@@ -127,7 +127,7 @@ footer a{color:var(--zee)}
 <svg viewBox="0 0 40 40" fill="none"><rect x="6" y="4" width="20" height="32" rx="3" fill="#0E6BA8"/><rect x="11" y="4" width="3" height="32" fill="#F5A623"/><rect x="20" y="10" width="14" height="26" rx="2" fill="#FF7F50"/></svg>
 <span><b>GS Books</b><small>G.T.J. SANDVLIET</small></span></a>
 <nav>
-<a href="#boeken">Boeken</a><a href="#videoboek">Videoboek</a><a href="#luister">Luister</a><a href="#kijk">Kijk</a><a href="#auteur">Auteur</a><a href="#spel">Spel</a>
+<a href="#boeken">Boeken</a><a href="#videoboek">Videoboek</a><a href="#luister">Luister</a><a href="#blader">Blader</a><a href="#kijk">Kijk</a><a href="#auteur">Auteur</a><a href="#spel">Spel</a>
 <a class="cta" href="#boeken">Koop Sunny</a>
 </nav>
 </div></header>
@@ -248,7 +248,7 @@ footer a{color:var(--zee)}
 <div class="vb-bar">
 <button onclick="vbStap(1,-1)">⏮</button>
 <button onclick="vbStap(1,1)">⏭</button>
-<span class="teller" id="vb1-teller">page 1/4</span>
+<span class="teller" id="vb1-teller">page 1/6</span>
 <div class="vb-voortgang"><i id="vb1-voort"></i></div>
 </div>
 <audio id="vb1-audio" src="audio/sunny-ch1a.mp3" preload="metadata"></audio>
@@ -267,6 +267,21 @@ footer a{color:var(--zee)}
 <div class="track"><b>Sunny — Chapter 1b: The Magical Sailboat</b><small>English audiobook</small><audio controls preload="none" src="audio/sunny-ch1b.mp3"></audio></div>
 <div class="track"><b>Sunny — luisterdeel 1</b><small>Aanvullende verhaal-audio</small><audio controls preload="none" src="audio/sunny-deel1.mp3"></audio></div>
 <div class="track"><b>Sunny — luisterdeel 2</b><small>Aanvullende verhaal-audio</small><audio controls preload="none" src="audio/sunny-deel2.mp3"></audio></div>
+</div>
+</section>
+
+<section id="blader">
+<h2>📖 Blader door het echte boek</h2>
+<p class="sub">20 echte hoofdstuk-plaatjes uit <i>Sunny's Sailing Adventures</i> — klik door het boek alsof je het vasthoudt.</p>
+<div class="vb-scherm" style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 14px rgba(8,78,124,.15)">
+<img id="bl-img" src="boek/p00.jpg" alt="Boekpagina uit Sunny's Sailing Adventures" style="width:100%;height:min(60vw,480px);object-fit:contain">
+</div>
+<div class="vb-bar" style="color:var(--zeedonker)">
+<button onclick="blStap(-1)" style="background:var(--tint);color:var(--zeedonker)">⏮</button>
+<button onclick="blStap(1)" style="background:var(--tint);color:var(--zeedonker)">⏭</button>
+<span class="teller" id="bl-teller" style="color:#6B7B88">pagina 1/20</span>
+<div class="vb-voortgang" style="background:#E3ECF2"><i id="bl-voort" style="background:var(--goud)"></i></div>
+<a class="mini kopen" href="https://buy.stripe.com/00wbJ12wwaan8rRggB5J601" target="_blank" rel="noopener" style="white-space:nowrap">Koop het boek</a>
 </div>
 </section>
 
@@ -342,7 +357,7 @@ function schuif(id,dir){
   el.scrollBy({left:dir*270,behavior:'smooth'});
 }
 // videoboek-spelers
-var VB=[{paginas:5,pad:'pages/keesje-h1-',nul:'pagina'},{paginas:4,pad:'pages/sunny-',nul:'page'}];
+var VB=[{paginas:5,pad:'pages/keesje-h1-',nul:'pagina'},{paginas:6,pad:'pages/sunny-',nul:'page'}];
 var vbIdx=[0,0], vbTimer=[null,null];
 function vbZet(i){
   var img=document.getElementById('vb'+i+'-img');
@@ -373,6 +388,14 @@ function vbPlay(i){
 function vbStap(i,d){
   vbIdx[i]=Math.max(0,Math.min(VB[i].paginas-1,vbIdx[i]+d));
   vbZet(i);
+}
+// boek-bladeraar
+var blIdx=0,blN=20;
+function blStap(d){
+  blIdx=Math.max(0,Math.min(blN-1,blIdx+d));
+  document.getElementById('bl-img').src='boek/p'+String(blIdx).padStart(2,'0')+'.jpg';
+  document.getElementById('bl-teller').textContent='pagina '+(blIdx+1)+'/'+blN;
+  document.getElementById('bl-voort').style.width=((blIdx+1)/blN*100)+'%';
 }
 // memory-spel
 var MEM=['img/mem-0.jpg','img/mem-1.jpg','img/mem-2.jpg','img/mem-3.jpg','img/mem-4.jpg','img/mem-5.jpg'];
