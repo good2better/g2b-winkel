@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G2B Muziekwinkel</title>
+<meta name="description" content="Eigen muziekwinkel van Good2Better — luister previews en koop direct van de maker.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230D0F0E'/><text x='50' y='68' font-size='52' font-weight='bold' text-anchor='middle' fill='%232FBF71' font-family='sans-serif'>G2</text></svg>">
+<style>
+:root{
+  --bg:#0d0f0e; --panel:#171a19; --panel2:#1e2221; --line:#2a2f2d;
+  --txt:#e8ecea; --dim:#8fa098; --accent:#2fbf71; --accent2:#1d7a48;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);
+  font:15px/1.6 'Segoe UI',system-ui,sans-serif;min-height:100vh}
+header{border-bottom:1px solid var(--line);background:var(--panel);
+  padding:20px;text-align:center}
+.logo{font-size:clamp(22px,4vw,30px);font-weight:800;letter-spacing:2px}
+.logo b{color:var(--accent)}
+.sub{color:var(--dim);font-size:13px;margin-top:4px}
+main{max-width:860px;margin:0 auto;padding:22px 16px 60px}
+.trust{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
+  margin:0 0 20px}
+.trust span{color:var(--dim);font-size:12px;border:1px solid var(--line);
+  border-radius:20px;padding:3px 12px}
+.card{background:var(--panel);border:1px solid var(--line);
+  border-radius:14px;padding:16px;margin-bottom:16px;
+  transition:border-color .2s}
+.card:hover{border-color:var(--accent2)}
+.card .top{display:flex;gap:14px;align-items:flex-start}
+.cover{width:96px;height:96px;border-radius:10px;object-fit:cover;
+  background:#000;flex:none;border:1px solid var(--line)}
+.info{flex:1;min-width:0}
+.titel{font-size:17px;font-weight:700}
+.prijs{color:var(--accent);font-weight:700;margin:2px 0}
+.beschr{color:var(--dim);font-size:13px;margin-top:4px}
+.player{display:flex;align-items:center;gap:10px;margin-top:12px}
+.playbtn{width:42px;height:42px;border-radius:50%;border:none;
+  background:var(--accent);color:#04120a;font-size:16px;cursor:pointer;
+  flex:none;display:flex;align-items:center;justify-content:center;
+  font-weight:700}
+.playbtn:hover{filter:brightness(1.15)}
+.wave{flex:1;min-width:0;height:52px;cursor:pointer}
+.duur{color:var(--dim);font-size:12px;flex:none}
+.koop-blok{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;
+  align-items:center}
+.licentie{background:var(--panel2);border:1px solid var(--line);
+  color:var(--txt);border-radius:8px;padding:7px 12px;font-size:12.5px;
+  cursor:pointer}
+.licentie.on{border-color:var(--accent);color:var(--accent);
+  font-weight:700}
+.koop{margin-left:auto;background:var(--accent);color:#04120a;
+  border:none;font-weight:800;font-size:15px;padding:11px 26px;
+  border-radius:9px;cursor:pointer;text-decoration:none;
+  display:inline-block}
+.koop:hover{filter:brightness(1.12)}
+.koop.uit{opacity:.45;pointer-events:none}
+.leeg{text-align:center;color:var(--dim);padding:60px 20px;
+  border:1px dashed var(--line);border-radius:14px}
+.groepen{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
+  margin:0 0 20px}
+.groepbtn{background:var(--panel);border:1px solid var(--line);
+  color:var(--txt);border-radius:20px;padding:8px 16px;font-size:13px;
+  font-weight:700;cursor:pointer;letter-spacing:.3px}
+.groepbtn:hover{border-color:var(--accent)}
+.groepbtn.speelt{border-color:var(--accent);color:var(--accent)}
+.groepbtn.alles{background:var(--accent);color:#04120a;
+  border-color:var(--accent)}
+footer{text-align:center;color:var(--dim);font-size:12px;
+  padding:24px;border-top:1px solid var(--line)}
+footer b{color:var(--accent)}
+@media(max-width:560px){
+  .card .top{flex-direction:column}
+  .cover{width:100%;height:auto;aspect-ratio:1}
+  .koop{margin-left:0;width:100%;text-align:center}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" id="titel">G2B <b>MUZIEKWINKEL</b></div>
+  <div class="sub" id="ondertitel">Beats en meer — direct van de maker</div>
+</header>
+<main>
+  <div class="trust">
+    <span>🔒 veilig betalen</span>
+    <span>⬇ direct downloaden</span>
+    <span>🤝 100% van de maker</span>
+  </div>
+  <div id="groepen" class="groepen" style="display:none"></div>
+  <div id="lijst"><div class="leeg">Winkel wordt geladen…</div></div>
+</main>
+<footer>Gebouwd door <b>Good2Better</b> — eigen winkel, geen commissie.
+<span id="jaar"></span></footer>
+<script type="module" src="app.js"></script>
+</body>
+</html>

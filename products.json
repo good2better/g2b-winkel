@@ -1,0 +1,123 @@
+{
+ "titel": "G2B Muziekwinkel",
+ "ondertitel": "Beats en meer — direct van de maker",
+ "stats_url": "",
+ "gebouwd": "2026-10-07T06:13:24",
+ "producten": [
+  {
+   "id": "c5444536",
+   "titel": "Midnight Dembow",
+   "soort": "audio",
+   "beschrijving": "",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 161.1,
+   "groep": "dembow",
+   "cover": "media/c5444536-cover.png",
+   "preview": "media/c5444536-preview.mp3",
+   "download": "d/c5444536/Midnight_Dembow2.wav"
+  },
+  {
+   "id": "701065e9",
+   "titel": "Ugkgov 2026",
+   "soort": "audio",
+   "beschrijving": "",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 94.2,
+   "groep": "2026",
+   "cover": "media/701065e9-cover.png",
+   "preview": "media/701065e9-preview.mp3",
+   "download": "d/701065e9/ugkgoiuv_2026.wav"
+  },
+  {
+   "id": "b539358b",
+   "titel": "Idjoevh 2026",
+   "soort": "audio",
+   "beschrijving": "",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 51.5,
+   "groep": "2026",
+   "cover": "media/b539358b-cover.png",
+   "preview": "media/b539358b-preview.mp3",
+   "download": "d/b539358b/idjoevh_2026.wav"
+  },
+  {
+   "id": "2878e291",
+   "titel": "Cjfjff Houce",
+   "soort": "audio",
+   "beschrijving": "",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 133.3,
+   "groep": "house",
+   "cover": "media/2878e291-cover.png",
+   "preview": "media/2878e291-preview.mp3",
+   "download": "d/2878e291/GOOD2BETTER-_cjfjff_houce.wav"
+  },
+  {
+   "id": "5881caf4",
+   "titel": "UD 2026",
+   "soort": "audio",
+   "beschrijving": "",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 54.9,
+   "groep": "2026",
+   "cover": "media/5881caf4-cover.png",
+   "preview": "media/5881caf4-preview.mp3",
+   "download": "d/5881caf4/ud_2026.wav"
+  }
+ ]
+}
