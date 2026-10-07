@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B Beats — one-page</title>
+<!-- G2B one-page beats-site — één bestand, leest live uit de winkel
+     (products.json). Embed als iFrame of open als eigen pagina.
+     Gratis hosting via GitHub Pages. Geen cookies, geen trackers. -->
+<style>
+  :root{
+    --bg:#0d0f0e; --panel:#171a19; --accent:#2fbf71; --accent2:#1d7a48;
+    --tekst:#e8ecea; --dim:#8fa098; --line:#233027;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--tekst);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+  .kop{max-width:960px;margin:0 auto;padding:34px 20px 8px}
+  .logo{font-size:30px;font-weight:800;letter-spacing:.04em}
+  .logo b{color:var(--accent)}
+  .tag{color:var(--dim);margin-top:6px;font-size:14px}
+  .badges{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .badge{border:1px solid var(--line);border-radius:999px;padding:5px 12px;
+    font-size:12px;color:var(--dim);background:var(--panel)}
+  .badge i{color:var(--accent);font-style:normal;margin-right:4px}
+  .sectie-kop{max-width:960px;margin:26px auto 0;padding:0 20px;
+    display:flex;align-items:center;justify-content:space-between}
+  .sectie-kop h2{font-size:17px;letter-spacing:.08em;text-transform:uppercase}
+  .sectie-kop h2 b{color:var(--accent)}
+  .nav{display:flex;gap:8px}
+  .nav button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);
+    background:var(--panel);color:var(--tekst);font-size:15px;cursor:pointer}
+  .nav button:hover{border-color:var(--accent);color:var(--accent)}
+  .swipe{max-width:960px;margin:14px auto 0;display:flex;gap:16px;
+    overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 20px 20px;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .swipe::-webkit-scrollbar{display:none}
+  .kaart{flex:0 0 250px;scroll-snap-align:start;background:var(--panel);
+    border:1px solid var(--line);border-radius:16px;overflow:hidden;
+    transition:border-color .15s, transform .15s}
+  .kaart:hover{border-color:var(--accent2);transform:translateY(-2px)}
+  .hoes-wrap{position:relative}
+  .hoes{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+  .play{position:absolute;inset:0;display:flex;align-items:center;
+    justify-content:center;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.6));
+    border:0;width:100%;cursor:pointer}
+  .play .c{width:60px;height:60px;border-radius:50%;background:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 18px rgba(0,0,0,.5);transition:transform .15s}
+  .play:hover .c{transform:scale(1.07)}
+  .play svg{width:24px;height:24px;fill:#04120a;margin-left:3px}
+  .play.pauze svg{margin-left:0}
+  .info{padding:12px 14px 14px}
+  .titel{font-size:15.5px;font-weight:700;white-space:nowrap;overflow:hidden;
+    text-overflow:ellipsis}
+  .meta{font-size:11.5px;color:var(--dim);margin-top:3px}
+  .prijs-rij{display:flex;align-items:center;justify-content:space-between;
+    margin-top:10px}
+  .prijs{font-size:12px;color:var(--dim)}
+  .prijs b{color:var(--tekst);font-size:15px}
+  .koop{background:var(--accent);color:#04120a;text-decoration:none;
+    font-weight:800;font-size:12px;padding:8px 14px;border-radius:9px;
+    letter-spacing:.04em}
+  .koop:hover{filter:brightness(1.12)}
+  .dots{display:flex;gap:6px;justify-content:center;padding:0 0 10px}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+  .dots i.on{background:var(--accent)}
+  .cta{max-width:960px;margin:18px auto 30px;padding:0 20px;text-align:center}
+  .cta a{display:inline-block;background:var(--accent);color:#04120a;
+    text-decoration:none;font-weight:800;font-size:15px;letter-spacing:.05em;
+    padding:14px 34px;border-radius:12px;
+    box-shadow:0 6px 24px rgba(0,0,0,.35)}
+  .cta a:hover{filter:brightness(1.12)}
+  .cta p{color:var(--dim);font-size:12.5px;margin-top:12px}
+  footer{border-top:1px solid var(--line);text-align:center;color:var(--dim);
+    font-size:12px;padding:18px 20px 26px}
+  footer b{color:var(--accent)}
+  .leeg{color:var(--dim);padding:30px 20px}
+</style>
+</head>
+<body>
+<header class="kop">
+  <div class="logo" id="merk">G2B <b>BEATS</b></div>
+  <div class="tag" id="tag">Originele beats — direct van de maker. Luister, kies je licentie, download meteen.</div>
+  <div class="badges">
+    <span class="badge"><i>🔒</i>veilig betalen</span>
+    <span class="badge"><i>⬇</i>direct downloaden</span>
+    <span class="badge"><i>🤝</i>100% van de maker</span>
+  </div>
+</header>
+<div class="sectie-kop">
+  <h2><b>◆</b> Beats</h2>
+  <div class="nav">
+    <button id="prev" aria-label="terug">‹</button>
+    <button id="next" aria-label="verder">›</button>
+  </div>
+</div>
+<div class="swipe" id="swipe"><div class="leeg">Beats laden…</div></div>
+<div class="dots" id="dots"></div>
+<div class="cta">
+  <a id="alleLink" href="index.html">ALLE BEATS &amp; LICENTIES →</a>
+  <p>MP3-lease · WAV-licentie · Exclusief — betaling via Stripe (iDEAL, kaart, PayPal).</p>
+</div>
+<footer>Gebouwd door <b id="maker">Good2Better</b> — eigen winkel, geen commissie.</footer>
+<script type="module">
+const $ = id => document.getElementById(id);
+const esc = s => String(s || "").replace(/[&<>"']/g, c =>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+const LIC = {mp3: "MP3-lease", wav: "WAV", exclusief: "Exclusief"};
+
+let huidige = null;        // het audio-element dat nu speelt
+const P = '<path d="M8 5v14l11-7z"/>';
+const S = '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>';
+
+let data;
+try { data = await (await fetch("products.json", {cache: "no-store"})).json(); }
+catch { data = {producten: []}; }
+
+// huisstijl van de winkel overnemen (titel + accentkleur)
+if (data.accent)
+  document.documentElement.style.setProperty("--accent", data.accent);
+if (data.accent2)
+  document.documentElement.style.setProperty("--accent2", data.accent2);
+if (data.titel) {
+  const delen = data.titel.split(" ");
+  const kop = delen.slice(0, -1).join(" ") || data.titel;
+  const laatste = delen.length > 1 ? delen.at(-1) : "";
+  $("merk").innerHTML = `${esc(kop)} ${laatste ? `<b>${esc(laatste)}</b>` : ""}`;
+  document.title = data.titel;
+}
+if (data.ondertitel) $("tag").textContent = data.ondertitel;
+
+const prods = (data.producten || []).filter(p => p.soort === "audio" && p.preview);
+const swipe = $("swipe");
+if (!prods.length)
+  swipe.innerHTML = '<div class="leeg">Binnenkort — de eerste beats komen eraan.</div>';
+
+swipe.innerHTML = prods.map((p, n) => {
+  const licenties = Object.keys(LIC).filter(k => p.links?.[k]);
+  const koop = licenties.length ? p.links[licenties[0]] : (p.links?.koop || "");
+  return `<div class="kaart">
+    <div class="hoes-wrap">
+      ${p.cover ? `<img class="hoes" src="${esc(p.cover)}" alt="">` : ""}
+      <button class="play" data-n="${n}" aria-label="speel">
+        <span class="c"><svg viewBox="0 0 24 24">${P}</svg></span>
+      </button>
+      <audio src="${esc(p.preview)}" preload="none"></audio>
+    </div>
+    <div class="info">
+      <div class="titel">${esc(p.titel)}</div>
+      <div class="meta">${esc(p.groep || "beat")} · ${fmt(p.duur || 0)} preview</div>
+      <div class="prijs-rij">
+        <div class="prijs">v.a. <b>${esc((p.prijs || "").replace(/^v\.?a\.?\s*/i, ""))}</b></div>
+        ${koop ? `<a class="koop" href="${esc(koop)}" target="_blank" rel="noopener">KOOP</a>` : ""}
+      </div>
+    </div>
+  </div>`;
+}).join("");
+
+const kaarten = [...swipe.querySelectorAll(".kaart")];
+const dots = $("dots");
+dots.innerHTML = kaarten.map((_, n) => `<i data-n="${n}"></i>`).join("");
+const alleDots = [...dots.querySelectorAll("i")];
+function markeer() {
+  const midden = swipe.scrollLeft + swipe.clientWidth / 2;
+  let best = 0, afstand = 1e9;
+  kaarten.forEach((k, n) => {
+    const c = k.offsetLeft + k.offsetWidth / 2;
+    if (Math.abs(c - midden) < afstand) { afstand = Math.abs(c - midden); best = n; }
+  });
+  alleDots.forEach((d, n) => d.classList.toggle("on", n === best));
+}
+markeer();
+swipe.addEventListener("scroll", () => requestAnimationFrame(markeer), {passive: true});
+const stap = () => (kaarten[0]?.offsetWidth || 250) + 16;
+$("prev").onclick = () => swipe.scrollBy({left: -stap(), behavior: "smooth"});
+$("next").onclick = () => swipe.scrollBy({left: stap(), behavior: "smooth"});
+
+swipe.addEventListener("click", e => {
+  const btn = e.target.closest(".play");
+  if (!btn) return;
+  const audio = btn.parentElement.querySelector("audio");
+  const icoon = btn.querySelector("svg");
+  if (huidige && huidige !== audio) {
+    huidige.pause();
+    document.querySelectorAll(".play.pauze").forEach(x => {
+      x.classList.remove("pauze"); x.querySelector("svg").innerHTML = P;
+    });
+  }
+  if (audio.paused) { audio.play(); }
+  else { audio.pause(); }
+  audio.onplay = () => { btn.classList.add("pauze"); icoon.innerHTML = S; huidige = audio; };
+  audio.onpause = () => { btn.classList.remove("pauze"); icoon.innerHTML = P; };
+  audio.onended = () => { btn.classList.remove("pauze"); icoon.innerHTML = P; };
+});
+</script>
+</body>
+</html>
