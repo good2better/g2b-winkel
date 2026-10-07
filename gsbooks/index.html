@@ -221,37 +221,45 @@ footer a{color:var(--zee)}
 <h2>▶ Videoboek — kijken én luisteren</h2>
 <p class="sub">Het boek als filmpje: de pagina's verschijnen terwijl het verhaal wordt voorgelezen. Druk op play en blader mee — of kijk gewoon mee.</p>
 <div class="vb-tabs">
-<button class="vb-tab actief" onclick="vbKies(0)">🐰 Keesje Konijn — Hoofdstuk 1 (NL)</button>
-<button class="vb-tab" onclick="vbKies(1)">⛵ Sunny — The Magical Sailboat (EN)</button>
+<button class="vb-tab actief" onclick="vbKies(0)">🐰 Keesje — HELE boek, de film (NL) ⭐</button>
+<button class="vb-tab" onclick="vbKies(1)">🐰 Keesje — Hoofdstuk 1 (NL)</button>
+<button class="vb-tab" onclick="vbKies(2)">⛵ Sunny — The Magical Sailboat (EN)</button>
 </div>
 
 <div class="vb-speler actief" id="vb0">
 <div class="vb-scherm">
-<img id="vb0-img" src="pages/keesje-h1-0.jpg" alt="Keesje Konijn hoofdstuk 1">
-<button class="vb-play" id="vb0-play" onclick="vbPlay(0)">▶</button>
+<video controls playsinline preload="none" poster="pages/keesje-vb-poster.jpg" src="video/keesje-videoboek.mp4" style="width:100%;display:block;background:#071522"></video>
 </div>
-<div class="vb-bar">
-<button onclick="vbStap(0,-1)">⏮</button>
-<button onclick="vbStap(0,1)">⏭</button>
-<span class="teller" id="vb0-teller">pagina 1/5</span>
-<div class="vb-voortgang"><i id="vb0-voort"></i></div>
-</div>
-<audio id="vb0-audio" src="audio/keesje-h1.mp3" preload="metadata"></audio>
-<p class="vb-tip">🐰 De Avonturen van Keesje Konijn — hoofdstuk 1, voorgelezen. De pagina's draaien mee met het verhaal.</p>
+<p class="vb-tip">🐰 De Avonturen van Keesje Konijn — het HELE boek als film: 8 hoofdstukken met echte illustraties en een echte voorleesstem. Lekker achterover kijken!</p>
 </div>
 
 <div class="vb-speler" id="vb1">
 <div class="vb-scherm">
-<img id="vb1-img" src="pages/sunny-0.jpg" alt="Sunny the Magical Sailboat">
+<img id="vb1-img" src="pages/keesje-h1-0.jpg" alt="Keesje Konijn hoofdstuk 1">
 <button class="vb-play" id="vb1-play" onclick="vbPlay(1)">▶</button>
 </div>
 <div class="vb-bar">
 <button onclick="vbStap(1,-1)">⏮</button>
 <button onclick="vbStap(1,1)">⏭</button>
-<span class="teller" id="vb1-teller">page 1/6</span>
+<span class="teller" id="vb1-teller">pagina 1/5</span>
 <div class="vb-voortgang"><i id="vb1-voort"></i></div>
 </div>
-<audio id="vb1-audio" src="audio/sunny-ch1a.mp3" preload="metadata"></audio>
+<audio id="vb1-audio" src="audio/keesje-h1.mp3" preload="metadata"></audio>
+<p class="vb-tip">🐰 De Avonturen van Keesje Konijn — hoofdstuk 1, voorgelezen. De pagina's draaien mee met het verhaal.</p>
+</div>
+
+<div class="vb-speler" id="vb2">
+<div class="vb-scherm">
+<img id="vb2-img" src="pages/sunny-0.jpg" alt="Sunny the Magical Sailboat">
+<button class="vb-play" id="vb2-play" onclick="vbPlay(2)">▶</button>
+</div>
+<div class="vb-bar">
+<button onclick="vbStap(2,-1)">⏮</button>
+<button onclick="vbStap(2,1)">⏭</button>
+<span class="teller" id="vb2-teller">page 1/6</span>
+<div class="vb-voortgang"><i id="vb2-voort"></i></div>
+</div>
+<audio id="vb2-audio" src="audio/sunny-ch1a.mp3" preload="metadata"></audio>
 <p class="vb-tip">⛵ Sunny — Chapter 1: The Magical Sailboat (English audio edition, deel a). Wil je deel b horen? Zie Luister hieronder.</p>
 </div>
 
@@ -359,8 +367,8 @@ function schuif(id,dir){
   el.scrollBy({left:dir*270,behavior:'smooth'});
 }
 // videoboek-spelers
-var VB=[{paginas:5,pad:'pages/keesje-h1-',nul:'pagina'},{paginas:6,pad:'pages/sunny-',nul:'page'}];
-var vbIdx=[0,0], vbTimer=[null,null];
+var VB=[{paginas:1,pad:'pages/keesje-h1-',nul:'pagina'},{paginas:5,pad:'pages/keesje-h1-',nul:'pagina'},{paginas:6,pad:'pages/sunny-',nul:'page'}];
+var vbIdx=[0,0,0], vbTimer=[null,null,null];
 function vbZet(i){
   var img=document.getElementById('vb'+i+'-img');
   img.src=VB[i].pad+vbIdx[i]+'.jpg';
