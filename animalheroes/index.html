@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Animal Heroes — Dieren die levens redden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --groen:#4CAF50; --blauw:#2196F3; --geel:#FFEB3B; --oranje:#FF9800;
+  --teal:#004D40; --aqua:#E0F7FA; --tekst:#333333; --wit:#ffffff;
+  --groen2:#3d9142; --blauw2:#1976d2;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Raleway',system-ui,sans-serif;background:var(--aqua);color:var(--tekst);overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:var(--oranje);text-decoration:none;font-weight:700}
+a:hover{text-decoration:underline}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
+  box-shadow:0 2px 14px rgba(0,77,64,.10)}
+.hb{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:10px 20px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:20px;color:var(--teal);letter-spacing:.5px}
+.logo svg{width:36px;height:36px}
+.logo b span{color:var(--groen)}
+nav{margin-left:auto;display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+nav a{color:var(--oranje);padding:8px 12px;border-radius:999px;font-size:14px;font-weight:700}
+nav a:hover{background:#fff3e0;text-decoration:none}
+nav a.cta{background:var(--groen);color:#fff;padding:9px 18px}
+nav a.cta:hover{background:var(--groen2)}
+
+/* ---------- hero ---------- */
+.hero{max-width:1200px;margin:22px auto 0;padding:0 20px}
+.hero-kader{position:relative;border-radius:26px;overflow:hidden;box-shadow:0 18px 50px rgba(0,77,64,.22)}
+.hero-kader img{width:100%;height:clamp(340px,52vw,560px);object-fit:cover}
+.hero-tekst{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:clamp(22px,4vw,44px);background:linear-gradient(180deg,rgba(0,77,64,0) 35%,rgba(0,77,64,.78))}
+.hero-tekst .label{display:inline-block;background:var(--geel);color:var(--teal);font-weight:800;
+  font-size:12px;letter-spacing:1.6px;text-transform:uppercase;padding:6px 14px;border-radius:999px;width:max-content}
+.hero-tekst h1{color:#fff;font-size:clamp(30px,5.4vw,58px);font-weight:900;line-height:1.05;margin:14px 0 10px;
+  text-shadow:0 2px 12px rgba(0,0,0,.35)}
+.hero-tekst p{color:#eafaf1;font-size:clamp(14px,2vw,19px);max-width:560px;font-weight:600}
+.hero-knoppen{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+.knop{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:999px;font-weight:800;
+  font-size:15px;border:0;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.knop:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.25);text-decoration:none}
+.knop-groen{background:var(--groen);color:#fff}
+.knop-geel{background:var(--geel);color:var(--teal)}
+.knop-blauw{background:var(--blauw);color:#fff}
+.knop-oranje{background:var(--oranje);color:#fff}
+
+/* ---------- secties ---------- */
+section{max-width:1200px;margin:54px auto 0;padding:0 20px}
+.kop{display:flex;align-items:baseline;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.kop h2{color:var(--teal);font-size:clamp(22px,3.4vw,34px);font-weight:900}
+.kop .streep{flex:1;height:4px;background:linear-gradient(90deg,var(--groen),transparent);border-radius:4px;min-width:60px}
+.kop small{color:#5f8a84;font-weight:700}
+
+/* missie */
+.missie-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.missie-kaart{background:#fff;border-radius:18px;padding:24px;box-shadow:0 6px 20px rgba(0,77,64,.08);
+  border-top:5px solid var(--groen)}
+.missie-kaart:nth-child(2){border-top-color:var(--blauw)}
+.missie-kaart:nth-child(3){border-top-color:var(--oranje)}
+.missie-kaart .ico{font-size:30px;margin-bottom:10px}
+.missie-kaart h3{color:var(--teal);font-size:17px;margin-bottom:8px}
+.missie-kaart p{font-size:14px;line-height:1.6;color:#4a6560}
+
+/* video strip */
+.video-rij{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.video-kaart{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 6px 20px rgba(0,77,64,.10)}
+.video-kaart video{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#0b3d33}
+.video-kaart .cap{padding:14px 16px;font-weight:700;color:var(--teal);font-size:14px}
+.video-kaart .cap span{display:block;font-weight:600;color:#6b8f8a;font-size:12px;margin-top:3px}
+
+/* swipe rijen (boeken/shop) */
+.swipe-wrap{position:relative}
+.swipe{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 4px 18px;
+  scrollbar-width:none}
+.swipe::-webkit-scrollbar{display:none}
+.kaart{flex:0 0 240px;scroll-snap-align:center;background:#fff;border-radius:18px;overflow:hidden;
+  box-shadow:0 6px 20px rgba(0,77,64,.10);display:flex;flex-direction:column}
+.kaart img{height:240px;width:100%;object-fit:cover}
+.kaart .body{padding:14px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.kaart .titel{font-weight:800;color:var(--teal);font-size:15px}
+.kaart .sub{font-size:12.5px;color:#6b8f8a;line-height:1.5;flex:1}
+.kaart .prijs{font-weight:800;color:var(--groen);font-size:14px}
+.kaart .acties{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.miniknop{padding:8px 14px;border-radius:999px;font-size:12px;font-weight:800;border:0;cursor:pointer}
+.badge{position:absolute;top:12px;left:12px;background:var(--geel);color:var(--teal);font-size:11px;
+  font-weight:800;padding:5px 12px;border-radius:999px;letter-spacing:.6px;text-transform:uppercase}
+.kaart{position:relative}
+.pijl{position:absolute;top:42%;width:42px;height:42px;border-radius:50%;background:#fff;border:0;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);cursor:pointer;font-size:18px;font-weight:900;color:var(--teal);z-index:5}
+.pijl.l{left:-8px}.pijl.r{right:-8px}
+@media(max-width:640px){.pijl{display:none}}
+
+/* kaartspel */
+.spel{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center;background:#fff;
+  border-radius:24px;padding:26px;box-shadow:0 10px 30px rgba(0,77,64,.12)}
+.spel img{border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.spel h3{color:var(--teal);font-size:clamp(20px,2.6vw,28px);font-weight:900;margin-bottom:10px}
+.spel p{font-size:15px;line-height:1.7;color:#4a6560;margin-bottom:14px}
+.spel .facts{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.spel .facts span{background:var(--aqua);color:var(--teal);font-size:12px;font-weight:800;
+  padding:7px 13px;border-radius:999px}
+@media(max-width:820px){.spel{grid-template-columns:1fr}}
+
+/* muziek */
+.muziek{background:linear-gradient(120deg,var(--teal),#00695c);border-radius:24px;padding:30px;color:#fff;
+  display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+.muziek h3{font-size:clamp(20px,2.6vw,28px);font-weight:900;margin-bottom:8px}
+.muziek p{color:#c8e6e2;font-size:14.5px;line-height:1.7;max-width:640px}
+.muziek .lyr{font-style:italic;color:#a5d6cf;font-size:13px;margin-top:10px}
+.muziek .paw-big{font-size:64px}
+@media(max-width:720px){.muziek{grid-template-columns:1fr}}
+
+/* partners/goede doelen */
+.doelen{display:flex;gap:12px;flex-wrap:wrap}
+.doelen .doel{background:#fff;border-radius:14px;padding:14px 20px;font-weight:800;color:var(--teal);
+  box-shadow:0 4px 14px rgba(0,77,64,.08);font-size:14px;display:flex;gap:8px;align-items:center}
+
+footer{margin-top:64px;background:var(--teal);color:#b2dfdb;padding:34px 20px;text-align:center}
+footer .flogo{font-weight:900;color:#fff;font-size:18px;letter-spacing:.5px}
+footer p{font-size:13px;margin-top:10px;color:#8fc4bd}
+footer a{color:var(--geel)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hb">
+    <div class="logo">
+      <svg viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="31" rx="11" ry="9" fill="#4CAF50"/><circle cx="11" cy="19" r="5.5" fill="#4CAF50"/><circle cx="19.5" cy="12.5" r="5.5" fill="#4CAF50"/><circle cx="28.5" cy="12.5" r="5.5" fill="#4CAF50"/><circle cx="37" cy="19" r="5.5" fill="#4CAF50"/></svg>
+      <b>Animal <span>Heroes</span></b>
+    </div>
+    <nav>
+      <a href="#boeken">Boeken</a>
+      <a href="#kaartspel">Kaartspel</a>
+      <a href="#shop">Shop</a>
+      <a href="#muziek">Muziek</a>
+      <a class="cta" href="#shop">Bezoek de shop</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-kader">
+    <img src="img/ah-hero.jpg" alt="Het Animal Heroes-team: olifant Sunny, leeuw, giraffe en papegaai">
+    <div class="hero-tekst">
+      <span class="label">Saving lives every day</span>
+      <h1>Dieren die levens redden,<br>verhalen die raken.</h1>
+      <p>Boeken, een kaartspel, muziek en merchandise rond echte dierenhelden — voor kinderen én iedereen die van dieren houdt.</p>
+      <div class="hero-knoppen">
+        <a class="knop knop-geel" href="#boeken">📚 Ontdek de boeken</a>
+        <a class="knop knop-groen" href="#shop">🛍️ Naar de shop</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="missie-grid">
+    <div class="missie-kaart">
+      <div class="ico">🐾</div>
+      <h3>Echte helden</h3>
+      <p>Elke Animal Hero is gebaseerd op waargebeurde reddingen — honden die sporen, katten die alarmeren, paarden die helpen.</p>
+    </div>
+    <div class="missie-kaart">
+      <div class="ico">🌱</div>
+      <h3>Leren door spel</h3>
+      <p>Kinderen ontdekken dierenwelzijn en natuur via boeken, liedjes en het kaartspel — educatief en vrolijk.</p>
+    </div>
+    <div class="missie-kaart">
+      <div class="ico">💚</div>
+      <h3>Terug aan de dieren</h3>
+      <p>Een deel van elke verkoop steunt goede doelen voor dieren- en natuurbehoud. Jouw aankoop helpt écht.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="kop"><h2>🎬 Kijk</h2><div class="streep"></div><small>echte Animal Heroes-animaties</small></div>
+  <div class="video-rij">
+    <div class="video-kaart">
+      <video src="video/sunny-intro.mp4" autoplay muted loop playsinline></video>
+      <div class="cap">Sunny's Zeilboot Avonturen<span>Magische avonturen op zee — boek-introductie</span></div>
+    </div>
+    <div class="video-kaart">
+      <video src="video/sunny-dolfijn.mp4" autoplay muted loop playsinline></video>
+      <div class="cap">Sunny ontmoet Flash de dolfijn<span>…en Polly de papegaai vliegt binnen</span></div>
+    </div>
+    <div class="video-kaart">
+      <video src="video/helden-redding.mp4" autoplay muted loop playsinline></video>
+      <div class="cap">Redding in actie<span>Het Animal Heroes-team tijdens een bosbrand</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="boeken">
+  <div class="kop"><h2>📚 Boeken</h2><div class="streep"></div><small>prentenboeken &amp; verhalen</small></div>
+  <div class="swipe-wrap">
+    <button class="pijl l" onclick="schuif('boekenSwipe',-1)">‹</button>
+    <div class="swipe" id="boekenSwipe">
+      <div class="kaart">
+        <img src="img/ah-boek.jpg" alt="Sunny's Sailing Adventures boekomslag">
+        <div class="body">
+          <div class="titel">Sunny's Sailing Adventures</div>
+          <div class="sub">Olifantje Sunny vaart de zee over en maakt nieuwe vrienden — met Flash de dolfijn en Polly de papegaai.</div>
+          <div class="prijs">Kinderboek</div>
+          <div class="acties">
+            <a class="miniknop knop-groen" href="https://buy.stripe.com/00wbJ12wwaan8rRggB5J601" target="_blank" rel="noopener">🇬🇧 EN — koop</a>
+            <a class="miniknop knop-blauw" href="https://www.boekenbestellen.nl" target="_blank" rel="noopener">🇳🇱 NL — bestel</a>
+          </div>
+        </div>
+      </div>
+      <div class="kaart">
+        <span class="badge">Binnenkort</span>
+        <img src="img/ah-hero.jpg" alt="Animal Heroes vol. 2">
+        <div class="body">
+          <div class="titel">Animal Heroes: Animals Saving Lives</div>
+          <div class="sub">Deel 2 — helden-honden, dappere katten, vlijtige paarden, dappere vogels en exotische redders in actie.</div>
+          <div class="prijs">Verhalenboek</div>
+        </div>
+      </div>
+      <div class="kaart">
+        <span class="badge">Binnenkort</span>
+        <img src="img/ah-knuffel.jpg" alt="Keesje Konijn prentenboek">
+        <div class="body">
+          <div class="titel">De Avonturen van Keesje Konijn</div>
+          <div class="sub">Leerzaam prentenboek over tellen, kleuren, emoties en de natuur — voor de kleinste lezers.</div>
+        </div>
+      </div>
+    </div>
+    <button class="pijl r" onclick="schuif('boekenSwipe',1)">›</button>
+  </div>
+</section>
+
+<section id="kaartspel">
+  <div class="spel">
+    <img src="img/ah-kaartspel.jpg" alt="Animal Heroes kaartspel-doos met speelkaarten">
+    <div>
+      <h3>🃏 Het Animal Heroes-kaartspel</h3>
+      <p>Stel je eigen team van dierlijke helden samen en voltooi missies uit het echte leven. Trek kaarten, speel slim, en leer ondertussen alles over dieren en hun wondere wereld.</p>
+      <div class="facts">
+        <span>2–4 spelers</span><span>60 heldenkaarten</span><span>30 missies</span><span>40 feiten</span><span>+20 acties</span>
+      </div>
+      <a class="knop knop-oranje" href="#shop">Vanaf eind 2026 in de shop</a>
+    </div>
+  </div>
+</section>
+
+<section id="shop">
+  <div class="kop"><h2>🛍️ Shop</h2><div class="streep"></div><small>shirts, knuffels &amp; meer — steunt goede doelen</small></div>
+  <div class="swipe-wrap">
+    <button class="pijl l" onclick="schuif('shopSwipe',-1)">‹</button>
+    <div class="swipe" id="shopSwipe">
+      <div class="kaart">
+        <img src="img/ah-shirt.jpg" alt="Geel kinder-t-shirt met leeuwen-print">
+        <div class="body">
+          <div class="titel">Held T-shirt — Leeuw</div>
+          <div class="sub">Zacht kindershirt met onze medaille-leeuw. Ook in olifant, giraffe en papegaai.</div>
+          <div class="prijs">v.a. € 19,95</div>
+          <div class="acties"><a class="miniknop knop-groen" href="https://animalheroes.beezer.com/shop" target="_blank" rel="noopener">Bestel in de shop</a></div>
+        </div>
+      </div>
+      <div class="kaart">
+        <img src="img/ah-knuffel.jpg" alt="Knuffel-olifantje met rode cape">
+        <div class="body">
+          <div class="titel">Sunny-knuffel</div>
+          <div class="sub">Knuffel-olifantje Sunny met haar eigen rode helden-cape. De knuffel van het boek.</div>
+          <div class="prijs">v.a. € 24,95</div>
+          <div class="acties"><a class="miniknop knop-groen" href="https://animalheroes.beezer.com/shop" target="_blank" rel="noopener">Bestel in de shop</a></div>
+        </div>
+      </div>
+      <div class="kaart">
+        <img src="img/ah-kaartspel.jpg" alt="Kaartspel in de shop">
+        <div class="body">
+          <div class="titel">Kaartspel Animal Heroes</div>
+          <div class="sub">Het complete spel: 150 kaarten, spelbord en fiches — voor de hele familie.</div>
+          <div class="prijs">Binnenkort</div>
+        </div>
+      </div>
+    </div>
+    <button class="pijl r" onclick="schuif('shopSwipe',1)">›</button>
+  </div>
+</section>
+
+<section id="muziek">
+  <div class="muziek">
+    <div>
+      <h3>🎵 Het Animal Heroes-themesong</h3>
+      <p>Ons eigen lied — "Animal Heroes, Heldhaftig en Vrij" — in het Nederlands én Engels. Binnenkort ook kinderliedjes per leeftijd: slaapliedjes, speelliedjes en avonturenliedjes bij de boeken.</p>
+      <p class="lyr">"Animalheroes.club, waar wonderen gebeuren,<br>dieren die redden, waar liefde regeert…"</p>
+    </div>
+    <div class="paw-big">🐾</div>
+  </div>
+</section>
+
+<section>
+  <div class="kop"><h2>💚 Goede doelen</h2><div class="streep"></div><small>waar jouw aankoop aan bijdraagt</small></div>
+  <div class="doelen">
+    <div class="doel">🐘 Dierenopvang</div>
+    <div class="doel">🌿 Natuurbehoud</div>
+    <div class="doel">🐕 Reddingsdieren</div>
+    <div class="doel">🧒 Kinder-educatie</div>
+  </div>
+</section>
+
+<footer>
+  <div class="flogo">🐾 Animal Heroes</div>
+  <p>Saving lives every day · <a href="https://animalheroes.beezer.com" target="_blank" rel="noopener">animalheroes.club</a> · een merk van <a href="https://www.good2better.com" target="_blank" rel="noopener">Good2Better</a></p>
+</footer>
+
+<script>
+function schuif(id,dir){
+  const el=document.getElementById(id);
+  const kaart=el.querySelector('.kaart');
+  el.scrollBy({left:dir*(kaart.offsetWidth+16),behavior:'smooth'});
+}
+</script>
+</body>
+</html>
