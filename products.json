@@ -113,6 +113,34 @@
    "groep": "2026",
    "cover": "media/5881caf4-cover.png",
    "preview": "media/5881caf4-preview.mp3"
+  },
+  {
+   "id": "g2b-studio-pack",
+   "titel": "G2B Studio Pack",
+   "soort": "digitaal",
+   "beschrijving": "Complete mix/master-studio voor Windows: de G2B Engineer-app mixt en master je stems automatisch (in REAPER of zelfstandig, met smaak-loop), plus de G2B Glans-plugin (VST3+CLAP) voor air en breedte. Inclusief Nederlandse handleidingen. Eenmalig, geen abonnement.",
+   "prijs": "€ 149 intro-prijs",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-studio-pack-cover.png"
+  },
+  {
+   "id": "g2b-glans",
+   "titel": "G2B Glans",
+   "soort": "digitaal",
+   "beschrijving": "Air- en breedte-plugin (VST3 + CLAP) voor elke DAW: zet glans op je master zonder je sub te vervuilen — breedte alleen boven je splitpunt. Windows. Met Nederlandse handleiding.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-glans-cover.png"
   }
  ]
 }
