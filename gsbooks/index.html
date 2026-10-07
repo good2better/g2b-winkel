@@ -254,6 +254,8 @@ footer a{color:var(--zee)}
 <audio id="vb1-audio" src="audio/sunny-ch1a.mp3" preload="metadata"></audio>
 <p class="vb-tip">⛵ Sunny — Chapter 1: The Magical Sailboat (English audio edition, deel a). Wil je deel b horen? Zie Luister hieronder.</p>
 </div>
+
+<div id="vb-meer" style="margin-top:16px"></div>
 </div>
 </section>
 
@@ -440,6 +442,17 @@ function spelKlik(btn,k){
   }
 }
 spelStart();
+// extra videoboeken uit de Videoboek-Fabriek (gsbooks/vb/index.json)
+fetch('vb/index.json').then(function(r){return r.ok?r.json():[]}).then(function(lijst){
+  if(!lijst.length)return;
+  var houder=document.getElementById('vb-meer');
+  houder.innerHTML='<h3 style="color:#fff;margin:14px 0 10px">📚 Meer videoboeken</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px">'+
+    lijst.map(function(v){
+      return '<a href="'+v.url+'" style="display:block;background:rgba(255,255,255,.12);border-radius:12px;overflow:hidden;text-decoration:none;color:#fff">'+
+        '<img src="'+v.cover+'" alt="" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block">'+
+        '<div style="padding:8px 10px;font-size:.85rem"><b>▶ '+v.titel+'</b><br><span style="opacity:.8">'+v.paginas+' pagina’s</span></div></a>';
+    }).join('')+'</div>';
+}).catch(function(){});
 </script>
 </body>
 </html>
