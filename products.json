@@ -184,7 +184,8 @@
    },
    "groep": "software",
    "cover": "media/g2b-ruimte-cover.png",
-   "download_dir": "d/fe52c4567835e895"
+   "download_dir": "d/fe52c4567835e895",
+   "demo": "media/ruimte-demo.mp4"
   }
  ]
 }
