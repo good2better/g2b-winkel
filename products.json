@@ -212,7 +212,8 @@
    },
    "groep": "software",
    "cover": "media/g2b-akkoord-cover.png",
-   "download_dir": "d/081ca3261c3337a0"
+   "download_dir": "d/081ca3261c3337a0",
+   "demo": "media/akkoord-demo.mp4"
   }
  ]
 }
