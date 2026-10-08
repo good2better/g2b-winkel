@@ -102,6 +102,9 @@ async function laden() {
             ? `<div class="beschr">${esc(p.beschrijving)}</div>` : ""}
         </div>
       </div>
+      ${p.demo ? `
+      <video class="demo" src="${esc(p.demo)}" controls
+             preload="metadata" playsinline></video>` : ""}
       ${p.soort === "audio" ? `
       <div class="player">
         <button class="playbtn" data-play="${esc(p.id)}">▶</button>

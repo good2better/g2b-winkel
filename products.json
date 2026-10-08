@@ -75,7 +75,8 @@
    "duur": 0,
    "groep": "software",
    "cover": "media/g2b-glans-cover.png",
-   "download_dir": "d/ddcb57cd3635d858"
+   "download_dir": "d/ddcb57cd3635d858",
+   "demo": "media/glans-demo.mp4"
   },
   {
    "id": "g2b-subtamer",
@@ -90,7 +91,8 @@
    "duur": 0,
    "groep": "software",
    "cover": "media/g2b-subtamer-cover.png",
-   "download_dir": "d/28b55ed796124b2a"
+   "download_dir": "d/28b55ed796124b2a",
+   "demo": "media/subtamer-demo.mp4"
   },
   {
    "id": "g2b-poets",
@@ -105,7 +107,8 @@
    "duur": 0,
    "groep": "software",
    "cover": "media/g2b-poets-cover.png",
-   "download_dir": "d/c69c824eceda4964"
+   "download_dir": "d/c69c824eceda4964",
+   "demo": "media/poets-demo.mp4"
   },
   {
    "id": "g2b-ocho",
@@ -120,7 +123,8 @@
    "duur": 0,
    "groep": "software",
    "cover": "media/g2b-ocho-cover.png",
-   "download_dir": "d/df1f5bd8edab4901"
+   "download_dir": "d/df1f5bd8edab4901",
+   "demo": "media/ocho-demo.mp4"
   },
   {
    "id": "g2b-suite",
@@ -150,7 +154,8 @@
    "duur": 0,
    "groep": "software",
    "cover": "media/g2b-knip-cover.png",
-   "download_dir": "d/8bb4d2cd4aec439e"
+   "download_dir": "d/8bb4d2cd4aec439e",
+   "demo": "media/knip-demo.mp4"
   }
  ]
 }
