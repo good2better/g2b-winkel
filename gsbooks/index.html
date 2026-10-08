@@ -228,9 +228,9 @@ footer a{color:var(--zee)}
 
 <div class="vb-speler actief" id="vb0">
 <div class="vb-scherm">
-<video controls playsinline preload="none" poster="pages/keesje-vb-poster.jpg" src="video/keesje-videoboek.mp4" style="width:100%;display:block;background:#071522"></video>
+<video id="vb0-video" controls playsinline preload="none" poster="pages/keesje-vb-poster.jpg" src="video/keesje-videoboek-deel1.mp4" style="width:100%;display:block;background:#071522"></video>
 </div>
-<p class="vb-tip">🐰 De Avonturen van Keesje Konijn — het HELE boek als film: 8 hoofdstukken met echte illustraties en een echte voorleesstem. Lekker achterover kijken!</p>
+<p class="vb-tip">🐰 De Avonturen van Keesje Konijn — het HELE boek als film (~28 min): 8 hoofdstukken met de echte boek-illustraties en voorleesstem. Lekker achterover kijken!</p>
 </div>
 
 <div class="vb-speler" id="vb1">
@@ -368,6 +368,8 @@ function schuif(id,dir){
 }
 // videoboek-spelers
 var VB=[{paginas:1,pad:'pages/keesje-h1-',nul:'pagina'},{paginas:5,pad:'pages/keesje-h1-',nul:'pagina'},{paginas:6,pad:'pages/sunny-',nul:'page'}];
+var VB0_DELEN=['video/keesje-videoboek-deel1.mp4','video/keesje-videoboek-deel2.mp4','video/keesje-videoboek-deel3.mp4'],vb0Deel=0;
+(function(){var v=document.getElementById('vb0-video');if(!v)return;v.addEventListener('ended',function(){vb0Deel++;if(vb0Deel<VB0_DELEN.length){v.src=VB0_DELEN[vb0Deel];v.play()}else{vb0Deel=0;v.src=VB0_DELEN[0]}})})();
 var vbIdx=[0,0,0], vbTimer=[null,null,null];
 function vbZet(i){
   var img=document.getElementById('vb'+i+'-img');
