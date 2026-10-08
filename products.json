@@ -227,6 +227,19 @@
    "groep": "sounds",
    "cover": "media/g2b-looppack-cover.png",
    "download_dir": "d/07e56514f5fbdf54"
+  },
+  {
+   "id": "g2b-drumkit",
+   "titel": "G2B Drum Kit Vol. 1",
+   "soort": "digitaal",
+   "beschrijving": "29 one-shots uit de eigen engine: kicks, snares, hats, claps, perc, 808-subs en pluck-stabs. Perfect voor G2B SampleX. Royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-drumkit-cover.png",
+   "download_dir": "d/7258ce699cb3a2e8"
   }
  ]
 }
