@@ -432,6 +432,19 @@
    "download_dir": "d/d67a3a9bc5522e11"
   },
   {
+   "id": "g2b-housekit",
+   "titel": "G2B House Kit Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "27 house-sounds GERENDERD door onze engines: 4-on-the-floor kicks, claps/snaps, hats, percs, bass-stabs + groove-loop 124bpm. 100% eigen, royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-house-cover.png",
+   "download_dir": "d/f69234581b741570"
+  },
+  {
    "id": "g2b-fx-pack",
    "titel": "G2B FX-Pack",
    "soort": "digitaal",
