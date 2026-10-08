@@ -268,6 +268,32 @@
       "cover": "media/g2b-melodie-cover.png",
       "download_dir": "d/419c138ba1f0d5af",
       "demo": "media/g2b-melodie-demo.mp4"
+    },
+    {
+      "id": "g2b-fx-pack",
+      "titel": "G2B FX-Pack",
+      "soort": "digitaal",
+      "beschrijving": "6 effect-plugins in één ZIP: Glans, SubTamer, Poets, Knip, Ruimte + MasterRack flagship. De hele mix-keten van sub tot ruimte. Windows VST3+CLAP. Los = €154,70.",
+      "prijs": 49.95,
+      "links": {
+        "koop": ""
+      },
+      "groep": "software",
+      "cover": "media/g2b-fxpack-cover.png",
+      "download_dir": "d/ea6f54c7925b9ed8"
+    },
+    {
+      "id": "g2b-instrument-pack",
+      "titel": "G2B Instrument-Pack",
+      "soort": "digitaal",
+      "beschrijving": "5 instrumenten in één ZIP: OchoOcho (808), Akkoord (1-toets akkoorden), Drums (drum-machine), Melodie (hook-generator), SampleX (sample→instrument). Windows VST3+CLAP. Los = €99,75.",
+      "prijs": 39.95,
+      "links": {
+        "koop": ""
+      },
+      "groep": "software",
+      "cover": "media/g2b-instrumentpack-cover.png",
+      "download_dir": "d/98b4cbb4c04add54"
     }
   ]
 }
