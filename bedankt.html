@@ -58,7 +58,7 @@ footer b{color:var(--accent)}
   </div>
 </main>
 <footer>Gebouwd door <b>Good2Better</b> — eigen winkel, geen commissie.</footer>
-<script>
+<script type="module">
 const kaart = document.getElementById("kaart");
 const esc = s => String(s || "").replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -74,6 +74,15 @@ function fout() {
       winkel via de contactgegevens op de site — je betaling is je
       bewijs, je krijgt je bestand.</div>`;
 }
+
+// accentkleur van de winkel overnemen (mislukt = groen default)
+try {
+  const c = await (await fetch("products.json", { cache: "no-store" })).json();
+  if (c.accent)
+    document.documentElement.style.setProperty("--accent", c.accent);
+  if (c.accent2)
+    document.documentElement.style.setProperty("--accent2", c.accent2);
+} catch { /* groene huisstijl is prima */ }
 
 async function laden() {
   const k = new URLSearchParams(location.search).get("k") || "";

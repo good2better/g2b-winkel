@@ -101,14 +101,13 @@
   <a id="alleLink" href="index.html">ALLE BEATS &amp; LICENTIES →</a>
   <p>MP3-lease · WAV-licentie · Exclusief — betaling via Stripe (iDEAL, kaart, PayPal).</p>
 </div>
-<footer>Gebouwd door <b id="maker">Good2Better</b> — eigen winkel, geen commissie.
-<div style="margin-top:10px"><a href="gsbooks/" style="color:var(--accent);text-decoration:none">📚 GS Books</a> · <a href="animalheroes/" style="color:var(--accent);text-decoration:none">🦸 Animal Heroes</a> · <a href="https://www.good2better.com" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">good2better.com</a></div></footer>
+<footer>Gebouwd door <b id="maker">Good2Better</b> — eigen winkel, geen commissie.</footer>
 <script type="module">
 const $ = id => document.getElementById(id);
 const esc = s => String(s || "").replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
-const LIC = {mp3: "MP3-lease", wav: "WAV", exclusief: "Exclusieve licentie"};
+const LIC = {mp3: "MP3-lease", wav: "WAV", exclusief: "Exclusief"};
 
 let huidige = null;        // het audio-element dat nu speelt
 const P = '<path d="M8 5v14l11-7z"/>';

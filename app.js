@@ -6,13 +6,14 @@ const lijst = document.getElementById("lijst");
 document.getElementById("jaar").textContent = " · " + new Date().getFullYear();
 
 const LICENTIE_NAMEN = {
-  mp3: "MP3-lease", wav: "WAV-licentie", exclusief: "Exclusieve licentie",
+  mp3: "MP3-lease", wav: "WAV-licentie", exclusief: "Exclusief",
 };
 
 let huidige = null;                 // de speler die nu speelt
 const spelers = new Map();          // id -> WaveSurfer
 let afspeellijst = null;            // {ids:[], idx} als er wordt doorgespeeld
 let statsUrl = "";                   // optioneel luister-statistiek-endpoint
+let accent = "#2fbf71";              // uit products.json (winkel-accentkleur)
 const luisterTijd = new Map();      // id -> seconden echt geluisterd
 
 function stuurStats() {
@@ -59,6 +60,10 @@ async function laden() {
   if (data.ondertitel)
     document.getElementById("ondertitel").textContent = data.ondertitel;
   statsUrl = data.stats_url || "";
+  accent = data.accent || "#2fbf71";
+  document.documentElement.style.setProperty("--accent", accent);
+  document.documentElement.style.setProperty(
+    "--accent2", data.accent2 || accent);
   document.title = data.titel || "G2B Muziekwinkel";
 
   const prods = data.producten || [];
@@ -185,7 +190,7 @@ function togglePlay(id) {
     if (!p || !p.preview) return;
     ws = WaveSurfer.create({
       container: document.querySelector(`[data-wave="${id}"]`),
-      height: 52, waveColor: "#3a443f", progressColor: "#2fbf71",
+      height: 52, waveColor: "#3a443f", progressColor: accent,
       cursorColor: "#e8ecea", cursorWidth: 2, barWidth: 2,
       barGap: 2, barRadius: 2, normalize: true,
     });

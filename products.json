@@ -1,8 +1,10 @@
 {
  "titel": "G2B Muziekwinkel",
  "ondertitel": "Beats en meer — direct van de maker",
+ "accent": "#2fbf71",
+ "accent2": "#1d7646",
  "stats_url": "",
- "gebouwd": "2026-10-07T09:40:19",
+ "gebouwd": "2026-10-08T23:49:55",
  "producten": [
   {
    "id": "c5444536",
@@ -27,6 +29,50 @@
    "preview": "media/c5444536-preview.mp3"
   },
   {
+   "id": "701065e9",
+   "titel": "Ugkgov 2026",
+   "soort": "audio",
+   "beschrijving": "",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 94.2,
+   "groep": "2026",
+   "cover": "media/701065e9-cover.png",
+   "preview": "media/701065e9-preview.mp3"
+  },
+  {
+   "id": "b539358b",
+   "titel": "Idjoevh 2026",
+   "soort": "audio",
+   "beschrijving": "",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 51.5,
+   "groep": "2026",
+   "cover": "media/b539358b-cover.png",
+   "preview": "media/b539358b-preview.mp3"
+  },
+  {
    "id": "2878e291",
    "titel": "Cjfjff Houce",
    "soort": "audio",
@@ -49,18 +95,173 @@
    "preview": "media/2878e291-preview.mp3"
   },
   {
-   "id": "g2b-studio-pack",
-   "titel": "G2B Studio Pack",
-   "soort": "digitaal",
-   "beschrijving": "Complete mix/master-studio voor Windows: de G2B Engineer-app mixt en master je stems automatisch (in REAPER of zelfstandig, met smaak-loop), plus de G2B Glans-plugin (VST3+CLAP) voor air en breedte. Inclusief Nederlandse handleidingen. Eenmalig, geen abonnement.",
-   "prijs": "€ 149 intro-prijs",
-   "prijzen": {},
-   "links": {
-    "koop": ""
+   "id": "5881caf4",
+   "titel": "UD 2026",
+   "soort": "audio",
+   "beschrijving": "",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
    },
-   "duur": 0,
-   "groep": "software",
-   "cover": "media/g2b-studio-pack-cover.png"
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 54.9,
+   "groep": "2026",
+   "cover": "media/5881caf4-cover.png",
+   "preview": "media/5881caf4-preview.mp3"
+  },
+  {
+   "id": "73d385d5",
+   "titel": "Keesje en de Verdwenen Worteltaart — kleurboek",
+   "soort": "digitaal",
+   "beschrijving": "Kleurboek-pakket: print-kleurboek (PDF) + print-klare kaft (PDF) + voorkant-plaatje. Printen en kleuren maar!",
+   "prijs": "9,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/73d385d5-cover.png"
+  },
+  {
+   "id": "8879f745",
+   "titel": "Flip en de Zeehondpup — kleurboek",
+   "soort": "digitaal",
+   "beschrijving": "Kleurboek-pakket: print-kleurboek (PDF) + print-klare kaft (PDF) + voorkant-plaatje. Printen en kleuren maar!",
+   "prijs": "9,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/8879f745-cover.png"
+  },
+  {
+   "id": "58edadbc",
+   "titel": "Vonk en het Katje in de Boom — kleurboek",
+   "soort": "digitaal",
+   "beschrijving": "Kleurboek-pakket: print-kleurboek (PDF) + print-klare kaft (PDF) + voorkant-plaatje. Printen en kleuren maar!",
+   "prijs": "9,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/58edadbc-cover.png"
+  },
+  {
+   "id": "407e67b5",
+   "titel": "Ravi en de Verdwaalde Papegaai — kleurboek",
+   "soort": "digitaal",
+   "beschrijving": "Kleurboek-pakket: print-kleurboek (PDF) + print-klare kaft (PDF) + voorkant-plaatje. Printen en kleuren maar!",
+   "prijs": "9,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/407e67b5-cover.png"
+  },
+  {
+   "id": "6cf27e40",
+   "titel": "De Avonturen van Keesje Konijn — kleurboek",
+   "soort": "digitaal",
+   "beschrijving": "Kleurboek-pakket: print-kleurboek (PDF) + print-klare kaft (PDF) + voorkant-plaatje. Printen en kleuren maar!",
+   "prijs": "12,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/6cf27e40-cover.png"
+  },
+  {
+   "id": "7ad33a82",
+   "titel": "Bodhi en de Kleine Koala — kleurboek",
+   "soort": "digitaal",
+   "beschrijving": "Kleurboek-pakket: print-kleurboek (PDF) + print-klare kaft (PDF) + voorkant-plaatje. Printen en kleuren maar!",
+   "prijs": "9,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/7ad33a82-cover.png"
+  },
+  {
+   "id": "a7c56540",
+   "titel": "Animal Heroes Verzamelkleurboek — kleurboek",
+   "soort": "digitaal",
+   "beschrijving": "Kleurboek-pakket: print-kleurboek (PDF) + print-klare kaft (PDF) + voorkant-plaatje. Printen en kleuren maar!",
+   "prijs": "14,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/a7c56540-cover.png"
   },
   {
    "id": "g2b-glans",
@@ -77,19 +278,18 @@
    "cover": "media/g2b-glans-cover.png"
   },
   {
-   "id": "g2b-subtamer",
-   "titel": "G2B SubTamer",
+   "id": "g2b-studio-pack",
+   "titel": "G2B Studio Pack",
    "soort": "digitaal",
-   "beschrijving": "Sub- en 808-controleplugin (VST3 + CLAP) voor elke DAW: houd je laag strak en mono onder je splitpunt, zonder de slagkracht te verliezen. Windows. Met Nederlandse handleiding.",
-   "prijs": "€ 19,95",
+   "beschrijving": "Complete mix/master-studio voor Windows: de G2B Engineer-app mixt en master je stems automatisch (in REAPER of zelfstandig, met smaak-loop), plus de G2B Glans-plugin (VST3+CLAP) voor air en breedte. Inclusief Nederlandse handleidingen. Eenmalig, geen abonnement.",
+   "prijs": "€ 149 intro-prijs",
    "prijzen": {},
    "links": {
     "koop": ""
    },
    "duur": 0,
    "groep": "software",
-   "cover": "media/g2b-subtamer-cover.png",
-   "download_dir": "d/28b55ed796124b2a"
+   "cover": "media/g2b-studio-pack-cover.png"
   }
  ]
 }
