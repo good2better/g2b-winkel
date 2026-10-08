@@ -130,7 +130,7 @@
       "id": "g2b-suite",
       "titel": "G2B Suite — alles (10 producten)",
       "soort": "digitaal",
-      "beschrijving": "Alles van G2B in één ZIP: 13 plugins + MasterRack flagship + PDF-handleiding. Los = €274,35 — bespaar ruim €184.",
+      "beschrijving": "Alles van G2B in één ZIP: 14 plugins + PDF-handleiding. Los = €294,30 — bespaar ruim €204.",
       "prijs": 89.95,
       "prijzen": {},
       "links": {
@@ -298,6 +298,20 @@
       "demo": "media/g2b-stof-demo.mp4"
     },
     {
+      "id": "g2b-keys",
+      "titel": "G2B Keys",
+      "soort": "digitaal",
+      "beschrijving": "E-piano/keys instrument: Rhodes-stijl tine + bells + stereo tremolo. Velocity-speelt. 🎲 + ☀/🌙 + presets. Windows VST3+CLAP.",
+      "prijs": 19.95,
+      "links": {
+        "koop": ""
+      },
+      "groep": "software",
+      "cover": "media/g2b-keys-cover.png",
+      "download_dir": "d/e20b87f8132aacc0",
+      "demo": "media/g2b-keys-demo.mp4"
+    },
+    {
       "id": "g2b-fx-pack",
       "titel": "G2B FX-Pack",
       "soort": "digitaal",
@@ -314,7 +328,7 @@
       "id": "g2b-instrument-pack",
       "titel": "G2B Instrument-Pack",
       "soort": "digitaal",
-      "beschrijving": "5 instrumenten in één ZIP: OchoOcho (808), Akkoord (1-toets akkoorden), Drums (drum-machine), Melodie (hook-generator), SampleX (sample→instrument). Windows VST3+CLAP. Los = €99,75.",
+      "beschrijving": "6 instrument-plugins in één ZIP: OchoOcho, Akkoord, Drums, Melodie, SampleX, Keys. Los = €119,70.",
       "prijs": 39.95,
       "links": {
         "koop": ""
