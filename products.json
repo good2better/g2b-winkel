@@ -76,7 +76,7 @@
    "groep": "software",
    "cover": "media/g2b-glans-cover.png",
    "download_dir": "d/ddcb57cd3635d858",
-   "demo": "media/glans-demo.mp4"
+   "demo": "media/g2b-glans-demo.mp4"
   },
   {
    "id": "g2b-subtamer",
@@ -92,7 +92,7 @@
    "groep": "software",
    "cover": "media/g2b-subtamer-cover.png",
    "download_dir": "d/28b55ed796124b2a",
-   "demo": "media/subtamer-demo.mp4"
+   "demo": "media/g2b-subtamer-demo.mp4"
   },
   {
    "id": "g2b-poets",
@@ -108,7 +108,7 @@
    "groep": "software",
    "cover": "media/g2b-poets-cover.png",
    "download_dir": "d/c69c824eceda4964",
-   "demo": "media/poets-demo.mp4"
+   "demo": "media/g2b-poets-demo.mp4"
   },
   {
    "id": "g2b-ocho",
@@ -155,7 +155,7 @@
    "groep": "software",
    "cover": "media/g2b-knip-cover.png",
    "download_dir": "d/8bb4d2cd4aec439e",
-   "demo": "media/knip-demo.mp4"
+   "demo": "media/g2b-knip-demo.mp4"
   },
   {
    "id": "g2b-samplex",
@@ -171,7 +171,7 @@
    "groep": "software",
    "cover": "media/g2b-samplex-cover.png",
    "download_dir": "d/5613965b57144233",
-   "demo": "media/samplex-demo.mp4"
+   "demo": "media/g2b-samplex-demo.mp4"
   },
   {
    "id": "g2b-ruimte",
@@ -185,7 +185,7 @@
    "groep": "software",
    "cover": "media/g2b-ruimte-cover.png",
    "download_dir": "d/fe52c4567835e895",
-   "demo": "media/ruimte-demo.mp4"
+   "demo": "media/g2b-ruimte-demo.mp4"
   },
   {
    "id": "g2b-masterrack",
@@ -199,7 +199,7 @@
    "groep": "software",
    "cover": "media/g2b-masterrack-cover.png",
    "download_dir": "d/7ef69ffb385e9a87",
-   "demo": "media/masterrack-demo.mp4"
+   "demo": "media/g2b-masterrack-demo.mp4"
   },
   {
    "id": "g2b-akkoord",
@@ -253,7 +253,7 @@
    "groep": "software",
    "cover": "media/g2b-drums-cover.png",
    "download_dir": "d/43ff51cc8c3e677c",
-   "demo": "media/drums-demo.mp4"
+   "demo": "media/g2b-drums-demo.mp4"
   },
   {
    "id": "g2b-melodie",
