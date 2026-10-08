@@ -128,10 +128,10 @@
   },
   {
    "id": "g2b-suite",
-   "titel": "G2B Suite (alle 5 plugins)",
+   "titel": "G2B Suite (alle 6 plugins)",
    "soort": "digitaal",
-   "beschrijving": "De complete G2B-plugin-lijn in één bundel: Glans (air/width), SubTamer (sub-controle), Poets (één-draai punch+body+sizzle), OchoOcho (808 sub-bas instrument) en Knip (clipper+stereo-breedte). Alle 5 met 6 stijl-presets. VST3 + CLAP voor Windows. Los kopen = € 99,75; in de Suite € 69,95.",
-   "prijs": "€ 69,95",
+   "beschrijving": "De complete G2B-plugin-lijn: Glans (air/width), SubTamer (sub-controle), Poets (punch+body+sizzle), OchoOcho (808-instrument), Knip (clipper+breedte) en SampleX (eigen-sample instrument). Allemaal met stijl-presets. VST3 + CLAP voor Windows. Los = € 119,70; Suite € 79,95.",
+   "prijs": "€ 79,95",
    "prijzen": {},
    "links": {
     "koop": ""
@@ -156,6 +156,21 @@
    "cover": "media/g2b-knip-cover.png",
    "download_dir": "d/8bb4d2cd4aec439e",
    "demo": "media/knip-demo.mp4"
+  },
+  {
+   "id": "g2b-samplex",
+   "titel": "G2B SampleX",
+   "soort": "digitaal",
+   "beschrijving": "Laad je eigen one-shot of loop en maak er je eigen instrument van: pitch, filter, drive, pitch-drop en start-punt. Geen kopie — jouw eigen legale sound, speelbaar met MIDI. Sample blijft in je project opgeslagen. VST3 + CLAP voor Windows.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-samplex-cover.png",
+   "download_dir": "d/5613965b57144233"
   }
  ]
 }
