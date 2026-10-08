@@ -170,7 +170,8 @@
    "duur": 0,
    "groep": "software",
    "cover": "media/g2b-samplex-cover.png",
-   "download_dir": "d/5613965b57144233"
+   "download_dir": "d/5613965b57144233",
+   "demo": "media/samplex-demo.mp4"
   }
  ]
 }
