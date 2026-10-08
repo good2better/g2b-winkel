@@ -128,9 +128,9 @@
   },
   {
    "id": "g2b-suite",
-   "titel": "G2B Suite — alles (9 producten)",
+   "titel": "G2B Suite — alles (10 producten)",
    "soort": "digitaal",
-   "beschrijving": "ALLE 9 G2B-producten in één ZIP: 8 plugins + MasterRack flagship. Los = €194,55 → bespaar meer dan €100. Windows VST3 + CLAP + handleiding.",
+   "beschrijving": "ALLE 10 G2B-producten in één ZIP: 9 plugins + MasterRack flagship. Los = €214,50 → bespaar meer dan €124. Windows VST3 + CLAP + handleiding.",
    "prijs": 89.95,
    "prijzen": {},
    "links": {
@@ -240,6 +240,19 @@
    "groep": "sounds",
    "cover": "media/g2b-drumkit-cover.png",
    "download_dir": "d/7258ce699cb3a2e8"
+  },
+  {
+   "id": "g2b-drums",
+   "titel": "G2B Drums",
+   "soort": "digitaal",
+   "beschrijving": "Drum-machine met jouw stijl-patronen — kick/snare/hat/perc gesyncd op je DAW. 16-staps LED-grid toont wat speelt. Windows VST3 + CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-drums-cover.png",
+   "download_dir": "d/43ff51cc8c3e677c"
   }
  ]
 }
