@@ -135,6 +135,21 @@
    "groep": "software",
    "cover": "media/g2b-suite-cover.png",
    "download_dir": "d/14697b4950bd4701"
+  },
+  {
+   "id": "g2b-knip",
+   "titel": "G2B Knip",
+   "soort": "digitaal",
+   "beschrijving": "Clipper + stereo-breedte + plafond: maak je beat luider en breder zonder pieken. Met 6 stijl-presets (G2B/DEMBOW/DRILL/RNB/HOUSE/AFRO) die de knoppen meteen goed zetten — ook als je niet weet waar je moet beginnen. VST3 + CLAP voor Windows.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-knip-cover.png",
+   "download_dir": "d/8bb4d2cd4aec439e"
   }
  ]
 }
