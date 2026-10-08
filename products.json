@@ -252,7 +252,8 @@
    },
    "groep": "software",
    "cover": "media/g2b-drums-cover.png",
-   "download_dir": "d/43ff51cc8c3e677c"
+   "download_dir": "d/43ff51cc8c3e677c",
+   "demo": "media/drums-demo.mp4"
   }
  ]
 }
