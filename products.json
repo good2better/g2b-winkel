@@ -354,6 +354,19 @@
    "demo": "media/g2b-song-demo.mp4"
   },
   {
+   "id": "g2b-percfx",
+   "titel": "G2B Percussion & FX Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "32 shots GERENDERD door onze eigen engines: percs (bongo/cowbell/agogo/guiro/shaker), cymbals, hits, tom-fills en risers/falls. 100% eigen sounds, royalty-vrij voor altijd.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-percfx-cover.png",
+   "download_dir": "d/b11ad30d5a0be609"
+  },
+  {
    "id": "g2b-fx-pack",
    "titel": "G2B FX-Pack",
    "soort": "digitaal",
