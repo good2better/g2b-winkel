@@ -198,7 +198,8 @@
    },
    "groep": "software",
    "cover": "media/g2b-masterrack-cover.png",
-   "download_dir": "d/7ef69ffb385e9a87"
+   "download_dir": "d/7ef69ffb385e9a87",
+   "demo": "media/masterrack-demo.mp4"
   }
  ]
 }
