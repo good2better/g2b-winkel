@@ -128,9 +128,9 @@
   },
   {
    "id": "g2b-suite",
-   "titel": "G2B Suite — alles (8 producten)",
+   "titel": "G2B Suite — alles (9 producten)",
    "soort": "digitaal",
-   "beschrijving": "ALLE 8 G2B-producten in één ZIP: 7 plugins én de MasterRack flagship. Los = €174,60 → bespaar bijna €85. Windows VST3 + CLAP + handleiding.",
+   "beschrijving": "ALLE 9 G2B-producten in één ZIP: 8 plugins + MasterRack flagship. Los = €194,55 → bespaar meer dan €100. Windows VST3 + CLAP + handleiding.",
    "prijs": 89.95,
    "prijzen": {},
    "links": {
@@ -200,6 +200,19 @@
    "cover": "media/g2b-masterrack-cover.png",
    "download_dir": "d/7ef69ffb385e9a87",
    "demo": "media/masterrack-demo.mp4"
+  },
+  {
+   "id": "g2b-akkoord",
+   "titel": "G2B Akkoord",
+   "soort": "digitaal",
+   "beschrijving": "Speel één toets, krijg een heel akkoord in jouw stijl — 6 voicings per genre-preset. Je tweede instrument. Windows VST3 + CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-akkoord-cover.png",
+   "download_dir": "d/081ca3261c3337a0"
   }
  ]
 }
