@@ -90,6 +90,21 @@
    "groep": "software",
    "cover": "media/g2b-subtamer-cover.png",
    "download_dir": "d/28b55ed796124b2a"
+  },
+  {
+   "id": "g2b-poets",
+   "titel": "G2B Poets",
+   "soort": "digitaal",
+   "beschrijving": "De één-knop plugin (VST3 + CLAP): punch + body + sizzle in één draai — maakt je mix vet, helder en hard. Met live golfvorm-schermpje dat laat zien wat hij doet. Windows. Met Nederlandse handleiding.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-poets-cover.png",
+   "download_dir": "d/c69c824eceda4964"
   }
  ]
 }
