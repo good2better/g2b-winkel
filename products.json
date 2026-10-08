@@ -120,6 +120,21 @@
    "groep": "software",
    "cover": "media/g2b-ocho-cover.png",
    "download_dir": "d/df1f5bd8edab4901"
+  },
+  {
+   "id": "g2b-suite",
+   "titel": "G2B Suite (alle 4 plugins)",
+   "soort": "digitaal",
+   "beschrijving": "De complete G2B-plugin-lijn in één bundel: Glans (air/width), SubTamer (sub-controle), Poets (één-draai punch+body+sizzle) en OchoOcho (808 sub-bas instrument). VST3 + CLAP voor Windows. Los kopen = € 79,80; in de Suite € 59,95.",
+   "prijs": "€ 59,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-suite-cover.png",
+   "download_dir": "d/14697b4950bd4701"
   }
  ]
 }
