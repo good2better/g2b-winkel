@@ -107,7 +107,7 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s || "").replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
-const LIC = {mp3: "MP3-lease", wav: "WAV", exclusief: "Exclusief"};
+const LIC = {mp3: "MP3-lease", wav: "WAV", exclusief: "Exclusieve licentie"};
 
 let huidige = null;        // het audio-element dat nu speelt
 const P = '<path d="M8 5v14l11-7z"/>';

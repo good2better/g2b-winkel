@@ -6,7 +6,7 @@ const lijst = document.getElementById("lijst");
 document.getElementById("jaar").textContent = " · " + new Date().getFullYear();
 
 const LICENTIE_NAMEN = {
-  mp3: "MP3-lease", wav: "WAV-licentie", exclusief: "Exclusief",
+  mp3: "MP3-lease", wav: "WAV-licentie", exclusief: "Exclusieve licentie",
 };
 
 let huidige = null;                 // de speler die nu speelt
