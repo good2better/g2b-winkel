@@ -128,10 +128,10 @@
   },
   {
    "id": "g2b-suite",
-   "titel": "G2B Suite (alle 6 plugins)",
+   "titel": "G2B Suite — alle 7 plugins",
    "soort": "digitaal",
-   "beschrijving": "De complete G2B-plugin-lijn: Glans (air/width), SubTamer (sub-controle), Poets (punch+body+sizzle), OchoOcho (808-instrument), Knip (clipper+breedte) en SampleX (eigen-sample instrument). Allemaal met stijl-presets. VST3 + CLAP voor Windows. Los = € 119,70; Suite € 79,95.",
-   "prijs": "€ 79,95",
+   "beschrijving": "Alle 7 G2B-plugins in één ZIP: Glans, SubTamer, Poets, OchoOcho, Knip, SampleX én Ruimte. Los = €139,65 → bespaar bijna €50. Windows VST3 + CLAP + handleiding.",
+   "prijs": 89.95,
    "prijzen": {},
    "links": {
     "koop": ""
@@ -172,6 +172,19 @@
    "cover": "media/g2b-samplex-cover.png",
    "download_dir": "d/5613965b57144233",
    "demo": "media/samplex-demo.mp4"
+  },
+  {
+   "id": "g2b-ruimte",
+   "titel": "G2B Ruimte",
+   "soort": "digitaal",
+   "beschrijving": "Delay + reverb in één draai — jouw geluid krijgt plek. Live golfvorm + 6 stijl-presets. Windows VST3 + CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-ruimte-cover.png",
+   "download_dir": "d/fe52c4567835e895"
   }
  ]
 }
