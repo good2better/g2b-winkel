@@ -130,7 +130,7 @@
       "id": "g2b-suite",
       "titel": "G2B Suite — alles (10 producten)",
       "soort": "digitaal",
-      "beschrijving": "Alles van G2B in één ZIP: 10 plugins (Glans, SubTamer, Poets, OchoOcho, Knip, SampleX, Ruimte, Akkoord, Drums, Melodie) + MasterRack flagship + PDF-handleiding. Los = €234,45 — bespaar ruim €144.",
+      "beschrijving": "Alles van G2B in één ZIP: 12 plugins (Glans, SubTamer, Poets, OchoOcho, Knip, SampleX, Ruimte, Akkoord, Drums, Melodie, Stem) + MasterRack flagship + PDF-handleiding. Los = €254,40 — bespaar ruim €164.",
       "prijs": 89.95,
       "prijzen": {},
       "links": {
@@ -268,6 +268,20 @@
       "cover": "media/g2b-melodie-cover.png",
       "download_dir": "d/419c138ba1f0d5af",
       "demo": "media/g2b-melodie-demo.mp4"
+    },
+    {
+      "id": "g2b-stem",
+      "titel": "G2B Stem",
+      "soort": "digitaal",
+      "beschrijving": "Complete vocal-keten in één scherm: DE-ESS (sss-demping), BODY, AIR, COMP, BREEDTE — je stem staat meteen voorin. 🎲 + ☀/🌙 + presets. Windows VST3+CLAP.",
+      "prijs": 19.95,
+      "links": {
+        "koop": ""
+      },
+      "groep": "software",
+      "cover": "media/g2b-stem-cover.png",
+      "download_dir": "d/7ad9cf6dab8d000b",
+      "demo": "media/g2b-stem-demo.mp4"
     },
     {
       "id": "g2b-fx-pack",
