@@ -80,7 +80,7 @@
    "id": "g2b-subtamer",
    "titel": "G2B SubTamer",
    "soort": "digitaal",
-   "beschrijving": "Sub- en 808-controleplugin (VST3 + CLAP) voor elke DAW: houd je laag strak en mono onder je splitpunt, zonder de slagkracht te verliezen. Windows. Met Nederlandse handleiding.",
+   "beschrijving": "Sub- en 808-controleplugin (VST3 + CLAP) voor elke DAW: houd je laag strak en mono onder je splitpunt, zonder de slagkracht te verliezen. Windows. Met Nederlandse handleiding — met 6 stijl-presets.",
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
@@ -95,7 +95,7 @@
    "id": "g2b-poets",
    "titel": "G2B Poets",
    "soort": "digitaal",
-   "beschrijving": "De één-knop plugin (VST3 + CLAP): punch + body + sizzle in één draai — maakt je mix vet, helder en hard. Met live golfvorm-schermpje dat laat zien wat hij doet. Windows. Met Nederlandse handleiding.",
+   "beschrijving": "De één-knop plugin (VST3 + CLAP): punch + body + sizzle in één draai — maakt je mix vet, helder en hard. Met live golfvorm-schermpje dat laat zien wat hij doet. Windows. Met Nederlandse handleiding — met 6 stijl-presets.",
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
@@ -110,7 +110,7 @@
    "id": "g2b-ocho",
    "titel": "G2B OchoOcho",
    "soort": "digitaal",
-   "beschrijving": "Jouw eigen 808 (VST3 + CLAP instrument): diepe sub-bas met glide, pitch-drop en zachte drive — gebouwd op het G2B-subgeluid. Speel hem als instrument in elke DAW. Windows. Met Nederlandse handleiding.",
+   "beschrijving": "Jouw eigen 808 (VST3 + CLAP instrument): diepe sub-bas met glide, pitch-drop en zachte drive — gebouwd op het G2B-subgeluid. Speel hem als instrument in elke DAW. Windows. Met Nederlandse handleiding — met 6 stijl-presets.",
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
@@ -123,10 +123,10 @@
   },
   {
    "id": "g2b-suite",
-   "titel": "G2B Suite (alle 4 plugins)",
+   "titel": "G2B Suite (alle 5 plugins)",
    "soort": "digitaal",
-   "beschrijving": "De complete G2B-plugin-lijn in één bundel: Glans (air/width), SubTamer (sub-controle), Poets (één-draai punch+body+sizzle) en OchoOcho (808 sub-bas instrument). VST3 + CLAP voor Windows. Los kopen = € 79,80; in de Suite € 59,95.",
-   "prijs": "€ 59,95",
+   "beschrijving": "De complete G2B-plugin-lijn in één bundel: Glans (air/width), SubTamer (sub-controle), Poets (één-draai punch+body+sizzle), OchoOcho (808 sub-bas instrument) en Knip (clipper+stereo-breedte). Alle 5 met 6 stijl-presets. VST3 + CLAP voor Windows. Los kopen = € 99,75; in de Suite € 69,95.",
+   "prijs": "€ 69,95",
    "prijzen": {},
    "links": {
     "koop": ""
