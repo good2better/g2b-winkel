@@ -130,7 +130,7 @@
       "id": "g2b-suite",
       "titel": "G2B Suite — alles (10 producten)",
       "soort": "digitaal",
-      "beschrijving": "Alles van G2B in één ZIP: 14 plugins + PDF-handleiding. Los = €294,30 — bespaar ruim €204.",
+      "beschrijving": "Alles van G2B in één ZIP: 15 plugins + PDF-handleiding. Los = €314,25 — bespaar ruim €224.",
       "prijs": 89.95,
       "prijzen": {},
       "links": {
@@ -312,6 +312,20 @@
       "demo": "media/g2b-keys-demo.mp4"
     },
     {
+      "id": "g2b-bas",
+      "titel": "G2B Bas",
+      "soort": "digitaal",
+      "beschrijving": "Sub-bass & reese instrument: pure sub → detuned reese → growl. Mono-legato. 🎲 + ☀/🌙 + presets. Windows VST3+CLAP.",
+      "prijs": 19.95,
+      "links": {
+        "koop": ""
+      },
+      "groep": "software",
+      "cover": "media/g2b-bas-cover.png",
+      "download_dir": "d/a80af1715f44ec62",
+      "demo": "media/g2b-bas-demo.mp4"
+    },
+    {
       "id": "g2b-fx-pack",
       "titel": "G2B FX-Pack",
       "soort": "digitaal",
@@ -328,7 +342,7 @@
       "id": "g2b-instrument-pack",
       "titel": "G2B Instrument-Pack",
       "soort": "digitaal",
-      "beschrijving": "6 instrument-plugins in één ZIP: OchoOcho, Akkoord, Drums, Melodie, SampleX, Keys. Los = €119,70.",
+      "beschrijving": "7 instrument-plugins in één ZIP: OchoOcho, Akkoord, Drums, Melodie, SampleX, Keys, Bas. Los = €139,65.",
       "prijs": 39.95,
       "links": {
         "koop": ""
