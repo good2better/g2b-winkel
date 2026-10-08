@@ -105,6 +105,21 @@
    "groep": "software",
    "cover": "media/g2b-poets-cover.png",
    "download_dir": "d/c69c824eceda4964"
+  },
+  {
+   "id": "g2b-ocho",
+   "titel": "G2B OchoOcho",
+   "soort": "digitaal",
+   "beschrijving": "Jouw eigen 808 (VST3 + CLAP instrument): diepe sub-bas met glide, pitch-drop en zachte drive — gebouwd op het G2B-subgeluid. Speel hem als instrument in elke DAW. Windows. Met Nederlandse handleiding.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-ocho-cover.png",
+   "download_dir": "d/df1f5bd8edab4901"
   }
  ]
 }
