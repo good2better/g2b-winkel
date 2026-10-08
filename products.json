@@ -214,6 +214,19 @@
    "cover": "media/g2b-akkoord-cover.png",
    "download_dir": "d/081ca3261c3337a0",
    "demo": "media/akkoord-demo.mp4"
+  },
+  {
+   "id": "g2b-looppack",
+   "titel": "G2B Loop Pack Vol. 1",
+   "soort": "digitaal",
+   "beschrijving": "12 unieke loops uit de G2B-engine — dembow, house, drill, winti, bachata en meer. Royalty-vrij in jouw tracks. WAV, elke DAW.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-looppack-cover.png",
+   "download_dir": "d/07e56514f5fbdf54"
   }
  ]
 }
