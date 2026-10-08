@@ -128,9 +128,9 @@
   },
   {
    "id": "g2b-suite",
-   "titel": "G2B Suite — alle 7 plugins",
+   "titel": "G2B Suite — alles (8 producten)",
    "soort": "digitaal",
-   "beschrijving": "Alle 7 G2B-plugins in één ZIP: Glans, SubTamer, Poets, OchoOcho, Knip, SampleX én Ruimte. Los = €139,65 → bespaar bijna €50. Windows VST3 + CLAP + handleiding.",
+   "beschrijving": "ALLE 8 G2B-producten in één ZIP: 7 plugins én de MasterRack flagship. Los = €174,60 → bespaar bijna €85. Windows VST3 + CLAP + handleiding.",
    "prijs": 89.95,
    "prijzen": {},
    "links": {
@@ -186,6 +186,19 @@
    "cover": "media/g2b-ruimte-cover.png",
    "download_dir": "d/fe52c4567835e895",
    "demo": "media/ruimte-demo.mp4"
+  },
+  {
+   "id": "g2b-masterrack",
+   "titel": "G2B MasterRack",
+   "soort": "digitaal",
+   "beschrijving": "DE flagship: sub+vet+luid+air+ruimte in één scherm — je complete G2B-keten op één slot. 6 preset-stijlen + live golfvorm. Windows VST3 + CLAP.",
+   "prijs": 34.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-masterrack-cover.png",
+   "download_dir": "d/7ef69ffb385e9a87"
   }
  ]
 }
