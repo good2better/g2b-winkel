@@ -25,7 +25,9 @@ button.keuze{background:#2fbf71;color:#04120a;border:0;border-radius:16px;
 button.keuze:hover{filter:brightness(1.12);transform:scale(1.04)}
 #einde,#start{position:fixed;inset:0;background:#0b0d0cd9;display:none;z-index:8;
   flex-direction:column;align-items:center;justify-content:center;gap:18px;
-  text-align:center;padding:0 24px}
+  text-align:center;padding:24px}
+#einde{overflow-y:auto;justify-content:flex-start;padding-top:15vh}
+#einde h1{max-width:22em;line-height:1.35}
 #start{display:flex}
 #einde h1,#start h1{font-size:clamp(28px,5vw,44px);text-shadow:0 2px 12px #000}
 #opnieuw,#speel{background:#2fbf71;color:#04120a;border:0;border-radius:14px;
