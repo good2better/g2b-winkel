@@ -1027,6 +1027,28 @@
    "groep": "house",
    "cover": "media/2878e291-cover.png",
    "preview": "media/2878e291-preview.mp3"
+  },
+  {
+   "id": "57de20ad",
+   "titel": "Meester Dancehall",
+   "soort": "audio",
+   "beschrijving": "Dancehall beat — 80 BPM in Am7. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 53.7,
+   "groep": "dancehall",
+   "cover": "media/57de20ad-cover.png",
+   "preview": "media/57de20ad-preview.mp3"
   }
  ]
 }
