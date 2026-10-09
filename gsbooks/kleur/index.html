@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B KleurStudio — kleur de Animal Heroes online</title>
+<link rel="icon" href="../img/favicon.svg">
+<style>
+:root{--g:#2fbf71;--gd:#1e8f54;--ink:#0e1b14;--card:#142019;--mut:#9db8a8}
+*{box-sizing:border-box;margin:0}
+body{background:linear-gradient(160deg,#0a120d,#10241a 60%,#0d1f16);color:#eef5f0;
+  font-family:system-ui,'Segoe UI',sans-serif;min-height:100vh}
+header{padding:18px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header h1{font-size:clamp(20px,3.4vw,30px)}
+header .sub{color:var(--mut);font-size:14px;width:100%}
+header a{color:var(--g);text-decoration:none;font-weight:700;margin-left:auto}
+main{display:grid;grid-template-columns:220px 1fr;gap:16px;padding:0 24px 24px}
+@media(max-width:800px){main{grid-template-columns:1fr}}
+aside{background:var(--card);border-radius:16px;padding:12px;max-height:78vh;overflow-y:auto}
+aside h3{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;margin:10px 4px 6px}
+.plaatjes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:800px){aside{max-height:160px}.plaatjes{grid-template-columns:repeat(auto-fill,64px)}}
+.plaatjes img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;cursor:pointer;
+  border:3px solid transparent;transition:.15s;background:#fff}
+.plaatjes img:hover{transform:scale(1.04)}
+.plaatjes img.actief{border-color:var(--g)}
+.werk{background:var(--card);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.gereedschap{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.kleuren{display:grid;grid-template-columns:repeat(9,30px);gap:6px}
+.kleur{width:30px;height:30px;border-radius:50%;cursor:pointer;border:3px solid #ffffff22;transition:.15s}
+.kleur.actief{border-color:#fff;transform:scale(1.18)}
+.tool{background:#1d2c22;border:0;color:#eef5f0;border-radius:10px;padding:9px 13px;
+  font-size:15px;font-weight:700;cursor:pointer;display:flex;gap:6px;align-items:center}
+.tool:hover{background:#263a2c}
+.tool.actief{background:var(--g);color:#04120a}
+input[type=color]{width:38px;height:38px;border:0;background:none;cursor:pointer;padding:0}
+input[type=range]{width:110px;accent-color:var(--g)}
+.doek-wrap{position:relative;border-radius:12px;overflow:hidden;background:#fff;
+  touch-action:none;user-select:none;align-self:center}
+.doek-wrap canvas{display:block;max-width:100%;height:auto}
+#verf{position:relative;z-index:1}
+#lijnen{position:absolute;inset:0;z-index:2;pointer-events:none;mix-blend-mode:multiply}
+.hint{color:var(--mut);font-size:13px;text-align:center}
+footer{padding:16px 24px;color:var(--mut);font-size:12px;text-align:center}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:99}
+</style>
+</head>
+<body>
+<header>
+<h1>🎨 G2B KleurStudio</h1>
+<div class="sub">Kleur de Animal Heroes online — kies een plaat, pak je kwast en maak iets moois!</div>
+<a href="../index.html">← Terug naar GS Books</a>
+</header>
+<main>
+<aside><div id="lijst"></div></aside>
+<div class="werk">
+<div class="gereedschap">
+<div class="kleuren" id="kleuren"></div>
+<input type="color" id="eigen" value="#ff66cc" title="Eigen kleur">
+<button class="tool actief" id="kwast">🖌️ Kwast</button>
+<button class="tool" id="gum">🧽 Gum</button>
+<label class="tool" style="cursor:default">📏 <input type="range" id="dikte" min="4" max="60" value="18"></label>
+<button class="tool" id="regenboog">🌈</button>
+<button class="tool" id="undo">↩️ Ongedaan</button>
+<button class="tool" id="reset">🗑️ Leeg</button>
+<button class="tool" id="opslaan" style="background:var(--g);color:#04120a">⬇️ Bewaar</button>
+</div>
+<div class="doek-wrap" id="doekWrap">
+<canvas id="verf"></canvas>
+<canvas id="lijnen"></canvas>
+</div>
+<div class="hint">🖱️ Klik en sleep om te kleuren — werkt ook met je vinger op tablet!</div>
+</div>
+</main>
+<canvas id="confetti"></canvas>
+<footer>G2B KleurStudio — alle Animal Heroes kleurplaten, gratis kleuren. Koop het boek in de <a href="../index.html#winkel" style="color:var(--g)">Boekwinkel</a>!</footer>
+<script>
+const KLEUREN=["#e03131","#f76707","#fab005","#8ce99a","#2fbf71","#1098ad","#339af0","#4263eb",
+"#9775fa","#e64980","#ff8787","#ffa94d","#fff3bf","#000000","#868e96","#ffffff","#8b5a2b","#ffd8a8"];
+const verf=document.getElementById('verf'),lijnen=document.getElementById('lijnen');
+const v=verf.getContext('2d'),l=lijnen.getContext('2d');
+let kleur='#e03131',dikte=18,gum=false,regen=false,hue=0,tekenen=false,stap=[],laatste=null;
+let plaatUrl='';
+
+const kl=document.getElementById('kleuren');
+KLEUREN.forEach((c,i)=>{
+  const d=document.createElement('div');d.className='kleur'+(i==0?' actief':'');
+  d.style.background=c;d.onclick=()=>{kleur=c;regen=false;
+    document.querySelectorAll('.kleur').forEach(x=>x.classList.remove('actief'));
+    d.classList.add('actief');zet('kwast');};
+  kl.appendChild(d);
+});
+document.getElementById('eigen').oninput=e=>{kleur=e.target.value;regen=false;zet('kwast');};
+document.getElementById('dikte').oninput=e=>dikte=+e.target.value;
+
+function zet(w){gum=(w==='gum');if(w!=='gum')regen=(w==='regenboog')?!regen:regen;
+  document.getElementById('kwast').classList.toggle('actief',w==='kwast');
+  document.getElementById('gum').classList.toggle('actief',w==='gum');
+  document.getElementById('regenboog').classList.toggle('actief',w==='regenboog'&&regen);}
+document.getElementById('kwast').onclick=()=>{regen=false;zet('kwast')};
+document.getElementById('gum').onclick=()=>zet('gum');
+document.getElementById('regenboog').onclick=()=>{regen=!regen;zet('regenboog')};
+
+function snapshot(){stap.push(v.getImageData(0,0,verf.width,verf.height));if(stap.length>25)stap.shift();}
+document.getElementById('undo').onclick=()=>{if(stap.length)v.putImageData(stap.pop(),0,0);};
+document.getElementById('reset').onclick=()=>{snapshot();v.fillStyle='#fff';v.fillRect(0,0,verf.width,verf.height);};
+
+function pos(e){const r=verf.getBoundingClientRect();
+  return[(e.clientX-r.left)*verf.width/r.width,(e.clientY-r.top)*verf.height/r.height];}
+function punt(x,y){v.fillStyle=gum?'#fff':(regen?`hsl(${hue=(hue+3)%360},85%,55%)`:kleur);
+  v.beginPath();v.arc(x,y,(gum?dikte*1.4:dikte)/2,0,7);v.fill();}
+function lijn(a,b){v.strokeStyle=gum?'#fff':(regen?`hsl(${hue},85%,55%)`:kleur);
+  v.lineWidth=gum?dikte*1.4:dikte;v.lineCap='round';v.lineJoin='round';
+  v.beginPath();v.moveTo(a[0],a[1]);v.lineTo(b[0],b[1]);v.stroke();}
+verf.addEventListener('pointerdown',e=>{verf.setPointerCapture(e.pointerId);tekenen=true;
+  snapshot();laatste=pos(e);punt(...laatste);});
+verf.addEventListener('pointermove',e=>{if(!tekenen)return;const p=pos(e);
+  lijn(laatste,p);laatste=p;});
+verf.addEventListener('pointerup',()=>tekenen=false);
+
+function laadPlaat(src,el){
+  const img=new Image();img.onload=()=>{
+    verf.width=lijnen.width=img.width;verf.height=lijnen.height=img.height;
+    stap=[];v.fillStyle='#fff';v.fillRect(0,0,verf.width,verf.height);
+    l.clearRect(0,0,lijnen.width,lijnen.height);l.drawImage(img,0,0);
+    plaatUrl=src;
+    document.querySelectorAll('.plaatjes img').forEach(x=>x.classList.remove('actief'));
+    if(el)el.classList.add('actief');
+  };img.src=src;}
+
+fetch('platen.json').then(r=>r.json()).then(p=>{
+  const lijst=document.getElementById('lijst');let boek=null,grid=null;
+  ORDE=["Pippa en het Vogelnest","Sunny en de Verdwaalde Eend","Keesje en de Verdwenen Worteltaart",
+  "Bram en het Verloren Lammetje","Flip en de Zeehondpup","Vonk en het Katje in de Boom",
+  "Ravi en de Verdwaalde Papegaai","bodhi","Ollie en het Verloren Muisje","Sterre en het Kuikentje",
+  "dana","Keesje avonturen","Animal Heroes"];
+  p.sort((a,b)=>(ORDE.indexOf(a.boek)+1||99)-(ORDE.indexOf(b.boek)+1||99));
+  p.forEach(x=>{if(x.boek!==boek){boek=x.boek;
+      const h=document.createElement('h3');h.textContent=boek;lijst.appendChild(h);
+      grid=document.createElement('div');grid.className='plaatjes';lijst.appendChild(grid);}
+    const im=document.createElement('img');im.src=x.src;im.loading='lazy';
+    im.title=x.naam;im.onclick=()=>laadPlaat(x.src,im);grid.appendChild(im);});
+  if(p.length){const eerste=lijst.querySelector('img');laadPlaat(p[0].src,eerste);}
+});
+
+function confetti(){const c=document.getElementById('confetti'),x=c.getContext('2d');
+  c.width=innerWidth;c.height=innerHeight;const P=[];
+  for(let i=0;i<140;i++)P.push({x:Math.random()*c.width,y:-20-Math.random()*c.height*.4,
+    c:KLEUREN[i%KLEUREN.length],s:6+Math.random()*8,vy:2+Math.random()*3,vx:-1.5+Math.random()*3,r:Math.random()*6});
+  let t=0;(function anim(){x.clearRect(0,0,c.width,c.height);t++;
+    P.forEach(p=>{p.y+=p.vy;p.x+=p.vx;p.r+=.05;
+      x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;
+      x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore();});
+    if(t<260)requestAnimationFrame(anim);else x.clearRect(0,0,c.width,c.height);})();}
+
+document.getElementById('opslaan').onclick=()=>{
+  const uit=document.createElement('canvas');uit.width=verf.width;uit.height=verf.height;
+  const u=uit.getContext('2d');u.drawImage(verf,0,0);u.drawImage(lijnen,0,0);
+  const a=document.createElement('a');a.download='mijn-animal-heroes-kunstwerk.png';
+  a.href=uit.toDataURL('image/png');a.click();confetti();};
+</script>
+</body>
+</html>
