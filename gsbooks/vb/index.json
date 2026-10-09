@@ -29,5 +29,21 @@
   "url": "vb/vraag-het-aan-keesje/index.html",
   "cover": "vb/vraag-het-aan-keesje/cover.jpg",
   "interactief": true
+ },
+ {
+  "slug": "vraag-het-aan-dana",
+  "titel": "Vraag het aan Dana",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-dana/index.html",
+  "cover": "vb/vraag-het-aan-dana/cover.jpg",
+  "interactief": true
+ },
+ {
+  "slug": "vraag-het-aan-sunny",
+  "titel": "Vraag het aan Sunny",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-sunny/index.html",
+  "cover": "vb/vraag-het-aan-sunny/cover.jpg",
+  "interactief": true
  }
 ]
