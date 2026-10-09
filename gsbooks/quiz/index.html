@@ -60,6 +60,8 @@ footer{padding:16px 24px;color:var(--mut);font-size:12px;text-align:center}
 <footer>G2B Helden-Quiz — lees de boeken in de <a href="../index.html#winkel" style="color:var(--g)">Boekwinkel</a> en word een echte Animal Heroes-expert!</footer>
 <script>
 let QUIZ=[],quiz=null,nr=0,score=0,alles=false;
+const VB={"Sunny en de Verdwaalde Eend":"../vb/sunny-kies-je-avontuur/index.html",
+"Dana en de Verdwaalde Boot":"../vb/dana-en-de-verdwaalde-boot/index.html"};
 const kaart=document.getElementById('kaart');
 const CONF=["#e03131","#fab005","#8ce99a","#339af0","#e64980","#fff"];
 
@@ -122,6 +124,7 @@ function einde(){
     Jij kent de Animal Heroes door en door — net zo dapper als zij!<br><br>
     <input id="dnaam" placeholder="Typ je naam..." style="padding:10px 14px;border-radius:10px;border:2px solid var(--g);background:#0a120d;color:#eef5f0;font-size:16px;text-align:center">
     <button class="knop" onclick="diploma()" style="margin-left:8px">📜 Print je diploma!</button></div>`:''}
+  ${VB[quiz.boek]?`<a class="knop" href="${VB[quiz.boek]}" style="background:#fab005;color:#04120a">🎬 Bekijk het avontuur!</a>`:''}
   <div class="groep">
   <button class="knop" onclick="menu()">🔄 Nog een quiz</button>
   <a class="knop licht" href="../kleur/">🎨 Ga kleuren</a>
