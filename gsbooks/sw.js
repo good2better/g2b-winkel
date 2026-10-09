@@ -1,5 +1,5 @@
 // GS Books service worker — offline-leesmodus voor kinderen
-const CACHE = "gsbooks-v1";
+const CACHE = "gsbooks-v2";
 const CORE = [
   "./index.html",
   "./manifest.webmanifest",
@@ -8,7 +8,10 @@ const CORE = [
   "./kleur/platen.json",
   "./img/favicon.svg",
   "./img/icon-192.png",
-  "./img/icon-512.png"
+  "./img/icon-512.png",
+  "./kleur/",
+  "./quiz/",
+  "./paspoort/"
 ];
 
 self.addEventListener("install", e => {

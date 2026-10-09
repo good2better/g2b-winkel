@@ -174,7 +174,9 @@ fetch('platen.json').then(r=>r.json()).then(p=>{
       const h=document.createElement('h3');h.textContent=boek;lijst.appendChild(h);
       grid=document.createElement('div');grid.className='plaatjes';lijst.appendChild(grid);}
     const im=document.createElement('img');im.src=x.src;im.loading='lazy';
-    im.title=x.naam;im.onclick=()=>laadPlaat(x.src,im);grid.appendChild(im);});
+    im.title=x.naam;im.onclick=()=>laadPlaat(x.src,im);
+    try{if(localStorage.getItem('gskleur-'+x.src)){im.style.borderColor='var(--g)';im.title+=' ✓ gekleurd!';}}catch(e){}
+    grid.appendChild(im);});
   if(p.length){const eerste=lijst.querySelector('img');laadPlaat(p[0].src,eerste);}
 });
 
@@ -192,7 +194,8 @@ document.getElementById('opslaan').onclick=()=>{
   const uit=document.createElement('canvas');uit.width=verf.width;uit.height=verf.height;
   const u=uit.getContext('2d');u.drawImage(verf,0,0);u.drawImage(lijnen,0,0);
   const a=document.createElement('a');a.download='mijn-animal-heroes-kunstwerk.png';
-  a.href=uit.toDataURL('image/png');a.click();confetti();};
+  a.href=uit.toDataURL('image/png');a.click();confetti();
+  if(plaatUrl)try{localStorage.setItem('gskleur-'+plaatUrl,'1');}catch(e){}};
 
 document.getElementById('print').onclick=()=>{
   const w=window.open('','_blank');
