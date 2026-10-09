@@ -1131,6 +1131,28 @@
    "groep": "rnb",
    "cover": "media/be3f5598-cover.png",
    "preview": "media/be3f5598-preview.mp3"
+  },
+  {
+   "id": "e47de869",
+   "titel": "Meester evo27",
+   "soort": "audio",
+   "beschrijving": "Rnb beat — 77 BPM in Gm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 24.8,
+   "groep": "rnb",
+   "cover": "media/e47de869-cover.png",
+   "preview": "media/e47de869-preview.mp3"
   }
  ]
 }
