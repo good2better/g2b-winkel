@@ -1,231 +1,245 @@
 {
-  "boeken": [
-    {
-      "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket",
-      "serie": "sunny",
-      "cover": "media/sunny-mega-cover.png",
-      "beschrijving": "Alles van Sunny in één winkel: het complete computerspel (6 spelletjes, werkt offline), het luisterboek (ruim anderhalf uur voorlezen), activiteitenboek, puzzelboek, kleurboek, printbaar bordspel, kalender en het knutselpakket (stickers, poppentheater, kaartjes, boekenleggers). Digitaal — direct te downloaden, print zoveel je wilt voor eigen gebruik.",
-      "spel": {
-        "prijs": "4,95",
-        "koop": ""
-      },
-      "activiteitenboek": {
-        "prijs": "9,95",
-        "koop": ""
-      },
-      "puzzelboek": {
-        "prijs": "7,95",
-        "koop": ""
-      },
-      "kleurboek": {
-        "prijs": "6,95",
-        "koop": ""
-      },
-      "bordspel": {
-        "prijs": "3,95",
-        "koop": ""
-      },
-      "pakket": {
-        "prijs": "19,95",
-        "koop": ""
-      },
-      "luisterboek": {
-        "prijs": "6,95",
-        "koop": ""
-      },
-      "kalender": {
-        "prijs": "9,95",
-        "koop": ""
-      },
-      "knutsel": {
-        "prijs": "7,95",
-        "koop": ""
-      },
-      "probeer": {
-        "prijs": "",
-        "koop": "../d/69f048627c95/Sunny-Spel.html"
-      },
-      "videoboek": {
-        "prijs": "9,95",
-        "koop": ""
-      }
-    },
-    {
-      "titel": "Pippa en het Vogelnest",
-      "serie": "dierenhelden",
-      "cover": "media/76fdf38f-cover.png",
-      "beschrijving": "Pippa het dappere katje klimt door de storm om drie baby-vogeltjes te redden! Kleur haar heldendaad in — 4 grote kleurplaten voor kleine helden (3-8 jaar). Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-      "kleurboek": {
-        "prijs": "9,95",
-        "koop": ""
-      },
-      "ebook": {
-        "prijs": "6,95",
-        "koop": ""
-      }
-    },
-    {
-      "titel": "Sunny en de Verdwaalde Eend",
-      "serie": "sunny",
-      "cover": "media/c77aa21e-cover.png",
-      "beschrijving": "Sunny de lieve olifant waadt het meer in om een verdwaald eendje thuis te brengen bij zonsondergang. Kleur hun vriendschap in! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-      "kleurboek": {
-        "prijs": "9,95",
-        "koop": ""
-      },
-      "ebook": {
-        "prijs": "6,95",
-        "koop": ""
-      }
-    },
-    {
-      "titel": "Keesje en de Verdwenen Worteltaart",
-      "serie": "keesje",
-      "cover": "media/73d385d5-cover.png",
-      "beschrijving": "Detective Keesje zoekt met zijn vergrootglas wie de worteltaart heeft gestolen — een hongerig egeltje! Samen delen is de leukste les. Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-      "kleurboek": {
-        "prijs": "9,95",
-        "koop": ""
-      },
-      "ebook": {
-        "prijs": "6,95",
-        "koop": ""
-      }
-    },
-    {
-      "titel": "Bram en het Verloren Lammetje",
-      "serie": "dierenhelden",
-      "cover": "media/7a089fda-cover.png",
-      "beschrijving": "Reddingshond Bram zoekt lammetje Meeh in de sneeuwstorm en vindt hem voor het donker. Moed + nooit opgeven = een echte held! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-      "kleurboek": {
-        "prijs": "9,95",
-        "koop": ""
-      },
-      "ebook": {
-        "prijs": "6,95",
-        "koop": ""
-      }
-    },
-    {
-      "titel": "Flip en de Zeehondpup",
-      "serie": "dierenhelden",
-      "cover": "media/8879f745-cover.png",
-      "beschrijving": "Flip de stoere zeeotter duikt diep en knabbelt een zeehondpup los uit een oud visnet. Onderwater-avontuur om zelf in te kleuren! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-      "kleurboek": {
-        "prijs": "9,95",
-        "koop": ""
-      },
-      "ebook": {
-        "prijs": "6,95",
-        "koop": ""
-      }
-    },
-    {
-      "titel": "Vonk en het Katje in de Boom",
-      "serie": "dierenhelden",
-      "cover": "media/58edadbc-cover.png",
-      "beschrijving": "Brandweer-dalmatiër Vonk klimt heldhaftig de boom in voor een bang katje. Echte helden zijn dapper én zachtaardig! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-      "kleurboek": {
-        "prijs": "9,95",
-        "koop": ""
-      },
-      "ebook": {
-        "prijs": "6,95",
-        "koop": ""
-      }
-    },
-    {
-      "titel": "Ravi en de Verdwaalde Papegaai",
-      "serie": "dierenhelden",
-      "cover": "media/407e67b5-cover.png",
-      "beschrijving": "Ravi de slimme capucijnaap draagt een verdwaalde baby-papegaai door de jungle terug naar zijn nest. Klein gebaar, groot heldenwerk! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-      "kleurboek": {
-        "prijs": "9,95",
-        "koop": ""
-      },
-      "ebook": {
-        "prijs": "6,95",
-        "koop": ""
-      }
-    },
-    {
-      "titel": "Bodhi en de Kleine Koala",
-      "serie": "dierenhelden",
-      "cover": "media/7ad33a82-cover.png",
-      "beschrijving": "Bodhi de kangoeroe springt door de outback met een bang koalaatje veilig in zijn buidel — naar de rustige rivier. Hartverwarmend! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-      "kleurboek": {
-        "prijs": "9,95",
-        "koop": ""
-      },
-      "ebook": {
-        "prijs": "6,95",
-        "koop": ""
-      }
-    },
-    {
-      "titel": "Ollie en het Verloren Muisje",
-      "serie": "dierenhelden",
-      "cover": "media/077ed49d-cover.png",
-      "beschrijving": "Wijze bosuil Ollie vliegt door het betoverende nachtbos en brengt een verdwaald muisje thuis. Een magisch nacht-avontuur om in te kleuren! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-      "kleurboek": {
-        "prijs": "9,95",
-        "koop": ""
-      },
-      "ebook": {
-        "prijs": "6,95",
-        "koop": ""
-      }
-    },
-    {
-      "titel": "Sterre en het Kuikentje",
-      "serie": "dierenhelden",
-      "cover": "media/d903c8f1-cover.png",
-      "beschrijving": "Veulentje Sterre (met witte ster!) redt kuikentje Pip uit de modder — door slim om hulp te vragen. De mooiste les: samen ben je sterker! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-      "kleurboek": {
-        "prijs": "9,95",
-        "koop": ""
-      },
-      "ebook": {
-        "prijs": "6,95",
-        "koop": ""
-      }
-    },
-    {
-      "titel": "Dana en de Verdwaalde Boot",
-      "serie": "dierenhelden",
-      "cover": "media/6c3c57aa-cover.png",
-      "beschrijving": "Dana de dappere dolfijn duwt met haar vrienden Jonassie's stukke bootje terug naar de veilige haven — samen sterk, echte helden! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-      "kleurboek": {
-        "prijs": "9,95",
-        "koop": ""
-      },
-      "ebook": {
-        "prijs": "6,95",
-        "koop": ""
-      },
-      "_ebook_cover": "media/739260e8-cover.png"
-    },
-    {
-      "titel": "De Avonturen van Keesje Konijn",
-      "serie": "keesje",
-      "cover": "media/6cf27e40-cover.png",
-      "beschrijving": "Het complete Keesje-avontuur: 17 kleurplaten uit zijn eigen film! Onze beroemdste detective-konijn in zijn grootste verhaal. Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-      "kleurboek": {
-        "prijs": "12,95",
-        "koop": ""
-      },
-      "ebook": null
-    },
-    {
-      "titel": "Animal Heroes Verzamelkleurboek",
-      "serie": "dierenhelden",
-      "cover": "media/a7c56540-cover.png",
-      "beschrijving": "ALLE Animal Heroes in één mega kleurboek: 68 kleurplaten uit 11 avonturen + het complete Keesje-filmboek, met hoofdstuk-pagina per boek. 80 pagina's kleurplezier!",
-      "kleurboek": {
-        "prijs": "14,95",
-        "koop": ""
-      },
-      "ebook": null
-    }
-  ]
+ "boeken": [
+  {
+   "beschrijving": "Ziggy Zebra gaat op kleurenavontuur met Meneer Regenboog — van Roodland tot Regenboogdorp. Vrolijk kleurboek + e-boek voor de allerkleinsten (0-3 jaar).",
+   "cover": "media/4fa33ef7d0-cover.png",
+   "ebook": {
+    "prijs": "4,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "7,95",
+    "koop": ""
+   },
+   "serie": "ziggy",
+   "titel": "Ziggy Zebra en de Magische Kleurenrace"
+  },
+  {
+   "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket",
+   "serie": "sunny",
+   "cover": "media/sunny-mega-cover.png",
+   "beschrijving": "Alles van Sunny in één winkel: het complete computerspel (6 spelletjes, werkt offline), het luisterboek (ruim anderhalf uur voorlezen), activiteitenboek, puzzelboek, kleurboek, printbaar bordspel, kalender en het knutselpakket (stickers, poppentheater, kaartjes, boekenleggers). Digitaal — direct te downloaden, print zoveel je wilt voor eigen gebruik.",
+   "spel": {
+    "prijs": "4,95",
+    "koop": ""
+   },
+   "activiteitenboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "puzzelboek": {
+    "prijs": "7,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "6,95",
+    "koop": ""
+   },
+   "bordspel": {
+    "prijs": "3,95",
+    "koop": ""
+   },
+   "pakket": {
+    "prijs": "19,95",
+    "koop": ""
+   },
+   "luisterboek": {
+    "prijs": "6,95",
+    "koop": ""
+   },
+   "kalender": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "knutsel": {
+    "prijs": "7,95",
+    "koop": ""
+   },
+   "probeer": {
+    "prijs": "",
+    "koop": "../d/69f048627c95/Sunny-Spel.html"
+   },
+   "videoboek": {
+    "prijs": "9,95",
+    "koop": ""
+   }
+  },
+  {
+   "titel": "Pippa en het Vogelnest",
+   "serie": "dierenhelden",
+   "cover": "media/76fdf38f-cover.png",
+   "beschrijving": "Pippa het dappere katje klimt door de storm om drie baby-vogeltjes te redden! Kleur haar heldendaad in — 4 grote kleurplaten voor kleine helden (3-8 jaar). Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+   "kleurboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "ebook": {
+    "prijs": "6,95",
+    "koop": ""
+   }
+  },
+  {
+   "titel": "Sunny en de Verdwaalde Eend",
+   "serie": "sunny",
+   "cover": "media/c77aa21e-cover.png",
+   "beschrijving": "Sunny de lieve olifant waadt het meer in om een verdwaald eendje thuis te brengen bij zonsondergang. Kleur hun vriendschap in! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+   "kleurboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "ebook": {
+    "prijs": "6,95",
+    "koop": ""
+   }
+  },
+  {
+   "titel": "Keesje en de Verdwenen Worteltaart",
+   "serie": "keesje",
+   "cover": "media/73d385d5-cover.png",
+   "beschrijving": "Detective Keesje zoekt met zijn vergrootglas wie de worteltaart heeft gestolen — een hongerig egeltje! Samen delen is de leukste les. Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+   "kleurboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "ebook": {
+    "prijs": "6,95",
+    "koop": ""
+   }
+  },
+  {
+   "titel": "Bram en het Verloren Lammetje",
+   "serie": "dierenhelden",
+   "cover": "media/7a089fda-cover.png",
+   "beschrijving": "Reddingshond Bram zoekt lammetje Meeh in de sneeuwstorm en vindt hem voor het donker. Moed + nooit opgeven = een echte held! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+   "kleurboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "ebook": {
+    "prijs": "6,95",
+    "koop": ""
+   }
+  },
+  {
+   "titel": "Flip en de Zeehondpup",
+   "serie": "dierenhelden",
+   "cover": "media/8879f745-cover.png",
+   "beschrijving": "Flip de stoere zeeotter duikt diep en knabbelt een zeehondpup los uit een oud visnet. Onderwater-avontuur om zelf in te kleuren! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+   "kleurboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "ebook": {
+    "prijs": "6,95",
+    "koop": ""
+   }
+  },
+  {
+   "titel": "Vonk en het Katje in de Boom",
+   "serie": "dierenhelden",
+   "cover": "media/58edadbc-cover.png",
+   "beschrijving": "Brandweer-dalmatiër Vonk klimt heldhaftig de boom in voor een bang katje. Echte helden zijn dapper én zachtaardig! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+   "kleurboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "ebook": {
+    "prijs": "6,95",
+    "koop": ""
+   }
+  },
+  {
+   "titel": "Ravi en de Verdwaalde Papegaai",
+   "serie": "dierenhelden",
+   "cover": "media/407e67b5-cover.png",
+   "beschrijving": "Ravi de slimme capucijnaap draagt een verdwaalde baby-papegaai door de jungle terug naar zijn nest. Klein gebaar, groot heldenwerk! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+   "kleurboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "ebook": {
+    "prijs": "6,95",
+    "koop": ""
+   }
+  },
+  {
+   "titel": "Bodhi en de Kleine Koala",
+   "serie": "dierenhelden",
+   "cover": "media/7ad33a82-cover.png",
+   "beschrijving": "Bodhi de kangoeroe springt door de outback met een bang koalaatje veilig in zijn buidel — naar de rustige rivier. Hartverwarmend! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+   "kleurboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "ebook": {
+    "prijs": "6,95",
+    "koop": ""
+   }
+  },
+  {
+   "titel": "Ollie en het Verloren Muisje",
+   "serie": "dierenhelden",
+   "cover": "media/077ed49d-cover.png",
+   "beschrijving": "Wijze bosuil Ollie vliegt door het betoverende nachtbos en brengt een verdwaald muisje thuis. Een magisch nacht-avontuur om in te kleuren! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+   "kleurboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "ebook": {
+    "prijs": "6,95",
+    "koop": ""
+   }
+  },
+  {
+   "titel": "Sterre en het Kuikentje",
+   "serie": "dierenhelden",
+   "cover": "media/d903c8f1-cover.png",
+   "beschrijving": "Veulentje Sterre (met witte ster!) redt kuikentje Pip uit de modder — door slim om hulp te vragen. De mooiste les: samen ben je sterker! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+   "kleurboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "ebook": {
+    "prijs": "6,95",
+    "koop": ""
+   }
+  },
+  {
+   "titel": "Dana en de Verdwaalde Boot",
+   "serie": "dierenhelden",
+   "cover": "media/6c3c57aa-cover.png",
+   "beschrijving": "Dana de dappere dolfijn duwt met haar vrienden Jonassie's stukke bootje terug naar de veilige haven — samen sterk, echte helden! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+   "kleurboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "ebook": {
+    "prijs": "6,95",
+    "koop": ""
+   },
+   "_ebook_cover": "media/739260e8-cover.png"
+  },
+  {
+   "titel": "De Avonturen van Keesje Konijn",
+   "serie": "keesje",
+   "cover": "media/6cf27e40-cover.png",
+   "beschrijving": "Het complete Keesje-avontuur: 17 kleurplaten uit zijn eigen film! Onze beroemdste detective-konijn in zijn grootste verhaal. Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+   "kleurboek": {
+    "prijs": "12,95",
+    "koop": ""
+   },
+   "ebook": null
+  },
+  {
+   "titel": "Animal Heroes Verzamelkleurboek",
+   "serie": "dierenhelden",
+   "cover": "media/a7c56540-cover.png",
+   "beschrijving": "ALLE Animal Heroes in één mega kleurboek: 68 kleurplaten uit 11 avonturen + het complete Keesje-filmboek, met hoofdstuk-pagina per boek. 80 pagina's kleurplezier!",
+   "kleurboek": {
+    "prijs": "14,95",
+    "koop": ""
+   },
+   "ebook": null
+  }
+ ]
 }
