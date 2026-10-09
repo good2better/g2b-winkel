@@ -47,6 +47,19 @@ section{padding:34px 0}
 h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--zeedonker);margin-bottom:6px;position:relative;padding-bottom:12px}
 h2::after{content:'';position:absolute;left:0;bottom:0;width:56px;height:5px;border-radius:3px;background:var(--goud)}
 .sub{color:#6B7B88;font-size:15px;margin-bottom:18px}
+/* categorie-tegels (toy-store stijl) */
+.cats{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;padding-top:10px}
+@media(max-width:900px){.cats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:480px){.cats{grid-template-columns:repeat(2,1fr)}}
+.cat{display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 10px;border-radius:18px;text-decoration:none;font-weight:800;font-size:14px;color:#fff;box-shadow:0 4px 14px rgba(8,78,124,.14);transition:transform .18s,box-shadow .18s;text-align:center}
+.cat:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(8,78,124,.24)}
+.cat span{font-size:34px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+.c1{background:linear-gradient(145deg,#0E6BA8,#084E7C)}
+.c2{background:linear-gradient(145deg,#F5A623,#E8871E)}
+.c3{background:linear-gradient(145deg,#8B6BB8,#5B3F8E)}
+.c4{background:linear-gradient(145deg,#FF7F50,#E85D30)}
+.c5{background:linear-gradient(145deg,#37C27B,#1E9A56)}
+.c6{background:linear-gradient(145deg,#F0679C,#C93A6E)}
 /* boeken swipe */
 .rijh{position:relative}
 .swipe{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 14px;scrollbar-width:thin}
@@ -178,6 +191,17 @@ footer a{color:var(--zee)}
 </div>
 <svg class="golf" viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,32 C200,62 400,4 600,32 C800,62 1000,4 1200,32 L1200,60 L0,60 Z" fill="#FFF8EC"/></svg>
 </div>
+
+<section id="cats" style="padding:8px 0 0">
+<div class="cats">
+<a class="cat c1" href="#boeken"><span>📚</span>Boeken</a>
+<a class="cat c2" href="#winkel"><span>🛒</span>Boekwinkel</a>
+<a class="cat c3" href="#videoboek"><span>📼</span>Videoboeken</a>
+<a class="cat c4" href="#luister"><span>🎧</span>Luisterhoek</a>
+<a class="cat c5" href="#spel"><span>🎮</span>Spelletjes</a>
+<a class="cat c6" href="#gratis"><span>🎁</span>Gratis</a>
+</div>
+</section>
 
 <section id="gratis">
 <div class="gratiskaart">
