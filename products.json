@@ -2,7 +2,7 @@
  "titel": "G2B Muziekwinkel",
  "ondertitel": "Beats en meer — direct van de maker",
  "stats_url": "",
- "gebouwd": "2026-10-07T09:40:19",
+ "gebouwd": "2026-10-09T00:00:00",
  "producten": [
   {
    "id": "c5444536",
@@ -482,6 +482,292 @@
    "groep": "software",
    "cover": "media/g2b-instrumentpack-cover.png",
    "download_dir": "d/98b4cbb4c04add54"
+  },
+  {
+   "id": "1fd53e7c",
+   "titel": "Meester 181",
+   "soort": "audio",
+   "beschrijving": "G2b beat — 79 BPM in Cm7. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 48.5,
+   "groep": "g2b",
+   "cover": "media/1fd53e7c-cover.png",
+   "preview": "media/1fd53e7c-preview.mp3"
+  },
+  {
+   "id": "b806bcbe",
+   "titel": "Meester 198",
+   "soort": "audio",
+   "beschrijving": "G2b beat — 129 BPM in Fm7. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 29.9,
+   "groep": "g2b",
+   "cover": "media/b806bcbe-cover.png",
+   "preview": "media/b806bcbe-preview.mp3"
+  },
+  {
+   "id": "5d7937c5",
+   "titel": "Meester 221",
+   "soort": "audio",
+   "beschrijving": "G2b beat — 114 BPM in Em. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 33.6,
+   "groep": "g2b",
+   "cover": "media/5d7937c5-cover.png",
+   "preview": "media/5d7937c5-preview.mp3"
+  },
+  {
+   "id": "a9e0703c",
+   "titel": "Meester 222",
+   "soort": "audio",
+   "beschrijving": "Dembow beat — 77 BPM in Am. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 25.0,
+   "groep": "dembow",
+   "cover": "media/a9e0703c-cover.png",
+   "preview": "media/a9e0703c-preview.mp3"
+  },
+  {
+   "id": "efa1aa18",
+   "titel": "Meester 226",
+   "soort": "audio",
+   "beschrijving": "Dembow beat — 77 BPM in Am. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 25.0,
+   "groep": "dembow",
+   "cover": "media/efa1aa18-cover.png",
+   "preview": "media/efa1aa18-preview.mp3"
+  },
+  {
+   "id": "818cb301",
+   "titel": "Meester 232",
+   "soort": "audio",
+   "beschrijving": "Dembow beat — 77 BPM in Am. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 25.0,
+   "groep": "dembow",
+   "cover": "media/818cb301-cover.png",
+   "preview": "media/818cb301-preview.mp3"
+  },
+  {
+   "id": "604030ac",
+   "titel": "Meester 249",
+   "soort": "audio",
+   "beschrijving": "G2b beat — 80 BPM in Em. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 24.1,
+   "groep": "g2b",
+   "cover": "media/604030ac-cover.png",
+   "preview": "media/604030ac-preview.mp3"
+  },
+  {
+   "id": "31ee63ca",
+   "titel": "Meester 263",
+   "soort": "audio",
+   "beschrijving": "G2b beat — 95 BPM in Fm7. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 53.2,
+   "groep": "g2b",
+   "cover": "media/31ee63ca-cover.png",
+   "preview": "media/31ee63ca-preview.mp3"
+  },
+  {
+   "id": "2294c174",
+   "titel": "Meester 347",
+   "soort": "audio",
+   "beschrijving": "G2b beat — 102 BPM in C#m. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 37.8,
+   "groep": "g2b",
+   "cover": "media/2294c174-cover.png",
+   "preview": "media/2294c174-preview.mp3"
+  },
+  {
+   "id": "abf3c168",
+   "titel": "Meester 49",
+   "soort": "audio",
+   "beschrijving": "G2b beat — 118 BPM in Gm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 32.5,
+   "groep": "g2b",
+   "cover": "media/abf3c168-cover.png",
+   "preview": "media/abf3c168-preview.mp3"
+  },
+  {
+   "id": "57b9ce5f",
+   "titel": "Bergtop",
+   "soort": "audio",
+   "beschrijving": "Dancehall beat — 94 BPM in Cm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 53.6,
+   "groep": "dancehall",
+   "cover": "media/57b9ce5f-cover.png",
+   "preview": "media/57b9ce5f-preview.mp3"
+  },
+  {
+   "id": "9a433470",
+   "titel": "Bergtop M",
+   "soort": "audio",
+   "beschrijving": "House beat — 117 BPM in Gm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 32.8,
+   "groep": "house",
+   "cover": "media/9a433470-cover.png",
+   "preview": "media/9a433470-preview.mp3"
+  },
+  {
+   "id": "ba5ca09a",
+   "titel": "Droomreis",
+   "soort": "audio",
+   "beschrijving": "Drill beat — 117 BPM in F#m. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 53.3,
+   "groep": "drill",
+   "cover": "media/ba5ca09a-cover.png",
+   "preview": "media/ba5ca09a-preview.mp3"
   }
  ]
 }
