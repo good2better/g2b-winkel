@@ -88,6 +88,14 @@ h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--zeedonker);ma
 .vb-voortgang{flex:1;height:6px;background:rgba(255,255,255,.18);border-radius:3px;overflow:hidden}
 .vb-voortgang i{display:block;height:100%;width:0;background:var(--goud);transition:width .4s}
 .vb-tip{font-size:13px;color:#BFDFF2;margin-top:10px}
+/* vraag het aan */
+.vraag-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.vraag-kaart{display:block;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 14px rgba(8,78,124,.12);text-decoration:none;transition:transform .15s}
+.vraag-kaart:hover{transform:translateY(-3px)}
+.vraag-kaart img{width:100%;height:190px;object-fit:cover;display:block;background:#F4F7FA}
+.vraag-kaart div{padding:12px 14px}
+.vraag-kaart b{display:block;color:var(--zeedonker);font-size:15px}
+.vraag-kaart span{color:#6B7B88;font-size:12px}
 /* luister */
 .luister-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
 .track{background:#fff;border-radius:14px;padding:14px;box-shadow:0 3px 10px rgba(8,78,124,.10);display:flex;flex-direction:column;gap:8px}
@@ -139,7 +147,7 @@ footer a{color:var(--zee)}
 <svg viewBox="0 0 40 40" fill="none"><rect x="6" y="4" width="20" height="32" rx="3" fill="#0E6BA8"/><rect x="11" y="4" width="3" height="32" fill="#F5A623"/><rect x="20" y="10" width="14" height="26" rx="2" fill="#FF7F50"/></svg>
 <span><b>GS Books</b><small>G.T.J. SANDVLIET</small></span></a>
 <nav>
-<a href="#boeken">Boeken</a><a href="#winkel">Winkel</a><a href="kleur/">🎨 Kleuren!</a><a href="quiz/">🏆 Quiz</a><a href="paspoort/">🗺️ Paspoort</a><a href="#videoboek">Videoboek</a><a href="#luister">Luister</a><a href="#blader">Blader</a><a href="#kijk">Kijk</a><a href="#auteur">Auteur</a><a href="#spel">Spel</a>
+<a href="#boeken">Boeken</a><a href="#winkel">Winkel</a><a href="kleur/">🎨 Kleuren!</a><a href="quiz/">🏆 Quiz</a><a href="paspoort/">🗺️ Paspoort</a><a href="#videoboek">Videoboek</a><a href="#vraag">🧩 Vraag</a><a href="#luister">Luister</a><a href="#blader">Blader</a><a href="#kijk">Kijk</a><a href="#auteur">Auteur</a><a href="#spel">Spel</a>
 <a class="cta" href="#boeken">Koop Sunny</a>
 </nav>
 </div></header>
@@ -307,6 +315,16 @@ footer a{color:var(--zee)}
 </div>
 
 <div id="vb-meer" style="margin-top:16px"></div>
+</div>
+</section>
+
+<section id="vraag">
+<h2>🧩 Vraag het aan... — jij stelt de vragen!</h2>
+<p class="sub">Kies een vraag en de held antwoordt zelf — met stem en echte boek-illustraties. Stel daarna gewoon nóg een vraag!</p>
+<div class="vraag-grid">
+<a class="vraag-kaart" href="vb/vraag-het-aan-keesje/index.html"><img src="vb/vraag-het-aan-keesje/cover.jpg" alt="Keesje de detective" loading="lazy"><div><b>🐰 Vraag het aan Keesje</b><span>De detective beantwoordt jouw vragen</span></div></a>
+<a class="vraag-kaart" href="vb/vraag-het-aan-dana/index.html"><img src="vb/vraag-het-aan-dana/cover.jpg" alt="Dana de dolfijn" loading="lazy"><div><b>🐬 Vraag het aan Dana</b><span>De dappere dolfijn vertelt over de zee</span></div></a>
+<a class="vraag-kaart" href="vb/vraag-het-aan-sunny/index.html"><img src="vb/vraag-het-aan-sunny/cover.jpg" alt="Sunny het zeilbootje" loading="lazy"><div><b>⛵ Vraag het aan Sunny</b><span>Het dappere bootje beantwoordt alles</span></div></a>
 </div>
 </section>
 
