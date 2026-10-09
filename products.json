@@ -16,7 +16,8 @@
    },
    "duur": 0,
    "groep": "software",
-   "cover": "media/g2b-studio-pack-cover.png"
+   "cover": "media/g2b-studio-pack-cover.png",
+   "video": "media/g2b-studiopack-demo.mp4"
   },
   {
    "id": "g2b-glans",
@@ -455,7 +456,8 @@
    },
    "groep": "software",
    "cover": "media/g2b-instrumentpack-cover.png",
-   "download_dir": "d/98b4cbb4c04add54"
+   "download_dir": "d/98b4cbb4c04add54",
+   "video": "media/g2b-instrumentpack-demo.mp4"
   },
   {
    "id": "g2btrapk",
