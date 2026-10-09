@@ -2,6 +2,7 @@
   "boeken": [
     {
       "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket",
+      "serie": "sunny",
       "cover": "media/sunny-mega-cover.png",
       "beschrijving": "Alles van Sunny in één winkel: het complete computerspel (6 spelletjes, werkt offline), het luisterboek (ruim anderhalf uur voorlezen), activiteitenboek, puzzelboek, kleurboek, printbaar bordspel, kalender en het knutselpakket (stickers, poppentheater, kaartjes, boekenleggers). Digitaal — direct te downloaden, print zoveel je wilt voor eigen gebruik.",
       "spel": {
@@ -51,6 +52,7 @@
     },
     {
       "titel": "Pippa en het Vogelnest",
+      "serie": "dierenhelden",
       "cover": "media/76fdf38f-cover.png",
       "beschrijving": "Pippa het dappere katje klimt door de storm om drie baby-vogeltjes te redden! Kleur haar heldendaad in — 4 grote kleurplaten voor kleine helden (3-8 jaar). Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
       "kleurboek": {
@@ -64,6 +66,7 @@
     },
     {
       "titel": "Sunny en de Verdwaalde Eend",
+      "serie": "sunny",
       "cover": "media/c77aa21e-cover.png",
       "beschrijving": "Sunny de lieve olifant waadt het meer in om een verdwaald eendje thuis te brengen bij zonsondergang. Kleur hun vriendschap in! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
       "kleurboek": {
@@ -77,6 +80,7 @@
     },
     {
       "titel": "Keesje en de Verdwenen Worteltaart",
+      "serie": "keesje",
       "cover": "media/73d385d5-cover.png",
       "beschrijving": "Detective Keesje zoekt met zijn vergrootglas wie de worteltaart heeft gestolen — een hongerig egeltje! Samen delen is de leukste les. Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
       "kleurboek": {
@@ -90,6 +94,7 @@
     },
     {
       "titel": "Bram en het Verloren Lammetje",
+      "serie": "dierenhelden",
       "cover": "media/7a089fda-cover.png",
       "beschrijving": "Reddingshond Bram zoekt lammetje Meeh in de sneeuwstorm en vindt hem voor het donker. Moed + nooit opgeven = een echte held! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
       "kleurboek": {
@@ -103,6 +108,7 @@
     },
     {
       "titel": "Flip en de Zeehondpup",
+      "serie": "dierenhelden",
       "cover": "media/8879f745-cover.png",
       "beschrijving": "Flip de stoere zeeotter duikt diep en knabbelt een zeehondpup los uit een oud visnet. Onderwater-avontuur om zelf in te kleuren! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
       "kleurboek": {
@@ -116,6 +122,7 @@
     },
     {
       "titel": "Vonk en het Katje in de Boom",
+      "serie": "dierenhelden",
       "cover": "media/58edadbc-cover.png",
       "beschrijving": "Brandweer-dalmatiër Vonk klimt heldhaftig de boom in voor een bang katje. Echte helden zijn dapper én zachtaardig! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
       "kleurboek": {
@@ -129,6 +136,7 @@
     },
     {
       "titel": "Ravi en de Verdwaalde Papegaai",
+      "serie": "dierenhelden",
       "cover": "media/407e67b5-cover.png",
       "beschrijving": "Ravi de slimme capucijnaap draagt een verdwaalde baby-papegaai door de jungle terug naar zijn nest. Klein gebaar, groot heldenwerk! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
       "kleurboek": {
@@ -142,6 +150,7 @@
     },
     {
       "titel": "Bodhi en de Kleine Koala",
+      "serie": "dierenhelden",
       "cover": "media/7ad33a82-cover.png",
       "beschrijving": "Bodhi de kangoeroe springt door de outback met een bang koalaatje veilig in zijn buidel — naar de rustige rivier. Hartverwarmend! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
       "kleurboek": {
@@ -155,6 +164,7 @@
     },
     {
       "titel": "Ollie en het Verloren Muisje",
+      "serie": "dierenhelden",
       "cover": "media/077ed49d-cover.png",
       "beschrijving": "Wijze bosuil Ollie vliegt door het betoverende nachtbos en brengt een verdwaald muisje thuis. Een magisch nacht-avontuur om in te kleuren! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
       "kleurboek": {
@@ -168,6 +178,7 @@
     },
     {
       "titel": "Sterre en het Kuikentje",
+      "serie": "dierenhelden",
       "cover": "media/d903c8f1-cover.png",
       "beschrijving": "Veulentje Sterre (met witte ster!) redt kuikentje Pip uit de modder — door slim om hulp te vragen. De mooiste les: samen ben je sterker! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
       "kleurboek": {
@@ -181,6 +192,7 @@
     },
     {
       "titel": "Dana en de Verdwaalde Boot",
+      "serie": "dierenhelden",
       "cover": "media/6c3c57aa-cover.png",
       "beschrijving": "Dana de dappere dolfijn duwt met haar vrienden Jonassie's stukke bootje terug naar de veilige haven — samen sterk, echte helden! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
       "kleurboek": {
@@ -195,6 +207,7 @@
     },
     {
       "titel": "De Avonturen van Keesje Konijn",
+      "serie": "keesje",
       "cover": "media/6cf27e40-cover.png",
       "beschrijving": "Het complete Keesje-avontuur: 17 kleurplaten uit zijn eigen film! Onze beroemdste detective-konijn in zijn grootste verhaal. Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
       "kleurboek": {
@@ -205,6 +218,7 @@
     },
     {
       "titel": "Animal Heroes Verzamelkleurboek",
+      "serie": "dierenhelden",
       "cover": "media/a7c56540-cover.png",
       "beschrijving": "ALLE Animal Heroes in één mega kleurboek: 68 kleurplaten uit 11 avonturen + het complete Keesje-filmboek, met hoofdstuk-pagina per boek. 80 pagina's kleurplezier!",
       "kleurboek": {

@@ -85,6 +85,10 @@ h2::after{content:'';position:absolute;left:0;bottom:0;width:56px;height:5px;bor
 .pijl.links{left:-8px}.pijl.rechts{right:-8px}
 /* boekwinkel grid */
 .shopgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+.serieblok{margin-bottom:28px}
+.serie-kop{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:4px 0 14px;padding-bottom:8px;border-bottom:3px solid var(--goud)}
+.serie-titel{font-size:20px;color:var(--zeedonker);margin:0}
+.serie-sub{font-size:13px;color:#6B7B88;font-weight:600}
 .shopkaart{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 14px rgba(8,78,124,.12);display:flex;flex-direction:column;transition:transform .18s,box-shadow .18s}
 .shopkaart:hover{transform:translateY(-5px);box-shadow:0 10px 26px rgba(8,78,124,.22)}
 .shopkaart img{width:100%;height:280px;object-fit:contain;padding:12px;background:linear-gradient(165deg,#E8F4FB 0%,#FFF8EC 100%)}
@@ -313,7 +317,7 @@ footer a{color:var(--zee)}
 <section id="winkel">
 <h2>🛒 Boekwinkel</h2>
 <p class="sub">Alle boeken van G.T.J. Sandvliet — kleurboek (print zoveel je wilt) of e-boek (lekker lezen op tablet). Bij elke koop: directe download, 100% van je aankoop steunt de maker.</p>
-<div class="shopgrid" id="shopgrid"></div>
+<div id="shopgrid"></div>
 </section>
 
 <section id="videoboek">
@@ -574,18 +578,32 @@ spelStart();
 fetch('boeken.json').then(function(r){return r.ok?r.json():{boeken:[]}}).then(function(data){
   var el=document.getElementById('shopgrid');
   if(!data.boeken||!data.boeken.length){el.innerHTML='<p class="sub">Nog geen boeken in de winkel.</p>';return;}
-  el.innerHTML=data.boeken.map(function(b){
-    var knop=function(f,label,cls){
+  var knop=function(f,label,cls){
       if(!f)return '';
       var prijs=f.prijs?('€'+f.prijs):'';
       return f.koop?'<a class="mini '+cls+'" href="'+f.koop+'" target="_blank" rel="noopener">'+label+' '+prijs+'</a>'
         :'<span class="mini meer" style="opacity:.8;cursor:default">'+label+' '+prijs+' <i class="bk">binnenkort</i></span>';
     };
+  var kaart=function(b){
     return '<div class="shopkaart"><img src="../'+b.cover+'" alt="'+b.titel+'" loading="lazy">'+
       '<div class="info"><span class="badge">Animal Heroes</span><h3>'+b.titel+'</h3>'+
       '<p>'+(b.beschrijving||'')+'</p><div class="links">'+
       knop(b.probeer,'▶️ Probeer gratis','meer')+knop(b.spel,'🎮 Spel','kopen')+knop(b.luisterboek,'🎧 Luisterboek','kopen')+knop(b.videoboek,'📼 Videoboek','kopen')+knop(b.kleurboek,'🖍️ Kleurboek','kopen')+knop(b.activiteitenboek,'📒 Activiteitenboek','kopen')+knop(b.puzzelboek,'🧩 Puzzelboek','kopen')+knop(b.bordspel,'🎲 Bordspel','kopen')+knop(b.kalender,'📅 Kalender','kopen')+knop(b.knutsel,'✂️ Knutselpakket','kopen')+knop(b.ebook,'📖 E-boek','meer')+knop(b.pakket,'🎁 Mega-pakket','kopen')+
       '</div></div></div>';
+  };
+  var SERIES=[
+    {id:'sunny',titel:'⛵ Sunny-serie',sub:'De avonturen van het dappere zeilbootje — meer delen onderweg!'},
+    {id:'keesje',titel:'🐰 Keesje-serie',sub:'Keesje Konijn de detective — elke zaak een nieuw avontuur'},
+    {id:'dierenhelden',titel:'🐾 Animal Heroes Avonturen',sub:'Elke held z’n eigen verhaal — echt gebeurde dierenmoed'}
+  ];
+  var groepen={};
+  data.boeken.forEach(function(b){var s=b.serie||'dierenhelden';(groepen[s]=groepen[s]||[]).push(b);});
+  // series die niet in de lijst staan, komen achteraan
+  SERIES=SERIES.concat(Object.keys(groepen).filter(function(k){return !SERIES.some(function(s){return s.id===k;});}).map(function(k){return {id:k,titel:k,sub:''};}));
+  el.innerHTML=SERIES.filter(function(s){return groepen[s.id]&&groepen[s.id].length;}).map(function(s){
+    return '<div class="serieblok"><div class="serie-kop"><h3 class="serie-titel">'+s.titel+'</h3>'+
+      (s.sub?'<span class="serie-sub">'+s.sub+'</span>':'')+'</div>'+
+      '<div class="shopgrid">'+groepen[s.id].map(kaart).join('')+'</div></div>';
   }).join('');
 }).catch(function(){});
 // extra videoboeken uit de Videoboek-Fabriek (gsbooks/vb/index.json)
