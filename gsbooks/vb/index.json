@@ -59,5 +59,47 @@
   "cover": "vb/vraag-het-aan-vonk/cover.jpg",
   "interactief": true,
   "paginas": 0
+ },
+ {
+  "titel": "Vraag het aan Pippa",
+  "url": "vb/vraag-het-aan-pippa/index.html",
+  "cover": "vb/vraag-het-aan-pippa/cover.jpg",
+  "interactief": true,
+  "paginas": 0
+ },
+ {
+  "titel": "Vraag het aan Flip",
+  "url": "vb/vraag-het-aan-flip/index.html",
+  "cover": "vb/vraag-het-aan-flip/cover.jpg",
+  "interactief": true,
+  "paginas": 0
+ },
+ {
+  "titel": "Vraag het aan Ravi",
+  "url": "vb/vraag-het-aan-ravi/index.html",
+  "cover": "vb/vraag-het-aan-ravi/cover.jpg",
+  "interactief": true,
+  "paginas": 0
+ },
+ {
+  "titel": "Vraag het aan Bodhi",
+  "url": "vb/vraag-het-aan-bodhi/index.html",
+  "cover": "vb/vraag-het-aan-bodhi/cover.jpg",
+  "interactief": true,
+  "paginas": 0
+ },
+ {
+  "titel": "Vraag het aan Ollie",
+  "url": "vb/vraag-het-aan-ollie/index.html",
+  "cover": "vb/vraag-het-aan-ollie/cover.jpg",
+  "interactief": true,
+  "paginas": 0
+ },
+ {
+  "titel": "Vraag het aan Sterre",
+  "url": "vb/vraag-het-aan-sterre/index.html",
+  "cover": "vb/vraag-het-aan-sterre/cover.jpg",
+  "interactief": true,
+  "paginas": 0
  }
 ]
