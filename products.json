@@ -1176,6 +1176,28 @@
    "groep": "drill",
    "cover": "media/e110f961-cover.png",
    "preview": "media/e110f961-preview.mp3"
+  },
+  {
+   "id": "084092dd",
+   "titel": "Meester",
+   "soort": "audio",
+   "beschrijving": "House beat — 96 BPM in Gm7. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 52.5,
+   "groep": "house",
+   "cover": "media/084092dd-cover.png",
+   "preview": "media/084092dd-preview.mp3"
   }
  ]
 }
