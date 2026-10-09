@@ -677,6 +677,23 @@
    "preview": "media/g2btrapk-preview.mp3"
   },
   {
+   "id": "sankaste",
+   "titel": "Sanka Stemloops Vol. 1",
+   "soort": "digitaal",
+   "beschrijving": "4 naadloze stem-loops uit Sanka (drums/bas/melodie/zang, wav+mp3) — 100% eigen IP uit eigen song: buy-out-ready constructie-kit.",
+   "prijs": "€ 14,95",
+   "prijzen": {
+    "digitaal": "€ 14,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "digitaal": "https://buy.stripe.com/demo_dig"
+   },
+   "groep": "sounds",
+   "cover": "media/sankaste-cover.png",
+   "preview": "media/sankaste-preview.mp3"
+  },
+  {
    "id": "kw322dcb",
    "titel": "G2B Kawina Kit Vol. 1",
    "soort": "digitaal",
