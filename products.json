@@ -709,6 +709,54 @@
    "groep": "sounds",
    "cover": "media/kw322dcb-cover.png",
    "preview": "media/kw322dcb-preview.mp3"
+  },
+  {
+   "id": "g2b-juridisch",
+   "titel": "G2B Juridisch",
+   "soort": "digitaal",
+   "beschrijving": "Jouw eigen Nederlandse wetboek op je pc: typ je probleem in gewone woorden → stappen + echte wetsartikelen + hulp-instanties + bewijs-pakket als PDF. Rechtbank-uitspraken importeren en doorzoeken. Werkt offline, 100% lokaal. Incl. handleiding-PDF en workflow-video.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "apps",
+   "cover": "media/g2b-juridisch-cover.png",
+   "download_dir": "d/12f11d0fe3c348",
+   "demo": "media/g2b-juridisch-demo.mp4"
+  },
+  {
+   "id": "g2b-psychologie",
+   "titel": "G2B Psychologie",
+   "soort": "digitaal",
+   "beschrijving": "Begrijp wat er speelt en vind snel de juiste hulp: typ je situatie → uitleg + stappen + 29 echte NL-instanties met adres, telefoon en QR-code naar Maps. Spoed-detectie met 112/113 voorop, begrijp-lijst in gewone woorden en kant-en-klare brieven als PDF. Incl. handleiding-PDF en workflow-video.",
+   "prijs": "€ 14,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "apps",
+   "cover": "media/g2b-psychologie-cover.png",
+   "download_dir": "d/eff2f763bada21",
+   "demo": "media/g2b-psychologie-demo.mp4"
+  },
+  {
+   "id": "g2b-bedrijfsmiddelen",
+   "titel": "G2B Bedrijfsmiddelen",
+   "soort": "digitaal",
+   "beschrijving": "Jouw complete zakelijke gereedschapskist: beat-contracten, ZZP-facturen met BTW en eigen nummering, algemene voorwaarden, merk-assets, kleurboeken, videoboeken, royalty-rapporten en winkel-pakketten. Alles als PDF/PNG/ZIP, jouw gegevens één keer instellen. Incl. handleiding-PDF en workflow-video.",
+   "prijs": "€ 29,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "apps",
+   "cover": "media/g2b-bedrijfsmiddelen-cover.png",
+   "download_dir": "d/f481c3d2e1e330",
+   "demo": "media/g2b-bedrijfsmiddelen-demo.mp4"
   }
  ],
  "accent": "#2fbf71",

@@ -68,15 +68,16 @@ async function laden() {
 
   // categorie per product: boeken eerst (mooiste covers!), dan plugins,
   // sound-packs en als laatste de beats.
-  const CAT = p => p.soort === "audio" ? "beats"
+  const CAT = p => p.groep === "apps" ? "apps"
+    : p.soort === "audio" ? "beats"
     : (p.groep === "software" || p.groep === "plugins") ? "plugins"
     : p.groep === "sounds" ? "sounds"
     : "boeken";
   const CAT_NAAM = {
-    boeken: "📚 Boeken", plugins: "🔌 Plugins",
+    apps: "🛠️ Apps", boeken: "📚 Boeken", plugins: "🔌 Plugins",
     sounds: "🔊 Sound packs", beats: "🎵 Beats",
   };
-  const CAT_VOLGORDE = ["boeken", "plugins", "sounds", "beats"];
+  const CAT_VOLGORDE = ["apps", "boeken", "plugins", "sounds", "beats"];
 
   // binnen Boeken: serie-volgorde 1→10 met e-boek direct achter zijn
   // kleurboek, daarna verzamel-/avonturen-bundels; onbekende titels alfabetisch.
