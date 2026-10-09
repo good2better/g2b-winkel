@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>G2B Muziekwinkel</title>
-<meta name="description" content="Eigen muziekwinkel van Good2Better — luister previews en koop direct van de maker.">
+<title>G2B Winkel</title>
+<meta name="description" content="Eigen winkel van Good2Better — beats, plugins en sound packs, direct van de maker.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230D0F0E'/><text x='50' y='68' font-size='52' font-weight='bold' text-anchor='middle' fill='%232FBF71' font-family='sans-serif'>G2</text></svg>">
 <style>
 :root{
@@ -15,7 +15,6 @@
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--txt);
   font:15px/1.6 'Segoe UI',system-ui,sans-serif;min-height:100vh}
-.hero{width:100%;display:block;object-fit:cover;max-height:340px}
 header{border-bottom:1px solid var(--line);background:var(--panel);
   padding:20px;text-align:center}
 .logo{font-size:clamp(22px,4vw,30px);font-weight:800;letter-spacing:2px}
@@ -31,7 +30,6 @@ main{max-width:860px;margin:0 auto;padding:22px 16px 60px}
   transition:border-color .2s}
 .card:hover{border-color:var(--accent2)}
 .card .top{display:flex;gap:14px;align-items:flex-start}
-.demo{width:100%;border-radius:10px;margin:10px 0;background:#000}
 .cover{width:96px;height:96px;border-radius:10px;object-fit:cover;
   background:#000;flex:none;border:1px solid var(--line)}
 .info{flex:1;min-width:0}
@@ -82,22 +80,21 @@ footer b{color:var(--accent)}
 </head>
 <body>
 <header>
-  <div class="logo" id="titel">G2B <b>MUZIEKWINKEL</b></div>
-  <div class="sub" id="ondertitel">Beats en meer — direct van de maker</div>
+  <div class="logo" id="titel">G2B <b>WINKEL</b></div>
+  <div class="sub" id="ondertitel">Eigen beats, plugins & sound packs — direct van de maker</div>
 </header>
-<img class="hero" src="media/hero.jpg" alt="Good2Better studio">
 <main>
   <div class="trust">
     <span>🔒 veilig betalen</span>
     <span>⬇ direct downloaden</span>
     <span>🤝 100% van de maker</span>
   </div>
+  <div id="cats" class="groepen"></div>
   <div id="groepen" class="groepen" style="display:none"></div>
   <div id="lijst"><div class="leeg">Winkel wordt geladen…</div></div>
 </main>
 <footer>Gebouwd door <b>Good2Better</b> — eigen winkel, geen commissie.
-<span id="jaar"></span>
-<div style="margin-top:10px"><a href="gsbooks/" style="color:var(--accent);text-decoration:none">📚 GS Books</a> · <a href="animalheroes/" style="color:var(--accent);text-decoration:none">🦸 Animal Heroes</a> · <a href="https://www.good2better.com" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">good2better.com</a></div></footer>
+<span id="jaar"></span></footer>
 <script type="module" src="app.js"></script>
 </body>
 </html>

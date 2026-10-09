@@ -1,1 +1,105 @@
-[{"slug":"sunny-hoofdstuk-1","titel":"Sunny's Sailing Adventures — Hoofdstuk 1","paginas":37,"url":"vb/sunny-hoofdstuk-1/index.html","cover":"vb/sunny-hoofdstuk-1/cover.jpg"}]
+[
+ {
+  "slug": "sunny-hoofdstuk-1",
+  "titel": "Sunny's Sailing Adventures — Hoofdstuk 1",
+  "paginas": 37,
+  "url": "vb/sunny-hoofdstuk-1/index.html",
+  "cover": "vb/sunny-hoofdstuk-1/cover.jpg"
+ },
+ {
+  "slug": "dana-en-de-verdwaalde-boot",
+  "titel": "Dana en de Verdwaalde Boot — kies zelf het avontuur! 🧩",
+  "paginas": 5,
+  "url": "vb/dana-en-de-verdwaalde-boot/index.html",
+  "cover": "vb/dana-en-de-verdwaalde-boot/cover.jpg",
+  "interactief": true
+ },
+ {
+  "slug": "sunny-kies-je-avontuur",
+  "titel": "Sunny en de Verdwaalde Eend — kies zelf het avontuur! 🧩",
+  "paginas": 16,
+  "url": "vb/sunny-kies-je-avontuur/index.html",
+  "cover": "vb/sunny-kies-je-avontuur/cover.jpg",
+  "interactief": true
+ },
+ {
+  "slug": "vraag-het-aan-keesje",
+  "titel": "Vraag het aan Keesje",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-keesje/index.html",
+  "cover": "vb/vraag-het-aan-keesje/cover.jpg",
+  "interactief": true
+ },
+ {
+  "slug": "vraag-het-aan-dana",
+  "titel": "Vraag het aan Dana",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-dana/index.html",
+  "cover": "vb/vraag-het-aan-dana/cover.jpg",
+  "interactief": true
+ },
+ {
+  "slug": "vraag-het-aan-sunny",
+  "titel": "Vraag het aan Sunny",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-sunny/index.html",
+  "cover": "vb/vraag-het-aan-sunny/cover.jpg",
+  "interactief": true
+ },
+ {
+  "titel": "Vraag het aan Bram",
+  "url": "vb/vraag-het-aan-bram/index.html",
+  "cover": "vb/vraag-het-aan-bram/cover.jpg",
+  "interactief": true,
+  "paginas": 0
+ },
+ {
+  "titel": "Vraag het aan Vonk",
+  "url": "vb/vraag-het-aan-vonk/index.html",
+  "cover": "vb/vraag-het-aan-vonk/cover.jpg",
+  "interactief": true,
+  "paginas": 0
+ },
+ {
+  "titel": "Vraag het aan Pippa",
+  "url": "vb/vraag-het-aan-pippa/index.html",
+  "cover": "vb/vraag-het-aan-pippa/cover.jpg",
+  "interactief": true,
+  "paginas": 0
+ },
+ {
+  "titel": "Vraag het aan Flip",
+  "url": "vb/vraag-het-aan-flip/index.html",
+  "cover": "vb/vraag-het-aan-flip/cover.jpg",
+  "interactief": true,
+  "paginas": 0
+ },
+ {
+  "titel": "Vraag het aan Ravi",
+  "url": "vb/vraag-het-aan-ravi/index.html",
+  "cover": "vb/vraag-het-aan-ravi/cover.jpg",
+  "interactief": true,
+  "paginas": 0
+ },
+ {
+  "titel": "Vraag het aan Bodhi",
+  "url": "vb/vraag-het-aan-bodhi/index.html",
+  "cover": "vb/vraag-het-aan-bodhi/cover.jpg",
+  "interactief": true,
+  "paginas": 0
+ },
+ {
+  "titel": "Vraag het aan Ollie",
+  "url": "vb/vraag-het-aan-ollie/index.html",
+  "cover": "vb/vraag-het-aan-ollie/cover.jpg",
+  "interactief": true,
+  "paginas": 0
+ },
+ {
+  "titel": "Vraag het aan Sterre",
+  "url": "vb/vraag-het-aan-sterre/index.html",
+  "cover": "vb/vraag-het-aan-sterre/cover.jpg",
+  "interactief": true,
+  "paginas": 0
+ }
+]

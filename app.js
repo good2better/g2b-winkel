@@ -6,13 +6,14 @@ const lijst = document.getElementById("lijst");
 document.getElementById("jaar").textContent = " · " + new Date().getFullYear();
 
 const LICENTIE_NAMEN = {
-  mp3: "MP3-lease", wav: "WAV-licentie", exclusief: "Exclusieve licentie",
+  mp3: "MP3-lease", wav: "WAV-licentie", exclusief: "Exclusief",
 };
 
 let huidige = null;                 // de speler die nu speelt
 const spelers = new Map();          // id -> WaveSurfer
 let afspeellijst = null;            // {ids:[], idx} als er wordt doorgespeeld
 let statsUrl = "";                   // optioneel luister-statistiek-endpoint
+let accent = "#2fbf71";              // uit products.json (winkel-accentkleur)
 const luisterTijd = new Map();      // id -> seconden echt geluisterd
 
 function stuurStats() {
@@ -55,13 +56,47 @@ async function laden() {
   if (data.titel)
     document.getElementById("titel").innerHTML =
       esc(data.titel).replace(/^(\S+)\s/, "$1 ").replace(
-        /MUZIEKWINKEL/i, "<b>MUZIEKWINKEL</b>");
+        /MUZIEKWINKEL|WINKEL/i, m => `<b>${m.toUpperCase()}</b>`);
   if (data.ondertitel)
     document.getElementById("ondertitel").textContent = data.ondertitel;
   statsUrl = data.stats_url || "";
-  document.title = data.titel || "G2B Muziekwinkel";
+  accent = data.accent || "#2fbf71";
+  document.documentElement.style.setProperty("--accent", accent);
+  document.documentElement.style.setProperty(
+    "--accent2", data.accent2 || accent);
+  document.title = data.titel || "G2B Winkel";
 
-  const prods = data.producten || [];
+  // categorie per product: boeken eerst (mooiste covers!), dan plugins,
+  // sound-packs en als laatste de beats.
+  const CAT = p => p.groep === "apps" ? "apps"
+    : p.soort === "audio" ? "beats"
+    : (p.groep === "software" || p.groep === "plugins") ? "plugins"
+    : p.groep === "sounds" ? "sounds"
+    : "boeken";
+  const CAT_NAAM = {
+    apps: "🛠️ Apps", boeken: "📚 Boeken", plugins: "🔌 Plugins",
+    sounds: "🔊 Sound packs", beats: "🎵 Beats",
+  };
+  const CAT_VOLGORDE = ["apps", "boeken", "plugins", "sounds", "beats"];
+
+  // binnen Boeken: serie-volgorde 1→10 met e-boek direct achter zijn
+  // kleurboek, daarna verzamel-/avonturen-bundels; onbekende titels alfabetisch.
+  const BOEK_VOLGORDE = [
+    "pippa", "sunny", "worteltaart", "bram", "flip", "vonk",
+    "ravi", "bodhi", "ollie", "sterre", "avonturen", "verzamel",
+  ];
+  const boekIndex = t => {
+    const s = (t || "").toLowerCase();
+    const i = BOEK_VOLGORDE.findIndex(k => s.includes(k));
+    return i < 0 ? BOEK_VOLGORDE.length : i;
+  };
+  const boekScore = p =>
+    boekIndex(p.titel) * 10 + (/e-boek/i.test(p.titel) ? 1 : 0);
+
+  const prods = [...(data.producten || [])].sort((a, b) =>
+    (CAT_VOLGORDE.indexOf(CAT(a)) - CAT_VOLGORDE.indexOf(CAT(b))) ||
+    (CAT(a) === "boeken" ? boekScore(a) - boekScore(b)
+                         : (a.titel || "").localeCompare(b.titel || "")));
   window._prods = prods;
   if (!prods.length) {
     lijst.innerHTML = `<div class="leeg">Binnenkort open —
@@ -85,12 +120,24 @@ async function laden() {
              ▶ SPEEL ALLES</button>` : "");
   }
 
+  // categorie-filterknoppen (alleen categorieën die voorkomen)
+  const aanwezig = CAT_VOLGORDE.filter(c =>
+    prods.some(p => CAT(p) === c));
+  const catsEl = document.getElementById("cats");
+  if (aanwezig.length > 1) {
+    catsEl.innerHTML =
+      `<button class="groepbtn alles" data-cat="">✨ Alles (${prods.length})</button>` +
+      aanwezig.map(c =>
+        `<button class="groepbtn" data-cat="${c}">${CAT_NAAM[c]} ` +
+        `(${prods.filter(p => CAT(p) === c).length})</button>`).join("");
+  }
+
   lijst.innerHTML = prods.map(p => {
     const links = p.links || {};
     const licenties = ["mp3", "wav", "exclusief"]
       .filter(k => links[k]);
     const koopHref = licenties.length ? links[licenties[0]] : (links.koop || "");
-    return `<div class="card" data-id="${esc(p.id)}">
+    return `<div class="card" data-id="${esc(p.id)}" data-cat="${CAT(p)}">
       <div class="top">
         ${p.cover
           ? `<img class="cover" src="${esc(p.cover)}" alt="">`
@@ -102,9 +149,6 @@ async function laden() {
             ? `<div class="beschr">${esc(p.beschrijving)}</div>` : ""}
         </div>
       </div>
-      ${p.demo ? `
-      <video class="demo" src="${esc(p.demo)}" controls
-             preload="metadata" playsinline></video>` : ""}
       ${p.soort === "audio" ? `
       <div class="player">
         <button class="playbtn" data-play="${esc(p.id)}">▶</button>
@@ -141,6 +185,19 @@ lijst.addEventListener("click", e => {
   }
   const play = e.target.closest("[data-play]");
   if (play) { afspeellijst = null; togglePlay(play.dataset.play); }
+});
+
+// categorie-filter: toon alleen kaarten van de gekozen categorie
+document.getElementById("cats").addEventListener("click", e => {
+  const knop = e.target.closest(".groepbtn");
+  if (!knop) return;
+  const cat = knop.dataset.cat;
+  document.querySelectorAll("#cats .groepbtn").forEach(b =>
+    b.classList.toggle("alles", b === knop));
+  document.querySelectorAll("#lijst .card").forEach(card => {
+    card.style.display = (!cat || card.dataset.cat === cat) ? "" : "none";
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
 // vibe-knoppen: speel alle previews van een groep (of alles) achter elkaar
@@ -188,7 +245,7 @@ function togglePlay(id) {
     if (!p || !p.preview) return;
     ws = WaveSurfer.create({
       container: document.querySelector(`[data-wave="${id}"]`),
-      height: 52, waveColor: "#3a443f", progressColor: "#2fbf71",
+      height: 52, waveColor: "#3a443f", progressColor: accent,
       cursorColor: "#e8ecea", cursorWidth: 2, barWidth: 2,
       barGap: 2, barRadius: 2, normalize: true,
     });

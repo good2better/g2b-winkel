@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bedankt — G2B Muziekwinkel</title>
+<title>Bedankt — G2B Winkel</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230D0F0E'/><text x='50' y='68' font-size='52' font-weight='bold' text-anchor='middle' fill='%232FBF71' font-family='sans-serif'>G2</text></svg>">
 <style>
@@ -49,7 +49,7 @@ footer b{color:var(--accent)}
 </style>
 </head>
 <body>
-<header><div class="logo">G2B <b>MUZIEKWINKEL</b></div></header>
+<header><div class="logo">G2B <b>WINKEL</b></div></header>
 <main>
   <div class="card" id="kaart">
     <div class="vinkje">…</div>
@@ -58,7 +58,7 @@ footer b{color:var(--accent)}
   </div>
 </main>
 <footer>Gebouwd door <b>Good2Better</b> — eigen winkel, geen commissie.</footer>
-<script>
+<script type="module">
 const kaart = document.getElementById("kaart");
 const esc = s => String(s || "").replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -74,6 +74,15 @@ function fout() {
       winkel via de contactgegevens op de site — je betaling is je
       bewijs, je krijgt je bestand.</div>`;
 }
+
+// accentkleur van de winkel overnemen (mislukt = groen default)
+try {
+  const c = await (await fetch("products.json", { cache: "no-store" })).json();
+  if (c.accent)
+    document.documentElement.style.setProperty("--accent", c.accent);
+  if (c.accent2)
+    document.documentElement.style.setProperty("--accent2", c.accent2);
+} catch { /* groene huisstijl is prima */ }
 
 async function laden() {
   const k = new URLSearchParams(location.search).get("k") || "";

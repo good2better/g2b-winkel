@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vraag het aan Ollie — interactief videoboek</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0b0d0c;color:#e8ecea;
+  font:16px/1.5 'Segoe UI',system-ui,sans-serif;overflow:hidden}
+#scene{position:fixed;inset:0}
+#scene img.kb{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;opacity:0;
+  animation:kb 6s ease-in-out forwards,fadein 1s ease forwards}
+@keyframes kb{0%{transform:scale(1)}100%{transform:scale(1.12)}}
+@keyframes fadein{to{opacity:1}}
+#titel{position:fixed;top:14px;left:0;right:0;text-align:center;
+  font-weight:800;font-size:clamp(18px,3vw,26px);letter-spacing:1px;
+  text-shadow:0 2px 12px #000;z-index:5;pointer-events:none}
+#keuzes{position:fixed;bottom:8%;left:0;right:0;display:none;
+  flex-wrap:wrap;gap:16px;justify-content:center;z-index:6;padding:0 20px}
+#tekst{position:fixed;bottom:20%;left:50%;transform:translateX(-50%);
+  max-width:min(760px,86vw);background:#0b0d0cc9;border-radius:14px;
+  padding:10px 20px;font-size:clamp(16px,2.4vw,22px);font-weight:700;
+  text-align:center;text-shadow:0 1px 4px #000;z-index:5;display:none}
+button.keuze{background:#2fbf71;color:#04120a;border:0;border-radius:16px;
+  padding:18px 30px;font-size:clamp(17px,2.6vw,24px);font-weight:800;
+  cursor:pointer;box-shadow:0 6px 24px #000a;min-width:200px}
+button.keuze:hover{filter:brightness(1.12);transform:scale(1.04)}
+#einde,#start{position:fixed;inset:0;background:#0b0d0cd9;display:none;z-index:8;
+  flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  text-align:center;padding:24px}
+#einde{overflow-y:auto;justify-content:flex-start;padding-top:15vh}
+#einde h1{max-width:22em;line-height:1.35}
+#start{display:flex}
+#einde h1,#start h1{font-size:clamp(28px,5vw,44px);text-shadow:0 2px 12px #000}
+#opnieuw,#speel{background:#2fbf71;color:#04120a;border:0;border-radius:14px;
+  padding:16px 32px;font-size:clamp(17px,2.6vw,22px);font-weight:800;cursor:pointer}
+#terugNaar{background:#fab005;color:#04120a;border:0;border-radius:14px;
+  padding:14px 26px;font-size:clamp(15px,2.2vw,20px);font-weight:800;cursor:pointer}
+#terugNaar:hover,#opnieuw:hover,#speel:hover{filter:brightness(1.12);transform:scale(1.04)}
+#stem{display:none}
+</style>
+</head>
+<body>
+<div id="scene"></div>
+<div id="titel">Vraag het aan Ollie</div>
+<div id="tekst"></div>
+<div id="keuzes"></div>
+<div id="einde"><h1 id="eindeTekst">Einde — goed gekozen!</h1>
+  <button id="terugNaar" style="display:none">↩ Stel nog een vraag</button>
+  <button id="opnieuw">🔁 Opnieuw spelen — ander pad</button></div>
+<div id="start"><h1>Vraag het aan Ollie</h1>
+  <p>Jij bepaalt hoe dit verhaal gaat!</p>
+  <button id="speel">▶ SPEEL HET VERHAAL</button></div>
+<audio id="stem"></audio>
+<script>const STORY = {"start": "hub", "scenes": {"hub": {"paginas": ["p00.png"], "audio": "scenes/hub/audio.mp3", "keuzes": [{"label": "Hoe vond je het muisje? \ud83d\udc2d", "doel": "a1"}, {"label": "Zie je echt in het donker? \ud83c\udf19", "doel": "a2"}, {"label": "Waarom heb je een medaille? \ud83c\udfc5", "doel": "a3"}, {"label": "Wat is jouw wijsheid? \ud83e\udd89", "doel": "a4"}], "tekst": "Oehoe! Ik ben Ollie, de wijze bosuil met de rode heldenmedaille. Wat wil je weten?", "einde": "", "terug": null}, "a1": {"paginas": ["p00.png"], "audio": "scenes/a1/audio.mp3", "keuzes": [], "tekst": "Ik hoorde een piepje in het donker! Uilen horen alles. Het muisje was de weg kwijt \u2014 dus liet ik hem op mijn rug klimmen.", "einde": "Dat was mijn antwoord!", "terug": "hub"}, "a2": {"paginas": ["p00.png"], "audio": "scenes/a2/audio.mp3", "keuzes": [], "tekst": "Ja! Mijn grote ogen vangen al het licht van de maan. 's Nachts is het bos juist mijn speeltuin.", "einde": "Dat was mijn antwoord!", "terug": "hub"}, "a3": {"paginas": ["p00.png"], "audio": "scenes/a3/audio.mp3", "keuzes": [], "tekst": "Omdat ik de weg terug vond naar het muisjes-holletje! Mamma-muis knuffelde haar kleintje \u2014 daar doe ik het voor.", "einde": "Dat was mijn antwoord!", "terug": "hub"}, "a4": {"paginas": ["p00.png"], "audio": "scenes/a4/audio.mp3", "keuzes": [], "tekst": "Luisteren is belangrijker dan kijken. Wie goed luistert, hoort wie hulp nodig heeft \u2014 zelfs in het donker.", "einde": "Dat was mijn antwoord!", "terug": "hub"}}};</script>
+<script>// interactieve videoboek-speler — kind kiest het pad (regel 1: eigen code)
+const wrap = document.getElementById("scene");
+const audio = document.getElementById("stem");
+const keuzebox = document.getElementById("keuzes");
+const titelEl = document.getElementById("titel");
+let huidig = null, plaatTimer = null;
+
+function scene(id) {
+  huidig = STORY.scenes[id];
+  if (!huidig) return;
+  keuzebox.innerHTML = "";
+  keuzebox.style.display = "none";
+  document.getElementById("einde").style.display = "none";
+  wrap.innerHTML = "";
+  const tt = document.getElementById("tekst");
+  if (huidig.tekst) { tt.textContent = huidig.tekst; tt.style.display = ""; }
+  else tt.style.display = "none";
+  const paginas = huidig.paginas || [];
+  // elke plaat ~4s Ken Burns, zolang de audio duurt
+  let i = 0;
+  const toon = () => {
+    wrap.innerHTML = "";
+    const img = document.createElement("img");
+    img.src = "scenes/" + id + "/paginas/" + paginas[i % paginas.length];
+    img.className = "kb";
+    wrap.appendChild(img);
+    i++;
+  };
+  if (paginas.length) toon();
+  if (plaatTimer) clearInterval(plaatTimer);
+  if (paginas.length > 1) plaatTimer = setInterval(toon, 4000);
+  if (huidig.audio) {
+    audio.src = huidig.audio;
+    audio.play().catch(() => { klaar(); });
+    audio.onended = klaar;
+  } else {
+    // zonder stem: leestijd schaalt mee met de tekstlengte
+    const lees = huidig.tekst ? 1800 + huidig.tekst.length * 85 : 0;
+    setTimeout(klaar, Math.max(2500, 4000 * Math.min(paginas.length, 2),
+                             Math.min(lees, 20000)));
+  }
+}
+
+function klaar() {
+  if (plaatTimer) clearInterval(plaatTimer);
+  document.getElementById("tekst").style.display = "none";
+  const kz = huidig.keuzes || [];
+  if (!kz.length) {
+    document.getElementById("eindeTekst").textContent =
+      huidig.einde || "Einde — goed gekozen!";
+    const tb = document.getElementById("terugNaar");
+    if (huidig.terug) {
+      tb.style.display = "";
+      tb.onclick = () => scene(huidig.terug);
+    } else {
+      tb.style.display = "none";
+    }
+    document.getElementById("einde").style.display = "flex";
+    return;
+  }
+  keuzebox.innerHTML = "";
+  kz.forEach(k => {
+    const b = document.createElement("button");
+    b.className = "keuze";
+    b.textContent = k.label;
+    b.onclick = () => scene(k.doel);
+    keuzebox.appendChild(b);
+  });
+  keuzebox.style.display = "flex";
+}
+
+document.getElementById("opnieuw").onclick = () => scene(STORY.start);
+// start via knop: browsers eisen een gebruikers-gebaar voor audio-autoplay
+document.getElementById("speel").onclick = () => {
+  document.getElementById("start").style.display = "none";
+  scene(STORY.start);
+};
+</script>
+</body></html>

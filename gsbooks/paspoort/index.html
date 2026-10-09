@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mijn Helden-paspoort — GS Books</title>
+<link rel="icon" href="../img/favicon.svg">
+<style>
+:root{--g:#2fbf71;--card:#142019;--mut:#9db8a8}
+*{box-sizing:border-box;margin:0}
+body{background:linear-gradient(160deg,#0a120d,#10241a 60%,#0d1f16);color:#eef5f0;
+  font-family:system-ui,'Segoe UI',sans-serif;min-height:100vh}
+header{padding:18px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header h1{font-size:clamp(20px,3.4vw,30px)}
+header .sub{color:var(--mut);font-size:14px;width:100%}
+header a{color:var(--g);text-decoration:none;font-weight:700;margin-left:auto}
+main{max-width:900px;margin:0 auto;padding:10px 24px 30px}
+.paspoort{background:var(--card);border:3px solid var(--g);border-radius:20px;
+  padding:26px;text-align:center;margin-bottom:20px}
+.paspoort .avatar{font-size:64px}
+.paspoort h2{color:var(--g);font-size:26px;margin:8px 0}
+.paspoort p{color:var(--mut);margin:6px 0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+.stat{background:#0f1a13;border-radius:14px;padding:16px}
+.stat .n{font-size:34px;font-weight:800;color:var(--g)}
+.stat .t{color:var(--mut);font-size:13px}
+.kaart{background:var(--card);border-radius:16px;padding:18px;margin-bottom:14px}
+.kaart h3{color:var(--g);margin-bottom:10px}
+.boek{display:flex;justify-content:space-between;align-items:center;padding:8px 4px;
+  border-bottom:1px solid #ffffff12;font-size:15px}
+.boek:last-child{border-bottom:0}
+.ster{color:#fab005;letter-spacing:2px}
+.mist{color:#5a6f61}
+.tip{background:#1d2c22;border-radius:12px;padding:12px;margin-top:10px;font-size:14px;color:var(--mut)}
+.knop{display:inline-block;background:var(--g);color:#04120a;border:0;border-radius:12px;
+  padding:12px 20px;font-size:15px;font-weight:800;cursor:pointer;text-decoration:none;margin:4px}
+.knop.licht{background:#1d2c22;color:#eef5f0}
+footer{padding:16px 24px;color:var(--mut);font-size:12px;text-align:center}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:99}
+</style>
+</head>
+<body>
+<header>
+<h1>🗺️ Mijn Helden-paspoort</h1>
+<div class="sub">Alles wat jij als Animal Heroes-held hebt bereikt — op één plek!</div>
+<a href="../index.html">← Terug naar GS Books</a>
+</header>
+<main>
+<div class="paspoort">
+<div class="avatar" id="avatar">🦸</div>
+<h2 id="rang">Animal Heroes-held in opleiding</h2>
+<p id="totaal"></p>
+<div class="stats">
+<div class="stat"><div class="n" id="nSter">0</div><div class="t">⭐ quiz-sterren</div></div>
+<div class="stat"><div class="n" id="nDip">0</div><div class="t">📜 diploma's</div></div>
+<div class="stat"><div class="n" id="nKleur">0</div><div class="t">🎨 kunstwerken bewaard</div></div>
+<div class="stat"><div class="n" id="nQuiz">0</div><div class="t">🏆 quizzen gespeeld</div></div>
+</div>
+<div id="heerlijk"></div>
+</div>
+<div class="kaart"><h3>📚 Jouw boeken-sterren</h3><div id="boeken"></div></div>
+<div class="kaart"><h3>🚀 Volgende avonturen</h3>
+<div class="tip" id="tips"></div>
+<a class="knop" href="../quiz/">🏆 Helden-Quiz</a>
+<a class="knop licht" href="../kleur/">🎨 KleurStudio</a>
+<a class="knop licht" href="../index.html#videoboeken">🎬 Videoboeken</a>
+</div>
+</main>
+<canvas id="confetti"></canvas>
+<footer>GS Books Helden-paspoort — jouw voorwerken blijven op dit apparaat (niks wordt verstuurd)</footer>
+<script>
+const RANGEN=[[0,"🐣 Animal Heroes-vriend"],[5,"🦸 Animal Heroes-held in opleiding"],
+[12,"🌟 Echte Animal Hero"],[22,"🏅 Superheld van de Animal Heroes"],[33,"👑 Legendarische Held"]];
+let totaalSterren=0,diplomas=0,kunst=0,gespeeld=0,rij=[];
+fetch('../quiz/quiz.json').then(r=>r.json()).then(d=>{
+  const q=d.quizzen;let maxSter=q.length*3;
+  q.forEach((z,i)=>{
+    const b=+(localStorage.getItem('gsquiz-best-'+i)||0);
+    if(b>0)gespeeld++;
+    totaalSterren+=b;if(b===z.vragen.length&&z.vragen.length>=3)diplomas++;
+    rij.push({boek:z.boek,vragen:z.vragen.length,ster:b});
+  });
+  const g=+(localStorage.getItem('gsquiz-best-groot')||0);
+  if(g>0){gespeeld++;totaalSterren+=Math.round(g/10*3)>3?3:Math.round(g/10*3);
+    rij.push({boek:"🏆 GROTE QUIZ",vragen:10,ster:Math.min(3,Math.round(g/10*3)),groot:g});}
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);
+    if(k&&k.startsWith('gskleur-'))kunst++;}}catch(e){}
+  toon();
+});
+function toon(){
+  document.getElementById('nSter').textContent=totaalSterren;
+  document.getElementById('nDip').textContent=diplomas;
+  document.getElementById('nKleur').textContent=kunst;
+  document.getElementById('nQuiz').textContent=gespeeld;
+  let rang=RANGEN[0];
+  for(const r of RANGEN)if(totaalSterren>=r[0])rang=r;
+  document.getElementById('rang').textContent=rang[1];
+  document.getElementById('avatar').textContent=rang[1].split(' ')[0];
+  document.getElementById('totaal').textContent=
+    gespeeld+kunst===0?"Nog helemaal vers! Speel je eerste quiz of kleur je eerste plaat.":
+    `Al ${gespeeld} quiz${gespeeld===1?'':'zen'} gespeeld en ${kunst} kunstwerk${kunst===1?'':'en'} bewaard!`;
+  const bk=document.getElementById('boeken');
+  rij.forEach(r=>{
+    const d=document.createElement('div');d.className='boek';
+    d.innerHTML=`<span>${r.boek}</span><span class="${r.ster?'ster':'mist'}">${
+      r.ster?'⭐'.repeat(r.ster):'— nog niet gespeeld'}</span>`;
+    bk.appendChild(d);});
+  const tips=[];
+  if(gespeeld===0)tips.push("Speel je eerste Helden-Quiz — kies je favoriete boek!");
+  else{const nog=rij.filter(r=>!r.ster);if(nog.length)tips.push(`Nog ${nog.length} boek${nog.length===1?'':'en'} zonder ster — ${nog[0].boek} is een leuke!`);
+    if(diplomas===0)tips.push("Haal 3 sterren in één quiz voor je eerste 📜 diploma!");
+    if(!localStorage.getItem('gsquiz-best-groot'))tips.push("Durf jij de 🏆 GROTE QUIZ aan? 10 vragen uit alle boeken!");}
+  if(kunst===0)tips.push("Kleur je eerste plaat in de KleurStudio en druk op ⬇️ Bewaar!");
+  document.getElementById('tips').innerHTML=tips.map(t=>'• '+t).join('<br>')||"Alles gedaan — jij bent een legendarische held! 👑";
+  if(totaalSterren>=12)confetti();
+}
+const CONF=["#e03131","#fab005","#8ce99a","#339af0","#e64980","#fff"];
+function confetti(){const c=document.getElementById('confetti'),x=c.getContext('2d');
+  c.width=innerWidth;c.height=innerHeight;const P=[];
+  for(let i=0;i<140;i++)P.push({x:Math.random()*c.width,y:-20-Math.random()*c.height*.4,
+    c:CONF[i%CONF.length],s:6+Math.random()*8,vy:2+Math.random()*3,vx:-1.5+Math.random()*3,r:Math.random()*6});
+  let t=0;(function anim(){x.clearRect(0,0,c.width,c.height);t++;
+    P.forEach(p=>{p.y+=p.vy;p.x+=p.vx;p.r+=.05;
+      x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;
+      x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore();});
+    if(t<260)requestAnimationFrame(anim);else x.clearRect(0,0,c.width,c.height);})();}
+</script>
+</body>
+</html>

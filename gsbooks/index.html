@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>GS Books — Kinderboeken van G.T.J. Sandvliet</title>
 <meta name="description" content="Kinderboeken, videoboeken en audioboeken van schrijver G.T.J. Sandvliet. Sunny's Zeilboot Avonturen en De Avonturen van Keesje Konijn.">
+<meta name="theme-color" content="#2fbf71">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="img/favicon.svg">
+<link rel="apple-touch-icon" href="img/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 <style>
@@ -57,6 +61,14 @@ h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--zeedonker);ma
 .mini.speel{background:var(--koraal);color:#fff}
 .pijl{position:absolute;top:42%;width:38px;height:38px;border-radius:50%;border:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:18px;cursor:pointer;color:var(--zeedonker);z-index:2}
 .pijl.links{left:-8px}.pijl.rechts{right:-8px}
+/* boekwinkel grid */
+.shopgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+.shopkaart{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 14px rgba(8,78,124,.12);display:flex;flex-direction:column}
+.shopkaart img{width:100%;height:280px;object-fit:cover;background:#F4F7FA}
+.shopkaart .info{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.shopkaart .info h3{font-size:16px;color:var(--zeedonker)}
+.shopkaart .info p{font-size:12px;color:#6B7B88;flex:1}
+.shopkaart .links{display:flex;gap:8px;flex-wrap:wrap}
 /* videoboek */
 .videoboek{background:linear-gradient(160deg,#084E7C,#0E6BA8);border-radius:20px;color:#fff;padding:26px;margin-top:8px}
 .videoboek h2{color:#fff}
@@ -76,6 +88,14 @@ h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--zeedonker);ma
 .vb-voortgang{flex:1;height:6px;background:rgba(255,255,255,.18);border-radius:3px;overflow:hidden}
 .vb-voortgang i{display:block;height:100%;width:0;background:var(--goud);transition:width .4s}
 .vb-tip{font-size:13px;color:#BFDFF2;margin-top:10px}
+/* vraag het aan */
+.vraag-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.vraag-kaart{display:block;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 14px rgba(8,78,124,.12);text-decoration:none;transition:transform .15s}
+.vraag-kaart:hover{transform:translateY(-3px)}
+.vraag-kaart img{width:100%;height:190px;object-fit:cover;display:block;background:#F4F7FA}
+.vraag-kaart div{padding:12px 14px}
+.vraag-kaart b{display:block;color:var(--zeedonker);font-size:15px}
+.vraag-kaart span{color:#6B7B88;font-size:12px}
 /* luister */
 .luister-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
 .track{background:#fff;border-radius:14px;padding:14px;box-shadow:0 3px 10px rgba(8,78,124,.10);display:flex;flex-direction:column;gap:8px}
@@ -127,7 +147,7 @@ footer a{color:var(--zee)}
 <svg viewBox="0 0 40 40" fill="none"><rect x="6" y="4" width="20" height="32" rx="3" fill="#0E6BA8"/><rect x="11" y="4" width="3" height="32" fill="#F5A623"/><rect x="20" y="10" width="14" height="26" rx="2" fill="#FF7F50"/></svg>
 <span><b>GS Books</b><small>G.T.J. SANDVLIET</small></span></a>
 <nav>
-<a href="#boeken">Boeken</a><a href="#videoboek">Videoboek</a><a href="#luister">Luister</a><a href="#blader">Blader</a><a href="#kijk">Kijk</a><a href="#auteur">Auteur</a><a href="#spel">Spel</a>
+<a href="#boeken">Boeken</a><a href="#winkel">Winkel</a><a href="kleur/">🎨 Kleuren!</a><a href="quiz/">🏆 Quiz</a><a href="paspoort/">🗺️ Paspoort</a><a href="#videoboek">Videoboek</a><a href="#vraag">🧩 Vraag</a><a href="#luister">Luister</a><a href="#blader">Blader</a><a href="#kijk">Kijk</a><a href="#auteur">Auteur</a><a href="#spel">Spel</a>
 <a class="cta" href="#boeken">Koop Sunny</a>
 </nav>
 </div></header>
@@ -146,6 +166,18 @@ footer a{color:var(--zee)}
 </div>
 </div>
 </div>
+
+<section id="gratis">
+<div style="border:3px dashed var(--g,#2fbf71);border-radius:20px;padding:24px 28px;background:#0f1a13;display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+<div style="font-size:52px">🎁</div>
+<div style="flex:1;min-width:230px">
+<span class="badge" style="background:#2fbf71;color:#04120a">Gratis boek!</span>
+<h2 style="margin:6px 0">Animal Hero's: Inspiring Stories</h2>
+<p style="color:#9db8a8">Het gratis weggeef-boek van G.T.J. Sandvliet: echte verhalen over de bijzondere band tussen mens en dier — met een missie: steun voor dieren in nood. Download gratis, lees met het hele gezin!</p>
+</div>
+<a class="btn goud" href="gratis/animal-heroes-gratis-boek.pdf" download style="white-space:nowrap">⬇️ Download gratis</a>
+</div>
+</section>
 
 <section id="boeken">
 <h2>De boeken</h2>
@@ -202,6 +234,18 @@ footer a{color:var(--zee)}
 </div>
 </div>
 <div class="boek">
+<img src="vb/dana-en-de-verdwaalde-boot/cover.jpg" alt="Dana en de Verdwaalde Boot">
+<div class="info">
+<span class="badge">Nieuw — interactief!</span>
+<h3>Dana en de Verdwaalde Boot</h3>
+<p>Dana de dappere dolfijn redt Jonassie' stukke bootje — en JIJ bepaalt hoe het avontuur eindigt: samen sterk of dapper alleen!</p>
+<div class="links">
+<a class="mini speel" href="vb/dana-en-de-verdwaalde-boot/index.html">🧩 Speel het avontuur</a>
+<a class="mini kopen" href="#winkel">🛒 Het boek</a>
+</div>
+</div>
+</div>
+<div class="boek">
 <img src="img/keesje-huis.jpg" alt="Keesje's boomhut">
 <div class="info">
 <span class="badge grijs">Collectie</span>
@@ -215,6 +259,12 @@ footer a{color:var(--zee)}
 </div>
 <button class="pijl rechts" onclick="schuif('boekrij',1)">›</button>
 </div>
+</section>
+
+<section id="winkel">
+<h2>🛒 Boekwinkel</h2>
+<p class="sub">Alle boeken van G.T.J. Sandvliet — kleurboek (print zoveel je wilt) of e-boek (lekker lezen op tablet). Bij elke koop: directe download, 100% van je aankoop steunt de maker.</p>
+<div class="shopgrid" id="shopgrid"></div>
 </section>
 
 <section id="videoboek">
@@ -265,6 +315,24 @@ footer a{color:var(--zee)}
 </div>
 
 <div id="vb-meer" style="margin-top:16px"></div>
+</div>
+</section>
+
+<section id="vraag">
+<h2>🧩 Vraag het aan... — jij stelt de vragen!</h2>
+<p class="sub">Kies een vraag en de held antwoordt zelf — met stem en echte boek-illustraties. Stel daarna gewoon nóg een vraag!</p>
+<div class="vraag-grid">
+<a class="vraag-kaart" href="vb/vraag-het-aan-keesje/index.html"><img src="vb/vraag-het-aan-keesje/cover.jpg" alt="Keesje de detective" loading="lazy"><div><b>🐰 Vraag het aan Keesje</b><span>De detective beantwoordt jouw vragen</span></div></a>
+<a class="vraag-kaart" href="vb/vraag-het-aan-dana/index.html"><img src="vb/vraag-het-aan-dana/cover.jpg" alt="Dana de dolfijn" loading="lazy"><div><b>🐬 Vraag het aan Dana</b><span>De dappere dolfijn vertelt over de zee</span></div></a>
+<a class="vraag-kaart" href="vb/vraag-het-aan-sunny/index.html"><img src="vb/vraag-het-aan-sunny/cover.jpg" alt="Sunny het zeilbootje" loading="lazy"><div><b>⛵ Vraag het aan Sunny</b><span>Het dappere bootje beantwoordt alles</span></div></a>
+<a class="vraag-kaart" href="vb/vraag-het-aan-bram/index.html"><img src="vb/vraag-het-aan-bram/cover.jpg" alt="Bram de berghond" loading="lazy"><div><b>🐕 Vraag het aan Bram</b><span>De reddingshond van de bergen</span></div></a>
+<a class="vraag-kaart" href="vb/vraag-het-aan-vonk/index.html"><img src="vb/vraag-het-aan-vonk/cover.jpg" alt="Vonk de dalmatiër" loading="lazy"><div><b>🐾 Vraag het aan Vonk</b><span>De brandweer-held met vlekken</span></div></a>
+<a class="vraag-kaart" href="vb/vraag-het-aan-pippa/index.html"><img src="vb/vraag-het-aan-pippa/cover.jpg" alt="Pippa het katje" loading="lazy"><div><b>🐱 Vraag het aan Pippa</b><span>De held van de tuin</span></div></a>
+<a class="vraag-kaart" href="vb/vraag-het-aan-flip/index.html"><img src="vb/vraag-het-aan-flip/cover.jpg" alt="Flip de zeeotter" loading="lazy"><div><b>🦦 Vraag het aan Flip</b><span>De stuntelaar van de zee</span></div></a>
+<a class="vraag-kaart" href="vb/vraag-het-aan-ravi/index.html"><img src="vb/vraag-het-aan-ravi/cover.jpg" alt="Ravi de capucijnaap" loading="lazy"><div><b>🐒 Vraag het aan Ravi</b><span>De slimste van de jungle</span></div></a>
+<a class="vraag-kaart" href="vb/vraag-het-aan-bodhi/index.html"><img src="vb/vraag-het-aan-bodhi/cover.jpg" alt="Bodhi de kangoeroe" loading="lazy"><div><b>🦘 Vraag het aan Bodhi</b><span>De springer van de outback</span></div></a>
+<a class="vraag-kaart" href="vb/vraag-het-aan-ollie/index.html"><img src="vb/vraag-het-aan-ollie/cover.jpg" alt="Ollie de bosuil" loading="lazy"><div><b>🦉 Vraag het aan Ollie</b><span>De wijze van de nacht</span></div></a>
+<a class="vraag-kaart" href="vb/vraag-het-aan-sterre/index.html"><img src="vb/vraag-het-aan-sterre/cover.jpg" alt="Sterre het veulentje" loading="lazy"><div><b>⭐ Vraag het aan Sterre</b><span>Het kleinste grote heldenpaard</span></div></a>
 </div>
 </section>
 
@@ -453,6 +521,24 @@ function spelKlik(btn,k){
   }
 }
 spelStart();
+// boekwinkel: alle boeken uit boeken.json (gegenereerd uit de Fabriek)
+fetch('boeken.json').then(function(r){return r.ok?r.json():{boeken:[]}}).then(function(data){
+  var el=document.getElementById('shopgrid');
+  if(!data.boeken||!data.boeken.length){el.innerHTML='<p class="sub">Nog geen boeken in de winkel.</p>';return;}
+  el.innerHTML=data.boeken.map(function(b){
+    var knop=function(f,label,cls){
+      if(!f)return '';
+      var prijs=f.prijs?('€'+f.prijs):'';
+      return f.koop?'<a class="mini '+cls+'" href="'+f.koop+'" target="_blank" rel="noopener">'+label+' '+prijs+'</a>'
+        :'<span class="mini meer" style="opacity:.85;cursor:default">'+label+' '+prijs+' — binnenkort</span>';
+    };
+    return '<div class="shopkaart"><img src="../'+b.cover+'" alt="'+b.titel+'" loading="lazy">'+
+      '<div class="info"><span class="badge">Animal Heroes</span><h3>'+b.titel+'</h3>'+
+      '<p>'+(b.beschrijving||'')+'</p><div class="links">'+
+      knop(b.kleurboek,'🖍️ Kleurboek','kopen')+knop(b.ebook,'📖 E-boek','meer')+
+      '</div></div></div>';
+  }).join('');
+}).catch(function(){});
 // extra videoboeken uit de Videoboek-Fabriek (gsbooks/vb/index.json)
 fetch('vb/index.json').then(function(r){return r.ok?r.json():[]}).then(function(lijst){
   if(!lijst.length)return;
@@ -461,9 +547,12 @@ fetch('vb/index.json').then(function(r){return r.ok?r.json():[]}).then(function(
     lijst.map(function(v){
       return '<a href="'+v.url+'" style="display:block;background:rgba(255,255,255,.12);border-radius:12px;overflow:hidden;text-decoration:none;color:#fff">'+
         '<img src="'+v.cover+'" alt="" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block">'+
-        '<div style="padding:8px 10px;font-size:.85rem"><b>▶ '+v.titel+'</b><br><span style="opacity:.8">'+v.paginas+' pagina’s</span></div></a>';
+        '<div style="padding:8px 10px;font-size:.85rem"><b>'+(v.interactief?'🧩 ':'▶ ')+v.titel+'</b><br><span style="opacity:.8">'+(v.interactief?'Jij kiest!':'▶ '+v.paginas+' pagina’s')+'</span></div></a>';
     }).join('')+'</div>';
 }).catch(function(){});
+</script>
+<script>
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
 </html>
