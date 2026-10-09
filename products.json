@@ -2,7 +2,7 @@
  "titel": "G2B Muziekwinkel",
  "ondertitel": "Beats en meer — direct van de maker",
  "stats_url": "",
- "gebouwd": "2026-10-08T23:54:16",
+ "gebouwd": "2026-10-09T00:02:34",
  "producten": [
   {
    "id": "c5444536",
@@ -692,6 +692,174 @@
    "duur": 0.0,
    "groep": "",
    "cover": "media/7a089fda-cover.png"
+  },
+  {
+   "id": "4e7e814b",
+   "titel": "Pippa en het Vogelnest — e-boek",
+   "soort": "digitaal",
+   "beschrijving": "Het echte verhaalboek als PDF — voorlezen op tablet, laptop of zelf printen. Volledig verhaal met alle aquarel-plaatjes.",
+   "prijs": "6,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/4e7e814b-cover.png"
+  },
+  {
+   "id": "8b9520e7",
+   "titel": "Sunny en de Verdwaalde Eend — e-boek",
+   "soort": "digitaal",
+   "beschrijving": "Het echte verhaalboek als PDF — voorlezen op tablet, laptop of zelf printen. Volledig verhaal met alle aquarel-plaatjes.",
+   "prijs": "6,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/8b9520e7-cover.png"
+  },
+  {
+   "id": "1dfe3f31",
+   "titel": "Keesje en de Verdwenen Worteltaart — e-boek",
+   "soort": "digitaal",
+   "beschrijving": "Het echte verhaalboek als PDF — voorlezen op tablet, laptop of zelf printen. Volledig verhaal met alle aquarel-plaatjes.",
+   "prijs": "6,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/1dfe3f31-cover.png"
+  },
+  {
+   "id": "42ee7fda",
+   "titel": "Bram en het Verloren Lammetje — e-boek",
+   "soort": "digitaal",
+   "beschrijving": "Het echte verhaalboek als PDF — voorlezen op tablet, laptop of zelf printen. Volledig verhaal met alle aquarel-plaatjes.",
+   "prijs": "6,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/42ee7fda-cover.png"
+  },
+  {
+   "id": "6a7e4449",
+   "titel": "Flip en de Zeehondpup — e-boek",
+   "soort": "digitaal",
+   "beschrijving": "Het echte verhaalboek als PDF — voorlezen op tablet, laptop of zelf printen. Volledig verhaal met alle aquarel-plaatjes.",
+   "prijs": "6,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/6a7e4449-cover.png"
+  },
+  {
+   "id": "1772572a",
+   "titel": "Vonk en het Katje in de Boom — e-boek",
+   "soort": "digitaal",
+   "beschrijving": "Het echte verhaalboek als PDF — voorlezen op tablet, laptop of zelf printen. Volledig verhaal met alle aquarel-plaatjes.",
+   "prijs": "6,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/1772572a-cover.png"
+  },
+  {
+   "id": "2c71ffef",
+   "titel": "Ravi en de Verdwaalde Papegaai — e-boek",
+   "soort": "digitaal",
+   "beschrijving": "Het echte verhaalboek als PDF — voorlezen op tablet, laptop of zelf printen. Volledig verhaal met alle aquarel-plaatjes.",
+   "prijs": "6,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/2c71ffef-cover.png"
+  },
+  {
+   "id": "cccf8e7a",
+   "titel": "Bodhi en de Kleine Koala — e-boek",
+   "soort": "digitaal",
+   "beschrijving": "Het echte verhaalboek als PDF — voorlezen op tablet, laptop of zelf printen. Volledig verhaal met alle aquarel-plaatjes.",
+   "prijs": "6,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/cccf8e7a-cover.png"
   }
  ],
  "accent": "#2fbf71",
