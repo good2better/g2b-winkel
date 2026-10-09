@@ -1,15 +1,16 @@
 {
- "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket",
- "producten": [
-  "Sunny-Spel.html",
-  "Sunny-Activiteitenboek.pdf",
-  "Sunny-Puzzelboek.pdf",
-  "Sunny-Kleurboek.pdf",
-  "Sunny-Bordspel.pdf",
-  "Sunny-Winkelpakket.zip",
-  "Sunny-Luisterboek.mp3",
-  "Sunny-Kalender.pdf",
-  "Sunny-Knutselpakket.zip"
- ],
- "licentie": "LICENTIE.txt"
+  "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket",
+  "producten": [
+    "Sunny-Spel.html",
+    "Sunny-Activiteitenboek.pdf",
+    "Sunny-Puzzelboek.pdf",
+    "Sunny-Kleurboek.pdf",
+    "Sunny-Bordspel.pdf",
+    "Sunny-Winkelpakket.zip",
+    "Sunny-Luisterboek.mp3",
+    "Sunny-Kalender.pdf",
+    "Sunny-Knutselpakket.zip",
+    "Sunny-Videoboek.mp4"
+  ],
+  "licentie": "LICENTIE.txt"
 }

@@ -544,7 +544,7 @@ fetch('boeken.json').then(function(r){return r.ok?r.json():{boeken:[]}}).then(fu
     return '<div class="shopkaart"><img src="../'+b.cover+'" alt="'+b.titel+'" loading="lazy">'+
       '<div class="info"><span class="badge">Animal Heroes</span><h3>'+b.titel+'</h3>'+
       '<p>'+(b.beschrijving||'')+'</p><div class="links">'+
-      knop(b.probeer,'▶️ Probeer gratis','meer')+knop(b.spel,'🎮 Spel','kopen')+knop(b.luisterboek,'🎧 Luisterboek','kopen')+knop(b.kleurboek,'🖍️ Kleurboek','kopen')+knop(b.activiteitenboek,'📒 Activiteitenboek','kopen')+knop(b.puzzelboek,'🧩 Puzzelboek','kopen')+knop(b.bordspel,'🎲 Bordspel','kopen')+knop(b.kalender,'📅 Kalender','kopen')+knop(b.knutsel,'✂️ Knutselpakket','kopen')+knop(b.ebook,'📖 E-boek','meer')+knop(b.pakket,'🎁 Mega-pakket','kopen')+
+      knop(b.probeer,'▶️ Probeer gratis','meer')+knop(b.spel,'🎮 Spel','kopen')+knop(b.luisterboek,'🎧 Luisterboek','kopen')+knop(b.videoboek,'📼 Videoboek','kopen')+knop(b.kleurboek,'🖍️ Kleurboek','kopen')+knop(b.activiteitenboek,'📒 Activiteitenboek','kopen')+knop(b.puzzelboek,'🧩 Puzzelboek','kopen')+knop(b.bordspel,'🎲 Bordspel','kopen')+knop(b.kalender,'📅 Kalender','kopen')+knop(b.knutsel,'✂️ Knutselpakket','kopen')+knop(b.ebook,'📖 E-boek','meer')+knop(b.pakket,'🎁 Mega-pakket','kopen')+
       '</div></div></div>';
   }).join('');
 }).catch(function(){});
