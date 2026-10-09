@@ -2,7 +2,7 @@
  "titel": "G2B Muziekwinkel",
  "ondertitel": "Beats en meer — direct van de maker",
  "stats_url": "",
- "gebouwd": "2026-10-09T00:07:47",
+ "gebouwd": "2026-10-09T00:10:50",
  "producten": [
   {
    "id": "c5444536",
@@ -902,6 +902,48 @@
    "duur": 0.0,
    "groep": "",
    "cover": "media/55905f94-cover.png"
+  },
+  {
+   "id": "d903c8f1",
+   "titel": "Sterre en het Kuikentje — kleurboek",
+   "soort": "digitaal",
+   "beschrijving": "Kleurboek-pakket: print-kleurboek (PDF) + print-klare kaft (PDF) + voorkant-plaatje. Printen en kleuren maar!",
+   "prijs": "9,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/d903c8f1-cover.png"
+  },
+  {
+   "id": "8d575113",
+   "titel": "Sterre en het Kuikentje — e-boek",
+   "soort": "digitaal",
+   "beschrijving": "Het echte verhaalboek als PDF — voorlezen op tablet, laptop of zelf printen. Volledig verhaal met alle aquarel-plaatjes.",
+   "prijs": "6,95",
+   "prijzen": {
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "links": {
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
+   },
+   "duur": 0.0,
+   "groep": "",
+   "cover": "media/8d575113-cover.png"
   }
  ],
  "accent": "#2fbf71",
