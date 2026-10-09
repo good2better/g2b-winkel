@@ -1,5 +1,5 @@
 // GS Books service worker — offline-leesmodus voor kinderen
-const CACHE = "gsbooks-v4";
+const CACHE = "gsbooks-v5";
 const CORE = [
   "./index.html",
   "./manifest.webmanifest",
@@ -29,6 +29,12 @@ self.addEventListener("activate", e => {
 self.addEventListener("fetch", e => {
   const u = new URL(e.request.url);
   if (e.request.method !== "GET" || u.origin !== location.origin) return;
+  // Grote media (video/audio) nooit cachen: te groot voor cache-opslag én
+  // de browser streamt ze beter zelf (range-requests, geen vaste caches).
+  if (/\.(mp4|mp3|m4a|m4b|wav|webm|ogg|mov|mpg|m4v)(\?.*)?$/i.test(u.pathname)) {
+    e.respondWith(fetch(e.request));
+    return;
+  }
   const vers = e.request.mode === "navigate" || u.pathname.endsWith(".html") || u.pathname.endsWith(".json") || u.pathname.endsWith("/");
   e.respondWith(
     vers
