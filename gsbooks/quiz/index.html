@@ -119,12 +119,39 @@ function einde(){
   <div class="sterren">${'⭐'.repeat(ster)}${'☆'.repeat(3-ster)}</div>
   <h2>${titel}</h2><p>${score} van de ${quiz.vragen.length} goed!</p>
   ${ster===3?`<div class="diploma">🏅 <b>Helden-diploma</b><br>
-    Jij kent de Animal Heroes door en door — net zo dapper als zij!</div>`:''}
+    Jij kent de Animal Heroes door en door — net zo dapper als zij!<br><br>
+    <input id="dnaam" placeholder="Typ je naam..." style="padding:10px 14px;border-radius:10px;border:2px solid var(--g);background:#0a120d;color:#eef5f0;font-size:16px;text-align:center">
+    <button class="knop" onclick="diploma()" style="margin-left:8px">📜 Print je diploma!</button></div>`:''}
   <div class="groep">
   <button class="knop" onclick="menu()">🔄 Nog een quiz</button>
   <a class="knop licht" href="../kleur/">🎨 Ga kleuren</a>
   <a class="knop licht" href="../index.html#winkel">📖 De boeken</a>
   </div></div>`;
+}
+function diploma(){
+  const naam=(document.getElementById('dnaam').value||'Kleine Held').trim();
+  const c=document.createElement('canvas');c.width=1400;c.height=990;
+  const x=c.getContext('2d');
+  x.fillStyle='#0f1a13';x.fillRect(0,0,1400,990);
+  x.strokeStyle='#2fbf71';x.lineWidth=18;x.strokeRect(30,30,1340,930);
+  x.strokeStyle='#fab005';x.lineWidth=5;x.strokeRect(60,60,1280,870);
+  x.textAlign='center';x.fillStyle='#2fbf71';
+  x.font='bold 64px Georgia,serif';x.fillText('🏅 HELDEN-DIPLOMA 🏅',700,190);
+  x.fillStyle='#9db8a8';x.font='30px Georgia,serif';
+  x.fillText('GS Books — Animal Heroes · G.T.J. Sandvliet',700,250);
+  x.fillStyle='#eef5f0';x.font='38px Georgia,serif';
+  x.fillText('Dit diploma is voor een echte',700,340);
+  x.font='bold 84px Georgia,serif';x.fillStyle='#fab005';
+  x.fillText(naam,700,460);
+  x.fillStyle='#eef5f0';x.font='34px Georgia,serif';
+  x.fillText('die de quiz "'+quiz.boek+'" voltooide',700,560);
+  x.fillText('met '+score+' van de '+quiz.vragen.length+' vragen goed!',700,615);
+  x.font='80px serif';x.fillText('⭐⭐⭐',700,730);
+  x.fillStyle='#9db8a8';x.font='26px Georgia,serif';
+  x.fillText('Saving Lives Every Day! — net zo dapper als de Animal Heroes',700,830);
+  x.fillText(new Date().toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'}),700,885);
+  const a=document.createElement('a');a.download='helden-diploma-'+naam.replace(/\s+/g,'-')+'.png';
+  a.href=c.toDataURL('image/png');a.click();
 }
 function confetti(){const c=document.getElementById('confetti'),x=c.getContext('2d');
   c.width=innerWidth;c.height=innerHeight;const P=[];
