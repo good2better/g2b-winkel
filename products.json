@@ -660,6 +660,23 @@
    "preview": "media/23e386ca-preview.mp3"
   },
   {
+   "id": "g2btrapk",
+   "titel": "G2B Trap Kit Vol. 1",
+   "soort": "digitaal",
+   "beschrijving": "6 trap groove-loops op een bpm-ladder (135-150bpm) + MIDI in Sranan-Drong layout — 808-sub, snare op tel 3, rollende hats, donkere stab. 100% eigen, royalty-vrij.",
+   "prijs": "€ 9,95",
+   "prijzen": {
+    "digitaal": "€ 9,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "digitaal": "https://buy.stripe.com/demo_dig"
+   },
+   "groep": "sounds",
+   "cover": "media/g2btrapk-cover.png",
+   "preview": "media/g2btrapk-preview.mp3"
+  },
+  {
    "id": "kw322dcb",
    "titel": "G2B Kawina Kit Vol. 1",
    "soort": "digitaal",
