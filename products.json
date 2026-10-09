@@ -1415,6 +1415,28 @@
    "groep": "g2b",
    "cover": "media/8f16bfa0-cover.png",
    "preview": "media/8f16bfa0-preview.mp3"
+  },
+  {
+   "id": "4f143a8a",
+   "titel": "Meester 21",
+   "soort": "audio",
+   "beschrijving": "Rnb beat — 77 BPM in Gm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 52.7,
+   "groep": "rnb",
+   "cover": "media/4f143a8a-cover.png",
+   "preview": "media/4f143a8a-preview.mp3"
   }
  ]
 }
