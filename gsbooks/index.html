@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>GS Books — Kinderboeken van G.T.J. Sandvliet</title>
 <meta name="description" content="Kinderboeken, videoboeken en audioboeken van schrijver G.T.J. Sandvliet. Sunny's Zeilboot Avonturen en De Avonturen van Keesje Konijn.">
+<meta name="theme-color" content="#2fbf71">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="img/favicon.svg">
+<link rel="apple-touch-icon" href="img/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 <style>
@@ -520,6 +524,9 @@ fetch('vb/index.json').then(function(r){return r.ok?r.json():[]}).then(function(
         '<div style="padding:8px 10px;font-size:.85rem"><b>▶ '+v.titel+'</b><br><span style="opacity:.8">'+v.paginas+' pagina’s</span></div></a>';
     }).join('')+'</div>';
 }).catch(function(){});
+</script>
+<script>
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
 </html>

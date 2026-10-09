@@ -63,12 +63,15 @@ let QUIZ=[],quiz=null,nr=0,score=0,alles=false;
 const kaart=document.getElementById('kaart');
 const CONF=["#e03131","#fab005","#8ce99a","#339af0","#e64980","#fff"];
 
+function best(i){return +(localStorage.getItem('gsquiz-best-'+i)||0);}
 function menu(){
   let h='<h2>Kies je boek</h2><div class="boeken">';
-  QUIZ.forEach((q,i)=>{h+=`<button class="boek" onclick="start(${i})">📖 ${q.boek}
-    <small>${q.vragen.length} vragen</small></button>`;});
+  QUIZ.forEach((q,i)=>{const b=best(i);
+    h+=`<button class="boek" onclick="start(${i})">📖 ${q.boek}
+    <small>${q.vragen.length} vragen${b?' · ⭐ '+b+'/'+q.vragen.length:''}</small></button>`;});
+  const bg=+(localStorage.getItem('gsquiz-best-groot')||0);
   h+=`<button class="boek" style="background:var(--gd);color:#04120a" onclick="start(-1)">🏆 GROTE QUIZ
-    <small>alle boeken door elkaar!</small></button>`;
+    <small>alle boeken door elkaar!${bg?' · ⭐ '+bg+'/10':''}</small></button>`;
   kaart.innerHTML=h+'</div>';
 }
 function start(i){
@@ -76,10 +79,16 @@ function start(i){
     .vragen.sort(()=>Math.random()-.5).slice(0,10);
     quiz={boek:"🏆 GROTE QUIZ",vragen:quiz};}
   else quiz=QUIZ[i];
-  nr=0;score=0;toon();
+  nr=0;score=0;fouten=[];extraRonde=false;toon();
 }
+let extraRonde=false;
 function toon(){
-  if(nr>=quiz.vragen.length)return einde();
+  if(nr>=quiz.vragen.length){
+    if(fouten.length&&!extraRonde){extraRonde=true;
+      quiz.vragen=quiz.vragen.concat(fouten);fouten=[];
+      kaart.innerHTML='<h2>🔄 Extra ronde!</h2><p style="color:var(--mut)">De vragen die je miste komen nog één keer — nu goed onthouden!</p>';
+      setTimeout(toon,1600);return;}
+    return einde();}
   const v=quiz.vragen[nr],pct=Math.round(nr/quiz.vragen.length*100);
   let h=`<div class="voortgang">${quiz.boek} — vraag ${nr+1} van ${quiz.vragen.length}</div>
   <div class="balk"><i style="width:${pct}%"></i></div>
@@ -87,6 +96,7 @@ function toon(){
   v.a.forEach((a,j)=>h+=`<button onclick="kies(this,${j})">${a}</button>`);
   kaart.innerHTML=h+'</div><div class="feedback" id="fb"></div>';
 }
+let fouten=[];
 function kies(el,j){
   const v=quiz.vragen[nr],fb=document.getElementById('fb');
   document.querySelectorAll('.antw button').forEach(b=>b.onclick=null);
@@ -95,10 +105,13 @@ function kies(el,j){
     fb.style.color='var(--g)';}
   else{el.classList.add('fout');
     document.querySelectorAll('.antw button')[v.goed].classList.add('goed');
-    fb.textContent='Bijna! Het goede antwoord is groen.';fb.style.color='#f88';}
+    fb.textContent='Bijna! Die komt straks nog een keer. 🔄';fb.style.color='#f88';
+    fouten.push(v);}
   setTimeout(()=>{nr++;toon();},1100);
 }
 function einde(){
+  const sleutel=quiz.boek.includes('GROTE')?'gsquiz-best-groot':'gsquiz-best-'+QUIZ.indexOf(QUIZ.find(q=>q.boek===quiz.boek));
+  if(score>+(localStorage.getItem(sleutel)||0))localStorage.setItem(sleutel,score);
   const pct=score/quiz.vragen.length,ster=pct>=.9?3:pct>=.6?2:pct>=.3?1:0;
   const titel=ster===3?"ECHTE ANIMAL HERO!":ster===2?"Bijna-held!":ster===1?"Held in training!":"Goed geprobeerd!";
   if(ster>=2)confetti();

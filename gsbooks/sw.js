@@ -1,0 +1,39 @@
+// GS Books service worker — offline-leesmodus voor kinderen
+const CACHE = "gsbooks-v1";
+const CORE = [
+  "./index.html",
+  "./manifest.webmanifest",
+  "./boeken.json",
+  "./quiz/quiz.json",
+  "./kleur/platen.json",
+  "./img/favicon.svg",
+  "./img/icon-192.png",
+  "./img/icon-512.png"
+];
+
+self.addEventListener("install", e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
+});
+
+self.addEventListener("activate", e => {
+  e.waitUntil(caches.keys().then(ks =>
+    Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))
+  ).then(() => self.clients.claim()));
+});
+
+// Cache-first voor eigen bestanden; netwerk faalt → cache; anders vers + cache het
+self.addEventListener("fetch", e => {
+  const u = new URL(e.request.url);
+  if (e.request.method !== "GET" || u.origin !== location.origin) return;
+  e.respondWith(
+    caches.match(e.request).then(hit => hit ||
+      fetch(e.request).then(res => {
+        if (res.ok) {
+          const kloon = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, kloon));
+        }
+        return res;
+      })
+    )
+  );
+});
