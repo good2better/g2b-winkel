@@ -15,7 +15,9 @@
 :root{--zee:#0E6BA8;--zeedonker:#084E7C;--zand:#FFF8EC;--goud:#F5A623;--koraal:#FF7F50;--tint:#E8F4FB;--tekst:#2E3A45}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:Raleway,sans-serif;color:var(--tekst);background:var(--zand)}
+::selection{background:var(--goud);color:#4A3400}
+:focus-visible{outline:3px solid var(--goud);outline-offset:2px}
+body{font-family:Raleway,sans-serif;color:var(--tekst);background-color:var(--zand);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='190' height='190'%3E%3Cg fill='%230E6BA8' fill-opacity='.015'%3E%3Cellipse cx='35' cy='44' rx='13' ry='10'/%3E%3Cellipse cx='17' cy='26' rx='6.5' ry='8'/%3E%3Cellipse cx='28' cy='19' rx='6.5' ry='8'/%3E%3Cellipse cx='40' cy='19' rx='6.5' ry='8'/%3E%3Cellipse cx='51' cy='26' rx='6.5' ry='8'/%3E%3C/g%3E%3Cg fill='%23F5A623' fill-opacity='.02'%3E%3Cellipse cx='130' cy='144' rx='13' ry='10'/%3E%3Cellipse cx='112' cy='126' rx='6.5' ry='8'/%3E%3Cellipse cx='123' cy='119' rx='6.5' ry='8'/%3E%3Cellipse cx='135' cy='119' rx='6.5' ry='8'/%3E%3Cellipse cx='146' cy='126' rx='6.5' ry='8'/%3E%3C/g%3E%3C/svg%3E")}
 img{display:block;max-width:100%}
 .wrap{max-width:1080px;margin:0 auto;padding:0 18px}
 header{position:sticky;top:0;z-index:50;background:rgba(255,248,236,.96);backdrop-filter:blur(6px);border-bottom:2px solid #F0E3CE}
@@ -25,7 +27,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,248,236,.96);backdro
 .logo b{font-family:'Playfair Display',serif;font-size:22px;display:block;line-height:1}
 .logo small{font-size:10px;letter-spacing:2px;color:var(--zee);font-weight:600}
 nav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
-nav a{text-decoration:none;color:var(--zeedonker);font-weight:600;font-size:14px;padding:8px 10px;border-radius:8px}
+nav a{text-decoration:none;color:var(--zeedonker);font-weight:600;font-size:14px;padding:8px 12px;border-radius:999px}
 nav a:hover{background:var(--tint)}
 nav a.cta{background:var(--goud);color:#4A3400;border-radius:20px;padding:8px 16px}
 /* hero */
@@ -35,15 +37,32 @@ nav a.cta{background:var(--goud);color:#4A3400;border-radius:20px;padding:8px 16
 .hero .tekst{position:absolute;left:26px;bottom:24px;right:26px;color:#fff}
 .hero .label{display:inline-block;background:var(--goud);color:#4A3400;font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:12px;margin-bottom:10px}
 .hero h1{font-family:'Playfair Display',serif;font-size:clamp(26px,4.5vw,44px);line-height:1.15;max-width:640px;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+.hero .hulplijn{margin-top:8px;font-size:16px;color:#EAF4FB;font-weight:600;text-shadow:0 1px 6px rgba(0,0,0,.35)}
 .hero .knopen{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
-.btn{display:inline-block;text-decoration:none;font-weight:800;font-size:15px;padding:12px 20px;border-radius:24px}
+.golf{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:46px;display:block}
+.btn{display:inline-block;text-decoration:none;font-weight:800;font-size:15px;padding:12px 22px;border-radius:999px;transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(8,78,124,.28)}
 .btn.goud{background:var(--goud);color:#4A3400}
 .btn.wit{background:#fff;color:var(--zeedonker)}
 .btn.koraal{background:var(--koraal);color:#fff}
 /* secties */
-section{padding:34px 0}
-h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--zeedonker);margin-bottom:6px}
+section{padding:38px 0;scroll-margin-top:84px}
+h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--zeedonker);margin-bottom:6px;position:relative;padding-bottom:12px}
+h2::after{content:'';position:absolute;left:0;bottom:0;width:56px;height:5px;border-radius:3px;background:var(--goud)}
 .sub{color:#6B7B88;font-size:15px;margin-bottom:18px}
+/* categorie-tegels (toy-store stijl) */
+.cats{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;padding-top:10px}
+@media(max-width:900px){.cats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:480px){.cats{grid-template-columns:repeat(2,1fr)}}
+.cat{display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 10px;border-radius:18px;text-decoration:none;font-weight:800;font-size:14px;color:#fff;box-shadow:0 4px 14px rgba(8,78,124,.14);transition:transform .18s,box-shadow .18s;text-align:center}
+.cat:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(8,78,124,.24)}
+.cat span{font-size:34px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+.c1{background:linear-gradient(145deg,#0E6BA8,#084E7C)}
+.c2{background:linear-gradient(145deg,#F5A623,#E8871E)}
+.c3{background:linear-gradient(145deg,#8B6BB8,#5B3F8E)}
+.c4{background:linear-gradient(145deg,#FF7F50,#E85D30)}
+.c5{background:linear-gradient(145deg,#37C27B,#1E9A56)}
+.c6{background:linear-gradient(145deg,#F0679C,#C93A6E)}
 /* boeken swipe */
 .rijh{position:relative}
 .swipe{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 14px;scrollbar-width:thin}
@@ -53,15 +72,15 @@ h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--zeedonker);ma
 .boek .info{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
 .boek .info h3{font-size:17px;color:var(--zeedonker)}
 .boek .info p{font-size:13px;color:#6B7B88;flex:1}
-.badge{align-self:flex-start;background:#DFF3E3;color:#1B7A3D;font-size:11px;font-weight:800;padding:4px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px}
+.badge{align-self:flex-start;background:#DFF3E3;color:#1B7A3D;font-size:11px;font-weight:800;padding:4px 11px;border-radius:999px;text-transform:uppercase;letter-spacing:.5px}
 .badge.grijs{background:#EEF1F4;color:#6B7B88}
 .boek .links{display:flex;gap:8px;flex-wrap:wrap}
-.mini{font-size:13px;font-weight:800;text-decoration:none;padding:8px 12px;border-radius:14px;transition:filter .15s,transform .15s}
+.mini{font-size:13px;font-weight:800;text-decoration:none;padding:8px 14px;border-radius:999px;transition:filter .15s,transform .15s}
 .mini:hover{filter:brightness(1.07);transform:translateY(-1px)}
 .mini.kopen{background:var(--goud);color:#4A3400}
 .mini.meer{background:var(--tint);color:var(--zee)}
 .mini.speel{background:var(--koraal);color:#fff}
-.mini .bk{font-style:normal;background:#C7D6E0;color:#4A5B68;font-size:10px;font-weight:800;padding:2px 8px;border-radius:8px;margin-left:4px;text-transform:uppercase;letter-spacing:.5px}
+.mini .bk{font-style:normal;background:#C7D6E0;color:#4A5B68;font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;margin-left:4px;text-transform:uppercase;letter-spacing:.5px}
 .pijl{position:absolute;top:42%;width:38px;height:38px;border-radius:50%;border:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:18px;cursor:pointer;color:var(--zeedonker);z-index:2}
 .pijl.links{left:-8px}.pijl.rechts{right:-8px}
 /* boekwinkel grid */
@@ -78,7 +97,7 @@ h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--zeedonker);ma
 .videoboek h2{color:#fff}
 .videoboek .sub{color:#BFDFF2}
 .vb-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.vb-tab{background:rgba(255,255,255,.14);border:none;color:#fff;font-family:Raleway;font-weight:700;font-size:14px;padding:9px 16px;border-radius:18px;cursor:pointer}
+.vb-tab{background:rgba(255,255,255,.14);border:none;color:#fff;font-family:Raleway;font-weight:700;font-size:14px;padding:9px 18px;border-radius:999px;cursor:pointer}
 .vb-tab.actief{background:var(--goud);color:#4A3400}
 .vb-speler{display:none}
 .vb-speler.actief{display:block}
@@ -95,7 +114,7 @@ h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--zeedonker);ma
 /* vraag het aan */
 .vraag-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
 .vraag-kaart{display:block;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 14px rgba(8,78,124,.12);text-decoration:none;transition:transform .15s}
-.vraag-kaart:hover{transform:translateY(-3px)}
+.vraag-kaart:hover{transform:translateY(-5px)}
 .vraag-kaart img{width:100%;height:190px;object-fit:contain;padding:10px;display:block;background:linear-gradient(165deg,#E8F4FB 0%,#FFF8EC 100%)}
 .vraag-kaart div{padding:12px 14px}
 .vraag-kaart b{display:block;color:var(--zeedonker);font-size:15px}
@@ -120,7 +139,7 @@ h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--zeedonker);ma
 .auteur h2{margin-bottom:10px}
 .auteur p{font-size:15px;line-height:1.65;color:#4A433B;margin-bottom:12px}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.chip{background:var(--tint);color:var(--zeedonker);font-size:12px;font-weight:700;padding:6px 12px;border-radius:14px}
+.chip{background:var(--tint);color:var(--zeedonker);font-size:12px;font-weight:700;padding:6px 14px;border-radius:999px}
 .handtekening{font-family:'Playfair Display',serif;font-style:italic;font-size:20px;color:var(--zeedonker)}
 /* spel */
 .spel{background:#fff;border-radius:20px;padding:24px;box-shadow:0 4px 16px rgba(8,78,124,.12)}
@@ -132,7 +151,7 @@ h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--zeedonker);ma
 .kaart.open,.kaart.geraden{background:#fff}
 .kaart.geraden{outline:3px solid var(--goud)}
 .spel-status{text-align:center;font-size:15px;font-weight:700;color:var(--zeedonker);min-height:22px}
-.spel-reset{display:block;margin:10px auto 0;background:var(--goud);border:none;color:#4A3400;font-family:Raleway;font-weight:800;font-size:14px;padding:10px 22px;border-radius:18px;cursor:pointer}
+.spel-reset{display:block;margin:10px auto 0;background:var(--goud);border:none;color:#4A3400;font-family:Raleway;font-weight:800;font-size:14px;padding:10px 24px;border-radius:999px;cursor:pointer}
 /* tools */
 .tools{background:#1E2A33;border-radius:20px;color:#DEE7EC;padding:26px;margin-top:8px}
 .tools h2{color:#fff}
@@ -141,7 +160,11 @@ h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--zeedonker);ma
 .tool{background:rgba(255,255,255,.07);border-radius:12px;padding:14px}
 .tool b{color:var(--goud);font-size:14px;display:block;margin-bottom:4px}
 .tool p{font-size:13px;color:#B9C6CE}
-footer{text-align:center;padding:26px 0 40px;color:#8A9AA6;font-size:13px}
+/* gratis-kaarten */
+.gratiskaart{border:3px dashed #E8C766;border-radius:22px;padding:26px 28px;background:#FFFDF6;display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:18px;box-shadow:0 6px 18px rgba(8,78,124,.08)}
+.gratiskaart:first-child{margin-top:0}
+.gratiskaart p{color:#6B7B88;font-size:14px;line-height:1.55}
+footer{text-align:center;padding:30px 0 44px;color:#8A9AA6;font-size:13px;border-top:1px solid #F0E3CE;margin-top:24px}
 footer a{color:var(--zee)}
 </style>
 </head>
@@ -164,36 +187,49 @@ footer a{color:var(--zee)}
 <div class="tekst">
 <span class="label">Kinderboeken &amp; avonturen</span>
 <h1>Verhalen die kinderen meenemen op avontuur.</h1>
+<p class="hulplijn">Voor kleine helden &amp; dierenliefhebbers 🐾</p>
 <div class="knopen">
 <a class="btn goud" href="#boeken">Bekijk de boeken</a>
 <a class="btn wit" href="#videoboek">▶ Speel het videoboek af</a>
 </div>
 </div>
+<svg class="golf" viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,32 C200,62 400,4 600,32 C800,62 1000,4 1200,32 L1200,60 L0,60 Z" fill="#FFF8EC"/></svg>
 </div>
 
+<section id="cats" style="padding:8px 0 0">
+<div class="cats">
+<a class="cat c1" href="#boeken"><span>📚</span>Boeken</a>
+<a class="cat c2" href="#winkel"><span>🛒</span>Boekwinkel</a>
+<a class="cat c3" href="#videoboek"><span>📼</span>Videoboeken</a>
+<a class="cat c4" href="#luister"><span>🎧</span>Luisterhoek</a>
+<a class="cat c5" href="#spel"><span>🎮</span>Spelletjes</a>
+<a class="cat c6" href="#gratis"><span>🎁</span>Gratis</a>
+</div>
+</section>
+
 <section id="gratis">
-<div style="border:3px dashed var(--g,#2fbf71);border-radius:20px;padding:24px 28px;background:#0f1a13;display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+<div class="gratiskaart">
 <div style="font-size:52px">🎁</div>
 <div style="flex:1;min-width:230px">
-<span class="badge" style="background:#2fbf71;color:#04120a">Gratis boek!</span>
+<span class="badge">Gratis boek!</span>
 <h2 style="margin:6px 0">Animal Hero's: Inspiring Stories</h2>
-<p style="color:#9db8a8">Het gratis weggeef-boek van G.T.J. Sandvliet: echte verhalen over de bijzondere band tussen mens en dier — met een missie: steun voor dieren in nood. Download gratis, lees met het hele gezin!</p>
+<p>Het gratis weggeef-boek van G.T.J. Sandvliet: echte verhalen over de bijzondere band tussen mens en dier — met een missie: steun voor dieren in nood. Download gratis, lees met het hele gezin!</p>
 </div>
 <a class="btn goud" href="gratis/animal-heroes-gratis-boek.pdf" download style="white-space:nowrap">⬇️ Download gratis</a>
 </div>
-<div style="border:3px dashed var(--g,#2fbf71);border-radius:20px;padding:24px 28px;background:#0f1a13;display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:18px">
+<div class="gratiskaart">
 <div style="font-size:52px">⛵</div>
 <div style="flex:1;min-width:230px">
-<span class="badge" style="background:#2fbf71;color:#04120a">Gratis proef!</span>
+<span class="badge">Gratis proef!</span>
 <h2 style="margin:6px 0">Sunny's Zeilboot Avonturen — Probeerversie</h2>
-<p style="color:#9db8a8">Lees gratis een stukje van het echte boek voor je koopt — echte hoofdstukken en illustraties uit het verhaal. Past perfect op tablet of om uit te printen.</p>
+<p>Lees gratis een stukje van het echte boek voor je koopt — echte hoofdstukken en illustraties uit het verhaal. Past perfect op tablet of om uit te printen.</p>
 </div>
 <a class="btn goud" href="gratis/sunny-proefboek.pdf" download style="white-space:nowrap">⬇️ Lees de proef</a>
 </div>
 </section>
 
 <section id="boeken">
-<h2>De boeken</h2>
+<h2>📚 De boeken</h2>
 <p class="sub">Vrolijke verhalen voor kinderen van 5 tot 10 jaar — geschreven en geïllustreerd door G.T.J. Sandvliet.</p>
 <div class="rijh">
 <button class="pijl links" onclick="schuif('boekrij',-1)">‹</button>
@@ -251,7 +287,7 @@ footer a{color:var(--zee)}
 <div class="info">
 <span class="badge">Nieuw — interactief!</span>
 <h3>Dana en de Verdwaalde Boot</h3>
-<p>Dana de dappere dolfijn redt Jonassie' stukke bootje — en JIJ bepaalt hoe het avontuur eindigt: samen sterk of dapper alleen!</p>
+<p>Dana de dappere dolfijn redt Jonassie's stukke bootje — en JIJ bepaalt hoe het avontuur eindigt: samen sterk of dapper alleen!</p>
 <div class="links">
 <a class="mini speel" href="vb/dana-en-de-verdwaalde-boot/index.html">🧩 Speel het avontuur</a>
 <a class="mini kopen" href="#winkel">🛒 Het boek</a>
@@ -438,6 +474,7 @@ footer a{color:var(--zee)}
 </section>
 
 <footer>
+<p style="margin-bottom:10px;color:#6B7B88;font-weight:600">Voor kleine helden, dierenliefhebbers &amp; grote dromers 🐾</p>
 <p>© 2025 GS Books / Good2Better · G.T.J. Sandvliet · <a href="https://www.good2better.com" target="_blank" rel="noopener">good2better.com</a> · <a href="../animalheroes/">Animal Heroes</a> · <a href="../">G2B Winkel</a></p>
 </footer>
 </div>
