@@ -1393,6 +1393,28 @@
    "groep": "sounds",
    "cover": "media/midnightst-cover.png",
    "preview": "media/midnightst-preview.mp3"
+  },
+  {
+   "id": "8f16bfa0",
+   "titel": "Meester G2B",
+   "soort": "audio",
+   "beschrijving": "G2b beat — 98 BPM in G#m. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 53.9,
+   "groep": "g2b",
+   "cover": "media/8f16bfa0-cover.png",
+   "preview": "media/8f16bfa0-preview.mp3"
   }
  ]
 }
