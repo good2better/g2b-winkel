@@ -78,8 +78,24 @@ async function laden() {
   };
   const CAT_VOLGORDE = ["boeken", "plugins", "sounds", "beats"];
 
+  // binnen Boeken: serie-volgorde 1→10 met e-boek direct achter zijn
+  // kleurboek, daarna verzamel-/avonturen-bundels; onbekende titels alfabetisch.
+  const BOEK_VOLGORDE = [
+    "pippa", "sunny", "worteltaart", "bram", "flip", "vonk",
+    "ravi", "bodhi", "ollie", "sterre", "avonturen", "verzamel",
+  ];
+  const boekIndex = t => {
+    const s = (t || "").toLowerCase();
+    const i = BOEK_VOLGORDE.findIndex(k => s.includes(k));
+    return i < 0 ? BOEK_VOLGORDE.length : i;
+  };
+  const boekScore = p =>
+    boekIndex(p.titel) * 10 + (/e-boek/i.test(p.titel) ? 1 : 0);
+
   const prods = [...(data.producten || [])].sort((a, b) =>
-    CAT_VOLGORDE.indexOf(CAT(a)) - CAT_VOLGORDE.indexOf(CAT(b)));
+    (CAT_VOLGORDE.indexOf(CAT(a)) - CAT_VOLGORDE.indexOf(CAT(b))) ||
+    (CAT(a) === "boeken" ? boekScore(a) - boekScore(b)
+                         : (a.titel || "").localeCompare(b.titel || "")));
   window._prods = prods;
   if (!prods.length) {
     lijst.innerHTML = `<div class="leeg">Binnenkort open —
