@@ -45,5 +45,19 @@
   "url": "vb/vraag-het-aan-sunny/index.html",
   "cover": "vb/vraag-het-aan-sunny/cover.jpg",
   "interactief": true
+ },
+ {
+  "titel": "Vraag het aan Bram",
+  "url": "vb/vraag-het-aan-bram/index.html",
+  "cover": "vb/vraag-het-aan-bram/cover.jpg",
+  "interactief": true,
+  "paginas": 0
+ },
+ {
+  "titel": "Vraag het aan Vonk",
+  "url": "vb/vraag-het-aan-vonk/index.html",
+  "cover": "vb/vraag-het-aan-vonk/cover.jpg",
+  "interactief": true,
+  "paginas": 0
  }
 ]
