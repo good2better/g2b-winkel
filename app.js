@@ -155,6 +155,9 @@ async function laden() {
         <div class="wave" data-wave="${esc(p.id)}"></div>
         <span class="duur">${fmtDuur(p.duur)}</span>
       </div>` : ""}
+      ${p.video ? `
+      <video class="promo" src="${esc(p.video)}" controls playsinline
+             preload="metadata"></video>` : ""}
       <div class="koop-blok">
         ${licenties.map((k, i) =>
           `<button class="licentie${i === 0 ? " on" : ""}"
