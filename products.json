@@ -1043,6 +1043,94 @@
    "cover": "media/g2b-bedrijfsmiddelen-cover.png",
    "download_dir": "d/f481c3d2e1e330",
    "demo": "media/g2b-bedrijfsmiddelen-demo.mp4"
+  },
+  {
+   "id": "76d946ea",
+   "titel": "Meester evo26 Air",
+   "soort": "audio",
+   "beschrijving": "Rnb beat — 77 BPM in Gm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 15.4,
+   "groep": "rnb",
+   "cover": "media/76d946ea-cover.png",
+   "preview": "media/76d946ea-preview.mp3"
+  },
+  {
+   "id": "b4d6b6c1",
+   "titel": "Meester evo26 Balans",
+   "soort": "audio",
+   "beschrijving": "Rnb beat — 77 BPM in Gm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 15.4,
+   "groep": "rnb",
+   "cover": "media/b4d6b6c1-cover.png",
+   "preview": "media/b4d6b6c1-preview.mp3"
+  },
+  {
+   "id": "463c9c3c",
+   "titel": "Meester evo26 Donker",
+   "soort": "audio",
+   "beschrijving": "Rnb beat — 77 BPM in Gm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 14.0,
+   "groep": "rnb",
+   "cover": "media/463c9c3c-cover.png",
+   "preview": "media/463c9c3c-preview.mp3"
+  },
+  {
+   "id": "be3f5598",
+   "titel": "Meester evo26 Laag",
+   "soort": "audio",
+   "beschrijving": "Rnb beat — 77 BPM in Gm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 20.4,
+   "groep": "rnb",
+   "cover": "media/be3f5598-cover.png",
+   "preview": "media/be3f5598-preview.mp3"
   }
  ]
 }
