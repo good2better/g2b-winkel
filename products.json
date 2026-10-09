@@ -16,10 +16,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
    },
    "duur": 161.1,
    "groep": "dembow",
@@ -38,10 +38,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
    },
    "duur": 133.3,
    "groep": "house",
@@ -495,10 +495,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
    },
    "duur": 90,
    "groep": "eigen songs",
@@ -517,10 +517,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
    },
    "duur": 90,
    "groep": "eigen songs",
@@ -539,10 +539,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
    },
    "duur": 90,
    "groep": "eigen songs",
@@ -561,10 +561,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
    },
    "duur": 90,
    "groep": "eigen songs",
@@ -583,10 +583,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
    },
    "duur": 90,
    "groep": "eigen songs",
@@ -605,10 +605,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
    },
    "duur": 90,
    "groep": "eigen songs",
@@ -627,10 +627,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
    },
    "duur": 90,
    "groep": "eigen songs",
@@ -649,10 +649,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "koop": "",
+    "mp3": "",
+    "wav": "",
+    "exclusief": ""
    },
    "duur": 90,
    "groep": "eigen songs",
@@ -669,8 +669,8 @@
     "digitaal": "€ 9,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "digitaal": "https://buy.stripe.com/demo_dig"
+    "koop": "",
+    "digitaal": ""
    },
    "groep": "sounds",
    "cover": "media/g2btrapk-cover.png",
@@ -686,8 +686,8 @@
     "digitaal": "€ 14,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "digitaal": "https://buy.stripe.com/demo_dig"
+    "koop": "",
+    "digitaal": ""
    },
    "groep": "sounds",
    "cover": "media/sankaste-cover.png",
@@ -703,8 +703,8 @@
     "digitaal": "€ 9,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "digitaal": "https://buy.stripe.com/demo_dig"
+    "koop": "",
+    "digitaal": ""
    },
    "groep": "sounds",
    "cover": "media/kw322dcb-cover.png",
