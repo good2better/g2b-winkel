@@ -155,50 +155,6 @@
    "preview": "media/23e386ca-preview.mp3"
   },
   {
-   "id": "c5444536",
-   "titel": "Midnight Dembow",
-   "soort": "audio",
-   "beschrijving": "",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
-   },
-   "duur": 161.1,
-   "groep": "dembow",
-   "cover": "media/c5444536-cover.png",
-   "preview": "media/c5444536-preview.mp3"
-  },
-  {
-   "id": "2878e291",
-   "titel": "Cjfjff Houce",
-   "soort": "audio",
-   "beschrijving": "",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
-   },
-   "duur": 133.3,
-   "groep": "house",
-   "cover": "media/2878e291-cover.png",
-   "preview": "media/2878e291-preview.mp3"
-  },
-  {
    "id": "sankaste",
    "titel": "Sanka Stemloops Vol. 1",
    "soort": "digitaal",
