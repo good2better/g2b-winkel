@@ -47,24 +47,28 @@ h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--zeedonker);ma
 /* boeken swipe */
 .rijh{position:relative}
 .swipe{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 2px 14px;scrollbar-width:thin}
-.boek{min-width:250px;max-width:250px;scroll-snap-align:start;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 14px rgba(8,78,124,.12);display:flex;flex-direction:column}
-.boek img{width:100%;height:300px;object-fit:cover}
+.boek{min-width:250px;max-width:250px;scroll-snap-align:start;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 14px rgba(8,78,124,.12);display:flex;flex-direction:column;transition:transform .18s,box-shadow .18s}
+.boek:hover{transform:translateY(-5px);box-shadow:0 10px 26px rgba(8,78,124,.22)}
+.boek img{width:100%;height:300px;object-fit:contain;padding:12px;background:linear-gradient(165deg,#E8F4FB 0%,#FFF8EC 100%)}
 .boek .info{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
 .boek .info h3{font-size:17px;color:var(--zeedonker)}
 .boek .info p{font-size:13px;color:#6B7B88;flex:1}
 .badge{align-self:flex-start;background:#DFF3E3;color:#1B7A3D;font-size:11px;font-weight:800;padding:4px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px}
 .badge.grijs{background:#EEF1F4;color:#6B7B88}
 .boek .links{display:flex;gap:8px;flex-wrap:wrap}
-.mini{font-size:13px;font-weight:800;text-decoration:none;padding:8px 12px;border-radius:14px}
+.mini{font-size:13px;font-weight:800;text-decoration:none;padding:8px 12px;border-radius:14px;transition:filter .15s,transform .15s}
+.mini:hover{filter:brightness(1.07);transform:translateY(-1px)}
 .mini.kopen{background:var(--goud);color:#4A3400}
 .mini.meer{background:var(--tint);color:var(--zee)}
 .mini.speel{background:var(--koraal);color:#fff}
+.mini .bk{font-style:normal;background:#C7D6E0;color:#4A5B68;font-size:10px;font-weight:800;padding:2px 8px;border-radius:8px;margin-left:4px;text-transform:uppercase;letter-spacing:.5px}
 .pijl{position:absolute;top:42%;width:38px;height:38px;border-radius:50%;border:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.2);font-size:18px;cursor:pointer;color:var(--zeedonker);z-index:2}
 .pijl.links{left:-8px}.pijl.rechts{right:-8px}
 /* boekwinkel grid */
 .shopgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
-.shopkaart{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 14px rgba(8,78,124,.12);display:flex;flex-direction:column}
-.shopkaart img{width:100%;height:280px;object-fit:cover;background:#F4F7FA}
+.shopkaart{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 14px rgba(8,78,124,.12);display:flex;flex-direction:column;transition:transform .18s,box-shadow .18s}
+.shopkaart:hover{transform:translateY(-5px);box-shadow:0 10px 26px rgba(8,78,124,.22)}
+.shopkaart img{width:100%;height:280px;object-fit:contain;padding:12px;background:linear-gradient(165deg,#E8F4FB 0%,#FFF8EC 100%)}
 .shopkaart .info{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
 .shopkaart .info h3{font-size:16px;color:var(--zeedonker)}
 .shopkaart .info p{font-size:12px;color:#6B7B88;flex:1}
@@ -92,7 +96,7 @@ h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--zeedonker);ma
 .vraag-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
 .vraag-kaart{display:block;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 14px rgba(8,78,124,.12);text-decoration:none;transition:transform .15s}
 .vraag-kaart:hover{transform:translateY(-3px)}
-.vraag-kaart img{width:100%;height:190px;object-fit:cover;display:block;background:#F4F7FA}
+.vraag-kaart img{width:100%;height:190px;object-fit:contain;padding:10px;display:block;background:linear-gradient(165deg,#E8F4FB 0%,#FFF8EC 100%)}
 .vraag-kaart div{padding:12px 14px}
 .vraag-kaart b{display:block;color:var(--zeedonker);font-size:15px}
 .vraag-kaart span{color:#6B7B88;font-size:12px}
@@ -539,7 +543,7 @@ fetch('boeken.json').then(function(r){return r.ok?r.json():{boeken:[]}}).then(fu
       if(!f)return '';
       var prijs=f.prijs?('€'+f.prijs):'';
       return f.koop?'<a class="mini '+cls+'" href="'+f.koop+'" target="_blank" rel="noopener">'+label+' '+prijs+'</a>'
-        :'<span class="mini meer" style="opacity:.85;cursor:default">'+label+' '+prijs+' — binnenkort</span>';
+        :'<span class="mini meer" style="opacity:.8;cursor:default">'+label+' '+prijs+' <i class="bk">binnenkort</i></span>';
     };
     return '<div class="shopkaart"><img src="../'+b.cover+'" alt="'+b.titel+'" loading="lazy">'+
       '<div class="info"><span class="badge">Animal Heroes</span><h3>'+b.titel+'</h3>'+
