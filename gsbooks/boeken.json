@@ -3,7 +3,7 @@
   {
    "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket",
    "cover": "media/sunny-mega-cover.png",
-   "beschrijving": "Alles van Sunny in één pakket: het complete computerspel (6 spelletjes, werkt offline), het 41-pagina's activiteitenboek, puzzelboek, kleurboek en printbaar bordspel. Digitaal — direct te downloaden, print zoveel je wilt voor eigen gebruik. Ook los verkrijgbaar.",
+   "beschrijving": "Alles van Sunny in één winkel: het complete computerspel (6 spelletjes, werkt offline), het luisterboek (ruim anderhalf uur voorlezen), activiteitenboek, puzzelboek, kleurboek, printbaar bordspel, kalender en het knutselpakket (stickers, poppentheater, kaartjes, boekenleggers). Digitaal — direct te downloaden, print zoveel je wilt voor eigen gebruik.",
    "spel": {
     "prijs": "4,95",
     "koop": ""
@@ -26,6 +26,18 @@
    },
    "pakket": {
     "prijs": "19,95",
+    "koop": ""
+   },
+   "luisterboek": {
+    "prijs": "6,95",
+    "koop": ""
+   },
+   "kalender": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "knutsel": {
+    "prijs": "7,95",
     "koop": ""
    },
    "probeer": {

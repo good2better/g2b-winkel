@@ -1154,6 +1154,28 @@
    "groep": "rnb",
    "cover": "media/e47de869-cover.png",
    "preview": "media/e47de869-preview.mp3"
+  },
+  {
+   "id": "e110f961",
+   "titel": "Meester",
+   "soort": "audio",
+   "beschrijving": "Drill beat — 79 BPM in Bm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 54.6,
+   "groep": "drill",
+   "cover": "media/e110f961-cover.png",
+   "preview": "media/e110f961-preview.mp3"
   }
  ]
 }
