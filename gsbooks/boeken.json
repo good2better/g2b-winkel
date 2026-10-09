@@ -1,6 +1,35 @@
 {
  "boeken": [
   {
+   "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket",
+   "cover": "media/sunny-mega-cover.png",
+   "beschrijving": "Alles van Sunny in één pakket: het complete computerspel (6 spelletjes, werkt offline), het 41-pagina's activiteitenboek, puzzelboek, kleurboek en printbaar bordspel. Digitaal — direct te downloaden, print zoveel je wilt voor eigen gebruik. Ook los verkrijgbaar.",
+   "spel": {
+    "prijs": "4,95",
+    "koop": ""
+   },
+   "activiteitenboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "puzzelboek": {
+    "prijs": "7,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "6,95",
+    "koop": ""
+   },
+   "bordspel": {
+    "prijs": "3,95",
+    "koop": ""
+   },
+   "pakket": {
+    "prijs": "19,95",
+    "koop": ""
+   }
+  },
+  {
    "titel": "Pippa en het Vogelnest",
    "cover": "media/76fdf38f-cover.png",
    "beschrijving": "Pippa het dappere katje klimt door de storm om drie baby-vogeltjes te redden! Kleur haar heldendaad in — 4 grote kleurplaten voor kleine helden (3-8 jaar). Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",

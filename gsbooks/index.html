@@ -177,6 +177,15 @@ footer a{color:var(--zee)}
 </div>
 <a class="btn goud" href="gratis/animal-heroes-gratis-boek.pdf" download style="white-space:nowrap">⬇️ Download gratis</a>
 </div>
+<div style="border:3px dashed var(--g,#2fbf71);border-radius:20px;padding:24px 28px;background:#0f1a13;display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:18px">
+<div style="font-size:52px">⛵</div>
+<div style="flex:1;min-width:230px">
+<span class="badge" style="background:#2fbf71;color:#04120a">Gratis proef!</span>
+<h2 style="margin:6px 0">Sunny's Zeilboot Avonturen — Probeerversie</h2>
+<p style="color:#9db8a8">Lees gratis een stukje van het echte boek voor je koopt — echte hoofdstukken en illustraties uit het verhaal. Past perfect op tablet of om uit te printen.</p>
+</div>
+<a class="btn goud" href="gratis/sunny-proefboek.pdf" download style="white-space:nowrap">⬇️ Lees de proef</a>
+</div>
 </section>
 
 <section id="boeken">
@@ -535,7 +544,7 @@ fetch('boeken.json').then(function(r){return r.ok?r.json():{boeken:[]}}).then(fu
     return '<div class="shopkaart"><img src="../'+b.cover+'" alt="'+b.titel+'" loading="lazy">'+
       '<div class="info"><span class="badge">Animal Heroes</span><h3>'+b.titel+'</h3>'+
       '<p>'+(b.beschrijving||'')+'</p><div class="links">'+
-      knop(b.kleurboek,'🖍️ Kleurboek','kopen')+knop(b.ebook,'📖 E-boek','meer')+
+      knop(b.spel,'🎮 Spel','kopen')+knop(b.kleurboek,'🖍️ Kleurboek','kopen')+knop(b.activiteitenboek,'📒 Activiteitenboek','kopen')+knop(b.puzzelboek,'🧩 Puzzelboek','kopen')+knop(b.bordspel,'🎲 Bordspel','kopen')+knop(b.ebook,'📖 E-boek','meer')+knop(b.pakket,'🎁 Mega-pakket','kopen')+
       '</div></div></div>';
   }).join('');
 }).catch(function(){});
