@@ -1291,6 +1291,108 @@
    "groep": "dembow",
    "cover": "media/f92b4951-cover.png",
    "preview": "media/f92b4951-preview.mp3"
+  },
+  {
+   "id": "khvckhvclv",
+   "titel": "Khvckhvclv Stemloops Vol. 1",
+   "soort": "digitaal",
+   "beschrijving": "7 naadloze stem-loops uit Khvckhvclv (wav+mp3) + MIDI voor bas — 100% eigen IP: buy-out-ready constructie-kit.",
+   "prijs": "€ 14,95",
+   "prijzen": {
+    "digitaal": "€ 14,95"
+   },
+   "links": {
+    "koop": "",
+    "digitaal": ""
+   },
+   "groep": "sounds",
+   "cover": "media/khvckhvclv-cover.png",
+   "preview": "media/khvckhvclv-preview.mp3"
+  },
+  {
+   "id": "houcetrap",
+   "titel": "Houce Trap Stemloops Vol. 1",
+   "soort": "digitaal",
+   "beschrijving": "6 naadloze stem-loops uit Houce Trap (wav+mp3) + MIDI voor bas — 100% eigen IP: buy-out-ready constructie-kit.",
+   "prijs": "€ 14,95",
+   "prijzen": {
+    "digitaal": "€ 14,95"
+   },
+   "links": {
+    "koop": "",
+    "digitaal": ""
+   },
+   "groep": "sounds",
+   "cover": "media/houcetrap-cover.png",
+   "preview": "media/houcetrap-preview.mp3"
+  },
+  {
+   "id": "laladance",
+   "titel": "Lala Dance Stemloops Vol. 1",
+   "soort": "digitaal",
+   "beschrijving": "8 naadloze stem-loops uit Lala Dance (wav+mp3) + MIDI voor bas — 100% eigen IP: buy-out-ready constructie-kit.",
+   "prijs": "€ 14,95",
+   "prijzen": {
+    "digitaal": "€ 14,95"
+   },
+   "links": {
+    "koop": "",
+    "digitaal": ""
+   },
+   "groep": "sounds",
+   "cover": "media/laladance-cover.png",
+   "preview": "media/laladance-preview.mp3"
+  },
+  {
+   "id": "exoticridd",
+   "titel": "Exotic Riddim Stemloops Vol. 1",
+   "soort": "digitaal",
+   "beschrijving": "7 naadloze stem-loops uit Exotic Riddim (wav+mp3) + MIDI voor bas — 100% eigen IP: buy-out-ready constructie-kit.",
+   "prijs": "€ 14,95",
+   "prijzen": {
+    "digitaal": "€ 14,95"
+   },
+   "links": {
+    "koop": "",
+    "digitaal": ""
+   },
+   "groep": "sounds",
+   "cover": "media/exoticridd-cover.png",
+   "preview": "media/exoticridd-preview.mp3"
+  },
+  {
+   "id": "soldaatst",
+   "titel": "Soldaat Stemloops Vol. 1",
+   "soort": "digitaal",
+   "beschrijving": "8 naadloze stem-loops uit Soldaat (wav+mp3) + MIDI voor bas — 100% eigen IP: buy-out-ready constructie-kit.",
+   "prijs": "€ 14,95",
+   "prijzen": {
+    "digitaal": "€ 14,95"
+   },
+   "links": {
+    "koop": "",
+    "digitaal": ""
+   },
+   "groep": "sounds",
+   "cover": "media/soldaatst-cover.png",
+   "preview": "media/soldaatst-preview.mp3"
+  },
+  {
+   "id": "midnightst",
+   "titel": "Midnight Dembow Stemloops Vol. 1",
+   "soort": "digitaal",
+   "beschrijving": "6 naadloze stem-loops uit Midnight Dembow (wav+mp3) + MIDI voor bas — 100% eigen IP: buy-out-ready constructie-kit.",
+   "prijs": "€ 14,95",
+   "prijzen": {
+    "digitaal": "€ 14,95"
+   },
+   "links": {
+    "koop": "",
+    "digitaal": ""
+   },
+   "groep": "sounds",
+   "cover": "media/midnightst-cover.png",
+   "preview": "media/midnightst-preview.mp3"
   }
  ]
 }
