@@ -1,5 +1,5 @@
 // GS Books service worker — offline-leesmodus voor kinderen
-const CACHE = "gsbooks-v2";
+const CACHE = "gsbooks-v3";
 const CORE = [
   "./index.html",
   "./manifest.webmanifest",
@@ -24,19 +24,29 @@ self.addEventListener("activate", e => {
   ).then(() => self.clients.claim()));
 });
 
-// Cache-first voor eigen bestanden; netwerk faalt → cache; anders vers + cache het
+// Pagina's + JSON altijd vers proberen (netwerk-eerst, offline → cache);
+// losse assets (plaatjes/audio/fonts) cache-first — die veranderen nooit.
 self.addEventListener("fetch", e => {
   const u = new URL(e.request.url);
   if (e.request.method !== "GET" || u.origin !== location.origin) return;
+  const vers = e.request.mode === "navigate" || u.pathname.endsWith(".html") || u.pathname.endsWith(".json") || u.pathname.endsWith("/");
   e.respondWith(
-    caches.match(e.request).then(hit => hit ||
-      fetch(e.request).then(res => {
-        if (res.ok) {
-          const kloon = res.clone();
-          caches.open(CACHE).then(c => c.put(e.request, kloon));
-        }
-        return res;
-      })
-    )
+    vers
+      ? fetch(e.request).then(res => {
+          if (res.ok) {
+            const kloon = res.clone();
+            caches.open(CACHE).then(c => c.put(e.request, kloon));
+          }
+          return res;
+        }).catch(() => caches.match(e.request))
+      : caches.match(e.request).then(hit => hit ||
+          fetch(e.request).then(res => {
+            if (res.ok) {
+              const kloon = res.clone();
+              caches.open(CACHE).then(c => c.put(e.request, kloon));
+            }
+            return res;
+          })
+        )
   );
 });
