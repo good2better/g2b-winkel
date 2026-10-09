@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B Helden-Quiz — test je Animal Heroes kennis</title>
+<link rel="icon" href="../img/favicon.svg">
+<style>
+:root{--g:#2fbf71;--gd:#1e8f54;--card:#142019;--mut:#9db8a8}
+*{box-sizing:border-box;margin:0}
+body{background:linear-gradient(160deg,#0a120d,#10241a 60%,#0d1f16);color:#eef5f0;
+  font-family:system-ui,'Segoe UI',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+header{padding:18px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header h1{font-size:clamp(20px,3.4vw,30px)}
+header .sub{color:var(--mut);font-size:14px;width:100%}
+header a{color:var(--g);text-decoration:none;font-weight:700;margin-left:auto}
+main{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 20px 24px}
+.kaart{background:var(--card);border-radius:20px;padding:26px;max-width:640px;width:100%;
+  display:flex;flex-direction:column;gap:16px}
+.boeken{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.boek{background:#1d2c22;border:0;color:#eef5f0;border-radius:12px;padding:14px;
+  font-size:15px;font-weight:700;cursor:pointer;text-align:left;transition:.15s}
+.boek:hover{background:#263a2c;transform:scale(1.02)}
+.boek small{display:block;color:var(--mut);font-weight:400;margin-top:4px}
+.vraag{font-size:clamp(18px,2.6vw,24px);font-weight:800;line-height:1.35}
+.voortgang{color:var(--mut);font-size:13px}
+.balk{height:8px;background:#0a120d;border-radius:99px;overflow:hidden}
+.balk i{display:block;height:100%;background:var(--g);border-radius:99px;transition:width .3s}
+.antw{display:grid;gap:10px}
+.antw button{background:#1d2c22;border:2px solid #2a4033;color:#eef5f0;border-radius:12px;
+  padding:15px 18px;font-size:16px;font-weight:700;cursor:pointer;text-align:left;transition:.15s}
+.antw button:hover{border-color:var(--g);background:#263a2c}
+.antw button.goed{background:var(--g);border-color:var(--g);color:#04120a}
+.antw button.fout{background:#a33;border-color:#a33}
+.feedback{min-height:24px;font-weight:700;font-size:16px}
+.score{text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
+.score .sterren{font-size:44px;letter-spacing:6px}
+.score h2{font-size:26px}
+.score p{color:var(--mut)}
+.groep{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.knop{background:var(--g);border:0;color:#04120a;border-radius:12px;padding:12px 20px;
+  font-size:16px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-block}
+.knop.licht{background:#1d2c22;color:#eef5f0}
+.diploma{border:3px dashed var(--g);border-radius:16px;padding:16px;background:#0f1a13}
+.diploma b{color:var(--g)}
+footer{padding:16px 24px;color:var(--mut);font-size:12px;text-align:center}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:99}
+</style>
+</head>
+<body>
+<header>
+<h1>🏆 G2B Helden-Quiz</h1>
+<div class="sub">Hoe goed ken jij de Animal Heroes? Kies een boek en test jezelf!</div>
+<a href="../index.html">← Terug naar GS Books</a>
+</header>
+<main>
+<div class="kaart" id="kaart"></div>
+</main>
+<canvas id="confetti"></canvas>
+<footer>G2B Helden-Quiz — lees de boeken in de <a href="../index.html#winkel" style="color:var(--g)">Boekwinkel</a> en word een echte Animal Heroes-expert!</footer>
+<script>
+let QUIZ=[],quiz=null,nr=0,score=0,alles=false;
+const kaart=document.getElementById('kaart');
+const CONF=["#e03131","#fab005","#8ce99a","#339af0","#e64980","#fff"];
+
+function menu(){
+  let h='<h2>Kies je boek</h2><div class="boeken">';
+  QUIZ.forEach((q,i)=>{h+=`<button class="boek" onclick="start(${i})">📖 ${q.boek}
+    <small>${q.vragen.length} vragen</small></button>`;});
+  h+=`<button class="boek" style="background:var(--gd);color:#04120a" onclick="start(-1)">🏆 GROTE QUIZ
+    <small>alle boeken door elkaar!</small></button>`;
+  kaart.innerHTML=h+'</div>';
+}
+function start(i){
+  if(i<0){alles=true;quiz={boek:"GROTE QUIZ",vragen:QUIZ.flatMap(q=>q.vragen)}
+    .vragen.sort(()=>Math.random()-.5).slice(0,10);
+    quiz={boek:"🏆 GROTE QUIZ",vragen:quiz};}
+  else quiz=QUIZ[i];
+  nr=0;score=0;toon();
+}
+function toon(){
+  if(nr>=quiz.vragen.length)return einde();
+  const v=quiz.vragen[nr],pct=Math.round(nr/quiz.vragen.length*100);
+  let h=`<div class="voortgang">${quiz.boek} — vraag ${nr+1} van ${quiz.vragen.length}</div>
+  <div class="balk"><i style="width:${pct}%"></i></div>
+  <div class="vraag">${v.v}</div><div class="antw">`;
+  v.a.forEach((a,j)=>h+=`<button onclick="kies(this,${j})">${a}</button>`);
+  kaart.innerHTML=h+'</div><div class="feedback" id="fb"></div>';
+}
+function kies(el,j){
+  const v=quiz.vragen[nr],fb=document.getElementById('fb');
+  document.querySelectorAll('.antw button').forEach(b=>b.onclick=null);
+  if(j===v.goed){el.classList.add('goed');score++;
+    fb.textContent=['🎉 Goed zo!','⭐ Super!','💪 Echte held!','🐾 Precies!'][nr%4];
+    fb.style.color='var(--g)';}
+  else{el.classList.add('fout');
+    document.querySelectorAll('.antw button')[v.goed].classList.add('goed');
+    fb.textContent='Bijna! Het goede antwoord is groen.';fb.style.color='#f88';}
+  setTimeout(()=>{nr++;toon();},1100);
+}
+function einde(){
+  const pct=score/quiz.vragen.length,ster=pct>=.9?3:pct>=.6?2:pct>=.3?1:0;
+  const titel=ster===3?"ECHTE ANIMAL HERO!":ster===2?"Bijna-held!":ster===1?"Held in training!":"Goed geprobeerd!";
+  if(ster>=2)confetti();
+  kaart.innerHTML=`<div class="score">
+  <div class="sterren">${'⭐'.repeat(ster)}${'☆'.repeat(3-ster)}</div>
+  <h2>${titel}</h2><p>${score} van de ${quiz.vragen.length} goed!</p>
+  ${ster===3?`<div class="diploma">🏅 <b>Helden-diploma</b><br>
+    Jij kent de Animal Heroes door en door — net zo dapper als zij!</div>`:''}
+  <div class="groep">
+  <button class="knop" onclick="menu()">🔄 Nog een quiz</button>
+  <a class="knop licht" href="../kleur/">🎨 Ga kleuren</a>
+  <a class="knop licht" href="../index.html#winkel">📖 De boeken</a>
+  </div></div>`;
+}
+function confetti(){const c=document.getElementById('confetti'),x=c.getContext('2d');
+  c.width=innerWidth;c.height=innerHeight;const P=[];
+  for(let i=0;i<140;i++)P.push({x:Math.random()*c.width,y:-20-Math.random()*c.height*.4,
+    c:CONF[i%CONF.length],s:6+Math.random()*8,vy:2+Math.random()*3,vx:-1.5+Math.random()*3,r:Math.random()*6});
+  let t=0;(function anim(){x.clearRect(0,0,c.width,c.height);t++;
+    P.forEach(p=>{p.y+=p.vy;p.x+=p.vx;p.r+=.05;
+      x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;
+      x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore();});
+    if(t<260)requestAnimationFrame(anim);else x.clearRect(0,0,c.width,c.height);})();}
+
+fetch('quiz.json').then(r=>r.json()).then(d=>{QUIZ=d.quizzen;menu();});
+</script>
+</body>
+</html>

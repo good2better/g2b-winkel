@@ -1,0 +1,38 @@
+{"quizzen":[
+{"boek":"Pippa en het Vogelnest","vragen":[
+ {"v":"Wat is Pippa voor dier?","a":["Een eekhoorn","Een vogel","Een konijn"],"goed":0},
+ {"v":"Wat vindt Pippa in de storm?","a":["Een vogelnestje dat uit de boom waaide","Een zakje eten","Een gouden ei"],"goed":0},
+ {"v":"Hoe helpt Pippa de vogeltjes?","a":["Ze laat ze aan hun lot over","Ze brengt het nestje veilig terug","Ze vraagt een mens om hulp"],"goed":1}]},
+{"boek":"Sunny en de Verdwaalde Eend","vragen":[
+ {"v":"Wat is er met het eendje aan de hand?","a":["Het is verdwaald","Het is ziek","Het is boos"],"goed":0},
+ {"v":"Wie helpt het eendje weer thuis te komen?","a":["Pippa","Sunny","Keesje"],"goed":1}]},
+{"boek":"Keesje en de Verdwenen Worteltaart","vragen":[
+ {"v":"Wat is Keesje zijn baantje?","a":["Brandweerman","Detective","Dokter"],"goed":1},
+ {"v":"Wat is er verdwenen?","a":["De worteltaart","Het boek","De sleutel"],"goed":0},
+ {"v":"Wie nam de worteltaart mee?","a":["De egel","De vos","De muis"],"goed":0}]},
+{"boek":"Bram en het Verloren Lammetje","vragen":[
+ {"v":"Wat is Bram?","a":["Een herdershond","Een kat","Een paard"],"goed":0},
+ {"v":"Waar is het lammetje verdwaald?","a":["In de sneeuw","In de zee","In de stad"],"goed":0}]},
+{"boek":"Flip en de Zeehondpup","vragen":[
+ {"v":"Wie vindt Flip aan de kust?","a":["Een zeehondpup","Een vis","Een krab"],"goed":0},
+ {"v":"Waar brengt Flip de pup heen?","a":["Naar de dierentuin","Terug naar z'n moeder in zee","Naar huis"],"goed":1}]},
+{"boek":"Vonk en het Katje in de Boom","vragen":[
+ {"v":"Wat is Vonk zijn heldenbaan?","a":["Politieagent","Brandweerman","Piloot"],"goed":1},
+ {"v":"Waar zit het katje vast?","a":["In een boom","In een put","Op het dak"],"goed":0}]},
+{"boek":"Ravi en de Verdwaalde Papegaai","vragen":[
+ {"v":"Waar woont Ravi?","a":["In de jungle","Op de boerderij","Aan zee"],"goed":0},
+ {"v":"Hoe helpt Ravi de papegaai?","a":["Hij klimt naar de top van de boom","Hij roept de brandweer","Hij vangt hem in een net"],"goed":0}]},
+{"boek":"Bodhi en de Kleine Koala","vragen":[
+ {"v":"Wat is Bodhi?","a":["Een kangoeroe","Een wombat","Een koala"],"goed":0},
+ {"v":"Hoe draagt Bodhi het koalaatje veilig?","a":["In haar buidel","Op haar rug","In haar armen"],"goed":0}]},
+{"boek":"Ollie en het Verloren Muisje","vragen":[
+ {"v":"Wanneer speelt Ollie's verhaal zich af?","a":["'s Nachts","'s Ochtends","'s Middags"],"goed":0},
+ {"v":"Wat draagt Ollie om zijn hals?","a":["Een heldenmedaille","Een das","Een bel"],"goed":0}]},
+{"boek":"Sterre en het Kuikentje","vragen":[
+ {"v":"Wat is Sterre?","a":["Een kastanje-veulen met witte ster","Een koe","Een geit"],"goed":0},
+ {"v":"Wat is de les van Sterre's verhaal?","a":["Om hulp vragen is óók held zijn","Alleen zijn is het best","Rennen lost alles op"],"goed":0}]},
+{"boek":"Dana en de Verdwaalde Boot","vragen":[
+ {"v":"Wat is Dana?","a":["Een dolfijn met rood rescue-vest","Een vis","Een schildpad"],"goed":0},
+ {"v":"Wat is er stuk aan Jonassie' bootje?","a":["De motor doet het niet meer","Er zit een gat in","De zeilen zijn weg"],"goed":0},
+ {"v":"Wat leren we van Dana?","a":["Samen ben je de sterkste held","Zwem sneller dan de rest","Blijf altijd op het land"],"goed":0}]}
+]}
