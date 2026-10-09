@@ -1049,6 +1049,116 @@
    "groep": "dancehall",
    "cover": "media/57de20ad-cover.png",
    "preview": "media/57de20ad-preview.mp3"
+  },
+  {
+   "id": "d9d479ab",
+   "titel": "Under",
+   "soort": "audio",
+   "beschrijving": "Dembow beat — 152 BPM in G#m. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 204.8,
+   "groep": "dembow",
+   "cover": "media/d9d479ab-cover.png",
+   "preview": "media/d9d479ab-preview.mp3"
+  },
+  {
+   "id": "7fe03e5c",
+   "titel": "KAY9",
+   "soort": "audio",
+   "beschrijving": "Dembow beat — 133 BPM in C#m. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 202.2,
+   "groep": "dembow",
+   "cover": "media/7fe03e5c-cover.png",
+   "preview": "media/7fe03e5c-preview.mp3"
+  },
+  {
+   "id": "0ef9a078",
+   "titel": "Love",
+   "soort": "audio",
+   "beschrijving": "Dembow beat — 133 BPM in Fm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 149.1,
+   "groep": "dembow",
+   "cover": "media/0ef9a078-cover.png",
+   "preview": "media/0ef9a078-preview.mp3"
+  },
+  {
+   "id": "3e8da4cd",
+   "titel": "Coolbreez",
+   "soort": "audio",
+   "beschrijving": "Dembow beat — 152 BPM in Dm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 168.0,
+   "groep": "dembow",
+   "cover": "media/3e8da4cd-cover.png",
+   "preview": "media/3e8da4cd-preview.mp3"
+  },
+  {
+   "id": "8171e455",
+   "titel": "Soldaat",
+   "soort": "audio",
+   "beschrijving": "Dembow beat — 136 BPM in Cm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 157.3,
+   "groep": "dembow",
+   "cover": "media/8171e455-cover.png",
+   "preview": "media/8171e455-preview.mp3"
   }
  ]
 }
