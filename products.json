@@ -658,6 +658,23 @@
    "groep": "eigen songs",
    "cover": "media/23e386ca-cover.png",
    "preview": "media/23e386ca-preview.mp3"
+  },
+  {
+   "id": "kw322dcb",
+   "titel": "G2B Kawina Kit Vol. 1",
+   "soort": "digitaal",
+   "beschrijving": "6 Surinaamse kawina groove-loops (112-125bpm) + MIDI in Sranan-Drong layout — met de echte patronen (bangi/koti/klap/hari/seki/key-slag/bas)",
+   "prijs": "€ 9,95",
+   "prijzen": {
+    "digitaal": "€ 9,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "digitaal": "https://buy.stripe.com/demo_dig"
+   },
+   "groep": "sounds",
+   "cover": "media/kw322dcb-cover.png",
+   "preview": "media/kw322dcb-preview.mp3"
   }
  ],
  "accent": "#2fbf71",
