@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sunny en de Verdwaalde Eend — interactief videoboek</title>
+<title>Sunny en de Verdwaalde Eend — kies zelf het avontuur! 🧩 — interactief videoboek</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#0b0d0c;color:#e8ecea;
@@ -19,6 +19,10 @@ html,body{height:100%;background:#0b0d0c;color:#e8ecea;
   text-shadow:0 2px 12px #000;z-index:5;pointer-events:none}
 #keuzes{position:fixed;bottom:8%;left:0;right:0;display:none;
   flex-wrap:wrap;gap:16px;justify-content:center;z-index:6;padding:0 20px}
+#tekst{position:fixed;bottom:20%;left:50%;transform:translateX(-50%);
+  max-width:min(760px,86vw);background:#0b0d0cc9;border-radius:14px;
+  padding:10px 20px;font-size:clamp(16px,2.4vw,22px);font-weight:700;
+  text-align:center;text-shadow:0 1px 4px #000;z-index:5;display:none}
 button.keuze{background:#2fbf71;color:#04120a;border:0;border-radius:16px;
   padding:18px 30px;font-size:clamp(17px,2.6vw,24px);font-weight:800;
   cursor:pointer;box-shadow:0 6px 24px #000a;min-width:200px}
@@ -30,23 +34,27 @@ button.keuze:hover{filter:brightness(1.12);transform:scale(1.04)}
 #einde h1{max-width:22em;line-height:1.35}
 #start{display:flex}
 #einde h1,#start h1{font-size:clamp(28px,5vw,44px);text-shadow:0 2px 12px #000}
-#terugNaar,#opnieuw,#speel{background:#2fbf71;color:#04120a;border:0;border-radius:14px;
+#opnieuw,#speel{background:#2fbf71;color:#04120a;border:0;border-radius:14px;
   padding:16px 32px;font-size:clamp(17px,2.6vw,22px);font-weight:800;cursor:pointer}
+#terugNaar{background:#fab005;color:#04120a;border:0;border-radius:14px;
+  padding:14px 26px;font-size:clamp(15px,2.2vw,20px);font-weight:800;cursor:pointer}
 #terugNaar:hover,#opnieuw:hover,#speel:hover{filter:brightness(1.12);transform:scale(1.04)}
 #stem{display:none}
 </style>
 </head>
 <body>
 <div id="scene"></div>
-<div id="titel">Sunny en de Verdwaalde Eend</div>
+<div id="titel">Sunny en de Verdwaalde Eend — kies zelf het avontuur! 🧩</div>
+<div id="tekst"></div>
 <div id="keuzes"></div>
 <div id="einde"><h1 id="eindeTekst">Einde — goed gekozen!</h1>
+  <button id="terugNaar" style="display:none">↩ Stel nog een vraag</button>
   <button id="opnieuw">🔁 Opnieuw spelen — ander pad</button></div>
-<div id="start"><h1>Sunny en de Verdwaalde Eend</h1>
+<div id="start"><h1>Sunny en de Verdwaalde Eend — kies zelf het avontuur! 🧩</h1>
   <p>Jij bepaalt hoe dit verhaal gaat!</p>
   <button id="speel">▶ SPEEL HET VERHAAL</button></div>
 <audio id="stem"></audio>
-<script>const STORY = {"start": "intro", "scenes": {"intro": {"paginas": ["p00.jpg", "p01.jpg", "p02.jpg"], "audio": "scenes/intro/audio.mp3", "keuzes": [{"label": "Sunny besluit te gaan zoeken ▶", "doel": "zoek"}], "einde": ""}, "zoek": {"paginas": ["p00.jpg", "p01.jpg"], "audio": "scenes/zoek/audio.mp3", "keuzes": [{"label": "🦆 Via de rivier zwemmen", "doel": "rivier"}, {"label": "🐾 Over de kade lopen", "doel": "kade"}], "einde": ""}, "rivier": {"paginas": ["p00.jpg", "p01.jpg", "p02.jpg"], "audio": "scenes/rivier/audio.mp3", "keuzes": [{"label": "Sunny roept KWAAAK! ▶", "doel": "einde-rivier"}], "einde": ""}, "kade": {"paginas": ["p00.jpg", "p01.jpg", "p02.jpg"], "audio": "scenes/kade/audio.mp3", "keuzes": [{"label": "Sunny rent door het riet ▶", "doel": "einde-kade"}], "einde": ""}, "einde-rivier": {"paginas": ["p00.jpg", "p01.jpg"], "audio": "scenes/einde-rivier/audio.mp3", "keuzes": [], "einde": "Einde — samen zijn eenden het allersterkst!"}, "einde-kade": {"paginas": ["p00.jpg", "p01.jpg"], "audio": "scenes/einde-kade/audio.mp3", "keuzes": [], "einde": "Einde — wie doorzet en zoekt, vindt zijn familie altijd terug!"}}};</script>
+<script>const STORY = {"start": "intro", "scenes": {"intro": {"paginas": ["p00.jpg", "p01.jpg", "p02.jpg"], "audio": "scenes/intro/audio.mp3", "keuzes": [{"label": "Sunny besluit te gaan zoeken \u25b6", "doel": "zoek"}], "einde": "", "tekst": ""}, "zoek": {"paginas": ["p00.jpg", "p01.jpg"], "audio": "scenes/zoek/audio.mp3", "keuzes": [{"label": "\ud83e\udd86 Via de rivier zwemmen", "doel": "rivier"}, {"label": "\ud83d\udc3e Over de kade lopen", "doel": "kade"}], "einde": "", "tekst": ""}, "rivier": {"paginas": ["p00.jpg", "p01.jpg", "p02.jpg"], "audio": "scenes/rivier/audio.mp3", "keuzes": [{"label": "Sunny roept KWAAAK! \u25b6", "doel": "einde-rivier"}], "einde": "", "tekst": ""}, "kade": {"paginas": ["p00.jpg", "p01.jpg", "p02.jpg"], "audio": "scenes/kade/audio.mp3", "keuzes": [{"label": "Sunny rent door het riet \u25b6", "doel": "einde-kade"}], "einde": "", "tekst": ""}, "einde-rivier": {"paginas": ["p00.jpg", "p01.jpg"], "audio": "scenes/einde-rivier/audio.mp3", "keuzes": [], "einde": "Einde \u2014 samen zijn eenden het allersterkst!", "tekst": ""}, "einde-kade": {"paginas": ["p00.jpg", "p01.jpg"], "audio": "scenes/einde-kade/audio.mp3", "keuzes": [], "einde": "Einde \u2014 wie doorzet en zoekt, vindt zijn familie altijd terug!", "tekst": ""}}};</script>
 <script>// interactieve videoboek-speler — kind kiest het pad (regel 1: eigen code)
 const wrap = document.getElementById("scene");
 const audio = document.getElementById("stem");
@@ -61,6 +69,9 @@ function scene(id) {
   keuzebox.style.display = "none";
   document.getElementById("einde").style.display = "none";
   wrap.innerHTML = "";
+  const tt = document.getElementById("tekst");
+  if (huidig.tekst) { tt.textContent = huidig.tekst; tt.style.display = ""; }
+  else tt.style.display = "none";
   const paginas = huidig.paginas || [];
   // elke plaat ~4s Ken Burns, zolang de audio duurt
   let i = 0;
@@ -80,16 +91,27 @@ function scene(id) {
     audio.play().catch(() => { klaar(); });
     audio.onended = klaar;
   } else {
-    setTimeout(klaar, Math.max(2500, 4000 * Math.min(paginas.length, 2)));
+    // zonder stem: leestijd schaalt mee met de tekstlengte
+    const lees = huidig.tekst ? 1800 + huidig.tekst.length * 85 : 0;
+    setTimeout(klaar, Math.max(2500, 4000 * Math.min(paginas.length, 2),
+                             Math.min(lees, 20000)));
   }
 }
 
 function klaar() {
   if (plaatTimer) clearInterval(plaatTimer);
+  document.getElementById("tekst").style.display = "none";
   const kz = huidig.keuzes || [];
   if (!kz.length) {
     document.getElementById("eindeTekst").textContent =
       huidig.einde || "Einde — goed gekozen!";
+    const tb = document.getElementById("terugNaar");
+    if (huidig.terug) {
+      tb.style.display = "";
+      tb.onclick = () => scene(huidig.terug);
+    } else {
+      tb.style.display = "none";
+    }
     document.getElementById("einde").style.display = "flex";
     return;
   }
