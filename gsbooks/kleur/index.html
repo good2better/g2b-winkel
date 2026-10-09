@@ -65,6 +65,7 @@ footer{padding:16px 24px;color:var(--mut);font-size:12px;text-align:center}
 <button class="tool" id="undo">↩️ Ongedaan</button>
 <button class="tool" id="reset">🗑️ Leeg</button>
 <button class="tool" id="opslaan" style="background:var(--g);color:#04120a">⬇️ Bewaar</button>
+<button class="tool" id="print" title="Druk de plaat af om op papier te kleuren">🖨️ Print</button>
 </div>
 <div class="doek-wrap" id="doekWrap">
 <canvas id="verf"></canvas>
@@ -192,6 +193,13 @@ document.getElementById('opslaan').onclick=()=>{
   const u=uit.getContext('2d');u.drawImage(verf,0,0);u.drawImage(lijnen,0,0);
   const a=document.createElement('a');a.download='mijn-animal-heroes-kunstwerk.png';
   a.href=uit.toDataURL('image/png');a.click();confetti();};
+
+document.getElementById('print').onclick=()=>{
+  const w=window.open('','_blank');
+  w.document.write('<html><head><title>GS Books kleurplaat</title></head><body style="margin:0">'+
+    '<img src="'+lijnen.toDataURL('image/png')+'" style="width:100%" onload="setTimeout(()=>{print();close()},300)">'+
+    '</body></html>');
+  w.document.close();};
 </script>
 </body>
 </html>
