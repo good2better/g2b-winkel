@@ -21,5 +21,13 @@
   "url": "vb/sunny-kies-je-avontuur/index.html",
   "cover": "vb/sunny-kies-je-avontuur/cover.jpg",
   "interactief": true
+ },
+ {
+  "slug": "vraag-het-aan-keesje",
+  "titel": "Vraag het aan Keesje",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-keesje/index.html",
+  "cover": "vb/vraag-het-aan-keesje/cover.jpg",
+  "interactief": true
  }
 ]
