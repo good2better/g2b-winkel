@@ -59,6 +59,7 @@ footer{padding:16px 24px;color:var(--mut);font-size:12px;text-align:center}
 <input type="color" id="eigen" value="#ff66cc" title="Eigen kleur">
 <button class="tool actief" id="kwast">🖌️ Kwast</button>
 <button class="tool" id="gum">🧽 Gum</button>
+<button class="tool" id="emmer">🪣 Vul</button>
 <label class="tool" style="cursor:default">📏 <input type="range" id="dikte" min="4" max="60" value="18"></label>
 <button class="tool" id="regenboog">🌈</button>
 <button class="tool" id="undo">↩️ Ongedaan</button>
@@ -79,7 +80,7 @@ const KLEUREN=["#e03131","#f76707","#fab005","#8ce99a","#2fbf71","#1098ad","#339
 "#9775fa","#e64980","#ff8787","#ffa94d","#fff3bf","#000000","#868e96","#ffffff","#8b5a2b","#ffd8a8"];
 const verf=document.getElementById('verf'),lijnen=document.getElementById('lijnen');
 const v=verf.getContext('2d'),l=lijnen.getContext('2d');
-let kleur='#e03131',dikte=18,gum=false,regen=false,hue=0,tekenen=false,stap=[],laatste=null;
+let kleur='#e03131',dikte=18,gum=false,regen=false,hue=0,tekenen=false,stap=[],laatste=null,emmer=false;
 let plaatUrl='';
 
 const kl=document.getElementById('kleuren');
@@ -87,18 +88,25 @@ KLEUREN.forEach((c,i)=>{
   const d=document.createElement('div');d.className='kleur'+(i==0?' actief':'');
   d.style.background=c;d.onclick=()=>{kleur=c;regen=false;
     document.querySelectorAll('.kleur').forEach(x=>x.classList.remove('actief'));
-    d.classList.add('actief');zet('kwast');};
+    d.classList.add('actief');
+    document.getElementById('regenboog').classList.remove('actief');
+    if(!emmer&&!gum)zet('kwast');};
   kl.appendChild(d);
 });
-document.getElementById('eigen').oninput=e=>{kleur=e.target.value;regen=false;zet('kwast');};
+document.getElementById('eigen').oninput=e=>{kleur=e.target.value;regen=false;
+  document.getElementById('regenboog').classList.remove('actief');
+  if(!emmer&&!gum)zet('kwast');};
 document.getElementById('dikte').oninput=e=>dikte=+e.target.value;
 
-function zet(w){gum=(w==='gum');if(w!=='gum')regen=(w==='regenboog')?!regen:regen;
+function zet(w){gum=(w==='gum');emmer=(w==='emmer');
+  if(w!=='gum'&&w!=='emmer')regen=(w==='regenboog')?!regen:regen;
   document.getElementById('kwast').classList.toggle('actief',w==='kwast');
   document.getElementById('gum').classList.toggle('actief',w==='gum');
+  document.getElementById('emmer').classList.toggle('actief',w==='emmer');
   document.getElementById('regenboog').classList.toggle('actief',w==='regenboog'&&regen);}
 document.getElementById('kwast').onclick=()=>{regen=false;zet('kwast')};
 document.getElementById('gum').onclick=()=>zet('gum');
+document.getElementById('emmer').onclick=()=>zet('emmer');
 document.getElementById('regenboog').onclick=()=>{regen=!regen;zet('regenboog')};
 
 function snapshot(){stap.push(v.getImageData(0,0,verf.width,verf.height));if(stap.length>25)stap.shift();}
@@ -113,10 +121,36 @@ function lijn(a,b){v.strokeStyle=gum?'#fff':(regen?`hsl(${hue},85%,55%)`:kleur);
   v.lineWidth=gum?dikte*1.4:dikte;v.lineCap='round';v.lineJoin='round';
   v.beginPath();v.moveTo(a[0],a[1]);v.lineTo(b[0],b[1]);v.stroke();}
 verf.addEventListener('pointerdown',e=>{verf.setPointerCapture(e.pointerId);tekenen=true;
-  snapshot();laatste=pos(e);punt(...laatste);});
+  snapshot();laatste=pos(e);
+  if(emmer){vul(Math.round(laatste[0]),Math.round(laatste[1]));tekenen=false;return;}
+  punt(...laatste);});
 verf.addEventListener('pointermove',e=>{if(!tekenen)return;const p=pos(e);
   lijn(laatste,p);laatste=p;});
 verf.addEventListener('pointerup',()=>tekenen=false);
+
+// flood-fill: vult een vlak, stopt bij de zwarte lijnen van de kleurplaat
+function vul(sx,sy){
+  const W=verf.width,H=verf.height;
+  const vd=v.getImageData(0,0,W,H).data;
+  const ld=l.getImageData(0,0,W,H).data;
+  const i0=(sy*W+sx)*4, tr=vd[i0],tg=vd[i0+1],tb=vd[i0+2];
+  const k=kleur.match(/\w\w/g).map(x=>parseInt(x,16));
+  if(tr===k[0]&&tg===k[1]&&tb===k[2])return;
+  const bezocht=new Uint8Array(W*H),stek=[[sx,sy]];
+  const TOL=32;
+  while(stek.length){
+    const[x,y]=stek.pop(),i=y*W+x;
+    if(x<0||x>=W||y<0||y>=H||bezocht[i])continue;
+    bezocht[i]=1;
+    const j=i*4,lr=ld[j],lg=ld[j+1],lb=ld[j+2];
+    if(lr+lg+lb<450)continue; // donkere lijn = muur
+    const dr=vd[j]-tr,dg=vd[j+1]-tg,db=vd[j+2]-tb;
+    if(dr*dr+dg*dg+db*db>TOL*TOL*3)continue;
+    vd[j]=k[0];vd[j+1]=k[1];vd[j+2]=k[2];vd[j+3]=255;
+    stek.push([x+1,y],[x-1,y],[x,y+1],[x,y-1]);
+  }
+  v.putImageData(new ImageData(vd,W,H),0,0);
+}
 
 function laadPlaat(src,el){
   const img=new Image();img.onload=()=>{
