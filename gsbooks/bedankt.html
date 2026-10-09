@@ -15,7 +15,9 @@ body{font-family:Raleway,sans-serif;color:var(--tekst);background:var(--zand);mi
 .emoji{font-size:64px;line-height:1}
 h1{font-family:'Playfair Display',serif;color:var(--zeedonker);font-size:30px;margin:14px 0 10px}
 p.sub{color:#5a6b7a;font-size:15px;line-height:1.6;margin-bottom:8px}
-.product{background:var(--tint);border-radius:16px;padding:18px 20px;margin:22px 0;text-align:left}
+.product{background:var(--tint);border-radius:16px;padding:18px 20px;margin:22px 0;text-align:left;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.product img{width:84px;height:auto;border-radius:10px;box-shadow:0 4px 14px rgba(8,78,124,.18)}
+.product .pin{flex:1;min-width:200px}
 .product b{color:var(--zeedonker);display:block;font-size:17px;margin-bottom:4px}
 .product span{font-size:13px;color:#5a6b7a}
 .knop{display:inline-block;background:var(--goud);color:#4A3400;font-weight:800;font-size:17px;text-decoration:none;padding:15px 34px;border-radius:30px;margin-top:8px}
@@ -32,8 +34,9 @@ p.sub{color:#5a6b7a;font-size:15px;line-height:1.6;margin-bottom:8px}
 <p class="sub">Je betaling is gelukt. Hieronder staat je download —
 klik op de knop om je product meteen te openen of op te slaan.</p>
 <div class="product" id="blok" style="display:none">
-<b id="ptitel"></b><span id="puitleg"></span><br>
-<a class="knop" id="pknop" href="#">⬇️ Download nu</a>
+<img id="pimg" alt="" style="display:none">
+<div class="pin"><b id="ptitel"></b><span id="puitleg"></span><br>
+<a class="knop" id="pknop" href="#">⬇️ Download nu</a></div>
 </div>
 <p class="noot">Bewaar deze pagina of de e-mail met je aankoopbewijs —
 daarmee kun je altijd opnieuw downloaden.<br>
@@ -44,17 +47,18 @@ Bedankt dat je Animal Heroes steunt! 🐾</p>
 <script>
 // Product→download koppeling. Elke Stripe Payment Link verwijst met
 // ?p=<sleutel> naar deze pagina na betaling.
+var SUNNY_IMG='../media/sunny-mega-cover.png';
 var PRODUCTEN = {
-  "sunny-spel":      {titel:"Sunny's Zeilboot Avonturen — Het Spel", uitleg:"Computer-spel (één bestand): dubbelklikken om te spelen, werkt offline.", url:"../d/69f048627c95/Sunny-Spel.html"},
-  "sunny-pakket":    {titel:"Sunny's Zeilboot Avonturen — Mega-Pakket", uitleg:"Complete ZIP: spel + alle boekjes + knutselpakket.", url:"../d/69f048627c95/Sunny-Winkelpakket.zip"},
-  "sunny-luisterboek":{titel:"Sunny's Zeilboot Avonturen — Luisterboek", uitleg:"MP3, ruim anderhalf uur voorlezen. Speelt af op elk apparaat.", url:"../d/69f048627c95/Sunny-Luisterboek.mp3"},
-  "sunny-kalender":  {titel:"Sunny's Zeilboot Avonturen — Kalender", uitleg:"PDF, 12 maandpagina's om zelf te printen.", url:"../d/69f048627c95/Sunny-Kalender.pdf"},
-  "sunny-knutsel":   {titel:"Sunny's Zeilboot Avonturen — Knutselpakket", uitleg:"ZIP met stickers, poppentheater, kaartjes, diploma en woordkaarten.", url:"../d/69f048627c95/Sunny-Knutselpakket.zip"},
-  "sunny-activiteitenboek":{titel:"Sunny's Zeilboot Avonturen — Activiteitenboek", uitleg:"PDF met 41 pagina's spelletjes om te printen.", url:"../d/69f048627c95/Sunny-Activiteitenboek.pdf"},
-  "sunny-puzzelboek":{titel:"Sunny's Zeilboot Avonturen — Puzzelboek", uitleg:"PDF met 28 pagina's puzzels om te printen.", url:"../d/69f048627c95/Sunny-Puzzelboek.pdf"},
-  "sunny-kleurboek": {titel:"Sunny's Zeilboot Avonturen — Kleurboek", uitleg:"PDF met 21 kleurplaten om te printen.", url:"../d/69f048627c95/Sunny-Kleurboek.pdf"},
-  "sunny-bordspel":  {titel:"Sunny's Zeilboot Avonturen — Bordspel", uitleg:"Printbaar A4-speelbord + spelregels.", url:"../d/69f048627c95/Sunny-Bordspel.pdf"},
-  "sunny-videoboek": {titel:"Sunny's Zeilboot Avonturen — Videoboek", uitleg:"MP4-film, ruim anderhalf uur voorlezen met beeld. Speelt af op elk apparaat.", url:"../d/69f048627c95/Sunny-Videoboek.mp4"}
+  "sunny-spel":      {titel:"Sunny's Zeilboot Avonturen — Het Spel", uitleg:"Computer-spel (één bestand): dubbelklikken om te spelen, werkt offline.", url:"../d/69f048627c95/Sunny-Spel.html", img:SUNNY_IMG},
+  "sunny-pakket":    {titel:"Sunny's Zeilboot Avonturen — Mega-Pakket", uitleg:"Complete ZIP: spel + alle boekjes + knutselpakket.", url:"../d/69f048627c95/Sunny-Winkelpakket.zip", img:SUNNY_IMG},
+  "sunny-luisterboek":{titel:"Sunny's Zeilboot Avonturen — Luisterboek", uitleg:"MP3, ruim anderhalf uur voorlezen. Speelt af op elk apparaat.", url:"../d/69f048627c95/Sunny-Luisterboek.mp3", img:SUNNY_IMG},
+  "sunny-kalender":  {titel:"Sunny's Zeilboot Avonturen — Kalender", uitleg:"PDF, 12 maandpagina's om zelf te printen.", url:"../d/69f048627c95/Sunny-Kalender.pdf", img:SUNNY_IMG},
+  "sunny-knutsel":   {titel:"Sunny's Zeilboot Avonturen — Knutselpakket", uitleg:"ZIP met stickers, poppentheater, kaartjes, diploma en woordkaarten.", url:"../d/69f048627c95/Sunny-Knutselpakket.zip", img:SUNNY_IMG},
+  "sunny-activiteitenboek":{titel:"Sunny's Zeilboot Avonturen — Activiteitenboek", uitleg:"PDF met 41 pagina's spelletjes om te printen.", url:"../d/69f048627c95/Sunny-Activiteitenboek.pdf", img:SUNNY_IMG},
+  "sunny-puzzelboek":{titel:"Sunny's Zeilboot Avonturen — Puzzelboek", uitleg:"PDF met 28 pagina's puzzels om te printen.", url:"../d/69f048627c95/Sunny-Puzzelboek.pdf", img:SUNNY_IMG},
+  "sunny-kleurboek": {titel:"Sunny's Zeilboot Avonturen — Kleurboek", uitleg:"PDF met 21 kleurplaten om te printen.", url:"../d/69f048627c95/Sunny-Kleurboek.pdf", img:SUNNY_IMG},
+  "sunny-bordspel":  {titel:"Sunny's Zeilboot Avonturen — Bordspel", uitleg:"Printbaar A4-speelbord + spelregels.", url:"../d/69f048627c95/Sunny-Bordspel.pdf", img:SUNNY_IMG},
+  "sunny-videoboek": {titel:"Sunny's Zeilboot Avonturen — Videoboek", uitleg:"MP4-film, ruim anderhalf uur voorlezen met beeld. Speelt af op elk apparaat.", url:"../d/69f048627c95/Sunny-Videoboek.mp4", img:SUNNY_IMG}
 };
 var sleutel = new URLSearchParams(location.search).get('p');
 if (sleutel && PRODUCTEN[sleutel]) {
@@ -62,7 +66,8 @@ if (sleutel && PRODUCTEN[sleutel]) {
   document.getElementById('ptitel').textContent = pr.titel;
   document.getElementById('puitleg').textContent = pr.uitleg;
   document.getElementById('pknop').href = pr.url;
-  document.getElementById('blok').style.display = 'block';
+  if (pr.img) { var pi=document.getElementById('pimg'); pi.src=pr.img; pi.style.display='block'; }
+  document.getElementById('blok').style.display = 'flex';
 } else {
   document.querySelector('.sub').textContent =
     'Je betaling is gelukt! Je download-link staat ook in je aankoop-e-mail. ' +
