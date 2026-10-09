@@ -1159,6 +1159,138 @@
    "groep": "dembow",
    "cover": "media/8171e455-cover.png",
    "preview": "media/8171e455-preview.mp3"
+  },
+  {
+   "id": "266054dc",
+   "titel": "Houce Trap",
+   "soort": "audio",
+   "beschrijving": "Dembow beat — 126 BPM in Gm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 133.6,
+   "groep": "dembow",
+   "cover": "media/266054dc-cover.png",
+   "preview": "media/266054dc-preview.mp3"
+  },
+  {
+   "id": "53c9dc1f",
+   "titel": "Lala Dance",
+   "soort": "audio",
+   "beschrijving": "Dembow beat — 136 BPM in Gm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 141.1,
+   "groep": "dembow",
+   "cover": "media/53c9dc1f-cover.png",
+   "preview": "media/53c9dc1f-preview.mp3"
+  },
+  {
+   "id": "054630ff",
+   "titel": "Exotic Riddim",
+   "soort": "audio",
+   "beschrijving": "Dembow beat — 92 BPM in Fm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 147.0,
+   "groep": "dembow",
+   "cover": "media/054630ff-cover.png",
+   "preview": "media/054630ff-preview.mp3"
+  },
+  {
+   "id": "3083f3d3",
+   "titel": "Khvckhvclv",
+   "soort": "audio",
+   "beschrijving": "Dembow beat — 112 BPM in Am. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 124.9,
+   "groep": "dembow",
+   "cover": "media/3083f3d3-cover.png",
+   "preview": "media/3083f3d3-preview.mp3"
+  },
+  {
+   "id": "600fb829",
+   "titel": "Midnight Dembow Mashup1",
+   "soort": "audio",
+   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 158.1,
+   "groep": "dembow",
+   "cover": "media/600fb829-cover.png",
+   "preview": "media/600fb829-preview.mp3"
+  },
+  {
+   "id": "f92b4951",
+   "titel": "Midnight Dembow Mashup2",
+   "soort": "audio",
+   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 162.7,
+   "groep": "dembow",
+   "cover": "media/f92b4951-cover.png",
+   "preview": "media/f92b4951-preview.mp3"
   }
  ]
 }
