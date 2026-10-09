@@ -1,1 +1,17 @@
-[{"slug":"sunny-hoofdstuk-1","titel":"Sunny's Sailing Adventures — Hoofdstuk 1","paginas":37,"url":"vb/sunny-hoofdstuk-1/index.html","cover":"vb/sunny-hoofdstuk-1/cover.jpg"}]
+[
+ {
+  "slug": "sunny-hoofdstuk-1",
+  "titel": "Sunny's Sailing Adventures — Hoofdstuk 1",
+  "paginas": 37,
+  "url": "vb/sunny-hoofdstuk-1/index.html",
+  "cover": "vb/sunny-hoofdstuk-1/cover.jpg"
+ },
+ {
+  "slug": "dana-en-de-verdwaalde-boot",
+  "titel": "Dana en de Verdwaalde Boot — kies zelf het avontuur! 🧩",
+  "paginas": 5,
+  "url": "vb/dana-en-de-verdwaalde-boot/index.html",
+  "cover": "vb/dana-en-de-verdwaalde-boot/cover.jpg",
+  "interactief": true
+ }
+]
