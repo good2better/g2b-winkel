@@ -539,6 +539,1028 @@
    "duur": 0,
    "groep": "software",
    "cover": "media/g2b-studio-pack-cover.png"
+<<<<<<< HEAD
+||||||| parent of 384ba3f (🎵 8 eigen songs toegevoegd (licentie-producten))
+  },
+  {
+   "id": "g2b-glans",
+   "titel": "G2B Glans",
+   "soort": "digitaal",
+   "beschrijving": "Air- en breedte-plugin (VST3 + CLAP) voor elke DAW: zet glans op je master zonder je sub te vervuilen — breedte alleen boven je splitpunt. Windows. Met Nederlandse handleiding — met 6 stijl-presets.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-glans-cover.png",
+   "download_dir": "d/ddcb57cd3635d858",
+   "demo": "media/g2b-glans-demo.mp4"
+  },
+  {
+   "id": "g2b-subtamer",
+   "titel": "G2B SubTamer",
+   "soort": "digitaal",
+   "beschrijving": "Sub- en 808-controleplugin (VST3 + CLAP) voor elke DAW: houd je laag strak en mono onder je splitpunt, zonder de slagkracht te verliezen. Windows. Met Nederlandse handleiding — met 6 stijl-presets.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-subtamer-cover.png",
+   "download_dir": "d/28b55ed796124b2a",
+   "demo": "media/g2b-subtamer-demo.mp4"
+  },
+  {
+   "id": "g2b-poets",
+   "titel": "G2B Poets",
+   "soort": "digitaal",
+   "beschrijving": "De één-knop plugin (VST3 + CLAP): punch + body + sizzle in één draai — maakt je mix vet, helder en hard. Met live golfvorm-schermpje dat laat zien wat hij doet. Windows. Met Nederlandse handleiding — met 6 stijl-presets.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-poets-cover.png",
+   "download_dir": "d/c69c824eceda4964",
+   "demo": "media/g2b-poets-demo.mp4"
+  },
+  {
+   "id": "g2b-ocho",
+   "titel": "G2B OchoOcho",
+   "soort": "digitaal",
+   "beschrijving": "Jouw eigen 808 (VST3 + CLAP instrument): diepe sub-bas met glide, pitch-drop en zachte drive — gebouwd op het G2B-subgeluid. Speel hem als instrument in elke DAW. Windows. Met Nederlandse handleiding — met 6 stijl-presets.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-ocho-cover.png",
+   "download_dir": "d/df1f5bd8edab4901",
+   "demo": "media/ocho-demo.mp4"
+  },
+  {
+   "id": "g2b-suite",
+   "titel": "G2B Suite — ALLES (17 tools)",
+   "soort": "digitaal",
+   "beschrijving": "COMPLETE G2B studio: 17 producten — 8 FX + 8 instruments + MasterRack + packs. Los = €354,15 → bespaar €264. Windows VST3/CLAP.",
+   "prijs": 89.95,
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-suite-cover.png",
+   "download_dir": "d/14697b4950bd4701"
+  },
+  {
+   "id": "g2b-knip",
+   "titel": "G2B Knip",
+   "soort": "digitaal",
+   "beschrijving": "Clipper + stereo-breedte + plafond: maak je beat luider en breder zonder pieken. Met 6 stijl-presets (G2B/DEMBOW/DRILL/RNB/HOUSE/AFRO) die de knoppen meteen goed zetten — ook als je niet weet waar je moet beginnen. VST3 + CLAP voor Windows.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-knip-cover.png",
+   "download_dir": "d/8bb4d2cd4aec439e",
+   "demo": "media/g2b-knip-demo.mp4"
+  },
+  {
+   "id": "g2b-samplex",
+   "titel": "G2B SampleX",
+   "soort": "digitaal",
+   "beschrijving": "Laad je eigen one-shot of loop en maak er je eigen instrument van: pitch, filter, drive, pitch-drop en start-punt. Geen kopie — jouw eigen legale sound, speelbaar met MIDI. Sample blijft in je project opgeslagen. VST3 + CLAP voor Windows.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-samplex-cover.png",
+   "download_dir": "d/5613965b57144233",
+   "demo": "media/g2b-samplex-demo.mp4"
+  },
+  {
+   "id": "g2b-ruimte",
+   "titel": "G2B Ruimte",
+   "soort": "digitaal",
+   "beschrijving": "Delay + reverb in één draai — jouw geluid krijgt plek. Live golfvorm + 6 stijl-presets. Windows VST3 + CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-ruimte-cover.png",
+   "download_dir": "d/fe52c4567835e895",
+   "demo": "media/g2b-ruimte-demo.mp4"
+  },
+  {
+   "id": "g2b-masterrack",
+   "titel": "G2B MasterRack",
+   "soort": "digitaal",
+   "beschrijving": "DE flagship: sub+vet+luid+air+ruimte in één scherm — je complete G2B-keten op één slot. 6 preset-stijlen + live golfvorm. Windows VST3 + CLAP.",
+   "prijs": 34.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-masterrack-cover.png",
+   "download_dir": "d/7ef69ffb385e9a87",
+   "demo": "media/g2b-masterrack-demo.mp4"
+  },
+  {
+   "id": "g2b-akkoord",
+   "titel": "G2B Akkoord",
+   "soort": "digitaal",
+   "beschrijving": "Speel één toets, krijg een heel akkoord in jouw stijl — 6 voicings per genre-preset. Je tweede instrument. Windows VST3 + CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-akkoord-cover.png",
+   "download_dir": "d/081ca3261c3337a0",
+   "demo": "media/akkoord-demo.mp4"
+  },
+  {
+   "id": "g2b-looppack",
+   "titel": "G2B Loop Pack Vol.1 — Studio Melodies",
+   "soort": "digitaal",
+   "beschrijving": "12 melodie-loops GERENDERD door onze eigen engines — gelaagde keys/pluck + pad + 808-bas, gemasterd op studioniveau. BPM + key in de naam. 100% eigen, royalty-vrij voor altijd.",
+   "prijs": 14.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-looppack-cover.png",
+   "download_dir": "d/07e56514f5fbdf54"
+  },
+  {
+   "id": "g2b-drumkit",
+   "titel": "G2B Drum Kit Vol. 1",
+   "soort": "digitaal",
+   "beschrijving": "29 one-shots uit de eigen engine: kicks, snares, hats, claps, perc, 808-subs en pluck-stabs. Perfect voor G2B SampleX. Royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-drumkit-cover.png",
+   "download_dir": "d/7258ce699cb3a2e8"
+  },
+  {
+   "id": "g2b-drums",
+   "titel": "G2B Drums",
+   "soort": "digitaal",
+   "beschrijving": "Drum-machine met jouw stijl-patronen — kick/snare/hat/perc gesyncd op je DAW. 16-staps LED-grid toont wat speelt. Windows VST3 + CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-drums-cover.png",
+   "download_dir": "d/43ff51cc8c3e677c",
+   "demo": "media/g2b-drums-demo.mp4"
+  },
+  {
+   "id": "g2b-melodie",
+   "titel": "G2B Melodie",
+   "soort": "digitaal",
+   "beschrijving": "Melodie-generator: schrijft zelf hooks in jouw stijl, altijd in key (KEY+SCALE-lock). 🎲-knop = nieuwe variatie, AUTO = muteert elke 4 bars, ☀/🌙-modus, live melodie-grid. Windows VST3+CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-melodie-cover.png",
+   "download_dir": "d/419c138ba1f0d5af",
+   "demo": "media/g2b-melodie-demo.mp4"
+  },
+  {
+   "id": "g2b-stem",
+   "titel": "G2B Stem",
+   "soort": "digitaal",
+   "beschrijving": "Complete vocal-keten in één scherm: DE-ESS (sss-demping), BODY, AIR, COMP, BREEDTE — je stem staat meteen voorin. 🎲 + ☀/🌙 + presets. Windows VST3+CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-stem-cover.png",
+   "download_dir": "d/7ad9cf6dab8d000b",
+   "demo": "media/g2b-stem-demo.mp4"
+  },
+  {
+   "id": "g2b-stof",
+   "titel": "G2B Stof",
+   "soort": "digitaal",
+   "beschrijving": "Lo-fi machine: vinyl-kraak, wow/flutter wobble, donkere toon, bit-crush. Maak elke sound stoffig & warm. 🎲 + ☀/🌙 + presets. Windows VST3+CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-stof-cover.png",
+   "download_dir": "d/74c02e090078fb91",
+   "demo": "media/g2b-stof-demo.mp4"
+  },
+  {
+   "id": "g2b-keys",
+   "titel": "G2B Keys",
+   "soort": "digitaal",
+   "beschrijving": "E-piano/keys instrument: Rhodes-stijl tine + bells + stereo tremolo. Velocity-speelt. 🎲 + ☀/🌙 + presets. Windows VST3+CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-keys-cover.png",
+   "download_dir": "d/e20b87f8132aacc0",
+   "demo": "media/g2b-keys-demo.mp4"
+  },
+  {
+   "id": "g2b-bas",
+   "titel": "G2B Bas",
+   "soort": "digitaal",
+   "beschrijving": "Sub-bass & reese instrument: pure sub → detuned reese → growl. Mono-legato. 🎲 + ☀/🌙 + presets. Windows VST3+CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-bas-cover.png",
+   "download_dir": "d/a80af1715f44ec62",
+   "demo": "media/g2b-bas-demo.mp4"
+  },
+  {
+   "id": "g2b-banden",
+   "titel": "G2B Banden",
+   "soort": "digitaal",
+   "beschrijving": "Multiband-mixer: 4 freq-lagen (sub/laag/mid/air) + WIDTH + DRIVE. 🧠 LUISTER stelt de banden zelf in balans. Windows VST3+CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-banden-cover.png",
+   "download_dir": "d/0af69ba4f526aeb1",
+   "demo": "media/g2b-banden-demo.mp4"
+  },
+  {
+   "id": "g2b-song",
+   "titel": "G2B Song",
+   "soort": "digitaal",
+   "beschrijving": "All-in-one beat-engine VST3/CLAP: drums + bas + akkoorden + melodie uit één scherm. 5 stijlen, KEY+SCALE-lock, DICE schrijft een hele song, AUTO muteert elke 4 bars. Speelt zelf een complete beat in jouw key — Windows.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "plugins",
+   "cover": "media/g2b-song-cover.png",
+   "download_dir": "d/de5535c5bb3228a5",
+   "demo": "media/g2b-song-demo.mp4"
+  },
+  {
+   "id": "g2b-percfx",
+   "titel": "G2B Percussion & FX Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "32 shots GERENDERD door onze eigen engines: percs (bongo/cowbell/agogo/guiro/shaker), cymbals, hits, tom-fills en risers/falls. 100% eigen sounds, royalty-vrij voor altijd.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-percfx-cover.png",
+   "download_dir": "d/b11ad30d5a0be609"
+  },
+  {
+   "id": "g2b-dembowkit",
+   "titel": "G2B Dembow Kit Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "26 dembow-sounds GERENDERD door onze engines: sub-kicks, rims, hats, claves/guiro-percs + 2 drum-loops (95bpm). 100% eigen, royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-dembow-cover.png",
+   "download_dir": "d/644ea9eda81185ca"
+  },
+  {
+   "id": "g2b-drillkit",
+   "titel": "G2B Drill Kit Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "29 drill-sounds GERENDERD door onze engines: agressieve kicks, scherpe snares, hats + 6 sliding 808s (echte glides) + drill-loop 142bpm. 100% eigen, royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-drill-cover.png",
+   "download_dir": "d/59b422b651b647c8"
+  },
+  {
+   "id": "g2b-congo808",
+   "titel": "G2B Donder Vol.1 — Congo-808",
+   "soort": "digitaal",
+   "beschrijving": "DONDER — het nieuwe geluid: conga/bongo-slap + 808-sub als één shot (de nieuwe standaard). 10 hybride shots + traditionele congas, bongos, winti-percussie + groove-loop. 100% eigen, royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-congo808-cover.png",
+   "download_dir": "d/ec5c20746db1fdfd"
+  },
+  {
+   "id": "g2b-afrokit",
+   "titel": "G2B Afro Kit Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "28 afro-sounds GERENDERD door onze engines: kicks, 6 LOG DRUMS (amapiano-signatuur, getuned), snares, hats, percs + groove-loop 102bpm. 100% eigen, royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-afro-cover.png",
+   "download_dir": "d/78e140497f0d1f1c"
+  },
+  {
+   "id": "g2b-rnbkit",
+   "titel": "G2B RnB Kit Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "26 rnb-sounds GERENDERD door onze engines: warme kicks, snares/claps, hats, rhodes-key-stabs, zachte 808s + groove-loop 88bpm. 100% eigen, royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-rnb-cover.png",
+   "download_dir": "d/d67a3a9bc5522e11"
+  },
+  {
+   "id": "g2b-housekit",
+   "titel": "G2B House Kit Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "27 house-sounds GERENDERD door onze engines: 4-on-the-floor kicks, claps/snaps, hats, percs, bass-stabs + groove-loop 124bpm. 100% eigen, royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-house-cover.png",
+   "download_dir": "d/f69234581b741570"
+  },
+  {
+   "id": "g2b-dancehallkit",
+   "titel": "G2B Dancehall Kit Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "31 dancehall/bubbling-sounds GERENDERD door onze engines: kicks, snares/rims, hats, conga/bongo-percs, riddim-stabs + riddim-loop 102bpm. 100% eigen, royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-dancehall-cover.png",
+   "download_dir": "d/89cd9b73c6c2adf3"
+  },
+  {
+   "id": "g2b-fx-pack",
+   "titel": "G2B FX-Pack",
+   "soort": "digitaal",
+   "beschrijving": "9 effect-plugins: Glans, SubTamer, Poets, Knip, Ruimte, Stem, Stof, Banden + MasterRack. Los = €214,55.",
+   "prijs": 49.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-fxpack-cover.png",
+   "download_dir": "d/ea6f54c7925b9ed8"
+  },
+  {
+   "id": "g2b-instrument-pack",
+   "titel": "G2B Instrument-Pack",
+   "soort": "digitaal",
+   "beschrijving": "Alle 8 G2B instruments: OchoOcho, Akkoord, Drums, Melodie, SampleX, Keys, Bas + SONG (all-in-one beat). Los = €159,60 → bespaar €119. Windows VST3/CLAP.",
+   "prijs": 39.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-instrumentpack-cover.png",
+   "download_dir": "d/98b4cbb4c04add54"
+=======
+  },
+  {
+   "id": "g2b-glans",
+   "titel": "G2B Glans",
+   "soort": "digitaal",
+   "beschrijving": "Air- en breedte-plugin (VST3 + CLAP) voor elke DAW: zet glans op je master zonder je sub te vervuilen — breedte alleen boven je splitpunt. Windows. Met Nederlandse handleiding — met 6 stijl-presets.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-glans-cover.png",
+   "download_dir": "d/ddcb57cd3635d858",
+   "demo": "media/g2b-glans-demo.mp4"
+  },
+  {
+   "id": "g2b-subtamer",
+   "titel": "G2B SubTamer",
+   "soort": "digitaal",
+   "beschrijving": "Sub- en 808-controleplugin (VST3 + CLAP) voor elke DAW: houd je laag strak en mono onder je splitpunt, zonder de slagkracht te verliezen. Windows. Met Nederlandse handleiding — met 6 stijl-presets.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-subtamer-cover.png",
+   "download_dir": "d/28b55ed796124b2a",
+   "demo": "media/g2b-subtamer-demo.mp4"
+  },
+  {
+   "id": "g2b-poets",
+   "titel": "G2B Poets",
+   "soort": "digitaal",
+   "beschrijving": "De één-knop plugin (VST3 + CLAP): punch + body + sizzle in één draai — maakt je mix vet, helder en hard. Met live golfvorm-schermpje dat laat zien wat hij doet. Windows. Met Nederlandse handleiding — met 6 stijl-presets.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-poets-cover.png",
+   "download_dir": "d/c69c824eceda4964",
+   "demo": "media/g2b-poets-demo.mp4"
+  },
+  {
+   "id": "g2b-ocho",
+   "titel": "G2B OchoOcho",
+   "soort": "digitaal",
+   "beschrijving": "Jouw eigen 808 (VST3 + CLAP instrument): diepe sub-bas met glide, pitch-drop en zachte drive — gebouwd op het G2B-subgeluid. Speel hem als instrument in elke DAW. Windows. Met Nederlandse handleiding — met 6 stijl-presets.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-ocho-cover.png",
+   "download_dir": "d/df1f5bd8edab4901",
+   "demo": "media/ocho-demo.mp4"
+  },
+  {
+   "id": "g2b-suite",
+   "titel": "G2B Suite — ALLES (17 tools)",
+   "soort": "digitaal",
+   "beschrijving": "COMPLETE G2B studio: 17 producten — 8 FX + 8 instruments + MasterRack + packs. Los = €354,15 → bespaar €264. Windows VST3/CLAP.",
+   "prijs": 89.95,
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-suite-cover.png",
+   "download_dir": "d/14697b4950bd4701"
+  },
+  {
+   "id": "g2b-knip",
+   "titel": "G2B Knip",
+   "soort": "digitaal",
+   "beschrijving": "Clipper + stereo-breedte + plafond: maak je beat luider en breder zonder pieken. Met 6 stijl-presets (G2B/DEMBOW/DRILL/RNB/HOUSE/AFRO) die de knoppen meteen goed zetten — ook als je niet weet waar je moet beginnen. VST3 + CLAP voor Windows.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-knip-cover.png",
+   "download_dir": "d/8bb4d2cd4aec439e",
+   "demo": "media/g2b-knip-demo.mp4"
+  },
+  {
+   "id": "g2b-samplex",
+   "titel": "G2B SampleX",
+   "soort": "digitaal",
+   "beschrijving": "Laad je eigen one-shot of loop en maak er je eigen instrument van: pitch, filter, drive, pitch-drop en start-punt. Geen kopie — jouw eigen legale sound, speelbaar met MIDI. Sample blijft in je project opgeslagen. VST3 + CLAP voor Windows.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-samplex-cover.png",
+   "download_dir": "d/5613965b57144233",
+   "demo": "media/g2b-samplex-demo.mp4"
+  },
+  {
+   "id": "g2b-ruimte",
+   "titel": "G2B Ruimte",
+   "soort": "digitaal",
+   "beschrijving": "Delay + reverb in één draai — jouw geluid krijgt plek. Live golfvorm + 6 stijl-presets. Windows VST3 + CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-ruimte-cover.png",
+   "download_dir": "d/fe52c4567835e895",
+   "demo": "media/g2b-ruimte-demo.mp4"
+  },
+  {
+   "id": "g2b-masterrack",
+   "titel": "G2B MasterRack",
+   "soort": "digitaal",
+   "beschrijving": "DE flagship: sub+vet+luid+air+ruimte in één scherm — je complete G2B-keten op één slot. 6 preset-stijlen + live golfvorm. Windows VST3 + CLAP.",
+   "prijs": 34.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-masterrack-cover.png",
+   "download_dir": "d/7ef69ffb385e9a87",
+   "demo": "media/g2b-masterrack-demo.mp4"
+  },
+  {
+   "id": "g2b-akkoord",
+   "titel": "G2B Akkoord",
+   "soort": "digitaal",
+   "beschrijving": "Speel één toets, krijg een heel akkoord in jouw stijl — 6 voicings per genre-preset. Je tweede instrument. Windows VST3 + CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-akkoord-cover.png",
+   "download_dir": "d/081ca3261c3337a0",
+   "demo": "media/akkoord-demo.mp4"
+  },
+  {
+   "id": "g2b-looppack",
+   "titel": "G2B Loop Pack Vol.1 — Studio Melodies",
+   "soort": "digitaal",
+   "beschrijving": "12 melodie-loops GERENDERD door onze eigen engines — gelaagde keys/pluck + pad + 808-bas, gemasterd op studioniveau. BPM + key in de naam. 100% eigen, royalty-vrij voor altijd.",
+   "prijs": 14.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-looppack-cover.png",
+   "download_dir": "d/07e56514f5fbdf54"
+  },
+  {
+   "id": "g2b-drumkit",
+   "titel": "G2B Drum Kit Vol. 1",
+   "soort": "digitaal",
+   "beschrijving": "29 one-shots uit de eigen engine: kicks, snares, hats, claps, perc, 808-subs en pluck-stabs. Perfect voor G2B SampleX. Royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-drumkit-cover.png",
+   "download_dir": "d/7258ce699cb3a2e8"
+  },
+  {
+   "id": "g2b-drums",
+   "titel": "G2B Drums",
+   "soort": "digitaal",
+   "beschrijving": "Drum-machine met jouw stijl-patronen — kick/snare/hat/perc gesyncd op je DAW. 16-staps LED-grid toont wat speelt. Windows VST3 + CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-drums-cover.png",
+   "download_dir": "d/43ff51cc8c3e677c",
+   "demo": "media/g2b-drums-demo.mp4"
+  },
+  {
+   "id": "g2b-melodie",
+   "titel": "G2B Melodie",
+   "soort": "digitaal",
+   "beschrijving": "Melodie-generator: schrijft zelf hooks in jouw stijl, altijd in key (KEY+SCALE-lock). 🎲-knop = nieuwe variatie, AUTO = muteert elke 4 bars, ☀/🌙-modus, live melodie-grid. Windows VST3+CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-melodie-cover.png",
+   "download_dir": "d/419c138ba1f0d5af",
+   "demo": "media/g2b-melodie-demo.mp4"
+  },
+  {
+   "id": "g2b-stem",
+   "titel": "G2B Stem",
+   "soort": "digitaal",
+   "beschrijving": "Complete vocal-keten in één scherm: DE-ESS (sss-demping), BODY, AIR, COMP, BREEDTE — je stem staat meteen voorin. 🎲 + ☀/🌙 + presets. Windows VST3+CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-stem-cover.png",
+   "download_dir": "d/7ad9cf6dab8d000b",
+   "demo": "media/g2b-stem-demo.mp4"
+  },
+  {
+   "id": "g2b-stof",
+   "titel": "G2B Stof",
+   "soort": "digitaal",
+   "beschrijving": "Lo-fi machine: vinyl-kraak, wow/flutter wobble, donkere toon, bit-crush. Maak elke sound stoffig & warm. 🎲 + ☀/🌙 + presets. Windows VST3+CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-stof-cover.png",
+   "download_dir": "d/74c02e090078fb91",
+   "demo": "media/g2b-stof-demo.mp4"
+  },
+  {
+   "id": "g2b-keys",
+   "titel": "G2B Keys",
+   "soort": "digitaal",
+   "beschrijving": "E-piano/keys instrument: Rhodes-stijl tine + bells + stereo tremolo. Velocity-speelt. 🎲 + ☀/🌙 + presets. Windows VST3+CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-keys-cover.png",
+   "download_dir": "d/e20b87f8132aacc0",
+   "demo": "media/g2b-keys-demo.mp4"
+  },
+  {
+   "id": "g2b-bas",
+   "titel": "G2B Bas",
+   "soort": "digitaal",
+   "beschrijving": "Sub-bass & reese instrument: pure sub → detuned reese → growl. Mono-legato. 🎲 + ☀/🌙 + presets. Windows VST3+CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-bas-cover.png",
+   "download_dir": "d/a80af1715f44ec62",
+   "demo": "media/g2b-bas-demo.mp4"
+  },
+  {
+   "id": "g2b-banden",
+   "titel": "G2B Banden",
+   "soort": "digitaal",
+   "beschrijving": "Multiband-mixer: 4 freq-lagen (sub/laag/mid/air) + WIDTH + DRIVE. 🧠 LUISTER stelt de banden zelf in balans. Windows VST3+CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-banden-cover.png",
+   "download_dir": "d/0af69ba4f526aeb1",
+   "demo": "media/g2b-banden-demo.mp4"
+  },
+  {
+   "id": "g2b-song",
+   "titel": "G2B Song",
+   "soort": "digitaal",
+   "beschrijving": "All-in-one beat-engine VST3/CLAP: drums + bas + akkoorden + melodie uit één scherm. 5 stijlen, KEY+SCALE-lock, DICE schrijft een hele song, AUTO muteert elke 4 bars. Speelt zelf een complete beat in jouw key — Windows.",
+   "prijs": 19.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "plugins",
+   "cover": "media/g2b-song-cover.png",
+   "download_dir": "d/de5535c5bb3228a5",
+   "demo": "media/g2b-song-demo.mp4"
+  },
+  {
+   "id": "g2b-percfx",
+   "titel": "G2B Percussion & FX Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "32 shots GERENDERD door onze eigen engines: percs (bongo/cowbell/agogo/guiro/shaker), cymbals, hits, tom-fills en risers/falls. 100% eigen sounds, royalty-vrij voor altijd.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-percfx-cover.png",
+   "download_dir": "d/b11ad30d5a0be609"
+  },
+  {
+   "id": "g2b-dembowkit",
+   "titel": "G2B Dembow Kit Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "26 dembow-sounds GERENDERD door onze engines: sub-kicks, rims, hats, claves/guiro-percs + 2 drum-loops (95bpm). 100% eigen, royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-dembow-cover.png",
+   "download_dir": "d/644ea9eda81185ca"
+  },
+  {
+   "id": "g2b-drillkit",
+   "titel": "G2B Drill Kit Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "29 drill-sounds GERENDERD door onze engines: agressieve kicks, scherpe snares, hats + 6 sliding 808s (echte glides) + drill-loop 142bpm. 100% eigen, royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-drill-cover.png",
+   "download_dir": "d/59b422b651b647c8"
+  },
+  {
+   "id": "g2b-congo808",
+   "titel": "G2B Donder Vol.1 — Congo-808",
+   "soort": "digitaal",
+   "beschrijving": "DONDER — het nieuwe geluid: conga/bongo-slap + 808-sub als één shot (de nieuwe standaard). 10 hybride shots + traditionele congas, bongos, winti-percussie + groove-loop. 100% eigen, royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-congo808-cover.png",
+   "download_dir": "d/ec5c20746db1fdfd"
+  },
+  {
+   "id": "g2b-afrokit",
+   "titel": "G2B Afro Kit Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "28 afro-sounds GERENDERD door onze engines: kicks, 6 LOG DRUMS (amapiano-signatuur, getuned), snares, hats, percs + groove-loop 102bpm. 100% eigen, royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-afro-cover.png",
+   "download_dir": "d/78e140497f0d1f1c"
+  },
+  {
+   "id": "g2b-rnbkit",
+   "titel": "G2B RnB Kit Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "26 rnb-sounds GERENDERD door onze engines: warme kicks, snares/claps, hats, rhodes-key-stabs, zachte 808s + groove-loop 88bpm. 100% eigen, royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-rnb-cover.png",
+   "download_dir": "d/d67a3a9bc5522e11"
+  },
+  {
+   "id": "g2b-housekit",
+   "titel": "G2B House Kit Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "27 house-sounds GERENDERD door onze engines: 4-on-the-floor kicks, claps/snaps, hats, percs, bass-stabs + groove-loop 124bpm. 100% eigen, royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-house-cover.png",
+   "download_dir": "d/f69234581b741570"
+  },
+  {
+   "id": "g2b-dancehallkit",
+   "titel": "G2B Dancehall Kit Vol.1",
+   "soort": "digitaal",
+   "beschrijving": "31 dancehall/bubbling-sounds GERENDERD door onze engines: kicks, snares/rims, hats, conga/bongo-percs, riddim-stabs + riddim-loop 102bpm. 100% eigen, royalty-vrij.",
+   "prijs": 9.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "sounds",
+   "cover": "media/g2b-dancehall-cover.png",
+   "download_dir": "d/89cd9b73c6c2adf3"
+  },
+  {
+   "id": "g2b-fx-pack",
+   "titel": "G2B FX-Pack",
+   "soort": "digitaal",
+   "beschrijving": "9 effect-plugins: Glans, SubTamer, Poets, Knip, Ruimte, Stem, Stof, Banden + MasterRack. Los = €214,55.",
+   "prijs": 49.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-fxpack-cover.png",
+   "download_dir": "d/ea6f54c7925b9ed8"
+  },
+  {
+   "id": "g2b-instrument-pack",
+   "titel": "G2B Instrument-Pack",
+   "soort": "digitaal",
+   "beschrijving": "Alle 8 G2B instruments: OchoOcho, Akkoord, Drums, Melodie, SampleX, Keys, Bas + SONG (all-in-one beat). Los = €159,60 → bespaar €119. Windows VST3/CLAP.",
+   "prijs": 39.95,
+   "links": {
+    "koop": ""
+   },
+   "groep": "software",
+   "cover": "media/g2b-instrumentpack-cover.png",
+   "download_dir": "d/98b4cbb4c04add54"
+  },
+  {
+   "id": "4e69688f",
+   "titel": "Vinyl Crackle Leerles",
+   "soort": "audio",
+   "beschrijving": "Eigen productie — licentie, geen buy-out",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 90,
+   "groep": "eigen songs",
+   "cover": "media/4e69688f-cover.png",
+   "preview": "media/4e69688f-preview.mp3"
+  },
+  {
+   "id": "03549903",
+   "titel": "War With Who",
+   "soort": "audio",
+   "beschrijving": "Eigen productie — licentie, geen buy-out",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 90,
+   "groep": "eigen songs",
+   "cover": "media/03549903-cover.png",
+   "preview": "media/03549903-preview.mp3"
+  },
+  {
+   "id": "e7384d9b",
+   "titel": "Sanka",
+   "soort": "audio",
+   "beschrijving": "Eigen productie — licentie, geen buy-out",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 90,
+   "groep": "eigen songs",
+   "cover": "media/e7384d9b-cover.png",
+   "preview": "media/e7384d9b-preview.mp3"
+  },
+  {
+   "id": "4485e96f",
+   "titel": "Story Of Tato 2025 Carib",
+   "soort": "audio",
+   "beschrijving": "Eigen productie — licentie, geen buy-out",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 90,
+   "groep": "eigen songs",
+   "cover": "media/4485e96f-cover.png",
+   "preview": "media/4485e96f-preview.mp3"
+  },
+  {
+   "id": "65dfd1a2",
+   "titel": "Summer In Februari 2023",
+   "soort": "audio",
+   "beschrijving": "Eigen productie — licentie, geen buy-out",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 90,
+   "groep": "eigen songs",
+   "cover": "media/65dfd1a2-cover.png",
+   "preview": "media/65dfd1a2-preview.mp3"
+  },
+  {
+   "id": "e043af90",
+   "titel": "Upup Verder Motivatie",
+   "soort": "audio",
+   "beschrijving": "Eigen productie — licentie, geen buy-out",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 90,
+   "groep": "eigen songs",
+   "cover": "media/e043af90-cover.png",
+   "preview": "media/e043af90-preview.mp3"
+  },
+  {
+   "id": "a960ac84",
+   "titel": "Verder Rica - Tru The Night",
+   "soort": "audio",
+   "beschrijving": "Eigen productie — licentie, geen buy-out",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 90,
+   "groep": "eigen songs",
+   "cover": "media/a960ac84-cover.png",
+   "preview": "media/a960ac84-preview.mp3"
+  },
+  {
+   "id": "23e386ca",
+   "titel": "Youngin 2026",
+   "soort": "audio",
+   "beschrijving": "Eigen productie — licentie, geen buy-out",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 90,
+   "groep": "eigen songs",
+   "cover": "media/23e386ca-cover.png",
+   "preview": "media/23e386ca-preview.mp3"
+>>>>>>> 384ba3f (🎵 8 eigen songs toegevoegd (licentie-producten))
   }
  ]
 }
