@@ -614,7 +614,7 @@ fetch('vb/index.json').then(function(r){return r.ok?r.json():[]}).then(function(
     lijst.map(function(v){
       return '<a href="'+v.url+'" style="display:block;background:rgba(255,255,255,.12);border-radius:12px;overflow:hidden;text-decoration:none;color:#fff">'+
         '<img src="'+v.cover+'" alt="" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block">'+
-        '<div style="padding:8px 10px;font-size:.85rem"><b>'+(v.interactief?'🧩 ':'▶ ')+v.titel+'</b><br><span style="opacity:.8">'+(v.interactief?'Jij kiest!':'▶ '+v.paginas+' pagina’s')+'</span></div></a>';
+        '<div style="padding:8px 10px;font-size:.85rem"><b>'+(v.interactief?'🧩 ':'▶ ')+v.titel+'</b><br><span style="opacity:.8">'+(v.interactief?'Jij kiest!':(v.video?'🎬 voorleesvideo':'▶ '+v.paginas+' pagina’s'))+'</span></div></a>';
     }).join('')+'</div>';
 }).catch(function(){});
 </script>
