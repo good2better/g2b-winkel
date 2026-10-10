@@ -942,10 +942,10 @@
    "preview": "media/0b5647bf-preview.mp3"
   },
   {
-   "id": "ritmosalbum",
-   "titel": "Ritmos Del Corazón — album",
+   "id": "ritmosbundel",
+   "titel": "Ritmos Del Corazón + Beat Tape",
    "soort": "digitaal",
-   "beschrijving": "Zijn Spaanse album: 12 tracks, opnieuw gemasterd op streaming-niveau (-14,5 LUFS). MP3 320k + cover + tracklist.",
+   "beschrijving": "Zijn Spaanse album (12 tracks, opnieuw gemasterd op streaming-niveau) + GRATIS G2B Beat Tape Vol. 1 (33 min doorlopende tape met 13 beats). Twee downloads, één prijs.",
    "prijs": "€ 9,95",
    "prijzen": {
     "digitaal": "€ 9,95"
@@ -955,27 +955,10 @@
     "digitaal": ""
    },
    "groep": "muziek",
-   "cover": "media/ritmosalbum-cover.png",
+   "cover": "media/ritmosbundle-cover.png",
    "preview": "media/ritmosalbum-preview.mp3",
-   "download_dir": "d/ritmosalbum"
-  },
-  {
-   "id": "beattape1",
-   "titel": "G2B Beat Tape Vol. 1",
-   "soort": "digitaal",
-   "beschrijving": "33 minuten doorlopende tape met zijn 13 winkel-beats achter elkaar gemixed. Elke beat is ook los te licensen.",
-   "prijs": "€ 9,95",
-   "prijzen": {
-    "digitaal": "€ 9,95"
-   },
-   "links": {
-    "koop": "",
-    "digitaal": ""
-   },
-   "groep": "muziek",
-   "cover": "media/beattape1-cover.png",
-   "preview": "media/beattape1-preview.mp3",
-   "download_dir": "d/beattape1"
+   "video": "media/ritmosbundle-promo.mp4",
+   "download_dir": "d/d74976fef7dfff6a"
   }
  ]
 }

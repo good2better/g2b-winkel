@@ -96,6 +96,14 @@ async function laden() {
 
   const href = info.url || `d/${k}/${encodeURIComponent(info.bestand)}`;
   const extern = !!info.url;
+  // bundel: info.bestanden = [{naam, url}] → één knop per bestand
+  const knoppen = info.bestanden ? info.bestanden.map(b => {
+    const h = b.url || `d/${k}/${encodeURIComponent(b.bestand)}`;
+    const ex = !!b.url;
+    return `<a class="knop" href="${esc(h)}" ${ex ? 'target="_blank" rel="noopener"' : "download"}>
+      ⬇ ${esc(b.naam || "DOWNLOAD")}</a>`;
+  }).join("") : `<a class="knop" href="${esc(href)}" ${extern ? 'target="_blank" rel="noopener"' : "download"}>
+      ⬇ DOWNLOAD</a>`;
   kaart.innerHTML = `
     <div class="vinkje">✓</div>
     <h1>Bedankt voor je aankoop!</h1>
@@ -107,8 +115,7 @@ async function laden() {
         <div class="l">${esc(info.licentie || "")}</div>
       </div>
     </div>
-    <a class="knop" href="${esc(href)}" ${extern ? 'target="_blank" rel="noopener"' : "download"}>
-      ⬇ DOWNLOAD</a>
+    ${knoppen}
     <div class="klein">Bewaar deze link — hij is jouw persoonlijke
       download. Werkt de knop niet? Rechtermuisknop → "link opslaan als".
       <br><a href="index.html">← terug naar de winkel</a></div>`;
