@@ -187,6 +187,22 @@
    "badge": "later los — nu in bundel"
   },
   {
+   "id": "g2b-tijd",
+   "titel": "G2B Tijd",
+   "soort": "digitaal",
+   "beschrijving": "Echte pitch-shift + formant op je audio — toonhoogte verandert, tempo blijft gelijk (REAPER-grade stretch-engine, MIT). TOON ±24 semitones, FORMANT ±12 karakter, MIX, OUTPUT, SMOOTH + GALAXY-knop. 17 stijl-presets. Windows VST3 + CLAP.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-tijd-cover.png",
+   "download_dir": "d/e7f1a9c2d4b6",
+   "badge": "later los — nu in bundel"
+  },
+  {
    "id": "g2b-ruimte",
    "titel": "G2B Ruimte",
    "soort": "digitaal",
