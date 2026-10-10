@@ -1,6 +1,56 @@
 {
  "quizzen": [
   {
+   "boek": "Ziggy Zebra en de Grijze Schaduw",
+   "vragen": [
+    {
+     "v": "Wat is er met de wereld gebeurd als Ziggy wakker wordt?",
+     "a": [
+      "Alles is grijs",
+      "Alles is nat",
+      "Alles is groot"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wat vindt Ziggy onder een blad?",
+     "a": [
+      "Een sleutel",
+      "Een mini rood vlindertje",
+      "Een kaart"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Hoe komt kleur terug bij de dieren?",
+     "a": [
+      "Door vriendschap bij Ziggy",
+      "Door regen",
+      "Door slapen"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Waarom was de Grijze Schaduw grijs?",
+     "a": [
+      "Hij was boos",
+      "Hij had nooit vriendjes",
+      "Hij was ziek"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "In wat verandert de Schaduw na Ziggy's knuffel?",
+     "a": [
+      "In een Gouden Schaduw",
+      "In een regenboog",
+      "In een ster"
+     ],
+     "goed": 0
+    }
+   ]
+  },
+  {
    "boek": "Ziggy Zebra en de Dansende Kleuren",
    "vragen": [
     {

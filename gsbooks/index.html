@@ -425,6 +425,15 @@ footer a{color:var(--zee)}
 <div class="track"><b>Hoofdstuk 5 — Het Lied van Samenwerking</b><small>Nederlands audioboek</small><audio controls preload="none" src="audio/ziggy2-h5.mp3"></audio></div>
 <div class="track"><b>Hoofdstuk 6 — De Finale Dans</b><small>Nederlands audioboek</small><audio controls preload="none" src="audio/ziggy2-h6.mp3"></audio></div>
 </div>
+<h3 style="color:var(--zeedonker);margin:16px 0 8px">🦓 Ziggy Zebra — Boek 3: De Grijze Schaduw</h3>
+<div class="luister-grid">
+<div class="track"><b>Hoofdstuk 1 — Het Grijze Mysterie</b><small>Nederlands audioboek</small><audio controls preload="none" src="audio/ziggy3-h1.mp3"></audio></div>
+<div class="track"><b>Hoofdstuk 2 — Op Zoek naar Kleur</b><small>Nederlands audioboek</small><audio controls preload="none" src="audio/ziggy3-h2.mp3"></audio></div>
+<div class="track"><b>Hoofdstuk 3 — De Kracht van Vriendschap</b><small>Nederlands audioboek</small><audio controls preload="none" src="audio/ziggy3-h3.mp3"></audio></div>
+<div class="track"><b>Hoofdstuk 4 — Een Vleugje Moed</b><small>Nederlands audioboek</small><audio controls preload="none" src="audio/ziggy3-h4.mp3"></audio></div>
+<div class="track"><b>Hoofdstuk 5 — De Terugkeer van Kleur</b><small>Nederlands audioboek</small><audio controls preload="none" src="audio/ziggy3-h5.mp3"></audio></div>
+<div class="track"><b>Hoofdstuk 6 — Het Licht Overwint</b><small>Nederlands audioboek</small><audio controls preload="none" src="audio/ziggy3-h6.mp3"></audio></div>
+</div>
 </section>
 
 <section id="blader">
@@ -434,6 +443,7 @@ footer a{color:var(--zee)}
 <button class="held-kies actief" data-bl="sunny" onclick="blKies('sunny')">⛵ Sunny</button>
 <button class="held-kies" data-bl="ziggy" onclick="blKies('ziggy')">🦓 Ziggy</button>
 <button class="held-kies" data-bl="ziggy2" onclick="blKies('ziggy2')">🦓 Ziggy 2</button>
+<button class="held-kies" data-bl="ziggy3" onclick="blKies('ziggy3')">🦓 Ziggy 3</button>
 </div>
 <div class="vb-scherm" style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 14px rgba(8,78,124,.15)">
 <img id="bl-img" src="boek/p00.jpg" alt="Boekpagina uit Sunny's Sailing Adventures" style="width:100%;height:min(60vw,480px);object-fit:contain">
@@ -558,7 +568,8 @@ function vbStap(i,d){
 // boek-bladeraar
 var BLBOEKEN={sunny:{dir:'boek',n:20,sub:"20 echte hoofdstuk-plaatjes uit <i>Sunny's Sailing Adventures</i> — klik door het boek alsof je het vasthoudt.",koop:'https://buy.stripe.com/00wbJ12wwaan8rRggB5J601'},
   ziggy:{dir:'boek-ziggy',n:9,sub:"9 hoofdstuk-pagina's uit <i>Ziggy Zebra en de Magische Kleurenrace</i> — blader zelf door het echte boek.",koop:''},
-  ziggy2:{dir:'boek-ziggy2',n:6,sub:"6 hoofdstuk-pagina's uit <i>Ziggy Zebra en de Dansende Kleuren</i> — het nieuwe boek 2!",koop:''}};
+  ziggy2:{dir:'boek-ziggy2',n:6,sub:"6 hoofdstuk-pagina's uit <i>Ziggy Zebra en de Dansende Kleuren</i> — het nieuwe boek 2!",koop:''},
+  ziggy3:{dir:'boek-ziggy3',n:6,sub:"6 hoofdstuk-pagina's uit <i>Ziggy Zebra en de Grijze Schaduw</i> — boek 3!",koop:''}};
 var blIdx=0,blB=BLBOEKEN.sunny;
 function blToon(){
   document.getElementById('bl-img').src=blB.dir+'/p'+String(blIdx).padStart(2,'0')+'.jpg';
@@ -581,6 +592,7 @@ var HELDEN={
   keesje:{naam:'Keesje Konijn',ico:'🐰'},
   ziggy:{naam:'Ziggy Zebra',ico:'🦓'},
   ziggy2:{naam:'Ziggy Boek 2',ico:'💃'},
+  ziggy3:{naam:'Ziggy Boek 3',ico:'🌫️'},
   sunny:{naam:'Sunny',ico:'⛵'},
   dana:{naam:'Dana',ico:'🐬'},
   bram:{naam:'Bram',ico:'🐕'},

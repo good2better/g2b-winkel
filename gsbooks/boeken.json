@@ -41,6 +41,20 @@
    }
   },
   {
+   "titel": "Ziggy Zebra en de Grijze Schaduw",
+   "beschrijving": "Boek 3 — Alles is grijs geworden... kan Ziggy's moed en vriendschap de kleuren terugbrengen? (0-3 jaar)",
+   "cover": "media/83abeac8f4-cover.png",
+   "serie": "ziggy",
+   "ebook": {
+    "prijs": "4,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "7,95",
+    "koop": ""
+   }
+  },
+  {
    "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket",
    "serie": "sunny",
    "cover": "media/sunny-mega-cover.png",
