@@ -311,6 +311,56 @@
      "goed": 1
     }
    ]
+  },
+  {
+   "boek": "Ziggy Zebra en de Magische Kleurenrace",
+   "vragen": [
+    {
+     "v": "Wat is Ziggy voor dier?",
+     "a": [
+      "Een zebra",
+      "Een eend",
+      "Een paard"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wie neemt Ziggy mee naar de wereld van kleuren?",
+     "a": [
+      "Keesje Konijn",
+      "Meneer Regenboog",
+      "Chef Koko"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Welke kleur is Ziggy's eerste avontuur?",
+     "a": [
+      "Groen",
+      "Blauw",
+      "Rood"
+     ],
+     "goed": 2
+    },
+    {
+     "v": "Waar voert Ziggy op de blauwe zee?",
+     "a": [
+      "In een blauw bootje",
+      "Op een vliegende zebra",
+      "In een zwemband"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Waar is het eindfeest van de Kleurenrace?",
+     "a": [
+      "In het bos",
+      "In Regenboogdorp",
+      "Op de maan"
+     ],
+     "goed": 1
+    }
+   ]
   }
  ]
 }
