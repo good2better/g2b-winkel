@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dana en de Verdwaalde Boot (voorleesvideo)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0b0d0c;color:#e8ecea;font:16px/1.5 'Segoe UI',system-ui,sans-serif;overflow:hidden}
+#scherm{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0b0d0c}
+video{width:100%;height:100%;object-fit:contain}
+#start{position:fixed;inset:0;background:#0b0d0cd9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px;z-index:8}
+#start h1{font-size:clamp(28px,5vw,44px);text-shadow:0 2px 12px #000}
+#speel{background:#2fbf71;color:#04120a;border:0;border-radius:14px;padding:16px 32px;font-size:clamp(17px,2.6vw,22px);font-weight:800;cursor:pointer}
+#speel:hover{filter:brightness(1.12);transform:scale(1.04)}
+#einde{position:fixed;inset:0;background:#0b0d0cd9;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px;z-index:8}
+#einde h1{font-size:clamp(24px,4.5vw,38px);text-shadow:0 2px 12px #000;max-width:22em}
+a.koop{background:#fab005;color:#04120a;border-radius:14px;padding:16px 32px;font-size:clamp(16px,2.4vw,20px);font-weight:800;cursor:pointer;text-decoration:none}
+a.koop:hover{filter:brightness(1.12);transform:scale(1.04)}
+#opnieuw{background:rgba(255,255,255,.15);color:#fff;border:0;border-radius:14px;padding:12px 24px;font-size:16px;font-weight:700;cursor:pointer}
+#titel{position:fixed;top:14px;left:0;right:0;text-align:center;font-weight:800;font-size:clamp(18px,3vw,26px);letter-spacing:1px;text-shadow:0 2px 12px #000;z-index:5;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="scherm"><video id="film" src="preview.mp4" playsinline preload="metadata"></video></div>
+<div id="titel">Dana en de Verdwaalde Boot</div>
+<div id="start"><h1>Dana<br>en de Verdwaalde Boot</h1>
+  <p>Gratis voorleesvideo — ontmoet Dana! 🐬</p>
+  <button id="speel">▶ SPEEL DE VIDEO</button></div>
+<div id="einde"><h1>Dat was Dana!<br>Ontdek het hele avontuur in de winkel.</h1>
+  <a class="koop" href="../../index.html">🐬 Bekijk het boek in de winkel</a>
+  <button id="opnieuw">🔁 Nog een keer kijken</button></div>
+<script>
+const v=document.getElementById('film'),start=document.getElementById('start'),einde=document.getElementById('einde');
+document.getElementById('speel').onclick=()=>{start.style.display='none';v.play();};
+v.onended=()=>{einde.style.display='flex';};
+document.getElementById('opnieuw').onclick=()=>{einde.style.display='none';v.currentTime=0;v.play();};
+</script>
+</body>
+</html>

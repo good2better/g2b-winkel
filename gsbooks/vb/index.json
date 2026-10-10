@@ -63,6 +63,20 @@
   "video": true
  },
  {
+  "slug": "dana-avontuur",
+  "titel": "Dana en de Verdwaalde Boot",
+  "url": "vb/dana-avontuur/index.html",
+  "cover": "vb/dana-avontuur/cover.jpg",
+  "video": true
+ },
+ {
+  "slug": "sunny-avontuur",
+  "titel": "Sunny's Zeilboot Avonturen",
+  "url": "vb/sunny-avontuur/index.html",
+  "cover": "vb/sunny-avontuur/cover.jpg",
+  "video": true
+ },
+ {
   "slug": "sunny-hoofdstuk-1",
   "titel": "Sunny's Sailing Adventures — Hoofdstuk 1",
   "paginas": 37,
