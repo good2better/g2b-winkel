@@ -202,22 +202,6 @@
   "interactief": true
  },
  {
-  "slug": "koko-fruitfeest",
-  "titel": "Chef Koko — Het Grote Fruitfeest 🦍🍌",
-  "video": true,
-  "url": "vb/koko-fruitfeest/index.html",
-  "cover": "vb/koko-fruitfeest/cover.jpg"
- },
- {
-  "slug": "vraag-het-aan-koko",
-  "titel": "Vraag het aan Chef Koko 🦍",
-  "video": false,
-  "url": "vb/vraag-het-aan-koko/index.html",
-  "cover": "vb/vraag-het-aan-koko/cover.jpg",
-  "interactief": true,
-  "paginas": 5
- },
- {
   "slug": "kokos-keuken",
   "titel": "De Kleurrijke Keuken van Chef Kokos 👨‍🍳🥕",
   "video": true,
