@@ -78,7 +78,7 @@ async function laden() {
     apps: "🛠️ Apps", boeken: "📚 Boeken", plugins: "🔌 Plugins",
     sounds: "🔊 Sound packs", muziek: "🎤 Muziek", beats: "🎵 Beats",
   };
-  const CAT_VOLGORDE = ["apps", "boeken", "plugins", "sounds", "muziek", "beats"];
+  const CAT_VOLGORDE = ["muziek", "beats", "sounds", "plugins", "boeken", "apps"];
 
   // binnen Boeken: serie-volgorde 1→10 met e-boek direct achter zijn
   // kleurboek, daarna verzamel-/avonturen-bundels; onbekende titels alfabetisch.
