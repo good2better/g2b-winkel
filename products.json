@@ -545,50 +545,6 @@
    "video": "media/g2b-bedrijfsmiddelen-demo.mp4"
   },
   {
-   "id": "e110f961",
-   "titel": "Meester Drill",
-   "soort": "audio",
-   "beschrijving": "Drill beat — 79 BPM in Bm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
-   },
-   "duur": 54.6,
-   "groep": "drill",
-   "cover": "media/e110f961-cover.png",
-   "preview": "media/e110f961-preview.mp3"
-  },
-  {
-   "id": "e7384d9b",
-   "titel": "Sanka",
-   "soort": "audio",
-   "beschrijving": "Eigen productie — licentie, geen buy-out",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "",
-    "mp3": "",
-    "wav": "",
-    "exclusief": ""
-   },
-   "duur": 90,
-   "groep": "eigen songs",
-   "cover": "media/e7384d9b-cover.png",
-   "preview": "media/e7384d9b-preview.mp3"
-  },
-  {
    "id": "c5444536",
    "titel": "Midnight Dembow",
    "soort": "audio",
@@ -631,28 +587,6 @@
    "groep": "house",
    "cover": "media/2878e291-cover.png",
    "preview": "media/2878e291-preview.mp3"
-  },
-  {
-   "id": "57de20ad",
-   "titel": "Meester Dancehall",
-   "soort": "audio",
-   "beschrijving": "Dancehall beat — 80 BPM in Am7. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
-   },
-   "duur": 53.7,
-   "groep": "dancehall",
-   "cover": "media/57de20ad-cover.png",
-   "preview": "media/57de20ad-preview.mp3"
   },
   {
    "id": "d9d479ab",
@@ -997,28 +931,6 @@
    "groep": "sounds",
    "cover": "media/midnightst-cover.png",
    "preview": "media/midnightst-preview.mp3"
-  },
-  {
-   "id": "443881d2",
-   "titel": "Meester Kampioen",
-   "soort": "audio",
-   "beschrijving": "Rnb beat — 77 BPM in Gm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
-   },
-   "duur": 52.7,
-   "groep": "rnb",
-   "cover": "media/443881d2-cover.png",
-   "preview": "media/443881d2-preview.mp3"
   }
  ]
 }
