@@ -548,7 +548,7 @@
    "id": "c5444536",
    "titel": "Midnight Dembow",
    "soort": "audio",
-   "beschrijving": "",
+   "beschrijving": "Dembow beat. Eigen G2B-productie.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -570,7 +570,7 @@
    "id": "2878e291",
    "titel": "Cjfjff Houce",
    "soort": "audio",
-   "beschrijving": "",
+   "beschrijving": "House beat. Eigen G2B-productie.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -592,7 +592,7 @@
    "id": "d9d479ab",
    "titel": "Under",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 152 BPM in G#m. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "beschrijving": "Drill beat — 152 BPM in G#m. Eigen G2B-productie.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -606,7 +606,7 @@
     "exclusief": "https://buy.stripe.com/demo_excl"
    },
    "duur": 204.8,
-   "groep": "dembow",
+   "groep": "drill",
    "cover": "media/d9d479ab-cover.png",
    "preview": "media/d9d479ab-preview.mp3"
   },
@@ -614,7 +614,7 @@
    "id": "7fe03e5c",
    "titel": "KAY9",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 133 BPM in C#m. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "beschrijving": "Dembow beat — 133 BPM in C#m. Eigen G2B-productie.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -636,7 +636,7 @@
    "id": "0ef9a078",
    "titel": "Love",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 133 BPM in Fm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "beschrijving": "Rnb beat — 133 BPM in Fm. Eigen G2B-productie.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -650,7 +650,7 @@
     "exclusief": "https://buy.stripe.com/demo_excl"
    },
    "duur": 149.1,
-   "groep": "dembow",
+   "groep": "rnb",
    "cover": "media/0ef9a078-cover.png",
    "preview": "media/0ef9a078-preview.mp3"
   },
@@ -658,7 +658,7 @@
    "id": "3e8da4cd",
    "titel": "Coolbreez",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 152 BPM in Dm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "beschrijving": "Drill beat — 152 BPM in Dm. Eigen G2B-productie.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -672,7 +672,7 @@
     "exclusief": "https://buy.stripe.com/demo_excl"
    },
    "duur": 168.0,
-   "groep": "dembow",
+   "groep": "drill",
    "cover": "media/3e8da4cd-cover.png",
    "preview": "media/3e8da4cd-preview.mp3"
   },
@@ -680,7 +680,7 @@
    "id": "8171e455",
    "titel": "Soldaat",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 136 BPM in Cm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "beschrijving": "G2b beat — 136 BPM in Cm. Eigen G2B-productie.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -694,7 +694,7 @@
     "exclusief": "https://buy.stripe.com/demo_excl"
    },
    "duur": 157.3,
-   "groep": "dembow",
+   "groep": "g2b",
    "cover": "media/8171e455-cover.png",
    "preview": "media/8171e455-preview.mp3"
   },
@@ -702,7 +702,7 @@
    "id": "266054dc",
    "titel": "Houce Trap",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 126 BPM in Gm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "beschrijving": "Trap beat — 126 BPM in Gm. Eigen G2B-productie.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -716,7 +716,7 @@
     "exclusief": "https://buy.stripe.com/demo_excl"
    },
    "duur": 133.6,
-   "groep": "dembow",
+   "groep": "trap",
    "cover": "media/266054dc-cover.png",
    "preview": "media/266054dc-preview.mp3"
   },
@@ -724,7 +724,7 @@
    "id": "53c9dc1f",
    "titel": "Lala Dance",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 136 BPM in Gm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "beschrijving": "House beat — 136 BPM in Gm. Eigen G2B-productie.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -738,7 +738,7 @@
     "exclusief": "https://buy.stripe.com/demo_excl"
    },
    "duur": 141.1,
-   "groep": "dembow",
+   "groep": "house",
    "cover": "media/53c9dc1f-cover.png",
    "preview": "media/53c9dc1f-preview.mp3"
   },
@@ -746,7 +746,7 @@
    "id": "054630ff",
    "titel": "Exotic Riddim",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 92 BPM in Fm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "beschrijving": "Dancehall beat — 92 BPM in Fm. Eigen G2B-productie.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -760,7 +760,7 @@
     "exclusief": "https://buy.stripe.com/demo_excl"
    },
    "duur": 147.0,
-   "groep": "dembow",
+   "groep": "dancehall",
    "cover": "media/054630ff-cover.png",
    "preview": "media/054630ff-preview.mp3"
   },
@@ -768,7 +768,7 @@
    "id": "3083f3d3",
    "titel": "Khvckhvclv",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 112 BPM in Am. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "beschrijving": "Drill beat — 112 BPM in Am. Eigen G2B-productie.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -782,7 +782,7 @@
     "exclusief": "https://buy.stripe.com/demo_excl"
    },
    "duur": 124.9,
-   "groep": "dembow",
+   "groep": "drill",
    "cover": "media/3083f3d3-cover.png",
    "preview": "media/3083f3d3-preview.mp3"
   },
@@ -790,7 +790,7 @@
    "id": "600fb829",
    "titel": "Midnight Dembow II",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -812,7 +812,7 @@
    "id": "f92b4951",
    "titel": "Midnight Dembow III",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie: gecomponeerd en gemixed in eigen engine.",
+   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
