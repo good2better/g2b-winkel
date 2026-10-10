@@ -594,7 +594,8 @@ fetch('boeken.json').then(function(r){return r.ok?r.json():{boeken:[]}}).then(fu
   var SERIES=[
     {id:'sunny',titel:'⛵ Sunny-serie',sub:'De avonturen van het dappere zeilbootje — meer delen onderweg!'},
     {id:'keesje',titel:'🐰 Keesje-serie',sub:'Keesje Konijn de detective — elke zaak een nieuw avontuur'},
-    {id:'dierenhelden',titel:'🐾 Animal Heroes Avonturen',sub:'Elke held z’n eigen verhaal — echt gebeurde dierenmoed'}
+    {id:'dierenhelden',titel:'🐾 Animal Heroes Avonturen',sub:'Elke held z’n eigen verhaal — echt gebeurde dierenmoed'},
+    {id:'ziggy',titel:'🦓 Ziggy Zebra-serie',sub:'Kleuren leren met de regenboog-zebra — voor de allerkleinsten'}
   ];
   var groepen={};
   data.boeken.forEach(function(b){var s=b.serie||'dierenhelden';(groepen[s]=groepen[s]||[]).push(b);});
