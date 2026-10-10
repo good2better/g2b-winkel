@@ -43,6 +43,10 @@
     "prijs": "",
     "koop": "../d/d3bac76a9e/Ziggy-Voorproef.pdf"
    },
+   "videoboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
    "stripboek": {
     "prijs": "6,95",
     "koop": ""
@@ -64,6 +68,10 @@
    "probeer": {
     "prijs": "",
     "koop": "../d/c33584371a/Ziggy-Voorproef.pdf"
+   },
+   "videoboek": {
+    "prijs": "9,95",
+    "koop": ""
    },
    "stripboek": {
     "prijs": "6,95",
