@@ -8,8 +8,8 @@
    "bestand": "Soldaat - WAV licentie.zip"
   },
   {
-   "naam": "Soldaat — STEMS (FLAC)",
-   "bestand": "stems-soldaat-flac.zip"
+   "naam": "Soldaat — STEMS (WAV)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-stems-wav-v1/stems-soldaat-wav.zip"
   }
  ]
 }
