@@ -568,5 +568,41 @@
   "naam": "Chef Koko kleurplaat 6",
   "boek": "Chef Koko",
   "src": "platen/koko-6-kleurplaat.jpg"
+ },
+ {
+  "id": "kokos-1",
+  "naam": "Hoofdstuk 1 — Inleiding: De Kleurrijke Keuken van Chef Kokos",
+  "boek": "Chef Kokos",
+  "src": "platen/kokos-1-kleurplaat.jpg"
+ },
+ {
+  "id": "kokos-2",
+  "naam": "Hoofdstuk 2 — Het verkennen van gezonde ingrediënten",
+  "boek": "Chef Kokos",
+  "src": "platen/kokos-2-kleurplaat.jpg"
+ },
+ {
+  "id": "kokos-3",
+  "naam": "Hoofdstuk 3 — Reis van de Boerderij naar de Tafel",
+  "boek": "Chef Kokos",
+  "src": "platen/kokos-3-kleurplaat.jpg"
+ },
+ {
+  "id": "kokos-4",
+  "naam": "Hoofdstuk 4 — Creatieve Kooktechnieken",
+  "boek": "Chef Kokos",
+  "src": "platen/kokos-4-kleurplaat.jpg"
+ },
+ {
+  "id": "kokos-5",
+  "naam": "Hoofdstuk 5 — Voedselavonturen over de hele wereld",
+  "boek": "Chef Kokos",
+  "src": "platen/kokos-5-kleurplaat.jpg"
+ },
+ {
+  "id": "kokos-6",
+  "naam": "Hoofdstuk 6 — Het opbouwen van gezonde gewoonten",
+  "boek": "Chef Kokos",
+  "src": "platen/kokos-6-kleurplaat.jpg"
  }
 ]

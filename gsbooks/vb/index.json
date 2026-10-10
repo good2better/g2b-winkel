@@ -216,5 +216,21 @@
   "cover": "vb/vraag-het-aan-koko/cover.jpg",
   "interactief": true,
   "paginas": 5
+ },
+ {
+  "slug": "kokos-keuken",
+  "titel": "De Kleurrijke Keuken van Chef Kokos 👨‍🍳🥕",
+  "video": true,
+  "url": "vb/kokos-keuken/index.html",
+  "cover": "vb/kokos-keuken/cover.jpg"
+ },
+ {
+  "slug": "vraag-het-aan-kokos",
+  "titel": "Vraag het aan Chef Kokos 👨‍🍳",
+  "video": false,
+  "url": "vb/vraag-het-aan-kokos/index.html",
+  "cover": "vb/vraag-het-aan-kokos/cover.jpg",
+  "interactief": true,
+  "paginas": 5
  }
 ]
