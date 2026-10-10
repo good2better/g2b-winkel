@@ -576,7 +576,7 @@
    "video": "media/workstation-demo.mp4",
    "video_en": "media/workstation-demo-en.mp4",
    "video_es": "media/workstation-demo-es.mp4",
-   "badge": "<span style='background:#12402a;color:#7CFF9B'>2 modi: CPU + GPU</span>",
+   "badge": "2 modi: CPU + GPU",
    "eerst": true
   },
   {

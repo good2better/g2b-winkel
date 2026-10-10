@@ -161,7 +161,7 @@ async function laden() {
       ${p.video ? `
       <div class="vid-wrap">
         ${p.video_en || p.video_es ? `<button class="taal" data-taal="${esc(p.id)}"
-           title="NL / EN / ES">🇳🇱 NL</button>` : ""}
+           title="NL / EN / ES">NL</button>` : ""}
         <video class="promo" data-vid="${esc(p.id)}"
                src="${esc(p.video)}" data-nl="${esc(p.video)}"
                data-en="${esc(p.video_en || "")}"
@@ -199,9 +199,9 @@ lijst.addEventListener("click", e => {
   const taal = e.target.closest("[data-taal]");
   if (taal) {
     const v = taal.closest(".vid-wrap").querySelector("video");
-    const talen = [["nl", v.dataset.nl, "🇳🇱 NL"],
-                   ["en", v.dataset.en, "🇬🇧 EN"],
-                   ["es", v.dataset.es, "🇪🇸 ES"]].filter(x => x[1]);
+    const talen = [["nl", v.dataset.nl, "NL"],
+                   ["en", v.dataset.en, "EN"],
+                   ["es", v.dataset.es, "ES"]].filter(x => x[1]);
     const cur = talen.findIndex(x => v.src.endsWith(x[1]));
     const nxt = talen[(cur + 1) % talen.length];
     const t = v.currentTime;
