@@ -386,19 +386,19 @@
    "nieuw": true,
    "ebook": {
     "prijs": "4,95",
-    "koop": "../d/c2d402ab79/"
+    "koop": ""
    },
    "kleurboek": {
     "prijs": "7,95",
-    "koop": "../d/ef543c35b7/"
+    "koop": ""
    },
    "stripboek": {
     "prijs": "6,95",
-    "koop": "../d/233cf789a3/"
+    "koop": ""
    },
    "videoboek": {
     "prijs": "9,95",
-    "koop": "../d/0a31c7c262/"
+    "koop": ""
    },
    "probeer": {
     "prijs": "",
