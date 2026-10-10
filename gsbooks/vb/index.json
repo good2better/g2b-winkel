@@ -7,6 +7,62 @@
   "cover": "vb/ziggy-kleurenrace/cover.jpg"
  },
  {
+  "slug": "bodhi-avontuur",
+  "titel": "Bodhi en de Kleine Koala",
+  "url": "vb/bodhi-avontuur/index.html",
+  "cover": "vb/bodhi-avontuur/cover.jpg",
+  "video": true
+ },
+ {
+  "slug": "bram-avontuur",
+  "titel": "Bram en het Verloren Lammetje",
+  "url": "vb/bram-avontuur/index.html",
+  "cover": "vb/bram-avontuur/cover.jpg",
+  "video": true
+ },
+ {
+  "slug": "flip-avontuur",
+  "titel": "Flip en de Zeehondpup",
+  "url": "vb/flip-avontuur/index.html",
+  "cover": "vb/flip-avontuur/cover.jpg",
+  "video": true
+ },
+ {
+  "slug": "ollie-avontuur",
+  "titel": "Ollie en het Verloren Muisje",
+  "url": "vb/ollie-avontuur/index.html",
+  "cover": "vb/ollie-avontuur/cover.jpg",
+  "video": true
+ },
+ {
+  "slug": "pippa-avontuur",
+  "titel": "Pippa en het Vogelnest",
+  "url": "vb/pippa-avontuur/index.html",
+  "cover": "vb/pippa-avontuur/cover.jpg",
+  "video": true
+ },
+ {
+  "slug": "ravi-avontuur",
+  "titel": "Ravi en de Verdwaalde Papegaai",
+  "url": "vb/ravi-avontuur/index.html",
+  "cover": "vb/ravi-avontuur/cover.jpg",
+  "video": true
+ },
+ {
+  "slug": "sterre-avontuur",
+  "titel": "Sterre en het Kuikentje",
+  "url": "vb/sterre-avontuur/index.html",
+  "cover": "vb/sterre-avontuur/cover.jpg",
+  "video": true
+ },
+ {
+  "slug": "vonk-avontuur",
+  "titel": "Vonk en het Katje in de Boom",
+  "url": "vb/vonk-avontuur/index.html",
+  "cover": "vb/vonk-avontuur/cover.jpg",
+  "video": true
+ },
+ {
   "slug": "sunny-hoofdstuk-1",
   "titel": "Sunny's Sailing Adventures — Hoofdstuk 1",
   "paginas": 37,
