@@ -140,6 +140,10 @@
    "ebook": {
     "prijs": "6,95",
     "koop": ""
+   },
+   "probeer": {
+    "prijs": "",
+    "koop": "../d/568bf5bafe14c9fc/Voorproef.pdf"
    }
   },
   {
@@ -154,6 +158,10 @@
    "ebook": {
     "prijs": "6,95",
     "koop": ""
+   },
+   "probeer": {
+    "prijs": "",
+    "koop": "../d/586079bd95d17484/Voorproef.pdf"
    }
   },
   {
@@ -168,6 +176,10 @@
    "ebook": {
     "prijs": "6,95",
     "koop": ""
+   },
+   "probeer": {
+    "prijs": "",
+    "koop": "../d/894b478c72c61d2a/Voorproef.pdf"
    }
   },
   {
@@ -182,6 +194,10 @@
    "ebook": {
     "prijs": "6,95",
     "koop": ""
+   },
+   "probeer": {
+    "prijs": "",
+    "koop": "../d/241f3fd45cb97480/Voorproef.pdf"
    }
   },
   {
@@ -196,6 +212,10 @@
    "ebook": {
     "prijs": "6,95",
     "koop": ""
+   },
+   "probeer": {
+    "prijs": "",
+    "koop": "../d/9a188625a6b7eaec/Voorproef.pdf"
    }
   },
   {
@@ -210,6 +230,10 @@
    "ebook": {
     "prijs": "6,95",
     "koop": ""
+   },
+   "probeer": {
+    "prijs": "",
+    "koop": "../d/83de090f3abb6d0d/Voorproef.pdf"
    }
   },
   {
@@ -224,6 +248,10 @@
    "ebook": {
     "prijs": "6,95",
     "koop": ""
+   },
+   "probeer": {
+    "prijs": "",
+    "koop": "../d/13510b8b2b6f9b5f/Voorproef.pdf"
    }
   },
   {
@@ -238,6 +266,10 @@
    "ebook": {
     "prijs": "6,95",
     "koop": ""
+   },
+   "probeer": {
+    "prijs": "",
+    "koop": "../d/30bc3caa6c1a2efa/Voorproef.pdf"
    }
   },
   {
@@ -252,6 +284,10 @@
    "ebook": {
     "prijs": "6,95",
     "koop": ""
+   },
+   "probeer": {
+    "prijs": "",
+    "koop": "../d/c16dbe49c7bf93f7/Voorproef.pdf"
    }
   },
   {
@@ -266,6 +302,10 @@
    "ebook": {
     "prijs": "6,95",
     "koop": ""
+   },
+   "probeer": {
+    "prijs": "",
+    "koop": "../d/5c90abf91b83b5be/Voorproef.pdf"
    }
   },
   {
@@ -281,7 +321,11 @@
     "prijs": "6,95",
     "koop": ""
    },
-   "_ebook_cover": "media/739260e8-cover.png"
+   "_ebook_cover": "media/739260e8-cover.png",
+   "probeer": {
+    "prijs": "",
+    "koop": "../d/62b6d9b39487ff72/Voorproef.pdf"
+   }
   },
   {
    "titel": "De Avonturen van Keesje Konijn",
