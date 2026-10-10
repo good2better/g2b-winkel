@@ -86,7 +86,7 @@ try {
 
 async function laden() {
   const k = new URLSearchParams(location.search).get("k") || "";
-  if (!/^[a-f0-9]{16,32}$/.test(k)) { fout(); return; }
+  if (!/^[a-z0-9]{4,32}$/i.test(k)) { fout(); return; }
   let info;
   try {
     const r = await fetch(`d/${k}/info.json`, { cache: "no-store" });
