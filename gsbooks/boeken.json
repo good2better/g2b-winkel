@@ -27,6 +27,20 @@
    }
   },
   {
+   "titel": "Ziggy Zebra en de Dansende Kleuren",
+   "beschrijving": "Boek 2 — Ziggy danst met zijn kleuren! Voor de allerkleinsten (0-3 jaar).",
+   "cover": "media/ca3c472fb2-cover.png",
+   "serie": "ziggy",
+   "ebook": {
+    "prijs": "4,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "7,95",
+    "koop": ""
+   }
+  },
+  {
    "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket",
    "serie": "sunny",
    "cover": "media/sunny-mega-cover.png",

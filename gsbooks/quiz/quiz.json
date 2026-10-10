@@ -1,6 +1,56 @@
 {
  "quizzen": [
   {
+   "boek": "Ziggy Zebra en de Dansende Kleuren",
+   "vragen": [
+    {
+     "v": "Waar danst Ziggy in boek 2?",
+     "a": [
+      "Op een muzikaal bloemenveld",
+      "In de sneeuw",
+      "Op de maan"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wat gebeurt er met Ziggy's strepen als hij danst?",
+     "a": [
+      "Ze verdwijnen",
+      "Ze worden dansende kleurlinten",
+      "Ze worden grijs"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Wie leert alle kleuren samen dansen?",
+     "a": [
+      "Meneer Regenboog",
+      "Keesje",
+      "Sunny"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wat maken alle kleuren samen?",
+     "a": [
+      "Een taart",
+      "Een symfonie",
+      "Een huis"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Wat is volgens Ziggy het mooiste van dansen?",
+     "a": [
+      "Alleen dansen",
+      "Het delen met anderen",
+      "Snel dansen"
+     ],
+     "goed": 1
+    }
+   ]
+  },
+  {
    "boek": "Pippa en het Vogelnest",
    "vragen": [
     {

@@ -7,6 +7,13 @@
   "cover": "vb/ziggy-kleurenrace/cover.jpg"
  },
  {
+  "slug": "ziggy-dansende-kleuren",
+  "titel": "Ziggy Zebra en de Dansende Kleuren 💃",
+  "url": "vb/ziggy-dansende-kleuren/index.html",
+  "cover": "vb/ziggy-dansende-kleuren/cover.jpg",
+  "video": true
+ },
+ {
   "slug": "bodhi-avontuur",
   "titel": "Bodhi en de Kleine Koala",
   "url": "vb/bodhi-avontuur/index.html",
