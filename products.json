@@ -95,6 +95,24 @@
    "badge": "later los — nu in bundel"
   },
   {
+   "id": "g2b-donderglider",
+   "titel": "G2B Donder Glider",
+   "soort": "digitaal",
+   "beschrijving": "Jouw eigen glide-808 (VST3 + CLAP instrument): de basslijn glijdt echt van noot naar noot — dé trap/drill-slide. Met pitch-drop, zachte drive, MIDI-bespeelbaar en de vaste G2B-balk: presets, dice en dark/light. Windows, met Nederlandse handleiding.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-donderglider-cover.png",
+   "download_dir": "d/a1b2c3d4e5f6a7",
+   "badge": "NIEUW",
+   "demo": "media/donderglider-demo.mp4",
+   "video": "media/donderglider-demo.mp4"
+  },
+  {
    "id": "g2b-suite",
    "titel": "G2B Suite — ALLES (17 tools)",
    "soort": "digitaal",
