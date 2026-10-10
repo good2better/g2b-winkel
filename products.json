@@ -909,6 +909,28 @@
    "groep": "sounds",
    "cover": "media/midnightst-cover.png",
    "preview": "media/midnightst-preview.mp3"
+  },
+  {
+   "id": "0b5647bf",
+   "titel": "Coolbreez",
+   "soort": "audio",
+   "beschrijving": "Drill beat — 152 BPM in Em. Eigen G2B-productie van Giorgio met zijn Cymatics-samples; gemixed en gemasterd in de G2B-engine.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "https://buy.stripe.com/demo",
+    "mp3": "https://buy.stripe.com/demo_mp3",
+    "wav": "https://buy.stripe.com/demo_wav",
+    "exclusief": "https://buy.stripe.com/demo_excl"
+   },
+   "duur": 168.0,
+   "groep": "drill",
+   "cover": "media/0b5647bf-cover.png",
+   "preview": "media/0b5647bf-preview.mp3"
   }
  ]
 }
