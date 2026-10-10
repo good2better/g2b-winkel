@@ -536,7 +536,9 @@
    "cover": "media/g2b-juridisch-cover.png",
    "download_dir": "d/12f11d0fe3c348",
    "demo": "media/g2b-juridisch-demo.mp4",
-   "video": "media/g2b-juridisch-demo.mp4"
+   "video": "media/juridisch-demo.mp4",
+   "video_en": "media/juridisch-demo-en.mp4",
+   "video_es": "media/juridisch-demo-es.mp4"
   },
   {
    "id": "g2b-psychologie",
@@ -553,7 +555,9 @@
    "cover": "media/g2b-psychologie-cover.png",
    "download_dir": "d/eff2f763bada21",
    "demo": "media/g2b-psychologie-demo.mp4",
-   "video": "media/g2b-psychologie-demo.mp4"
+   "video": "media/psychologie-demo.mp4",
+   "video_en": "media/psychologie-demo-en.mp4",
+   "video_es": "media/psychologie-demo-es.mp4"
   },
   {
    "id": "g2b-bedrijfsmiddelen",
@@ -570,7 +574,9 @@
    "cover": "media/g2b-bedrijfsmiddelen-cover.png",
    "download_dir": "d/f481c3d2e1e330",
    "demo": "media/g2b-bedrijfsmiddelen-demo.mp4",
-   "video": "media/g2b-bedrijfsmiddelen-demo.mp4"
+   "video": "media/bedrijfsmiddelen-demo.mp4",
+   "video_en": "media/bedrijfsmiddelen-demo-en.mp4",
+   "video_es": "media/bedrijfsmiddelen-demo-es.mp4"
   },
   {
    "id": "c5444536",

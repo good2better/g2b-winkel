@@ -159,8 +159,15 @@ async function laden() {
         <span class="duur">${fmtDuur(p.duur)}</span>
       </div>` : ""}
       ${p.video ? `
-      <video class="promo" src="${esc(p.video)}" controls playsinline
-             preload="metadata"></video>` : ""}
+      <div class="vid-wrap">
+        ${p.video_en || p.video_es ? `<button class="taal" data-taal="${esc(p.id)}"
+           title="NL / EN / ES">🇳🇱 NL</button>` : ""}
+        <video class="promo" data-vid="${esc(p.id)}"
+               src="${esc(p.video)}" data-nl="${esc(p.video)}"
+               data-en="${esc(p.video_en || "")}"
+               data-es="${esc(p.video_es || "")}" controls playsinline
+               preload="metadata"></video>
+      </div>` : ""}
       <div class="koop-blok">
         ${licenties.map((k, i) =>
           `<button class="licentie${i === 0 ? " on" : ""}"
@@ -187,6 +194,19 @@ lijst.addEventListener("click", e => {
     const p = productenById(lic.dataset.id);
     const btn = card.querySelector("[data-buy]");
     if (btn && p) btn.href = p.links[lic.dataset.lic];
+    return;
+  }
+  const taal = e.target.closest("[data-taal]");
+  if (taal) {
+    const v = taal.closest(".vid-wrap").querySelector("video");
+    const talen = [["nl", v.dataset.nl, "🇳🇱 NL"],
+                   ["en", v.dataset.en, "🇬🇧 EN"],
+                   ["es", v.dataset.es, "🇪🇸 ES"]].filter(x => x[1]);
+    const cur = talen.findIndex(x => v.src.endsWith(x[1]));
+    const nxt = talen[(cur + 1) % talen.length];
+    const t = v.currentTime;
+    v.src = nxt[1]; v.currentTime = t; v.play().catch(() => {});
+    taal.textContent = nxt[2];
     return;
   }
   const play = e.target.closest("[data-play]");
