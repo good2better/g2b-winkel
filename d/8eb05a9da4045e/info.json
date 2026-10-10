@@ -2,5 +2,14 @@
  "titel": "Midnight Dembow II — WAV licentie",
  "licentie": "audio",
  "cover": "media/600fb829-cover.png",
- "bestand": "Midnight Dembow II - WAV licentie.zip"
+ "bestanden": [
+  {
+   "naam": "Midnight Dembow II — WAV licentie.zip (beat + licentie)",
+   "bestand": "Midnight Dembow II - WAV licentie.zip"
+  },
+  {
+   "naam": "Midnight Dembow II — STEMS (FLAC)",
+   "bestand": "stems-midnight-dembow-2-flac.zip"
+  }
+ ]
 }

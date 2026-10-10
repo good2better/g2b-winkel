@@ -2,5 +2,14 @@
  "titel": "Khvckhvclv — WAV licentie",
  "licentie": "audio",
  "cover": "media/3083f3d3-cover.png",
- "bestand": "Khvckhvclv - WAV licentie.zip"
+ "bestanden": [
+  {
+   "naam": "Khvckhvclv — WAV licentie.zip (beat + licentie)",
+   "bestand": "Khvckhvclv - WAV licentie.zip"
+  },
+  {
+   "naam": "Khvckhvclv — STEMS (FLAC)",
+   "bestand": "stems-khvckhvclv-flac.zip"
+  }
+ ]
 }

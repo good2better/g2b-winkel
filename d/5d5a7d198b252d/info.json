@@ -2,5 +2,14 @@
  "titel": "Lala Dance — Exclusieve licentie",
  "licentie": "audio",
  "cover": "media/53c9dc1f-cover.png",
- "bestand": "Lala Dance - Exclusieve licentie.zip"
+ "bestanden": [
+  {
+   "naam": "Lala Dance — Exclusieve licentie.zip (beat + licentie)",
+   "bestand": "Lala Dance - Exclusieve licentie.zip"
+  },
+  {
+   "naam": "Lala Dance — STEMS (FLAC)",
+   "bestand": "stems-lala-dance-flac.zip"
+  }
+ ]
 }

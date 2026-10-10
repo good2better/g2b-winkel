@@ -2,5 +2,14 @@
  "titel": "Houce Trap — Exclusieve licentie",
  "licentie": "audio",
  "cover": "media/266054dc-cover.png",
- "bestand": "Houce Trap - Exclusieve licentie.zip"
+ "bestanden": [
+  {
+   "naam": "Houce Trap — Exclusieve licentie.zip (beat + licentie)",
+   "bestand": "Houce Trap - Exclusieve licentie.zip"
+  },
+  {
+   "naam": "Houce Trap — STEMS (FLAC)",
+   "bestand": "stems-houce-trap-flac.zip"
+  }
+ ]
 }

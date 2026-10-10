@@ -2,5 +2,14 @@
  "titel": "Coolbreez — Exclusieve licentie",
  "licentie": "audio",
  "cover": "media/0b5647bf-cover.png",
- "bestand": "Coolbreez - Exclusieve licentie.zip"
+ "bestanden": [
+  {
+   "naam": "Coolbreez — Exclusieve licentie.zip (beat + licentie)",
+   "bestand": "Coolbreez - Exclusieve licentie.zip"
+  },
+  {
+   "naam": "Coolbreez — STEMS (FLAC)",
+   "bestand": "stems-coolbreez-flac.zip"
+  }
+ ]
 }
