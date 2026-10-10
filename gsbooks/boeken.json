@@ -350,6 +350,33 @@
     "koop": ""
    },
    "ebook": null
+  },
+  {
+   "titel": "Chef Koko en het Grote Fruitfeest",
+   "beschrijving": "Boek 2 — Chef Koko, de liefste gorilla-kok, kookt regenboogsoep voor al zijn vrienden! Tellen, kleuren proeven en delen — voor peuters (0-5 jaar).",
+   "cover": "media/f49e7a7e72-cover.png",
+   "serie": "koko",
+   "ebook": {
+    "prijs": "4,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "7,95",
+    "koop": ""
+   },
+   "stripboek": {
+    "prijs": "6,95",
+    "koop": ""
+   },
+   "videoboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "probeer": {
+    "prijs": "",
+    "koop": "../d/75efc6ce48/Koko-Voorproef.pdf"
+   },
+   "nieuw": true
   }
  ]
 }
