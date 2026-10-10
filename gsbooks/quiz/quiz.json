@@ -511,6 +511,56 @@
      "goed": 1
     }
    ]
+  },
+  {
+   "boek": "De Kleurrijke Keuken van Chef Kokos",
+   "vragen": [
+    {
+     "v": "Wie is de hoofdpersoon van de magische keuken?",
+     "a": [
+      "Chef Kokos",
+      "Ziggy Zebra",
+      "Meneer Regenboog"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Welke groente is Carrotina?",
+     "a": [
+      "De wortel",
+      "De paprika",
+      "De aardappel"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wat doen wortels voor je lichaam?",
+     "a": [
+      "Ze helpen je ogen goed zien",
+      "Ze maken je sneller",
+      "Ze laten je vliegen"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Waar haalt Chef Kokos zijn groenten vandaan?",
+     "a": [
+      "Van de boerderij",
+      "Uit de ruimte",
+      "Van de markt onder water"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wat is het thema van het boek?",
+     "a": [
+      "Gezond eten en koken",
+      "Zwemmen in zee",
+      "Auto's repareren"
+     ],
+     "goed": 0
+    }
+   ]
   }
  ]
 }

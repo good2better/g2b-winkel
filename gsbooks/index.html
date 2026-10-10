@@ -390,6 +390,7 @@ footer a{color:var(--zee)}
 <a class="vraag-kaart" href="vb/vraag-het-aan-ollie/index.html"><img src="vb/vraag-het-aan-ollie/cover.jpg" alt="Ollie de bosuil" loading="lazy"><div><b>🦉 Vraag het aan Ollie</b><span>De wijze van de nacht</span></div></a>
 <a class="vraag-kaart" href="vb/vraag-het-aan-sterre/index.html"><img src="vb/vraag-het-aan-sterre/cover.jpg" alt="Sterre het veulentje" loading="lazy"><div><b>⭐ Vraag het aan Sterre</b><span>Het kleinste grote heldenpaard</span></div></a>
 <a class="vraag-kaart" href="vb/vraag-het-aan-ziggy/index.html"><img src="vb/vraag-het-aan-ziggy/cover.jpg" alt="Ziggy de zebra" loading="lazy"><div><b>🦓 Vraag het aan Ziggy</b><span>De regenboog-zebra beantwoordt alles</span></div></a>
+<a class="vraag-kaart" href="vb/vraag-het-aan-kokos/index.html"><img src="vb/vraag-het-aan-kokos/cover.jpg" alt="Chef Kokos de echte keuken-kok" loading="lazy"><div><b>👨‍🍳 Vraag het aan Chef Kokos</b><span>De echte keuken-kok leert je gezond eten</span></div></a>
 <a class="vraag-kaart" href="vb/vraag-het-aan-koko/index.html"><img src="vb/vraag-het-aan-koko/cover.jpg" alt="Chef Koko de gorilla-kok" loading="lazy"><div><b>🦍 Vraag het aan Chef Koko</b><span>De vrolijke jungle-kok beantwoordt alles</span></div></a>
 </div>
 </section>
@@ -446,6 +447,7 @@ footer a{color:var(--zee)}
 <button class="held-kies" data-bl="ziggy2" onclick="blKies('ziggy2')">🦓 Ziggy 2</button>
 <button class="held-kies" data-bl="ziggy3" onclick="blKies('ziggy3')">🦓 Ziggy 3</button>
 <button class="held-kies" data-bl="koko2" onclick="blKies('koko2')">🦍 Chef Koko</button>
+<button class="held-kies" data-bl="kokos1" onclick="blKies('kokos1')">👨‍🍳 Chef Kokos</button>
 </div>
 <div class="vb-scherm" style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 14px rgba(8,78,124,.15)">
 <img id="bl-img" src="boek/p00.jpg" alt="Boekpagina uit Sunny's Sailing Adventures" style="width:100%;height:min(60vw,480px);object-fit:contain">
@@ -572,7 +574,8 @@ var BLBOEKEN={sunny:{dir:'boek',n:20,sub:"20 echte hoofdstuk-plaatjes uit <i>Sun
   ziggy:{dir:'boek-ziggy',n:9,sub:"9 hoofdstuk-pagina's uit <i>Ziggy Zebra en de Magische Kleurenrace</i> — blader zelf door het echte boek.",koop:''},
   ziggy2:{dir:'boek-ziggy2',n:6,sub:"6 hoofdstuk-pagina's uit <i>Ziggy Zebra en de Dansende Kleuren</i> — het nieuwe boek 2!",koop:''},
   ziggy3:{dir:'boek-ziggy3',n:6,sub:"6 hoofdstuk-pagina's uit <i>Ziggy Zebra en de Grijze Schaduw</i> — boek 3!",koop:''},
-  koko2:{dir:'boek-koko2',n:6,sub:"6 hoofdstuk-pagina's uit <i>Chef Koko en het Grote Fruitfeest</i> — boek 2 van Chef Koko!",koop:''}};
+  koko2:{dir:'boek-koko2',n:6,sub:"6 hoofdstuk-pagina's uit <i>Chef Koko en het Grote Fruitfeest</i> — boek 2 van Chef Koko!",koop:''},
+  kokos1:{dir:'boek-kokos1',n:7,sub:"7 hoofdstuk-pagina's uit <i>De Kleurrijke Keuken van Chef Kokos</i> — deel 1 van de echte serie!",koop:''}};
 var blIdx=0,blB=BLBOEKEN.sunny;
 function blToon(){
   document.getElementById('bl-img').src=blB.dir+'/p'+String(blIdx).padStart(2,'0')+'.jpg';
@@ -606,7 +609,8 @@ var HELDEN={
   bodhi:{naam:'Bodhi',ico:'🐨'},
   ollie:{naam:'Ollie',ico:'🦉'},
   sterre:{naam:'Sterre',ico:'🐴'},
-  koko:{naam:'Chef Koko',ico:'🦍'}};
+  koko:{naam:'Chef Koko',ico:'🦍'},
+  kokos:{naam:'Chef Kokos',ico:'👨‍🍳'}};
 Object.keys(HELDEN).forEach(function(h){
   var base=(h==='keesje')?'img/mem-':'img/mem-'+h+'-';
   HELDEN[h].mem=[0,1,2,3,4,5].map(function(i){return base+i+'.jpg';});

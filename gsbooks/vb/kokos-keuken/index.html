@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>De Kleurrijke Keuken van Chef Kokos — voorleesvideo</title>
+<style>body{margin:0;font-family:sans-serif;background:#1a1410;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center}
+#scherm{max-width:900px;width:100%;padding:20px;text-align:center}video{width:100%;border-radius:16px;display:none}
+#start,#eind{background:#2a2118;border-radius:20px;padding:40px}
+.knop{background:#e67e22;color:#fff;border:0;border-radius:50px;padding:16px 40px;font-size:20px;cursor:pointer;margin:8px}
+h1{color:#f5a623}p{color:#ccc;font-size:17px;line-height:1.6}</style></head><body>
+<div id="scherm">
+<div id="start"><h1>👨‍🍳 De Kleurrijke Keuken van Chef Kokos</h1>
+<p>Chef Kokos en zijn Groente Vrienden — Carrotina, Bellabella, Spudnik en Sous-chef Selderij — leren je alles over gezond eten. Luister naar de eerste hoofdstukken!</p>
+<button class="knop" onclick="document.getElementById('start').style.display='none';var v=document.getElementById('vid');v.style.display='block';v.play()">▶ Start de voorleesvideo</button></div>
+<video id="vid" controls src="preview.mp4" onended="document.getElementById('vid').style.display='none';document.getElementById('eind').style.display='block'"></video>
+<div id="eind" style="display:none"><h1>Dat was een voorproefje! 👨‍🍳</h1>
+<p>De hele video met alle 7 hoofdstukken vind je in het videoboek-pakket in de winkel.</p>
+<a class="knop" href="../" style="text-decoration:none;display:inline-block">Terug naar de boekenwinkel</a></div>
+</div></body></html>

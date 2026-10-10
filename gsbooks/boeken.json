@@ -377,6 +377,33 @@
     "koop": "../d/75efc6ce48/Koko-Voorproef.pdf"
    },
    "nieuw": true
+  },
+  {
+   "titel": "De Kleurrijke Keuken van Chef Kokos",
+   "beschrijving": "Chef Kokos en zijn Groente Vrienden leren kinderen over gezond eten — van boerderij tot bord. Echt boek van G.T.J. Sandvliet, met 7 hoofdstukken vol kookavonturen.",
+   "cover": "media/c2d402ab79-cover.png",
+   "serie": "koko",
+   "nieuw": true,
+   "ebook": {
+    "prijs": "4,95",
+    "koop": "../d/c2d402ab79/"
+   },
+   "kleurboek": {
+    "prijs": "7,95",
+    "koop": "../d/ef543c35b7/"
+   },
+   "stripboek": {
+    "prijs": "6,95",
+    "koop": "../d/233cf789a3/"
+   },
+   "videoboek": {
+    "prijs": "9,95",
+    "koop": "../d/0a31c7c262/"
+   },
+   "probeer": {
+    "prijs": "",
+    "koop": "../d/c2d402ab79/Voorproef.pdf"
+   }
   }
  ]
 }
