@@ -17,7 +17,8 @@
    "duur": 0,
    "groep": "software",
    "cover": "media/g2b-studio-pack-cover.png",
-   "video": "media/g2b-studiopack-demo.mp4"
+   "video": "media/g2b-studiopack-demo.mp4",
+   "download_dir": "d/336693b92c56db7a"
   },
   {
    "id": "g2b-glans",
@@ -474,7 +475,8 @@
    },
    "groep": "sounds",
    "cover": "media/g2btrapk-cover.png",
-   "preview": "media/g2btrapk-preview.mp3"
+   "preview": "media/g2btrapk-preview.mp3",
+   "download_dir": "d/g2btrapk"
   },
   {
    "id": "kw322dcb",
@@ -491,7 +493,8 @@
    },
    "groep": "sounds",
    "cover": "media/kw322dcb-cover.png",
-   "preview": "media/kw322dcb-preview.mp3"
+   "preview": "media/kw322dcb-preview.mp3",
+   "download_dir": "d/kw322dcb"
   },
   {
    "id": "g2b-juridisch",
@@ -823,7 +826,8 @@
    },
    "groep": "sounds",
    "cover": "media/khvckhvclv-cover.png",
-   "preview": "media/khvckhvclv-preview.mp3"
+   "preview": "media/khvckhvclv-preview.mp3",
+   "download_dir": "d/c20b73ceeed82b"
   },
   {
    "id": "houcetrap",
@@ -840,7 +844,8 @@
    },
    "groep": "sounds",
    "cover": "media/houcetrap-cover.png",
-   "preview": "media/houcetrap-preview.mp3"
+   "preview": "media/houcetrap-preview.mp3",
+   "download_dir": "d/d39b63afd8ece2"
   },
   {
    "id": "laladance",
@@ -857,7 +862,8 @@
    },
    "groep": "sounds",
    "cover": "media/laladance-cover.png",
-   "preview": "media/laladance-preview.mp3"
+   "preview": "media/laladance-preview.mp3",
+   "download_dir": "d/3742d464929982"
   },
   {
    "id": "exoticridd",
@@ -874,7 +880,8 @@
    },
    "groep": "sounds",
    "cover": "media/exoticridd-cover.png",
-   "preview": "media/exoticridd-preview.mp3"
+   "preview": "media/exoticridd-preview.mp3",
+   "download_dir": "d/f8b6ae9bca4157"
   },
   {
    "id": "soldaatst",
@@ -891,7 +898,8 @@
    },
    "groep": "sounds",
    "cover": "media/soldaatst-cover.png",
-   "preview": "media/soldaatst-preview.mp3"
+   "preview": "media/soldaatst-preview.mp3",
+   "download_dir": "d/0ed8b2d3f4eb26"
   },
   {
    "id": "midnightst",
@@ -908,7 +916,8 @@
    },
    "groep": "sounds",
    "cover": "media/midnightst-cover.png",
-   "preview": "media/midnightst-preview.mp3"
+   "preview": "media/midnightst-preview.mp3",
+   "download_dir": "d/de402a81829c37"
   },
   {
    "id": "0b5647bf",
