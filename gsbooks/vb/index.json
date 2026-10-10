@@ -213,6 +213,8 @@
   "titel": "Vraag het aan Chef Koko 🦍",
   "video": false,
   "url": "vb/vraag-het-aan-koko/index.html",
-  "cover": "vb/vraag-het-aan-koko/cover.jpg"
+  "cover": "vb/vraag-het-aan-koko/cover.jpg",
+  "interactief": true,
+  "paginas": 5
  }
 ]
