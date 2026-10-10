@@ -1,5 +1,41 @@
 [
  {
+  "id": "ziggy3-1",
+  "naam": "Hoofdstuk 1 — Het Grijze Mysterie",
+  "boek": "Ziggy Zebra Boek 3",
+  "src": "platen/ziggy3-1-kleurplaat.jpg"
+ },
+ {
+  "id": "ziggy3-2",
+  "naam": "Hoofdstuk 2 — Op Zoek naar Kleur",
+  "boek": "Ziggy Zebra Boek 3",
+  "src": "platen/ziggy3-2-kleurplaat.jpg"
+ },
+ {
+  "id": "ziggy3-3",
+  "naam": "Hoofdstuk 3 — De Kracht van Vriendschap",
+  "boek": "Ziggy Zebra Boek 3",
+  "src": "platen/ziggy3-3-kleurplaat.jpg"
+ },
+ {
+  "id": "ziggy3-4",
+  "naam": "Hoofdstuk 4 — Een Vleugje Moed",
+  "boek": "Ziggy Zebra Boek 3",
+  "src": "platen/ziggy3-4-kleurplaat.jpg"
+ },
+ {
+  "id": "ziggy3-5",
+  "naam": "Hoofdstuk 5 — De Terugkeer van Kleur",
+  "boek": "Ziggy Zebra Boek 3",
+  "src": "platen/ziggy3-5-kleurplaat.jpg"
+ },
+ {
+  "id": "ziggy3-6",
+  "naam": "Hoofdstuk 6 — Het Licht Overwint",
+  "boek": "Ziggy Zebra Boek 3",
+  "src": "platen/ziggy3-6-kleurplaat.jpg"
+ },
+ {
   "id": "ziggy2-6",
   "naam": "De Finale Dans",
   "boek": "Ziggy Zebra Boek 2",
