@@ -2,5 +2,14 @@
  "titel": "Soldaat — Exclusieve licentie",
  "licentie": "audio",
  "cover": "media/8171e455-cover.png",
- "bestand": "Soldaat - Exclusieve licentie.zip"
+ "bestanden": [
+  {
+   "naam": "Soldaat — Exclusieve licentie.zip (beat + licentie)",
+   "bestand": "Soldaat - Exclusieve licentie.zip"
+  },
+  {
+   "naam": "Soldaat — STEMS (FLAC)",
+   "bestand": "stems-soldaat-flac.zip"
+  }
+ ]
 }

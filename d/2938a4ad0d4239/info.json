@@ -2,5 +2,14 @@
  "titel": "Soldaat — WAV licentie",
  "licentie": "audio",
  "cover": "media/8171e455-cover.png",
- "bestand": "Soldaat - WAV licentie.zip"
+ "bestanden": [
+  {
+   "naam": "Soldaat — WAV licentie.zip (beat + licentie)",
+   "bestand": "Soldaat - WAV licentie.zip"
+  },
+  {
+   "naam": "Soldaat — STEMS (FLAC)",
+   "bestand": "stems-soldaat-flac.zip"
+  }
+ ]
 }

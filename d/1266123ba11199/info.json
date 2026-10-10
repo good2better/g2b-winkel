@@ -2,5 +2,14 @@
  "titel": "Coolbreez — WAV licentie",
  "licentie": "audio",
  "cover": "media/0b5647bf-cover.png",
- "bestand": "Coolbreez - WAV licentie.zip"
+ "bestanden": [
+  {
+   "naam": "Coolbreez — WAV licentie.zip (beat + licentie)",
+   "bestand": "Coolbreez - WAV licentie.zip"
+  },
+  {
+   "naam": "Coolbreez — STEMS (FLAC)",
+   "bestand": "stems-coolbreez-flac.zip"
+  }
+ ]
 }

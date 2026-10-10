@@ -2,5 +2,14 @@
  "titel": "Khvckhvclv — Exclusieve licentie",
  "licentie": "audio",
  "cover": "media/3083f3d3-cover.png",
- "bestand": "Khvckhvclv - Exclusieve licentie.zip"
+ "bestanden": [
+  {
+   "naam": "Khvckhvclv — Exclusieve licentie.zip (beat + licentie)",
+   "bestand": "Khvckhvclv - Exclusieve licentie.zip"
+  },
+  {
+   "naam": "Khvckhvclv — STEMS (FLAC)",
+   "bestand": "stems-khvckhvclv-flac.zip"
+  }
+ ]
 }

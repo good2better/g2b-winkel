@@ -712,7 +712,7 @@
    "id": "8171e455",
    "titel": "Soldaat",
    "soort": "audio",
-   "beschrijving": "G2b beat — 136 BPM in Cm. Eigen G2B-productie.",
+   "beschrijving": "G2b beat — 136 BPM in Cm. Eigen G2B-productie — WAV & Exclusief incl. stems (FLAC).",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -734,7 +734,7 @@
    "id": "266054dc",
    "titel": "Houce Trap",
    "soort": "audio",
-   "beschrijving": "Trap beat — 126 BPM in Gm. Eigen G2B-productie.",
+   "beschrijving": "Trap beat — 126 BPM in Gm. Eigen G2B-productie — WAV & Exclusief incl. stems (FLAC).",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -756,7 +756,7 @@
    "id": "53c9dc1f",
    "titel": "Lala Dance",
    "soort": "audio",
-   "beschrijving": "House beat — 136 BPM in Gm. Eigen G2B-productie.",
+   "beschrijving": "House beat — 136 BPM in Gm. Eigen G2B-productie — WAV & Exclusief incl. stems (FLAC).",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -778,7 +778,7 @@
    "id": "054630ff",
    "titel": "Exotic Riddim",
    "soort": "audio",
-   "beschrijving": "Dancehall beat — 92 BPM in Fm. Eigen G2B-productie.",
+   "beschrijving": "Dancehall beat — 92 BPM in Fm. Eigen G2B-productie — WAV & Exclusief incl. stems (FLAC).",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -800,7 +800,7 @@
    "id": "3083f3d3",
    "titel": "Khvckhvclv",
    "soort": "audio",
-   "beschrijving": "Drill beat — 112 BPM in Am. Eigen G2B-productie.",
+   "beschrijving": "Drill beat — 112 BPM in Am. Eigen G2B-productie — WAV & Exclusief incl. stems (FLAC).",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -822,7 +822,7 @@
    "id": "600fb829",
    "titel": "Midnight Dembow II",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie.",
+   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie — WAV & Exclusief incl. stems (FLAC).",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -863,118 +863,10 @@
    "preview": "media/f92b4951-preview.mp3"
   },
   {
-   "id": "khvckhvclv",
-   "titel": "Khvckhvclv Stemloops Vol. 1",
-   "soort": "digitaal",
-   "beschrijving": "7 naadloze stem-loops uit Khvckhvclv (wav+mp3) + MIDI voor bas — 100% eigen IP: buy-out-ready constructie-kit.",
-   "prijs": "€ 14,95",
-   "prijzen": {
-    "digitaal": "€ 14,95"
-   },
-   "links": {
-    "koop": "",
-    "digitaal": ""
-   },
-   "groep": "sounds",
-   "cover": "media/khvckhvclv-cover.png",
-   "preview": "media/khvckhvclv-preview.mp3",
-   "download_dir": "d/c20b73ceeed82b"
-  },
-  {
-   "id": "houcetrap",
-   "titel": "Houce Trap Stemloops Vol. 1",
-   "soort": "digitaal",
-   "beschrijving": "6 naadloze stem-loops uit Houce Trap (wav+mp3) + MIDI voor bas — 100% eigen IP: buy-out-ready constructie-kit.",
-   "prijs": "€ 14,95",
-   "prijzen": {
-    "digitaal": "€ 14,95"
-   },
-   "links": {
-    "koop": "",
-    "digitaal": ""
-   },
-   "groep": "sounds",
-   "cover": "media/houcetrap-cover.png",
-   "preview": "media/houcetrap-preview.mp3",
-   "download_dir": "d/d39b63afd8ece2"
-  },
-  {
-   "id": "laladance",
-   "titel": "Lala Dance Stemloops Vol. 1",
-   "soort": "digitaal",
-   "beschrijving": "8 naadloze stem-loops uit Lala Dance (wav+mp3) + MIDI voor bas — 100% eigen IP: buy-out-ready constructie-kit.",
-   "prijs": "€ 14,95",
-   "prijzen": {
-    "digitaal": "€ 14,95"
-   },
-   "links": {
-    "koop": "",
-    "digitaal": ""
-   },
-   "groep": "sounds",
-   "cover": "media/laladance-cover.png",
-   "preview": "media/laladance-preview.mp3",
-   "download_dir": "d/3742d464929982"
-  },
-  {
-   "id": "exoticridd",
-   "titel": "Exotic Riddim Stemloops Vol. 1",
-   "soort": "digitaal",
-   "beschrijving": "7 naadloze stem-loops uit Exotic Riddim (wav+mp3) + MIDI voor bas — 100% eigen IP: buy-out-ready constructie-kit.",
-   "prijs": "€ 14,95",
-   "prijzen": {
-    "digitaal": "€ 14,95"
-   },
-   "links": {
-    "koop": "",
-    "digitaal": ""
-   },
-   "groep": "sounds",
-   "cover": "media/exoticridd-cover.png",
-   "preview": "media/exoticridd-preview.mp3",
-   "download_dir": "d/f8b6ae9bca4157"
-  },
-  {
-   "id": "soldaatst",
-   "titel": "Soldaat Stemloops Vol. 1",
-   "soort": "digitaal",
-   "beschrijving": "8 naadloze stem-loops uit Soldaat (wav+mp3) + MIDI voor bas — 100% eigen IP: buy-out-ready constructie-kit.",
-   "prijs": "€ 14,95",
-   "prijzen": {
-    "digitaal": "€ 14,95"
-   },
-   "links": {
-    "koop": "",
-    "digitaal": ""
-   },
-   "groep": "sounds",
-   "cover": "media/soldaatst-cover.png",
-   "preview": "media/soldaatst-preview.mp3",
-   "download_dir": "d/0ed8b2d3f4eb26"
-  },
-  {
-   "id": "midnightst",
-   "titel": "Midnight Dembow Stemloops Vol. 1",
-   "soort": "digitaal",
-   "beschrijving": "6 naadloze stem-loops uit Midnight Dembow (wav+mp3) + MIDI voor bas — 100% eigen IP: buy-out-ready constructie-kit.",
-   "prijs": "€ 14,95",
-   "prijzen": {
-    "digitaal": "€ 14,95"
-   },
-   "links": {
-    "koop": "",
-    "digitaal": ""
-   },
-   "groep": "sounds",
-   "cover": "media/midnightst-cover.png",
-   "preview": "media/midnightst-preview.mp3",
-   "download_dir": "d/de402a81829c37"
-  },
-  {
    "id": "0b5647bf",
    "titel": "Coolbreez",
    "soort": "audio",
-   "beschrijving": "Drill beat — 152 BPM in Em. Eigen G2B-productie van Giorgio met zijn Cymatics-samples; gemixed en gemasterd in de G2B-engine.",
+   "beschrijving": "Drill beat — 152 BPM in Em. Eigen G2B-productie van Giorgio met zijn Cymatics-samples; gemixed en gemasterd in de G2B-engine — WAV & Exclusief incl. stems (FLAC).",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",

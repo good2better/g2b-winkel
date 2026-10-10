@@ -2,5 +2,14 @@
  "titel": "Exotic Riddim — Exclusieve licentie",
  "licentie": "audio",
  "cover": "media/054630ff-cover.png",
- "bestand": "Exotic Riddim - Exclusieve licentie.zip"
+ "bestanden": [
+  {
+   "naam": "Exotic Riddim — Exclusieve licentie.zip (beat + licentie)",
+   "bestand": "Exotic Riddim - Exclusieve licentie.zip"
+  },
+  {
+   "naam": "Exotic Riddim — STEMS (FLAC)",
+   "bestand": "stems-exotic-riddim-flac.zip"
+  }
+ ]
 }
