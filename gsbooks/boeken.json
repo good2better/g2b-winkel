@@ -50,7 +50,8 @@
    "stripboek": {
     "prijs": "6,95",
     "koop": ""
-   }
+   },
+   "nieuw": true
   },
   {
    "titel": "Ziggy Zebra en de Grijze Schaduw",
@@ -76,7 +77,8 @@
    "stripboek": {
     "prijs": "6,95",
     "koop": ""
-   }
+   },
+   "nieuw": true
   },
   {
    "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket",
