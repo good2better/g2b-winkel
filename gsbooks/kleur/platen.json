@@ -1,5 +1,41 @@
 [
  {
+  "id": "ziggy2-6",
+  "naam": "De Finale Dans",
+  "boek": "Ziggy Zebra Boek 2",
+  "src": "platen/ziggy2-6-kleurplaat.jpg"
+ },
+ {
+  "id": "ziggy2-5",
+  "naam": "Het Lied van Samenwerking",
+  "boek": "Ziggy Zebra Boek 2",
+  "src": "platen/ziggy2-5-kleurplaat.jpg"
+ },
+ {
+  "id": "ziggy2-4",
+  "naam": "De Kleurensymfonie",
+  "boek": "Ziggy Zebra Boek 2",
+  "src": "platen/ziggy2-4-kleurplaat.jpg"
+ },
+ {
+  "id": "ziggy2-3",
+  "naam": "Lessen in Harmonie",
+  "boek": "Ziggy Zebra Boek 2",
+  "src": "platen/ziggy2-3-kleurplaat.jpg"
+ },
+ {
+  "id": "ziggy2-2",
+  "naam": "Dans van de Kleuren",
+  "boek": "Ziggy Zebra Boek 2",
+  "src": "platen/ziggy2-2-kleurplaat.jpg"
+ },
+ {
+  "id": "ziggy2-1",
+  "naam": "Het Muzikale Veld",
+  "boek": "Ziggy Zebra Boek 2",
+  "src": "platen/ziggy2-1-kleurplaat.jpg"
+ },
+ {
   "id": "keesje-strand-0b38ce",
   "naam": "keesje strand 0b38ce",
   "boek": "Keesje avonturen",
