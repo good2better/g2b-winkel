@@ -420,7 +420,11 @@ footer a{color:var(--zee)}
 
 <section id="blader">
 <h2>📖 Blader door het echte boek</h2>
-<p class="sub">20 echte hoofdstuk-plaatjes uit <i>Sunny's Sailing Adventures</i> — klik door het boek alsof je het vasthoudt.</p>
+<p class="sub" id="bl-sub">20 echte hoofdstuk-plaatjes uit <i>Sunny's Sailing Adventures</i> — klik door het boek alsof je het vasthoudt.</p>
+<div class="held-kies-rij">
+<button class="held-kies actief" data-bl="sunny" onclick="blKies('sunny')">⛵ Sunny</button>
+<button class="held-kies" data-bl="ziggy" onclick="blKies('ziggy')">🦓 Ziggy</button>
+</div>
 <div class="vb-scherm" style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 14px rgba(8,78,124,.15)">
 <img id="bl-img" src="boek/p00.jpg" alt="Boekpagina uit Sunny's Sailing Adventures" style="width:100%;height:min(60vw,480px);object-fit:contain">
 </div>
@@ -429,7 +433,7 @@ footer a{color:var(--zee)}
 <button onclick="blStap(1)" style="background:var(--tint);color:var(--zeedonker)">⏭</button>
 <span class="teller" id="bl-teller" style="color:#6B7B88">pagina 1/20</span>
 <div class="vb-voortgang" style="background:#E3ECF2"><i id="bl-voort" style="background:var(--goud)"></i></div>
-<a class="mini kopen" href="https://buy.stripe.com/00wbJ12wwaan8rRggB5J601" target="_blank" rel="noopener" style="white-space:nowrap">Koop het boek</a>
+<a id="bl-koop" class="mini kopen" href="https://buy.stripe.com/00wbJ12wwaan8rRggB5J601" target="_blank" rel="noopener" style="white-space:nowrap">Koop het boek</a>
 </div>
 </section>
 
@@ -440,6 +444,7 @@ footer a{color:var(--zee)}
 <div class="vid"><video autoplay muted loop playsinline src="video/sunny-intro.mp4"></video><p>Sunny's avontuur begint — intro</p></div>
 <div class="vid"><video autoplay muted loop playsinline src="video/sunny-dolfijn.mp4"></video><p>Sunny ontmoet de dolfijn</p></div>
 <div class="vid"><video autoplay muted loop playsinline src="video/keesje-video.mp4"></video><p>Keesje Konijn in het bos</p></div>
+<div class="vid"><video autoplay muted loop playsinline src="video/ziggy-race.mp4"></video><p>Ziggy start de Magische Kleurenrace</p></div>
 <div class="vid"><video autoplay muted loop playsinline src="video/boot.mp4"></video><p>De magische zeilboot vaart uit</p></div>
 <div class="vid"><video autoplay muted loop playsinline src="video/zwemmen.mp4"></video><p>De kinderen zwemmen in de rivier</p></div>
 <div class="vid"><video autoplay muted loop playsinline src="video/regenboog.mp4"></video><p>Zeilen onder de regenboog</p></div>
@@ -541,12 +546,24 @@ function vbStap(i,d){
   vbZet(i);
 }
 // boek-bladeraar
-var blIdx=0,blN=20;
+var BLBOEKEN={sunny:{dir:'boek',n:20,sub:"20 echte hoofdstuk-plaatjes uit <i>Sunny's Sailing Adventures</i> — klik door het boek alsof je het vasthoudt.",koop:'https://buy.stripe.com/00wbJ12wwaan8rRggB5J601'},
+  ziggy:{dir:'boek-ziggy',n:9,sub:"9 hoofdstuk-pagina's uit <i>Ziggy Zebra en de Magische Kleurenrace</i> — blader zelf door het echte boek.",koop:''}};
+var blIdx=0,blB=BLBOEKEN.sunny;
+function blToon(){
+  document.getElementById('bl-img').src=blB.dir+'/p'+String(blIdx).padStart(2,'0')+'.jpg';
+  document.getElementById('bl-teller').textContent='pagina '+(blIdx+1)+'/'+blB.n;
+  document.getElementById('bl-voort').style.width=((blIdx+1)/blB.n*100)+'%';
+}
+function blKies(k){
+  blB=BLBOEKEN[k];blIdx=0;blToon();
+  document.getElementById('bl-sub').innerHTML=blB.sub;
+  var ko=document.getElementById('bl-koop');
+  if(blB.koop){ko.href=blB.koop;ko.style.display='';}else{ko.style.display='none';}
+  document.querySelectorAll('[data-bl]').forEach(function(b){b.classList.toggle('actief',b.dataset.bl===k)});
+}
 function blStap(d){
-  blIdx=Math.max(0,Math.min(blN-1,blIdx+d));
-  document.getElementById('bl-img').src='boek/p'+String(blIdx).padStart(2,'0')+'.jpg';
-  document.getElementById('bl-teller').textContent='pagina '+(blIdx+1)+'/'+blN;
-  document.getElementById('bl-voort').style.width=((blIdx+1)/blN*100)+'%';
+  blIdx=Math.max(0,Math.min(blB.n-1,blIdx+d));
+  blToon();
 }
 // memory-spel
 var HELDEN={keesje:{naam:'Keesje Konijn',ico:'🐰',mem:['img/mem-0.jpg','img/mem-1.jpg','img/mem-2.jpg','img/mem-3.jpg','img/mem-4.jpg','img/mem-5.jpg']},
