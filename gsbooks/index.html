@@ -156,7 +156,7 @@ h2::after{content:'';position:absolute;left:0;bottom:0;width:56px;height:5px;bor
 .kaart.geraden{outline:3px solid var(--goud)}
 .spel-status{text-align:center;font-size:15px;font-weight:700;color:var(--zeedonker);min-height:22px}
 .spel-reset{display:block;margin:10px auto 0;background:var(--goud);border:none;color:#4A3400;font-family:Raleway;font-weight:800;font-size:14px;padding:10px 24px;border-radius:999px;cursor:pointer}
-.held-kies-rij{display:flex;gap:8px;margin:6px 0 2px}
+.held-kies-rij{display:flex;gap:8px;margin:6px 0 2px;flex-wrap:wrap;justify-content:center}
 .held-kies{background:var(--tint);border:none;color:var(--zeedonker);font-family:Raleway;font-weight:800;font-size:14px;padding:9px 18px;border-radius:999px;cursor:pointer;opacity:.75}
 .held-kies.actief{background:var(--goud);color:#4A3400;opacity:1}
 /* tools */
@@ -478,7 +478,7 @@ footer a{color:var(--zee)}
 <section id="spel">
 <div class="spel">
 <h2 id="spel-titel">🐰 Keesje Konijn Memory</h2>
-<div class="held-kies-rij"><button class="held-kies actief" data-held="keesje" onclick="heldKies('keesje')">🐰 Keesje</button><button class="held-kies" data-held="ziggy" onclick="heldKies('ziggy')">🦓 Ziggy</button></div>
+<div class="held-kies-rij" id="held-kies-rij"></div>
 <p class="sub">Vind dezelfde plaatjes uit het boek. Hoe minder beurten, hoe beter!</p>
 <p class="spel-status" id="spel-status">Klik op twee kaartjes…</p>
 <div class="spel-bord" id="bord"></div>
@@ -566,8 +566,31 @@ function blStap(d){
   blToon();
 }
 // memory-spel
-var HELDEN={keesje:{naam:'Keesje Konijn',ico:'🐰',mem:['img/mem-0.jpg','img/mem-1.jpg','img/mem-2.jpg','img/mem-3.jpg','img/mem-4.jpg','img/mem-5.jpg']},
-  ziggy:{naam:'Ziggy Zebra',ico:'🦓',mem:['img/mem-ziggy-0.jpg','img/mem-ziggy-1.jpg','img/mem-ziggy-2.jpg','img/mem-ziggy-3.jpg','img/mem-ziggy-4.jpg','img/mem-ziggy-5.jpg']}};
+var HELDEN={
+  keesje:{naam:'Keesje Konijn',ico:'🐰'},
+  ziggy:{naam:'Ziggy Zebra',ico:'🦓'},
+  sunny:{naam:'Sunny',ico:'⛵'},
+  dana:{naam:'Dana',ico:'🐬'},
+  bram:{naam:'Bram',ico:'🐕'},
+  vonk:{naam:'Vonk',ico:'🐈'},
+  pippa:{naam:'Pippa',ico:'🐦'},
+  flip:{naam:'Flip',ico:'🦭'},
+  ravi:{naam:'Ravi',ico:'🦜'},
+  bodhi:{naam:'Bodhi',ico:'🐨'},
+  ollie:{naam:'Ollie',ico:'🦉'},
+  sterre:{naam:'Sterre',ico:'🐴'}};
+Object.keys(HELDEN).forEach(function(h){
+  var base=(h==='keesje')?'img/mem-':'img/mem-'+h+'-';
+  HELDEN[h].mem=[0,1,2,3,4,5].map(function(i){return base+i+'.jpg';});
+});
+(function(){
+  var rij=document.getElementById('held-kies-rij');
+  Object.keys(HELDEN).forEach(function(h){
+    var b=document.createElement('button');b.className='held-kies'+(h==='keesje'?' actief':'');
+    b.dataset.held=h;b.textContent=HELDEN[h].ico+' '+HELDEN[h].naam;
+    b.onclick=function(){heldKies(h)};rij.appendChild(b);
+  });
+})();
 var held='keesje',MEM=HELDEN[held].mem;
 var spelKaarten=[],openKaarten=[],beurten=0,gevonden=0,bezig=false;
 function heldKies(h){
