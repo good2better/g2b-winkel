@@ -156,6 +156,9 @@ h2::after{content:'';position:absolute;left:0;bottom:0;width:56px;height:5px;bor
 .kaart.geraden{outline:3px solid var(--goud)}
 .spel-status{text-align:center;font-size:15px;font-weight:700;color:var(--zeedonker);min-height:22px}
 .spel-reset{display:block;margin:10px auto 0;background:var(--goud);border:none;color:#4A3400;font-family:Raleway;font-weight:800;font-size:14px;padding:10px 24px;border-radius:999px;cursor:pointer}
+.held-kies-rij{display:flex;gap:8px;margin:6px 0 2px}
+.held-kies{background:var(--tint);border:none;color:var(--zeedonker);font-family:Raleway;font-weight:800;font-size:14px;padding:9px 18px;border-radius:999px;cursor:pointer;opacity:.75}
+.held-kies.actief{background:var(--goud);color:#4A3400;opacity:1}
 /* tools */
 .tools{background:#1E2A33;border-radius:20px;color:#DEE7EC;padding:26px;margin-top:8px}
 .tools h2{color:#fff}
@@ -457,8 +460,9 @@ footer a{color:var(--zee)}
 
 <section id="spel">
 <div class="spel">
-<h2>🧩 Keesje Memory</h2>
-<p class="sub">Vind dezelfde plaatjes uit het Keesje Konijn-boek. Hoe minder beurten, hoe beter!</p>
+<h2 id="spel-titel">🐰 Keesje Konijn Memory</h2>
+<div class="held-kies-rij"><button class="held-kies actief" data-held="keesje" onclick="heldKies('keesje')">🐰 Keesje</button><button class="held-kies" data-held="ziggy" onclick="heldKies('ziggy')">🦓 Ziggy</button></div>
+<p class="sub">Vind dezelfde plaatjes uit het boek. Hoe minder beurten, hoe beter!</p>
 <p class="spel-status" id="spel-status">Klik op twee kaartjes…</p>
 <div class="spel-bord" id="bord"></div>
 <button class="spel-reset" onclick="spelStart()">Opnieuw</button>
@@ -533,8 +537,16 @@ function blStap(d){
   document.getElementById('bl-voort').style.width=((blIdx+1)/blN*100)+'%';
 }
 // memory-spel
-var MEM=['img/mem-0.jpg','img/mem-1.jpg','img/mem-2.jpg','img/mem-3.jpg','img/mem-4.jpg','img/mem-5.jpg'];
+var HELDEN={keesje:{naam:'Keesje Konijn',ico:'🐰',mem:['img/mem-0.jpg','img/mem-1.jpg','img/mem-2.jpg','img/mem-3.jpg','img/mem-4.jpg','img/mem-5.jpg']},
+  ziggy:{naam:'Ziggy Zebra',ico:'🦓',mem:['img/mem-ziggy-0.jpg','img/mem-ziggy-1.jpg','img/mem-ziggy-2.jpg','img/mem-ziggy-3.jpg','img/mem-ziggy-4.jpg','img/mem-ziggy-5.jpg']}};
+var held='keesje',MEM=HELDEN[held].mem;
 var spelKaarten=[],openKaarten=[],beurten=0,gevonden=0,bezig=false;
+function heldKies(h){
+  held=h;MEM=HELDEN[h].mem;
+  document.getElementById('spel-titel').textContent=HELDEN[h].ico+' '+HELDEN[h].naam+' Memory';
+  document.querySelectorAll('.held-kies').forEach(function(b){b.classList.toggle('actief',b.dataset.held===h)});
+  spelStart();
+}
 function spelStart(){
   var bord=document.getElementById('bord');bord.innerHTML='';
   beurten=0;gevonden=0;bezig=false;openKaarten=[];
@@ -544,7 +556,7 @@ function spelStart(){
   spelKaarten.forEach(function(k,idx){
     var btn=document.createElement('button');
     btn.className='kaart';btn.dataset.idx=idx;
-    btn.innerHTML='🐰<img src="'+k.src+'" alt="kaart">';
+    btn.innerHTML=HELDEN[held].ico+'<img src="'+k.src+'" alt="kaart">';
     btn.onclick=function(){spelKlik(btn,k)};
     bord.appendChild(btn);
   });
@@ -567,8 +579,8 @@ function spelKlik(btn,k){
       document.getElementById('spel-status').textContent='Niet dezelfde — probeer opnieuw…';
       setTimeout(function(){
         a.btn.classList.remove('open');b.btn.classList.remove('open');
-        a.btn.textContent='🐰';a.btn.appendChild(a.btn.querySelector('img'));
-        b.btn.textContent='🐰';b.btn.appendChild(b.btn.querySelector('img'));
+        a.btn.textContent=HELDEN[held].ico;a.btn.appendChild(a.btn.querySelector('img'));
+        b.btn.textContent=HELDEN[held].ico;b.btn.appendChild(b.btn.querySelector('img'));
         openKaarten=[];bezig=false;
       },900);
     }
