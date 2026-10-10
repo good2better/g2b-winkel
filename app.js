@@ -96,6 +96,7 @@ async function laden() {
 
   const prods = [...(data.producten || [])].sort((a, b) =>
     (CAT_VOLGORDE.indexOf(CAT(a)) - CAT_VOLGORDE.indexOf(CAT(b))) ||
+    ((a.eerst ? 0 : 1) - (b.eerst ? 0 : 1)) ||
     (CAT(a) === "boeken" ? boekScore(a) - boekScore(b)
                          : (a.titel || "").localeCompare(b.titel || "")));
   window._prods = prods;
@@ -144,7 +145,8 @@ async function laden() {
           ? `<img class="cover" src="${esc(p.cover)}" alt="">`
           : ""}
         <div class="info">
-          <div class="titel">${esc(p.titel)}</div>
+          <div class="titel">${esc(p.titel)}
+            ${p.badge ? ` <span style="display:inline-block;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#111;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px;vertical-align:middle">${esc(p.badge)}</span>` : ""}</div>
           ${p.prijs ? `<div class="prijs">${esc(p.prijs)}</div>` : ""}
           ${p.beschrijving
             ? `<div class="beschr">${esc(p.beschrijving)}</div>` : ""}
