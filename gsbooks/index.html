@@ -569,7 +569,8 @@ function vbStap(i,d){
 var BLBOEKEN={sunny:{dir:'boek',n:20,sub:"20 echte hoofdstuk-plaatjes uit <i>Sunny's Sailing Adventures</i> — klik door het boek alsof je het vasthoudt.",koop:'https://buy.stripe.com/00wbJ12wwaan8rRggB5J601'},
   ziggy:{dir:'boek-ziggy',n:9,sub:"9 hoofdstuk-pagina's uit <i>Ziggy Zebra en de Magische Kleurenrace</i> — blader zelf door het echte boek.",koop:''},
   ziggy2:{dir:'boek-ziggy2',n:6,sub:"6 hoofdstuk-pagina's uit <i>Ziggy Zebra en de Dansende Kleuren</i> — het nieuwe boek 2!",koop:''},
-  ziggy3:{dir:'boek-ziggy3',n:6,sub:"6 hoofdstuk-pagina's uit <i>Ziggy Zebra en de Grijze Schaduw</i> — boek 3!",koop:''}};
+  ziggy3:{dir:'boek-ziggy3',n:6,sub:"6 hoofdstuk-pagina's uit <i>Ziggy Zebra en de Grijze Schaduw</i> — boek 3!",koop:''},
+  koko2:{dir:'boek-koko2',n:6,sub:"6 hoofdstuk-pagina's uit <i>Chef Koko en het Grote Fruitfeest</i> — boek 2 van Chef Koko!",koop:''}};
 var blIdx=0,blB=BLBOEKEN.sunny;
 function blToon(){
   document.getElementById('bl-img').src=blB.dir+'/p'+String(blIdx).padStart(2,'0')+'.jpg';
@@ -602,7 +603,8 @@ var HELDEN={
   ravi:{naam:'Ravi',ico:'🦜'},
   bodhi:{naam:'Bodhi',ico:'🐨'},
   ollie:{naam:'Ollie',ico:'🦉'},
-  sterre:{naam:'Sterre',ico:'🐴'}};
+  sterre:{naam:'Sterre',ico:'🐴'},
+  koko:{naam:'Chef Koko',ico:'🦍'}};
 Object.keys(HELDEN).forEach(function(h){
   var base=(h==='keesje')?'img/mem-':'img/mem-'+h+'-';
   HELDEN[h].mem=[0,1,2,3,4,5].map(function(i){return base+i+'.jpg';});
@@ -684,7 +686,8 @@ fetch('boeken.json').then(function(r){return r.ok?r.json():{boeken:[]}}).then(fu
     {id:'sunny',titel:'⛵ Sunny-serie',sub:'De avonturen van het dappere zeilbootje — meer delen onderweg!'},
     {id:'keesje',titel:'🐰 Keesje-serie',sub:'Keesje Konijn de detective — elke zaak een nieuw avontuur'},
     {id:'dierenhelden',titel:'🐾 Animal Heroes Avonturen',sub:'Elke held z’n eigen verhaal — echt gebeurde dierenmoed'},
-    {id:'ziggy',titel:'🦓 Ziggy Zebra-serie',sub:'Kleuren leren met de regenboog-zebra — voor de allerkleinsten'}
+    {id:'ziggy',titel:'🦓 Ziggy Zebra-serie',sub:'Kleuren leren met de regenboog-zebra — voor de allerkleinsten'},
+    {id:'koko',titel:'🦍 Chef Koko-serie',sub:'Koken, fruit en vrienden met de liefste gorilla-kok — 0-5 jaar'}
   ];
   var groepen={};
   data.boeken.forEach(function(b){var s=b.serie||'dierenhelden';(groepen[s]=groepen[s]||[]).push(b);});

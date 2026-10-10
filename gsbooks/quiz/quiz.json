@@ -461,6 +461,56 @@
      "goed": 1
     }
    ]
+  },
+  {
+   "boek": "Chef Koko en het Grote Fruitfeest",
+   "vragen": [
+    {
+     "v": "Wat staat er op Chef Koko's hoofd?",
+     "a": [
+      "Een feesthoedje",
+      "Een witte koksmuts",
+      "Een kroon"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Wie helpt Koko het fruit tellen?",
+     "a": [
+      "Mo de aap",
+      "Peppie de papegaai",
+      "Tambo het olifantje"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wat proeft Peppie en vindt veel te zuur?",
+     "a": [
+      "Een banaan",
+      "Een aardbei",
+      "Een citroen"
+     ],
+     "goed": 2
+    },
+    {
+     "v": "Welke soep kookt Chef Koko?",
+     "a": [
+      "Regenboogsoep",
+      "Tomatensoep",
+      "Erwtensoep"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wat doen ze aan het eind van het feest?",
+     "a": [
+      "Slapen",
+      "Dansen",
+      "Zwemmen"
+     ],
+     "goed": 1
+    }
+   ]
   }
  ]
 }
