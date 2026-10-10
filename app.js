@@ -72,12 +72,13 @@ async function laden() {
     : p.soort === "audio" ? "beats"
     : (p.groep === "software" || p.groep === "plugins") ? "plugins"
     : p.groep === "sounds" ? "sounds"
+    : p.groep === "muziek" ? "muziek"
     : "boeken";
   const CAT_NAAM = {
     apps: "🛠️ Apps", boeken: "📚 Boeken", plugins: "🔌 Plugins",
-    sounds: "🔊 Sound packs", beats: "🎵 Beats",
+    sounds: "🔊 Sound packs", muziek: "🎤 Muziek", beats: "🎵 Beats",
   };
-  const CAT_VOLGORDE = ["apps", "boeken", "plugins", "sounds", "beats"];
+  const CAT_VOLGORDE = ["apps", "boeken", "plugins", "sounds", "muziek", "beats"];
 
   // binnen Boeken: serie-volgorde 1→10 met e-boek direct achter zijn
   // kleurboek, daarna verzamel-/avonturen-bundels; onbekende titels alfabetisch.
