@@ -560,6 +560,24 @@
    "video_es": "media/psychologie-demo-es.mp4"
   },
   {
+   "id": "g2b-workstation",
+   "titel": "G2B Workstation",
+   "soort": "digitaal",
+   "groep": "apps",
+   "beschrijving": "Jouw eigen AI-muziekstudio op je eigen pc — songs maken, stemmen klonen, beats bouwen, mixen, masteren en je winkel beheren. Twee uiterlijken: op een gewone pc werkt hij in CPU MODE (alles werkt behalve zware AI-generatie — knoppen grijs); met een videokaart (NVIDIA) of een RunPod-pod schakelt hij naar GPU MODE en lichten álle knoppen op. Geen abonnement — alleen je eigen hardware of prepaid RunPod-centen. Incl. installatie-PDF en workflow-video.",
+   "prijs": "€ 49,95",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "cover": "media/g2b-workstation-cover.png",
+   "video": "media/workstation-demo.mp4",
+   "video_en": "media/workstation-demo-en.mp4",
+   "video_es": "media/workstation-demo-es.mp4",
+   "badge": "<span style='background:#12402a;color:#7CFF9B'>2 modi: CPU + GPU</span>",
+   "eerst": true
+  },
+  {
    "id": "g2b-bedrijfsmiddelen",
    "titel": "G2B Bedrijfsmiddelen",
    "soort": "digitaal",
