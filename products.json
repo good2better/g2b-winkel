@@ -77,28 +77,10 @@
    "badge": "later los — nu in bundel"
   },
   {
-   "id": "g2b-ocho",
-   "titel": "G2B OchoOcho",
-   "soort": "digitaal",
-   "beschrijving": "Jouw eigen 808 (VST3 + CLAP instrument): diepe sub-bas met glide, pitch-drop en zachte drive — gebouwd op het G2B-subgeluid. Speel hem als instrument in elke DAW. Windows. Met Nederlandse handleiding — met 6 stijl-presets.",
-   "prijs": "€ 19,95",
-   "prijzen": {},
-   "links": {
-    "koop": ""
-   },
-   "duur": 0,
-   "groep": "software",
-   "cover": "media/g2b-ocho-cover.png",
-   "download_dir": "d/df1f5bd8edab4901",
-   "demo": "media/ocho-demo.mp4",
-   "video": "media/ocho-demo.mp4",
-   "badge": "later los — nu in bundel"
-  },
-  {
    "id": "g2b-donderglider",
    "titel": "G2B Donder Glider",
    "soort": "digitaal",
-   "beschrijving": "Jouw eigen glide-808 (VST3 + CLAP instrument): de basslijn glijdt echt van noot naar noot — dé trap/drill-slide. Met pitch-drop, zachte drive, MIDI-bespeelbaar en de vaste G2B-balk: presets, dice en dark/light. Windows, met Nederlandse handleiding.",
+   "beschrijving": "DE alles-in-1 beat-machine (VST3 + CLAP): drums + glijdende 808 + akkoorden + melodie in één scherm. De 808 glijdt echt van noot naar noot — speel live met MIDI-keyboard (legato = slide) of laat de groove-engine beats bouwen. Presets, dice, auto, dark/light. Windows, NL-handleiding.",
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
