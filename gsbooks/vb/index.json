@@ -108,5 +108,13 @@
   "cover": "vb/vraag-het-aan-sterre/cover.jpg",
   "interactief": true,
   "paginas": 0
+ },
+ {
+  "slug": "vraag-het-aan-ziggy",
+  "titel": "Vraag het aan Ziggy",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-ziggy/index.html",
+  "cover": "vb/vraag-het-aan-ziggy/cover.jpg",
+  "interactief": true
  }
 ]
