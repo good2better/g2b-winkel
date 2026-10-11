@@ -31,7 +31,8 @@
    "video": "media/g2b-studiopack-demo.mp4",
    "download_dir": "d/336693b92c56db7a",
    "eerst": true,
-   "badge": "APP-BUNDEL"
+   "badge": "APP-BUNDEL",
+   "badge": "GRATIS"
   },
   {
    "id": "g2b-glans",
@@ -147,7 +148,8 @@
   "prijs": "GRATIS",
   "prijzen": {},
   "links": {
-   "koop": "d/m1d1gr00ves001/G2B-MIDI-GROOVES-Vol1.zip"
+   "koop": "d/m1d1gr00ves001/G2B-MIDI-GROOVES-Vol1.zip",
+   "badge": "GRATIS"
   },
   "groep": "sounds",
   "cover": "media/g2b-midigrooves-cover.png",
