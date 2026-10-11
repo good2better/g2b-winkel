@@ -631,7 +631,6 @@
    },
    "groep": "sounds",
    "cover": "media/g2btrapk-cover.png",
-   "preview": "media/g2btrapk-preview.mp3",
    "download_dir": "d/g2btrapk",
    "video": "media/g2btrapk-demo.mp4"
   },
@@ -650,7 +649,6 @@
    },
    "groep": "sounds",
    "cover": "media/kw322dcb-cover.png",
-   "preview": "media/kw322dcb-preview.mp3",
    "download_dir": "d/kw322dcb",
    "video": "media/kw322dcb-demo.mp4"
   },
