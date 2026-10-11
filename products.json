@@ -124,7 +124,9 @@
   },
   "groep": "sounds",
   "cover": "media/g2b-midigrooves-cover.png",
-  "download_dir": "d/m1d1gr00ves001"
+  "download_dir": "d/m1d1gr00ves001",
+   "demo": "media/g2b-midigrooves-demo.mp4",
+   "video": "media/g2b-midigrooves-demo.mp4"
  },
 {
    "id": "g2b-donderglider-mini",
