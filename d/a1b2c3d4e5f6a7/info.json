@@ -1,1 +1,11 @@
-{"titel": "G2B Donder Glider", "licentie": "Volledige download — persoonlijke licentie", "cover": "media/g2b-donderglider-cover.png", "bestand": "G2B-DonderGlider.zip"}
+{
+ "titel": "G2B Donder Glider",
+ "licentie": "Volledige download — persoonlijke licentie",
+ "cover": "media/g2b-donderglider-cover.png",
+ "bestanden": [
+  {
+   "naam": "G2B-DonderGlider.zip — nieuwste build (Kawai 4-laags + marimba 3-laags)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-glider-v1/G2B-DonderGlider.zip"
+  }
+ ]
+}
