@@ -38,7 +38,7 @@
       "id": "g2b-studio-pack",
       "titel": "G2B Studio Pack",
       "soort": "digitaal",
-      "beschrijving": "Complete mix/master-studio voor Windows: de G2B Engineer-app mixt en master je stems automatisch (in REAPER of zelfstandig, met smaak-loop), plus de G2B Glans-plugin (VST3+CLAP) voor air en breedte. Inclusief Nederlandse handleidingen. Eenmalig, geen abonnement.",
+      "beschrijving": "Complete mix/master-studio voor Windows: de G2B Engineer-app mixt en master je stems automatisch (in REAPER of zelfstandig, met smaak-loop), plus de G2B Glans-plugin (VST3+CLAP) voor air en breedte. Inclusief Nederlandse handleidingen. Eenmalig, geen abonnement. Nu met viool+altviool+cello-strijkers en OBOE.",
       "prijs": "€ 149 intro-prijs",
       "prijzen": {},
       "links": {
@@ -197,7 +197,7 @@
       "id": "g2b-suite",
       "titel": "G2B Suite — ALLES (17 tools)",
       "soort": "digitaal",
-      "beschrijving": "ALLE 18 G2B-plugins in één bundel: 10 FX + 8 instruments + packs. Los zou dit €374 kosten — nu €89,95. Windows VST3+CLAP, met NL-handleiding en broncode erbij.",
+      "beschrijving": "ALLE 18 G2B-plugins in één bundel: 10 FX + 8 instruments + packs. Los zou dit €374 kosten — nu €89,95. Windows VST3+CLAP, met NL-handleiding en broncode erbij. Nu met viool+altviool+cello-strijkers en OBOE.",
       "prijs": "€ 89,95",
       "prijzen": {},
       "links": {
@@ -303,7 +303,7 @@
       "id": "g2b-akkoord",
       "titel": "G2B Akkoord",
       "soort": "digitaal",
-      "beschrijving": "Akkoorden met VIJF echte instrumenten: concert-HARP + Yamaha-upright + PIJP-ORGEL + STRUMSTICK + STRIJKERS-pizzicato (echte viool+cello-sectie), met zachte/harde lagen. Voicings + per-stijl kleur. Windows VST3 + CLAP.",
+      "beschrijving": "Akkoorden met VIJF echte instrumenten: concert-HARP + Yamaha-upright + PIJP-ORGEL + STRUMSTICK + STRIJKERS-pizzicato (echte viool+altviool+cello-sectie), met zachte/harde lagen. Voicings + per-stijl kleur. Windows VST3 + CLAP.",
       "prijs": 19.95,
       "links": {
         "koop": ""
@@ -319,7 +319,7 @@
       "id": "g2b-looppack",
       "titel": "G2B Loop Pack Vol.1 — Studio Melodies",
       "soort": "digitaal",
-      "beschrijving": "12 melodie-loops GERENDERD door onze eigen engines — gelaagde keys/pluck + pad + 808-bas, gemasterd op studioniveau. BPM + key in de naam. 100% eigen, royalty-vrij voor altijd.",
+      "beschrijving": "12 melodie-loops GERENDERD door onze eigen engines — gelaagde keys/pluck + pad + 808-bas, gemasterd op studioniveau. BPM + key in de naam. 100% eigen, royalty-vrij voor altijd. Nu met viool+altviool+cello-strijkers en OBOE.",
       "prijs": 14.95,
       "links": {
         "koop": ""
@@ -361,7 +361,7 @@
       "id": "g2b-melodie",
       "titel": "G2B Melodie",
       "soort": "digitaal",
-      "beschrijving": "NEGEN klanken in één: synth + echte MARIMBA + echte PSALTERY + echte TENOR-SAXOFOON + echte BLOKFLUIT + OCARINA + echte GLOCKENSPIEL + echte MONDHARMONICA + echte BRASS-SECTIE (trompet+trombone+hoorn, CC0, 100% commercieel). Windows VST3 + CLAP.",
+      "beschrijving": "TIEN klanken in één: synth + echte MARIMBA + echte PSALTERY + echte TENOR-SAXOFOON + echte BLOKFLUIT + OCARINA + echte GLOCKENSPIEL + echte MONDHARMONICA + echte BRASS-SECTIE (trompet+trombone+hoorn) + echte OBOE-staccato — allemaal CC0, 100% commercieel. Windows VST3 + CLAP.",
       "prijs": 19.95,
       "links": {
         "koop": ""
@@ -577,7 +577,7 @@
       "id": "g2b-fx-pack",
       "titel": "G2B FX-Pack",
       "soort": "digitaal",
-      "beschrijving": "10 effect-plugins in één deal: Glans, SubTamer, Poets, Knip, Ruimte, Stem, Stof, Banden, MasterRack + TIJD (echte pitch-shift). Los = €214,50 → bespaar €164. Windows VST3/CLAP.",
+      "beschrijving": "10 effect-plugins in één deal: Glans, SubTamer, Poets, Knip, Ruimte, Stem, Stof, Banden, MasterRack + TIJD (echte pitch-shift). Los = €214,50 → bespaar €164. Windows VST3/CLAP. Nu met viool+altviool+cello-strijkers en OBOE.",
       "prijs": 49.95,
       "links": {
         "koop": ""
@@ -594,7 +594,7 @@
       "id": "g2b-instrument-pack",
       "titel": "G2B Instrument-Pack",
       "soort": "digitaal",
-      "beschrijving": "Alle 8 G2B instruments: OchoOcho, Akkoord, Drums, Melodie, SampleX, Keys, Bas + SONG (all-in-one beat). Los = €159,60 → bespaar €119. Windows VST3/CLAP.",
+      "beschrijving": "Alle 8 G2B instruments: OchoOcho, Akkoord, Drums, Melodie, SampleX, Keys, Bas + SONG (all-in-one beat). Los = €159,60 → bespaar €119. Windows VST3/CLAP. Nu met viool+altviool+cello-strijkers en OBOE.",
       "prijs": 39.95,
       "links": {
         "koop": ""
