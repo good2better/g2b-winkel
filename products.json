@@ -116,7 +116,7 @@
    "id": "g2b-donderglider-mini",
    "titel": "G2B Donder Glider MINI",
    "soort": "digitaal",
-   "beschrijving": "De G2B all-in-one beat-machine: drums + glijdende 808 + akkoorden + hook, AUTO-SONG in 27 stijlen, bespeelbaar op MIDI (4 kanalen), MIDI OUT naar je DAW én NIEUW: EXPORT .MID — schrijft je patroon als echt midi-bestand naar Muziek\\G2B. GALAXY-knop, swing, fills, sidechain-pump. VST3 + CLAP.",
+   "beschrijving": "GRATIS instap-versie van de G2B all-in-one beat-machine: drums + glijdende 808 + akkoorden + hook in 5 stijlen (G2B, DEMBOW, DRILL, RNB, KAWINA), AUTO-arrange, swing, fills, GALAXY-knop en bespeelbaar op MIDI. Volle versie heeft 27 stijlen, AUTO-SONG, MIDI OUT én EXPORT .MID. VST3 + CLAP.",
    "prijs": "GRATIS",
    "prijzen": {},
    "links": {
@@ -127,8 +127,8 @@
    "cover": "media/g2b-donderglider-cover.png",
    "download_dir": "d/f1e2d3c4b5a697",
    "badge": "GRATIS",
-   "demo": "media/donderglider-v31.mp4",
-   "video": "media/donderglider-v31.mp4"
+   "demo": "media/donderglider-mini5.mp4",
+   "video": "media/donderglider-mini5.mp4"
   },
   {
    "id": "g2b-suite",
