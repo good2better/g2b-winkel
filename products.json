@@ -770,23 +770,6 @@
    "preview": "media/ritmosalbum-preview.mp3",
    "video": "media/ritmosbundle-promo.mp4",
    "download_dir": "d/d74976fef7dfff6a"
-  },
-  {
-   "id": "beattape2",
-   "titel": "G2B BEAT TAPE #2 — hele tape",
-   "soort": "bundel",
-   "groep": "tape",
-   "beschrijving": "Alle 6 beats (kawina·drill·boombap·afro·house·rnb) in losse kits: beat-WAV+MP3+melodie-stem+versies+licentie+buy-out-verklaring. 100% eigen engine-audio.",
-   "prijs": 39.95,
-   "prijzen": {
-    "tape": 39.95
-   },
-   "download_dir": "d/beattape2",
-   "links": {
-    "koop": "",
-    "download": "bedankt.html?k=beattape2"
-   },
-   "cover": "media/beattape2-cover.png"
   }
  ]
 }
