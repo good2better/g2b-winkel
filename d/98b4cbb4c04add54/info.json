@@ -1,1 +1,11 @@
-{"titel": "G2B Instrument-Pack", "licentie": "Bundel-licentie (1 gebruiker, commercieel OK)", "cover": "media/g2b-instrumentpack-cover.png", "bestand": "G2B-Instrument-Pack.zip"}
+{
+ "titel": "G2B Instrument-Pack",
+ "licentie": "Bundel-licentie (1 gebruiker, commercieel OK)",
+ "cover": "media/g2b-instrumentpack-cover.png",
+ "bestanden": [
+  {
+   "naam": "G2B-Instrument-Pack.zip — nieuwste build (PAD-strijkers + round-robin)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-instrument-pack-v2/G2B-Instrument-Pack.zip"
+  }
+ ]
+}
