@@ -1,1 +1,11 @@
-{"titel": "G2B Keys", "licentie": "Plugin-licentie (1 gebruiker, commercieel OK)", "cover": "media/g2b-keys-cover.png", "bestand": "G2B-Keys.zip"}
+{
+ "titel": "G2B Keys",
+ "licentie": "Plugin-licentie (1 gebruiker, commercieel OK)",
+ "cover": "media/g2b-keys-cover.png",
+ "bestanden": [
+  {
+   "naam": "G2B-Keys.zip — nieuwste build (Kawai 4-laags + hall)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-keys-v1/G2B-Keys.zip"
+  }
+ ]
+}
