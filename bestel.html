@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bestellen — G2B Winkel</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230D0F0E'/><text x='50' y='68' font-size='52' font-weight='bold' text-anchor='middle' fill='%232FBF71' font-family='sans-serif'>G2</text></svg>">
+<style>
+:root{
+  --bg:#0d0f0e; --panel:#171a19; --panel2:#1e2221; --line:#2a2f2d;
+  --txt:#e8ecea; --dim:#8fa098; --accent:#2fbf71; --accent2:#1d7a48;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);
+  font:15px/1.6 'Segoe UI',system-ui,sans-serif;min-height:100vh;
+  display:flex;flex-direction:column}
+header{border-bottom:1px solid var(--line);background:var(--panel);
+  padding:20px;text-align:center}
+.logo{font-size:clamp(20px,4vw,26px);font-weight:800;letter-spacing:2px}
+.logo b{color:var(--accent)}
+main{flex:1;display:flex;align-items:center;justify-content:center;
+  padding:24px 16px}
+.card{background:var(--panel);border:1px solid var(--line);
+  border-radius:16px;padding:34px 30px;max-width:520px;width:100%}
+h1{font-size:22px;margin-bottom:6px;text-align:center}
+.sub{color:var(--dim);font-size:14px;text-align:center}
+.prod{display:flex;gap:12px;align-items:center;background:var(--panel2);
+  border:1px solid var(--line);border-radius:12px;padding:12px;
+  margin:20px 0;text-align:left}
+.prod img{width:56px;height:56px;border-radius:8px;object-fit:cover;
+  border:1px solid var(--line);flex:none}
+.prod .t{font-weight:700}
+.prod .l{color:var(--dim);font-size:12.5px}
+.prod .pr{color:var(--accent);font-weight:800;font-size:18px;margin-left:auto;
+  flex:none}
+.stappen{margin:18px 0;display:grid;gap:10px}
+.stap{display:flex;gap:10px;align-items:flex-start;background:var(--panel2);
+  border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:14px}
+.stap .n{background:var(--accent);color:#04120a;font-weight:800;
+  border-radius:50%;width:24px;height:24px;display:flex;flex:none;
+  align-items:center;justify-content:center;font-size:13px}
+.knop{display:block;background:var(--accent);color:#04120a;
+  font-weight:800;font-size:16px;padding:14px 20px;border-radius:10px;
+  text-decoration:none;margin-top:14px;text-align:center;cursor:pointer;
+  border:none;width:100%;font-family:inherit}
+.knop:hover{filter:brightness(1.12)}
+.knop.ander{background:var(--panel2);color:var(--txt);
+  border:1px solid var(--line);font-weight:600}
+.klein{color:var(--dim);font-size:12px;margin-top:18px;text-align:center}
+.klein a{color:var(--accent)}
+.terug{display:inline-block;margin-top:16px;color:var(--dim);
+  font-size:13px;text-decoration:none}
+.terug:hover{color:var(--accent)}
+.fout .vinkje{background:#bf5b2f;color:#fff}
+.vinkje{width:64px;height:64px;border-radius:50%;background:var(--accent);
+  color:#04120a;font-size:32px;font-weight:800;display:flex;
+  align-items:center;justify-content:center;margin:0 auto 16px}
+footer{text-align:center;color:var(--dim);font-size:12px;
+  padding:18px;border-top:1px solid var(--line)}
+footer b{color:var(--accent)}
+</style>
+</head>
+<body>
+<header><div class="logo">G2B <b>WINKEL</b></div></header>
+<main>
+  <div class="card" id="kaart">
+    <div class="vinkje">…</div>
+    <h1>Even laden</h1>
+    <div class="sub">Je bestelling wordt klaargezet…</div>
+  </div>
+</main>
+<footer>Gebouwd door <b>Good2Better</b> — eigen winkel, geen commissie.</footer>
+<script type="module">
+const kaart = document.getElementById("kaart");
+const esc = s => String(s || "").replace(/[&<>"']/g, c =>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const EMAIL = "g.sandvliet88@gmail.com";
+const LIC_NAMEN = { mp3:"MP3-lease", wav:"WAV-lease", exclusief:"EXCLUSIEF (buy-out)" };
+
+function fout(msg) {
+  kaart.classList.add("fout");
+  kaart.innerHTML = `
+    <div class="vinkje">!</div>
+    <h1>Product niet gevonden</h1>
+    <div class="sub">${esc(msg || "Deze bestel-link is niet geldig.")}</div>
+    <a class="terug" href="index.html">← terug naar de winkel</a>`;
+}
+
+const params = new URLSearchParams(location.search);
+const pid = params.get("p") || "";
+const tier = params.get("t") || "";
+
+let cat;
+try {
+  const r = await fetch("products.json", { cache: "no-store" });
+  if (!r.ok) throw 0;
+  cat = await r.json();
+  if (cat.accent)
+    document.documentElement.style.setProperty("--accent", cat.accent);
+  if (cat.accent2)
+    document.documentElement.style.setProperty("--accent2", cat.accent2);
+} catch { fout("De winkel kon niet geladen worden."); throw 0; }
+
+const p = (cat.producten || []).find(x => x.id === pid);
+if (!p) { fout(); throw 0; }
+
+const tierNaam = tier && LIC_NAMEN[tier] ? LIC_NAMEN[tier] : "";
+const prijs = tier && p.prijzen && p.prijzen[tier] ? p.prijzen[tier]
+  : (typeof p.prijs === "number" ? "€ " + p.prijs.toFixed(2).replace(".", ",") : p.prijs);
+const titelLang = p.titel + (tierNaam ? " — " + tierNaam : "");
+
+const orderTekst =
+`Bestelling bij G2B Winkel
+
+Product: ${titelLang}
+Prijs: ${prijs}
+
+Mijn naam:
+Mijn e-mailadres:
+
+(G2B stuurt daarna een Tikkie-betaallink. Na betaling komt de download-link binnen 24 uur.)`;
+
+const mailto = `mailto:${EMAIL}?subject=${encodeURIComponent("Bestelling: " + titelLang)}&body=${encodeURIComponent(orderTekst)}`;
+
+kaart.innerHTML = `
+  <h1>Bestelling afronden</h1>
+  <div class="sub">Zo werkt het — simpel en veilig via Tikkie</div>
+  <div class="prod">
+    ${p.cover ? `<img src="${esc(p.cover)}" alt="">` : ""}
+    <div>
+      <div class="t">${esc(p.titel)}</div>
+      ${tierNaam ? `<div class="l">${esc(tierNaam)}</div>` : ""}
+    </div>
+    <div class="pr">${esc(prijs)}</div>
+  </div>
+  <div class="stappen">
+    <div class="stap"><div class="n">1</div><div>Klik op <b>STUUR BESTELLING</b> — je mailtje naar de winkel wordt automatisch klaargezet. Verstuur hem.</div></div>
+    <div class="stap"><div class="n">2</div><div>Je krijgt snel antwoord met een <b>Tikkie-betaallink</b> (betaling via je eigen bank-app, veilig).</div></div>
+    <div class="stap"><div class="n">3</div><div>Na betaling ontvang je <b>binnen 24 uur je download-link</b> — meestal veel sneller.</div></div>
+  </div>
+  <a class="knop" href="${mailto}">✉ STUUR BESTELLING</a>
+  <button class="knop ander" id="kopie">📋 OF KOPIEER DE BESTELTEKST</button>
+  <div class="klein">Liever direct mailen? Stuur je bestelling naar
+    <a href="mailto:${EMAIL}">${EMAIL}</a> met de productnaam erbij.</div>
+  <a class="terug" href="index.html">← terug naar de winkel</a>`;
+
+document.getElementById("kopie").addEventListener("click", async e => {
+  try {
+    await navigator.clipboard.writeText(orderTekst + "\n\nMail naar: " + EMAIL);
+    e.target.textContent = "✓ GEKOPIEERD — plak in je mail/WhatsApp";
+  } catch {
+    e.target.textContent = orderTekst;
+  }
+});
+</script>
+</body>
+</html>
