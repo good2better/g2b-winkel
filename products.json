@@ -722,7 +722,7 @@
    "id": "2878e291",
    "titel": "Cjfjff Houce",
    "soort": "audio",
-   "beschrijving": "House beat. Eigen G2B-productie.",
+   "beschrijving": "House beat. Eigen G2B-productie. Nieuwe G2B-engine sound — 100% eigen audio.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -733,18 +733,20 @@
     "koop": "https://buy.stripe.com/demo",
     "mp3": "https://buy.stripe.com/demo_mp3",
     "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "exclusief": "https://buy.stripe.com/demo_excl",
+    "download": "bedankt.html?k=2878e291"
    },
    "duur": 133.3,
    "groep": "house",
    "cover": "media/2878e291-cover.png",
-   "preview": "media/2878e291-preview.mp3"
+   "preview": "media/2878e291-preview.mp3",
+   "download_dir": "d/2878e291"
   },
   {
    "id": "d9d479ab",
    "titel": "Under",
    "soort": "audio",
-   "beschrijving": "Drill beat — 152 BPM in G#m. Eigen G2B-productie.",
+   "beschrijving": "Drill beat — 152 BPM in G#m. Eigen G2B-productie. Nieuwe G2B-engine sound — 100% eigen audio.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -755,18 +757,20 @@
     "koop": "https://buy.stripe.com/demo",
     "mp3": "https://buy.stripe.com/demo_mp3",
     "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "exclusief": "https://buy.stripe.com/demo_excl",
+    "download": "bedankt.html?k=d9d479ab"
    },
    "duur": 204.8,
    "groep": "drill",
    "cover": "media/d9d479ab-cover.png",
-   "preview": "media/d9d479ab-preview.mp3"
+   "preview": "media/d9d479ab-preview.mp3",
+   "download_dir": "d/d9d479ab"
   },
   {
    "id": "7fe03e5c",
    "titel": "KAY9",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 133 BPM in C#m. Eigen G2B-productie.",
+   "beschrijving": "Dembow beat — 133 BPM in C#m. Eigen G2B-productie. Nieuwe G2B-engine sound — 100% eigen audio.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -777,18 +781,20 @@
     "koop": "https://buy.stripe.com/demo",
     "mp3": "https://buy.stripe.com/demo_mp3",
     "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "exclusief": "https://buy.stripe.com/demo_excl",
+    "download": "bedankt.html?k=7fe03e5c"
    },
    "duur": 202.2,
    "groep": "dembow",
    "cover": "media/7fe03e5c-cover.png",
-   "preview": "media/7fe03e5c-preview.mp3"
+   "preview": "media/7fe03e5c-preview.mp3",
+   "download_dir": "d/7fe03e5c"
   },
   {
    "id": "0ef9a078",
    "titel": "Love",
    "soort": "audio",
-   "beschrijving": "Rnb beat — 133 BPM in Fm. Eigen G2B-productie.",
+   "beschrijving": "Rnb beat — 133 BPM in Fm. Eigen G2B-productie. Nieuwe G2B-engine sound — 100% eigen audio.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -799,18 +805,20 @@
     "koop": "https://buy.stripe.com/demo",
     "mp3": "https://buy.stripe.com/demo_mp3",
     "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "exclusief": "https://buy.stripe.com/demo_excl",
+    "download": "bedankt.html?k=0ef9a078"
    },
    "duur": 149.1,
    "groep": "rnb",
    "cover": "media/0ef9a078-cover.png",
-   "preview": "media/0ef9a078-preview.mp3"
+   "preview": "media/0ef9a078-preview.mp3",
+   "download_dir": "d/0ef9a078"
   },
   {
    "id": "8171e455",
    "titel": "Soldaat",
    "soort": "audio",
-   "beschrijving": "G2b beat — 136 BPM in Cm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV).",
+   "beschrijving": "G2b beat — 136 BPM in Cm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV). Nieuwe G2B-engine sound — 100% eigen audio.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -821,18 +829,20 @@
     "koop": "https://buy.stripe.com/demo",
     "mp3": "https://buy.stripe.com/demo_mp3",
     "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "exclusief": "https://buy.stripe.com/demo_excl",
+    "download": "bedankt.html?k=8171e455"
    },
    "duur": 157.3,
    "groep": "g2b",
    "cover": "media/8171e455-cover.png",
-   "preview": "media/8171e455-preview.mp3"
+   "preview": "media/8171e455-preview.mp3",
+   "download_dir": "d/8171e455"
   },
   {
    "id": "266054dc",
    "titel": "Houce Trap",
    "soort": "audio",
-   "beschrijving": "Trap beat — 126 BPM in Gm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV).",
+   "beschrijving": "Trap beat — 126 BPM in Gm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV). Nieuwe G2B-engine sound — 100% eigen audio.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -843,18 +853,20 @@
     "koop": "https://buy.stripe.com/demo",
     "mp3": "https://buy.stripe.com/demo_mp3",
     "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "exclusief": "https://buy.stripe.com/demo_excl",
+    "download": "bedankt.html?k=266054dc"
    },
    "duur": 133.6,
    "groep": "trap",
    "cover": "media/266054dc-cover.png",
-   "preview": "media/266054dc-preview.mp3"
+   "preview": "media/266054dc-preview.mp3",
+   "download_dir": "d/266054dc"
   },
   {
    "id": "53c9dc1f",
    "titel": "Lala Dance",
    "soort": "audio",
-   "beschrijving": "House beat — 136 BPM in Gm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV).",
+   "beschrijving": "House beat — 136 BPM in Gm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV). Nieuwe G2B-engine sound — 100% eigen audio.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -865,18 +877,20 @@
     "koop": "https://buy.stripe.com/demo",
     "mp3": "https://buy.stripe.com/demo_mp3",
     "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "exclusief": "https://buy.stripe.com/demo_excl",
+    "download": "bedankt.html?k=53c9dc1f"
    },
    "duur": 141.1,
    "groep": "house",
    "cover": "media/53c9dc1f-cover.png",
-   "preview": "media/53c9dc1f-preview.mp3"
+   "preview": "media/53c9dc1f-preview.mp3",
+   "download_dir": "d/53c9dc1f"
   },
   {
    "id": "054630ff",
    "titel": "Exotic Riddim",
    "soort": "audio",
-   "beschrijving": "Dancehall beat — 92 BPM in Fm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV).",
+   "beschrijving": "Dancehall beat — 92 BPM in Fm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV). Nieuwe G2B-engine sound — 100% eigen audio.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -887,18 +901,20 @@
     "koop": "https://buy.stripe.com/demo",
     "mp3": "https://buy.stripe.com/demo_mp3",
     "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "exclusief": "https://buy.stripe.com/demo_excl",
+    "download": "bedankt.html?k=054630ff"
    },
    "duur": 147.0,
    "groep": "dancehall",
    "cover": "media/054630ff-cover.png",
-   "preview": "media/054630ff-preview.mp3"
+   "preview": "media/054630ff-preview.mp3",
+   "download_dir": "d/054630ff"
   },
   {
    "id": "3083f3d3",
    "titel": "Khvckhvclv",
    "soort": "audio",
-   "beschrijving": "Drill beat — 112 BPM in Am. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV).",
+   "beschrijving": "Drill beat — 112 BPM in Am. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV). Nieuwe G2B-engine sound — 100% eigen audio.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -909,18 +925,20 @@
     "koop": "https://buy.stripe.com/demo",
     "mp3": "https://buy.stripe.com/demo_mp3",
     "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "exclusief": "https://buy.stripe.com/demo_excl",
+    "download": "bedankt.html?k=3083f3d3"
    },
    "duur": 124.9,
    "groep": "drill",
    "cover": "media/3083f3d3-cover.png",
-   "preview": "media/3083f3d3-preview.mp3"
+   "preview": "media/3083f3d3-preview.mp3",
+   "download_dir": "d/3083f3d3"
   },
   {
    "id": "600fb829",
    "titel": "Midnight Dembow II",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV).",
+   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV). Nieuwe G2B-engine sound — 100% eigen audio.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -931,18 +949,20 @@
     "koop": "https://buy.stripe.com/demo",
     "mp3": "https://buy.stripe.com/demo_mp3",
     "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "exclusief": "https://buy.stripe.com/demo_excl",
+    "download": "bedankt.html?k=600fb829"
    },
    "duur": 158.1,
    "groep": "dembow",
    "cover": "media/600fb829-cover.png",
-   "preview": "media/600fb829-preview.mp3"
+   "preview": "media/600fb829-preview.mp3",
+   "download_dir": "d/600fb829"
   },
   {
    "id": "f92b4951",
    "titel": "Midnight Dembow III",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie.",
+   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie. Nieuwe G2B-engine sound — 100% eigen audio.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -953,18 +973,20 @@
     "koop": "https://buy.stripe.com/demo",
     "mp3": "https://buy.stripe.com/demo_mp3",
     "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "exclusief": "https://buy.stripe.com/demo_excl",
+    "download": "bedankt.html?k=f92b4951"
    },
    "duur": 162.7,
    "groep": "dembow",
    "cover": "media/f92b4951-cover.png",
-   "preview": "media/f92b4951-preview.mp3"
+   "preview": "media/f92b4951-preview.mp3",
+   "download_dir": "d/f92b4951"
   },
   {
    "id": "0b5647bf",
    "titel": "Coolbreez",
    "soort": "audio",
-   "beschrijving": "Drill beat — 152 BPM in Em. Eigen G2B-productie van Giorgio met zijn Cymatics-samples; gemixed en gemasterd in de G2B-engine — WAV & Exclusief incl. stems (WAV).",
+   "beschrijving": "Drill beat — 152 BPM in Em. Eigen G2B-productie van Giorgio. stems (WAV). Nieuwe G2B-engine sound — 100% eigen audio.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -975,12 +997,14 @@
     "koop": "https://buy.stripe.com/demo",
     "mp3": "https://buy.stripe.com/demo_mp3",
     "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
+    "exclusief": "https://buy.stripe.com/demo_excl",
+    "download": "bedankt.html?k=0b5647bf"
    },
    "duur": 168.0,
    "groep": "drill",
    "cover": "media/0b5647bf-cover.png",
-   "preview": "media/0b5647bf-preview.mp3"
+   "preview": "media/0b5647bf-preview.mp3",
+   "download_dir": "d/0b5647bf"
   },
   {
    "id": "ritmosbundel",
