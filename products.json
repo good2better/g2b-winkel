@@ -326,7 +326,8 @@
    },
    "groep": "sounds",
    "cover": "media/g2b-looppack-cover.png",
-   "download_dir": "d/07e56514f5fbdf54"
+   "download_dir": "d/07e56514f5fbdf54",
+   "video": "media/g2b-looppack-demo.mp4"
   },
   {
    "id": "g2b-drumkit",
@@ -339,7 +340,8 @@
    },
    "groep": "sounds",
    "cover": "media/g2b-drumkit-cover.png",
-   "download_dir": "d/7258ce699cb3a2e8"
+   "download_dir": "d/7258ce699cb3a2e8",
+   "video": "media/g2b-drumkit-demo.mp4"
   },
   {
    "id": "g2b-drums",
@@ -480,7 +482,8 @@
    },
    "groep": "sounds",
    "cover": "media/g2b-percfx-cover.png",
-   "download_dir": "d/b11ad30d5a0be609"
+   "download_dir": "d/b11ad30d5a0be609",
+   "video": "media/g2b-percfx-demo.mp4"
   },
   {
    "id": "g2b-dembowkit",
@@ -493,7 +496,8 @@
    },
    "groep": "sounds",
    "cover": "media/g2b-dembow-cover.png",
-   "download_dir": "d/644ea9eda81185ca"
+   "download_dir": "d/644ea9eda81185ca",
+   "video": "media/g2b-dembowkit-demo.mp4"
   },
   {
    "id": "g2b-drillkit",
@@ -506,7 +510,8 @@
    },
    "groep": "sounds",
    "cover": "media/g2b-drill-cover.png",
-   "download_dir": "d/59b422b651b647c8"
+   "download_dir": "d/59b422b651b647c8",
+   "video": "media/g2b-drillkit-demo.mp4"
   },
   {
    "id": "g2b-congo808",
@@ -519,7 +524,8 @@
    },
    "groep": "sounds",
    "cover": "media/g2b-congo808-cover.png",
-   "download_dir": "d/ec5c20746db1fdfd"
+   "download_dir": "d/ec5c20746db1fdfd",
+   "video": "media/g2b-congo808-demo.mp4"
   },
   {
    "id": "g2b-afrokit",
@@ -532,7 +538,8 @@
    },
    "groep": "sounds",
    "cover": "media/g2b-afro-cover.png",
-   "download_dir": "d/78e140497f0d1f1c"
+   "download_dir": "d/78e140497f0d1f1c",
+   "video": "media/g2b-afrokit-demo.mp4"
   },
   {
    "id": "g2b-rnbkit",
@@ -545,7 +552,8 @@
    },
    "groep": "sounds",
    "cover": "media/g2b-rnb-cover.png",
-   "download_dir": "d/d67a3a9bc5522e11"
+   "download_dir": "d/d67a3a9bc5522e11",
+   "video": "media/g2b-rnbkit-demo.mp4"
   },
   {
    "id": "g2b-housekit",
@@ -558,7 +566,8 @@
    },
    "groep": "sounds",
    "cover": "media/g2b-house-cover.png",
-   "download_dir": "d/f69234581b741570"
+   "download_dir": "d/f69234581b741570",
+   "video": "media/g2b-housekit-demo.mp4"
   },
   {
    "id": "g2b-dancehallkit",
@@ -571,7 +580,8 @@
    },
    "groep": "sounds",
    "cover": "media/g2b-dancehall-cover.png",
-   "download_dir": "d/89cd9b73c6c2adf3"
+   "download_dir": "d/89cd9b73c6c2adf3",
+   "video": "media/g2b-dancehallkit-demo.mp4"
   },
   {
    "id": "g2b-fx-pack",
@@ -622,7 +632,8 @@
    "groep": "sounds",
    "cover": "media/g2btrapk-cover.png",
    "preview": "media/g2btrapk-preview.mp3",
-   "download_dir": "d/g2btrapk"
+   "download_dir": "d/g2btrapk",
+   "video": "media/g2btrapk-demo.mp4"
   },
   {
    "id": "kw322dcb",
@@ -640,7 +651,8 @@
    "groep": "sounds",
    "cover": "media/kw322dcb-cover.png",
    "preview": "media/kw322dcb-preview.mp3",
-   "download_dir": "d/kw322dcb"
+   "download_dir": "d/kw322dcb",
+   "video": "media/kw322dcb-demo.mp4"
   },
   {
    "id": "g2b-juridisch",
