@@ -361,7 +361,7 @@
    "id": "g2b-melodie",
    "titel": "G2B Melodie",
    "soort": "digitaal",
-   "beschrijving": "Melodie-generator: schrijft zelf hooks in jouw stijl, altijd in key (KEY+SCALE-lock). 🎲-knop = nieuwe variatie, AUTO = muteert elke 4 bars, ☀/🌙-modus, live melodie-grid. Windows VST3+CLAP.",
+   "beschrijving": "Melodie-generator: schrijft zelf hooks in jouw stijl, altijd in key. TIMBRE vol-rechts = ECHTE geplukte psaltery-snaren (VCSL CC0). 🎲 variatie, AUTO muteert, live grid. Windows VST3+CLAP.",
    "prijs": 19.95,
    "links": {
     "koop": ""
