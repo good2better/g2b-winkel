@@ -303,7 +303,7 @@
    "id": "g2b-akkoord",
    "titel": "G2B Akkoord",
    "soort": "digitaal",
-   "beschrijving": "Akkoorden met VIJF echte instrumenten: concert-HARP + Yamaha-upright + PIJP-ORGEL + STRUMSTICK + STRIJKERS-pizzicato (echte viool-sectie), met zachte/harde lagen. Voicings + per-stijl kleur. Windows VST3 + CLAP.",
+   "beschrijving": "Akkoorden met DRIE echte instrumenten: concert-HARP + Yamaha-upright + STRUMSTICK + echte PIJP-ORGEL (TIMBRE vol-rechts), elk 2 lagen zacht/hard. Voicings + per-stijl kleur. Windows VST3 + CLAP.",
    "prijs": 19.95,
    "links": {
     "koop": ""
@@ -361,7 +361,7 @@
    "id": "g2b-melodie",
    "titel": "G2B Melodie",
    "soort": "digitaal",
-   "beschrijving": "NEGEN klanken in één: synth + echte MARIMBA + echte PSALTERY + echte TENOR-SAXOFOON + echte BLOKFLUIT + OCARINA + echte GLOCKENSPIEL + echte MONDHARMONICA + echte BRASS-SECTIE (trompet+trombone, CC0, 100% commercieel). Windows VST3 + CLAP.",
+   "beschrijving": "ACHT klanken in één: synth + echte MARIMBA + echte PSALTERY + echte TENOR-SAXOFOON + echte BLOKFLUIT + OCARINA + echte GLOCKENSPIEL + echte MONDHARMONICA (CC0, 100% commercieel). Windows VST3 + CLAP.",
    "prijs": 19.95,
    "links": {
     "koop": ""
@@ -721,7 +721,7 @@
    "id": "2878e291",
    "titel": "Cjfjff Houce",
    "soort": "audio",
-   "beschrijving": "House beat. Eigen G2B-productie. Nieuwe G2B-engine sound — 100% eigen audio.",
+   "beschrijving": "House beat. Eigen G2B-productie + GRATIS nieuwe engine-remake erbij.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -745,7 +745,7 @@
    "id": "d9d479ab",
    "titel": "Under",
    "soort": "audio",
-   "beschrijving": "Drill beat — 152 BPM in G#m. Eigen G2B-productie. Nieuwe G2B-engine sound — 100% eigen audio.",
+   "beschrijving": "Drill beat — 152 BPM in G#m. Eigen G2B-productie + GRATIS nieuwe engine-remake erbij.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -769,7 +769,7 @@
    "id": "7fe03e5c",
    "titel": "KAY9",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 133 BPM in C#m. Eigen G2B-productie. Nieuwe G2B-engine sound — 100% eigen audio.",
+   "beschrijving": "Dembow beat — 133 BPM in C#m. Eigen G2B-productie + GRATIS nieuwe engine-remake erbij.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -793,7 +793,7 @@
    "id": "0ef9a078",
    "titel": "Love",
    "soort": "audio",
-   "beschrijving": "Rnb beat — 133 BPM in Fm. Eigen G2B-productie. Nieuwe G2B-engine sound — 100% eigen audio.",
+   "beschrijving": "Rnb beat — 133 BPM in Fm. Eigen G2B-productie + GRATIS nieuwe engine-remake erbij.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -817,7 +817,7 @@
    "id": "8171e455",
    "titel": "Soldaat",
    "soort": "audio",
-   "beschrijving": "G2b beat — 136 BPM in Cm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV). Nieuwe G2B-engine sound — 100% eigen audio.",
+   "beschrijving": "G2b beat — 136 BPM in Cm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV) + GRATIS nieuwe engine-remake erbij.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -841,7 +841,7 @@
    "id": "266054dc",
    "titel": "Houce Trap",
    "soort": "audio",
-   "beschrijving": "Trap beat — 126 BPM in Gm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV). Nieuwe G2B-engine sound — 100% eigen audio.",
+   "beschrijving": "Trap beat — 126 BPM in Gm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV) + GRATIS nieuwe engine-remake erbij.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -865,7 +865,7 @@
    "id": "53c9dc1f",
    "titel": "Lala Dance",
    "soort": "audio",
-   "beschrijving": "House beat — 136 BPM in Gm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV). Nieuwe G2B-engine sound — 100% eigen audio.",
+   "beschrijving": "House beat — 136 BPM in Gm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV) + GRATIS nieuwe engine-remake erbij.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -889,7 +889,7 @@
    "id": "054630ff",
    "titel": "Exotic Riddim",
    "soort": "audio",
-   "beschrijving": "Dancehall beat — 92 BPM in Fm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV). Nieuwe G2B-engine sound — 100% eigen audio.",
+   "beschrijving": "Dancehall beat — 92 BPM in Fm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV) + GRATIS nieuwe engine-remake erbij.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -913,7 +913,7 @@
    "id": "3083f3d3",
    "titel": "Khvckhvclv",
    "soort": "audio",
-   "beschrijving": "Drill beat — 112 BPM in Am. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV). Nieuwe G2B-engine sound — 100% eigen audio.",
+   "beschrijving": "Drill beat — 112 BPM in Am. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV) + GRATIS nieuwe engine-remake erbij.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -937,7 +937,7 @@
    "id": "600fb829",
    "titel": "Midnight Dembow II",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV). Nieuwe G2B-engine sound — 100% eigen audio.",
+   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV) + GRATIS nieuwe engine-remake erbij.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -961,7 +961,7 @@
    "id": "f92b4951",
    "titel": "Midnight Dembow III",
    "soort": "audio",
-   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie. Nieuwe G2B-engine sound — 100% eigen audio.",
+   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie + GRATIS nieuwe engine-remake erbij.",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -985,7 +985,7 @@
    "id": "0b5647bf",
    "titel": "Coolbreez",
    "soort": "audio",
-   "beschrijving": "Drill beat — 152 BPM in Em. Eigen G2B-productie van Giorgio. stems (WAV). Nieuwe G2B-engine sound — 100% eigen audio.",
+   "beschrijving": "Drill beat — 152 BPM in Em. G2B-engine remake van Giorgio's Coolbreez (origineel bevatte externe samples — deze versie is 100% eigen audio, buy-out veilig).",
    "prijs": "v.a. € 19,95",
    "prijzen": {
     "mp3": "€ 19,95",
@@ -1140,6 +1140,63 @@
     "download": "bedankt.html?k=ee34cf20698d"
    },
    "cover": "media/ee34cf20698d-cover.png"
+  },
+  {
+   "id": "95ec3261a9f3",
+   "titel": "G2B-Afro-PACK",
+   "soort": "audio",
+   "groep": "afro",
+   "beschrijving": "Afro — 104 BPM. Beat-pakket, echte G2B-engine sound — 100% eigen audio.",
+   "prijs": 19.95,
+   "prijzen": {
+    "mp3": 19.95,
+    "wav": 49.95,
+    "exclusief": 199.95
+   },
+   "preview": "media/95ec3261a9f3-preview.mp3",
+   "download_dir": "d/95ec3261a9f3",
+   "links": {
+    "koop": "",
+    "download": "bedankt.html?k=95ec3261a9f3"
+   }
+  },
+  {
+   "id": "39da193b81d0",
+   "titel": "G2B-Kawina-PACK",
+   "soort": "audio",
+   "groep": "kawina",
+   "beschrijving": "Kawina — 138 BPM. Beat-pakket, echte G2B-engine sound — 100% eigen audio.",
+   "prijs": 19.95,
+   "prijzen": {
+    "mp3": 19.95,
+    "wav": 49.95,
+    "exclusief": 199.95
+   },
+   "preview": "media/39da193b81d0-preview.mp3",
+   "download_dir": "d/39da193b81d0",
+   "links": {
+    "koop": "",
+    "download": "bedankt.html?k=39da193b81d0"
+   }
+  },
+  {
+   "id": "d0ab25bf1d62",
+   "titel": "G2B-House-PACK",
+   "soort": "audio",
+   "groep": "house",
+   "beschrijving": "House — 126 BPM. Beat-pakket, echte G2B-engine sound — 100% eigen audio.",
+   "prijs": 19.95,
+   "prijzen": {
+    "mp3": 19.95,
+    "wav": 49.95,
+    "exclusief": 199.95
+   },
+   "preview": "media/d0ab25bf1d62-preview.mp3",
+   "download_dir": "d/d0ab25bf1d62",
+   "links": {
+    "koop": "",
+    "download": "bedankt.html?k=d0ab25bf1d62"
+   }
   }
  ]
 }
