@@ -112,7 +112,21 @@
    "demo": "media/donderglider-10dims.mp4",
    "video": "media/donderglider-10dims.mp4"
   },
-   {
+    {
+  "id": "g2b-midi-grooves-2",
+  "titel": "G2B MIDI Grooves Vol.2 — PRO",
+  "soort": "digitaal",
+  "beschrijving": "De diepere kant van de G2B beat-engine: 11 pro-grooves × 8 bars (met fill-bars, ghost-hats en velocity-humanisatie) als .mid — G2B-pocket, RNB, BOUNCE, FUNK, GRIME, AFROT, EDM e.a. Drums + 808-bas + akkoorden op eigen kanalen. Werkt in elke DAW.",
+  "prijs": "€ 4,95",
+  "prijzen": {},
+  "links": {
+   "koop": "d/m1d1gr00ves002/G2B-MIDI-GROOVES-Vol2.zip"
+  },
+  "groep": "sounds",
+  "cover": "media/g2b-midigrooves2-cover.png",
+  "download_dir": "d/m1d1gr00ves002"
+ },
+{
   "id": "g2b-midi-grooves",
   "titel": "G2B MIDI Grooves Vol.1",
   "soort": "digitaal",
