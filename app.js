@@ -176,7 +176,7 @@ async function laden() {
                ? ` · ${esc(p.prijzen[k])}` : ""}</button>`).join("")}
         ${koopHref
           ? `<a class="koop" data-buy="${esc(p.id)}" target="_blank"
-               rel="noopener" href="${esc(koopHref)}">KOOP NU</a>`
+               rel="noopener" href="${esc(koopHref)}">${p.prijs === "GRATIS" ? "DOWNLOAD" : "KOOP NU"}</a>`
           : `<span class="koop uit">binnenkort</span>`}
       </div>
     </div>`;
