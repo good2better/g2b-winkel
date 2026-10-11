@@ -129,6 +129,7 @@
    "titel": "G2B Donder Glider",
    "soort": "digitaal",
    "beschrijving": "De G2B all-in-one beat-machine: drums + glijdende 808 + akkoorden + hook, AUTO-SONG in 27 stijlen — elke stijl toont zijn emotie (energiek, donker, mellow...). Bespeelbaar op MIDI (4 kanalen), MIDI OUT naar je DAW én EXPORT .MID. GALAXY-knop + regelknoppen DENS, SWING, HUMAN, FILL. DICE met Oblique-modus (3-tonen hooks). GELUID-knop met 3 standen: SYNTH ↔ ECHT (echte vleugel + marimba + harp + echte drums/percussie per stijl) ↔ STACK (marimba+psaltery gestapeld = één nieuw geluid). Aanslag-gevoelig: zachte en harde takes. DONDER-knop: sub-octaaf laag onder je 808. VST3 + CLAP.",
+
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
@@ -303,7 +304,7 @@
    "id": "g2b-akkoord",
    "titel": "G2B Akkoord",
    "soort": "digitaal",
-   "beschrijving": "Akkoorden met DRIE echte instrumenten: concert-HARP + Yamaha-upright + STRUMSTICK (TIMBRE vol-rechts), elk 2 lagen zacht/hard. Voicings + per-stijl kleur. Windows VST3 + CLAP.",
+   "beschrijving": "Akkoorden met DRIE echte instrumenten: concert-HARP + Yamaha-upright + STRUMSTICK + echte PIJP-ORGEL (TIMBRE vol-rechts), elk 2 lagen zacht/hard. Voicings + per-stijl kleur. Windows VST3 + CLAP.",
    "prijs": 19.95,
    "links": {
     "koop": ""
@@ -361,7 +362,7 @@
    "id": "g2b-melodie",
    "titel": "G2B Melodie",
    "soort": "digitaal",
-   "beschrijving": "ZES klanken in één: synth + echte MARIMBA + echte PSALTERY + echte TENOR-SAXOFOON + echte BLOKFLUIT + OCARINA + echte GLOCKENSPIEL (CC0, 100% commercieel). Windows VST3 + CLAP.",
+   "beschrijving": "ZEVEN klanken in één: synth + echte MARIMBA + echte PSALTERY + echte TENOR-SAXOFOON + echte BLOKFLUIT + OCARINA + echte GLOCKENSPIEL (CC0, 100% commercieel). Windows VST3 + CLAP.",
    "prijs": 19.95,
    "links": {
     "koop": ""
@@ -716,28 +717,6 @@
    "video": "media/bedrijfsmiddelen-demo.mp4",
    "video_en": "media/bedrijfsmiddelen-demo-en.mp4",
    "video_es": "media/bedrijfsmiddelen-demo-es.mp4"
-  },
-  {
-   "id": "c5444536",
-   "titel": "Midnight Dembow",
-   "soort": "audio",
-   "beschrijving": "Dembow beat. Eigen G2B-productie.",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl"
-   },
-   "duur": 161.1,
-   "groep": "dembow",
-   "cover": "media/c5444536-cover.png",
-   "preview": "media/c5444536-preview.mp3"
   },
   {
    "id": "2878e291",
