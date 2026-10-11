@@ -1,1 +1,10 @@
-{"titel": "G2B Donder Glider MINI", "licentie": "gratis", "bestanden": [{"naam": "G2B Donder Glider MINI (VST3+CLAP+source)", "bestand": "G2B-DonderGlider-MINI.zip"}]}
+{
+ "titel": "G2B Donder Glider MINI",
+ "licentie": "gratis",
+ "bestanden": [
+  {
+   "naam": "G2B-DonderGlider-MINI.zip — nieuwste build (Kawai 4-laags + marimba 3-laags)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-glider-mini-v1/G2B-DonderGlider-MINI.zip"
+  }
+ ]
+}
