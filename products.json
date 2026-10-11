@@ -1041,7 +1041,8 @@
    "links": {
     "koop": "",
     "download": "bedankt.html?k=5773766d87b7"
-   }
+   },
+   "cover": "media/5773766d87b7-cover.png"
   },
   {
    "id": "5d9517a1c690",
@@ -1060,7 +1061,8 @@
    "links": {
     "koop": "",
     "download": "bedankt.html?k=5d9517a1c690"
-   }
+   },
+   "cover": "media/5d9517a1c690-cover.png"
   },
   {
    "id": "33454ff7df8b",
@@ -1079,7 +1081,8 @@
    "links": {
     "koop": "",
     "download": "bedankt.html?k=33454ff7df8b"
-   }
+   },
+   "cover": "media/33454ff7df8b-cover.png"
   },
   {
    "id": "beattape2",
@@ -1095,7 +1098,8 @@
    "links": {
     "koop": "",
     "download": "bedankt.html?k=beattape2"
-   }
+   },
+   "cover": "media/beattape2-cover.png"
   }
  ]
 }
