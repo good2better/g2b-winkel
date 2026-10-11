@@ -1025,7 +1025,8 @@
     "koop": "",
     "download": "bedankt.html?k=beattape2"
    },
-   "cover": "media/beattape2-cover.png"
+   "cover": "media/beattape2-cover.png",
+   "video": "media/beattape2-demo.mp4"
   }
  ]
 }
