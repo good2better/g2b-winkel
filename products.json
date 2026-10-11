@@ -129,7 +129,6 @@
    "titel": "G2B Donder Glider",
    "soort": "digitaal",
    "beschrijving": "De G2B all-in-one beat-machine: drums + glijdende 808 + akkoorden + hook, AUTO-SONG in 27 stijlen — elke stijl toont zijn emotie (energiek, donker, mellow...). Bespeelbaar op MIDI (4 kanalen), MIDI OUT naar je DAW én EXPORT .MID. GALAXY-knop + regelknoppen DENS, SWING, HUMAN, FILL. DICE met Oblique-modus (3-tonen hooks). GELUID-knop met 3 standen: SYNTH ↔ ECHT (echte vleugel + marimba + harp + echte drums/percussie per stijl) ↔ STACK (marimba+psaltery gestapeld = één nieuw geluid). Aanslag-gevoelig: zachte en harde takes. DONDER-knop: sub-octaaf laag onder je 808. VST3 + CLAP.",
-
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
@@ -1024,6 +1023,63 @@
    "preview": "media/ritmosalbum-preview.mp3",
    "video": "media/ritmosbundle-promo.mp4",
    "download_dir": "d/d74976fef7dfff6a"
+  },
+  {
+   "id": "5773766d87b7",
+   "titel": "G2B-BoomBap-PACK",
+   "soort": "audio",
+   "groep": "boombap",
+   "beschrijving": "Boombap — 92 BPM. Boombap beat-pakket — echte G2B-engine sound, 100% eigen audio.",
+   "prijs": 19.95,
+   "prijzen": {
+    "mp3": 19.95,
+    "wav": 49.95,
+    "exclusief": 199.95
+   },
+   "preview": "media/5773766d87b7-preview.mp3",
+   "download_dir": "d/5773766d87b7",
+   "links": {
+    "koop": "",
+    "download": "bedankt.html?k=5773766d87b7"
+   }
+  },
+  {
+   "id": "5d9517a1c690",
+   "titel": "G2B-Brazil-PACK",
+   "soort": "audio",
+   "groep": "brazil",
+   "beschrijving": "Brazil — 128 BPM. Brazil beat-pakket — echte G2B-engine sound, 100% eigen audio.",
+   "prijs": 19.95,
+   "prijzen": {
+    "mp3": 19.95,
+    "wav": 49.95,
+    "exclusief": 199.95
+   },
+   "preview": "media/5d9517a1c690-preview.mp3",
+   "download_dir": "d/5d9517a1c690",
+   "links": {
+    "koop": "",
+    "download": "bedankt.html?k=5d9517a1c690"
+   }
+  },
+  {
+   "id": "33454ff7df8b",
+   "titel": "G2B-Killer-PACK",
+   "soort": "audio",
+   "groep": "killer",
+   "beschrijving": "Killer — 140 BPM. Killer beat-pakket — echte G2B-engine sound, 100% eigen audio.",
+   "prijs": 19.95,
+   "prijzen": {
+    "mp3": 19.95,
+    "wav": 49.95,
+    "exclusief": 199.95
+   },
+   "preview": "media/33454ff7df8b-preview.mp3",
+   "download_dir": "d/33454ff7df8b",
+   "links": {
+    "koop": "",
+    "download": "bedankt.html?k=33454ff7df8b"
+   }
   }
  ]
 }
