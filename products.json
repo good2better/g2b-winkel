@@ -112,7 +112,21 @@
    "demo": "media/donderglider-10dims.mp4",
    "video": "media/donderglider-10dims.mp4"
   },
-  {
+   {
+  "id": "g2b-midi-grooves",
+  "titel": "G2B MIDI Grooves Vol.1",
+  "soort": "digitaal",
+  "beschrijving": "GRATIS: 16 echte grooves uit de G2B beat-engine als .mid — DEMBOW, DRILL, KAWINA, TRAP, DNB, LATIN e.a. Sleep in je DAW: drums + 808-bas + akkoorden op eigen kanalen, eigen sounds erop. Werkt in elke DAW.",
+  "prijs": "GRATIS",
+  "prijzen": {},
+  "links": {
+   "koop": "d/m1d1gr00ves001/G2B-MIDI-GROOVES-Vol1.zip"
+  },
+  "groep": "sounds",
+  "cover": "media/g2b-midigrooves-cover.png",
+  "download_dir": "d/m1d1gr00ves001"
+ },
+{
    "id": "g2b-donderglider-mini",
    "titel": "G2B Donder Glider MINI",
    "soort": "digitaal",
