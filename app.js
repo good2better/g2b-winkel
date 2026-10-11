@@ -66,19 +66,43 @@ async function laden() {
     "--accent2", data.accent2 || accent);
   document.title = data.titel || "G2B Winkel";
 
-  // categorie per product: boeken eerst (mooiste covers!), dan plugins,
-  // sound-packs en als laatste de beats.
+  // categorie per product — plugins opgesplitst in 3 secties:
+  // INSTRUMENTEN (makers) → STUDIO-TOOLS (mix/master FX) → BUNDELS.
+  const PLUGIN_CAT = {
+    instrumenten: ["g2b-donderglider","g2b-donderglider-mini","g2b-akkoord",
+      "g2b-melodie","g2b-keys","g2b-drums","g2b-bas","g2b-ocho",
+      "g2b-song","g2b-samplex"],
+    bundels: ["g2b-studio-pack","g2b-suite","g2b-fx-pack",
+      "g2b-instrument-pack"],
+  };
+  const pluginCat = p =>
+    PLUGIN_CAT.instrumenten.includes(p.id) ? "instrumenten"
+    : PLUGIN_CAT.bundels.includes(p.id) ? "bundels"
+    : "studiotools";
   const CAT = p => p.groep === "apps" ? "apps"
     : p.soort === "audio" ? "beats"
-    : (p.groep === "software" || p.groep === "plugins") ? "plugins"
+    : (p.groep === "software" || p.groep === "plugins") ? pluginCat(p)
     : p.groep === "sounds" ? "sounds"
     : p.groep === "muziek" ? "muziek"
     : "boeken";
   const CAT_NAAM = {
-    apps: "🛠️ Apps", boeken: "📚 Boeken", plugins: "🔌 Plugins",
-    sounds: "🔊 Sound packs", muziek: "🎤 Muziek", beats: "🎵 Beats",
+    apps: "🛠️ Apps", boeken: "📚 Boeken",
+    instrumenten: "🎹 Instrumenten", studiotools: "🎚️ Studio-tools",
+    bundels: "📦 Bundels", sounds: "🔊 Sound packs",
+    muziek: "🎤 Muziek", beats: "🎵 Beats",
   };
-  const CAT_VOLGORDE = ["muziek", "beats", "sounds", "plugins", "boeken", "apps"];
+  const CAT_UITLEG = {
+    instrumenten: "Plugins die muziek MAKEN — echte instrumenten, één knop = één geluid",
+    studiotools: "Mix & master tools — maak je track af: luider, strakker, breder",
+    bundels: "Meerdere plugins samen — voordeliger dan los",
+    sounds: "Losse klanken, loops & drums om in te laden",
+    beats: "Beats van Giorgio zelf — kies je licentie",
+    muziek: "Uitgebrachte muziek & tapes",
+    boeken: "Kinderboeken & kleurboeken",
+    apps: "Complete programma's voor je pc",
+  };
+  const CAT_VOLGORDE = ["instrumenten", "studiotools", "bundels", "sounds",
+    "beats", "muziek", "boeken", "apps"];
 
   // binnen Boeken: serie-volgorde 1→10 met e-boek direct achter zijn
   // kleurboek, daarna verzamel-/avonturen-bundels; onbekende titels alfabetisch.
@@ -134,12 +158,20 @@ async function laden() {
         `(${prods.filter(p => CAT(p) === c).length})</button>`).join("");
   }
 
+  let vorigeCat = "";
+  const sectieKop = c => {
+    if (c === vorigeCat) return "";
+    vorigeCat = c;
+    const u = CAT_UITLEG[c] ? `<div class="u">${CAT_UITLEG[c]}</div>` : "";
+    return `<div class="sectie" data-cat="${c}"><h2>${CAT_NAAM[c]}</h2>${u}</div>`;
+  };
   lijst.innerHTML = prods.map(p => {
+    const kop = sectieKop(CAT(p));
     const links = p.links || {};
     const licenties = ["mp3", "wav", "exclusief"]
       .filter(k => links[k]);
     const koopHref = licenties.length ? links[licenties[0]] : (links.koop || "");
-    return `<div class="card" data-id="${esc(p.id)}" data-cat="${CAT(p)}">
+    return `${kop}<div class="card" data-id="${esc(p.id)}" data-cat="${CAT(p)}">
       <div class="top">
         ${p.cover
           ? `<img class="cover" src="${esc(p.cover)}" alt="">`
@@ -220,8 +252,8 @@ document.getElementById("cats").addEventListener("click", e => {
   const cat = knop.dataset.cat;
   document.querySelectorAll("#cats .groepbtn").forEach(b =>
     b.classList.toggle("alles", b === knop));
-  document.querySelectorAll("#lijst .card").forEach(card => {
-    card.style.display = (!cat || card.dataset.cat === cat) ? "" : "none";
+  document.querySelectorAll("#lijst .card, #lijst .sectie").forEach(el => {
+    el.style.display = (!cat || el.dataset.cat === cat) ? "" : "none";
   });
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
