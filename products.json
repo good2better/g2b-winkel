@@ -4,6 +4,17 @@
  "stats_url": "",
  "gebouwd": "2026-10-09T00:00:00",
  "producten": [
+  {"id": "g2b-beatstarters",
+   "titel": "G2B Beat Starters Vol.1",
+   "soort": "Beat-pack",
+   "beschrijving": "5 complete 8-bar beats (WAV) gerenderd door de Donder Glider-engine: KAWINA, DEMBOW, DRILL, RNB en TRAP. Sleep in je DAW en bouw voort — wil je er oneindig veel? De plugin maakt ze live.",
+   "prijs": "GRATIS",
+   "links": {"koop": "d/beat5tar5/G2B-BeatStarters-Vol1.zip"},
+   "groep": "sounds",
+   "cover": "media/g2b-beatstarters-cover.png",
+   "download_dir": "d/beat5tar5",
+   "demo": "media/g2b-beatstarters-demo.mp4",
+   "video": "media/g2b-beatstarters-demo.mp4"},
   {
    "id": "g2b-studio-pack",
    "titel": "G2B Studio Pack",
