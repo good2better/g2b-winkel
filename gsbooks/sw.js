@@ -1,5 +1,5 @@
 // GS Books service worker — offline-leesmodus voor kinderen
-const CACHE = "gsbooks-v24";
+const CACHE = "gsbooks-v25";
 const CORE = [
   "./index.html",
   "./manifest.webmanifest",
