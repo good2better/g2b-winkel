@@ -1100,6 +1100,46 @@
     "download": "bedankt.html?k=beattape2"
    },
    "cover": "media/beattape2-cover.png"
+  },
+  {
+   "id": "e1de55ff1ad0",
+   "titel": "G2B-Dembow-PACK",
+   "soort": "audio",
+   "groep": "dembow",
+   "beschrijving": "Dembow — 124 BPM. Beat-pakket, echte G2B-engine sound — 100% eigen audio.",
+   "prijs": 19.95,
+   "prijzen": {
+    "mp3": 19.95,
+    "wav": 49.95,
+    "exclusief": 199.95
+   },
+   "preview": "media/e1de55ff1ad0-preview.mp3",
+   "download_dir": "d/e1de55ff1ad0",
+   "links": {
+    "koop": "",
+    "download": "bedankt.html?k=e1de55ff1ad0"
+   },
+   "cover": "media/e1de55ff1ad0-cover.png"
+  },
+  {
+   "id": "ee34cf20698d",
+   "titel": "G2B-Drill-PACK",
+   "soort": "audio",
+   "groep": "drill",
+   "beschrijving": "Drill — 145 BPM. Beat-pakket, echte G2B-engine sound — 100% eigen audio.",
+   "prijs": 19.95,
+   "prijzen": {
+    "mp3": 19.95,
+    "wav": 49.95,
+    "exclusief": 199.95
+   },
+   "preview": "media/ee34cf20698d-preview.mp3",
+   "download_dir": "d/ee34cf20698d",
+   "links": {
+    "koop": "",
+    "download": "bedankt.html?k=ee34cf20698d"
+   },
+   "cover": "media/ee34cf20698d-cover.png"
   }
  ]
 }
