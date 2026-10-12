@@ -555,7 +555,7 @@ footer a{color:var(--zee)}
 <div id="spel-schaduw" style="display:none">
 <h2>🌑 Schaduwraden</h2>
 <p class="sub">Wie is dit? Kijk goed naar de schaduw en kies de juiste held!</p>
-<div id="schaduw-img-wrap"><img id="schaduw-img" src="" alt="schaduw" style="width:280px;height:280px;object-fit:cover;border-radius:16px;filter:brightness(0) contrast(1.1);transition:filter .5s"></div>
+<div id="schaduw-img-wrap" style="background:linear-gradient(135deg,#EAF1F6,#FFF6DC);display:inline-block;padding:14px;border-radius:16px"><img id="schaduw-img" src="" alt="schaduw" style="width:280px;height:280px;object-fit:contain;border-radius:12px;filter:brightness(0);transition:filter .5s"></div>
 <div class="held-kies-rij" id="schaduw-rij" style="justify-content:center;margin-top:12px"></div>
 <p class="spel-status" id="schaduw-status">Ronde 1/6 — raad wie dit is…</p>
 </div>
@@ -791,8 +791,8 @@ function schaduwRonde(){
   schBezig=false;
   var h=schHeld[schRonde];
   var img=document.getElementById('schaduw-img');
-  img.src=HELDEN[h].mem[Math.floor(Math.random()*6)];
-  img.style.filter='brightness(0) contrast(1.1)';
+  img.src='img/mem-'+h+'-sil-'+Math.floor(Math.random()*6)+'.png';
+  img.style.filter='brightness(0)';
   document.getElementById('schaduw-status').textContent='Ronde '+(schRonde+1)+'/6 — raad wie dit is…';
   // opties: goede + 2 willekeurige andere helden
   var opts=[h],pool=Object.keys(HELDEN).filter(function(k){return k!==h});
