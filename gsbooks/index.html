@@ -534,6 +534,12 @@ footer a{color:var(--zee)}
 
 <section id="spel">
 <div class="spel">
+<div class="held-kies-rij" id="spel-soort-rij" style="justify-content:center;margin-bottom:10px">
+  <button class="held-kies actief" data-soort="mem" onclick="soortKies('mem')">🧠 Memory</button>
+  <button class="held-kies" data-soort="schaduw" onclick="soortKies('schaduw')">🌑 Schaduwraden</button>
+  <button class="held-kies" data-soort="puzzel" onclick="soortKies('puzzel')">🧩 Schuifpuzzel</button>
+</div>
+<div id="spel-mem">
 <h2 id="spel-titel">🐰 Keesje Konijn Memory</h2>
 <div class="held-kies-rij" id="held-kies-rij"></div>
 <div class="held-kies-rij" id="level-kies-rij" style="margin-top:8px">
@@ -545,6 +551,22 @@ footer a{color:var(--zee)}
 <p class="spel-status" id="spel-timer" style="font-size:14px;color:#8a94a6;margin-top:4px">⏱️ 0:00 · 🏆 record: –</p>
 <div class="spel-bord" id="bord"></div>
 <button class="spel-reset" onclick="spelStart()">Opnieuw</button>
+</div>
+<div id="spel-schaduw" style="display:none">
+<h2>🌑 Schaduwraden</h2>
+<p class="sub">Wie is dit? Kijk goed naar de schaduw en kies de juiste held!</p>
+<div id="schaduw-img-wrap"><img id="schaduw-img" src="" alt="schaduw" style="width:280px;height:280px;object-fit:cover;border-radius:16px;filter:brightness(0) contrast(1.1);transition:filter .5s"></div>
+<div class="held-kies-rij" id="schaduw-rij" style="justify-content:center;margin-top:12px"></div>
+<p class="spel-status" id="schaduw-status">Ronde 1/6 — raad wie dit is…</p>
+</div>
+<div id="spel-puzzel" style="display:none">
+<h2>🧩 Schuifpuzzel</h2>
+<p class="sub">Schuif de stukjes tot het plaatje weer heel is!</p>
+<div class="held-kies-rij" id="puzzel-held-rij" style="justify-content:center"></div>
+<div id="puzzel-bord" style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;max-width:340px;margin:12px auto"></div>
+<p class="spel-status" id="puzzel-status">Schuif maar!</p>
+<button class="spel-reset" onclick="puzzelStart()">Opnieuw</button>
+</div>
 </div>
 </section>
 
@@ -747,6 +769,113 @@ function spelKlik(btn,k){
   }
 }
 spelStart();
+// === spel-soort kiezer: memory / schaduwraden / schuifpuzzel ===
+function soortKies(s){
+  document.querySelectorAll('#spel-soort-rij .held-kies').forEach(function(b){b.classList.toggle('actief',b.dataset.soort===s)});
+  document.getElementById('spel-mem').style.display=s==='mem'?'':'none';
+  document.getElementById('spel-schaduw').style.display=s==='schaduw'?'':'none';
+  document.getElementById('spel-puzzel').style.display=s==='puzzel'?'':'none';
+  if(s==='schaduw')schaduwStart();
+  if(s==='puzzel')puzzelStart();
+}
+// === 🌑 Schaduwraden ===
+var schHeld=[],schRonde=0,schGoed=0,schBezig=false;
+function schaduwStart(){
+  // kies 6 willekeurige helden
+  var keys=Object.keys(HELDEN).slice();
+  schHeld=[];
+  while(schHeld.length<6&&keys.length){var i=Math.floor(Math.random()*keys.length);schHeld.push(keys.splice(i,1)[0]);}
+  schRonde=0;schGoed=0;schaduwRonde();
+}
+function schaduwRonde(){
+  schBezig=false;
+  var h=schHeld[schRonde];
+  var img=document.getElementById('schaduw-img');
+  img.src=HELDEN[h].mem[Math.floor(Math.random()*6)];
+  img.style.filter='brightness(0) contrast(1.1)';
+  document.getElementById('schaduw-status').textContent='Ronde '+(schRonde+1)+'/6 — raad wie dit is…';
+  // opties: goede + 2 willekeurige andere helden
+  var opts=[h],pool=Object.keys(HELDEN).filter(function(k){return k!==h});
+  while(opts.length<3&&pool.length){opts.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]);}
+  opts.sort(function(){return Math.random()-0.5});
+  var rij=document.getElementById('schaduw-rij');rij.innerHTML='';
+  opts.forEach(function(k){
+    var b=document.createElement('button');b.className='held-kies';b.dataset.k=k;
+    b.textContent=HELDEN[k].ico+' '+HELDEN[k].naam;
+    b.onclick=function(){schaduwKlik(b,k===h)};
+    rij.appendChild(b);
+  });
+}
+function schaduwKlik(btn,goed){
+  if(schBezig)return;schBezig=true;
+  if(goed){
+    schGoed++;
+    document.getElementById('schaduw-img').style.filter='none';
+    btn.style.background='#7BC47F';btn.style.color='#fff';
+    document.getElementById('schaduw-status').textContent='🎉 Goed geraden — dat is '+HELDEN[schHeld[schRonde]].naam+'!';
+    setTimeout(function(){
+      schRonde++;
+      if(schRonde<6){schaduwRonde();}
+      else{document.getElementById('schaduw-status').textContent='🏆 Klaar! Je had '+schGoed+'/6 goed'+(schGoed===6?' — ECHTE HELD!':'');if(schGoed>=5)feest();}
+    },1400);
+  }else{
+    btn.style.background='#E15B5B';btn.style.color='#fff';
+    document.getElementById('schaduw-status').textContent='Nee, dat is hem niet — probeer nog eens!';
+    setTimeout(function(){btn.style.background='';btn.style.color='';schBezig=false;},900);
+  }
+}
+// === 🧩 Schuifpuzzel ===
+var pzHeld='louie',pzT=[],pzLeeg=8,pzKlaar=false,pzZetten=0,pzSrc='';
+(function(){
+  var rij=document.getElementById('puzzel-held-rij');
+  ['louie','lila','fluffy','paard','zeven','superhelden','sunny2','ollieleo','keesje','ziggy'].forEach(function(h){
+    var b=document.createElement('button');b.className='held-kies';b.dataset.ph=h;
+    b.textContent=HELDEN[h].ico+' '+HELDEN[h].naam;
+    b.onclick=function(){pzHeld=h;puzzelStart();
+      document.querySelectorAll('#puzzel-held-rij .held-kies').forEach(function(x){x.classList.toggle('actief',x.dataset.ph===h)});};
+    rij.appendChild(b);
+  });
+})();
+function pzImg(){var n=HELDEN[pzHeld].mem.length;return HELDEN[pzHeld].mem[Math.floor(Math.random()*Math.min(6,n))];}
+function puzzelStart(){
+  pzSrc=pzImg();
+  pzT=[0,1,2,3,4,5,6,7,-1];pzLeeg=8;pzKlaar=false;pzZetten=0;
+  // shuffle: 60 legale zetten vanaf opgelost = altijd oplosbaar
+  for(var i=0;i<60;i++){
+    var opts=[];var r=Math.floor(pzLeeg/3),c=pzLeeg%3;
+    [[r-1,c],[r+1,c],[r,c-1],[r,c+1]].forEach(function(p){if(p[0]>=0&&p[0]<3&&p[1]>=0&&p[1]<3)opts.push(p[0]*3+p[1]);});
+    var j=opts[Math.floor(Math.random()*opts.length)];
+    pzT[pzLeeg]=pzT[j];pzT[j]=-1;pzLeeg=j;
+  }
+  document.getElementById('puzzel-status').textContent='Schuif maar! Klik op een stukje naast het lege vak.';
+  pzTeken();
+}
+function pzTeken(){
+  var bord=document.getElementById('puzzel-bord');bord.innerHTML='';
+  var src=pzSrc;pzT.forEach(function(t,i){
+    var d=document.createElement('div');
+    d.style.cssText='aspect-ratio:1;border-radius:8px;cursor:'+(t===-1?'default':'pointer')+';background-size:300% 300%;';
+    if(t===-1){d.style.background='#EAF1F6';}
+    else{
+      var r=Math.floor(t/3),c=t%3;
+      d.style.backgroundImage='url('+src+')';
+      d.style.backgroundPosition=(c*50)+'% '+(r*50)+'%';
+      if(pzKlaar)d.style.outline='3px solid #7BC47F';
+    }
+    if(t!==-1&&!pzKlaar)d.onclick=function(){pzKlik(i)};
+    bord.appendChild(d);
+  });
+}
+function pzKlik(i){
+  var r=Math.floor(i/3),c=i%3,lr=Math.floor(pzLeeg/3),lc=pzLeeg%3;
+  if(Math.abs(r-lr)+Math.abs(c-lc)!==1)return;
+  pzT[pzLeeg]=pzT[i];pzT[i]=-1;pzLeeg=i;pzZetten++;
+  var klaar=pzT.slice(0,8).every(function(v,k){return v===k});
+  if(klaar){pzKlaar=true;feest();
+    document.getElementById('puzzel-status').textContent='🎉 Plaatje compleet in '+pzZetten+' zetten!';
+  }else{document.getElementById('puzzel-status').textContent='Schuif maar! ('+pzZetten+' zetten)';}
+  pzTeken();
+}
 // boekwinkel: alle boeken uit boeken.json (gegenereerd uit de Fabriek)
 fetch('boeken.json').then(function(r){return r.ok?r.json():{boeken:[]}}).then(function(data){
   var el=document.getElementById('shopgrid');
