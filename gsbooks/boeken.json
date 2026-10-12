@@ -408,6 +408,249 @@
     "koop": "../d/ec3abbb84a5546/Sunny-Voorproef.pdf"
    },
    "nieuw": true
+  },
+  {
+   "titel": "De Kleurrijke Avonturen van Ollie & Leo",
+   "serie": "ollie-leo",
+   "cover": "media/7d0ab8e3b8b2-cover.png",
+   "beschrijving": "Ollie de olifant en Leo de leeuw ontdekken kleuren en vormen in een magisch bos — regenboog, driehoeken, vierkanten en cirkels. Een vrolijk prentenboek met 21 vaste illustraties voor kinderen van 2 tot 6 jaar. Je krijgt: het complete e-boek (PDF) + kaft voor en achter + print-kaft. Digitaal — direct te downloaden.",
+   "ebook": {
+    "prijs": "4,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "stripboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "videoboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "pakket": {
+    "prijs": "8,95",
+    "koop": "../d/7d0ab8e3b8b2/ollie-leo-pakket.zip"
+   },
+   "nieuw": true
+  },
+  {
+   "titel": "De Verhalen van Louie de Leeuw — Deel 1",
+   "serie": "louie",
+   "cover": "media/5a39710f1fb6-cover.png",
+   "beschrijving": "Louie de Leeuw gaat met zijn vrienden op avontuur door het bos naar een onbekend land — en leert onderweg over familie, moed en de kracht van verhalen. Vijf warme bedtijdverhalen voor kinderen van 3 tot 7 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript. Digitaal — direct te downloaden.",
+   "ebook": {
+    "prijs": "5,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "stripboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "videoboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "pakket": {
+    "prijs": "9,95",
+    "koop": "../d/5a39710f1fb6/louie1-pakket.zip"
+   },
+   "nieuw": true
+  },
+  {
+   "titel": "De Verhalen van Louie de Leeuw — Deel 2",
+   "serie": "louie",
+   "cover": "media/a960e69b2b18-cover.png",
+   "beschrijving": "Louie ontdekt hoe hij zijn verbeelding gebruikt om heerlijk te dromen — met wijze lessen van oma Leeuw en steeds meer verhalen-plezier. Vijf betoverende bedtijdverhalen voor kinderen van 3 tot 7 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript. Digitaal — direct te downloaden.",
+   "ebook": {
+    "prijs": "5,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "stripboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "videoboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "pakket": {
+    "prijs": "9,95",
+    "koop": "../d/a960e69b2b18/louie2-pakket.zip"
+   },
+   "nieuw": true
+  },
+  {
+   "titel": "Leren en Groeien met Lila",
+   "serie": "lila",
+   "cover": "media/731997b2faea-cover.png",
+   "beschrijving": "Lila neemt je mee op ontdekking: familie en vrienden, elke dag nieuwe dingen leren, gevoelens begrijpen en dromen over de toekomst. Negen warme hoofdstukken voor kinderen van 0 tot 5 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
+   "ebook": {
+    "prijs": "5,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "stripboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "videoboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "pakket": {
+    "prijs": "9,95",
+    "koop": "../d/731997b2faea/lila-pakket.zip"
+   },
+   "nieuw": true
+  },
+  {
+   "titel": "Fluffy en het Vogeltje",
+   "serie": "fluffy",
+   "cover": "media/e66897f1ef8a-cover.png",
+   "beschrijving": "Fluffy de kat vindt een verloren vogeltje en zet alles op alles om het te helpen — over vriendelijkheid, empathie en voor elkaar zorgen. Vijf warme verhalen voor kinderen van 3 tot 7 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
+   "ebook": {
+    "prijs": "5,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "stripboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "videoboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "pakket": {
+    "prijs": "9,95",
+    "koop": "../d/e66897f1ef8a/fluffy-pakket.zip"
+   },
+   "nieuw": true
+  },
+  {
+   "titel": "Het Wonderbaarlijke Avontuur van het Mooie Zwarte Paard",
+   "serie": "paard",
+   "cover": "media/179f9f603b44-cover.png",
+   "beschrijving": "Een prachtig zwart paard hoort de roep van de dieren en trekt ten strijde tegen het kwaad — kabouters, betovering en triomf. Een filmisch sprookje in zes hoofdstukken voor kinderen van 5 tot 9 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
+   "ebook": {
+    "prijs": "6,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "stripboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "videoboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "pakket": {
+    "prijs": "10,95",
+    "koop": "../d/179f9f603b44/paard-pakket.zip"
+   },
+   "nieuw": true
+  },
+  {
+   "titel": "De Avonturen van de Zeven Vrienden",
+   "serie": "zeven",
+   "cover": "media/b51ad3a819ac-cover.png",
+   "beschrijving": "Zeven beste vrienden gaan samen op pad: het bos in, op schattenjacht, naar een magische bron en door de sneeuw. Zeven avonturen over vriendschap voor kinderen van 4 tot 8 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
+   "ebook": {
+    "prijs": "6,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "stripboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "videoboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "pakket": {
+    "prijs": "10,95",
+    "koop": "../d/b51ad3a819ac/zeven-pakket.zip"
+   },
+   "nieuw": true
+  },
+  {
+   "titel": "Dieren Superhelden — Dappere Verhalen",
+   "serie": "dierenhelden",
+   "cover": "media/e35fe79a7be5-cover.png",
+   "beschrijving": "Fluffy de dappere kat, Sam het schaap, Ruby het redderkonijn, Milo de muis, Rosy de rat, Polly de pinguïn en Milly de maki — zeven inspirerende verhalen over moed en leiderschap. Voor kinderen van 4 tot 8 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
+   "ebook": {
+    "prijs": "6,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "stripboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "videoboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "pakket": {
+    "prijs": "10,95",
+    "koop": "../d/e35fe79a7be5/superhelden-pakket.zip"
+   },
+   "nieuw": true
+  },
+  {
+   "titel": "De Onvergetelijke Reis van Sunny en Vrienden",
+   "serie": "sunny",
+   "cover": "media/7fa4a7502476-cover.png",
+   "beschrijving": "Sunny en vrienden maken de reis van hun leven: walvissen, geheime eilanden, een lichtgevend koraalrif, een spookschip, een regenboogwaterval en een reis door de tijd. Twintig magische hoofdstukken voor kinderen van 4 tot 9 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
+   "ebook": {
+    "prijs": "7,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "stripboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "videoboek": {
+    "prijs": "",
+    "koop": ""
+   },
+   "pakket": {
+    "prijs": "12,95",
+    "koop": "../d/7fa4a7502476/sunny2-pakket.zip"
+   },
+   "nieuw": true
   }
  ]
 }
