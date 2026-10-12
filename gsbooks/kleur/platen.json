@@ -640,5 +640,125 @@
   "naam": "Hoofdstuk 12 — Weer Thuis",
   "boek": "Sunny Sterren",
   "src": "platen/sunny3-12-kleurplaat.jpg"
+ },
+ {
+  "id": "ollie-leo-1",
+  "naam": "Ollie & Leo — Kleurplaat 1",
+  "boek": "Ollie & Leo",
+  "src": "platen/ollie-leo-1-kleurplaat.jpg"
+ },
+ {
+  "id": "ollie-leo-2",
+  "naam": "Ollie & Leo — Kleurplaat 2",
+  "boek": "Ollie & Leo",
+  "src": "platen/ollie-leo-2-kleurplaat.jpg"
+ },
+ {
+  "id": "ollie-leo-3",
+  "naam": "Ollie & Leo — Kleurplaat 3",
+  "boek": "Ollie & Leo",
+  "src": "platen/ollie-leo-3-kleurplaat.jpg"
+ },
+ {
+  "id": "ollie-leo-4",
+  "naam": "Ollie & Leo — Kleurplaat 4",
+  "boek": "Ollie & Leo",
+  "src": "platen/ollie-leo-4-kleurplaat.jpg"
+ },
+ {
+  "id": "louie1-1",
+  "naam": "Louie de Leeuw 1 — Kleurplaat 1",
+  "boek": "Louie de Leeuw 1",
+  "src": "platen/louie1-1-kleurplaat.jpg"
+ },
+ {
+  "id": "louie1-2",
+  "naam": "Louie de Leeuw 1 — Kleurplaat 2",
+  "boek": "Louie de Leeuw 1",
+  "src": "platen/louie1-2-kleurplaat.jpg"
+ },
+ {
+  "id": "louie2-1",
+  "naam": "Louie de Leeuw 2 — Kleurplaat 1",
+  "boek": "Louie de Leeuw 2",
+  "src": "platen/louie2-1-kleurplaat.jpg"
+ },
+ {
+  "id": "louie2-2",
+  "naam": "Louie de Leeuw 2 — Kleurplaat 2",
+  "boek": "Louie de Leeuw 2",
+  "src": "platen/louie2-2-kleurplaat.jpg"
+ },
+ {
+  "id": "lila-1",
+  "naam": "Lila — Kleurplaat 1",
+  "boek": "Lila",
+  "src": "platen/lila-1-kleurplaat.jpg"
+ },
+ {
+  "id": "lila-2",
+  "naam": "Lila — Kleurplaat 2",
+  "boek": "Lila",
+  "src": "platen/lila-2-kleurplaat.jpg"
+ },
+ {
+  "id": "fluffy-1",
+  "naam": "Fluffy — Kleurplaat 1",
+  "boek": "Fluffy",
+  "src": "platen/fluffy-1-kleurplaat.jpg"
+ },
+ {
+  "id": "fluffy-2",
+  "naam": "Fluffy — Kleurplaat 2",
+  "boek": "Fluffy",
+  "src": "platen/fluffy-2-kleurplaat.jpg"
+ },
+ {
+  "id": "paard-1",
+  "naam": "Het Zwarte Paard — Kleurplaat 1",
+  "boek": "Het Zwarte Paard",
+  "src": "platen/paard-1-kleurplaat.jpg"
+ },
+ {
+  "id": "paard-2",
+  "naam": "Het Zwarte Paard — Kleurplaat 2",
+  "boek": "Het Zwarte Paard",
+  "src": "platen/paard-2-kleurplaat.jpg"
+ },
+ {
+  "id": "zeven-1",
+  "naam": "De Zeven Vrienden — Kleurplaat 1",
+  "boek": "De Zeven Vrienden",
+  "src": "platen/zeven-1-kleurplaat.jpg"
+ },
+ {
+  "id": "zeven-2",
+  "naam": "De Zeven Vrienden — Kleurplaat 2",
+  "boek": "De Zeven Vrienden",
+  "src": "platen/zeven-2-kleurplaat.jpg"
+ },
+ {
+  "id": "superhelden-1",
+  "naam": "Dieren Superhelden — Kleurplaat 1",
+  "boek": "Dieren Superhelden",
+  "src": "platen/superhelden-1-kleurplaat.jpg"
+ },
+ {
+  "id": "superhelden-2",
+  "naam": "Dieren Superhelden — Kleurplaat 2",
+  "boek": "Dieren Superhelden",
+  "src": "platen/superhelden-2-kleurplaat.jpg"
+ },
+ {
+  "id": "sunny2-1",
+  "naam": "Sunny — Onvergetelijke Reis — Kleurplaat 1",
+  "boek": "Sunny — Onvergetelijke Reis",
+  "src": "platen/sunny2-1-kleurplaat.jpg"
+ },
+ {
+  "id": "sunny2-2",
+  "naam": "Sunny — Onvergetelijke Reis — Kleurplaat 2",
+  "boek": "Sunny — Onvergetelijke Reis",
+  "src": "platen/sunny2-2-kleurplaat.jpg"
  }
 ]
