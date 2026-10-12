@@ -149,6 +149,10 @@ h2::after{content:'';position:absolute;left:0;bottom:0;width:56px;height:5px;bor
 .spel{background:#fff;border-radius:20px;padding:24px;box-shadow:0 4px 16px rgba(8,78,124,.12)}
 .spel-bord{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:560px;margin:14px auto}
 @media(max-width:560px){.spel-bord{grid-template-columns:repeat(3,1fr)}}
+@keyframes val{to{top:105vh;transform:rotate(360deg) scale(1.2);opacity:0}}
+.kaart{transition:transform .25s ease,box-shadow .25s ease}
+.kaart.open{transform:scale(1.05)}
+.kaart.geraden{box-shadow:0 0 0 3px #7BC47F,0 4px 14px rgba(123,196,127,.4)}
 .kaart{aspect-ratio:1;border:none;border-radius:12px;cursor:pointer;background:linear-gradient(135deg,var(--zee),var(--zeedonker));color:#fff;font-size:26px;overflow:hidden;padding:0;position:relative}
 .kaart img{width:100%;height:100%;object-fit:cover;display:none}
 .kaart.open img,.kaart.geraden img{display:block}
@@ -532,8 +536,13 @@ footer a{color:var(--zee)}
 <div class="spel">
 <h2 id="spel-titel">🐰 Keesje Konijn Memory</h2>
 <div class="held-kies-rij" id="held-kies-rij"></div>
+<div class="held-kies-rij" id="level-kies-rij" style="margin-top:8px">
+  <button class="held-kies actief" data-level="0" onclick="levelKies(0)">🌱 Makkelijk (12)</button>
+  <button class="held-kies" data-level="1" onclick="levelKies(1)">🔥 Moeilijk (24)</button>
+</div>
 <p class="sub">Vind dezelfde plaatjes uit het boek. Hoe minder beurten, hoe beter!</p>
 <p class="spel-status" id="spel-status">Klik op twee kaartjes…</p>
+<p class="spel-status" id="spel-timer" style="font-size:14px;color:#8a94a6;margin-top:4px">⏱️ 0:00 · 🏆 record: –</p>
 <div class="spel-bord" id="bord"></div>
 <button class="spel-reset" onclick="spelStart()">Opnieuw</button>
 </div>
@@ -638,10 +647,14 @@ var HELDEN={
   bodhi:{naam:'Bodhi',ico:'🐨'},
   ollie:{naam:'Ollie',ico:'🦉'},
   sterre:{naam:'Sterre',ico:'🐴'},
-  kokos:{naam:'Chef Kokos',ico:'👨‍🍳'},sunny3:{naam:'Sunny Sterren',ico:'🌟'}};
+  kokos:{naam:'Chef Kokos',ico:'👨‍🍳'},sunny3:{naam:'Sunny Sterren',ico:'🌟'},
+  louie:{naam:'Louie Leeuw',ico:'🦁'},lila:{naam:'Lila',ico:'🌼'},fluffy:{naam:'Fluffy',ico:'🐱'},
+  paard:{naam:'Magic Paard',ico:'🐴'},zeven:{naam:'Zeven Vrienden',ico:'🦊'},superhelden:{naam:'Superhelden',ico:'🦸'},
+  sunny2:{naam:'Sunny Reis',ico:'🗺️'},ollieleo:{naam:'Ollie & Leo',ico:'🐘'}};
 Object.keys(HELDEN).forEach(function(h){
   var base=(h==='keesje')?'img/mem-':'img/mem-'+h+'-';
-  HELDEN[h].mem=[0,1,2,3,4,5].map(function(i){return base+i+'.jpg';});
+  var n=(['louie','lila','fluffy','paard','zeven','superhelden','sunny2','ollieleo'].indexOf(h)>=0)?12:6;
+  HELDEN[h].mem=[...Array(n).keys()].map(function(i){return base+i+'.jpg';});
 });
 (function(){
   var rij=document.getElementById('held-kies-rij');
@@ -651,19 +664,45 @@ Object.keys(HELDEN).forEach(function(h){
     b.onclick=function(){heldKies(h)};rij.appendChild(b);
   });
 })();
-var held='keesje',MEM=HELDEN[held].mem;
-var spelKaarten=[],openKaarten=[],beurten=0,gevonden=0,bezig=false;
+var held='keesje',MEM=HELDEN[held].mem,level=0;
+var spelKaarten=[],openKaarten=[],beurten=0,gevonden=0,bezig=false,startTijd=null,klok=null;
 function heldKies(h){
   held=h;MEM=HELDEN[h].mem;
   document.getElementById('spel-titel').textContent=HELDEN[h].ico+' '+HELDEN[h].naam+' Memory';
-  document.querySelectorAll('.held-kies').forEach(function(b){b.classList.toggle('actief',b.dataset.held===h)});
+  document.querySelectorAll('#held-kies-rij .held-kies').forEach(function(b){b.classList.toggle('actief',b.dataset.held===h)});
   spelStart();
+}
+function levelKies(l){
+  level=l;
+  document.querySelectorAll('#level-kies-rij .held-kies').forEach(function(b){b.classList.toggle('actief',b.dataset.level==l)});
+  spelStart();
+}
+function fmtTijd(s){return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');}
+function recordSleutel(){return 'mem-rec-'+held+'-'+level;}
+function toonRecord(){
+  var r=localStorage.getItem(recordSleutel());
+  var t=document.getElementById('spel-timer');
+  t.innerHTML='⏱️ '+(startTijd?fmtTijd((Date.now()-startTijd)/1000):'0:00')+' · 🏆 record: '+(r?r+' beurten':'–');
+}
+function feest(){
+  var w=document.createElement('div');
+  w.style.cssText='position:fixed;left:0;top:0;right:0;pointer-events:none;z-index:999;font-size:34px;text-align:center';
+  var em=['🎉','⭐','🌟','🎈','🦁','🐾'];
+  for(var i=0;i<24;i++){
+    var s=document.createElement('span');s.textContent=em[i%em.length];
+    s.style.cssText='position:absolute;left:'+(Math.random()*100)+'%;top:-40px;animation:val '+(1.6+Math.random())+'s ease-in forwards;animation-delay:'+(Math.random()*0.8)+'s';
+    w.appendChild(s);
+  }
+  document.body.appendChild(w);setTimeout(function(){w.remove()},3200);
 }
 function spelStart(){
   var bord=document.getElementById('bord');bord.innerHTML='';
   beurten=0;gevonden=0;bezig=false;openKaarten=[];
+  if(klok)clearInterval(klok);startTijd=Date.now();
+  klok=setInterval(toonRecord,1000);toonRecord();
   document.getElementById('spel-status').textContent='Klik op twee kaartjes…';
-  spelKaarten=MEM.concat(MEM).map(function(src){return{src:src}});
+  var bron=level===1?MEM:MEM.slice(0,6);
+  spelKaarten=bron.concat(bron).map(function(src){return{src:src}});
   spelKaarten.sort(function(){return Math.random()-0.5});
   spelKaarten.forEach(function(k,idx){
     var btn=document.createElement('button');
@@ -684,8 +723,16 @@ function spelKlik(btn,k){
       setTimeout(function(){
         a.btn.classList.add('geraden');b.btn.classList.add('geraden');
         gevonden++;openKaarten=[];bezig=false;
-        if(gevonden===MEM.length){document.getElementById('spel-status').textContent='🎉 Alles gevonden in '+beurten+' beurten!'}
-        else{document.getElementById('spel-status').textContent='Goed zo! Nog '+(MEM.length-gevonden)+' te gaan…';}
+        var totaal=spelKaarten.length/2;
+        if(gevonden===totaal){
+          clearInterval(klok);
+          var r=localStorage.getItem(recordSleutel());
+          var nieuw=(!r||beurten<parseInt(r));
+          if(nieuw)localStorage.setItem(recordSleutel(),beurten);
+          document.getElementById('spel-status').textContent='🎉 Alles gevonden in '+beurten+' beurten en '+fmtTijd((Date.now()-startTijd)/1000)+'!'+(nieuw?' 🏆 Nieuw record!':'');
+          feest();toonRecord();
+        }
+        else{document.getElementById('spel-status').textContent='Goed zo! Nog '+(totaal-gevonden)+' te gaan…';}
       },350);
     }else{
       document.getElementById('spel-status').textContent='Niet dezelfde — probeer opnieuw…';
