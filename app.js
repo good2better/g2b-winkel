@@ -83,7 +83,7 @@ async function laden() {
     : p.soort === "audio" ? "beats"
     : (p.groep === "software" || p.groep === "plugins") ? pluginCat(p)
     : p.groep === "sounds" ? "sounds"
-    : p.groep === "muziek" ? "muziek"
+    : (p.groep === "muziek" || p.groep === "tape") ? "muziek"
     : "boeken";
   const CAT_NAAM = {
     apps: "🛠️ Apps", boeken: "📚 Boeken",
