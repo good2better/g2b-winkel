@@ -561,6 +561,303 @@
      "goed": 0
     }
    ]
+  },
+  {
+   "boek": "De Kleurrijke Avonturen van Ollie & Leo",
+   "vragen": [
+    {
+     "v": "Wie zijn de twee vrienden uit het boek?",
+     "a": [
+      "Ollie de olifant en Leo de leeuw",
+      "Ollie de aap en Leo de tijger",
+      "Ollie de beer en Leo de vos"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Welke vorm heeft de berg waar ze langs komen?",
+     "a": [
+      "Cirkel",
+      "Driehoek",
+      "Vierkant"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Wat doen Ollie en Leo op de regenboogbrug?",
+     "a": [
+      "Ze slapen",
+      "Ze vissen",
+      "Ze noemen elke kleur op"
+     ],
+     "goed": 2
+    },
+    {
+     "v": "Welke vormen verzamelen ze in het bos?",
+     "a": [
+      "Driehoeken, vierkanten en cirkels",
+      "Alleen sterren",
+      "Alleen harten"
+     ],
+     "goed": 0
+    }
+   ]
+  },
+  {
+   "boek": "De Verhalen van Louie de Leeuw — Deel 1",
+   "vragen": [
+    {
+     "v": "Waar begint Louie zijn eerste avontuur?",
+     "a": [
+      "In de zee",
+      "In het bos",
+      "In de woestijn"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Wie komt Louie tegen die er gevaarlijk uitzien?",
+     "a": [
+      "Een roedel wolven",
+      "Een groep beren",
+      "Een slang"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wat leert Louie over moed?",
+     "a": [
+      "Vechten is altijd goed",
+      "Wegrennen is het beste",
+      "Opkomen voor jezelf zonder geweld"
+     ],
+     "goed": 2
+    }
+   ]
+  },
+  {
+   "boek": "De Verhalen van Louie de Leeuw — Deel 2",
+   "vragen": [
+    {
+     "v": "Wat vindt Louie lastig als hij moet slapen?",
+     "a": [
+      "Zijn gedachten blijven racen",
+      "Hij is bang voor spinnen",
+      "Hij wil buiten spelen"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wie helpt Louie met een wijze les?",
+     "a": [
+      "Papa Leeuw",
+      "Oma Leeuw",
+      "De uil"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Waar gaat dit deel vooral over?",
+     "a": [
+      "Vechten met wolven",
+      "Leren dromen en rustig slapen",
+      "Koken met vrienden"
+     ],
+     "goed": 1
+    }
+   ]
+  },
+  {
+   "boek": "Leren en Groeien met Lila",
+   "vragen": [
+    {
+     "v": "Hoe oud is Lila?",
+     "a": [
+      "Vier jaar",
+      "Zeven jaar",
+      "Tien jaar"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wat is de baan van Lila haar moeder?",
+     "a": [
+      "Juf",
+      "Verpleegster",
+      "Bakker"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Waar is Lila heel goed in op school?",
+     "a": [
+      "Voetbal",
+      "Tekenen alleen",
+      "Wiskunde en wetenschap"
+     ],
+     "goed": 2
+    }
+   ]
+  },
+  {
+   "boek": "Fluffy en het Vogeltje",
+   "vragen": [
+    {
+     "v": "Wat voor dier is Fluffy?",
+     "a": [
+      "Een hond",
+      "Een konijn",
+      "Een kat"
+     ],
+     "goed": 2
+    },
+    {
+     "v": "Wat vindt Fluffy in het park?",
+     "a": [
+      "Een gewond vogeltje",
+      "Een sleutel",
+      "Een kaart"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wat leert het verhaal ons?",
+     "a": [
+      "Altijd alleen spelen",
+      "Vriendelijkheid en zorg voor anderen",
+      "Katten kunnen niet delen"
+     ],
+     "goed": 1
+    }
+   ]
+  },
+  {
+   "boek": "Het Wonderbaarlijke Avontuur van het Mooie Zwarte Paard",
+   "vragen": [
+    {
+     "v": "Hoe heet het magische paard?",
+     "a": [
+      "Storm",
+      "Magic",
+      "Donder"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Waar woont Magic?",
+     "a": [
+      "In een magisch bos",
+      "Op een boerderij",
+      "In een kasteel"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wie ontmoet Magic op zijn reis?",
+     "a": [
+      "Piraten",
+      "Gnomen",
+      "Robots"
+     ],
+     "goed": 1
+    }
+   ]
+  },
+  {
+   "boek": "De Avonturen van de Zeven Vrienden",
+   "vragen": [
+    {
+     "v": "Hoeveel vrienden spelen er mee?",
+     "a": [
+      "Vijf",
+      "Zeven",
+      "Tien"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Waar komen de vrienden bij elkaar?",
+     "a": [
+      "In het park",
+      "Op school",
+      "Bij de dierentuin"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Waar jagen de vrienden op?",
+     "a": [
+      "Een schat",
+      "Een draak",
+      "Een piraat"
+     ],
+     "goed": 0
+    }
+   ]
+  },
+  {
+   "boek": "Dieren Superhelden — Dappere Verhalen",
+   "vragen": [
+    {
+     "v": "Wat ruikt Fluffy de kat op de hete middag?",
+     "a": [
+      "Regen",
+      "Rook",
+      "Pizza"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Wat doet Fluffy als hij het vuur ziet?",
+     "a": [
+      "Hij verstopt zich",
+      "Hij komt in actie",
+      "Hij rent weg"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Welke dieren zijn superhelden in dit boek?",
+     "a": [
+      "Alleen katten",
+      "Kat, schaap, konijn, muis en meer",
+      "Alleen honden"
+     ],
+     "goed": 1
+    }
+   ]
+  },
+  {
+   "boek": "De Onvergetelijke Reis van Sunny en Vrienden",
+   "vragen": [
+    {
+     "v": "Wat voor dier is Sunny?",
+     "a": [
+      "Een olifant",
+      "Een leeuw",
+      "Een zebra"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wie is de wijze van de vriendengroep?",
+     "a": [
+      "Ruby de eekhoorn",
+      "Max de uil",
+      "Lila de tijger"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Welk dier ontmoet Sunny op zee?",
+     "a": [
+      "Een haai",
+      "Een walvis",
+      "Een kwal"
+     ],
+     "goed": 1
+    }
+   ]
   }
  ]
 }
