@@ -181,7 +181,7 @@ footer a{color:var(--zee)}
 <svg viewBox="0 0 40 40" fill="none"><rect x="6" y="4" width="20" height="32" rx="3" fill="#0E6BA8"/><rect x="11" y="4" width="3" height="32" fill="#F5A623"/><rect x="20" y="10" width="14" height="26" rx="2" fill="#FF7F50"/></svg>
 <span><b>GS Books</b><small>G.T.J. SANDVLIET</small></span></a>
 <nav>
-<a href="#boeken">Boeken</a><a href="#winkel">Winkel</a><a href="kleur/">🎨 Kleuren!</a><a href="quiz/">🏆 Quiz</a><a href="paspoort/">🗺️ Paspoort</a><a href="#videoboek">Videoboek</a><a href="#vraag">🧩 Vraag</a><a href="#luister">Luister</a><a href="#blader">Blader</a><a href="#kijk">Kijk</a><a href="#auteur">Auteur</a><a href="#spel">Spel</a>
+<a href="#boeken">Boeken</a><a href="#winkel">Winkel</a><a href="kleur/">🎨 Kleuren!</a><a href="quiz/">🏆 Quiz</a><a href="paspoort/">🗺️ Paspoort</a><a href="club.html" style="background:var(--goud);color:#4A3400;border-radius:20px;padding:8px 14px">🐾 Club</a><a href="#videoboek">Videoboek</a><a href="#vraag">🧩 Vraag</a><a href="#luister">Luister</a><a href="#blader">Blader</a><a href="#kijk">Kijk</a><a href="#auteur">Auteur</a><a href="#spel">Spel</a>
 <a class="cta" href="#boeken">Koop Sunny</a>
 </nav>
 </div></header>
@@ -723,6 +723,13 @@ fetch('boeken.json').then(function(r){return r.ok?r.json():{boeken:[]}}).then(fu
     {id:'dierenhelden',titel:'🐾 Animal Heroes Avonturen',sub:'Elke held z’n eigen verhaal — echt gebeurde dierenmoed'},
     {id:'ziggy',titel:'🦓 Ziggy Zebra-serie',sub:'Kleuren leren met de regenboog-zebra — voor de allerkleinsten'},
     {id:'koko',titel:'👨‍🍳 Chef Kokos-serie',sub:'Koken en gezond eten met Chef Kokos en zijn Groente Vrienden — uit het echte boek van G.T.J. Sandvliet'}
+    {id:'ollie-leo',titel:'🐘 Ollie & Leo-serie',sub:'Kleuren en vormen leren met twee beste vrienden'},
+    {id:'louie',titel:'🦁 Louie de Leeuw-serie',sub:'Warme avonturen over dromen, vriendschap en moed — voor het slapen gaan'},
+    {id:'lila',titel:'🌼 Lila-serie',sub:'Leren en groeien — voor de allerkleinsten (0-5 jaar)'},
+    {id:'fluffy',titel:'🐱 Fluffy-serie',sub:'Verhalen over vriendelijkheid en zorgzaamheid'},
+    {id:'paard',titel:'🐴 Het Zwarte Paard',sub:'Een magisch sprookje vol moed en mysterie'},
+    {id:'zeven',titel:'🦊 De Zeven Vrienden',sub:'Een verzameling spannende vriendschapsavonturen'},
+    {id:'animalheroes',titel:'x',sub:'x'},
   ];
   var groepen={};
   data.boeken.forEach(function(b){var s=b.serie||'dierenhelden';(groepen[s]=groepen[s]||[]).push(b);});
