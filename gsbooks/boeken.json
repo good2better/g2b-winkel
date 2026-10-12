@@ -377,6 +377,37 @@
     "prijs": "",
     "koop": "../d/c2d402ab79/Voorproef.pdf"
    }
+  },
+  {
+   "titel": "Sunny en de Reis naar de Sterren",
+   "serie": "sunny",
+   "cover": "media/ec3abbb84a5546-cover.png",
+   "beschrijving": "Sunny de olifant en zijn vrienden vinden een glinsterend sterrenkompas en reizen per regenboogballon naar de sterren — met Stella de kleine gouden ster, de Nachtwolken-puzzels, het Kleurenland en het ruimtefeest. Een warm avontuur over dromen en vriendschap, helemaal in het Nederlands én Engels (12 hoofdstukken). Je krijgt: e-boek NL + EN, kleurboek, stripboek en de voorleesvideo. Digitaal — direct te downloaden.",
+   "ebook": {
+    "prijs": "6,95",
+    "koop": ""
+   },
+   "kleurboek": {
+    "prijs": "7,95",
+    "koop": ""
+   },
+   "stripboek": {
+    "prijs": "6,95",
+    "koop": ""
+   },
+   "videoboek": {
+    "prijs": "9,95",
+    "koop": ""
+   },
+   "pakket": {
+    "prijs": "19,95",
+    "koop": ""
+   },
+   "probeer": {
+    "prijs": "",
+    "koop": "../d/ec3abbb84a5546/Sunny-Voorproef.pdf"
+   },
+   "nieuw": true
   }
  ]
 }
