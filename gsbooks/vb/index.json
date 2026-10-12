@@ -216,5 +216,21 @@
   "cover": "vb/vraag-het-aan-kokos/cover.jpg",
   "interactief": true,
   "paginas": 5
+ },
+ {
+  "slug": "sunny-sterren",
+  "titel": "Sunny en de Reis naar de Sterren 🐘⭐",
+  "video": true,
+  "url": "vb/sunny-sterren/index.html",
+  "cover": "vb/sunny-sterren/cover.jpg"
+ },
+ {
+  "slug": "vraag-het-aan-sunny-sterren",
+  "titel": "Vraag het aan Sunny 🐘⭐",
+  "video": false,
+  "url": "vb/vraag-het-aan-sunny-sterren/index.html",
+  "cover": "vb/vraag-het-aan-sunny-sterren/cover.jpg",
+  "interactief": true,
+  "paginas": 2
  }
 ]

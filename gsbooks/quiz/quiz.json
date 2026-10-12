@@ -511,6 +511,56 @@
      "goed": 0
     }
    ]
+  },
+  {
+   "boek": "Sunny en de Reis naar de Sterren",
+   "vragen": [
+    {
+     "v": "Wat vinden Sunny en zijn vrienden in het gras?",
+     "a": [
+      "Een glinsterend sterrenkompas",
+      "Een schatkaart",
+      "Een gouden munt"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Hoe reizen de vrienden naar de sterren?",
+     "a": [
+      "Met een regenboogballon",
+      "Met een raket",
+      "Op een vliegend tapijt"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wie is Stella?",
+     "a": [
+      "Een kleine gouden ster",
+      "Een maanfee",
+      "Een komeet"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Hoe raken ze door de Nachtwolken heen?",
+     "a": [
+      "Door samen puzzels op te lossen",
+      "Door heel hard te roepen",
+      "Door te verstoppen"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wat leren de vrienden van de Gouden Ster?",
+     "a": [
+      "Dat iedereen kan stralen, ook als je klein bent",
+      "Dat goud duur is",
+      "Dat sterren nooit slapen"
+     ],
+     "goed": 0
+    }
+   ]
   }
  ]
 }
