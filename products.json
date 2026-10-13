@@ -1,6 +1,19 @@
 {
  "producten": [
   {
+   "id": "g2b-mini-pack",
+   "titel": "G2B Mini-Pack (GRATIS)",
+   "soort": "digitaal",
+   "beschrijving": "34 gratis engineer-afgewerkte one-shots uit de Pack der Packs — alle categorieën + genre-varianten. Gratis teaser; de volle pack heeft 768 sounds + 6 plugins.",
+   "prijs": "GRATIS",
+   "prijzen": {},
+   "links": {"koop": ""},
+   "duur": 0,
+   "groep": "sounds",
+   "download_dir": "d/min1pack",
+   "badge": "GRATIS"
+  },
+  {
    "id": "g2b-pack-der-packs",
    "titel": "G2B Pack der Packs",
    "soort": "digitaal",
