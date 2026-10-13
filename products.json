@@ -1,6 +1,19 @@
 {
  "producten": [
   {
+   "id": "g2b-schoolspelen",
+   "titel": "G2B Schoolspelen",
+   "soort": "digitaal",
+   "beschrijving": "Leer-app voor kinderen in één bestand: lezen & rekenen van groep 1 tot genius-niveau, met het echte Keesje Konijn-verhaal, spelletjes, quizzen en Nederlandse voorlees-stem. Geen installatie, geen internet nodig — dubbelklik en speel.",
+   "prijs": "€ 4,95 intro-prijs",
+   "prijzen": {},
+   "links": {"koop": ""},
+   "duur": 0,
+   "groep": "apps",
+   "download_dir": "d/sch00lspelen",
+   "badge": "NIEUW"
+  },
+  {
    "id": "g2b-pack-der-packs",
    "titel": "G2B Pack der Packs",
    "soort": "digitaal",
