@@ -12,7 +12,7 @@ from g2btools import notes_to_events, write_midi
 
 GENRES = ["dembow","reggaeton","drill","boombap","trap","trap140","house","dance",
           "amapiano","kawina","kaseko","samba","cumbia","dancehall","afro","jersey",
-          "lofi","rnb","dark","winti","bubbling"]
+          "lofi","rnb","dark","winti","bubbling","slagritme","slagritme-keys"]
 DRUM_NAMES = {36:"kick",38:"snare",40:"snare2",39:"clap",42:"hat",44:"pedal",46:"ohat",
               49:"crash",51:"ride",70:"shaker",75:"clave",63:"conga",62:"conga_s",
               66:"timbale",68:"agogo",73:"guiro",60:"bongo",76:"cajon",81:"vibraslap"}
@@ -66,7 +66,12 @@ def leer(root, out):
             s["bars"] += bars
             step_t = tpq / 4
             mel = [n for n in notes if n[1] != 9]
-            drm = [n for n in notes if n[1] == 9]
+            allnd = (all(n[2] in DRUM_NAMES for n in notes) if notes else False) or g.startswith("slagritme")
+            drm = [n for n in notes if n[1] == 9 or allnd]
+            base=os.path.basename(path).rsplit('.',1)[0]
+            partd=None
+            if g.startswith("slagritme"):
+                partd=s.setdefault("parts",{}).setdefault(base,{"bars":bars,"notes":{}})
             for t,ch,note,vel,dur in drm:
                 st = round(t/step_t)
                 step = st % 16; bar = int(st // 16)
@@ -77,6 +82,9 @@ def leer(root, out):
                 k = str(step)
                 d["steps"][k] = d["steps"].get(k,0) + 1
                 d["vels"].setdefault(k, []).append(vel)
+                if partd is not None:
+                    nd=partd["notes"].setdefault(str(note),{"steps":{},"vel":[]})
+                    nd["steps"][k]=nd["steps"].get(k,0)+1; nd["vel"].append(vel)
                 # fill-detectie: snare-hits in laatste 4 stappen van een bar
                 if nm in ("snare","snare2") and step >= 12:
                     s["fills"] += 1
@@ -118,8 +126,25 @@ def gen(brain_path, genre, bpm, bars, out):
     g = B.get(genre) or B.get("misc") or next(iter(B.values()))
     rnd = random.random
     notes = []
-    core = {"kick":(36,9),"snare":(38,9),"clap":(39,9),"hat":(42,9),"ohat":(46,9),
-            "shaker":(70,9),"clave":(75,9),"conga":(63,9),"crash":(49,9),"ride":(51,9)}
+    NAME2NOTE = {v:k for k,v in DRUM_NAMES.items()}
+    NAME2NOTE.update({"perc":66,"timbale":65,"conga_s":62,"bongo":60,"agogo":68,
+                      "guiro":73,"cajon":76,"vibraslap":81,"pedal":44,"snare2":40})
+    if g.get("parts"):
+        for part, pd in g["parts"].items():
+            for nstr, nd in pd["notes"].items():
+                probs={k:v/pd["bars"] for k,v in nd["steps"].items()}
+                anchors=sorted(probs,key=probs.get,reverse=True)[:2]
+                for bar in range(bars):
+                    for step in range(16):
+                        p=probs.get(str(step),0)
+                        if str(step) in anchors or rnd()<p*0.9:
+                            vel=int(sum(nd["vel"])/len(nd["vel"]) + rnd()*10-5)
+                            notes.append(((bar*16+step)*120,120,9,int(nstr),max(30,min(127,vel))))
+        notes.sort()
+        write_midi(out, notes_to_events(notes), tempo=int(60e6/bpm), name=f"{genre}_gen")
+        print(f"{out}: {len(notes)} noten ({len(g['parts'])} parts) uit brein[{genre}] @ {bpm}bpm")
+        return
+    core = {nm:(NAME2NOTE.get(nm, 60+abs(hash(nm))%20), 9) for nm in g["drums"]}
     for nm,(note,ch) in core.items():
         d = g["drums"].get(nm)
         if not d: continue
