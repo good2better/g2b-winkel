@@ -32,6 +32,22 @@
    "badge": "NIEUW"
   },
   {
+   "id": "g2b-beat-bouwdoos",
+   "titel": "G2B Beat Bouwdoos",
+   "soort": "digitaal",
+   "beschrijving": "Bouw volledige beats in 4 stappen: 10 starters (intro>groove>lift) + 8 naadloze loops + 10 breakdowns + 12 fills — allemaal gegenereerd door het G2B-brein op G2B-samples. Inclusief 42 midi-bestanden om zelf van instrument te wisselen. 0% doorsluis geverifieerd.",
+   "prijs": 19.95,
+   "prijzen": {},
+   "links": {
+    "koop": "bestel.html?p=g2b-beat-bouwdoos"
+   },
+   "duur": 0,
+   "groep": "sounds",
+   "cover": "media/g2b-beatbouwdoos-cover.png",
+   "download_dir": "d/6d4c10171437",
+   "badge": "NIEUW"
+  },
+  {
    "id": "g2b-studio-pack",
    "titel": "G2B Studio Pack",
    "soort": "digitaal",
