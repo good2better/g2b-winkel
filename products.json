@@ -1,6 +1,24 @@
 {
  "producten": [
   {
+   "id": "g2b-pack-der-packs",
+   "titel": "G2B Pack der Packs",
+   "soort": "digitaal",
+   "beschrijving": "De G2B Pack der Packs: 720 sounds in 15 categorieen — one-shots op toonhoogte, unieke DNA-cross instruments die nergens anders bestaan, MIDI-patronen (dembow/drill/boombap drums, melodie, akkoorden, bas in G2B-stijl) en speelklare loops op 117 BPM. Plus drie plugins: VocalTune v5 met G2B-STIJL ladder, Sampler v2 met pack-browser en de OneShot met 48 ingebouwde sounds. Alles eigen code, VST3 + CLAP, regel-1 veilig (CC0/MIT), NL handleiding erbij.",
+   "prijs": "€ 79 intro-prijs",
+   "prijzen": {},
+   "links": {
+    "koop": ""
+   },
+   "duur": 0,
+   "groep": "soundpacks",
+   "cover": "media/g2b-packderpacks-cover.png",
+   "video": "media/g2b-packderpacks-demo.mp4",
+   "download_dir": "d/eb0455b2a2297e",
+   "eerst": true,
+   "badge": "NIEUW"
+  },
+  {
    "id": "g2b-studio-pack",
    "titel": "G2B Studio Pack",
    "soort": "digitaal",

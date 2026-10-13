@@ -1,0 +1,10 @@
+G2B PACK DER PACKS — alles voor jouw sound
+=========================================
+1) G2B-PLUGINS-2027.zip — 3 plugins (vst3+clap+bron):
+   VocalTune v5 (neuraal + G2B-STIJL ladder), Sampler v2 (UI + pack-browser),
+   OneShot (48 shots ingebakken)
+2) ONESHOTS-pack in 7 delen (alle 7 downloaden):
+   -1 KEYS+MALLETS  -2/3 STRINGS  -4 WIND+ORGAN+DRUMS  -5 BRASS+PERC
+   -6 WOODWINDS  -7 DNA+MIDI+LOOPS+VSCO-keys
+   = 720 items: one-shots (getuned), DNA-morfs, MIDI-patronen, loops 117bpm
+Alles regel 1 veilig: VCSL + VSCO2 (CC0) + eigen code/materiaal. MIT.
