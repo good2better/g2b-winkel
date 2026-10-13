@@ -72,6 +72,12 @@ def leer(root, out):
             partd=None
             if g.startswith("slagritme"):
                 partd=s.setdefault("parts",{}).setdefault(base,{"bars":bars,"notes":{}})
+                import re as _re
+                m=_re.search(r'rythem[-_]?(\d+)', os.path.basename(dirp).lower())
+                rid=m.group(0) if m else "los"
+                bpm_m=_re.search(r'bpm(\d+)', os.path.basename(dirp).lower())
+                rd=s.setdefault("ritmes",{}).setdefault(rid,{"bpm":int(bpm_m.group(1)) if bpm_m else 0,"parts":{}})
+                rpart=rd["parts"].setdefault(base,{"bars":bars,"notes":{}})
             for t,ch,note,vel,dur in drm:
                 st = round(t/step_t)
                 step = st % 16; bar = int(st // 16)
@@ -83,8 +89,9 @@ def leer(root, out):
                 d["steps"][k] = d["steps"].get(k,0) + 1
                 d["vels"].setdefault(k, []).append(vel)
                 if partd is not None:
-                    nd=partd["notes"].setdefault(str(note),{"steps":{},"vel":[]})
-                    nd["steps"][k]=nd["steps"].get(k,0)+1; nd["vel"].append(vel)
+                    for _pd in (partd, rpart):
+                        nd=_pd["notes"].setdefault(str(note),{"steps":{},"vel":[]})
+                        nd["steps"][k]=nd["steps"].get(k,0)+1; nd["vel"].append(vel)
                 # fill-detectie: snare-hits in laatste 4 stappen van een bar
                 if nm in ("snare","snare2") and step >= 12:
                     s["fills"] += 1
@@ -123,14 +130,22 @@ def _pick(d, rnd):
 
 def gen(brain_path, genre, bpm, bars, out):
     B = json.load(open(brain_path))
-    g = B.get(genre) or B.get("misc") or next(iter(B.values()))
+    g = B.get(genre) or B.get(genre.split("#")[0]) or B.get("misc") or next(iter(B.values()))
     rnd = random.random
     notes = []
     NAME2NOTE = {v:k for k,v in DRUM_NAMES.items()}
     NAME2NOTE.update({"perc":66,"timbale":65,"conga_s":62,"bongo":60,"agogo":68,
                       "guiro":73,"cajon":76,"vibraslap":81,"pedal":44,"snare2":40})
     if g.get("parts"):
-        for part, pd in g["parts"].items():
+        ritmes = g.get("ritmes")
+        if ritmes:
+            rid = genre.split("#",1)[1] if "#" in genre else random.choice(list(ritmes))
+            rid = rid if rid in ritmes else random.choice(list(ritmes))
+            parts = ritmes[rid]["parts"]; rbpm = ritmes[rid].get("bpm") or bpm
+            print(f"  ensemble {rid} ({len(parts)} parts, orig {rbpm}bpm)")
+        else:
+            parts = g["parts"]
+        for part, pd in parts.items():
             for nstr, nd in pd["notes"].items():
                 probs={k:v/pd["bars"] for k,v in nd["steps"].items()}
                 anchors=sorted(probs,key=probs.get,reverse=True)[:2]
@@ -142,7 +157,7 @@ def gen(brain_path, genre, bpm, bars, out):
                             notes.append(((bar*16+step)*120,120,9,int(nstr),max(30,min(127,vel))))
         notes.sort()
         write_midi(out, notes_to_events(notes), tempo=int(60e6/bpm), name=f"{genre}_gen")
-        print(f"{out}: {len(notes)} noten ({len(g['parts'])} parts) uit brein[{genre}] @ {bpm}bpm")
+        print(f"{out}: {len(notes)} noten ({len(parts)} parts) uit brein[{genre}] @ {bpm}bpm")
         return
     core = {nm:(NAME2NOTE.get(nm, 60+abs(hash(nm))%20), 9) for nm in g["drums"]}
     for nm,(note,ch) in core.items():
