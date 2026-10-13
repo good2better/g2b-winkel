@@ -12,7 +12,8 @@ from g2btools import notes_to_events, write_midi
 
 GENRES = ["dembow","reggaeton","drill","boombap","trap","trap140","house","dance",
           "amapiano","kawina","kaseko","samba","cumbia","dancehall","afro","jersey",
-          "lofi","rnb","dark","winti","bubbling","slagritme","slagritme-keys"]
+          "lofi","rnb","dark","winti","bubbling","slagritme","slagritme-keys",
+          "808","drumkit","keys","orkest"]
 DRUM_NAMES = {36:"kick",38:"snare",40:"snare2",39:"clap",42:"hat",44:"pedal",46:"ohat",
               49:"crash",51:"ride",70:"shaker",75:"clave",63:"conga",62:"conga_s",
               66:"timbale",68:"agogo",73:"guiro",60:"bongo",76:"cajon",81:"vibraslap"}
@@ -56,28 +57,31 @@ def leer(root, out):
             g = genre_of(path)
             notes, tpq = read_notes(path)
             if not notes: continue
+            maxt = max(t for t,_,_,_,_ in notes)
+            bars = max(1, int(maxt / (16*tpq/4) + 0.999))
+            if bars > 1024:        # corrupte tijd-waarden → niet meetellen
+                continue
             nfiles += 1
             s = B.setdefault(g, {"files":0,"bars":0,"drums":{}, "mel":{},
                                  "swing":[], "fills":0, "fillbars":0})
             s["files"] += 1
-            maxt = max(t for t,_,_,_,_ in notes)
-            bars = max(1, round(maxt / (16*tpq/4)) + (1 if maxt % (16*tpq/4) > 0 else 0))
-            bars = max(1, int(maxt / (16*tpq/4) + 0.999))
             s["bars"] += bars
             step_t = tpq / 4
             mel = [n for n in notes if n[1] != 9]
             allnd = (all(n[2] in DRUM_NAMES for n in notes) if notes else False) or g.startswith("slagritme")
             drm = [n for n in notes if n[1] == 9 or allnd]
             base=os.path.basename(path).rsplit('.',1)[0]
-            partd=None
-            if g.startswith("slagritme"):
+            partd=None; rpart=None; rmel=None
+            import re as _re
+            dirn=os.path.basename(dirp).lower()
+            is_kit = dirn != g and not dirn.startswith('_') and dirp != root
+            if is_kit:
                 partd=s.setdefault("parts",{}).setdefault(base,{"bars":bars,"notes":{}})
-                import re as _re
-                m=_re.search(r'rythem[-_]?(\d+)', os.path.basename(dirp).lower())
-                rid=m.group(0) if m else "los"
-                bpm_m=_re.search(r'bpm(\d+)', os.path.basename(dirp).lower())
-                rd=s.setdefault("ritmes",{}).setdefault(rid,{"bpm":int(bpm_m.group(1)) if bpm_m else 0,"parts":{}})
+                rid=_re.sub(r'\W+','-',dirn).strip('-')
+                bpm_m=_re.search(r'bpm[\s_-]?(\d+)', dirn)
+                rd=s.setdefault("ritmes",{}).setdefault(rid,{"bpm":int(bpm_m.group(1)) if bpm_m else 0,"parts":{},"melparts":{}})
                 rpart=rd["parts"].setdefault(base,{"bars":bars,"notes":{}})
+                rmel=rd["melparts"].setdefault(base,{"bars":bars,"pc":{},"grid":{},"vel":[],"dur":[],"base":[]})
             for t,ch,note,vel,dur in drm:
                 st = round(t/step_t)
                 step = st % 16; bar = int(st // 16)
@@ -90,6 +94,7 @@ def leer(root, out):
                 d["vels"].setdefault(k, []).append(vel)
                 if partd is not None:
                     for _pd in (partd, rpart):
+                        if _pd is None: continue
                         nd=_pd["notes"].setdefault(str(note),{"steps":{},"vel":[]})
                         nd["steps"][k]=nd["steps"].get(k,0)+1; nd["vel"].append(vel)
                 # fill-detectie: snare-hits in laatste 4 stappen van een bar
@@ -102,6 +107,10 @@ def leer(root, out):
                 m = s["mel"].setdefault("g", {"deg":{}, "grid":{}, "ivl":{}})
                 m["grid"][str(step)] = m["grid"].get(str(step),0) + 1
                 m["deg"][str(note % 12)] = m["deg"].get(str(note % 12),0) + 1
+                if rmel is not None:
+                    rmel["pc"][str(note%12)] = rmel["pc"].get(str(note%12),0)+1
+                    rmel["grid"][str(step)] = rmel["grid"].get(str(step),0)+1
+                    rmel["vel"].append(vel); rmel["dur"].append(dur); rmel["base"].append(note)
             # intervallen per file
             meln = sorted([n[2] for n in mel])
             for a,b in zip(meln, meln[1:]):
@@ -155,6 +164,18 @@ def gen(brain_path, genre, bpm, bars, out):
                         if str(step) in anchors or rnd()<p*0.9:
                             vel=int(sum(nd["vel"])/len(nd["vel"]) + rnd()*10-5)
                             notes.append(((bar*16+step)*120,120,9,int(nstr),max(30,min(127,vel))))
+        # melodische lagen van dezelfde kit (bass/keys/melodie op ch!=9)
+        for part, pd in ((ritmes[rid].get("melparts") if ritmes else {}) or {}).items():
+            tot=pd["bars"]
+            base_n = sorted(pd["base"])[len(pd["base"])//2] if pd["base"] else 60
+            dur_n = max(30,int(sum(pd["dur"])/len(pd["dur"]))) if pd["dur"] else 120
+            vm = int(sum(pd["vel"])/len(pd["vel"])) if pd["vel"] else 80
+            for bar in range(bars):
+                for step in range(16):
+                    if rnd() < (pd["grid"].get(str(step),0)/tot)*0.9:
+                        pcv=_pick(pd["pc"], rnd)
+                        n = base_n - base_n%12 + int(pcv)
+                        notes.append(((bar*16+step)*120, dur_n, 0, max(21,min(108,n)), max(30,min(127,int(vm+rnd()*10-5)))))
         notes.sort()
         write_midi(out, notes_to_events(notes), tempo=int(60e6/bpm), name=f"{genre}_gen")
         print(f"{out}: {len(notes)} noten ({len(parts)} parts) uit brein[{genre}] @ {bpm}bpm")
