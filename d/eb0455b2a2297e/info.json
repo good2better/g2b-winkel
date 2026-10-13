@@ -3,31 +3,109 @@
  "licentie": "Volledige download — commercieel gebruik OK (eigen + CC0)",
  "cover": "media/g2b-packderpacks-cover.png",
  "bestanden": [
-  {"naam": "⬇ G2B-PLUGINS-2027.zip — 6 plugins, Win+Linux (VocalTune, Sampler v2, OneShot, Keys XL, Delay, Reverb)", "bestand": "G2B-PLUGINS-2027.zip"},
-  {"naam": "⬇ G2B-KEYSXL-DATA.zip — instrumenten voor Keys XL (verplicht)", "bestand": "G2B-KEYSXL-DATA.zip"},
-  {"naam": "⬇ G2B-ALLES-BUNDLE.zip — handleidingen + demo-video's", "bestand": "G2B-ALLES-BUNDLE.zip"},
-  {"naam": "— ONE-SHOTS als losse wav's (universeel, elke DAW) —", "bestand": "ONESHOTS-LEESMIJ.txt"},
-  {"naam": "⬇ one-shots 1/7 — keys + mallets", "bestand": "ONESHOTS-1-KEYS-MALLETS.zip"},
-  {"naam": "⬇ one-shots 2/7 — strings deel A", "bestand": "ONESHOTS-2-STRINGS-A.zip"},
-  {"naam": "⬇ one-shots 3/7 — strings deel B", "bestand": "ONESHOTS-3-STRINGS-B.zip"},
-  {"naam": "⬇ one-shots 4/7 — wind + organ + drums", "bestand": "ONESHOTS-4-WIND-ORGAN-DRUMS.zip"},
-  {"naam": "⬇ one-shots 5/7 — brass + perc", "bestand": "ONESHOTS-5-BRASS-PERC.zip"},
-  {"naam": "⬇ one-shots 6/7 — woodwinds", "bestand": "ONESHOTS-6-WOODWINDS.zip"},
-  {"naam": "⬇ one-shots 7/7 — DNA + MIDI + loops + VSCO", "bestand": "ONESHOTS-7-DNA-MIDI-LOOPS-VSCO.zip"},
-  {"naam": "— .g2bpack packs voor Sampler v2 (sleep in PACK-veld) —", "bestand": "LEESMIJ.txt"},
-  {"naam": "⬇ pack: keys", "bestand": "01-keys.g2bpack"},
-  {"naam": "⬇ pack: mallets", "bestand": "02-mallets.g2bpack"},
-  {"naam": "⬇ pack: strings A", "bestand": "03-strings-a.g2bpack"},
-  {"naam": "⬇ pack: strings B", "bestand": "03-strings-b.g2bpack"},
-  {"naam": "⬇ pack: wind", "bestand": "04-wind.g2bpack"},
-  {"naam": "⬇ pack: organ", "bestand": "05-organ.g2bpack"},
-  {"naam": "⬇ pack: drums", "bestand": "06-drums.g2bpack"},
-  {"naam": "⬇ pack: brass", "bestand": "07-brass.g2bpack"},
-  {"naam": "⬇ pack: hybrid", "bestand": "08-hybrid.g2bpack"},
-  {"naam": "⬇ pack: woodwinds", "bestand": "09-woodwinds.g2bpack"},
-  {"naam": "⬇ pack: orkest-percussie", "bestand": "10-orkest-perc.g2bpack"},
-  {"naam": "⬇ pack: keys VSCO", "bestand": "11-keys-vsco.g2bpack"},
-  {"naam": "⬇ pack: DNA-morfs (uniek)", "bestand": "13-dna.g2bpack"},
-  {"naam": "⬇ pack: loops", "bestand": "15-loops.g2bpack"}
+  {
+   "naam": "⬇ G2B-PLUGINS-2027.zip — 6 plugins, Win+Linux (VocalTune, Sampler v2, OneShot, Keys XL, Delay, Reverb)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/G2B-PLUGINS-2027.zip"
+  },
+  {
+   "naam": "⬇ G2B-KEYSXL-DATA.zip — instrumenten voor Keys XL (verplicht)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/G2B-KEYSXL-DATA.zip"
+  },
+  {
+   "naam": "⬇ G2B-ALLES-BUNDLE.zip — handleidingen + demo-video's",
+   "bestand": "G2B-ALLES-BUNDLE.zip"
+  },
+  {
+   "naam": "— ONE-SHOTS als losse wav's (universeel, elke DAW) —",
+   "bestand": "ONESHOTS-LEESMIJ.txt"
+  },
+  {
+   "naam": "⬇ one-shots 1/7 — keys + mallets",
+   "bestand": "ONESHOTS-1-KEYS-MALLETS.zip"
+  },
+  {
+   "naam": "⬇ one-shots 2/7 — strings deel A",
+   "bestand": "ONESHOTS-2-STRINGS-A.zip"
+  },
+  {
+   "naam": "⬇ one-shots 3/7 — strings deel B",
+   "bestand": "ONESHOTS-3-STRINGS-B.zip"
+  },
+  {
+   "naam": "⬇ one-shots 4/7 — wind + organ + drums",
+   "bestand": "ONESHOTS-4-WIND-ORGAN-DRUMS.zip"
+  },
+  {
+   "naam": "⬇ one-shots 5/7 — brass + perc",
+   "bestand": "ONESHOTS-5-BRASS-PERC.zip"
+  },
+  {
+   "naam": "⬇ one-shots 6/7 — woodwinds",
+   "bestand": "ONESHOTS-6-WOODWINDS.zip"
+  },
+  {
+   "naam": "⬇ one-shots 7/7 — DNA + MIDI + loops + VSCO",
+   "bestand": "ONESHOTS-7-DNA-MIDI-LOOPS-VSCO.zip"
+  },
+  {
+   "naam": "— .g2bpack packs voor Sampler v2 (sleep in PACK-veld) —",
+   "bestand": "LEESMIJ.txt"
+  },
+  {
+   "naam": "⬇ pack: keys",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/01-keys.g2bpack"
+  },
+  {
+   "naam": "⬇ pack: mallets",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/02-mallets.g2bpack"
+  },
+  {
+   "naam": "⬇ pack: strings A",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/03-strings-a.g2bpack"
+  },
+  {
+   "naam": "⬇ pack: strings B",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/03-strings-b.g2bpack"
+  },
+  {
+   "naam": "⬇ pack: wind",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/04-wind.g2bpack"
+  },
+  {
+   "naam": "⬇ pack: organ",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/05-organ.g2bpack"
+  },
+  {
+   "naam": "⬇ pack: drums",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/06-drums.g2bpack"
+  },
+  {
+   "naam": "⬇ pack: brass",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/07-brass.g2bpack"
+  },
+  {
+   "naam": "⬇ pack: hybrid",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/08-hybrid.g2bpack"
+  },
+  {
+   "naam": "⬇ pack: woodwinds",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/09-woodwinds.g2bpack"
+  },
+  {
+   "naam": "⬇ pack: orkest-percussie",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/10-orkest-perc.g2bpack"
+  },
+  {
+   "naam": "⬇ pack: keys VSCO",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/11-keys-vsco.g2bpack"
+  },
+  {
+   "naam": "⬇ pack: DNA-morfs (uniek)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/13-dna.g2bpack"
+  },
+  {
+   "naam": "⬇ pack: loops",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/15-loops.g2bpack"
+  }
  ]
 }
