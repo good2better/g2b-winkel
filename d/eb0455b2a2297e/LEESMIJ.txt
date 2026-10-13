@@ -1,10 +1,18 @@
-G2B PACK DER PACKS — alles voor jouw sound
-=========================================
-1) G2B-PLUGINS-2027.zip — 3 plugins (vst3+clap+bron):
-   VocalTune v5 (neuraal + G2B-STIJL ladder), Sampler v2 (UI + pack-browser),
-   OneShot (48 shots ingebakken)
-2) ONESHOTS-pack in 7 delen (alle 7 downloaden):
-   -1 KEYS+MALLETS  -2/3 STRINGS  -4 WIND+ORGAN+DRUMS  -5 BRASS+PERC
-   -6 WOODWINDS  -7 DNA+MIDI+LOOPS+VSCO-keys
-   = 720 items: one-shots (getuned), DNA-morfs, MIDI-patronen, loops 117bpm
-Alles regel 1 veilig: VCSL + VSCO2 (CC0) + eigen code/materiaal. MIT.
+G2B PACK DER PACKS — wat zit erin
+==================================
+
+PLUGINS (6 stuks, Windows + Linux, VST3 + CLAP):
+- G2B-PLUGINS-2027.zip — VocalTune v5 (G2B-STIJL ladder), Sampler v2
+  (pack-browser + .g2bpack laden), OneShot (48 sounds erin),
+  Keys XL (11 echte instrumenten), Delay, Reverb.
+- G2B-KEYSXL-DATA.zip — instrument-data voor Keys XL (VERPLICHT:
+  uitpakken → map "G2BKeysData" naar Muziek\G2B\ kopiëren).
+- G2B-ALLES-BUNDLE.zip — handleidingen (PDF) + demo-video's.
+
+SOUNDS — twee vormen, zelfde inhoud:
+1) ONESHOTS-*.zip — losse wav's in mappen; werkt in elke DAW/sampler.
+2) *.g2bpack — één bestand per categorie voor Sampler v2:
+   in de plugin op "PACK" drukken → het .g2bpack-bestand kiezen →
+   ◀▶ bladeren door de sounds. Zelfde 700+ sounds, handiger geladen.
+
+Alles: eigen code (ISC) + CC0-samples — 100% commercieel veilig.
