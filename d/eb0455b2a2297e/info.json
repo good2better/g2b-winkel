@@ -52,59 +52,71 @@
    "bestand": "LEESMIJ.txt"
   },
   {
-   "naam": "⬇ pack: keys",
+   "naam": "📦 01-keys (Keys (piano/upright/fat))",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/01-keys.g2bpack"
   },
   {
-   "naam": "⬇ pack: mallets",
+   "naam": "📦 02-mallets (Mallets (marimba/vibes/glock))",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/02-mallets.g2bpack"
   },
   {
-   "naam": "⬇ pack: strings A",
+   "naam": "📦 03-strings-a (Strings)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/03-strings-a.g2bpack"
   },
   {
-   "naam": "⬇ pack: strings B",
+   "naam": "📦 03-strings-b (Strings)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/03-strings-b.g2bpack"
   },
   {
-   "naam": "⬇ pack: wind",
+   "naam": "📦 03-strings-c (Strings)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/03-strings-c.g2bpack"
+  },
+  {
+   "naam": "📦 03-strings-d (Strings)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/03-strings-d.g2bpack"
+  },
+  {
+   "naam": "📦 04-wind (Blaasinstrumenten)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/04-wind.g2bpack"
   },
   {
-   "naam": "⬇ pack: organ",
+   "naam": "📦 05-organ (Orgel)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/05-organ.g2bpack"
   },
   {
-   "naam": "⬇ pack: drums",
+   "naam": "📦 06-drums (Drums)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/06-drums.g2bpack"
   },
   {
-   "naam": "⬇ pack: brass",
-   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/07-brass.g2bpack"
+   "naam": "📦 07-brass-a (Brass)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/07-brass-a.g2bpack"
   },
   {
-   "naam": "⬇ pack: hybrid",
+   "naam": "📦 07-brass-b (Brass)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/07-brass-b.g2bpack"
+  },
+  {
+   "naam": "📦 08-hybrid (Hybrid)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/08-hybrid.g2bpack"
   },
   {
-   "naam": "⬇ pack: woodwinds",
+   "naam": "📦 09-woodwinds (Woodwinds)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/09-woodwinds.g2bpack"
   },
   {
-   "naam": "⬇ pack: orkest-percussie",
+   "naam": "📦 10-orkest-perc (Orkest-percussie)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/10-orkest-perc.g2bpack"
   },
   {
-   "naam": "⬇ pack: keys VSCO",
+   "naam": "📦 11-keys-vsco (Keys (VSCO))",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/11-keys-vsco.g2bpack"
   },
   {
-   "naam": "⬇ pack: DNA-morfs (uniek)",
+   "naam": "📦 13-dna (DNA-morf instrumenten)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/13-dna.g2bpack"
   },
   {
-   "naam": "⬇ pack: loops",
+   "naam": "📦 15-loops (Loops)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/15-loops.g2bpack"
   }
  ]
