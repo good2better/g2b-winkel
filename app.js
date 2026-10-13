@@ -71,7 +71,7 @@ async function laden() {
   const PLUGIN_CAT = {
     instrumenten: ["g2b-donderglider","g2b-donderglider-mini","g2b-akkoord",
       "g2b-melodie","g2b-keys","g2b-drums","g2b-bas","g2b-ocho",
-      "g2b-song","g2b-samplex"],
+      "g2b-song","g2b-samplex","g2b-brein"],
     bundels: ["g2b-studio-pack","g2b-suite","g2b-fx-pack",
       "g2b-instrument-pack"],
   };

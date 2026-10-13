@@ -18,9 +18,12 @@ g++ -O2 -I. brein_test.cpp -o brein_test
 ```
 
 ## DPF-integratie (plugin-sessie)
-1. `~/dpf/plugins/G2BBrein/` aanmaken (template = Drums-plugin).
-2. `DISTRHO_PLUGIN_WANT_MIDI_OUTPUT 1` + `DISTRHO_PLUGIN_WANT_TIMEPOS 1`.
-3. Genre+kit als program-pills (5 genres → kGenreKits), BARS+DICE+SEED knobs.
+1. `~/dpf/plugins/G2BBrein/` aanmaken — klaar in `dpf/` hier (kopieer de hele map).
+2. `DISTRHO_PLUGIN_WANT_MIDI_OUTPUT 1` + `DISTRHO_PLUGIN_WANT_TIMEPOS 1`
+   + `WANT_MIDI_INPUT 1` (DPF eist midi-in bij IS_SYNTH) + `WANT_STATE 1`.
+3. Genre+kit als program-pills (5 genres → kGenreKits), BARS+SEED+KRACHT+SWING knobs.
 4. In run(): noten uit gen() → midi-events op exacte frames schedulen
    (recept = DonderGlider midiHit + EXPORT .MID vendored midifile).
+   DSP→UI via `updateStateValue("step"/"kit")`; `setState` is host→plugin in nieuwe DPF.
 5. Bouwen: `make mingw64 -C plugins/G2BBrein -j4` → g2b_brein.vst3+.clap.
+   Linux UI-test: `make jack` + stub-libjack (`~/work/jackstub`) + xdotool/import.

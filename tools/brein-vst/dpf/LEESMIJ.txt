@@ -1,0 +1,4 @@
+G2B-BREIN — DPF-plugin source
+Zet deze map als ~/dpf/plugins/G2BBrein/ en run: make mingw64 -C plugins/G2BBrein
+Geeft ~/dpf/bin/g2b_brein.vst3 + g2b_brein.clap (Windows).
+Linux standalone test: make jack -C plugins/G2BBrein
