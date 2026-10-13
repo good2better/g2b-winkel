@@ -81,7 +81,7 @@ def leer(root, out):
                 bpm_m=_re.search(r'bpm[\s_-]?(\d+)', dirn)
                 rd=s.setdefault("ritmes",{}).setdefault(rid,{"bpm":int(bpm_m.group(1)) if bpm_m else 0,"parts":{},"melparts":{}})
                 rpart=rd["parts"].setdefault(base,{"bars":bars,"notes":{}})
-                rmel=rd["melparts"].setdefault(base,{"bars":bars,"pc":{},"grid":{},"vel":[],"dur":[],"base":[]})
+                rmel=rd["melparts"].setdefault(base,{"bars":bars,"pc":{},"grid":{},"vel":[],"dur":[],"base":[],"clus":0.0,"clusn":0})
             for t,ch,note,vel,dur in drm:
                 st = round(t/step_t)
                 step = st % 16; bar = int(st // 16)
@@ -102,6 +102,12 @@ def leer(root, out):
                     s["fills"] += 1
             if drm:
                 s["fillbars"] += max(1, bars)
+            if rmel is not None and mel:
+                # akkoord-dichtheid: gemiddelde noten per aanslag
+                _ts = {}
+                for t,ch,note,vel,dur in mel: _ts[t] = _ts.get(t,0)+1
+                rmel["clus"] = (rmel["clus"]*rmel["clusn"] + sum(_ts.values())) / (rmel["clusn"] + len(_ts))
+                rmel["clusn"] += len(_ts)
             for t,ch,note,vel,dur in mel:
                 st = round(t/step_t); step = st % 16
                 m = s["mel"].setdefault("g", {"deg":{}, "grid":{}, "ivl":{}})
@@ -173,9 +179,11 @@ def gen(brain_path, genre, bpm, bars, out):
             for bar in range(bars):
                 for step in range(16):
                     if rnd() < (pd["grid"].get(str(step),0)/tot)*0.9:
-                        pcv=_pick(pd["pc"], rnd)
-                        n = base_n - base_n%12 + int(pcv)
-                        notes.append(((bar*16+step)*120, dur_n, 0, max(21,min(108,n)), max(30,min(127,int(vm+rnd()*10-5)))))
+                        kk = max(1, min(4, round(pd.get("clus",1))))
+                        pcs = [int(_pick(pd["pc"], rnd)) for _ in range(kk)]
+                        for pcv in set(pcs):
+                            n = base_n - base_n%12 + pcv
+                            notes.append(((bar*16+step)*120, dur_n, 0, max(21,min(108,n)), max(30,min(127,int(vm+rnd()*10-5)))))
         notes.sort()
         write_midi(out, notes_to_events(notes), tempo=int(60e6/bpm), name=f"{genre}_gen")
         print(f"{out}: {len(notes)} noten ({len(parts)} parts) uit brein[{genre}] @ {bpm}bpm")
