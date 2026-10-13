@@ -170,6 +170,14 @@
   {
    "naam": "🎵 26-melodie (16 melodie-loops: steelpan/kalimba/marimba/piano per genre)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/26-melodie.g2bpack"
+  },
+  {
+   "naam": "🧠 27-brein-grooves (10 grooves gegenereerd uit zijn eigen midi-brein)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/27-brein-grooves.g2bpack"
+  },
+  {
+   "naam": "🧠 27-brein-midis.zip (de 10 .mid files — pas instrument aan in je DAW)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/27-brein-midis.zip"
   }
  ]
 }
