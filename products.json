@@ -17,11 +17,11 @@
    "id": "g2b-pack-der-packs",
    "titel": "G2B Pack der Packs",
    "soort": "digitaal",
-   "beschrijving": "De G2B Pack der Packs: 740 engineer-afgewerkte sounds in 17 categorieen — one-shots op toonhoogte, unieke DNA-cross instruments, akkoord-progressies (wav+midi) en Carib/West-Indies loops (kawina/winti/kaseko/samba/cumbia). Plus ZES plugins (Windows + Linux, VST3 + CLAP): VocalTune v5 met G2B-STIJL ladder, Sampler v2 met pack-browser (laadt de bijgeleverde .g2bpack bestanden in één klik), OneShot met 48 ingebouwde sounds, Keys XL met 11 echte instrumenten, Delay en Reverb. Alles eigen code, regel-1 veilig (CC0/MIT), NL handleidingen erbij.",
+   "beschrijving": "De G2B Pack der Packs: 814 engineer-afgewerkte sounds in 19 categorieen + 40 midi-patronen — one-shots op toonhoogte, unieke DNA-cross instruments, akkoord-progressies (wav+midi), Carib/West-Indies loops (kawina/winti/kaseko/samba/cumbia), complete beats, drum-fills + transitions (22-beatbouwer) en genre-patronen op midi (23-midi: dembow/drill/trap/house/kawina e.a.). Plus ZES plugins (Windows + Linux, VST3 + CLAP): VocalTune v5 met G2B-STIJL ladder, Sampler v2 met pack-browser (laadt de bijgeleverde .g2bpack bestanden in één klik), OneShot met 48 ingebouwde sounds, Keys XL met 11 echte instrumenten, Delay en Reverb. Alles eigen code, regel-1 veilig (CC0/MIT), NL handleidingen erbij.",
    "prijs": "€ 79 intro-prijs",
    "prijzen": {},
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-pack-der-packs"
    },
    "duur": 0,
    "groep": "sounds",
@@ -39,7 +39,7 @@
    "prijs": "€ 149 intro-prijs",
    "prijzen": {},
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-studio-pack"
    },
    "duur": 0,
    "groep": "software",
@@ -57,7 +57,7 @@
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-glans"
    },
    "duur": 0,
    "groep": "software",
@@ -75,7 +75,7 @@
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-subtamer"
    },
    "duur": 0,
    "groep": "software",
@@ -93,7 +93,7 @@
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-poets"
    },
    "duur": 0,
    "groep": "software",
@@ -111,7 +111,7 @@
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-ocho"
    },
    "duur": 0,
    "groep": "software",
@@ -129,7 +129,7 @@
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-donderglider"
    },
    "duur": 0,
    "groep": "software",
@@ -165,7 +165,7 @@
    "prijs": "€ 89,95",
    "prijzen": {},
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-suite"
    },
    "duur": 0,
    "groep": "software",
@@ -185,7 +185,7 @@
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-knip"
    },
    "duur": 0,
    "groep": "software",
@@ -203,7 +203,7 @@
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-samplex"
    },
    "duur": 0,
    "groep": "software",
@@ -221,7 +221,7 @@
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-tijd"
    },
    "duur": 0,
    "groep": "software",
@@ -238,7 +238,7 @@
    "beschrijving": "Delay + reverb in één draai — jouw geluid krijgt plek. Live golfvorm + 6 stijl-presets. Windows VST3 + CLAP.",
    "prijs": 19.95,
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-ruimte"
    },
    "groep": "software",
    "cover": "media/g2b-ruimte-cover.png",
@@ -254,7 +254,7 @@
    "beschrijving": "Je complete master-keten in één plugin: sub, vet, luid, air en ruimte — plus LIVE LUFS-uitlezing (echte R128-meting: huidig + gemiddeld). LUISTER-analyse, GALAXY-knop, 17 presets. Windows VST3 + CLAP.",
    "prijs": 34.95,
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-masterrack"
    },
    "groep": "software",
    "cover": "media/g2b-masterrack-cover.png",
@@ -270,7 +270,7 @@
    "beschrijving": "Akkoorden met ZES echte instrumenten: concert-HARP + Yamaha-upright + PIJP-ORGEL + STRUMSTICK + STRIJKERS-pizzicato (4 takes per noot: zacht/hard x 2 opnames) + PAD-strijkers. Hall-laag (zaal-sound) over de echte klanken. Voicings + per-stijl kleur. Windows VST3 + CLAP.",
    "prijs": 19.95,
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-akkoord"
    },
    "groep": "software",
    "cover": "media/g2b-akkoord-cover.png",
@@ -286,7 +286,7 @@
    "beschrijving": "Drum-machine met ECHTE opnames + round-robin overal: kick/snare/hat/toms wisselen per slag van take. Percussie per stijl — conga + TIMPANI (DRILL), BONGO's (DEMBOW/AFRO/REGGAE), AGOGO (KAWINA), TOMS (JERSEY/BOUNCE), echte CABASA/SHAKER als hat (LOFI/SOUL/BOOM) + echte CAJON-percussie (BOOM/SOUL/LOFI) + CRASH-cymbal elke 4 maten + TIMPANI-ROLL als fill: crescendo-roll in de laatste maat die op de crash landt (DRILL/TRAP/BOUNCE/DANCE). Windows VST3 + CLAP.",
    "prijs": 19.95,
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-drums"
    },
    "groep": "software",
    "cover": "media/g2b-drums-cover.png",
@@ -302,7 +302,7 @@
    "beschrijving": "TWAALF klanken in één: synth + MARIMBA (3 aanslag-lagen, echte ruimte-mic opnames) + PSALTERY + TENOR-SAX + BLOKFLUIT + GLOCK + OCARINA + MONDHARMONICA + BASSOON + BRASS (trompet+trombone+hoorn) + OBOE + PICCOLO — allemaal echte opnames (CC0, 100% commercieel) met hall-laag. Windows VST3 + CLAP.",
    "prijs": 19.95,
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-melodie"
    },
    "groep": "software",
    "cover": "media/g2b-melodie-cover.png",
@@ -318,7 +318,7 @@
    "beschrijving": "Complete vocal-keten in één scherm: DE-ESS (sss-demping), BODY, AIR, COMP, BREEDTE — je stem staat meteen voorin. 🎲 + ☀/🌙 + presets. Windows VST3+CLAP.",
    "prijs": 19.95,
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-stem"
    },
    "groep": "software",
    "cover": "media/g2b-stem-cover.png",
@@ -334,7 +334,7 @@
    "beschrijving": "Lo-fi machine: vinyl-kraak, wow/flutter wobble, donkere toon, bit-crush. Maak elke sound stoffig & warm. 🎲 + ☀/🌙 + presets. Windows VST3+CLAP.",
    "prijs": 19.95,
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-stof"
    },
    "groep": "software",
    "cover": "media/g2b-stof-cover.png",
@@ -350,7 +350,7 @@
    "beschrijving": "TWEE echte vleugels in één plugin: KAWAI (TIMBRE midden, nu 4 aanslag-lagen — zacht tot heel hard als een echte vleugel) en STEINWAY B (vol-rechts). Kleine hall-verb over de echte klanken. Daaronder Rhodes-synth. Windows VST3 + CLAP.",
    "prijs": 19.95,
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-keys"
    },
    "groep": "software",
    "cover": "media/g2b-keys-cover.png",
@@ -366,7 +366,7 @@
    "beschrijving": "Bas-instrument met 3 standen: SYNTH (sub→reese) / ECHT (echte contrabas-pizzicato uit VSCO-2: zacht/hard x 2 takes per noot) / STACK (contrabas + sub-octaaf = donder). Mono-legato. Windows VST3 + CLAP.",
    "prijs": 19.95,
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-bas"
    },
    "groep": "software",
    "cover": "media/g2b-bas-cover.png",
@@ -383,7 +383,7 @@
    "beschrijving": "Multiband-mixer: 4 freq-lagen (sub/laag/mid/air) + WIDTH + DRIVE. 🧠 LUISTER stelt de banden zelf in balans. Windows VST3+CLAP.",
    "prijs": 19.95,
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-banden"
    },
    "groep": "software",
    "cover": "media/g2b-banden-cover.png",
@@ -399,7 +399,7 @@
    "beschrijving": "All-in-one beat-engine VST3/CLAP: drums + bas + akkoorden + melodie uit één scherm. 5 stijlen, KEY+SCALE-lock, DICE schrijft een hele song, AUTO muteert elke 4 bars. Speelt zelf een complete beat in jouw key — Windows.",
    "prijs": 19.95,
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-song"
    },
    "groep": "software",
    "cover": "media/g2b-song-cover.png",
@@ -415,7 +415,7 @@
    "beschrijving": "10 effect-plugins in één deal: Glans, SubTamer, Poets, Knip, Ruimte, Stem, Stof, Banden, MasterRack + TIJD (echte pitch-shift). Los = €214,50 → bespaar €164. Windows VST3/CLAP.",
    "prijs": 49.95,
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-fx-pack"
    },
    "groep": "software",
    "cover": "media/g2b-fxpack-cover.png",
@@ -432,7 +432,7 @@
    "beschrijving": "Alle 8 G2B instruments: OchoOcho, Akkoord, Drums, Melodie, SampleX, Keys, Bas + SONG (all-in-one beat). Los = €159,60 → bespaar €119. Windows VST3/CLAP.",
    "prijs": 39.95,
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-instrument-pack"
    },
    "groep": "software",
    "cover": "media/g2b-instrumentpack-cover.png",
@@ -449,7 +449,7 @@
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-juridisch"
    },
    "duur": 0,
    "groep": "apps",
@@ -468,7 +468,7 @@
    "prijs": "€ 14,95",
    "prijzen": {},
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-psychologie"
    },
    "duur": 0,
    "groep": "apps",
@@ -505,7 +505,7 @@
    "prijs": "€ 29,95",
    "prijzen": {},
    "links": {
-    "koop": ""
+    "koop": "bestel.html?p=g2b-bedrijfsmiddelen"
    },
    "duur": 0,
    "groep": "apps",
@@ -528,10 +528,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl",
+    "koop": "bestel.html?p=2878e291",
+    "mp3": "bestel.html?p=2878e291&t=mp3",
+    "wav": "bestel.html?p=2878e291&t=wav",
+    "exclusief": "bestel.html?p=2878e291&t=exclusief",
     "download": "bedankt.html?k=2878e291"
    },
    "duur": 133.3,
@@ -552,10 +552,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl",
+    "koop": "bestel.html?p=d9d479ab",
+    "mp3": "bestel.html?p=d9d479ab&t=mp3",
+    "wav": "bestel.html?p=d9d479ab&t=wav",
+    "exclusief": "bestel.html?p=d9d479ab&t=exclusief",
     "download": "bedankt.html?k=d9d479ab"
    },
    "duur": 204.8,
@@ -576,10 +576,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl",
+    "koop": "bestel.html?p=7fe03e5c",
+    "mp3": "bestel.html?p=7fe03e5c&t=mp3",
+    "wav": "bestel.html?p=7fe03e5c&t=wav",
+    "exclusief": "bestel.html?p=7fe03e5c&t=exclusief",
     "download": "bedankt.html?k=7fe03e5c"
    },
    "duur": 202.2,
@@ -600,10 +600,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl",
+    "koop": "bestel.html?p=0ef9a078",
+    "mp3": "bestel.html?p=0ef9a078&t=mp3",
+    "wav": "bestel.html?p=0ef9a078&t=wav",
+    "exclusief": "bestel.html?p=0ef9a078&t=exclusief",
     "download": "bedankt.html?k=0ef9a078"
    },
    "duur": 149.1,
@@ -624,10 +624,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl",
+    "koop": "bestel.html?p=8171e455",
+    "mp3": "bestel.html?p=8171e455&t=mp3",
+    "wav": "bestel.html?p=8171e455&t=wav",
+    "exclusief": "bestel.html?p=8171e455&t=exclusief",
     "download": "bedankt.html?k=8171e455"
    },
    "duur": 157.3,
@@ -648,10 +648,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl",
+    "koop": "bestel.html?p=266054dc",
+    "mp3": "bestel.html?p=266054dc&t=mp3",
+    "wav": "bestel.html?p=266054dc&t=wav",
+    "exclusief": "bestel.html?p=266054dc&t=exclusief",
     "download": "bedankt.html?k=266054dc"
    },
    "duur": 133.6,
@@ -672,10 +672,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl",
+    "koop": "bestel.html?p=53c9dc1f",
+    "mp3": "bestel.html?p=53c9dc1f&t=mp3",
+    "wav": "bestel.html?p=53c9dc1f&t=wav",
+    "exclusief": "bestel.html?p=53c9dc1f&t=exclusief",
     "download": "bedankt.html?k=53c9dc1f"
    },
    "duur": 141.1,
@@ -696,10 +696,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl",
+    "koop": "bestel.html?p=054630ff",
+    "mp3": "bestel.html?p=054630ff&t=mp3",
+    "wav": "bestel.html?p=054630ff&t=wav",
+    "exclusief": "bestel.html?p=054630ff&t=exclusief",
     "download": "bedankt.html?k=054630ff"
    },
    "duur": 147.0,
@@ -720,10 +720,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl",
+    "koop": "bestel.html?p=3083f3d3",
+    "mp3": "bestel.html?p=3083f3d3&t=mp3",
+    "wav": "bestel.html?p=3083f3d3&t=wav",
+    "exclusief": "bestel.html?p=3083f3d3&t=exclusief",
     "download": "bedankt.html?k=3083f3d3"
    },
    "duur": 124.9,
@@ -744,10 +744,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl",
+    "koop": "bestel.html?p=600fb829",
+    "mp3": "bestel.html?p=600fb829&t=mp3",
+    "wav": "bestel.html?p=600fb829&t=wav",
+    "exclusief": "bestel.html?p=600fb829&t=exclusief",
     "download": "bedankt.html?k=600fb829"
    },
    "duur": 158.1,
@@ -768,10 +768,10 @@
     "exclusief": "€ 199,95"
    },
    "links": {
-    "koop": "https://buy.stripe.com/demo",
-    "mp3": "https://buy.stripe.com/demo_mp3",
-    "wav": "https://buy.stripe.com/demo_wav",
-    "exclusief": "https://buy.stripe.com/demo_excl",
+    "koop": "bestel.html?p=f92b4951",
+    "mp3": "bestel.html?p=f92b4951&t=mp3",
+    "wav": "bestel.html?p=f92b4951&t=wav",
+    "exclusief": "bestel.html?p=f92b4951&t=exclusief",
     "download": "bedankt.html?k=f92b4951"
    },
    "duur": 162.7,
@@ -790,7 +790,7 @@
     "digitaal": "€ 9,95"
    },
    "links": {
-    "koop": "",
+    "koop": "bestel.html?p=ritmosbundel",
     "digitaal": ""
    },
    "groep": "muziek",
@@ -811,7 +811,7 @@
    },
    "download_dir": "d/beattape2",
    "links": {
-    "koop": "",
+    "koop": "bestel.html?p=beattape2",
     "download": "bedankt.html?k=beattape2"
    },
    "cover": "media/beattape2-cover.png"
