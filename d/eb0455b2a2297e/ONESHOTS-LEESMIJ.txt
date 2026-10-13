@@ -1,0 +1,36 @@
+G2B ONE-SHOT PACK v2 — 695 shots · gemaakt met G2B One-Shot Maker v2
+====================================================================
+Bron: jouw VCSL-bibliotheek + VSCO 2 Community Edition (CC0 orkest —
+echte harp, strijkers, brass, houtblazers, pauken). 100% commercieel veilig.
+
+MAPPEN
+  01-keys    : vleugel/upright — clean · fat (dubbel) · oct
+  02-mallets : marimba/vibes/glock/kalimba — clean · air
+  03-strings : harp, viool, altviool, cello, strijkers-ensemble, contrabas — clean · wide
+  04-wind    : VCSL blazers — clean · grit
+  05-organ   : orgel
+  06-drums   : percussie — clean · punch
+  07-brass   : trompet, hoorn, trombone, tuba — clean · wide
+  08-hybrid  : gemixte hybrides = eigen nieuwe sounds
+  09-woodwinds: VSCO fagot/klarinet/fluit/hobo/piccolo — clean · wide
+  10-orkest-perc: pauken, marimba, xylofoon, glock — clean · punch
+  11-keys-vsco: VSCO orgel + uprights — clean · wide
+  12-eigen   : (jouw eigen mappen als je die erbij legt)
+
+BENAMING = auto:  instrument_NOOT_variant.wav   (bijv. harp_G3_clean)
+SORTERING = categorie → toonhoogte (laag→hoog).
+index.json = per shot: root-noot, lengte, snr, tags, mood + GENRES
+  (welke stijl hij het beste voor is: trap/lofi/score/boombap/…)
+
+KWALITEITSPOORT (beat-check): geen clip, geen stilte, geen dc, min. lengte —
+afgekeurde shots staan niet in de pack.
+ELKE shot is op zijn root-noot gestemd → in SampleX op C4 = juiste toon.
+
+MAKER: oneshot_maker.py (eigen code, MIT) — zelfde pipeline op je eigen wav-mappen:
+  python3 oneshot_maker.py <vcsl_map> <uit_map> <jouw_map>
+
+== ENGINEER-BEHANDELING (2026-10) ==
+Alle 711 sounds zijn door de G2B engineer-keten gehaald:
+EQ per instrumentfamilie (modder weg, presence erbij) + glue-compressor +
+lichte saturatie + consistent niveau. Resultaat: shots klinken direct
+"mix-ready" zoals bij commerciele packs — geen extra processing nodig.
