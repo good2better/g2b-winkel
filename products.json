@@ -175,9 +175,9 @@
   },
   {
    "id": "g2b-suite",
-   "titel": "G2B Suite — ALLES (17 tools)",
+   "titel": "G2B Suite — ALLES (24 plugins)",
    "soort": "digitaal",
-   "beschrijving": "ALLE 18 G2B-plugins in één bundel: 10 FX + 8 instruments + packs. Los zou dit €374 kosten — nu €89,95. Windows VST3+CLAP, met NL-handleiding en broncode erbij.",
+   "beschrijving": "ALLE 24 G2B-plugins in één bundel: 12 FX + 12 instruments, inclusief G2BKeysData-bibliotheek. V4: transport-fix overal (stop = echte stilte), Bas GELUID-kiezer, Brein AKKOORD-modus, Akkoord-bug gefixt. Windows VST3+CLAP, met NL-handleiding en broncode erbij.",
    "prijs": "€ 89,95",
    "prijzen": {},
    "links": {
@@ -461,7 +461,7 @@
    "id": "g2b-instrument-pack",
    "titel": "G2B Instrument-Pack",
    "soort": "digitaal",
-   "beschrijving": "Alle 8 G2B instruments: OchoOcho, Akkoord, Drums, Melodie, SampleX, Keys, Bas + SONG (all-in-one beat). Los = €159,60 → bespaar €119. Windows VST3/CLAP.",
+   "beschrijving": "Alle 8 G2B instruments: OchoOcho (808), Akkoord, Drums, Melodie, Sampler V2, Keys, KeysXL (incl. G2BKeysData) + Bas met GELUID-kiezer. Los = €159,60 → bespaar €119. Windows VST3/CLAP.",
    "prijs": 39.95,
    "links": {
     "koop": "bestel.html?p=g2b-instrument-pack"
