@@ -7,7 +7,9 @@
    "beschrijving": "34 gratis engineer-afgewerkte one-shots uit de Pack der Packs — alle categorieën + genre-varianten. Gratis teaser; de volle pack heeft 768 sounds + 6 plugins.",
    "prijs": "GRATIS",
    "prijzen": {},
-   "links": {"koop": ""},
+   "links": {
+    "koop": ""
+   },
    "duur": 0,
    "groep": "sounds",
    "download_dir": "d/min1pack",
@@ -177,7 +179,7 @@
    "id": "g2b-suite",
    "titel": "G2B Suite — ALLES (24 plugins)",
    "soort": "digitaal",
-   "beschrijving": "ALLE 24 G2B-plugins in één bundel: 12 FX + 12 instruments, inclusief G2BKeysData-bibliotheek. V4: transport-fix overal (stop = echte stilte), Bas GELUID-kiezer, Brein AKKOORD-modus, Akkoord-bug gefixt. Windows VST3+CLAP, met NL-handleiding en broncode erbij.",
+   "beschrijving": "ALLE 24 G2B-plugins in één bundel: 12 FX + 12 instruments, inclusief G2BKeysData + G2BSoundLib (262 eigen one-shots). V5: Menger kit-bouwer erbij, 16 presets per plugin, transport-fix overal (stop = echte stilte). Windows VST3+CLAP, met NL-handleiding en broncode erbij.",
    "prijs": "€ 89,95",
    "prijzen": {},
    "links": {
