@@ -218,6 +218,9 @@ protected:
                 fGenre=rand()%5; const BGK& g=kGenreKits[fGenre]; fKit=rand()%g.n;
                 fValue[1]=(float)(rand()%256);
                 setParameterValue(0,(float)fGenre);setParameterValue(1,(float)fKit);setParameterValue(3,fValue[1]);
+                // label direct bijwerken — wacht niet op DSP-state echo
+                std::snprintf(fKitMsg,sizeof(fKitMsg),"%s · nieuw patroon",
+                              kNames[kKits[g.off+fKit].name]);
                 repaint();return true;}
             // SPEEL
             if(ev.pos.getX()>=44&&ev.pos.getX()<=90&&ev.pos.getY()>=84&&ev.pos.getY()<=101){
