@@ -19,15 +19,19 @@ def bars_of(path_or_bytes):
                 out.setdefault(b, set()).add((dr, ev.note, s))
     return list(out.values())
 
+SRC_DIRS = [
+    os.path.expanduser('~/work/midi-src'),
+    os.path.expanduser('~/work/midi-new2'),
+]
 SRC = None
 def load_src():
     global SRC
     if SRC is None:
         SRC = []
-        fs = glob.glob('/tmp/midi_bulk/G2B-MIDI-SORT2/**/*.mid', recursive=True)
-        for f in fs:
-            for b in bars_of(f):
-                if b: SRC.append(b)
+        for sd in SRC_DIRS:
+            for f in glob.glob(os.path.join(sd, '**/*.mid'), recursive=True):
+                for b in bars_of(f):
+                    if b: SRC.append(b)
     return SRC
 
 def check(bars):
@@ -50,7 +54,7 @@ def check(bars):
 
 if __name__ == '__main__':
     src = load_src()
-    n_src_files = len(glob.glob('/tmp/midi_bulk/G2B-MIDI-SORT2/**/*.mid',recursive=True))
+    n_src_files = sum(len(glob.glob(os.path.join(sd,'**/*.mid'),recursive=True)) for sd in SRC_DIRS)
     print(f"bron: {len(src)} bars uit {n_src_files} files")
     for zp in sys.argv[1:]:
         z = zipfile.ZipFile(zp)
