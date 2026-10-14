@@ -94,6 +94,14 @@ protected:
         if(tp.playing && tp.bbt.valid && tp.bbt.beatsPerMinute>1.0) bpm=tp.bbt.beatsPerMinute;
         else { const BKit& k=kKits[kitAbs_()]; if(k.bpm>0) bpm=k.bpm; } // geen host-tempo → kit-bpm
         fBpm=bpm;
+        // host-stop = echte stop: geen geldige transport-info → gewoon spelen (free-run hosts)
+        const bool hostHasTransport = tp.bbt.valid;
+        const bool playNow = fPlay>0.5f && (!hostHasTransport || tp.playing);
+        if(wasPlaying_ && !playNow){                    // stop-transitie: stil + terug naar stap 1
+            flushOffs_();
+            fStep=-1; ni_=0; fPhase=0;
+        }
+        wasPlaying_=playNow;
         fpt_=sr*60.0/(bpm*480.0);                      // frames per tick (480 tpq)
         const double stepLen=60.0/bpm/4.0;             // sec per 16e
         const int totalSteps=clampi(fBars,1,16)*16;
@@ -101,7 +109,7 @@ protected:
             const uint64_t abs=fAbs+i;
             while(offr_!=offw_){PendingOff&o=offq_[offr_];if(o.at>abs)break;
                 emitMidi_(0x80|o.ch,o.note,0,i);offr_=(offr_+1)%128;}
-            if(fPlay>0.5f){
+            if(playNow){
                 fPhase+=1.0/sr;
                 const double curLen=stepLen*((fStep&1)?(1.0-0.335*fSwing):(1.0+0.335*fSwing));
                 if(fPhase>=curLen){
@@ -128,6 +136,7 @@ private:
     PendingOff offq_[128]; int offw_=0,offr_=0;
     std::vector<BNote> gen_; int ni_=0; int genN_=0;
     double fPhase=0,fpt_=1.0,fBpm=100.0; int fStep=-1; uint64_t fAbs=0;
+    bool wasPlaying_=false;
 
     void emitMidi_(uint8_t st,uint8_t nt,uint8_t vel,uint32_t fr){
         MidiEvent e{}; e.frame=fr; e.size=3;
@@ -140,6 +149,10 @@ private:
         emitMidi_(0x90|ch,(uint8_t)note,(uint8_t)vel,i);
         PendingOff&o=offq_[offw_];o.note=(uint8_t)note;o.ch=(uint8_t)ch;
         o.at=fAbs+i+(uint64_t)durFr;offw_=(offw_+1)%128;
+    }
+    void flushOffs_(){ // alle hangende noten NU uit (host-stop / SPEEL uit)
+        while(offr_!=offw_){PendingOff&o=offq_[offr_];
+            emitMidi_(0x80|o.ch,o.note,0,0);offr_=(offr_+1)%128;}
     }
     int kitAbs_() const {
         const BGK& gk=kGenreKits[clampi(fGenre,0,kNGenres-1)];
