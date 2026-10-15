@@ -1570,6 +1570,39 @@
    "preview": "media/r41ny-preview.mp3",
    "download_dir": "d/r41ny",
    "badge": "LOFI"
+  },
+  {
+   "id": "1r0n",
+   "titel": "Iron Horizon",
+   "soort": "audio",
+   "beschrijving": "Epische trailer-track · 100 BPM, C-klein · 74 sec met taiko-drums, brass-thema, strijkers en impacts — voor trailers, sport, games en heroische commercials. 100% eigen engine.",
+   "prijs": "v.a. € 24,95",
+   "prijzen": {
+    "mp3": "€ 24,95",
+    "wav": "€ 59,95",
+    "exclusief": "€ 249,95"
+   },
+   "links": {
+    "koop": "bestel.html?p=1r0n",
+    "mp3": "bestel.html?p=1r0n&t=mp3",
+    "wav": "bestel.html?p=1r0n&t=wav",
+    "exclusief": "bestel.html?p=1r0n&t=exclusief",
+    "download": "bedankt.html?k=1r0n"
+   },
+   "duur": 74.0,
+   "groep": "epic",
+   "bpm": 100,
+   "moods": [
+    "episch",
+    "heldhaftig",
+    "trailer",
+    "dramatisch",
+    "groots"
+   ],
+   "cover": "media/1r0n-cover.png",
+   "preview": "media/1r0n-preview.mp3",
+   "download_dir": "d/1r0n",
+   "badge": "EPIC"
   }
  ]
 }
