@@ -1,0 +1,26 @@
+PLUGIN-RONDE — volgende golf (plan)
+==================================
+
+Doel: 2 nieuwe plugins in de Sleutel-Helper-lijn, zelfde DPF-basis + vaste
+knoppen (AAN/UIT, KRACHT 0-100%, DIMENTIES 27, SKIN 8, XY waar zinvol).
+
+1) G2B Toon-Fixer (autotune-achtig, OP ZIJN VERZOEK)
+   - Pitch-correctie op monofone input: YIN/MPM-detectie (eigen, MIT) ->
+     schuif naar dichtstbijzijnde toonladder-noot (toonsoort instelbaar
+     of auto-detect via Sleutel-Helper-code, Krumhansl).
+   - KRACHT = correctie-snelheid (0=subtiel/natuurlijk, 100=hard-T-Pain).
+   - FOCUS-compatibel: BAS-808 (mono sub, snelle lock) vs MELODIE.
+   - Geen phase-vocoder nodig voor v1: PSOLA/lichte resample op frame-
+     basis, formant-bewaren later.
+
+2) G2B Echo-Kamer (delay-editor)
+   - Stereo delay: tijd (ms/sync), feedback, ping-pong, lowpass+highpass
+     in de feedback-lus, ducking (sidechain op input), mix-knop.
+   - XY-pad: X=tijd, Y=feedback. KRACHT = mix.
+   - 27 dimensies = delay-karakter (clean -> tape -> crushed -> shimmer).
+
+Herbruik: tools/sleutel-helper/dpf/{G2BSleutelPlugin,UI}.cpp als sjabloon
+(parameterChanged-mirror fix v1.1.1, 27-standen draaiknop, skin-systeem).
+Build: Linux vst3+clap+standalone test -> Windows cross (make WINDOWS=true)
+-> ZIP met LICENTIE.txt -> release downloads-v1 -> products.json entry
+-> Pack der Packs meenemen.
