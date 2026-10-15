@@ -2009,7 +2009,8 @@
       "groep": "plugins",
       "badge": "NIEUW",
       "cover": "media/toon-cover.png",
-      "download_dir": "d/t00nf"
+      "download_dir": "d/t00nf",
+      "video": "media/toon-fixer-demo.mp4"
     },
     {
       "id": "k4w1n",
