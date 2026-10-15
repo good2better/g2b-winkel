@@ -1,6 +1,23 @@
 {
   "producten": [
     {
+      "id": "g2b-drumsfx-pack",
+      "titel": "G2B Drums & FX Pack",
+      "soort": "sample-pack",
+      "beschrijving": "110 eigen producer-essentials — kicks/snares/claps/hats/perc + genre-fills + risers/impacts/transitions. De toolkit voor elke beat. 100% royalty-vrij.",
+      "prijs": "€ 19,95",
+      "prijzen": [
+        19.95
+      ],
+      "links": {
+        "koop": "https://pay.good2better.nl/drumsfx"
+      },
+      "groep": "sounds",
+      "download_dir": "d/drumsfx1",
+      "badge": "NIEUW",
+      "cover": "media/g2b-drumsfx1-cover.png"
+    },
+    {
       "id": "g2b-soul-pack",
       "titel": "G2B Soul & Schuivel Pack",
       "soort": "sample-pack",
