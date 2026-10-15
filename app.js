@@ -82,11 +82,13 @@ async function laden() {
   const CAT = p => p.groep === "apps" ? "apps"
     : p.soort === "audio" ? "beats"
     : (p.groep === "software" || p.groep === "plugins") ? pluginCat(p)
-    : p.groep === "sounds" ? "sounds"
+    : (p.groep === "sounds" || p.groep === "soundpacks") ? "sounds"
+    : (p.groep === "bundels" || p.soort === "bundel") ? "bundels"
     : (p.groep === "muziek" || p.groep === "tape") ? "muziek"
-    : "boeken";
+    : p.groep === "gratis" ? (p.soort === "digitaal" ? "apps" : "sounds")
+    : "sounds";
   const CAT_NAAM = {
-    apps: "🛠️ Apps", boeken: "📚 Boeken",
+    apps: "🛠️ Apps",
     instrumenten: "🎹 Instrumenten", studiotools: "🎚️ Studio-tools",
     bundels: "📦 Bundels", sounds: "🔊 Sound packs",
     muziek: "🎤 Muziek", beats: "🎵 Beats",
@@ -98,31 +100,15 @@ async function laden() {
     sounds: "Losse klanken, loops & drums om in te laden",
     beats: "Beats van Giorgio zelf — kies je licentie",
     muziek: "Uitgebrachte muziek & tapes",
-    boeken: "Kinderboeken & kleurboeken",
     apps: "Complete programma's voor je pc",
   };
   const CAT_VOLGORDE = ["instrumenten", "studiotools", "bundels", "sounds",
-    "beats", "muziek", "boeken", "apps"];
-
-  // binnen Boeken: serie-volgorde 1→10 met e-boek direct achter zijn
-  // kleurboek, daarna verzamel-/avonturen-bundels; onbekende titels alfabetisch.
-  const BOEK_VOLGORDE = [
-    "pippa", "sunny", "worteltaart", "bram", "flip", "vonk",
-    "ravi", "bodhi", "ollie", "sterre", "avonturen", "verzamel",
-  ];
-  const boekIndex = t => {
-    const s = (t || "").toLowerCase();
-    const i = BOEK_VOLGORDE.findIndex(k => s.includes(k));
-    return i < 0 ? BOEK_VOLGORDE.length : i;
-  };
-  const boekScore = p =>
-    boekIndex(p.titel) * 10 + (/e-boek/i.test(p.titel) ? 1 : 0);
+    "beats", "muziek", "apps"];
 
   const prods = [...(data.producten || [])].sort((a, b) =>
     (CAT_VOLGORDE.indexOf(CAT(a)) - CAT_VOLGORDE.indexOf(CAT(b))) ||
     ((a.eerst ? 0 : 1) - (b.eerst ? 0 : 1)) ||
-    (CAT(a) === "boeken" ? boekScore(a) - boekScore(b)
-                         : (a.titel || "").localeCompare(b.titel || "")));
+    (a.titel || "").localeCompare(b.titel || ""));
   window._prods = prods;
   if (!prods.length) {
     lijst.innerHTML = `<div class="leeg">Binnenkort open —

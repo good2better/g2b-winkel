@@ -110,7 +110,9 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g,
 let prods = [], mood = "", curAudio = null, curBtn = null;
 
 fetch("products.json").then(r => r.json()).then(d => {
-  prods = d.producten.filter(p => p.soort === "audio" && p.preview);
+  // alleen echte tracks voor sync — beat-packs/bundels horen hier niet
+  prods = d.producten.filter(p =>
+    p.soort === "audio" && p.preview && !/pack|bundel/i.test(p.titel || ""));
   bouwMoods(); render();
 });
 
