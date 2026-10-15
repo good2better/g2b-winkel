@@ -67,14 +67,24 @@
   <p class="note">100% eigenaar — geen samples, geen AI, geen derden. One-stop clearance: één handtekening en je bent klaar.</p>
 </div>
 <script>
+const EV_SCRIPT_URL=''; // <- plak hier je Apps Script /exec URL (zelfde als index.html)
 const MOODS=["donker","vrolijk","energisch","chill","episch","spannend","liefde","feest","triest","hoopvol","agressief","dromerig","mysterieus","trots"];
 const el=document.getElementById('moods');
 MOODS.forEach(m=>{const b=document.createElement('button');b.className='pill';b.textContent=m;b.onclick=()=>b.classList.toggle('on');el.appendChild(b);});
-function verstuur(){
+async function verstuur(){
   const g=id=>document.getElementById(id).value;
   const sel=[...document.querySelectorAll('.pill.on')].map(b=>b.textContent).join(', ')||'—';
-  const body=`NIEUWE SYNC-BRIEFING via g2b-winkel\n`+'='.repeat(40)+`\n\nProject-type: ${g('ptype')}\nMood: ${sel}\nGenre: ${g('genre')}\nTempo: ${g('bpm')||'—'} BPM\nLengte: ${g('dur')}\nDeadline: ${g('deadline')||'—'}\nVocal: ${g('vocal')}\nLicentie: ${g('lic')}\n\nBRIEFING:\n${g('brief')||'—'}\n\nCONTACT: ${g('contact')||'—'}`;
-  location.href=`mailto:g.sandvliet88@gmail.com?subject=${encodeURIComponent('SYNC-BRIEFING — '+g('ptype'))}&body=${encodeURIComponent(body)}`;
+  const data={ptype:g('ptype'),moods:sel,genre:g('genre'),bpm:g('bpm')||'—',dur:g('dur'),deadline:g('deadline')||'—',vocal:g('vocal'),licentie:g('lic'),brief:g('brief')||'—',contact:g('contact')||'—'};
+  if(EV_SCRIPT_URL){
+    try{
+      await fetch(EV_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({email:data.contact,bron:'sync-briefing',tijd:new Date().toISOString(),extra:data})});
+      document.querySelector('.send').textContent='✅ BRIEFING VERSTUURD — binnen 48u reactie';
+      document.querySelector('.send').disabled=true;
+      return;
+    }catch(_){/* val terug op mailto */}
+  }
+  const body=`NIEUWE SYNC-BRIEFING via g2b-winkel\n`+'='.repeat(40)+`\n\nProject-type: ${data.ptype}\nMood: ${data.moods}\nGenre: ${data.genre}\nTempo: ${data.bpm} BPM\nLengte: ${data.dur}\nDeadline: ${data.deadline}\nVocal: ${data.vocal}\nLicentie: ${data.licentie}\n\nBRIEFING:\n${data.brief}\n\nCONTACT: ${data.contact}`;
+  location.href=`mailto:g.sandvliet88@gmail.com?subject=${encodeURIComponent('SYNC-BRIEFING — '+data.ptype)}&body=${encodeURIComponent(body)}`;
 }
 </script>
 </body>

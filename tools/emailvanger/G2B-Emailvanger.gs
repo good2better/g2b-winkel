@@ -8,9 +8,10 @@ function doPost(e) {
   let sh = ss.getSheetByName("lijst");
   if (!sh) {
     sh = ss.insertSheet("lijst");
-    sh.appendRow(["email", "bron", "tijd"]);
+    sh.appendRow(["email", "bron", "tijd", "extra"]);
   }
-  sh.appendRow([d.email || "", d.bron || "", d.tijd || new Date().toISOString()]);
+  sh.appendRow([d.email || "", d.bron || "", d.tijd || new Date().toISOString(),
+    d.extra ? JSON.stringify(d.extra) : ""]);
   return ContentService.createTextOutput(JSON.stringify({ ok: true }))
     .setMimeType(ContentService.MimeType.JSON);
 }
