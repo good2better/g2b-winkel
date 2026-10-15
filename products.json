@@ -1759,6 +1759,39 @@
    "download_dir": "d/h4rt",
    "badge": "EMOTIE",
    "stems": true
+  },
+  {
+   "id": "n4cht",
+   "titel": "Nacht",
+   "soort": "audio",
+   "beschrijving": "Horror/tension score — dissonante drone, versnellende hartslag-pulse, scare-stabs. Incl. 4 stems.",
+   "prijzen": {
+    "mp3": "€ 9,95",
+    "wav": "€ 24,95",
+    "exclusief": "€ 149"
+   },
+   "links": {
+    "koop": "bestel.html?p=n4cht",
+    "mp3": "d/n4cht/",
+    "wav": "d/n4cht/",
+    "exclusief": "mailto:g.sandvliet88@gmail.com?subject=EXCLUSIEF Nacht"
+   },
+   "duur": "0:36",
+   "groep": "horror",
+   "bpm": 60,
+   "moods": [
+    "eng",
+    "donker",
+    "spanning",
+    "horror",
+    "thriller",
+    "halloween"
+   ],
+   "cover": "media/nacht-cover.png",
+   "preview": "media/nacht-preview.mp3",
+   "download_dir": "d/n4cht",
+   "badge": "HORROR",
+   "stems": true
   }
  ]
 }
