@@ -2066,7 +2066,8 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/chorus-cover.png",
-   "download_dir": "d/ch0r45"
+   "download_dir": "d/ch0r45",
+   "video": "media/chorus-demo.mp4"
   },
   {
    "id": "k4w1n",
