@@ -4,7 +4,7 @@
    "id": "g2b-producer-bundle",
    "titel": "G2B Producer Bundle — alle 6 packs",
    "soort": "bundle",
-   "beschrijving": "DE COMPLETE COLLECTIE: alle 6 G2B-packs in één download (85.5 MB, ~480 files). Surinaams·Latin·Urban·Melodic·Soul·Drums&FX + alle midi. Los: €124,70 — bundel: €59,95. 100% royalty-vrij.",
+   "beschrijving": "DE COMPLETE COLLECTIE: alle 6 G2B-packs in één download (~109 MB, ~790 files). Surinaams·Latin·Urban·Melodic·Soul·Drums&FX + alle midi + REAPER-template. Los: €124,70 — bundel: €59,95. 100% royalty-vrij.",
    "prijs": "€ 59,95",
    "prijzen": [
     59.95
@@ -21,7 +21,7 @@
    "id": "g2b-drumsfx-pack",
    "titel": "G2B Drums & FX Pack",
    "soort": "sample-pack",
-   "beschrijving": "110 eigen producer-essentials — kicks/snares/claps/hats/perc + genre-fills + risers/impacts/transitions. De toolkit voor elke beat. 100% royalty-vrij.",
+   "beschrijving": "137 files (wav+midi+reaper, 12,8 MB) eigen producer-essentials: kicks/snares/claps/hats/perc + genre-fills + risers/impacts/transitions + FX-varianten (delayed stabs, bitcrush) + BONUS: REAPER mix-template + NL mix-gids. 100% royalty-vrij.",
    "prijs": "€ 19,95",
    "prijzen": [
     19.95
@@ -38,7 +38,7 @@
    "id": "g2b-soul-pack",
    "titel": "G2B Soul & Schuivel Pack",
    "soort": "sample-pack",
-   "beschrijving": "60 eigen soul/schuivel sounds — soul·schuivel loops, pads (donker/warm/licht), hammond, strings, vox-chops, lobi-sfeer + midi. 100% royalty-vrij.",
+   "beschrijving": "92 files (wav+midi, 14,4 MB) eigen soul/schuivel sounds: soul·schuivel loops, pads (donker/warm/licht), duckpads (sidechain-pomp), hammond, strings, choir, vox-chops, schuivel-maj9 akkoord-stabs, lobi-sfeer + midi. 100% royalty-vrij.",
    "prijs": "€ 19,95",
    "prijzen": [
     19.95
@@ -55,7 +55,7 @@
    "id": "g2b-latin-pack",
    "titel": "G2B Latin Pack",
    "soort": "sample-pack",
-   "beschrijving": "60 eigen latin/caribbean sounds — salsa·cumbia·bachata·dembow·dancehall·amapiano loops, conga/bongo/timbale/guiro perc + fills + midi. 100% royalty-vrij.",
+   "beschrijving": "139 files (wav+midi, 15,9 MB) eigen latin/caribbean sounds: salsa·cumbia·bachata·dembow·dancehall·amapiano loops, dembow-piano/snare/guiro/shaker, tumbao+dembow-bas, conga/bongo/timbale/clave, steeldrum/marimba/nylon, kalimba-riffs, bachata/dancehall/amapiano akkoord-stabs + fills + midi. 100% royalty-vrij.",
    "prijs": "€ 19,95",
    "prijzen": [
     19.95
@@ -922,7 +922,7 @@
    "id": "g2b-surinaams-pack",
    "titel": "G2B Surinaamse Pack",
    "soort": "digitaal",
-   "beschrijving": "78 royalty-vrije Surinaamse & Caribische sounds (37,8 MB): skratji, kwakwa-bangi, donder/agida-sub, kaseko slap-bas, slag-gitaar ritmes (K1/K2/KA1/KA2/KA3/aleke/bigi-pokoe), conga/bongo/timbale/guiro, claves, cowbell + 26 genre-loops (winti, kawina, kaseko, soca, bubbling, cumbia, salsa, bachata, schuivel, crunk). Alles eigen G2B-engine — geen Kontakt nodig. Met LICENTIE + INFO.",
+   "beschrijving": "174 files (wav+midi, 32,1 MB) eigen Surinaamse & Caribische sounds: skratji, kwakwa-bangi, apinti/mandra/chik handdrums, donder/agida-sub, kaseko slap-bas, slag-gitaar ritmes (K1/K2/KA1/KA2/KA3/aleke/bigi-pokoe), conga/bongo/timbale/guiro, bubbling-plinks/roll/chant, kaseko+soca+schuivel akkoord-stabs + fills + midi. 100% royalty-vrij.",
    "prijs": "€ 24,95",
    "prijzen": {},
    "links": {
@@ -938,7 +938,7 @@
    "id": "g2b-urban-drill-pack",
    "titel": "G2B Urban Drill Pack",
    "soort": "digitaal",
-   "beschrijving": "54 royalty-vrije urban/drill sounds (13,1 MB): sub·reese·wobble·pluck-bas in 5 noten, slide808, 808+bite, drill/trap/crunk drums, snare-fills, vox-chops + arrangement-FX (risers, impacts, subdrop, downlift). Alles eigen G2B-engine. Met LICENTIE + INFO.",
+   "beschrijving": "144 files (wav+midi, 14,6 MB) eigen urban/drill sounds: sub·reese·wobble·pluck-bas, glide/trap-808s (drill + trap glijden), long/punch-808, 808+bite, slide808, logdrum-hits, trap-bells/brass/siren, drill+trap+crunk drums, crunk-brass, akkoord-stabs, snare-fills, vox + arrangement-FX + midi. 100% royalty-vrij.",
    "prijs": "€ 19,95",
    "prijzen": {},
    "links": {
@@ -954,7 +954,7 @@
    "id": "g2b-melodic-pack",
    "titel": "G2B Melodic Pack",
    "soort": "digitaal",
-   "beschrijving": "54 royalty-vrije melodische sounds (25,3 MB): brass-stabs, flutes, mallets/kalimba, strings-pads, hammond-stabs, piano-hits (elk in 4-5 noten), laser-kaseko gitaar, lobi-pads + slag-gitaar one-shots. Alles eigen G2B-engine. Met LICENTIE + INFO.",
+   "beschrijving": "108 files (wav+midi, 19,3 MB) eigen melodische sounds: brass-stabs, flutes, mallets/kalimba, strings-pads, hammond, piano-hits, laser-kaseko gitaar, lobi-pads, reverb-washpads, filtered-leads + slag-gitaar one-shots + midi. 100% royalty-vrij.",
    "prijs": "€ 24,95",
    "prijzen": {},
    "links": {
