@@ -1893,6 +1893,40 @@
    "cover": "media/spooky-cover.png",
    "preview": "media/spooky-preview.mp3",
    "download_dir": "d/sp00ky"
+  },
+  {
+   "id": "h4unt",
+   "titel": "Haunt",
+   "soort": "audio",
+   "beschrijving": "Halloween drill-trap 140 BPM — donkere bells, 808s en griezel-fx (echte Spooky-SFX lagen). Incl. 4 stems.",
+   "prijzen": {
+    "mp3": "€ 9,95",
+    "wav": "€ 24,95",
+    "exclusief": "€ 149"
+   },
+   "links": {
+    "koop": "bestel.html?p=h4unt",
+    "mp3": "bestel.html?p=h4unt&t=mp3",
+    "wav": "bestel.html?p=h4unt&t=wav",
+    "exclusief": "bestel.html?p=h4unt&t=exclusief",
+    "download": "bedankt.html?k=h4unt"
+   },
+   "duur": "0:16",
+   "groep": "horror",
+   "bpm": 140,
+   "moods": [
+    "donker",
+    "drill",
+    "halloween",
+    "horror",
+    "trap",
+    "eng"
+   ],
+   "cover": "media/haunt-cover.png",
+   "preview": "media/haunt-preview.mp3",
+   "download_dir": "d/h4unt",
+   "badge": "HALLOWEEN",
+   "stems": true
   }
  ]
 }
