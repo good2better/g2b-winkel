@@ -68,7 +68,7 @@
 </div>
 <script>
 const EV_SCRIPT_URL=''; // <- plak hier je Apps Script /exec URL (zelfde als index.html)
-const MOODS=["donker","vrolijk","energisch","chill","episch","spannend","liefde","feest","triest","hoopvol","agressief","dromerig","mysterieus","trots"];
+const MOODS=["donker","vrolijk","energisch","chill","episch","spannend","liefde","feest","triest","hoopvol","agressief","dromerig","mysterieus","trots","horror","kinder","zakelijk","sport"];
 const el=document.getElementById('moods');
 MOODS.forEach(m=>{const b=document.createElement('button');b.className='pill';b.textContent=m;b.onclick=()=>b.classList.toggle('on');el.appendChild(b);});
 async function verstuur(){
