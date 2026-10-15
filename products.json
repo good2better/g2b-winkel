@@ -1898,7 +1898,8 @@
       "badge": "DEAL",
       "cover": "media/syncbundle-cover.png",
       "download_dir": "d/syncbundle",
-      "preview": "media/syncbundle-preview.mp3"
+      "preview": "media/syncbundle-preview.mp3",
+      "video": "media/syncbundle-promo.mp4"
     },
     {
       "id": "sp00ky",
