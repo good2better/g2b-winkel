@@ -1471,6 +1471,39 @@
    "preview": "media/w1nti1-preview.mp3",
    "download_dir": "d/w1nti1",
    "badge": "VERS"
+  },
+  {
+   "id": "c1n3ma",
+   "titel": "Shadow City",
+   "soort": "audio",
+   "beschrijving": "Cinematic tension-track · 92 BPM, D-klein · 75 sec met duidelijke secties (intro→payoff→tail) — direct bruikbaar als 15\"/30\"/60\" cutdowns voor film/reclame. Donkere pads, hartslag-pulse, riser en impact-hits. 100% eigen engine.",
+   "prijs": "v.a. € 24,95",
+   "prijzen": {
+    "mp3": "€ 24,95",
+    "wav": "€ 59,95",
+    "exclusief": "€ 249,95"
+   },
+   "links": {
+    "koop": "bestel.html?p=c1n3ma",
+    "mp3": "bestel.html?p=c1n3ma&t=mp3",
+    "wav": "bestel.html?p=c1n3ma&t=wav",
+    "exclusief": "bestel.html?p=c1n3ma&t=exclusief",
+    "download": "bedankt.html?k=c1n3ma"
+   },
+   "duur": 75.0,
+   "groep": "cinematic",
+   "bpm": 92,
+   "moods": [
+    "donker",
+    "spanning",
+    "filmisch",
+    "cinematic",
+    "tension"
+   ],
+   "cover": "media/c1n3ma-cover.png",
+   "preview": "media/c1n3ma-preview.mp3",
+   "download_dir": "d/c1n3ma",
+   "badge": "CINEMATIC"
   }
  ]
 }
