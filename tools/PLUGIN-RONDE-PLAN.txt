@@ -24,3 +24,13 @@ Herbruik: tools/sleutel-helper/dpf/{G2BSleutelPlugin,UI}.cpp als sjabloon
 Build: Linux vst3+clap+standalone test -> Windows cross (make WINDOWS=true)
 -> ZIP met LICENTIE.txt -> release downloads-v1 -> products.json entry
 -> Pack der Packs meenemen.
+
+## Gedaan (2026-10-15)
+- Ronde 1: Echo-Kamer + Toon-Fixer — live, incl. demo-video's
+- Ronde 3: G2B Glue-Comp (glu3c0mp, €19,95) — bus-compressor, live + demo-video
+- Ronde 4: G2B Chorus (ch0r45, €14,95) — stereo breedte, live (video volgt)
+
+## Volgende kandidaten
+- G2B Saturator (tape/tube drive)
+- G2B Gate/Transient
+- G2B Filter-Wah (XY-pad-favoriet)
