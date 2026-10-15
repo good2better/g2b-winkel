@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="G2B Radio — non-stop eigen beats van Good2Better. Luister gratis, koop wat je hoort.">
+<title>G2B RADIO — non-stop eigen beats</title>
+<style>
+:root{--groen:#2ee09a;--donker:#0a0812;--paars:#16102a;--paars2:#221a3a;--tekst:#e8e6f0;--dim:#8a86a0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--donker);color:var(--tekst);font-family:system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px}
+h1{color:var(--groen);font-size:1.8rem;letter-spacing:2px}
+h1 b{color:var(--tekst);font-weight:400}
+.sub{color:var(--dim);font-size:.85rem;margin-bottom:18px;text-align:center}
+.live{display:inline-block;background:#e0245e22;border:1px solid #e0245e;color:#ff6b9d;font-size:.7rem;font-weight:800;border-radius:20px;padding:3px 12px;letter-spacing:1px;margin-bottom:14px}
+.live::before{content:"●";margin-right:6px;animation:knip 1.4s infinite}
+@keyframes knip{0%,100%{opacity:1}50%{opacity:.25}}
+.kast{background:var(--paars);border-radius:18px;padding:22px;width:100%;max-width:640px;box-shadow:0 10px 50px #000a}
+.nuspelen{display:flex;gap:16px;align-items:center;margin-bottom:14px}
+.cover{width:110px;height:110px;border-radius:12px;object-fit:cover;background:var(--paars2);flex:none;box-shadow:0 4px 20px #0008}
+.nuinfo{min-width:0}
+.nutitel{font-size:1.15rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nulabel{color:var(--groen);font-size:.7rem;font-weight:800;letter-spacing:1.5px;margin-bottom:4px}
+.koop{display:inline-block;margin-top:10px;background:var(--groen);color:var(--donker);font-weight:800;font-size:.8rem;border-radius:10px;padding:8px 16px;text-decoration:none}
+.koop:hover{filter:brightness(1.12)}
+canvas#vu{width:100%;height:90px;background:var(--paars2);border-radius:10px;margin-bottom:14px}
+.bediening{display:flex;align-items:center;gap:14px}
+#speel{background:var(--groen);border:none;color:var(--donker);font-weight:800;font-size:1rem;border-radius:50%;width:52px;height:52px;cursor:pointer;flex:none}
+#speel:hover{filter:brightness(1.12)}
+.vol{flex:1;display:flex;align-items:center;gap:8px;color:var(--dim);font-size:.75rem}
+.vol input{flex:1;accent-color:var(--groen)}
+.vaart{color:var(--dim);font-size:.72rem;text-align:center;margin-top:6px}
+.lijst{margin-top:16px;border-top:1px solid #ffffff14;padding-top:12px}
+.lijst h2{font-size:.75rem;color:var(--dim);letter-spacing:1.5px;margin-bottom:8px}
+.tt{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;cursor:pointer}
+.tt:hover{background:#ffffff0d}
+.tt.actief{background:#2ee09a18}
+.tt img{width:34px;height:34px;border-radius:6px;object-fit:cover;background:var(--paars2)}
+.tt .t{flex:1;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tt.actief .t{color:var(--groen);font-weight:700}
+.footer{margin-top:20px;font-size:.72rem;color:var(--dim);text-align:center}
+.footer a{color:var(--groen);text-decoration:none}
+</style>
+</head>
+<body>
+<h1>G2B <b>RADIO</b></h1>
+<div class="live">LIVE — EIGEN BEATS 24/7</div>
+<div class="kast">
+  <div class="nuspelen">
+    <img class="cover" id="cover" alt="cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='110'%3E%3Crect fill='%23221a3a' width='110' height='110'/%3E%3C/svg%3E">
+    <div class="nuinfo">
+      <div class="nulabel">NU SPEELT</div>
+      <div class="nutitel" id="nutitel">—</div>
+      <a class="koop" id="koop" href="#" target="_top">KOOP DEZE BEAT</a>
+    </div>
+  </div>
+  <canvas id="vu" width="640" height="90"></canvas>
+  <div class="bediening">
+    <button id="speel" aria-label="Radio aan/uit">▶</button>
+    <div class="vol">🔈<input type="range" id="vol" min="0" max="100" value="80">🔊</div>
+  </div>
+  <div class="vaart" id="vaart">Druk op ▶ om G2B Radio te starten — alle beats 100% eigen G2B-productie</div>
+  <div class="lijst"><h2>AANKOMENDE TRACKS</h2><div id="lijst"></div></div>
+</div>
+<p class="footer">Elke beat die je hoort is te koop in de <a href="index.html">G2B-winkel</a> · g2b radio</p>
+<audio id="audio" preload="auto"></audio>
+<script>
+const TRACKS=[
+{id:"2878e291",titel:"Cjfjff Houce",src:"media/2878e291-preview.mp3",cover:"media/2878e291-cover.png",koop:"bestel.html?p=2878e291"},
+{id:"d9d479ab",titel:"Under",src:"media/d9d479ab-preview.mp3",cover:"media/d9d479ab-cover.png",koop:"bestel.html?p=d9d479ab"},
+{id:"7fe03e5c",titel:"KAY9",src:"media/7fe03e5c-preview.mp3",cover:"media/7fe03e5c-cover.png",koop:"bestel.html?p=7fe03e5c"},
+{id:"0ef9a078",titel:"Love",src:"media/0ef9a078-preview.mp3",cover:"media/0ef9a078-cover.png",koop:"bestel.html?p=0ef9a078"},
+{id:"8171e455",titel:"Soldaat",src:"media/8171e455-preview.mp3",cover:"media/8171e455-cover.png",koop:"bestel.html?p=8171e455"},
+{id:"266054dc",titel:"Houce Trap",src:"media/266054dc-preview.mp3",cover:"media/266054dc-cover.png",koop:"bestel.html?p=266054dc"},
+{id:"53c9dc1f",titel:"Lala Dance",src:"media/53c9dc1f-preview.mp3",cover:"media/53c9dc1f-cover.png",koop:"bestel.html?p=53c9dc1f"},
+{id:"054630ff",titel:"Exotic Riddim",src:"media/054630ff-preview.mp3",cover:"media/054630ff-cover.png",koop:"bestel.html?p=054630ff"},
+{id:"3083f3d3",titel:"Khvckhvclv",src:"media/3083f3d3-preview.mp3",cover:"media/3083f3d3-cover.png",koop:"bestel.html?p=3083f3d3"},
+{id:"600fb829",titel:"Midnight Dembow II",src:"media/600fb829-preview.mp3",cover:"media/600fb829-cover.png",koop:"bestel.html?p=600fb829"},
+{id:"f92b4951",titel:"Midnight Dembow III",src:"media/f92b4951-preview.mp3",cover:"media/f92b4951-cover.png",koop:"bestel.html?p=f92b4951"},
+{id:"ritmosbundel",titel:"Ritmos Del Corazón",src:"media/ritmosalbum-preview.mp3",cover:"media/ritmosbundle-cover.png",koop:"bestel.html?p=ritmosbundel"}
+];
+const audio=document.getElementById('audio'),speel=document.getElementById('speel'),
+      cover=document.getElementById('cover'),nutitel=document.getElementById('nutitel'),
+      koop=document.getElementById('koop'),lijst=document.getElementById('lijst'),
+      vaart=document.getElementById('vaart'),vu=document.getElementById('vu'),
+      ctx2=vu.getContext('2d');
+let volgorde=[...TRACKS.keys()].sort(()=>Math.random()-.5),idx=0,ac=null,analyser=null,src=null,live=false;
+function huidige(){return TRACKS[volgorde[idx%volgorde.length]]}
+function toon(){
+ const t=huidige();
+ nutitel.textContent=t.titel;cover.src=t.cover;koop.href=t.koop;
+ [...lijst.children].forEach((el,i)=>el.classList.toggle('actief',i===idx%volgorde.length));
+ vaart.textContent='Track '+(idx%volgorde.length+1)+' van '+volgorde.length+' — eigen beats, non-stop';
+}
+function bouwLijst(){
+ lijst.innerHTML='';
+ volgorde.forEach((ti,i)=>{
+  const t=TRACKS[ti],d=document.createElement('div');d.className='tt';
+  d.innerHTML='<img src="'+t.cover+'" alt=""><div class="t">'+t.titel+'</div>';
+  d.onclick=()=>{idx=i;speelTrack();};
+  lijst.appendChild(d);
+ });
+}
+function speelTrack(){
+ const t=huidige();audio.src=t.src;audio.play().catch(()=>{});toon();
+ speel.textContent='⏸';live=true;
+}
+audio.addEventListener('ended',()=>{idx++;if(idx>=volgorde.length){idx=0;volgorde.sort(()=>Math.random()-.5);}speelTrack();});
+speel.onclick=()=>{
+ if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();
+  analyser=ac.createAnalyser();analyser.fftSize=128;
+  src=ac.createMediaElementSource(audio);src.connect(analyser);analyser.connect(ac.destination);}
+ if(!live){speelTrack();}else{audio.pause();speel.textContent='▶';live=false;}
+};
+document.getElementById('vol').oninput=e=>audio.volume=e.target.value/100;
+audio.volume=0.8;
+function teken(){
+ requestAnimationFrame(teken);
+ ctx2.fillStyle='#221a3a';ctx2.fillRect(0,0,vu.width,vu.height);
+ if(!analyser){ctx2.fillStyle='#8a86a0';ctx2.font='12px system-ui';ctx2.fillText('spectrum',10,20);return;}
+ const d=new Uint8Array(analyser.frequencyBinCount);analyser.getByteFrequencyData(d);
+ const bw=vu.width/d.length;
+ for(let i=0;i<d.length;i++){const h=d[i]/255*vu.height;
+  ctx2.fillStyle='hsl('+(152-i*0.6)+',70%,'+(35+d[i]/8)+'%)';
+  ctx2.fillRect(i*bw,vu.height-h,bw-1,h);}
+}
+teken();bouwLijst();toon();
+</script>
+</body>
+</html>
