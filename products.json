@@ -1343,6 +1343,70 @@
     "luchtig",
     "afgerond"
    ]
+  },
+  {
+   "id": "a1s0ca",
+   "titel": "Soca Run",
+   "soort": "audio",
+   "beschrijving": "Verse soca-beat · 128 BPM. Volledige song-opbouw (intro→refrein→outro) met road-march groove, ijzer-percussie en brass. 100% eigen G2B-engine, geen samples. Incl. songkaart + licentie + buy-out verklaring.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "bestel.html?p=a1s0ca",
+    "mp3": "bestel.html?p=a1s0ca&t=mp3",
+    "wav": "bestel.html?p=a1s0ca&t=wav",
+    "exclusief": "bestel.html?p=a1s0ca&t=exclusief",
+    "download": "bedankt.html?k=a1s0ca"
+   },
+   "duur": 37.5,
+   "groep": "soca",
+   "bpm": 128,
+   "moods": [
+    "feest",
+    "energisch",
+    "carnaval",
+    "zomer"
+   ],
+   "cover": "media/a1s0ca-cover.png",
+   "preview": "media/a1s0ca-preview.mp3",
+   "download_dir": "d/a1s0ca",
+   "badge": "VERS"
+  },
+  {
+   "id": "b2ubb1",
+   "titel": "Bubble Nights",
+   "soort": "audio",
+   "beschrijving": "Verse bubbling-beat · 152 BPM. Eigen G2B-bubbling: plonk-bas, sirens en snelle percussie in volledige song-structuur. 100% eigen engine, geen samples. Incl. songkaart + licentie + buy-out verklaring.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "bestel.html?p=b2ubb1",
+    "mp3": "bestel.html?p=b2ubb1&t=mp3",
+    "wav": "bestel.html?p=b2ubb1&t=wav",
+    "exclusief": "bestel.html?p=b2ubb1&t=exclusief",
+    "download": "bedankt.html?k=b2ubb1"
+   },
+   "duur": 34.3,
+   "groep": "bubbling",
+   "bpm": 152,
+   "moods": [
+    "donker",
+    "energisch",
+    "straat",
+    "signature"
+   ],
+   "cover": "media/b2ubb1-cover.png",
+   "preview": "media/b2ubb1-preview.mp3",
+   "download_dir": "d/b2ubb1",
+   "badge": "VERS"
   }
  ]
 }
