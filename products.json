@@ -163,7 +163,7 @@
    "id": "g2b-pack-der-packs",
    "titel": "G2B Pack der Packs",
    "soort": "digitaal",
-   "beschrijving": "DE VOLLEDIGE G2B-SOUND-STUDIO: 10 complete plugins (VocalTune, Sampler v2, OneShot, Keys XL, Delay, Reverb, Sleutel-Helper, Echo-Kamer, Toon-Fixer, Glue-Comp — Windows + Linux) + Keys XL instrumentenbank + 1006 one-shot sounds in 35 categorieën + 182 midi-patronen + handleidingen & demo-video's. 100% royalty-vrij. Wil je álle 24 plugins? → G2B Suite (€89,95). Wil je óók de automatische mix/master-robot? → G2B Studio Pack (€149).",
+   "beschrijving": "DE VOLLEDIGE G2B-SOUND-STUDIO: 11 complete plugins (VocalTune, Sampler v2, OneShot, Keys XL, Delay, Reverb, Sleutel-Helper, Echo-Kamer, Toon-Fixer, Glue-Comp, Chorus — Windows + Linux) + Keys XL instrumentenbank + 1006 one-shot sounds in 35 categorieën + 182 midi-patronen + handleidingen & demo-video's. 100% royalty-vrij. Wil je álle 24 plugins? → G2B Suite (€89,95). Wil je óók de automatische mix/master-robot? → G2B Studio Pack (€149).",
    "prijs": "€ 79 intro-prijs",
    "prijzen": {},
    "links": {
@@ -2052,6 +2052,21 @@
    "cover": "media/glue-cover.png",
    "download_dir": "d/glu3c0mp",
    "video": "media/glue-comp-demo.mp4"
+  },
+  {
+   "id": "ch0r45",
+   "titel": "G2B Chorus",
+   "soort": "plugin",
+   "beschrijving": "Stereo chorus: LFO-gemoduleerde delay-taps maken elke klank breder en rijker. Live LFO-golf display, WIDTH-breedte, FEED voor metallic, 27 DIMENTIES (clean/warm/thick met saturatie), 8 skins. VST3 + CLAP + standalone voor FL Studio.",
+   "prijs": "€ 14,95",
+   "links": {
+    "koop": "bestel.html?p=ch0r45",
+    "download": "bedankt.html?k=ch0r45"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/chorus-cover.png",
+   "download_dir": "d/ch0r45"
   },
   {
    "id": "k4w1n",

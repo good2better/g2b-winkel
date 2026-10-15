@@ -298,6 +298,10 @@
   {
    "naam": "⬇ g2b-glue-comp-v1.zip — nieuwe plugin: bus-compressor mix-lijm (VST3+CLAP+standalone, Win)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/g2b-glue-comp-v1.zip"
+  },
+  {
+   "naam": "⬇ g2b-chorus-v1.zip — nieuwe plugin: stereo chorus breedte (VST3+CLAP+standalone, Win)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/g2b-chorus-v1.zip"
   }
  ]
 }
