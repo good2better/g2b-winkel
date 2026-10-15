@@ -163,7 +163,7 @@
    "id": "g2b-pack-der-packs",
    "titel": "G2B Pack der Packs",
    "soort": "digitaal",
-   "beschrijving": "DE VOLLEDIGE G2B-SOUND-STUDIO: 9 complete plugins (VocalTune, Sampler v2, OneShot, Keys XL, Delay, Reverb, Sleutel-Helper, Echo-Kamer, Toon-Fixer — Windows + Linux) + Keys XL instrumentenbank + 1006 one-shot sounds in 35 categorieën + 182 midi-patronen + handleidingen & demo-video's. 100% royalty-vrij. Wil je álle 24 plugins? → G2B Suite (€89,95). Wil je óók de automatische mix/master-robot? → G2B Studio Pack (€149).",
+   "beschrijving": "DE VOLLEDIGE G2B-SOUND-STUDIO: 10 complete plugins (VocalTune, Sampler v2, OneShot, Keys XL, Delay, Reverb, Sleutel-Helper, Echo-Kamer, Toon-Fixer, Glue-Comp — Windows + Linux) + Keys XL instrumentenbank + 1006 one-shot sounds in 35 categorieën + 182 midi-patronen + handleidingen & demo-video's. 100% royalty-vrij. Wil je álle 24 plugins? → G2B Suite (€89,95). Wil je óók de automatische mix/master-robot? → G2B Studio Pack (€149).",
    "prijs": "€ 79 intro-prijs",
    "prijzen": {},
    "links": {
@@ -2036,6 +2036,21 @@
    "cover": "media/toon-cover.png",
    "download_dir": "d/t00nf",
    "video": "media/toon-fixer-demo.mp4"
+  },
+  {
+   "id": "glu3c0mp",
+   "titel": "G2B Glue-Comp",
+   "soort": "plugin",
+   "beschrijving": "Bus-compressor (mix-lijm): RMS-detector met zachte knee, sidechain high-pass zodat je kick blijft staan, auto makeup-gain, parallel-comp via KRACHT, 27 DIMENTIES van clean tot tape-saturatie, live compressor-curve display, 8 skins. VST3 + CLAP + standalone voor FL Studio. Mix klinkt meteen strakker en luider zonder pompen.",
+   "prijs": "€ 19,95",
+   "links": {
+    "koop": "bestel.html?p=glu3c0mp",
+    "download": "bedankt.html?k=glu3c0mp"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/glue-cover.png",
+   "download_dir": "d/glu3c0mp"
   },
   {
    "id": "k4w1n",
