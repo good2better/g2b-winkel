@@ -16,7 +16,8 @@
       "groep": "gratis",
       "badge": "GRATIS",
       "cover": "media/starter-cover.png",
-      "download_dir": "d/starter1"
+      "download_dir": "d/starter1",
+      "preview": "media/starter-preview.mp3"
     },
     {
       "id": "g2b-beatclub",
@@ -49,7 +50,8 @@
       "groep": "sounds",
       "download_dir": "d/midipack1",
       "cover": "media/g2b-midipack-cover.png",
-      "badge": "NIEUW"
+      "badge": "NIEUW",
+      "preview": "media/midipack-preview.mp3"
     },
     {
       "id": "g2b-house-pack",
@@ -154,7 +156,8 @@
       "groep": "sounds",
       "download_dir": "d/min1pack",
       "badge": "GRATIS",
-      "cover": "media/g2b-minipack-cover.png"
+      "cover": "media/g2b-minipack-cover.png",
+      "preview": "media/mini-preview.mp3"
     },
     {
       "id": "g2b-pack-der-packs",
@@ -1066,7 +1069,8 @@
         "urban",
         "donker",
         "energisch"
-      ]
+      ],
+      "video": "media/beattape2-demo.mp4"
     },
     {
       "id": "g2b-surinaams-pack",
@@ -1886,7 +1890,8 @@
       "groep": "bundels",
       "badge": "DEAL",
       "cover": "media/syncbundle-cover.png",
-      "download_dir": "d/syncbundle"
+      "download_dir": "d/syncbundle",
+      "preview": "media/syncbundle-preview.mp3"
     },
     {
       "id": "sp00ky",
