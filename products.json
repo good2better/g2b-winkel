@@ -1740,9 +1740,10 @@
    },
    "links": {
     "koop": "bestel.html?p=h4rt",
-    "mp3": "d/h4rt/",
-    "wav": "d/h4rt/",
-    "exclusief": "mailto:g.sandvliet88@gmail.com?subject=EXCLUSIEF Hart"
+    "mp3": "bestel.html?p=h4rt&t=mp3",
+    "wav": "bestel.html?p=h4rt&t=wav",
+    "exclusief": "bestel.html?p=h4rt&t=exclusief",
+    "download": "bedankt.html?k=h4rt"
    },
    "duur": "0:30",
    "groep": "emotioneel",
@@ -1772,9 +1773,10 @@
    },
    "links": {
     "koop": "bestel.html?p=n4cht",
-    "mp3": "d/n4cht/",
-    "wav": "d/n4cht/",
-    "exclusief": "mailto:g.sandvliet88@gmail.com?subject=EXCLUSIEF Nacht"
+    "mp3": "bestel.html?p=n4cht&t=mp3",
+    "wav": "bestel.html?p=n4cht&t=wav",
+    "exclusief": "bestel.html?p=n4cht&t=exclusief",
+    "download": "bedankt.html?k=n4cht"
    },
    "duur": "0:36",
    "groep": "horror",
@@ -1805,9 +1807,10 @@
    },
    "links": {
     "koop": "bestel.html?p=sp33ls",
-    "mp3": "d/sp33ls/",
-    "wav": "d/sp33ls/",
-    "exclusief": "mailto:g.sandvliet88@gmail.com?subject=EXCLUSIEF Speels"
+    "mp3": "bestel.html?p=sp33ls&t=mp3",
+    "wav": "bestel.html?p=sp33ls&t=wav",
+    "exclusief": "bestel.html?p=sp33ls&t=exclusief",
+    "download": "bedankt.html?k=sp33ls"
    },
    "duur": "0:21",
    "groep": "speels",
@@ -1838,9 +1841,10 @@
    },
    "links": {
     "koop": "bestel.html?p=h3ld3r",
-    "mp3": "d/h3ld3r/",
-    "wav": "d/h3ld3r/",
-    "exclusief": "mailto:g.sandvliet88@gmail.com?subject=EXCLUSIEF Helder"
+    "mp3": "bestel.html?p=h3ld3r&t=mp3",
+    "wav": "bestel.html?p=h3ld3r&t=wav",
+    "exclusief": "bestel.html?p=h3ld3r&t=exclusief",
+    "download": "bedankt.html?k=h3ld3r"
    },
    "duur": "0:19",
    "groep": "corporate",
