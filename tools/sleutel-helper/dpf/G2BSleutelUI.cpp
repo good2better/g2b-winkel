@@ -30,6 +30,15 @@ protected:
         if(index==0) fOn=value;
         else if(index==1) fFocus=(int)value;
         else if(index==4) fSkin=(int)value;
+        else if(index==8){                       // key-out: -1 of root*2+minor
+            static const char* NN[12]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
+            const int v=(int)value;
+            if(v<0) std::snprintf(fKey,sizeof(fKey),"luister…");
+            else std::snprintf(fKey,sizeof(fKey),"%s %s",NN[v/2],(v&1)?"mineur":"majeur");
+        }
+        else if(index==9) fConf=(int)value;
+        else if(index==10) fMask=(uint32_t)value;
+        else if(index==11) fFoc=(uint32_t)value;
         repaint();
     }
     void stateChanged(const char* key, const char* value) override
@@ -70,13 +79,13 @@ protected:
         beginPath(); rect(0,0,W,H); fillColor(C(bg)); fill();      // achtergrond
 
         // ---- kopbalk ----
-        fontSize(15); fontFace("sans-bold"); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
+        fontSize(15); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
         fillColor(C(ac)); text(16,22,"G2B SLEUTEL-HELPER",nullptr);
         fillColor(C(mu)); fontSize(11); text(150,22,"theory-assist · MIDI-thru",nullptr);
 
         // toonsoort blok
         beginPath(); roundedRect(W-200,8,184,44,8); fillColor(C(pn)); fill();
-        fillColor(C(fg)); fontSize(17); fontFace("sans-bold");
+        fillColor(C(fg)); fontSize(17); 
         textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
         text(W-108,24,fKey,nullptr);
         fontSize(9); fillColor(C(mu));
@@ -91,7 +100,7 @@ protected:
             beginPath(); roundedRect(x,fPillY,84,24,12);
             fillColor(i==(int)fFocus?C(ac):C(pn)); fill();
             fillColor(i==(int)fFocus?C(bg):C(fg));
-            fontSize(10); fontFace("sans-bold");
+            fontSize(10); 
             textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
             text(x+42,fPillY+12,FP[i],nullptr);
         }
@@ -133,10 +142,13 @@ protected:
         // ---- suggestie-kaart ----
         const float sy=py+ph+22;
         beginPath(); roundedRect(16,sy,W-32,96,10); fillColor(C(pn)); fill();
-        fillColor(C(fg)); fontSize(12); fontFace("sans"); textAlign(ALIGN_LEFT|ALIGN_TOP);
+        fillColor(C(fg)); fontSize(12); textAlign(ALIGN_LEFT|ALIGN_TOP);
         if(fSug1[0]) text(28,sy+12,fSug1,nullptr);
         if(fSug2[0]) text(28,sy+34,fSug2,nullptr);
-        if(fSug3[0]){ fillColor(C(ac)); fontFace("sans-bold"); text(28,sy+62,fSug3,nullptr); }
+        if(fSug3[0]){ fillColor(C(ac)); text(28,sy+62,fSug3,nullptr); }
+        else if(fConf>0){ fillColor(C(mu)); fontSize(10);
+            text(28,sy+12,"akkoord-, bas- en melodie-hints verschijnen",nullptr);
+            text(28,sy+28,"in je DAW-host (VST3/CLAP)",nullptr); }
 
         // ---- knobs: KRACHT · DIMENTIES ----
         fKnobY=H-64;
@@ -146,7 +158,7 @@ protected:
             const float a=-2.35f+ (fValue[i]-fMin[i])/(fMax[i]-fMin[i])*4.7f;
             beginPath(); moveTo(cx,cy); lineTo(cx+r*0.85f*std::cos(a),cy+r*0.85f*std::sin(a));
             strokeColor(C(ac)); strokeWidth(3); stroke();
-            fillColor(C(mu)); fontSize(9); fontFace("sans-bold");
+            fillColor(C(mu)); fontSize(9); 
             textAlign(ALIGN_CENTER|ALIGN_TOP);
             text(cx,cy+r+6,fLabel[i],nullptr);
             fillColor(C(fg)); fontSize(10);

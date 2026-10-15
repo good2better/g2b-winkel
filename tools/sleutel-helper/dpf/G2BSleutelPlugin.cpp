@@ -14,7 +14,7 @@ START_NAMESPACE_DISTRHO
 class SleutelPlugin : public Plugin
 {
 public:
-    SleutelPlugin() : Plugin(8, 0, 0) { pushAna_(); }
+    SleutelPlugin() : Plugin(12, 0, 0) { pushAna_(); }
 
 protected:
     const char* getLabel() const override { return "G2B Sleutel-Helper"; }
@@ -29,7 +29,8 @@ protected:
     void initState(uint32_t, String&, String&) override {}
     void setState(const char*, const char*) override {}
 
-    enum { kOn, kFocus, kKracht, kDim, kSkin, kClear, kThru, kHold };
+    enum { kOn, kFocus, kKracht, kDim, kSkin, kClear, kThru, kHold,
+           kOutKey, kOutConf, kOutMask, kOutFoc };
 
     void initParameter(uint32_t i, Parameter& p) override {
         p.hints = kParameterIsAutomatable;
@@ -42,6 +43,10 @@ protected:
         case kClear: p.name="WIS";          p.symbol="wis";    p.ranges.min=0; p.ranges.max=1;   p.hints|=kParameterIsTrigger; break;
         case kThru:  p.name="MIDI THRU";    p.symbol="thru";   p.ranges.min=0; p.ranges.max=1;   p.ranges.def=1;    p.hints|=kParameterIsBoolean; break;
         case kHold:  p.name="GEHEUGEN (s)"; p.symbol="hold";   p.ranges.min=4; p.ranges.max=120; p.ranges.def=30;   p.hints|=kParameterIsInteger; break;
+        case kOutKey: p.name="key-out";  p.symbol="okey";  p.ranges.min=-1; p.ranges.max=23;   p.hints|=kParameterIsInteger|kParameterIsOutput|kParameterIsHidden; break;
+        case kOutConf:p.name="conf-out"; p.symbol="oconf"; p.ranges.min=0;  p.ranges.max=99;   p.hints|=kParameterIsInteger|kParameterIsOutput|kParameterIsHidden; break;
+        case kOutMask:p.name="mask-out"; p.symbol="omask"; p.ranges.min=0;  p.ranges.max=4095; p.hints|=kParameterIsInteger|kParameterIsOutput|kParameterIsHidden; break;
+        case kOutFoc: p.name="foc-out";  p.symbol="ofoc";  p.ranges.min=0;  p.ranges.max=4095; p.hints|=kParameterIsInteger|kParameterIsOutput|kParameterIsHidden; break;
         }
     }
 
@@ -49,7 +54,11 @@ protected:
         switch(i){
         case kOn:return fOn; case kFocus:return fFocus; case kKracht:return fKracht;
         case kDim:return fDim; case kSkin:return fSkin; case kClear:return 0;
-        case kThru:return fThru; case kHold:return fHold;} return 0.f;
+        case kThru:return fThru; case kHold:return fHold;
+        case kOutKey:return key_<0?-1.f:(float)(key_*2+minor_);
+        case kOutConf:return (float)conf_;
+        case kOutMask:return (float)mask_;
+        case kOutFoc:return (float)focusMask_;} return 0.f;
     }
 
     void setParameterValue(uint32_t i, float v) override {
@@ -189,7 +198,11 @@ private:
     }
 
     void pushAna_(){
-        // statusregels naar de UI
+        // statusregels naar de UI — via state (hosts) én output-params (standalone)
+        requestParameterValueChange(kOutKey, key_<0?-1.f:(float)(key_*2+minor_));
+        requestParameterValueChange(kOutConf, (float)conf_);
+        requestParameterValueChange(kOutMask, (float)mask_);
+        requestParameterValueChange(kOutFoc, (float)focusMask_);
         char b[160];
         uint32_t m24=0;
         for(int pc=0;pc<12;pc++) if(mask_>>pc&1) m24|=(1u<<pc);
