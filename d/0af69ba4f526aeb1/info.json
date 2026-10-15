@@ -1,1 +1,7 @@
-{"titel": "G2B Banden", "licentie": "Plugin-licentie (1 gebruiker, commercieel OK)", "cover": "media/g2b-banden-cover.png", "bestand": "G2B-Banden.zip"}
+{
+ "titel": "G2B Banden",
+ "licentie": "Plugin-licentie (1 gebruiker, commercieel OK)",
+ "cover": "media/g2b-banden-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Banden.zip",
+ "bestand_release": "G2B-Banden.zip"
+}

@@ -1,1 +1,7 @@
-{"titel": "G2B MasterRack — alles-in-één mastering-keten", "licentie": "digitaal", "cover": "media/g2b-masterrack-cover.png", "bestand": "G2B-MasterRack.zip"}
+{
+ "titel": "G2B MasterRack — alles-in-één mastering-keten",
+ "licentie": "digitaal",
+ "cover": "media/g2b-masterrack-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-MasterRack.zip",
+ "bestand_release": "G2B-MasterRack.zip"
+}

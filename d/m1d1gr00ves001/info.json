@@ -1,1 +1,7 @@
-{"titel": "G2B MIDI Grooves Vol.1", "licentie": "gratis", "cover": "media/g2b-midigrooves-cover.png", "bestand": "G2B-MIDI-GROOVES-Vol1.zip"}
+{
+ "titel": "G2B MIDI Grooves Vol.1",
+ "licentie": "gratis",
+ "cover": "media/g2b-midigrooves-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-MIDI-GROOVES-Vol1.zip",
+ "bestand_release": "G2B-MIDI-GROOVES-Vol1.zip"
+}

@@ -1,11 +1,11 @@
 {
-  "titel": "G2B Surinaamse Pack",
-  "licentie": "Volledige download — commercieel gebruik OK (eigen G2B-sounds, royalty-free)",
-  "cover": "media/g2b-suripack1-cover.png",
-  "bestanden": [
-    {
-      "naam": "⬇ G2B-Surinaams-Pack.zip — 32.0 MB · 207 bestanden (wav+midi+INFO+LICENTIE)",
-      "bestand": "G2B-Surinaams-Pack.zip"
-    }
-  ]
+ "titel": "G2B Surinaamse Pack",
+ "licentie": "Volledige download — commercieel gebruik OK (eigen G2B-sounds, royalty-free)",
+ "cover": "media/g2b-suripack1-cover.png",
+ "bestanden": [
+  {
+   "naam": "⬇ G2B-Surinaams-Pack.zip — 32.0 MB · 207 bestanden (wav+midi+INFO+LICENTIE)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/suripack1__G2B-Surinaams-Pack.zip"
+  }
+ ]
 }

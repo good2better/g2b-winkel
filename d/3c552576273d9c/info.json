@@ -1,1 +1,12 @@
-{"bestanden": [{"naam": "⬇ KAY9 — BEAT + LICENTIE", "bestand": "KAY9 - Exclusieve licentie.zip"}, {"naam": "⬇ KAY9 — STEMS (losse sporen)", "bestand": "KAY9 - Exclusieve licentie deel-2-STEMS.zip"}]}
+{
+ "bestanden": [
+  {
+   "naam": "⬇ KAY9 — BEAT + LICENTIE",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/KAY9.-.Exclusieve.licentie.zip"
+  },
+  {
+   "naam": "⬇ KAY9 — STEMS (losse sporen)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/KAY9.-.Exclusieve.licentie.deel-2-STEMS.zip"
+  }
+ ]
+}

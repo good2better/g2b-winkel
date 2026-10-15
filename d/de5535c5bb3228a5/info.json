@@ -1,1 +1,6 @@
-{"titel": "G2B Song", "versie": "1.0", "bestand": "G2B-Song.zip"}
+{
+ "titel": "G2B Song",
+ "versie": "1.0",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Song.zip",
+ "bestand_release": "G2B-Song.zip"
+}

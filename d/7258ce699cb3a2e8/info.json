@@ -1,1 +1,7 @@
-{"titel": "G2B Drum Kit Vol. 1 — 29 one-shots", "licentie": "digitaal", "cover": "media/g2b-drumkit-cover.png", "bestand": "G2B-DrumKit-Vol1.zip"}
+{
+ "titel": "G2B Drum Kit Vol. 1 — 29 one-shots",
+ "licentie": "digitaal",
+ "cover": "media/g2b-drumkit-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-DrumKit-Vol1.zip",
+ "bestand_release": "G2B-DrumKit-Vol1.zip"
+}

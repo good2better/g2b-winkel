@@ -1,1 +1,11 @@
-{"titel": "G2B Latin Pack", "licentie": "Volledige download — commercieel gebruik OK (eigen G2B-sounds, royalty-free)", "cover": "media/g2b-latinpack1-cover.png", "bestanden": [{"naam": "⬇ G2B-Latin-Pack.zip — 16,9 MB · 152 bestanden (wav+midi+INFO+LICENTIE)", "bestand": "G2B-Latin-Pack.zip"}]}
+{
+ "titel": "G2B Latin Pack",
+ "licentie": "Volledige download — commercieel gebruik OK (eigen G2B-sounds, royalty-free)",
+ "cover": "media/g2b-latinpack1-cover.png",
+ "bestanden": [
+  {
+   "naam": "⬇ G2B-Latin-Pack.zip — 16,9 MB · 152 bestanden (wav+midi+INFO+LICENTIE)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Latin-Pack.zip"
+  }
+ ]
+}

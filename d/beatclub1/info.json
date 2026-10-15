@@ -1,42 +1,67 @@
 {
-  "titel": "G2B Beat-Club Welkomst-Pack",
-  "bestand": "G2B-BeatClub-Welkom.zip",
-  "bestanden": [
-    "G2B-BeatClub_Welkom/house_loop3_g2b.wav",
-    "G2B-BeatClub_Welkom/schuivelgroove2_g2b.wav",
-    "G2B-BeatClub_Welkom/bubbling_loop3_g2b.wav",
-    "G2B-BeatClub_Welkom/kawina_loop2_g2b.wav",
-    "G2B-BeatClub_Welkom/soca_loop2_g2b.wav",
-    "G2B-BeatClub_Welkom/afro_loop2_g2b.wav",
-    "G2B-BeatClub_Welkom/dancehall_loop2_g2b.wav",
-    "G2B-BeatClub_Welkom/winti_loop2_g2b.wav",
-    "G2B-BeatClub_Welkom/aleke_loop2_g2b.wav",
-    "G2B-BeatClub_Welkom/house_loop3_g2b.mid",
-    "G2B-BeatClub_Welkom/schuivelgroove2_g2b.mid",
-    "G2B-BeatClub_Welkom/marimbariff_g2b.wav",
-    "G2B-BeatClub_Welkom/kwaflute_g2b.wav",
-    "G2B-BeatClub_Welkom/dhallorganriff_g2b.wav",
-    "G2B-BeatClub_Welkom/shekereroll_g2b.wav",
-    "G2B-BeatClub-Maand1.zip"
-  ],
-  "aantekening": "Welkomst-pack voor nieuwe leden — 15 exclusieve sounds. Gebouwd 2026-10-15. + Maand-1 pack 'Afro-House' (15 club-exclusieve sounds) · + Maand-2 pack 'Latin Club' (16 club-exclusives) · + Maand-3 pack 'Caribbean Drill' (16 club-exclusives) · + Maand-4 pack 'Bubbling Bass' (16 club-exclusives) · + Maand-5 pack 'Festival Soca' (16 club-exclusives) · + Maand-6 pack 'Kaseko Carnival' (16 club-exclusives)",
-  "files": [
-    "G2B-BeatClub-Maand1.zip",
-    "G2B-BeatClub-Maand2.zip",
-    "G2B-BeatClub-Maand3.zip",
-    "G2B-BeatClub-Maand4.zip",
-    "G2B-BeatClub-Maand5.zip",
-    "G2B-BeatClub-Maand6.zip",
-    "G2B-BeatClub-Welkom.zip",
-    "info.json"
-  ],
-  "maanden": {
-    "welkom": "G2B-BeatClub-Welkom.zip",
-    "maand1": "G2B-BeatClub-Maand1.zip (Afro-House)",
-    "maand2": "G2B-BeatClub-Maand2.zip (Latin Club)",
-    "maand3": "G2B-BeatClub-Maand3.zip (Caribbean Drill)",
-    "maand4": "G2B-BeatClub-Maand4.zip (Bubbling Bass)",
-    "maand5": "G2B-BeatClub-Maand5.zip (Festival Soca)",
-    "maand6": "G2B-BeatClub-Maand6.zip (Kaseko Carnival)"
+ "titel": "G2B Beat-Club Welkomst-Pack",
+ "aantekening": "Welkomst-pack voor nieuwe leden — 15 exclusieve sounds. Gebouwd 2026-10-15. + Maand-1 pack 'Afro-House' (15 club-exclusieve sounds) · + Maand-2 pack 'Latin Club' (16 club-exclusives) · + Maand-3 pack 'Caribbean Drill' (16 club-exclusives) · + Maand-4 pack 'Bubbling Bass' (16 club-exclusives) · + Maand-5 pack 'Festival Soca' (16 club-exclusives) · + Maand-6 pack 'Kaseko Carnival' (16 club-exclusives)",
+ "maanden": {
+  "welkom": "G2B-BeatClub-Welkom.zip",
+  "maand1": "G2B-BeatClub-Maand1.zip (Afro-House)",
+  "maand2": "G2B-BeatClub-Maand2.zip (Latin Club)",
+  "maand3": "G2B-BeatClub-Maand3.zip (Caribbean Drill)",
+  "maand4": "G2B-BeatClub-Maand4.zip (Bubbling Bass)",
+  "maand5": "G2B-BeatClub-Maand5.zip (Festival Soca)",
+  "maand6": "G2B-BeatClub-Maand6.zip (Kaseko Carnival)"
+ },
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Welkom.zip",
+ "bestand_release": "G2B-BeatClub-Welkom.zip",
+ "manifest": [
+  "G2B-BeatClub_Welkom/house_loop3_g2b.wav",
+  "G2B-BeatClub_Welkom/schuivelgroove2_g2b.wav",
+  "G2B-BeatClub_Welkom/bubbling_loop3_g2b.wav",
+  "G2B-BeatClub_Welkom/kawina_loop2_g2b.wav",
+  "G2B-BeatClub_Welkom/soca_loop2_g2b.wav",
+  "G2B-BeatClub_Welkom/afro_loop2_g2b.wav",
+  "G2B-BeatClub_Welkom/dancehall_loop2_g2b.wav",
+  "G2B-BeatClub_Welkom/winti_loop2_g2b.wav",
+  "G2B-BeatClub_Welkom/aleke_loop2_g2b.wav",
+  "G2B-BeatClub_Welkom/house_loop3_g2b.mid",
+  "G2B-BeatClub_Welkom/schuivelgroove2_g2b.mid",
+  "G2B-BeatClub_Welkom/marimbariff_g2b.wav",
+  "G2B-BeatClub_Welkom/kwaflute_g2b.wav",
+  "G2B-BeatClub_Welkom/dhallorganriff_g2b.wav",
+  "G2B-BeatClub_Welkom/shekereroll_g2b.wav",
+  "G2B-BeatClub-Maand1.zip"
+ ],
+ "bestanden": [
+  {
+   "naam": "G2B-BeatClub-Maand1.zip",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand1.zip"
+  },
+  {
+   "naam": "G2B-BeatClub-Maand2.zip",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand2.zip"
+  },
+  {
+   "naam": "G2B-BeatClub-Maand3.zip",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand3.zip"
+  },
+  {
+   "naam": "G2B-BeatClub-Maand4.zip",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand4.zip"
+  },
+  {
+   "naam": "G2B-BeatClub-Maand5.zip",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand5.zip"
+  },
+  {
+   "naam": "G2B-BeatClub-Maand6.zip",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand6.zip"
+  },
+  {
+   "naam": "G2B-BeatClub-Maand7-LofiNights.zip",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand7-LofiNights.zip"
+  },
+  {
+   "naam": "G2B-BeatClub-Welkom.zip",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Welkom.zip"
   }
+ ]
 }

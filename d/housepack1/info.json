@@ -1,9 +1,9 @@
 {
-  "naam": "G2B House Pack",
-  "bestanden": [
-    {
-      "naam": "⬇ G2B-House-Pack.zip — 3,3.7 MB · 48 bestanden",
-      "bestand": "G2B-House-Pack.zip"
-    }
-  ]
+ "naam": "G2B House Pack",
+ "bestanden": [
+  {
+   "naam": "⬇ G2B-House-Pack.zip — 3,3.7 MB · 48 bestanden",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/housepack1__G2B-House-Pack.zip"
+  }
+ ]
 }

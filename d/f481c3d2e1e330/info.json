@@ -1,1 +1,7 @@
-{"titel": "G2B Bedrijfsmiddelen", "licentie": "Volledige download", "cover": "media/g2b-bedrijfsmiddelen-cover.png", "bestand": "G2B-Bedrijfsmiddelen-COMPLEET.zip"}
+{
+ "titel": "G2B Bedrijfsmiddelen",
+ "licentie": "Volledige download",
+ "cover": "media/g2b-bedrijfsmiddelen-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Bedrijfsmiddelen-COMPLEET.zip",
+ "bestand_release": "G2B-Bedrijfsmiddelen-COMPLEET.zip"
+}

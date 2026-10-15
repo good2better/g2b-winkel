@@ -3,11 +3,11 @@
  "bestanden": [
   {
    "naam": "G2B-IronHorizon.zip — volledige track + licentie + songkaart",
-   "bestand": "G2B-IronHorizon-EPIC.zip"
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-IronHorizon-EPIC.zip"
   },
   {
    "naam": "G2B-IronHorizon-STEMS.zip — 4 losse sporen (drums/brass/strings/fx)",
-   "bestand": "G2B-IronHorizon-STEMS.zip"
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-IronHorizon-STEMS.zip"
   }
  ]
 }

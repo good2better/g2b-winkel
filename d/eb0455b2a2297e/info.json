@@ -13,7 +13,7 @@
   },
   {
    "naam": "⬇ G2B-ALLES-BUNDLE.zip — handleidingen + demo-video's",
-   "bestand": "G2B-ALLES-BUNDLE.zip"
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-ALLES-BUNDLE.zip"
   },
   {
    "naam": "— ONE-SHOTS als losse wav's (universeel, elke DAW) —",
@@ -21,31 +21,31 @@
   },
   {
    "naam": "⬇ one-shots 1/7 — keys + mallets",
-   "bestand": "ONESHOTS-1-KEYS-MALLETS.zip"
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/ONESHOTS-1-KEYS-MALLETS.zip"
   },
   {
    "naam": "⬇ one-shots 2/7 — strings deel A",
-   "bestand": "ONESHOTS-2-STRINGS-A.zip"
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/ONESHOTS-2-STRINGS-A.zip"
   },
   {
    "naam": "⬇ one-shots 3/7 — strings deel B",
-   "bestand": "ONESHOTS-3-STRINGS-B.zip"
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/ONESHOTS-3-STRINGS-B.zip"
   },
   {
    "naam": "⬇ one-shots 4/7 — wind + organ + drums",
-   "bestand": "ONESHOTS-4-WIND-ORGAN-DRUMS.zip"
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/ONESHOTS-4-WIND-ORGAN-DRUMS.zip"
   },
   {
    "naam": "⬇ one-shots 5/7 — brass + perc",
-   "bestand": "ONESHOTS-5-BRASS-PERC.zip"
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/ONESHOTS-5-BRASS-PERC.zip"
   },
   {
    "naam": "⬇ one-shots 6/7 — woodwinds",
-   "bestand": "ONESHOTS-6-WOODWINDS.zip"
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/ONESHOTS-6-WOODWINDS.zip"
   },
   {
    "naam": "⬇ one-shots 7/7 — DNA + MIDI + loops + VSCO",
-   "bestand": "ONESHOTS-7-DNA-MIDI-LOOPS-VSCO.zip"
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/ONESHOTS-7-DNA-MIDI-LOOPS-VSCO.zip"
   },
   {
    "naam": "— .g2bpack packs voor Sampler v2 (sleep in PACK-veld) —",
@@ -158,15 +158,15 @@
   {
    "naam": "🎼 23-midi-bestanden.zip (alle 40 .mid files — sleep in je DAW)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/23-midi-bestanden.zip"
-  } ,
+  },
   {
    "naam": "🥁 24-beats-2 (12 nieuwe complete beats: bubbling/dembow/kawina/drill e.a.)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/24-beats-2.g2bpack"
-  } ,
+  },
   {
    "naam": "🥁 25-drumloops (21 stereo drumloops, 4 bars, loop-ready)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/25-drumloops.g2bpack"
-  } ,
+  },
   {
    "naam": "🎵 26-melodie (16 melodie-loops: steelpan/kalimba/marimba/piano per genre)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/26-melodie.g2bpack"
@@ -218,78 +218,70 @@
   {
    "naam": "🎬 32-cinema-midis.zip (de 10 .mid files)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/32-cinema-midis.zip"
-  }
- ,
+  },
   {
-   "naam": "\ud83c\udfaf 33-fills-transitions (12 fills met landing — 6 kawina + 6 trap)",
+   "naam": "🎯 33-fills-transitions (12 fills met landing — 6 kawina + 6 trap)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/33-fills-transitions.g2bpack"
   },
   {
-   "naam": "\ud83c\udfaf 33-fills-midis.zip (de 12 fill .mid files — pas instrument aan in je DAW)",
+   "naam": "🎯 33-fills-midis.zip (de 12 fill .mid files — pas instrument aan in je DAW)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/33-fills-midis.zip"
-  }
- ,
+  },
   {
-   "naam": "\ud83d\udd01 34-eigen-loops (10 naadloze 2-bar percussie-loops — vervanging voor loops van anderen)",
+   "naam": "🔁 34-eigen-loops (10 naadloze 2-bar percussie-loops — vervanging voor loops van anderen)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/34-eigen-loops.g2bpack"
   },
   {
-   "naam": "\ud83d\udd01 34-loops-midis.zip (de 10 loop .mid files)",
+   "naam": "🔁 34-loops-midis.zip (de 10 loop .mid files)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/34-loops-midis.zip"
-  }
- ,
+  },
   {
-   "naam": "\ud83c\udfb5 35-songstarters (10 beats-opzetjes: intro>groove>lift, 8 bars)",
+   "naam": "🎵 35-songstarters (10 beats-opzetjes: intro>groove>lift, 8 bars)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/35-songstarters.g2bpack"
   },
   {
-   "naam": "\ud83c\udfb5 35-songstarters-midis.zip (de 10 starter .mid files)",
+   "naam": "🎵 35-songstarters-midis.zip (de 10 starter .mid files)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/35-songstarters-midis.zip"
-  }
- ,
+  },
   {
-   "naam": "\ud83c\udf19 36-breakdowns (10 energie-dip secties: leeg>half>terug, 8 bars)",
+   "naam": "🌙 36-breakdowns (10 energie-dip secties: leeg>half>terug, 8 bars)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/36-breakdowns.g2bpack"
   },
   {
-   "naam": "\ud83c\udf19 36-breakdowns-midis.zip (de 10 breakdown .mid files)",
+   "naam": "🌙 36-breakdowns-midis.zip (de 10 breakdown .mid files)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/36-breakdowns-midis.zip"
-  }
- ,
+  },
   {
-   "naam": "\ud83d\udd08 37-808-basslines (10 baslijnen 4/8 bars op eigen bass)",
+   "naam": "🔈 37-808-basslines (10 baslijnen 4/8 bars op eigen bass)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/37-808-basslines.g2bpack"
   },
   {
-   "naam": "\ud83d\udd08 37-808-basslines-midis.zip (de 10 baslijn .mid files)",
+   "naam": "🔈 37-808-basslines-midis.zip (de 10 baslijn .mid files)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/37-808-basslines-midis.zip"
-  }
- ,
+  },
   {
-   "naam": "\ud83c\udf0d 38-kawina-fusion (10 Sranan-trap beats: kawina drums x 808 bass, 8 bars)",
+   "naam": "🌍 38-kawina-fusion (10 Sranan-trap beats: kawina drums x 808 bass, 8 bars)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/38-kawina-fusion.g2bpack"
   },
   {
-   "naam": "\ud83c\udf0d 38-kawina-fusion-midis.zip (de 10 fusion .mid files)",
+   "naam": "🌍 38-kawina-fusion-midis.zip (de 10 fusion .mid files)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/38-kawina-fusion-midis.zip"
-  }
- ,
+  },
   {
-   "naam": "\ud83e\udd41 39-kaseko (10 Surinaams-Creole grooves: donder-skratji + snare-rolls + call/response blazers)",
+   "naam": "🥁 39-kaseko (10 Surinaams-Creole grooves: donder-skratji + snare-rolls + call/response blazers)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/39-kaseko.g2bpack"
   },
   {
-   "naam": "\ud83e\udd41 39-kaseko-midis.zip (de 10 kaseko .mid files)",
+   "naam": "🥁 39-kaseko-midis.zip (de 10 kaseko .mid files)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/39-kaseko-midis.zip"
-  }
- ,
+  },
   {
-   "naam": "\u26a1 40-donder (10 trance-bodem grooves op de eigen G2B-skratji + skratji one-shot)",
+   "naam": "⚡ 40-donder (10 trance-bodem grooves op de eigen G2B-skratji + skratji one-shot)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/40-donder.g2bpack"
   },
   {
-   "naam": "\u26a1 40-donder-midis.zip (de 10 donder .mid files)",
+   "naam": "⚡ 40-donder-midis.zip (de 10 donder .mid files)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/g2b-pack-v2/40-donder-midis.zip"
   }
-]
+ ]
 }

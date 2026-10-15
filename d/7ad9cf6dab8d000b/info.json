@@ -1,1 +1,7 @@
-{"titel": "G2B Stem", "licentie": "Plugin-licentie (1 gebruiker, commercieel OK)", "cover": "media/g2b-stem-cover.png", "bestand": "G2B-Stem.zip"}
+{
+ "titel": "G2B Stem",
+ "licentie": "Plugin-licentie (1 gebruiker, commercieel OK)",
+ "cover": "media/g2b-stem-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Stem.zip",
+ "bestand_release": "G2B-Stem.zip"
+}

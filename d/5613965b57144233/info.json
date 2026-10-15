@@ -1,1 +1,7 @@
-{"titel": "G2B SampleX", "licentie": "Volledige download \u2014 persoonlijke licentie", "cover": "media/g2b-samplex-cover.png", "bestand": "G2B-SampleX.zip"}
+{
+ "titel": "G2B SampleX",
+ "licentie": "Volledige download — persoonlijke licentie",
+ "cover": "media/g2b-samplex-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-SampleX.zip",
+ "bestand_release": "G2B-SampleX.zip"
+}

@@ -3,11 +3,11 @@
  "bestanden": [
   {
    "naam": "G2B-ShadowCity-CINEMATIC.zip — volledige track + licentie + songkaart",
-   "bestand": "G2B-ShadowCity-CINEMATIC.zip"
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-ShadowCity-CINEMATIC.zip"
   },
   {
    "naam": "G2B-ShadowCity-STEMS.zip — 4 losse sporen (pad/pulse/perc/fx)",
-   "bestand": "G2B-ShadowCity-STEMS.zip"
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-ShadowCity-STEMS.zip"
   }
  ]
 }

@@ -1,1 +1,7 @@
-{"titel": "G2B Studio Pack", "licentie": "Volledige download", "cover": "media/g2b-studio-pack-cover.png", "bestand": "G2B-Studio-Pack.zip"}
+{
+ "titel": "G2B Studio Pack",
+ "licentie": "Volledige download",
+ "cover": "media/g2b-studio-pack-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Studio-Pack.zip",
+ "bestand_release": "G2B-Studio-Pack.zip"
+}

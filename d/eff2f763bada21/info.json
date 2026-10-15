@@ -1,1 +1,7 @@
-{"titel": "G2B Psychologie", "licentie": "Volledige download", "cover": "media/g2b-psychologie-cover.png", "bestand": "G2B-Psychologie-COMPLEET.zip"}
+{
+ "titel": "G2B Psychologie",
+ "licentie": "Volledige download",
+ "cover": "media/g2b-psychologie-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Psychologie-COMPLEET.zip",
+ "bestand_release": "G2B-Psychologie-COMPLEET.zip"
+}

@@ -1,1 +1,7 @@
-{"titel": "G2B Ruimte — delay+reverb plugin", "licentie": "digitaal", "cover": "media/g2b-ruimte-cover.png", "bestand": "G2B-Ruimte.zip"}
+{
+ "titel": "G2B Ruimte — delay+reverb plugin",
+ "licentie": "digitaal",
+ "cover": "media/g2b-ruimte-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Ruimte.zip",
+ "bestand_release": "G2B-Ruimte.zip"
+}

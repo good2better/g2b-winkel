@@ -1,6 +1,7 @@
 {
-  "titel": "Ziggy Zebra Stripboek — De Magische Kleurenrace",
-  "licentie": "Digitaal product",
-  "cover": "media/f53e234cf2-cover.png",
-  "bestand": "Stripboek-ziggy-zebra-stripboek-pakket.zip"
+ "titel": "Ziggy Zebra Stripboek — De Magische Kleurenrace",
+ "licentie": "Digitaal product",
+ "cover": "media/f53e234cf2-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Stripboek-ziggy-zebra-stripboek-pakket.zip",
+ "bestand_release": "Stripboek-ziggy-zebra-stripboek-pakket.zip"
 }

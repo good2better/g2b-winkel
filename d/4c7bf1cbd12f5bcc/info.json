@@ -1,1 +1,7 @@
-{"titel": "Cjfjff Houce", "licentie": "MP3-lease", "cover": "media/2878e291-cover.png", "bestand": "download.mp3"}
+{
+ "titel": "Cjfjff Houce",
+ "licentie": "MP3-lease",
+ "cover": "media/2878e291-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/download.mp3",
+ "bestand_release": "download.mp3"
+}

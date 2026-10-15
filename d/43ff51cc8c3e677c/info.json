@@ -1,1 +1,7 @@
-{"titel": "G2B Drums — drum-machine", "licentie": "digitaal", "cover": "media/g2b-drums-cover.png", "bestand": "G2B-Drums.zip"}
+{
+ "titel": "G2B Drums — drum-machine",
+ "licentie": "digitaal",
+ "cover": "media/g2b-drums-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Drums.zip",
+ "bestand_release": "G2B-Drums.zip"
+}

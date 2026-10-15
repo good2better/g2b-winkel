@@ -1,1 +1,7 @@
-{"titel": "G2B Knip", "licentie": "Volledige download \u2014 persoonlijke licentie", "cover": "media/g2b-knip-cover.png", "bestand": "G2B-Knip.zip"}
+{
+ "titel": "G2B Knip",
+ "licentie": "Volledige download — persoonlijke licentie",
+ "cover": "media/g2b-knip-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Knip.zip",
+ "bestand_release": "G2B-Knip.zip"
+}

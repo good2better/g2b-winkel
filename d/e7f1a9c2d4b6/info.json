@@ -1,1 +1,7 @@
-{"titel": "G2B Tijd", "licentie": "Volledige download — persoonlijke licentie", "cover": "media/g2b-tijd-cover.png", "bestand": "G2B-Tijd.zip"}
+{
+ "titel": "G2B Tijd",
+ "licentie": "Volledige download — persoonlijke licentie",
+ "cover": "media/g2b-tijd-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Tijd.zip",
+ "bestand_release": "G2B-Tijd.zip"
+}

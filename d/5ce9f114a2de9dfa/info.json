@@ -1,1 +1,7 @@
-{"titel": "Bodhi en de Kleine Koala — e-boek", "licentie": "Exclusief (buy-out)", "cover": "media/cccf8e7a-cover.png", "bestand": "Eboek-bodhi-en-de-kleine-koala-pakket.zip"}
+{
+ "titel": "Bodhi en de Kleine Koala — e-boek",
+ "licentie": "Exclusief (buy-out)",
+ "cover": "media/cccf8e7a-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Eboek-bodhi-en-de-kleine-koala-pakket.zip",
+ "bestand_release": "Eboek-bodhi-en-de-kleine-koala-pakket.zip"
+}

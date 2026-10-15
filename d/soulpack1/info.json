@@ -1,11 +1,11 @@
 {
-  "titel": "G2B Soul & Schuivel Pack",
-  "licentie": "Volledige download — commercieel gebruik OK (eigen G2B-sounds, royalty-free)",
-  "cover": "media/g2b-soulpack1-cover.png",
-  "bestanden": [
-    {
-      "naam": "⬇ G2B-Soul-Pack.zip — 17,16.9 MB · 108 bestanden (wav+midi+INFO+LICENTIE)",
-      "bestand": "G2B-Soul-Pack.zip"
-    }
-  ]
+ "titel": "G2B Soul & Schuivel Pack",
+ "licentie": "Volledige download — commercieel gebruik OK (eigen G2B-sounds, royalty-free)",
+ "cover": "media/g2b-soulpack1-cover.png",
+ "bestanden": [
+  {
+   "naam": "⬇ G2B-Soul-Pack.zip — 17,16.9 MB · 108 bestanden (wav+midi+INFO+LICENTIE)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/soulpack1__G2B-Soul-Pack.zip"
+  }
+ ]
 }

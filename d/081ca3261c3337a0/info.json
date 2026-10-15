@@ -1,1 +1,7 @@
-{"titel": "G2B Akkoord — één toets is een heel akkoord", "licentie": "digitaal", "cover": "media/g2b-akkoord-cover.png", "bestand": "G2B-Akkoord.zip"}
+{
+ "titel": "G2B Akkoord — één toets is een heel akkoord",
+ "licentie": "digitaal",
+ "cover": "media/g2b-akkoord-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Akkoord.zip",
+ "bestand_release": "G2B-Akkoord.zip"
+}

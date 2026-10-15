@@ -1,1 +1,7 @@
-{"titel": "G2B FX-Pack", "licentie": "Bundel-licentie (1 gebruiker, commercieel OK)", "cover": "media/g2b-fxpack-cover.png", "bestand": "G2B-FX-Pack.zip"}
+{
+ "titel": "G2B FX-Pack",
+ "licentie": "Bundel-licentie (1 gebruiker, commercieel OK)",
+ "cover": "media/g2b-fxpack-cover.png",
+ "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/ea6f54c7925b9ed8__G2B-FX-Pack.zip",
+ "bestand_release": "G2B-FX-Pack.zip"
+}

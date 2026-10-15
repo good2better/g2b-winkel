@@ -1,16 +1,46 @@
 {
-  "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket",
-  "producten": [
-    "Sunny-Spel.html",
-    "Sunny-Activiteitenboek.pdf",
-    "Sunny-Puzzelboek.pdf",
-    "Sunny-Kleurboek.pdf",
-    "Sunny-Bordspel.pdf",
-    "Sunny-Winkelpakket.zip",
-    "Sunny-Luisterboek.mp3",
-    "Sunny-Kalender.pdf",
-    "Sunny-Knutselpakket.zip",
-    "Sunny-Videoboek.mp4"
-  ],
-  "licentie": "LICENTIE.txt"
+ "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket",
+ "licentie": "LICENTIE.txt",
+ "bestanden": [
+  {
+   "naam": "Sunny-Spel.html",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Sunny-Spel.html"
+  },
+  {
+   "naam": "Sunny-Activiteitenboek.pdf",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Sunny-Activiteitenboek.pdf"
+  },
+  {
+   "naam": "Sunny-Puzzelboek.pdf",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Sunny-Puzzelboek.pdf"
+  },
+  {
+   "naam": "Sunny-Kleurboek.pdf",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Sunny-Kleurboek.pdf"
+  },
+  {
+   "naam": "Sunny-Bordspel.pdf",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Sunny-Bordspel.pdf"
+  },
+  {
+   "naam": "Sunny-Winkelpakket.zip",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Sunny-Winkelpakket.zip"
+  },
+  {
+   "naam": "Sunny-Luisterboek.mp3",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Sunny-Luisterboek.mp3"
+  },
+  {
+   "naam": "Sunny-Kalender.pdf",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Sunny-Kalender.pdf"
+  },
+  {
+   "naam": "Sunny-Knutselpakket.zip",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Sunny-Knutselpakket.zip"
+  },
+  {
+   "naam": "Sunny-Videoboek.mp4",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Sunny-Videoboek.mp4"
+  }
+ ]
 }

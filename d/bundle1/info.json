@@ -1,1 +1,35 @@
-{"titel": "G2B Producer Bundle — alle 6 packs", "licentie": "Volledige downloads — commercieel gebruik OK (eigen G2B-sounds, royalty-free)", "cover": "media/g2b-bundle1-cover.png", "bestanden": [{"naam": "⬇ G2B-DrumsFX-Pack.zip — ~120 MB · ~911 files", "bestand": "G2B-DrumsFX-Pack.zip"}, {"naam": "⬇ G2B-Latin-Pack.zip — ~120 MB · ~911 files", "bestand": "G2B-Latin-Pack.zip"}, {"naam": "⬇ G2B-Melodic-Pack.zip — ~120 MB · ~911 files", "bestand": "G2B-Melodic-Pack.zip"}, {"naam": "⬇ G2B-Soul-Pack.zip — ~120 MB · ~911 files", "bestand": "G2B-Soul-Pack.zip"}, {"naam": "⬇ G2B-Surinaams-Pack.zip — ~120 MB · ~911 files", "bestand": "G2B-Surinaams-Pack.zip"}, {"naam": "⬇ G2B-Urban-Drill-Pack.zip — ~120 MB · ~911 files", "bestand": "G2B-Urban-Drill-Pack.zip"}, {"naam": "⬇ G2B-House-Pack.zip — ~120 MB · ~911 files", "bestand": "G2B-House-Pack.zip"}]}
+{
+ "titel": "G2B Producer Bundle — alle 6 packs",
+ "licentie": "Volledige downloads — commercieel gebruik OK (eigen G2B-sounds, royalty-free)",
+ "cover": "media/g2b-bundle1-cover.png",
+ "bestanden": [
+  {
+   "naam": "⬇ G2B-DrumsFX-Pack.zip — ~120 MB · ~911 files",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-DrumsFX-Pack.zip"
+  },
+  {
+   "naam": "⬇ G2B-Latin-Pack.zip — ~120 MB · ~911 files",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Latin-Pack.zip"
+  },
+  {
+   "naam": "⬇ G2B-Melodic-Pack.zip — ~120 MB · ~911 files",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Melodic-Pack.zip"
+  },
+  {
+   "naam": "⬇ G2B-Soul-Pack.zip — ~120 MB · ~911 files",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Soul-Pack.zip"
+  },
+  {
+   "naam": "⬇ G2B-Surinaams-Pack.zip — ~120 MB · ~911 files",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Surinaams-Pack.zip"
+  },
+  {
+   "naam": "⬇ G2B-Urban-Drill-Pack.zip — ~120 MB · ~911 files",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Urban-Drill-Pack.zip"
+  },
+  {
+   "naam": "⬇ G2B-House-Pack.zip — ~120 MB · ~911 files",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-House-Pack.zip"
+  }
+ ]
+}
