@@ -1,6 +1,23 @@
 {
   "producten": [
     {
+      "id": "g2b-producer-bundle",
+      "titel": "G2B Producer Bundle — alle 6 packs",
+      "soort": "bundle",
+      "beschrijving": "DE COMPLETE COLLECTIE: alle 6 G2B-packs in één download (85.5 MB, ~480 files). Surinaams·Latin·Urban·Melodic·Soul·Drums&FX + alle midi. Los: €124,70 — bundel: €59,95. 100% royalty-vrij.",
+      "prijs": "€ 59,95",
+      "prijzen": [
+        59.95
+      ],
+      "links": {
+        "koop": "https://pay.good2better.nl/bundle"
+      },
+      "groep": "sounds",
+      "download_dir": "d/bundle1",
+      "badge": "DEAL",
+      "cover": "media/g2b-bundle1-cover.png"
+    },
+    {
       "id": "g2b-drumsfx-pack",
       "titel": "G2B Drums & FX Pack",
       "soort": "sample-pack",
