@@ -186,7 +186,8 @@
       "groep": "sounds",
       "cover": "media/g2b-beatbouwdoos-cover.png",
       "download_dir": "d/6d4c10171437",
-      "badge": "NIEUW"
+      "badge": "NIEUW",
+      "preview": "media/bouwdoos.mp3"
     },
     {
       "id": "g2b-studio-pack",
