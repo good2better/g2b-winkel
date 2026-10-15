@@ -2098,7 +2098,8 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/sat-cover.png",
-   "download_dir": "d/w4hf1l"
+   "download_dir": "d/w4hf1l",
+   "video": "media/wah-demo.mp4"
   },
   {
    "id": "ch0rd1",
@@ -2145,7 +2146,8 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/sat-cover.png",
-   "download_dir": "d/m3l0dy"
+   "download_dir": "d/m3l0dy",
+   "video": "media/melody-demo.mp4"
   },
   {
    "id": "k4w1n",
