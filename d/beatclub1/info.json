@@ -24,6 +24,13 @@
    "sounds": 16,
    "inhoud": "log-drums ×3, soulful pads (Fmaj/Dm), piano-stabs (Am/F), bass-stab, openhat, rim, soft kick, tight snare, flute-motief, whistle, groove-loop 112bpm, shaker-loop — de heetste afro-house stijl van nu",
    "thema": "amapiano / afro-house — club exclusief voor leden"
+  },
+  "maand11": {
+   "naam": "UK Drill",
+   "zip": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand11-UK-Drill.zip",
+   "sounds": 16,
+   "inhoud": "sliding 808s (up/down/punch), dark bells (A/E), minor plucks, drill hats/snare/kick, riser+downlifter, dark pad Am, 2 drill-loops 140bpm — donkere UK straatsound",
+   "thema": "uk drill — club exclusief voor leden"
   }
  },
  "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Welkom.zip",
@@ -47,6 +54,10 @@
   "G2B-BeatClub-Maand1.zip"
  ],
  "bestanden": [
+  {
+   "naam": "⬇ Maand 11 — G2B-BeatClub-Maand11-UK-Drill.zip (16 sounds)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand11-UK-Drill.zip"
+  },
   {
    "naam": "⬇ Maand 10 — G2B-BeatClub-Maand10-Amapiano-Groove.zip (16 sounds)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand10-Amapiano-Groove.zip"
