@@ -14,7 +14,7 @@ START_NAMESPACE_DISTRHO
 class SleutelPlugin : public Plugin
 {
 public:
-    SleutelPlugin() : Plugin(12, 0, 0) { pushAna_(); }
+    SleutelPlugin() : Plugin(15, 0, 0) { pushAna_(); }
 
 protected:
     const char* getLabel() const override { return "G2B Sleutel-Helper"; }
@@ -30,7 +30,8 @@ protected:
     void setState(const char*, const char*) override {}
 
     enum { kOn, kFocus, kKracht, kDim, kSkin, kClear, kThru, kHold,
-           kOutKey, kOutConf, kOutMask, kOutFoc };
+           kOutKey, kOutConf, kOutMask, kOutFoc,
+           kPlay, kOutChord, kOutHint };
 
     void initParameter(uint32_t i, Parameter& p) override {
         p.hints = kParameterIsAutomatable;
@@ -47,6 +48,9 @@ protected:
         case kOutConf:p.name="conf-out"; p.symbol="oconf"; p.ranges.min=0;  p.ranges.max=99;   p.hints|=kParameterIsInteger|kParameterIsOutput|kParameterIsHidden; break;
         case kOutMask:p.name="mask-out"; p.symbol="omask"; p.ranges.min=0;  p.ranges.max=4095; p.hints|=kParameterIsInteger|kParameterIsOutput|kParameterIsHidden; break;
         case kOutFoc: p.name="foc-out";  p.symbol="ofoc";  p.ranges.min=0;  p.ranges.max=4095; p.hints|=kParameterIsInteger|kParameterIsOutput|kParameterIsHidden; break;
+        case kPlay:  p.name="SPEEL HINT";  p.symbol="play";  p.ranges.min=0; p.ranges.max=1;   p.hints|=kParameterIsTrigger; break;
+        case kOutChord:p.name="chord-out";p.symbol="ochord";p.ranges.min=0; p.ranges.max=4095; p.hints|=kParameterIsInteger|kParameterIsOutput|kParameterIsHidden; break;
+        case kOutHint:p.name="hint-out";  p.symbol="ohint"; p.ranges.min=0; p.ranges.max=255;  p.hints|=kParameterIsInteger|kParameterIsOutput|kParameterIsHidden; break;
         }
     }
 
@@ -58,7 +62,10 @@ protected:
         case kOutKey:return key_<0?-1.f:(float)(key_*2+minor_);
         case kOutConf:return (float)conf_;
         case kOutMask:return (float)mask_;
-        case kOutFoc:return (float)focusMask_;} return 0.f;
+        case kOutFoc:return (float)focusMask_;
+        case kPlay:return 0;
+        case kOutChord:return (float)chordOut_;
+        case kOutHint:return (float)hintOut_;} return 0.f;
     }
 
     void setParameterValue(uint32_t i, float v) override {
@@ -71,6 +78,7 @@ protected:
         case kClear: if(v>0.5f){nNotes_=0;lastChord_=-1;pushAna_();} break;
         case kThru:  fThru=v; break;
         case kHold:  fHold=v; break;
+        case kPlay:  if(v>0.5f) playHint_(); break;
         }
     }
 
@@ -91,9 +99,23 @@ protected:
                 noteOn_(m.data[1], m.data[2], fAbs+m.frame);
                 changed=true;
             }
+            else if(st==0x80 || (st==0x90 && m.data[2]==0)){  // note-off
+                const int pc=m.data[1]%12;
+                if(held_[pc]>0){ held_[pc]--; chordDirty_=true; }
+            }
+        }
+        // uitgaande hint-events afspelen (SPEEL HINT)
+        for(int i=0;i<nPend_;i++){
+            Pend&p=pend_[i];
+            if(!p.done && p.at<fAbs+frames){
+                MidiEvent mo{}; mo.frame=(uint32_t)(p.at-fAbs); mo.size=3;
+                mo.data[0]=p.st; mo.data[1]=p.note; mo.data[2]=p.vel;
+                writeMidiEvent(mo); p.done=true;
+            }
         }
         fAbs+=frames;
         if(changed) analyse_();
+        if(chordDirty_){ chordDirty_=false; chordDetect_(); }
     }
 
 private:
@@ -107,10 +129,74 @@ private:
     uint16_t mask_=0xFFF, focusMask_=0;
     char keyTxt_[32]="luister…";
     char sug1_[64]="", sug2_[64]="", sug3_[96]="";
+    // feature 1+2: live-akkoord + buiten-toonsoort hint
+    int held_[12]={0}; bool chordDirty_=false;
+    int chordOut_=0;                                 // q*16+root  (q:0 geen,1 maj,2 min,3 dim,4 aug,5 sus4,6 7,7 maj7,8 m7)
+    int hintOut_=0;                                  // fout*16+goed (0=geen)
+    // feature 3: SPEEL HINT → midi-uit queue
+    struct Pend { uint64_t at; uint8_t st,note,vel; bool done; };
+    Pend pend_[64]; int nPend_=0;
+
+    void noteOffHeld_(uint8_t n){ const int pc=n%12; if(held_[pc]>0)held_[pc]--; }
+
+    // q-tabel: 1 maj{0,4,7} 2 min{0,3,7} 3 dim{0,3,6} 4 aug{0,4,8} 5 sus4{0,5,7} 6 7{0,4,7,10} 7 maj7{0,4,7,11} 8 m7{0,3,7,10}
+    void chordDetect_(){
+        static const int T[9][4]={{0,0,0,0},{0,4,7,-1},{0,3,7,-1},{0,3,6,-1},{0,4,8,-1},{0,5,7,-1},{0,4,7,10},{0,4,7,11},{0,3,7,10}};
+        int n=0; for(int i=0;i<12;i++) if(held_[i]>0) n++;
+        int bestQ=0,bestR=-1;
+        if(n>=3){
+            for(int r=0;r<12&&bestQ==0;r++)for(int q=1;q<=8;q++){
+                bool ok=true;
+                for(int k=1;k<4;k++){ const int iv=T[q][k]; if(iv<0)break;
+                    if(held_[(r+iv)%12]==0){ok=false;break;} }
+                if(ok && T[q][1]>0){ bestQ=q;bestR=r;break; }
+            }
+        }
+        const int co=bestR<0?0:bestQ*16+bestR;
+        if(co!=chordOut_){ chordOut_=co; requestParameterValueChange(kOutChord,(float)co); }
+    }
+
+    // buiten-de-toonsoort: stel dichtstbijzijnde veilige noot voor
+    void hintCheck_(uint8_t note){
+        const int pc=note%12;
+        int h=0;
+        if(mask_!=0xFFF && !(mask_>>pc&1)){
+            int best=pc; for(int d=1;d<6;d++){
+                if(mask_>>((pc+d)%12)&1){best=(pc+d)%12;break;}
+                if(mask_>>((pc+12-d)%12)&1){best=(pc+12-d)%12;break;}
+            }
+            h=pc*16+best;
+        }
+        if(h!=hintOut_){ hintOut_=h; requestParameterValueChange(kOutHint,(float)h); }
+    }
+
+    // SPEEL HINT: huidige akkoord/bas-suggestie als MIDI-uit sturen
+    void playHint_(){
+        if(key_<0) return;
+        nPend_=0;
+        const uint64_t now=fAbs+32;
+        const uint32_t sr=(uint32_t)getSampleRate();
+        const uint64_t len=(uint64_t)(sr*6/5);             // ~1.2s
+        if((int)fFocus==1){                              // BAS-808: root in oct 1-2
+            const int n=36+key_;
+            pend_[nPend_++]={now,0x90,(uint8_t)n,110,false};
+            pend_[nPend_++]={now+len,0x80,(uint8_t)n,0,false};
+        } else {                                          // triad oct 4 (+7e op hoge kracht)
+            const int t3=minor_?3:4;
+            const int notes[4]={48+key_,48+key_+t3,48+key_+7,48+key_+((fKracht>0.6f)?10:7)};
+            const int cnt=(fKracht>0.6f)?4:3;
+            for(int i=0;i<cnt;i++){
+                pend_[nPend_++]={now,0x90,(uint8_t)notes[i],100,false};
+                pend_[nPend_++]={now+len,0x80,(uint8_t)notes[i],0,false};
+            }
+        }
+    }
 
     void noteOn_(uint8_t n, uint8_t v, uint64_t at){
         ring_[wpos_]={n,v,at}; wpos_=(wpos_+1)%128;
         if(nNotes_<128) nNotes_++;
+        held_[n%12]++; chordDirty_=true;
+        hintCheck_(n);
     }
 
     void analyse_(){
@@ -203,6 +289,8 @@ private:
         requestParameterValueChange(kOutConf, (float)conf_);
         requestParameterValueChange(kOutMask, (float)mask_);
         requestParameterValueChange(kOutFoc, (float)focusMask_);
+        requestParameterValueChange(kOutChord, (float)chordOut_);
+        requestParameterValueChange(kOutHint, (float)hintOut_);
         char b[160];
         uint32_t m24=0;
         for(int pc=0;pc<12;pc++) if(mask_>>pc&1) m24|=(1u<<pc);

@@ -39,6 +39,19 @@ protected:
         else if(index==9) fConf=(int)value;
         else if(index==10) fMask=(uint32_t)value;
         else if(index==11) fFoc=(uint32_t)value;
+        else if(index==13){                        // chord-out: q*16+root
+            static const char* NN[12]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
+            static const char* QN[9]={"","","m","dim","aug","sus4","7","maj7","m7"};
+            const int v=(int)value;
+            if(v==0) fChord[0]=0;
+            else std::snprintf(fChord,sizeof(fChord),"%s%s",NN[v&15],QN[v/16]);
+        }
+        else if(index==14){                        // hint-out: fout*16+goed
+            static const char* NN[12]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
+            const int v=(int)value;
+            if(v==0) fHint[0]=0;
+            else std::snprintf(fHint,sizeof(fHint),"%s ? probeer %s",NN[v/16],NN[v&15]);
+        }
         repaint();
     }
     void stateChanged(const char* key, const char* value) override
@@ -87,10 +100,12 @@ protected:
         beginPath(); roundedRect(W-200,8,184,44,8); fillColor(C(pn)); fill();
         fillColor(C(fg)); fontSize(17); 
         textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
-        text(W-108,24,fKey,nullptr);
-        fontSize(9); fillColor(C(mu));
-        if(fConf>0){ char b[24]; std::snprintf(b,24,"zekerheid %d%%",fConf); text(W-108,42,b,nullptr); }
-        else text(W-108,42,"speel noten op je kanaal",nullptr);
+        text(W-108,22,fKey,nullptr);
+        fontSize(9);
+        if(fChord[0]){ fillColor(C(ac)); text(W-108,36,fChord,nullptr); }
+        fillColor(C(mu));
+        if(fConf>0){ char b[24]; std::snprintf(b,24,"zekerheid %d%%",fConf); text(W-108,47,b,nullptr); }
+        else text(W-108,47,"speel noten op je kanaal",nullptr);
 
         // ---- FOCUS pills ----
         static const char* FP[4]={"ALLES","BAS-808","AKKOORDEN","MELODIE"};
@@ -104,10 +119,12 @@ protected:
             textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
             text(x+42,fPillY+12,FP[i],nullptr);
         }
-        // AAN + WIS knoppen rechts
-        beginPath(); roundedRect(W-160,fPillY,66,24,12); fillColor(fOn>0.5f?C(ad):C(pn)); fill();
-        fillColor(C(fg)); fontSize(10); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
-        text(W-127,fPillY+12,fOn>0.5f?"AAN":"UIT",nullptr);
+        // SPEEL + AAN + WIS knoppen rechts
+        beginPath(); roundedRect(W-236,fPillY,66,24,12); fillColor(C(pn)); fill();
+        fillColor(C(ac)); fontSize(10); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+        text(W-203,fPillY+12,"SPEEL",nullptr);
+        beginPath(); roundedRect(W-164,fPillY,68,24,12); fillColor(fOn>0.5f?C(ad):C(pn)); fill();
+        fillColor(C(fg)); text(W-130,fPillY+12,fOn>0.5f?"AAN":"UIT",nullptr);
         beginPath(); roundedRect(W-88,fPillY,72,24,12); fillColor(C(pn)); fill();
         fillColor(C(fg)); text(W-52,fPillY+12,"WIS",nullptr);
 
@@ -138,6 +155,10 @@ protected:
         // toonnamen onder de C's
         fillColor(C(mu)); fontSize(8); textAlign(ALIGN_CENTER|ALIGN_TOP);
         for(int o=0;o<3;o++) text(16+o*7*(kw*12/7)+ (kw*12/7)/2, py+ph+4, o==1?"C3":"C",nullptr);
+
+        // buiten-toonsoort hint
+        if(fHint[0]){ fillColor(C(ad)); fontSize(11); textAlign(ALIGN_LEFT|ALIGN_TOP);
+            text(16,py+ph+8,fHint,nullptr); }
 
         // ---- suggestie-kaart ----
         const float sy=py+ph+22;
@@ -188,7 +209,8 @@ protected:
         if(ev.pos.getY()>=fPillY&&ev.pos.getY()<=fPillY+24){
             for(int i=0;i<4;i++){const float x=16+i*92;
                 if(ev.pos.getX()>=x&&ev.pos.getX()<=x+84){setParameterValue(1,(float)i);return true;}}
-            if(ev.pos.getX()>=W-160&&ev.pos.getX()<=W-94){setParameterValue(0,fOn>0.5f?0.f:1.f);return true;}
+            if(ev.pos.getX()>=W-236&&ev.pos.getX()<=W-170){setParameterValue(12,1.f);return true;}
+            if(ev.pos.getX()>=W-164&&ev.pos.getX()<=W-96){setParameterValue(0,fOn>0.5f?0.f:1.f);return true;}
             if(ev.pos.getX()>=W-88){setParameterValue(5,1.f);return true;}
         }
         // skin dots
@@ -215,7 +237,7 @@ private:
     float fMin[2],fMax[2],fValue[2]; const char* fLabel[2]; int fParamId[2];
     int fDrag; float fLastY;
     float fOn,fFocus,fSkin; uint32_t fMask,fFoc; int fConf;
-    char fKey[32], fSug1[64], fSug2[64], fSug3[96];
+    char fKey[32], fSug1[64], fSug2[64], fSug3[96], fChord[16]={0}, fHint[40]={0};
     float fPillY=62,fPianoY=104,fKnobY=0,fSkinX=0,fSkinY=0;
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SleutelUI)
