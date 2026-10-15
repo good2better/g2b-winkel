@@ -52,7 +52,7 @@
    "id": "g2b-producer-bundle",
    "titel": "G2B Producer Bundle — alle 7 packs",
    "soort": "bundle",
-   "beschrijving": "DE COMPLETE COLLECTIE: alle 7 G2B-sample-packs in één download (Drums&FX, House, Latin, Melodic, Soul&Schuivel, Surinaams, Urban Drill — ~120 MB, ~911 files). 100% eigen sounds, licenties inbegrepen.",
+   "beschrijving": "DE COMPLETE SAMPLE-COLLECTIE: alle 7 G2B-sound-packs in één download (Drums&FX, House, Latin, Melodic, Soul&Schuivel, Surinaams, Urban Drill — ~120 MB, ~911 files). 100% eigen sounds, licenties inbegrepen. Los ~€140 samen — hier één prijs. Wil je er plugins + midi bij? → G2B Pack der Packs (€79).",
    "prijs": "€ 59,95",
    "prijzen": [
     59.95
@@ -136,7 +136,7 @@
    "id": "g2b-pack-der-packs",
    "titel": "G2B Pack der Packs",
    "soort": "digitaal",
-   "beschrijving": "DE VOLLEDIGE G2B-STUDIO: 6 complete plugins (VocalTune, Sampler v2, OneShot, Keys XL, Delay, Reverb — Windows + Linux) + Keys XL instrumentenbank + 1006 one-shot sounds in 35 categorieën + 182 midi-patronen + handleidingen & demo-video's. Alles wat wij maken, in één download. 100% royalty-vrij.",
+   "beschrijving": "DE VOLLEDIGE G2B-SOUND-STUDIO: 6 complete plugins (VocalTune, Sampler v2, OneShot, Keys XL, Delay, Reverb — Windows + Linux) + Keys XL instrumentenbank + 1006 one-shot sounds in 35 categorieën + 182 midi-patronen + handleidingen & demo-video's. 100% royalty-vrij. Wil je álle 24 plugins? → G2B Suite (€89,95). Wil je óók de automatische mix/master-robot? → G2B Studio Pack (€149).",
    "prijs": "€ 79 intro-prijs",
    "prijzen": {},
    "links": {
@@ -296,7 +296,7 @@
    "id": "g2b-suite",
    "titel": "G2B Suite — ALLES (24 plugins)",
    "soort": "digitaal",
-   "beschrijving": "ALLE 24 G2B-plugins in één bundel: 12 FX + 12 instruments, inclusief G2BKeysData + eigen G2BSoundLib (262 eigen one-shots). V6: MENGER is nu DRUMPOD (GENRE → drumloop uit jouw eigen sounds, 6 banen met reroll-dobbelsteen per baan, 808-riffs met glide, VOL/PAN per baan, live MIDI-out + export: ↓MID schrijft .mid, ↓WAV schrijft de hele loop als .wav + 6 losse stems om per spoor in je DAW te slepen), GALAXY wit-scherm-bug gefixt op alle 27 standen, Donder Glider ↓MID-knop werkt echt. Windows VST3+CLAP, met NL-handleiding en broncode erbij.",
+   "beschrijving": "ALLE 24 G2B-plugins in één bundel: 12 FX + 12 instruments, inclusief G2BKeysData + eigen G2BSoundLib (262 eigen one-shots). V6: MENGER is nu DRUMPOD (GENRE → drumloop uit jouw eigen sounds, 6 banen met reroll-dobbelsteen per baan, 808-riffs met glide, VOL/PAN per baan, live MIDI-out + export: ↓MID schrijft .mid, ↓WAV schrijft de hele loop als .wav + 6 losse stems om per spoor in je DAW te slepen), GALAXY wit-scherm-bug gefixt op alle 27 standen, Donder Glider ↓MID-knop werkt echt. Windows VST3+CLAP, met NL-handleiding en broncode erbij. — Wil je óók de complete sound-bibliotheek + midi-patronen erbij? → G2B Pack der Packs (€79).",
    "prijs": "€ 89,95",
    "prijzen": {},
    "links": {
