@@ -1867,7 +1867,7 @@
    "id": "syncbundle",
    "titel": "G2B SYNC-BUNDLE — complete audio-catalogus",
    "soort": "bundel",
-   "beschrijving": "Alles in één koop: 35 beats & sync-tracks + alle stems + licenties — 46 downloads. Elke stemming (donker·vrolijk·chill·sport·emotioneel·horror·kids·corporate). Voor studios, editors en supervisors die direct willen schakelen.",
+   "beschrijving": "Alles in één koop: 36 beats & sync-tracks + alle stems + licenties — 48 downloads. Elke stemming (donker·vrolijk·chill·sport·emotioneel·horror·kids·corporate). Voor studios, editors en supervisors die direct willen schakelen.",
    "prijs": "€ 99",
    "links": {
     "koop": "bestel.html?p=syncbundle",
@@ -1943,6 +1943,40 @@
    "cover": "media/vox-cover.png",
    "preview": "media/vox-preview.mp3",
    "download_dir": "d/v0xch"
+  },
+  {
+   "id": "f13sta",
+   "titel": "Fiesta",
+   "soort": "audio",
+   "beschrijving": "Reggaeton party-track 95 BPM — dembow-drums, zonnige pluck-melodie en echte Vox-Chops. Incl. 4 stems.",
+   "prijzen": {
+    "mp3": "€ 9,95",
+    "wav": "€ 24,95",
+    "exclusief": "€ 149"
+   },
+   "links": {
+    "koop": "bestel.html?p=f13sta",
+    "mp3": "bestel.html?p=f13sta&t=mp3",
+    "wav": "bestel.html?p=f13sta&t=wav",
+    "exclusief": "bestel.html?p=f13sta&t=exclusief",
+    "download": "bedankt.html?k=f13sta"
+   },
+   "duur": "0:22",
+   "groep": "feest",
+   "bpm": 95,
+   "moods": [
+    "feest",
+    "reggaeton",
+    "club",
+    "zomer",
+    "dansbaar",
+    "energiek"
+   ],
+   "cover": "media/fiesta-cover.png",
+   "preview": "media/fiesta-preview.mp3",
+   "download_dir": "d/f13sta",
+   "badge": "NIEUW",
+   "stems": true
   }
  ]
 }
