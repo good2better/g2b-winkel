@@ -254,7 +254,8 @@ function pasFilterToe() {
   document.querySelectorAll("#lijst .card").forEach(el => {
     const p = productenById(el.dataset.id);
     const tekst = ((p?.titel || "") + " " + (p?.beschrijving || "") +
-      " " + (p?.groep || "")).toLowerCase();
+      " " + (p?.groep || "") + " " + (p?.bpm || "") + " " +
+      ((p?.moods || []).join(" "))).toLowerCase();
     const catOk = !actieveCat || el.dataset.cat === actieveCat;
     el.style.display = (catOk && (!q || tekst.includes(q))) ? "" : "none";
   });
