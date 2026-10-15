@@ -1891,7 +1891,7 @@
    "id": "syncbundle",
    "titel": "G2B SYNC-BUNDLE — complete audio-catalogus",
    "soort": "bundel",
-   "beschrijving": "Alles in één koop: 42 beats & sync-tracks + alle stems + licenties — 55 downloads. Elke stemming (donker·vrolijk·chill·sport·emotioneel·horror·kids·corporate). Voor studios, editors en supervisors die direct willen schakelen.",
+   "beschrijving": "Alles in één koop: 43 beats & sync-tracks + alle stems + licenties — 56 downloads. Elke stemming (donker·vrolijk·chill·sport·emotioneel·horror·kids·corporate). Voor studios, editors en supervisors die direct willen schakelen.",
    "prijs": "€ 99",
    "links": {
     "koop": "bestel.html?p=syncbundle",
@@ -2230,6 +2230,37 @@
    "bpm": 105,
    "stems": true,
    "beschrijving": "Vrolijke lente-instrumental 105 BPM — marimba, pads, fluit, vogels. Incl. 6 stems. Lente/Pasen-commercials, tuin/DIY-ads, feelgood-content."
+  },
+  {
+   "id": "z0m3r",
+   "titel": "Zomer — tropische zomer track (+6 stems)",
+   "soort": "audio",
+   "groep": "vrolijk",
+   "prijs": "€ 9,95",
+   "prijzen": {
+    "mp3": "€ 9,95",
+    "wav": "€ 24,95",
+    "exclusief": "€ 149"
+   },
+   "links": {
+    "koop": "bestel.html?p=z0m3r",
+    "mp3": "bestel.html?p=z0m3r&t=mp3",
+    "wav": "bestel.html?p=z0m3r&t=wav",
+    "exclusief": "bestel.html?p=z0m3r&t=exclusief",
+    "download": "bedankt.html?k=z0m3r"
+   },
+   "cover": "media/zomer-cover.png",
+   "preview": "media/zomer-preview.mp3",
+   "download_dir": "d/z0m3r",
+   "moods": [
+    "vrolijk",
+    "zomer",
+    "feest"
+   ],
+   "duur": "1:00",
+   "bpm": 112,
+   "stems": true,
+   "beschrijving": "Tropische zomer-party 112 BPM — steel drums, pads, pluck-melodie, shaker. Incl. 6 stems. Zomer/reis/strand/festival/ijs-ads."
   }
  ]
 }
