@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G2B Sync Library — muziek voor film, reclame & games</title>
+<meta name="description" content="Good2Better Sync Library — doorzoekbare muziek-catalogus voor sync-licenties: film, reclame, games en online video. Direct contact met de maker.">
+<meta property="og:title" content="G2B Sync Library">
+<meta property="og:description" content="Browse beats & tracks op mood en genre — direct licentie aanvragen.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0d0f0e">
+<style>
+:root{
+  --bg:#0d0f0e; --panel:#171a19; --panel2:#1e2221; --line:#2a2f2d;
+  --txt:#e8ecea; --dim:#8fa098; --accent:#2fbf71; --accent2:#1d7a48;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);
+  font:15px/1.6 'Segoe UI',system-ui,sans-serif;min-height:100vh}
+header{border-bottom:1px solid var(--line);background:var(--panel);
+  padding:22px 20px;text-align:center}
+.logo{font-size:clamp(22px,4vw,30px);font-weight:800;letter-spacing:2px}
+.logo b{color:var(--accent)}
+.sub{color:var(--dim);font-size:13px;margin-top:4px}
+.hero{color:var(--dim);font-size:13px;max-width:640px;margin:10px auto 0}
+main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
+.zoek{width:100%;background:var(--panel);border:1px solid var(--line);
+  color:var(--txt);border-radius:10px;padding:11px 14px;font-size:14px;
+  margin:0 0 14px;font-family:inherit}
+.zoek:focus{outline:none;border-color:var(--accent)}
+.moods{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
+  margin:0 0 18px}
+.mood{background:var(--panel);border:1px solid var(--line);
+  color:var(--txt);border-radius:20px;padding:7px 15px;font-size:13px;
+  font-weight:700;cursor:pointer}
+.mood:hover{border-color:var(--accent)}
+.mood.on{border-color:var(--accent);color:var(--accent)}
+.track{display:flex;align-items:center;gap:12px;background:var(--panel);
+  border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+  margin-bottom:10px}
+.track:hover{border-color:var(--accent2)}
+.play{width:40px;height:40px;border-radius:50%;border:none;flex:none;
+  background:var(--accent);color:#04120a;font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center}
+.play:hover{filter:brightness(1.15)}
+.info{flex:1;min-width:0}
+.titel{font-weight:700;font-size:15px}
+.meta{color:var(--dim);font-size:12px}
+.prijzen{color:var(--accent);font-size:12px;margin-top:2px}
+.aanvraag{flex:none;background:transparent;color:var(--accent);
+  border:1.5px solid var(--accent);font-weight:700;font-size:12px;
+  padding:8px 14px;border-radius:18px;text-decoration:none;
+  white-space:nowrap}
+.aanvraag:hover{background:var(--accent);color:#04120a}
+.leeg{text-align:center;color:var(--dim);padding:50px 20px;
+  border:1px dashed var(--line);border-radius:14px}
+audio{display:none}
+footer{border-top:1px solid var(--line);color:var(--dim);
+  text-align:center;padding:20px;font-size:13px}
+footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">G2B <b>SYNC LIBRARY</b></div>
+  <div class="sub">Muziek voor film, reclame, games & online video</div>
+  <div class="hero">Alle tracks 100% eigen gemaakt door Good2Better — geen samples,
+  geen claims. Zoek op genre/mood, luister de preview en vraag direct een
+  licentie aan bij de maker zelf.</div>
+</header>
+<main>
+  <input class="zoek" id="zoek" type="search"
+    placeholder="🔍 Zoek op titel, genre of mood…" aria-label="Zoek in de library">
+  <div class="moods" id="moods"></div>
+  <div id="lijst"><div class="leeg">Library laden…</div></div>
+</main>
+<footer>
+  Sync-licentie op maat, exclusive rechten of een track laten aanpassen?
+  <br><a href="mailto:g.sandvliet88@gmail.com?subject=Sync-licentie%20G2B">g.sandvliet88@gmail.com</a>
+  · <b>Good2Better</b> · KVK 95199926
+</footer>
+<script>
+const esc = s => String(s ?? "").replace(/[&<>"]/g,
+  c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let prods = [], mood = "", curAudio = null, curBtn = null;
+
+fetch("products.json").then(r => r.json()).then(d => {
+  prods = d.producten.filter(p => p.soort === "audio" && p.preview);
+  bouwMoods(); render();
+});
+
+function bouwMoods() {
+  const gs = [...new Set(prods.map(p => p.groep).filter(Boolean))].sort();
+  const el = document.getElementById("moods");
+  el.innerHTML = `<button class="mood on" data-m="">🎵 alles</button>` +
+    gs.map(g => `<button class="mood" data-m="${esc(g)}">${esc(g)}</button>`).join("");
+  el.addEventListener("click", e => {
+    const b = e.target.closest(".mood"); if (!b) return;
+    mood = b.dataset.m;
+    el.querySelectorAll(".mood").forEach(x => x.classList.toggle("on", x === b));
+    render();
+  });
+}
+
+document.getElementById("zoek").addEventListener("input", render);
+
+function render() {
+  const q = document.getElementById("zoek").value.trim().toLowerCase();
+  const lijst = document.getElementById("lijst");
+  const items = prods.filter(p => {
+    const t = ((p.titel || "") + " " + (p.groep || "")).toLowerCase();
+    return (!mood || p.groep === mood) && (!q || t.includes(q));
+  });
+  if (!items.length) { lijst.innerHTML = `<div class="leeg">Niets gevonden.</div>`; return; }
+  lijst.innerHTML = items.map(p => {
+    const prijzen = Object.entries(p.prijzen || {})
+      .map(([k, v]) => `${esc(k)} ${esc(v)}`).join(" · ");
+    const mail = "mailto:g.sandvliet88@gmail.com?subject=" +
+      encodeURIComponent(`Sync-licentie: ${p.titel} (${p.id})`) +
+      "&body=" + encodeURIComponent(
+        `Hoi Giorgio,\n\nIk wil graag een licentie voor "${p.titel}" ` +
+        `voor mijn project.\n\nProject: \nGebruik (film/reclame/game/video): \n\nGroet`);
+    return `<div class="track">
+      <button class="play" data-src="${esc(p.preview)}"
+        aria-label="Speel ${esc(p.titel)}">▶</button>
+      <div class="info">
+        <div class="titel">${esc(p.titel)}</div>
+        <div class="meta">${esc(p.groep || "")} · ${p.duur ? Math.round(p.duur) + "s" : ""} · 100% eigenaar</div>
+        <div class="prijzen">${prijzen || "prijs op aanvraag"}</div>
+      </div>
+      <a class="aanvraag" href="${mail}">LICENTIE ➜</a>
+    </div>`;
+  }).join("");
+}
+
+document.getElementById("lijst").addEventListener("click", e => {
+  const b = e.target.closest(".play"); if (!b) return;
+  if (curAudio && curBtn === b) { curAudio.pause(); return; }
+  if (curAudio) { curAudio.pause(); if (curBtn) curBtn.textContent = "▶"; }
+  const a = new Audio(b.dataset.src);
+  a.addEventListener("ended", () => { b.textContent = "▶"; });
+  a.addEventListener("pause", () => { b.textContent = "▶"; });
+  a.addEventListener("play", () => { b.textContent = "⏸"; });
+  a.play(); curAudio = a; curBtn = b;
+});
+</script>
+</body>
+</html>
