@@ -1867,7 +1867,7 @@
    "id": "syncbundle",
    "titel": "G2B SYNC-BUNDLE — complete audio-catalogus",
    "soort": "bundel",
-   "beschrijving": "Alles in één koop: 36 beats & sync-tracks + alle stems + licenties — 48 downloads. Elke stemming (donker·vrolijk·chill·sport·emotioneel·horror·kids·corporate). Voor studios, editors en supervisors die direct willen schakelen.",
+   "beschrijving": "Alles in één koop: 37 beats & sync-tracks + alle stems + licenties — 50 downloads. Elke stemming (donker·vrolijk·chill·sport·emotioneel·horror·kids·corporate). Voor studios, editors en supervisors die direct willen schakelen.",
    "prijs": "€ 99",
    "links": {
     "koop": "bestel.html?p=syncbundle",
@@ -2009,6 +2009,39 @@
    "badge": "NIEUW",
    "cover": "media/toon-cover.png",
    "download_dir": "d/t00nf"
+  },
+  {
+   "id": "k4w1n",
+   "titel": "Kawina Drive",
+   "soort": "audio",
+   "beschrijving": "Surinaamse kawina-beat 138 BPM: skratji-rolls, apinti-riff, kwakwa-bangi slag, sub-bas en orgel-stabs. Unieke sync-klank die niemand anders heeft. Incl. 4 stems — supervisors snijden hem zelf op maat.",
+   "links": {
+    "koop": "bestel.html?p=k4w1n",
+    "mp3": "bestel.html?p=k4w1n&t=mp3",
+    "wav": "bestel.html?p=k4w1n&t=wav",
+    "exclusief": "bestel.html?p=k4w1n&t=exclusief",
+    "download": "bedankt.html?k=k4w1n"
+   },
+   "groep": "energiek",
+   "bpm": 138,
+   "stems": true,
+   "cover": "media/kawina-cover.png",
+   "preview": "media/kawina-preview.mp3",
+   "download_dir": "d/k4w1n",
+   "moods": [
+    "energiek",
+    "surinaams",
+    "kawina",
+    "percussie",
+    "caribisch",
+    "feest"
+   ],
+   "prijzen": {
+    "mp3": "€ 9,95",
+    "wav": "€ 24,95",
+    "exclusief": "€ 149"
+   },
+   "duur": "0:23"
   }
  ]
 }
