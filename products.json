@@ -1537,6 +1537,39 @@
    "preview": "media/g0ld3n-preview.mp3",
    "download_dir": "d/g0ld3n",
    "badge": "UPLIFTING"
+  },
+  {
+   "id": "r41ny",
+   "titel": "Rainy Sunday",
+   "soort": "audio",
+   "beschrijving": "Lofi chill-track · 76 BPM, A-klein · 75 sec met vinyl-knits, rhodes-akkoorden en zachte drums — perfect voor study-beats, vlogs en achtergrondmuziek. 100% eigen engine.",
+   "prijs": "v.a. € 24,95",
+   "prijzen": {
+    "mp3": "€ 24,95",
+    "wav": "€ 59,95",
+    "exclusief": "€ 249,95"
+   },
+   "links": {
+    "koop": "bestel.html?p=r41ny",
+    "mp3": "bestel.html?p=r41ny&t=mp3",
+    "wav": "bestel.html?p=r41ny&t=wav",
+    "exclusief": "bestel.html?p=r41ny&t=exclusief",
+    "download": "bedankt.html?k=r41ny"
+   },
+   "duur": 75.0,
+   "groep": "lofi",
+   "bpm": 76,
+   "moods": [
+    "chill",
+    "ontspannen",
+    "lofi",
+    "study",
+    "achtergrond"
+   ],
+   "cover": "media/r41ny-cover.png",
+   "preview": "media/r41ny-preview.mp3",
+   "download_dir": "d/r41ny",
+   "badge": "LOFI"
   }
  ]
 }
