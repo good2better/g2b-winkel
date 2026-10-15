@@ -17,6 +17,13 @@
    "sounds": 16,
    "inhoud": "dembow-sub bassen, sirens (rise+fall), airhorns, skanks (Am/Em/Gm), laser, gunshot-fx, bubble-leads, brass-stab, steelpan, whistle, dembow-loop 95bpm — 100% eigen G2B sounds",
    "thema": "dancehall / dembow — club exclusief voor leden"
+  },
+  "maand10": {
+   "naam": "Amapiano Groove",
+   "zip": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand10-Amapiano-Groove.zip",
+   "sounds": 16,
+   "inhoud": "log-drums ×3, soulful pads (Fmaj/Dm), piano-stabs (Am/F), bass-stab, openhat, rim, soft kick, tight snare, flute-motief, whistle, groove-loop 112bpm, shaker-loop — de heetste afro-house stijl van nu",
+   "thema": "amapiano / afro-house — club exclusief voor leden"
   }
  },
  "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Welkom.zip",
@@ -40,6 +47,10 @@
   "G2B-BeatClub-Maand1.zip"
  ],
  "bestanden": [
+  {
+   "naam": "⬇ Maand 10 — G2B-BeatClub-Maand10-Amapiano-Groove.zip (16 sounds)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand10-Amapiano-Groove.zip"
+  },
   {
    "naam": "⬇ Maand 9 — G2B-BeatClub-Maand9-Dancehall-Heat.zip (16 sounds)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand9-Dancehall-Heat.zip"
