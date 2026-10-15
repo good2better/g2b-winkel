@@ -1359,18 +1359,16 @@
       "id": "0b5647bf",
       "titel": "Coolbreez",
       "soort": "audio",
-      "beschrijving": "Afgeronde track · 152 BPM, phrygische sfeer. mp3 + wav + akkoorden + songkaart + LICENTIE & BUY-OUT-VERKLARING. 100% eigen G2B-productie.",
+      "beschrijving": "Afgeronde track · 152 BPM, phrygische sfeer. mp3 + wav + akkoorden + songkaart + licentie. 100% eigen G2B-productie.",
       "prijs": "v.a. € 19,95",
       "prijzen": {
         "mp3": "€ 19,95",
-        "wav": "€ 49,95",
-        "exclusief": "€ 199,95"
+        "wav": "€ 49,95"
       },
       "links": {
         "koop": "bestel.html?p=0b5647bf",
         "mp3": "bestel.html?p=0b5647bf&t=mp3",
         "wav": "bestel.html?p=0b5647bf&t=wav",
-        "exclusief": "bestel.html?p=0b5647bf&t=exclusief",
         "download": "bedankt.html?k=0b5647bf"
       },
       "duur": 15,
@@ -1378,7 +1376,6 @@
       "cover": "media/0b5647bf-cover.png",
       "preview": "media/0b5647bf-preview.mp3",
       "download_dir": "d/0b5647bf",
-      "badge": "BUY-OUT",
       "bpm": 152,
       "moods": [
         "chill",
