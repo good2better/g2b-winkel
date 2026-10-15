@@ -186,7 +186,8 @@ async function laden() {
       </div>
       ${p.soort === "audio" ? `
       <div class="player">
-        <button class="playbtn" data-play="${esc(p.id)}">▶</button>
+        <button class="playbtn" data-play="${esc(p.id)}"
+          aria-label="Speel preview van ${esc(p.titel)}">▶</button>
         <div class="wave" data-wave="${esc(p.id)}"></div>
         <span class="duur">${fmtDuur(p.duur)}</span>
       </div>` : ""}
@@ -246,15 +247,30 @@ lijst.addEventListener("click", e => {
 });
 
 // categorie-filter: toon alleen kaarten van de gekozen categorie
+let actieveCat = "";
+function pasFilterToe() {
+  const q = (document.getElementById("zoek").value || "")
+    .trim().toLowerCase();
+  document.querySelectorAll("#lijst .card").forEach(el => {
+    const p = productenById(el.dataset.id);
+    const tekst = ((p?.titel || "") + " " + (p?.beschrijving || "") +
+      " " + (p?.groep || "")).toLowerCase();
+    const catOk = !actieveCat || el.dataset.cat === actieveCat;
+    el.style.display = (catOk && (!q || tekst.includes(q))) ? "" : "none";
+  });
+  document.querySelectorAll("#lijst .sectie").forEach(el => {
+    const catOk = !actieveCat || el.dataset.cat === actieveCat;
+    el.style.display = (!q && catOk) ? "" : "none";
+  });
+}
+document.getElementById("zoek").addEventListener("input", pasFilterToe);
 document.getElementById("cats").addEventListener("click", e => {
   const knop = e.target.closest(".groepbtn");
   if (!knop) return;
-  const cat = knop.dataset.cat;
+  actieveCat = knop.dataset.cat;
   document.querySelectorAll("#cats .groepbtn").forEach(b =>
     b.classList.toggle("alles", b === knop));
-  document.querySelectorAll("#lijst .card, #lijst .sectie").forEach(el => {
-    el.style.display = (!cat || el.dataset.cat === cat) ? "" : "none";
-  });
+  pasFilterToe();
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
