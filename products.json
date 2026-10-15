@@ -233,7 +233,7 @@
       "prijs": "GRATIS",
       "prijzen": {},
       "links": {
-        "koop": "d/f1e2d3c4b5a697/G2B-DonderGlider-MINI.zip"
+        "koop": "https://github.com/good2better/g2b-winkel/releases/download/g2b-glider-mini-v1/G2B-DonderGlider-MINI.zip"
       },
       "duur": 0,
       "groep": "software",
@@ -247,7 +247,7 @@
       "id": "g2b-suite",
       "titel": "G2B Suite — ALLES (24 plugins)",
       "soort": "digitaal",
-      "beschrijving": "ALLE 24 G2B-plugins in één bundel: 12 FX + 12 instruments, inclusief G2BKeysData + G2BSoundLib (262 eigen one-shots). V5: Menger kit-bouwer erbij, 16 presets per plugin, transport-fix overal (stop = echte stilte). Windows VST3+CLAP, met NL-handleiding en broncode erbij.",
+      "beschrijving": "ALLE 24 G2B-plugins in één bundel: 12 FX + 12 instruments, inclusief G2BKeysData + eigen G2BSoundLib (262 eigen one-shots). V6: MENGER is nu DRUMPOD (GENRE → drumloop uit jouw eigen sounds, 6 banen met reroll-dobbelsteen per baan, 808-riffs met glide, VOL/PAN per baan, live MIDI-out + export: ↓MID schrijft .mid, ↓WAV schrijft de hele loop als .wav + 6 losse stems om per spoor in je DAW te slepen), GALAXY wit-scherm-bug gefixt op alle 27 standen, Donder Glider ↓MID-knop werkt echt. Windows VST3+CLAP, met NL-handleiding en broncode erbij.",
       "prijs": "€ 89,95",
       "prijzen": {},
       "links": {
