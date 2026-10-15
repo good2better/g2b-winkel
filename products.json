@@ -690,7 +690,12 @@
    "cover": "media/2878e291-cover.png",
    "preview": "media/2878e291-preview.mp3",
    "download_dir": "d/2878e291",
-   "bpm": 124
+   "bpm": 124,
+   "moods": [
+    "energisch",
+    "club",
+    "vrolijk"
+   ]
   },
   {
    "id": "d9d479ab",
@@ -715,7 +720,12 @@
    "cover": "media/d9d479ab-cover.png",
    "preview": "media/d9d479ab-preview.mp3",
    "download_dir": "d/d9d479ab",
-   "bpm": 152
+   "bpm": 152,
+   "moods": [
+    "donker",
+    "hard",
+    "spanning"
+   ]
   },
   {
    "id": "7fe03e5c",
@@ -740,7 +750,12 @@
    "cover": "media/7fe03e5c-cover.png",
    "preview": "media/7fe03e5c-preview.mp3",
    "download_dir": "d/7fe03e5c",
-   "bpm": 133
+   "bpm": 133,
+   "moods": [
+    "party",
+    "ritmisch",
+    "zomer"
+   ]
   },
   {
    "id": "0ef9a078",
@@ -765,7 +780,12 @@
    "cover": "media/0ef9a078-cover.png",
    "preview": "media/0ef9a078-preview.mp3",
    "download_dir": "d/0ef9a078",
-   "bpm": 133
+   "bpm": 133,
+   "moods": [
+    "zacht",
+    "liefde",
+    "sensueel"
+   ]
   },
   {
    "id": "8171e455",
@@ -790,7 +810,12 @@
    "cover": "media/8171e455-cover.png",
    "preview": "media/8171e455-preview.mp3",
    "download_dir": "d/8171e455",
-   "bpm": 136
+   "bpm": 136,
+   "moods": [
+    "episch",
+    "signature",
+    "eigen"
+   ]
   },
   {
    "id": "266054dc",
@@ -815,7 +840,12 @@
    "cover": "media/266054dc-cover.png",
    "preview": "media/266054dc-preview.mp3",
    "download_dir": "d/266054dc",
-   "bpm": 126
+   "bpm": 126,
+   "moods": [
+    "hard",
+    "donker",
+    "energie"
+   ]
   },
   {
    "id": "53c9dc1f",
@@ -840,7 +870,12 @@
    "cover": "media/53c9dc1f-cover.png",
    "preview": "media/53c9dc1f-preview.mp3",
    "download_dir": "d/53c9dc1f",
-   "bpm": 136
+   "bpm": 136,
+   "moods": [
+    "energisch",
+    "club",
+    "vrolijk"
+   ]
   },
   {
    "id": "054630ff",
@@ -865,7 +900,12 @@
    "cover": "media/054630ff-cover.png",
    "preview": "media/054630ff-preview.mp3",
    "download_dir": "d/054630ff",
-   "bpm": 92
+   "bpm": 92,
+   "moods": [
+    "zomer",
+    "dans",
+    "caribisch"
+   ]
   },
   {
    "id": "3083f3d3",
@@ -890,7 +930,12 @@
    "cover": "media/3083f3d3-cover.png",
    "preview": "media/3083f3d3-preview.mp3",
    "download_dir": "d/3083f3d3",
-   "bpm": 112
+   "bpm": 112,
+   "moods": [
+    "donker",
+    "hard",
+    "spanning"
+   ]
   },
   {
    "id": "600fb829",
@@ -915,7 +960,12 @@
    "cover": "media/600fb829-cover.png",
    "preview": "media/600fb829-preview.mp3",
    "download_dir": "d/600fb829",
-   "bpm": 123
+   "bpm": 123,
+   "moods": [
+    "party",
+    "ritmisch",
+    "zomer"
+   ]
   },
   {
    "id": "f92b4951",
@@ -940,7 +990,12 @@
    "cover": "media/f92b4951-cover.png",
    "preview": "media/f92b4951-preview.mp3",
    "download_dir": "d/f92b4951",
-   "bpm": 123
+   "bpm": 123,
+   "moods": [
+    "party",
+    "ritmisch",
+    "zomer"
+   ]
   },
   {
    "id": "ritmosbundel",
@@ -1048,7 +1103,12 @@
    "preview": "media/d0ab25bf1d62-preview.mp3",
    "download_dir": "d/d0ab25bf1d62",
    "badge": "BUY-OUT",
-   "bpm": 126
+   "bpm": 126,
+   "moods": [
+    "energisch",
+    "club",
+    "vrolijk"
+   ]
   },
   {
    "id": "ee34cf20698d",
@@ -1072,7 +1132,12 @@
    "preview": "media/ee34cf20698d-preview.mp3",
    "download_dir": "d/ee34cf20698d",
    "badge": "BUY-OUT",
-   "bpm": 145
+   "bpm": 145,
+   "moods": [
+    "donker",
+    "hard",
+    "spanning"
+   ]
   },
   {
    "id": "e1de55ff1ad0",
@@ -1096,7 +1161,12 @@
    "preview": "media/e1de55ff1ad0-preview.mp3",
    "download_dir": "d/e1de55ff1ad0",
    "badge": "BUY-OUT",
-   "bpm": 124
+   "bpm": 124,
+   "moods": [
+    "party",
+    "ritmisch",
+    "zomer"
+   ]
   },
   {
    "id": "95ec3261a9f3",
@@ -1120,7 +1190,12 @@
    "preview": "media/95ec3261a9f3-preview.mp3",
    "download_dir": "d/95ec3261a9f3",
    "badge": "BUY-OUT",
-   "bpm": 104
+   "bpm": 104,
+   "moods": [
+    "warm",
+    "organisch",
+    "chill"
+   ]
   },
   {
    "id": "39da193b81d0",
@@ -1144,7 +1219,12 @@
    "preview": "media/39da193b81d0-preview.mp3",
    "download_dir": "d/39da193b81d0",
    "badge": "BUY-OUT",
-   "bpm": 138
+   "bpm": 138,
+   "moods": [
+    "feest",
+    "suri",
+    "energisch"
+   ]
   },
   {
    "id": "5773766d87b7",
@@ -1168,7 +1248,12 @@
    "preview": "media/5773766d87b7-preview.mp3",
    "download_dir": "d/5773766d87b7",
    "badge": "BUY-OUT",
-   "bpm": 92
+   "bpm": 92,
+   "moods": [
+    "oldskool",
+    "rustig",
+    "straat"
+   ]
   },
   {
    "id": "5d9517a1c690",
@@ -1192,7 +1277,12 @@
    "preview": "media/5d9517a1c690-preview.mp3",
    "download_dir": "d/5d9517a1c690",
    "badge": "BUY-OUT",
-   "bpm": 128
+   "bpm": 128,
+   "moods": [
+    "zomer",
+    "exotisch",
+    "dans"
+   ]
   },
   {
    "id": "33454ff7df8b",
@@ -1216,7 +1306,12 @@
    "preview": "media/33454ff7df8b-preview.mp3",
    "download_dir": "d/33454ff7df8b",
    "badge": "BUY-OUT",
-   "bpm": 140
+   "bpm": 140,
+   "moods": [
+    "agressief",
+    "hard",
+    "signature"
+   ]
   },
   {
    "id": "0b5647bf",
@@ -1242,7 +1337,12 @@
    "preview": "media/0b5647bf-preview.mp3",
    "download_dir": "d/0b5647bf",
    "badge": "BUY-OUT",
-   "bpm": 152
+   "bpm": 152,
+   "moods": [
+    "chill",
+    "luchtig",
+    "afgerond"
+   ]
   }
  ]
 }
