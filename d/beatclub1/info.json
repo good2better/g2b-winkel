@@ -1,23 +1,34 @@
 {
- "titel": "G2B Beat-Club Welkomst-Pack",
- "bestand": "G2B-BeatClub-Welkom.zip",
- "bestanden": [
-  "G2B-BeatClub_Welkom/house_loop3_g2b.wav",
-  "G2B-BeatClub_Welkom/schuivelgroove2_g2b.wav",
-  "G2B-BeatClub_Welkom/bubbling_loop3_g2b.wav",
-  "G2B-BeatClub_Welkom/kawina_loop2_g2b.wav",
-  "G2B-BeatClub_Welkom/soca_loop2_g2b.wav",
-  "G2B-BeatClub_Welkom/afro_loop2_g2b.wav",
-  "G2B-BeatClub_Welkom/dancehall_loop2_g2b.wav",
-  "G2B-BeatClub_Welkom/winti_loop2_g2b.wav",
-  "G2B-BeatClub_Welkom/aleke_loop2_g2b.wav",
-  "G2B-BeatClub_Welkom/house_loop3_g2b.mid",
-  "G2B-BeatClub_Welkom/schuivelgroove2_g2b.mid",
-  "G2B-BeatClub_Welkom/marimbariff_g2b.wav",
-  "G2B-BeatClub_Welkom/kwaflute_g2b.wav",
-  "G2B-BeatClub_Welkom/dhallorganriff_g2b.wav",
-  "G2B-BeatClub_Welkom/shekereroll_g2b.wav",
-  "G2B-BeatClub-Maand1.zip"
- ],
- "aantekening": "Welkomst-pack voor nieuwe leden — 15 exclusieve sounds. Gebouwd 2026-10-15. + Maand-1 pack 'Afro-House' (15 club-exclusieve sounds)"
+  "titel": "G2B Beat-Club Welkomst-Pack",
+  "bestand": "G2B-BeatClub-Welkom.zip",
+  "bestanden": [
+    "G2B-BeatClub_Welkom/house_loop3_g2b.wav",
+    "G2B-BeatClub_Welkom/schuivelgroove2_g2b.wav",
+    "G2B-BeatClub_Welkom/bubbling_loop3_g2b.wav",
+    "G2B-BeatClub_Welkom/kawina_loop2_g2b.wav",
+    "G2B-BeatClub_Welkom/soca_loop2_g2b.wav",
+    "G2B-BeatClub_Welkom/afro_loop2_g2b.wav",
+    "G2B-BeatClub_Welkom/dancehall_loop2_g2b.wav",
+    "G2B-BeatClub_Welkom/winti_loop2_g2b.wav",
+    "G2B-BeatClub_Welkom/aleke_loop2_g2b.wav",
+    "G2B-BeatClub_Welkom/house_loop3_g2b.mid",
+    "G2B-BeatClub_Welkom/schuivelgroove2_g2b.mid",
+    "G2B-BeatClub_Welkom/marimbariff_g2b.wav",
+    "G2B-BeatClub_Welkom/kwaflute_g2b.wav",
+    "G2B-BeatClub_Welkom/dhallorganriff_g2b.wav",
+    "G2B-BeatClub_Welkom/shekereroll_g2b.wav",
+    "G2B-BeatClub-Maand1.zip"
+  ],
+  "aantekening": "Welkomst-pack voor nieuwe leden — 15 exclusieve sounds. Gebouwd 2026-10-15. + Maand-1 pack 'Afro-House' (15 club-exclusieve sounds) · + Maand-2 pack 'Latin Club' (16 club-exclusives)",
+  "files": [
+    "G2B-BeatClub-Maand1.zip",
+    "G2B-BeatClub-Maand2.zip",
+    "G2B-BeatClub-Welkom.zip",
+    "info.json"
+  ],
+  "maanden": {
+    "welkom": "G2B-BeatClub-Welkom.zip",
+    "maand1": "G2B-BeatClub-Maand1.zip (Afro-House)",
+    "maand2": "G2B-BeatClub-Maand2.zip (Latin Club)"
+  }
 }
