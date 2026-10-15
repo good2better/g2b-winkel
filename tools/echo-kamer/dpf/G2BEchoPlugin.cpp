@@ -13,16 +13,18 @@ class G2BEchoPlugin : public Plugin {
 public:
     enum Param {
         kOn, kKracht, kTijd, kFeedback, kPingpong, kDuck,
-        kLp, kHp, kDimensie, kSkin, kXY, kParamCount
+        kLp, kHp, kDimensie, kSkin, kParamCount
     };
     G2BEchoPlugin() : Plugin(kParamCount, 0, 0) {
         std::memset(bufL_, 0, sizeof(bufL_)); std::memset(bufR_, 0, sizeof(bufR_));
+        v_[kOn]=1; v_[kKracht]=40; v_[kTijd]=375; v_[kFeedback]=40;
+        v_[kLp]=12000; v_[kHp]=120; v_[kDimensie]=13;
     }
     const char* getLabel() const override { return "G2B Echo-Kamer"; }
     const char* getMaker() const override { return "G2B"; }
     const char* getLicense() const override { return "G2B-EULA"; }
     uint32_t getVersion() const override { return d_version(1,0,0); }
-    int64_t getUniqueId() const override { return DISTRHO_PLUGIN_UNIQUE_ID; }
+    int64_t getUniqueId() const override { return d_cconst('G','2','E','k'); }
 
     void initParameter(uint32_t i, Parameter& p) override {
         p.hints = kParameterIsAutomatable; p.ranges.min=0; p.ranges.max=100; p.ranges.def=50;
@@ -37,17 +39,10 @@ public:
         case kHp: p.name="HIGHPASS"; p.symbol="hp"; p.unit="Hz"; p.ranges.min=20; p.ranges.max=2000; p.ranges.def=120; break;
         case kDimensie: p.name="DIMENTIES"; p.symbol="dim"; p.hints|=kParameterIsInteger; p.ranges.max=26; p.ranges.def=13; break;
         case kSkin: p.name="SKIN"; p.symbol="skin"; p.hints|=kParameterIsInteger; p.ranges.max=7; break;
-        case kXY: p.name="XY"; p.symbol="xy"; p.hints|=kParameterIsInteger; p.ranges.max=1000; break;
         }
     }
     float getParameterValue(uint32_t i) const override { return v_[i]; }
-    void setParameterValue(uint32_t i, float v) override {
-        v_[i]=v;
-        if(i==kXY){ // XY: X=tijd(0..1->20..1000ms), Y=feedback
-            float x=std::fmod(v,32.0f)/31.0f, y=std::floor(v/32.0f)/31.0f;
-            v_[kTijd]=20+x*980; v_[kFeedback]=y*95;
-        }
-    }
+    void setParameterValue(uint32_t i, float v) override { v_[i]=v; }
 protected:
     void run(const float** in, float** out, uint32_t n) override {
         if(v_[kOn]<0.5f){ if(in[0]!=out[0])std::memcpy(out[0],in[0],n*4); if(in[1]!=out[1])std::memcpy(out[1],in[1],n*4); return; }

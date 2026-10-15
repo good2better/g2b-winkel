@@ -1979,6 +1979,21 @@
    "download_dir": "d/f13sta",
    "badge": "NIEUW",
    "stems": true
+  },
+  {
+   "id": "3ch0k",
+   "titel": "G2B Echo-Kamer",
+   "soort": "plugin",
+   "beschrijving": "Stereo delay-plugin: ping-pong, ducking (echo zakt weg terwijl je speelt), lowpass+highpass kleuring, 27 DIMENTIES van clean tot tape-crush, XY-pad, 8 skins. VST3 + CLAP + standalone voor FL Studio.",
+   "prijs": "€ 14,95",
+   "links": {
+    "koop": "bestel.html?p=3ch0k",
+    "download": "bedankt.html?k=3ch0k"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/echo-cover.png",
+   "download_dir": "d/3ch0k"
   }
  ]
 }
