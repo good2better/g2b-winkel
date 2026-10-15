@@ -1891,7 +1891,7 @@
    "id": "syncbundle",
    "titel": "G2B SYNC-BUNDLE — complete audio-catalogus",
    "soort": "bundel",
-   "beschrijving": "Alles in één koop: 41 beats & sync-tracks + alle stems + licenties — 54 downloads. Elke stemming (donker·vrolijk·chill·sport·emotioneel·horror·kids·corporate). Voor studios, editors en supervisors die direct willen schakelen.",
+   "beschrijving": "Alles in één koop: 42 beats & sync-tracks + alle stems + licenties — 55 downloads. Elke stemming (donker·vrolijk·chill·sport·emotioneel·horror·kids·corporate). Voor studios, editors en supervisors die direct willen schakelen.",
    "prijs": "€ 99",
    "links": {
     "koop": "bestel.html?p=syncbundle",
@@ -2199,6 +2199,37 @@
    "bpm": 92,
    "stems": true,
    "beschrijving": "Romantische R&B 92 BPM — warme rhodes (Cmaj7-Am7-Fmaj7-G), laid-back drums, strings, bell-melodie. Incl. 6 stems. Valentijn, sieraden/chocola-ads, trouw- & romantiek-content."
+  },
+  {
+   "id": "l3nt3",
+   "titel": "Lente — vrolijke lente track (+6 stems)",
+   "soort": "audio",
+   "groep": "vrolijk",
+   "prijs": "€ 9,95",
+   "prijzen": {
+    "mp3": "€ 9,95",
+    "wav": "€ 24,95",
+    "exclusief": "€ 149"
+   },
+   "links": {
+    "koop": "bestel.html?p=l3nt3",
+    "mp3": "bestel.html?p=l3nt3&t=mp3",
+    "wav": "bestel.html?p=l3nt3&t=wav",
+    "exclusief": "bestel.html?p=l3nt3&t=exclusief",
+    "download": "bedankt.html?k=l3nt3"
+   },
+   "cover": "media/lente-cover.png",
+   "preview": "media/lente-preview.mp3",
+   "download_dir": "d/l3nt3",
+   "moods": [
+    "vrolijk",
+    "lente",
+    "fris"
+   ],
+   "duur": "0:58",
+   "bpm": 105,
+   "stems": true,
+   "beschrijving": "Vrolijke lente-instrumental 105 BPM — marimba, pads, fluit, vogels. Incl. 6 stems. Lente/Pasen-commercials, tuin/DIY-ads, feelgood-content."
   }
  ]
 }
