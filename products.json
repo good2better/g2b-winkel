@@ -1,6 +1,23 @@
 {
   "producten": [
     {
+      "id": "g2b-latin-pack",
+      "titel": "G2B Latin Pack",
+      "soort": "sample-pack",
+      "beschrijving": "60 eigen latin/caribbean sounds — salsa·cumbia·bachata·dembow·dancehall·amapiano loops, conga/bongo/timbale/guiro perc + fills + midi. 100% royalty-vrij.",
+      "prijs": "€ 19,95",
+      "prijzen": [
+        19.95
+      ],
+      "links": {
+        "koop": "https://pay.good2better.nl/latin"
+      },
+      "groep": "sounds",
+      "download_dir": "d/latinpack1",
+      "badge": "NIEUW",
+      "cover": "media/g2b-latinpack1-cover.png"
+    },
+    {
       "id": "g2b-mini-pack",
       "titel": "G2B Mini-Pack (GRATIS)",
       "soort": "digitaal",
