@@ -113,7 +113,7 @@ function render() {
   const q = document.getElementById("zoek").value.trim().toLowerCase();
   const lijst = document.getElementById("lijst");
   const items = prods.filter(p => {
-    const t = ((p.titel || "") + " " + (p.groep || "")).toLowerCase();
+    const t = ((p.titel || "") + " " + (p.groep || "") + " " + (p.bpm || "")).toLowerCase();
     return (!mood || p.groep === mood) && (!q || t.includes(q));
   });
   if (!items.length) { lijst.innerHTML = `<div class="leeg">Niets gevonden.</div>`; return; }
@@ -130,7 +130,7 @@ function render() {
         aria-label="Speel ${esc(p.titel)}">▶</button>
       <div class="info">
         <div class="titel">${esc(p.titel)}</div>
-        <div class="meta">${esc(p.groep || "")} · ${p.duur ? Math.round(p.duur) + "s" : ""} · 100% eigenaar</div>
+        <div class="meta">${esc(p.groep || "")}${p.bpm ? " · " + p.bpm + " BPM" : ""} · ${p.duur ? Math.round(p.duur) + "s" : ""} · 100% eigenaar</div>
         <div class="prijzen">${prijzen || "prijs op aanvraag"}</div>
       </div>
       <a class="aanvraag" href="${mail}">LICENTIE ➜</a>

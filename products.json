@@ -689,7 +689,8 @@
    "groep": "house",
    "cover": "media/2878e291-cover.png",
    "preview": "media/2878e291-preview.mp3",
-   "download_dir": "d/2878e291"
+   "download_dir": "d/2878e291",
+   "bpm": 124
   },
   {
    "id": "d9d479ab",
@@ -713,7 +714,8 @@
    "groep": "drill",
    "cover": "media/d9d479ab-cover.png",
    "preview": "media/d9d479ab-preview.mp3",
-   "download_dir": "d/d9d479ab"
+   "download_dir": "d/d9d479ab",
+   "bpm": 152
   },
   {
    "id": "7fe03e5c",
@@ -737,7 +739,8 @@
    "groep": "dembow",
    "cover": "media/7fe03e5c-cover.png",
    "preview": "media/7fe03e5c-preview.mp3",
-   "download_dir": "d/7fe03e5c"
+   "download_dir": "d/7fe03e5c",
+   "bpm": 133
   },
   {
    "id": "0ef9a078",
@@ -761,7 +764,8 @@
    "groep": "rnb",
    "cover": "media/0ef9a078-cover.png",
    "preview": "media/0ef9a078-preview.mp3",
-   "download_dir": "d/0ef9a078"
+   "download_dir": "d/0ef9a078",
+   "bpm": 133
   },
   {
    "id": "8171e455",
@@ -785,7 +789,8 @@
    "groep": "g2b",
    "cover": "media/8171e455-cover.png",
    "preview": "media/8171e455-preview.mp3",
-   "download_dir": "d/8171e455"
+   "download_dir": "d/8171e455",
+   "bpm": 136
   },
   {
    "id": "266054dc",
@@ -809,7 +814,8 @@
    "groep": "trap",
    "cover": "media/266054dc-cover.png",
    "preview": "media/266054dc-preview.mp3",
-   "download_dir": "d/266054dc"
+   "download_dir": "d/266054dc",
+   "bpm": 126
   },
   {
    "id": "53c9dc1f",
@@ -833,7 +839,8 @@
    "groep": "house",
    "cover": "media/53c9dc1f-cover.png",
    "preview": "media/53c9dc1f-preview.mp3",
-   "download_dir": "d/53c9dc1f"
+   "download_dir": "d/53c9dc1f",
+   "bpm": 136
   },
   {
    "id": "054630ff",
@@ -857,7 +864,8 @@
    "groep": "dancehall",
    "cover": "media/054630ff-cover.png",
    "preview": "media/054630ff-preview.mp3",
-   "download_dir": "d/054630ff"
+   "download_dir": "d/054630ff",
+   "bpm": 92
   },
   {
    "id": "3083f3d3",
@@ -881,7 +889,8 @@
    "groep": "drill",
    "cover": "media/3083f3d3-cover.png",
    "preview": "media/3083f3d3-preview.mp3",
-   "download_dir": "d/3083f3d3"
+   "download_dir": "d/3083f3d3",
+   "bpm": 112
   },
   {
    "id": "600fb829",
@@ -905,7 +914,8 @@
    "groep": "dembow",
    "cover": "media/600fb829-cover.png",
    "preview": "media/600fb829-preview.mp3",
-   "download_dir": "d/600fb829"
+   "download_dir": "d/600fb829",
+   "bpm": 123
   },
   {
    "id": "f92b4951",
@@ -929,7 +939,8 @@
    "groep": "dembow",
    "cover": "media/f92b4951-cover.png",
    "preview": "media/f92b4951-preview.mp3",
-   "download_dir": "d/f92b4951"
+   "download_dir": "d/f92b4951",
+   "bpm": 123
   },
   {
    "id": "ritmosbundel",
@@ -1036,7 +1047,8 @@
    "cover": "media/d0ab25bf1d62-cover.png",
    "preview": "media/d0ab25bf1d62-preview.mp3",
    "download_dir": "d/d0ab25bf1d62",
-   "badge": "BUY-OUT"
+   "badge": "BUY-OUT",
+   "bpm": 126
   },
   {
    "id": "ee34cf20698d",
@@ -1059,7 +1071,8 @@
    "cover": "media/ee34cf20698d-cover.png",
    "preview": "media/ee34cf20698d-preview.mp3",
    "download_dir": "d/ee34cf20698d",
-   "badge": "BUY-OUT"
+   "badge": "BUY-OUT",
+   "bpm": 145
   },
   {
    "id": "e1de55ff1ad0",
@@ -1082,7 +1095,8 @@
    "cover": "media/e1de55ff1ad0-cover.png",
    "preview": "media/e1de55ff1ad0-preview.mp3",
    "download_dir": "d/e1de55ff1ad0",
-   "badge": "BUY-OUT"
+   "badge": "BUY-OUT",
+   "bpm": 124
   },
   {
    "id": "95ec3261a9f3",
@@ -1105,7 +1119,8 @@
    "cover": "media/95ec3261a9f3-cover.png",
    "preview": "media/95ec3261a9f3-preview.mp3",
    "download_dir": "d/95ec3261a9f3",
-   "badge": "BUY-OUT"
+   "badge": "BUY-OUT",
+   "bpm": 104
   },
   {
    "id": "39da193b81d0",
@@ -1128,7 +1143,8 @@
    "cover": "media/39da193b81d0-cover.png",
    "preview": "media/39da193b81d0-preview.mp3",
    "download_dir": "d/39da193b81d0",
-   "badge": "BUY-OUT"
+   "badge": "BUY-OUT",
+   "bpm": 138
   },
   {
    "id": "5773766d87b7",
@@ -1151,7 +1167,8 @@
    "cover": "media/5773766d87b7-cover.png",
    "preview": "media/5773766d87b7-preview.mp3",
    "download_dir": "d/5773766d87b7",
-   "badge": "BUY-OUT"
+   "badge": "BUY-OUT",
+   "bpm": 92
   },
   {
    "id": "5d9517a1c690",
@@ -1174,7 +1191,8 @@
    "cover": "media/5d9517a1c690-cover.png",
    "preview": "media/5d9517a1c690-preview.mp3",
    "download_dir": "d/5d9517a1c690",
-   "badge": "BUY-OUT"
+   "badge": "BUY-OUT",
+   "bpm": 128
   },
   {
    "id": "33454ff7df8b",
@@ -1197,7 +1215,8 @@
    "cover": "media/33454ff7df8b-cover.png",
    "preview": "media/33454ff7df8b-preview.mp3",
    "download_dir": "d/33454ff7df8b",
-   "badge": "BUY-OUT"
+   "badge": "BUY-OUT",
+   "bpm": 140
   },
   {
    "id": "0b5647bf",
@@ -1222,7 +1241,8 @@
    "cover": "media/0b5647bf-cover.png",
    "preview": "media/0b5647bf-preview.mp3",
    "download_dir": "d/0b5647bf",
-   "badge": "BUY-OUT"
+   "badge": "BUY-OUT",
+   "bpm": 152
   }
  ]
 }
