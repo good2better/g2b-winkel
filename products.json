@@ -1825,6 +1825,39 @@
    "download_dir": "d/sp33ls",
    "badge": "KIDS",
    "stems": true
+  },
+  {
+   "id": "h3ld3r",
+   "titel": "Helder",
+   "soort": "audio",
+   "beschrijving": "Clean corporate/tech track 110 BPM — bedrijfsvideo's, tutorials, product-demos. Incl. 4 stems.",
+   "prijzen": {
+    "mp3": "€ 9,95",
+    "wav": "€ 24,95",
+    "exclusief": "€ 149"
+   },
+   "links": {
+    "koop": "bestel.html?p=h3ld3r",
+    "mp3": "d/h3ld3r/",
+    "wav": "d/h3ld3r/",
+    "exclusief": "mailto:g.sandvliet88@gmail.com?subject=EXCLUSIEF Helder"
+   },
+   "duur": "0:19",
+   "groep": "corporate",
+   "bpm": 110,
+   "moods": [
+    "positief",
+    "clean",
+    "zakelijk",
+    "motiverend",
+    "tech",
+    "tutorial"
+   ],
+   "cover": "media/helder-cover.png",
+   "preview": "media/helder-preview.mp3",
+   "download_dir": "d/h3ld3r",
+   "badge": "CORPORATE",
+   "stems": true
   }
  ]
 }
