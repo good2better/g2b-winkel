@@ -1,720 +1,720 @@
 {
- "boeken": [
-  {
-   "beschrijving": "Ziggy Zebra gaat op kleurenavontuur met Meneer Regenboog — van Roodland tot Regenboogdorp. Vrolijk kleurboek + e-boek voor de allerkleinsten (0-3 jaar).",
-   "cover": "media/4fa33ef7d0-cover.png",
-   "ebook": {
-    "prijs": "4,95",
-    "koop": "bestel.html?b=ziggy-zebra-en-de-magische-kleurenrace&f=ebook"
-   },
-   "kleurboek": {
-    "prijs": "7,95",
-    "koop": "bestel.html?b=ziggy-zebra-en-de-magische-kleurenrace&f=kleurboek"
-   },
-   "serie": "ziggy",
-   "titel": "Ziggy Zebra en de Magische Kleurenrace",
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Ziggy-Voorproef.pdf"
-   },
-   "stripboek": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=ziggy-zebra-en-de-magische-kleurenrace&f=stripboek"
-   },
-   "videoboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=ziggy-zebra-en-de-magische-kleurenrace&f=videoboek"
-   },
-   "id": "ziggy-zebra-en-de-magische-kleurenrace"
-  },
-  {
-   "titel": "Ziggy Zebra en de Dansende Kleuren",
-   "beschrijving": "Boek 2 — Ziggy danst met zijn kleuren! Voor de allerkleinsten (0-3 jaar).",
-   "cover": "media/ca3c472fb2-cover.png",
-   "serie": "ziggy",
-   "ebook": {
-    "prijs": "4,95",
-    "koop": "bestel.html?b=ziggy-zebra-en-de-dansende-kleuren&f=ebook"
-   },
-   "kleurboek": {
-    "prijs": "7,95",
-    "koop": "bestel.html?b=ziggy-zebra-en-de-dansende-kleuren&f=kleurboek"
-   },
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/d3bac76a9e__Ziggy-Voorproef.pdf"
-   },
-   "videoboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=ziggy-zebra-en-de-dansende-kleuren&f=videoboek"
-   },
-   "stripboek": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=ziggy-zebra-en-de-dansende-kleuren&f=stripboek"
-   },
-   "nieuw": true,
-   "id": "ziggy-zebra-en-de-dansende-kleuren"
-  },
-  {
-   "titel": "Ziggy Zebra en de Grijze Schaduw",
-   "beschrijving": "Boek 3 — Alles is grijs geworden... kan Ziggy's moed en vriendschap de kleuren terugbrengen? (0-3 jaar)",
-   "cover": "media/83abeac8f4-cover.png",
-   "serie": "ziggy",
-   "ebook": {
-    "prijs": "4,95",
-    "koop": "bestel.html?b=ziggy-zebra-en-de-grijze-schaduw&f=ebook"
-   },
-   "kleurboek": {
-    "prijs": "7,95",
-    "koop": "bestel.html?b=ziggy-zebra-en-de-grijze-schaduw&f=kleurboek"
-   },
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/c33584371a__Ziggy-Voorproef.pdf"
-   },
-   "videoboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=ziggy-zebra-en-de-grijze-schaduw&f=videoboek"
-   },
-   "stripboek": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=ziggy-zebra-en-de-grijze-schaduw&f=stripboek"
-   },
-   "nieuw": true,
-   "id": "ziggy-zebra-en-de-grijze-schaduw"
-  },
-  {
-   "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket",
-   "serie": "sunny",
-   "cover": "media/sunny-mega-cover.png",
-   "beschrijving": "Alles van Sunny in één winkel: het complete computerspel (6 spelletjes, werkt offline), het luisterboek (ruim anderhalf uur voorlezen), activiteitenboek, puzzelboek, kleurboek, printbaar bordspel, kalender en het knutselpakket (stickers, poppentheater, kaartjes, boekenleggers). Digitaal — direct te downloaden, print zoveel je wilt voor eigen gebruik.",
-   "spel": {
-    "prijs": "4,95",
-    "koop": "bestel.html?b=sunny-s-zeilboot-avonturen-mega-pakket&f=spel"
-   },
-   "activiteitenboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=sunny-s-zeilboot-avonturen-mega-pakket&f=activiteitenboek"
-   },
-   "puzzelboek": {
-    "prijs": "7,95",
-    "koop": "bestel.html?b=sunny-s-zeilboot-avonturen-mega-pakket&f=puzzelboek"
-   },
-   "kleurboek": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=sunny-s-zeilboot-avonturen-mega-pakket&f=kleurboek"
-   },
-   "bordspel": {
-    "prijs": "3,95",
-    "koop": "bestel.html?b=sunny-s-zeilboot-avonturen-mega-pakket&f=bordspel"
-   },
-   "pakket": {
-    "prijs": "19,95",
-    "koop": "bestel.html?b=sunny-s-zeilboot-avonturen-mega-pakket&f=pakket"
-   },
-   "luisterboek": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=sunny-s-zeilboot-avonturen-mega-pakket&f=luisterboek"
-   },
-   "kalender": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=sunny-s-zeilboot-avonturen-mega-pakket&f=kalender"
-   },
-   "knutsel": {
-    "prijs": "7,95",
-    "koop": "bestel.html?b=sunny-s-zeilboot-avonturen-mega-pakket&f=knutsel"
-   },
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Sunny-Spel.html"
-   },
-   "videoboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=sunny-s-zeilboot-avonturen-mega-pakket&f=videoboek"
-   },
-   "id": "sunny-s-zeilboot-avonturen-mega-pakket"
-  },
-  {
-   "titel": "Pippa en het Vogelnest",
-   "serie": "dierenhelden",
-   "cover": "media/76fdf38f-cover.png",
-   "beschrijving": "Pippa het dappere katje klimt door de storm om drie baby-vogeltjes te redden! Kleur haar heldendaad in — 4 grote kleurplaten voor kleine helden (3-8 jaar). Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-   "kleurboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=pippa-en-het-vogelnest&f=kleurboek"
-   },
-   "ebook": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=pippa-en-het-vogelnest&f=ebook"
-   },
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/568bf5bafe14c9fc__Voorproef.pdf"
-   },
-   "id": "pippa-en-het-vogelnest"
-  },
-  {
-   "titel": "Sunny en de Verdwaalde Eend",
-   "serie": "sunny",
-   "cover": "media/c77aa21e-cover.png",
-   "beschrijving": "Sunny de lieve olifant waadt het meer in om een verdwaald eendje thuis te brengen bij zonsondergang. Kleur hun vriendschap in! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-   "kleurboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=sunny-en-de-verdwaalde-eend&f=kleurboek"
-   },
-   "ebook": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=sunny-en-de-verdwaalde-eend&f=ebook"
-   },
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/586079bd95d17484__Voorproef.pdf"
-   },
-   "id": "sunny-en-de-verdwaalde-eend"
-  },
-  {
-   "titel": "Keesje en de Verdwenen Worteltaart",
-   "serie": "keesje",
-   "cover": "media/73d385d5-cover.png",
-   "beschrijving": "Detective Keesje zoekt met zijn vergrootglas wie de worteltaart heeft gestolen — een hongerig egeltje! Samen delen is de leukste les. Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-   "kleurboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=keesje-en-de-verdwenen-worteltaart&f=kleurboek"
-   },
-   "ebook": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=keesje-en-de-verdwenen-worteltaart&f=ebook"
-   },
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/894b478c72c61d2a__Voorproef.pdf"
-   },
-   "id": "keesje-en-de-verdwenen-worteltaart"
-  },
-  {
-   "titel": "Bram en het Verloren Lammetje",
-   "serie": "dierenhelden",
-   "cover": "media/7a089fda-cover.png",
-   "beschrijving": "Reddingshond Bram zoekt lammetje Meeh in de sneeuwstorm en vindt hem voor het donker. Moed + nooit opgeven = een echte held! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-   "kleurboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=bram-en-het-verloren-lammetje&f=kleurboek"
-   },
-   "ebook": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=bram-en-het-verloren-lammetje&f=ebook"
-   },
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/241f3fd45cb97480__Voorproef.pdf"
-   },
-   "id": "bram-en-het-verloren-lammetje"
-  },
-  {
-   "titel": "Flip en de Zeehondpup",
-   "serie": "dierenhelden",
-   "cover": "media/8879f745-cover.png",
-   "beschrijving": "Flip de stoere zeeotter duikt diep en knabbelt een zeehondpup los uit een oud visnet. Onderwater-avontuur om zelf in te kleuren! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-   "kleurboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=flip-en-de-zeehondpup&f=kleurboek"
-   },
-   "ebook": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=flip-en-de-zeehondpup&f=ebook"
-   },
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/9a188625a6b7eaec__Voorproef.pdf"
-   },
-   "id": "flip-en-de-zeehondpup"
-  },
-  {
-   "titel": "Vonk en het Katje in de Boom",
-   "serie": "dierenhelden",
-   "cover": "media/58edadbc-cover.png",
-   "beschrijving": "Brandweer-dalmatiër Vonk klimt heldhaftig de boom in voor een bang katje. Echte helden zijn dapper én zachtaardig! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-   "kleurboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=vonk-en-het-katje-in-de-boom&f=kleurboek"
-   },
-   "ebook": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=vonk-en-het-katje-in-de-boom&f=ebook"
-   },
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/83de090f3abb6d0d__Voorproef.pdf"
-   },
-   "id": "vonk-en-het-katje-in-de-boom"
-  },
-  {
-   "titel": "Ravi en de Verdwaalde Papegaai",
-   "serie": "dierenhelden",
-   "cover": "media/407e67b5-cover.png",
-   "beschrijving": "Ravi de slimme capucijnaap draagt een verdwaalde baby-papegaai door de jungle terug naar zijn nest. Klein gebaar, groot heldenwerk! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-   "kleurboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=ravi-en-de-verdwaalde-papegaai&f=kleurboek"
-   },
-   "ebook": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=ravi-en-de-verdwaalde-papegaai&f=ebook"
-   },
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Voorproef.pdf"
-   },
-   "id": "ravi-en-de-verdwaalde-papegaai"
-  },
-  {
-   "titel": "Bodhi en de Kleine Koala",
-   "serie": "dierenhelden",
-   "cover": "media/7ad33a82-cover.png",
-   "beschrijving": "Bodhi de kangoeroe springt door de outback met een bang koalaatje veilig in zijn buidel — naar de rustige rivier. Hartverwarmend! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-   "kleurboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=bodhi-en-de-kleine-koala&f=kleurboek"
-   },
-   "ebook": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=bodhi-en-de-kleine-koala&f=ebook"
-   },
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/30bc3caa6c1a2efa__Voorproef.pdf"
-   },
-   "id": "bodhi-en-de-kleine-koala"
-  },
-  {
-   "titel": "Ollie en het Verloren Muisje",
-   "serie": "dierenhelden",
-   "cover": "media/077ed49d-cover.png",
-   "beschrijving": "Wijze bosuil Ollie vliegt door het betoverende nachtbos en brengt een verdwaald muisje thuis. Een magisch nacht-avontuur om in te kleuren! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-   "kleurboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=ollie-en-het-verloren-muisje&f=kleurboek"
-   },
-   "ebook": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=ollie-en-het-verloren-muisje&f=ebook"
-   },
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/c16dbe49c7bf93f7__Voorproef.pdf"
-   },
-   "id": "ollie-en-het-verloren-muisje"
-  },
-  {
-   "titel": "Sterre en het Kuikentje",
-   "serie": "dierenhelden",
-   "cover": "media/d903c8f1-cover.png",
-   "beschrijving": "Veulentje Sterre (met witte ster!) redt kuikentje Pip uit de modder — door slim om hulp te vragen. De mooiste les: samen ben je sterker! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-   "kleurboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=sterre-en-het-kuikentje&f=kleurboek"
-   },
-   "ebook": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=sterre-en-het-kuikentje&f=ebook"
-   },
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/5c90abf91b83b5be__Voorproef.pdf"
-   },
-   "id": "sterre-en-het-kuikentje"
-  },
-  {
-   "titel": "Dana en de Verdwaalde Boot",
-   "serie": "dierenhelden",
-   "cover": "media/6c3c57aa-cover.png",
-   "beschrijving": "Dana de dappere dolfijn duwt met haar vrienden Jonassie's stukke bootje terug naar de veilige haven — samen sterk, echte helden! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-   "kleurboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=dana-en-de-verdwaalde-boot&f=kleurboek"
-   },
-   "ebook": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=dana-en-de-verdwaalde-boot&f=ebook"
-   },
-   "_ebook_cover": "media/739260e8-cover.png",
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/62b6d9b39487ff72__Voorproef.pdf"
-   },
-   "id": "dana-en-de-verdwaalde-boot"
-  },
-  {
-   "titel": "De Avonturen van Keesje Konijn",
-   "serie": "keesje",
-   "cover": "media/6cf27e40-cover.png",
-   "beschrijving": "Het complete Keesje-avontuur: 17 kleurplaten uit zijn eigen film! Onze beroemdste detective-konijn in zijn grootste verhaal. Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
-   "kleurboek": {
-    "prijs": "12,95",
-    "koop": "bestel.html?b=de-avonturen-van-keesje-konijn&f=kleurboek"
-   },
-   "ebook": null,
-   "id": "de-avonturen-van-keesje-konijn"
-  },
-  {
-   "titel": "Animal Heroes Verzamelkleurboek",
-   "serie": "dierenhelden",
-   "cover": "media/a7c56540-cover.png",
-   "beschrijving": "ALLE Animal Heroes in één mega kleurboek: 68 kleurplaten uit 11 avonturen + het complete Keesje-filmboek, met hoofdstuk-pagina per boek. 80 pagina's kleurplezier!",
-   "kleurboek": {
-    "prijs": "14,95",
-    "koop": "bestel.html?b=animal-heroes-verzamelkleurboek&f=kleurboek"
-   },
-   "ebook": null,
-   "id": "animal-heroes-verzamelkleurboek"
-  },
-  {
-   "titel": "De Kleurrijke Keuken van Chef Kokos",
-   "beschrijving": "Chef Kokos en zijn Groente Vrienden leren kinderen over gezond eten — van boerderij tot bord. Echt boek van G.T.J. Sandvliet, met 7 hoofdstukken vol kookavonturen.",
-   "cover": "media/c2d402ab79-cover.png",
-   "serie": "koko",
-   "nieuw": true,
-   "ebook": {
-    "prijs": "4,95",
-    "koop": "bestel.html?b=de-kleurrijke-keuken-van-chef-kokos&f=ebook"
-   },
-   "kleurboek": {
-    "prijs": "7,95",
-    "koop": "bestel.html?b=de-kleurrijke-keuken-van-chef-kokos&f=kleurboek"
-   },
-   "stripboek": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=de-kleurrijke-keuken-van-chef-kokos&f=stripboek"
-   },
-   "videoboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=de-kleurrijke-keuken-van-chef-kokos&f=videoboek"
-   },
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/c2d402ab79__Voorproef.pdf"
-   },
-   "id": "de-kleurrijke-keuken-van-chef-kokos"
-  },
-  {
-   "titel": "Sunny en de Reis naar de Sterren",
-   "serie": "sunny",
-   "cover": "media/ec3abbb84a5546-cover.png",
-   "beschrijving": "Sunny de olifant en zijn vrienden vinden een glinsterend sterrenkompas en reizen per regenboogballon naar de sterren — met Stella de kleine gouden ster, de Nachtwolken-puzzels, het Kleurenland en het ruimtefeest. Een warm avontuur over dromen en vriendschap, helemaal in het Nederlands én Engels (12 hoofdstukken). Je krijgt: e-boek NL + EN, kleurboek, stripboek en de voorleesvideo. Digitaal — direct te downloaden.",
-   "ebook": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=sunny-en-de-reis-naar-de-sterren&f=ebook"
-   },
-   "kleurboek": {
-    "prijs": "7,95",
-    "koop": "bestel.html?b=sunny-en-de-reis-naar-de-sterren&f=kleurboek"
-   },
-   "stripboek": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=sunny-en-de-reis-naar-de-sterren&f=stripboek"
-   },
-   "videoboek": {
-    "prijs": "9,95",
-    "koop": "bestel.html?b=sunny-en-de-reis-naar-de-sterren&f=videoboek"
-   },
-   "pakket": {
-    "prijs": "19,95",
-    "koop": "bestel.html?b=sunny-en-de-reis-naar-de-sterren&f=pakket"
-   },
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Sunny-Voorproef.pdf"
-   },
-   "nieuw": true,
-   "id": "sunny-en-de-reis-naar-de-sterren"
-  },
-  {
-   "titel": "De Kleurrijke Avonturen van Ollie & Leo",
-   "serie": "ollie-leo",
-   "cover": "media/7d0ab8e3b8b2-cover.png",
-   "beschrijving": "Ollie de olifant en Leo de leeuw ontdekken kleuren en vormen in een magisch bos — regenboog, driehoeken, vierkanten en cirkels. Een vrolijk prentenboek met 21 vaste illustraties voor kinderen van 2 tot 6 jaar. Je krijgt: het complete e-boek (PDF) + kaft voor en achter + print-kaft. Digitaal — direct te downloaden.",
-   "ebook": {
-    "prijs": "4,95",
-    "koop": "bestel.html?b=de-kleurrijke-avonturen-van-ollie-leo&f=ebook"
-   },
-   "kleurboek": {
-    "prijs": "4,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Kleurboek-De.Kleurrijke.Avonturen.van.Ollie.en.Leo.pdf"
-   },
-   "stripboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=de-kleurrijke-avonturen-van-ollie-leo&f=stripboek"
-   },
-   "videoboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=de-kleurrijke-avonturen-van-ollie-leo&f=videoboek"
-   },
-   "pakket": {
-    "prijs": "8,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/ollie-leo-pakket.zip"
-   },
-   "nieuw": true,
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/7d0ab8e3b8b2__Voorproef.pdf"
-   },
-   "id": "de-kleurrijke-avonturen-van-ollie-leo"
-  },
-  {
-   "titel": "De Verhalen van Louie de Leeuw — Deel 1",
-   "serie": "louie",
-   "cover": "media/5a39710f1fb6-cover.png",
-   "beschrijving": "Louie de Leeuw gaat met zijn vrienden op avontuur door het bos naar een onbekend land — en leert onderweg over familie, moed en de kracht van verhalen. Vijf warme bedtijdverhalen voor kinderen van 3 tot 7 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript. Digitaal — direct te downloaden.",
-   "ebook": {
-    "prijs": "5,95",
-    "koop": "bestel.html?b=de-verhalen-van-louie-de-leeuw-deel-1&f=ebook"
-   },
-   "kleurboek": {
-    "prijs": "5,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Kleurboek-De.Verhalen.van.Louie.de.Leeuw.Deel.1.pdf"
-   },
-   "stripboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=de-verhalen-van-louie-de-leeuw-deel-1&f=stripboek"
-   },
-   "videoboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=de-verhalen-van-louie-de-leeuw-deel-1&f=videoboek"
-   },
-   "pakket": {
-    "prijs": "9,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/louie1-pakket.zip"
-   },
-   "nieuw": true,
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/5a39710f1fb6__Voorproef.pdf"
-   },
-   "id": "de-verhalen-van-louie-de-leeuw-deel-1"
-  },
-  {
-   "titel": "De Verhalen van Louie de Leeuw — Deel 2",
-   "serie": "louie",
-   "cover": "media/a960e69b2b18-cover.png",
-   "beschrijving": "Louie ontdekt hoe hij zijn verbeelding gebruikt om heerlijk te dromen — met wijze lessen van oma Leeuw en steeds meer verhalen-plezier. Vijf betoverende bedtijdverhalen voor kinderen van 3 tot 7 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript. Digitaal — direct te downloaden.",
-   "ebook": {
-    "prijs": "5,95",
-    "koop": "bestel.html?b=de-verhalen-van-louie-de-leeuw-deel-2&f=ebook"
-   },
-   "kleurboek": {
-    "prijs": "5,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Kleurboek-De.Verhalen.van.Louie.de.Leeuw.Deel.2.pdf"
-   },
-   "stripboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=de-verhalen-van-louie-de-leeuw-deel-2&f=stripboek"
-   },
-   "videoboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=de-verhalen-van-louie-de-leeuw-deel-2&f=videoboek"
-   },
-   "pakket": {
-    "prijs": "9,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/louie2-pakket.zip"
-   },
-   "nieuw": true,
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/a960e69b2b18__Voorproef.pdf"
-   },
-   "id": "de-verhalen-van-louie-de-leeuw-deel-2"
-  },
-  {
-   "titel": "Leren en Groeien met Lila",
-   "serie": "lila",
-   "cover": "media/731997b2faea-cover.png",
-   "beschrijving": "Lila neemt je mee op ontdekking: familie en vrienden, elke dag nieuwe dingen leren, gevoelens begrijpen en dromen over de toekomst. Negen warme hoofdstukken voor kinderen van 0 tot 5 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
-   "ebook": {
-    "prijs": "5,95",
-    "koop": "bestel.html?b=leren-en-groeien-met-lila&f=ebook"
-   },
-   "kleurboek": {
-    "prijs": "5,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Kleurboek-Leren.en.Groeien.met.Lila.pdf"
-   },
-   "stripboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=leren-en-groeien-met-lila&f=stripboek"
-   },
-   "videoboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=leren-en-groeien-met-lila&f=videoboek"
-   },
-   "pakket": {
-    "prijs": "9,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/lila-pakket.zip"
-   },
-   "nieuw": true,
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/731997b2faea__Voorproef.pdf"
-   },
-   "id": "leren-en-groeien-met-lila"
-  },
-  {
-   "titel": "Fluffy en het Vogeltje",
-   "serie": "fluffy",
-   "cover": "media/e66897f1ef8a-cover.png",
-   "beschrijving": "Fluffy de kat vindt een verloren vogeltje en zet alles op alles om het te helpen — over vriendelijkheid, empathie en voor elkaar zorgen. Vijf warme verhalen voor kinderen van 3 tot 7 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
-   "ebook": {
-    "prijs": "5,95",
-    "koop": "bestel.html?b=fluffy-en-het-vogeltje&f=ebook"
-   },
-   "kleurboek": {
-    "prijs": "5,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Kleurboek-Fluffy.en.het.Vogeltje.pdf"
-   },
-   "stripboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=fluffy-en-het-vogeltje&f=stripboek"
-   },
-   "videoboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=fluffy-en-het-vogeltje&f=videoboek"
-   },
-   "pakket": {
-    "prijs": "9,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/fluffy-pakket.zip"
-   },
-   "nieuw": true,
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/e66897f1ef8a__Voorproef.pdf"
-   },
-   "id": "fluffy-en-het-vogeltje"
-  },
-  {
-   "titel": "Het Wonderbaarlijke Avontuur van het Mooie Zwarte Paard",
-   "serie": "paard",
-   "cover": "media/179f9f603b44-cover.png",
-   "beschrijving": "Een prachtig zwart paard hoort de roep van de dieren en trekt ten strijde tegen het kwaad — kabouters, betovering en triomf. Een filmisch sprookje in zes hoofdstukken voor kinderen van 5 tot 9 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
-   "ebook": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=het-wonderbaarlijke-avontuur-van-het-moo&f=ebook"
-   },
-   "kleurboek": {
-    "prijs": "6,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Kleurboek-Het.Wonderbaarlijke.Avontuur.van.het.Mooie.Zwarte.Paard.pdf"
-   },
-   "stripboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=het-wonderbaarlijke-avontuur-van-het-moo&f=stripboek"
-   },
-   "videoboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=het-wonderbaarlijke-avontuur-van-het-moo&f=videoboek"
-   },
-   "pakket": {
-    "prijs": "10,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/paard-pakket.zip"
-   },
-   "nieuw": true,
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/179f9f603b44__Voorproef.pdf"
-   },
-   "id": "het-wonderbaarlijke-avontuur-van-het-moo"
-  },
-  {
-   "titel": "De Avonturen van de Zeven Vrienden",
-   "serie": "zeven",
-   "cover": "media/b51ad3a819ac-cover.png",
-   "beschrijving": "Zeven beste vrienden gaan samen op pad: het bos in, op schattenjacht, naar een magische bron en door de sneeuw. Zeven avonturen over vriendschap voor kinderen van 4 tot 8 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
-   "ebook": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=de-avonturen-van-de-zeven-vrienden&f=ebook"
-   },
-   "kleurboek": {
-    "prijs": "6,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Kleurboek-De.Avonturen.van.de.Zeven.Vrienden.pdf"
-   },
-   "stripboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=de-avonturen-van-de-zeven-vrienden&f=stripboek"
-   },
-   "videoboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=de-avonturen-van-de-zeven-vrienden&f=videoboek"
-   },
-   "pakket": {
-    "prijs": "10,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/zeven-pakket.zip"
-   },
-   "nieuw": true,
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/b51ad3a819ac__Voorproef.pdf"
-   },
-   "id": "de-avonturen-van-de-zeven-vrienden"
-  },
-  {
-   "titel": "Dieren Superhelden — Dappere Verhalen",
-   "serie": "dierenhelden",
-   "cover": "media/e35fe79a7be5-cover.png",
-   "beschrijving": "Fluffy de dappere kat, Sam het schaap, Ruby het redderkonijn, Milo de muis, Rosy de rat, Polly de pinguïn en Milly de maki — zeven inspirerende verhalen over moed en leiderschap. Voor kinderen van 4 tot 8 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
-   "ebook": {
-    "prijs": "6,95",
-    "koop": "bestel.html?b=dieren-superhelden-dappere-verhalen&f=ebook"
-   },
-   "kleurboek": {
-    "prijs": "6,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Kleurboek-Dieren.Superhelden.Dappere.Verhalen.pdf"
-   },
-   "stripboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=dieren-superhelden-dappere-verhalen&f=stripboek"
-   },
-   "videoboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=dieren-superhelden-dappere-verhalen&f=videoboek"
-   },
-   "pakket": {
-    "prijs": "10,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/superhelden-pakket.zip"
-   },
-   "nieuw": true,
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/e35fe79a7be5__Voorproef.pdf"
-   },
-   "id": "dieren-superhelden-dappere-verhalen"
-  },
-  {
-   "titel": "De Onvergetelijke Reis van Sunny en Vrienden",
-   "serie": "sunny",
-   "cover": "media/7fa4a7502476-cover.png",
-   "beschrijving": "Sunny en vrienden maken de reis van hun leven: walvissen, geheime eilanden, een lichtgevend koraalrif, een spookschip, een regenboogwaterval en een reis door de tijd. Twintig magische hoofdstukken voor kinderen van 4 tot 9 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
-   "ebook": {
-    "prijs": "7,95",
-    "koop": "bestel.html?b=de-onvergetelijke-reis-van-sunny-en-vrie&f=ebook"
-   },
-   "kleurboek": {
-    "prijs": "7,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Kleurboek-De.Onvergetelijke.Reis.van.Sunny.en.Vrienden.pdf"
-   },
-   "stripboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=de-onvergetelijke-reis-van-sunny-en-vrie&f=stripboek"
-   },
-   "videoboek": {
-    "prijs": "",
-    "koop": "bestel.html?b=de-onvergetelijke-reis-van-sunny-en-vrie&f=videoboek"
-   },
-   "pakket": {
-    "prijs": "12,95",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/sunny2-pakket.zip"
-   },
-   "nieuw": true,
-   "probeer": {
-    "prijs": "",
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/7fa4a7502476__Voorproef.pdf"
-   },
-   "id": "de-onvergetelijke-reis-van-sunny-en-vrie"
-  }
- ]
+  "boeken": [
+    {
+      "beschrijving": "Ziggy Zebra gaat op kleurenavontuur met Meneer Regenboog — van Roodland tot Regenboogdorp. Vrolijk kleurboek + e-boek voor de allerkleinsten (0-3 jaar).",
+      "cover": "media/4fa33ef7d0-cover.png",
+      "ebook": {
+        "prijs": "4,95",
+        "koop": "https://buy.stripe.com/28E14n2wwgyL6jJe8t5J606"
+      },
+      "kleurboek": {
+        "prijs": "7,95",
+        "koop": "https://buy.stripe.com/cNi9AT3AAcivfUj0hD5J607"
+      },
+      "serie": "ziggy",
+      "titel": "Ziggy Zebra en de Magische Kleurenrace",
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "stripboek": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/dRm9ATgnmfuH5fFggB5J608"
+      },
+      "videoboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/5kQbJ12wwgyL5fF6G15J609"
+      },
+      "id": "ziggy-zebra-en-de-magische-kleurenrace"
+    },
+    {
+      "titel": "Ziggy Zebra en de Dansende Kleuren",
+      "beschrijving": "Boek 2 — Ziggy danst met zijn kleuren! Voor de allerkleinsten (0-3 jaar).",
+      "cover": "media/ca3c472fb2-cover.png",
+      "serie": "ziggy",
+      "ebook": {
+        "prijs": "4,95",
+        "koop": "https://buy.stripe.com/5kQ3cv3AA82fdMbaWh5J60a"
+      },
+      "kleurboek": {
+        "prijs": "7,95",
+        "koop": "https://buy.stripe.com/7sYcN5c762HVdMbaWh5J60b"
+      },
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "videoboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/4gMfZh3AA3LZcI7fcx5J60c"
+      },
+      "stripboek": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/fZuaEXb321DRcI71lH5J60d"
+      },
+      "nieuw": true,
+      "id": "ziggy-zebra-en-de-dansende-kleuren"
+    },
+    {
+      "titel": "Ziggy Zebra en de Grijze Schaduw",
+      "beschrijving": "Boek 3 — Alles is grijs geworden... kan Ziggy's moed en vriendschap de kleuren terugbrengen? (0-3 jaar)",
+      "cover": "media/83abeac8f4-cover.png",
+      "serie": "ziggy",
+      "ebook": {
+        "prijs": "4,95",
+        "koop": "https://buy.stripe.com/fZu00j5II3LZ37x7K55J60e"
+      },
+      "kleurboek": {
+        "prijs": "7,95",
+        "koop": "https://buy.stripe.com/bJe28r5II0zN23tggB5J60f"
+      },
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "videoboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/dRm9ATfji2HVcI77K55J60g"
+      },
+      "stripboek": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/fZu6oHgnmeqD7nN8O95J60h"
+      },
+      "nieuw": true,
+      "id": "ziggy-zebra-en-de-grijze-schaduw"
+    },
+    {
+      "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket",
+      "serie": "sunny",
+      "cover": "media/sunny-mega-cover.png",
+      "beschrijving": "Alles van Sunny in één winkel: het complete computerspel (6 spelletjes, werkt offline), het luisterboek (ruim anderhalf uur voorlezen), activiteitenboek, puzzelboek, kleurboek, printbaar bordspel, kalender en het knutselpakket (stickers, poppentheater, kaartjes, boekenleggers). Digitaal — direct te downloaden, print zoveel je wilt voor eigen gebruik.",
+      "spel": {
+        "prijs": "4,95",
+        "koop": "https://buy.stripe.com/fZu6oHgnmeqDeQfe8t5J60i"
+      },
+      "activiteitenboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/aFa5kDfjidmzfUj8O95J60j"
+      },
+      "puzzelboek": {
+        "prijs": "7,95",
+        "koop": "https://buy.stripe.com/28EaEX5IIaangYn1lH5J60k"
+      },
+      "kleurboek": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/bJeeVd1ssfuH6jJ6G15J60l"
+      },
+      "bordspel": {
+        "prijs": "3,95",
+        "koop": "https://buy.stripe.com/6oU7sL4EEber4bBd4p5J60m"
+      },
+      "pakket": {
+        "prijs": "19,95",
+        "koop": "https://buy.stripe.com/9B6dR9b32fuHbE30hD5J60n"
+      },
+      "luisterboek": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/5kQ3cv2wwgyLazZ6G15J60o"
+      },
+      "kalender": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/6oU5kDgnm6Yb0Zp6G15J60p"
+      },
+      "knutsel": {
+        "prijs": "7,95",
+        "koop": "https://buy.stripe.com/eVq8wPefegyLgYn9Sd5J60q"
+      },
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "videoboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/14A8wP3AA82f37x1lH5J60r"
+      },
+      "id": "sunny-s-zeilboot-avonturen-mega-pakket"
+    },
+    {
+      "titel": "Pippa en het Vogelnest",
+      "serie": "dierenhelden",
+      "cover": "media/76fdf38f-cover.png",
+      "beschrijving": "Pippa het dappere katje klimt door de storm om drie baby-vogeltjes te redden! Kleur haar heldendaad in — 4 grote kleurplaten voor kleine helden (3-8 jaar). Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+      "kleurboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/7sYfZhb322HV8rRc0l5J60s"
+      },
+      "ebook": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/8x228r6MMgyL9vVc0l5J60t"
+      },
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "pippa-en-het-vogelnest"
+    },
+    {
+      "titel": "Sunny en de Verdwaalde Eend",
+      "serie": "sunny",
+      "cover": "media/c77aa21e-cover.png",
+      "beschrijving": "Sunny de lieve olifant waadt het meer in om een verdwaald eendje thuis te brengen bij zonsondergang. Kleur hun vriendschap in! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+      "kleurboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/9B6cN57QQ3LZ9vV5BX5J60u"
+      },
+      "ebook": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/9B614nfjidmz5fF8O95J60v"
+      },
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "sunny-en-de-verdwaalde-eend"
+    },
+    {
+      "titel": "Keesje en de Verdwenen Worteltaart",
+      "serie": "keesje",
+      "cover": "media/73d385d5-cover.png",
+      "beschrijving": "Detective Keesje zoekt met zijn vergrootglas wie de worteltaart heeft gestolen — een hongerig egeltje! Samen delen is de leukste les. Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+      "kleurboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/bJe3cvfji5U7gYnfcx5J60w"
+      },
+      "ebook": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/7sYaEXdba82f7nN7K55J60x"
+      },
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "keesje-en-de-verdwenen-worteltaart"
+    },
+    {
+      "titel": "Bram en het Verloren Lammetje",
+      "serie": "dierenhelden",
+      "cover": "media/7a089fda-cover.png",
+      "beschrijving": "Reddingshond Bram zoekt lammetje Meeh in de sneeuwstorm en vindt hem voor het donker. Moed + nooit opgeven = een echte held! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+      "kleurboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/6oUcN54EEcivcI70hD5J60y"
+      },
+      "ebook": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/cNieVd1ss0zN9vV7K55J60z"
+      },
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "bram-en-het-verloren-lammetje"
+    },
+    {
+      "titel": "Flip en de Zeehondpup",
+      "serie": "dierenhelden",
+      "cover": "media/8879f745-cover.png",
+      "beschrijving": "Flip de stoere zeeotter duikt diep en knabbelt een zeehondpup los uit een oud visnet. Onderwater-avontuur om zelf in te kleuren! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+      "kleurboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/3cI28r3AA3LZ23tfcx5J60A"
+      },
+      "ebook": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/5kQbJ17QQ0zN6jJ9Sd5J60B"
+      },
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "flip-en-de-zeehondpup"
+    },
+    {
+      "titel": "Vonk en het Katje in de Boom",
+      "serie": "dierenhelden",
+      "cover": "media/58edadbc-cover.png",
+      "beschrijving": "Brandweer-dalmatiër Vonk klimt heldhaftig de boom in voor een bang katje. Echte helden zijn dapper én zachtaardig! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+      "kleurboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/5kQ28r6MM82f23tc0l5J60C"
+      },
+      "ebook": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/00w3cvb3282fazZ9Sd5J60D"
+      },
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "vonk-en-het-katje-in-de-boom"
+    },
+    {
+      "titel": "Ravi en de Verdwaalde Papegaai",
+      "serie": "dierenhelden",
+      "cover": "media/407e67b5-cover.png",
+      "beschrijving": "Ravi de slimme capucijnaap draagt een verdwaalde baby-papegaai door de jungle terug naar zijn nest. Klein gebaar, groot heldenwerk! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+      "kleurboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/28E5kD2wweqDbE3ggB5J60E"
+      },
+      "ebook": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/aFa28r6MMaaneQf0hD5J60F"
+      },
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "ravi-en-de-verdwaalde-papegaai"
+    },
+    {
+      "titel": "Bodhi en de Kleine Koala",
+      "serie": "dierenhelden",
+      "cover": "media/7ad33a82-cover.png",
+      "beschrijving": "Bodhi de kangoeroe springt door de outback met een bang koalaatje veilig in zijn buidel — naar de rustige rivier. Hartverwarmend! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+      "kleurboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/6oUfZh2wwfuH7nNe8t5J60G"
+      },
+      "ebook": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/fZueVdb323LZcI7c0l5J60H"
+      },
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "bodhi-en-de-kleine-koala"
+    },
+    {
+      "titel": "Ollie en het Verloren Muisje",
+      "serie": "dierenhelden",
+      "cover": "media/077ed49d-cover.png",
+      "beschrijving": "Wijze bosuil Ollie vliegt door het betoverende nachtbos en brengt een verdwaald muisje thuis. Een magisch nacht-avontuur om in te kleuren! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+      "kleurboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/7sYbJ13AA5U77nNfcx5J60I"
+      },
+      "ebook": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/cNidR95II5U79vVe8t5J60J"
+      },
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "ollie-en-het-verloren-muisje"
+    },
+    {
+      "titel": "Sterre en het Kuikentje",
+      "serie": "dierenhelden",
+      "cover": "media/d903c8f1-cover.png",
+      "beschrijving": "Veulentje Sterre (met witte ster!) redt kuikentje Pip uit de modder — door slim om hulp te vragen. De mooiste les: samen ben je sterker! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+      "kleurboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/cNi8wP1ss2HV37x5BX5J60K"
+      },
+      "ebook": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/dRm7sL3AAciv5fFc0l5J60L"
+      },
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "sterre-en-het-kuikentje"
+    },
+    {
+      "titel": "Dana en de Verdwaalde Boot",
+      "serie": "dierenhelden",
+      "cover": "media/6c3c57aa-cover.png",
+      "beschrijving": "Dana de dappere dolfijn duwt met haar vrienden Jonassie's stukke bootje terug naar de veilige haven — samen sterk, echte helden! Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+      "kleurboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/fZubJ13AA1DRdMbfcx5J60M"
+      },
+      "ebook": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/aFa3cv7QQ3LZ4bB0hD5J60N"
+      },
+      "_ebook_cover": "media/739260e8-cover.png",
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "dana-en-de-verdwaalde-boot"
+    },
+    {
+      "titel": "De Avonturen van Keesje Konijn",
+      "serie": "keesje",
+      "cover": "media/6cf27e40-cover.png",
+      "beschrijving": "Het complete Keesje-avontuur: 17 kleurplaten uit zijn eigen film! Onze beroemdste detective-konijn in zijn grootste verhaal. Je krijgt: kleurboek-PDF + drukklaar-kaft + het kleurplaatje. Print zoveel je wilt voor eigen gebruik!",
+      "kleurboek": {
+        "prijs": "12,95",
+        "koop": "https://buy.stripe.com/7sYeVdefe5U7azZ5BX5J60O"
+      },
+      "ebook": null,
+      "id": "de-avonturen-van-keesje-konijn"
+    },
+    {
+      "titel": "Animal Heroes Verzamelkleurboek",
+      "serie": "dierenhelden",
+      "cover": "media/a7c56540-cover.png",
+      "beschrijving": "ALLE Animal Heroes in één mega kleurboek: 68 kleurplaten uit 11 avonturen + het complete Keesje-filmboek, met hoofdstuk-pagina per boek. 80 pagina's kleurplezier!",
+      "kleurboek": {
+        "prijs": "14,95",
+        "koop": "https://buy.stripe.com/9B66oH8UU4Q3fUjc0l5J60P"
+      },
+      "ebook": null,
+      "id": "animal-heroes-verzamelkleurboek"
+    },
+    {
+      "titel": "De Kleurrijke Keuken van Chef Kokos",
+      "beschrijving": "Chef Kokos en zijn Groente Vrienden leren kinderen over gezond eten — van boerderij tot bord. Echt boek van G.T.J. Sandvliet, met 7 hoofdstukken vol kookavonturen.",
+      "cover": "media/c2d402ab79-cover.png",
+      "serie": "koko",
+      "nieuw": true,
+      "ebook": {
+        "prijs": "4,95",
+        "koop": "https://buy.stripe.com/9B66oH8UU6YbazZ4xT5J60Q"
+      },
+      "kleurboek": {
+        "prijs": "7,95",
+        "koop": "https://buy.stripe.com/fZu00j5II96jcI77K55J60R"
+      },
+      "stripboek": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/00w28r8UUgyL5fF2pL5J60S"
+      },
+      "videoboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/8x25kDb32aaneQf6G15J60T"
+      },
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "de-kleurrijke-keuken-van-chef-kokos"
+    },
+    {
+      "titel": "Sunny en de Reis naar de Sterren",
+      "serie": "sunny",
+      "cover": "media/ec3abbb84a5546-cover.png",
+      "beschrijving": "Sunny de olifant en zijn vrienden vinden een glinsterend sterrenkompas en reizen per regenboogballon naar de sterren — met Stella de kleine gouden ster, de Nachtwolken-puzzels, het Kleurenland en het ruimtefeest. Een warm avontuur over dromen en vriendschap, helemaal in het Nederlands én Engels (12 hoofdstukken). Je krijgt: e-boek NL + EN, kleurboek, stripboek en de voorleesvideo. Digitaal — direct te downloaden.",
+      "ebook": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/6oU28refe5U7azZ7K55J60U"
+      },
+      "kleurboek": {
+        "prijs": "7,95",
+        "koop": "https://buy.stripe.com/fZu14nc76fuH7nN7K55J60V"
+      },
+      "stripboek": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/eVq4gz3AA2HVeQfggB5J60W"
+      },
+      "videoboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/8x25kDc765U79vV3tP5J60X"
+      },
+      "pakket": {
+        "prijs": "19,95",
+        "koop": "https://buy.stripe.com/28EcN5c76ber8rR4xT5J60Y"
+      },
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "nieuw": true,
+      "id": "sunny-en-de-reis-naar-de-sterren"
+    },
+    {
+      "titel": "De Kleurrijke Avonturen van Ollie & Leo",
+      "serie": "ollie-leo",
+      "cover": "media/7d0ab8e3b8b2-cover.png",
+      "beschrijving": "Ollie de olifant en Leo de leeuw ontdekken kleuren en vormen in een magisch bos — regenboog, driehoeken, vierkanten en cirkels. Een vrolijk prentenboek met 21 vaste illustraties voor kinderen van 2 tot 6 jaar. Je krijgt: het complete e-boek (PDF) + kaft voor en achter + print-kaft. Digitaal — direct te downloaden.",
+      "ebook": {
+        "prijs": "4,95",
+        "koop": "https://buy.stripe.com/dRmfZh6MM5U7cI71lH5J60Z"
+      },
+      "kleurboek": {
+        "prijs": "4,95",
+        "koop": "https://buy.stripe.com/9B6eVd5II96jgYn3tP5J610"
+      },
+      "stripboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "videoboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "pakket": {
+        "prijs": "8,95",
+        "koop": "https://buy.stripe.com/dRmcN55IIberbE31lH5J611"
+      },
+      "nieuw": true,
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "de-kleurrijke-avonturen-van-ollie-leo"
+    },
+    {
+      "titel": "De Verhalen van Louie de Leeuw — Deel 1",
+      "serie": "louie",
+      "cover": "media/5a39710f1fb6-cover.png",
+      "beschrijving": "Louie de Leeuw gaat met zijn vrienden op avontuur door het bos naar een onbekend land — en leert onderweg over familie, moed en de kracht van verhalen. Vijf warme bedtijdverhalen voor kinderen van 3 tot 7 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript. Digitaal — direct te downloaden.",
+      "ebook": {
+        "prijs": "5,95",
+        "koop": "https://buy.stripe.com/14A5kD2ww3LZ4bBfcx5J612"
+      },
+      "kleurboek": {
+        "prijs": "5,95",
+        "koop": "https://buy.stripe.com/28EeVd0ooaan8rRaWh5J613"
+      },
+      "stripboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "videoboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "pakket": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/14AaEX3AAdmz0Zp6G15J614"
+      },
+      "nieuw": true,
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "de-verhalen-van-louie-de-leeuw-deel-1"
+    },
+    {
+      "titel": "De Verhalen van Louie de Leeuw — Deel 2",
+      "serie": "louie",
+      "cover": "media/a960e69b2b18-cover.png",
+      "beschrijving": "Louie ontdekt hoe hij zijn verbeelding gebruikt om heerlijk te dromen — met wijze lessen van oma Leeuw en steeds meer verhalen-plezier. Vijf betoverende bedtijdverhalen voor kinderen van 3 tot 7 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript. Digitaal — direct te downloaden.",
+      "ebook": {
+        "prijs": "5,95",
+        "koop": "https://buy.stripe.com/aFa14n3AAber23t2pL5J615"
+      },
+      "kleurboek": {
+        "prijs": "5,95",
+        "koop": "https://buy.stripe.com/4gMbJ1efedmz7nN8O95J616"
+      },
+      "stripboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "videoboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "pakket": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/4gM9AT3AA96jgYnaWh5J617"
+      },
+      "nieuw": true,
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "de-verhalen-van-louie-de-leeuw-deel-2"
+    },
+    {
+      "titel": "Leren en Groeien met Lila",
+      "serie": "lila",
+      "cover": "media/731997b2faea-cover.png",
+      "beschrijving": "Lila neemt je mee op ontdekking: familie en vrienden, elke dag nieuwe dingen leren, gevoelens begrijpen en dromen over de toekomst. Negen warme hoofdstukken voor kinderen van 0 tot 5 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
+      "ebook": {
+        "prijs": "5,95",
+        "koop": "https://buy.stripe.com/dRm3cv6MM4Q337x4xT5J618"
+      },
+      "kleurboek": {
+        "prijs": "5,95",
+        "koop": "https://buy.stripe.com/fZuaEX5IIeqD8rR7K55J619"
+      },
+      "stripboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "videoboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "pakket": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/eVq7sL7QQfuH4bB4xT5J61a"
+      },
+      "nieuw": true,
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "leren-en-groeien-met-lila"
+    },
+    {
+      "titel": "Fluffy en het Vogeltje",
+      "serie": "fluffy",
+      "cover": "media/e66897f1ef8a-cover.png",
+      "beschrijving": "Fluffy de kat vindt een verloren vogeltje en zet alles op alles om het te helpen — over vriendelijkheid, empathie en voor elkaar zorgen. Vijf warme verhalen voor kinderen van 3 tot 7 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
+      "ebook": {
+        "prijs": "5,95",
+        "koop": "https://buy.stripe.com/14AaEXdbaaanfUj2pL5J61b"
+      },
+      "kleurboek": {
+        "prijs": "5,95",
+        "koop": "https://buy.stripe.com/8x2dR9dbagyLfUj7K55J61c"
+      },
+      "stripboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "videoboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "pakket": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/bJe9AT2ww1DRgYn6G15J61d"
+      },
+      "nieuw": true,
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "fluffy-en-het-vogeltje"
+    },
+    {
+      "titel": "Het Wonderbaarlijke Avontuur van het Mooie Zwarte Paard",
+      "serie": "paard",
+      "cover": "media/179f9f603b44-cover.png",
+      "beschrijving": "Een prachtig zwart paard hoort de roep van de dieren en trekt ten strijde tegen het kwaad — kabouters, betovering en triomf. Een filmisch sprookje in zes hoofdstukken voor kinderen van 5 tot 9 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
+      "ebook": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/fZu14nfji5U75fF5BX5J61e"
+      },
+      "kleurboek": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/bJeaEX9YYgyL0Zpd4p5J61f"
+      },
+      "stripboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "videoboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "pakket": {
+        "prijs": "10,95",
+        "koop": "https://buy.stripe.com/dRmcN54EE96jcI7c0l5J61g"
+      },
+      "nieuw": true,
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "het-wonderbaarlijke-avontuur-van-het-mooie-zwarte-paard"
+    },
+    {
+      "titel": "De Avonturen van de Zeven Vrienden",
+      "serie": "zeven",
+      "cover": "media/b51ad3a819ac-cover.png",
+      "beschrijving": "Zeven beste vrienden gaan samen op pad: het bos in, op schattenjacht, naar een magische bron en door de sneeuw. Zeven avonturen over vriendschap voor kinderen van 4 tot 8 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
+      "ebook": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/eVq00jfjiciv37x0hD5J61h"
+      },
+      "kleurboek": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/00wdR9c761DR8rR0hD5J61i"
+      },
+      "stripboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "videoboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "pakket": {
+        "prijs": "10,95",
+        "koop": "https://buy.stripe.com/fZuaEXefe4Q337x0hD5J61j"
+      },
+      "nieuw": true,
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "de-avonturen-van-de-zeven-vrienden"
+    },
+    {
+      "titel": "Dieren Superhelden — Dappere Verhalen",
+      "serie": "dierenhelden",
+      "cover": "media/e35fe79a7be5-cover.png",
+      "beschrijving": "Fluffy de dappere kat, Sam het schaap, Ruby het redderkonijn, Milo de muis, Rosy de rat, Polly de pinguïn en Milly de maki — zeven inspirerende verhalen over moed en leiderschap. Voor kinderen van 4 tot 8 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
+      "ebook": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/aFa14n9YY96j8rR5BX5J61k"
+      },
+      "kleurboek": {
+        "prijs": "6,95",
+        "koop": "https://buy.stripe.com/5kQcN5dba0zN7nN6G15J61l"
+      },
+      "stripboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "videoboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "pakket": {
+        "prijs": "10,95",
+        "koop": "https://buy.stripe.com/14AbJ15II2HV6jJggB5J61m"
+      },
+      "nieuw": true,
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "dieren-superhelden-dappere-verhalen"
+    },
+    {
+      "titel": "De Onvergetelijke Reis van Sunny en Vrienden",
+      "serie": "sunny",
+      "cover": "media/7fa4a7502476-cover.png",
+      "beschrijving": "Sunny en vrienden maken de reis van hun leven: walvissen, geheime eilanden, een lichtgevend koraalrif, een spookschip, een regenboogwaterval en een reis door de tijd. Twintig magische hoofdstukken voor kinderen van 4 tot 9 jaar. Je krijgt: e-boek (PDF) + kaft + manuscript.",
+      "ebook": {
+        "prijs": "7,95",
+        "koop": "https://buy.stripe.com/9B600j6MM5U74bBggB5J61n"
+      },
+      "kleurboek": {
+        "prijs": "7,95",
+        "koop": "https://buy.stripe.com/eVq6oH1ss4Q36jJaWh5J61o"
+      },
+      "stripboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "videoboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "pakket": {
+        "prijs": "12,95",
+        "koop": "https://buy.stripe.com/14A4gzdba3LZcI7ggB5J61p"
+      },
+      "nieuw": true,
+      "probeer": {
+        "prijs": "",
+        "koop": ""
+      },
+      "id": "de-onvergetelijke-reis-van-sunny-en-vrienden"
+    }
+  ]
 }
