@@ -41,3 +41,10 @@ Build: Linux vst3+clap+standalone test -> Windows cross (make WINDOWS=true)
 - G2B Saturator (s4t0r) €14,95 — tape/tube/crush drive + waveshaper-curve
 Pack der Packs = 12 plugins · 97 producten totaal
 Volgende kandidaten: G2B Gate/Transient, G2B Filter-Wah, G2B Limiter
+
+## RONDE 6 — G2B ChordLab VST (grootste plugin)
+Chord-generator: ladder+toonsoort in → speelt akkoorden/voicings. Params:
+- ON, KRACHT(wet), LADDER(maj/min/dor/mix/lyd/phr/harmin), TOONSOORT(12), VOICING(root/1st/2nd/open), RITME-OFF, VEL, DIMENSIE27, SKIN
+- MIDI-IN akkoord-detect + audio-out met simpel electric-piano/pad timbre (sinus-partials, geen samples — regel-1 clean)
+- UI: akkoord-wiel/links-toetsenbord + voicing-visual + vaste knoppen-set
+Daarna: ALLE plugin-demo's opnieuw — schoon audio, geen ruis, 100% correct (Giorgio-eis).
