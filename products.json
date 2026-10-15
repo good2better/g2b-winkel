@@ -163,7 +163,7 @@
    "id": "g2b-pack-der-packs",
    "titel": "G2B Pack der Packs",
    "soort": "digitaal",
-   "beschrijving": "DE VOLLEDIGE G2B-SOUND-STUDIO: 14 complete plugins (VocalTune, Sampler v2, OneShot, Keys XL, Delay, Reverb, Sleutel-Helper, Echo-Kamer, Toon-Fixer, Glue-Comp, Chorus, Saturator — Windows + Linux) + Keys XL instrumentenbank + 1006 one-shot sounds in 35 categorieën + 182 midi-patronen + handleidingen & demo-video's. 100% royalty-vrij. Wil je álle 24 plugins? → G2B Suite (€89,95). Wil je óók de automatische mix/master-robot? → G2B Studio Pack (€149).",
+   "beschrijving": "DE VOLLEDIGE G2B-SOUND-STUDIO: 15 complete plugins (VocalTune, Sampler v2, OneShot, Keys XL, Delay, Reverb, Sleutel-Helper, Echo-Kamer, Toon-Fixer, Glue-Comp, Chorus, Saturator — Windows + Linux) + Keys XL instrumentenbank + 1006 one-shot sounds in 35 categorieën + 182 midi-patronen + handleidingen & demo-video's. 100% royalty-vrij. Wil je álle 24 plugins? → G2B Suite (€89,95). Wil je óók de automatische mix/master-robot? → G2B Studio Pack (€149).",
    "prijs": "€ 79 intro-prijs",
    "prijzen": {},
    "links": {
@@ -2115,6 +2115,21 @@
    "cover": "media/sat-cover.png",
    "download_dir": "d/ch0rd1",
    "video": "media/chordlab-demo.mp4"
+  },
+  {
+   "id": "l0f1m",
+   "titel": "G2B LoFi-Maker",
+   "soort": "plugin",
+   "beschrijving": "LoFi-texture: bitcrush (CRUSH) + grof sample-hold (GROF) + tape-wobble (WOBBLE) + vinyl-kraak (KRAAK) + warm TONE-filter. Vinyl-plaat visual. 27 DIMENSIES (licht/medium/heavy), 8 skins. VST3 + standalone voor FL Studio.",
+   "prijs": "€ 14,95",
+   "links": {
+    "koop": "bestel.html?p=l0f1m",
+    "download": "bedankt.html?k=l0f1m"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/sat-cover.png",
+   "download_dir": "d/l0f1m"
   },
   {
    "id": "k4w1n",
