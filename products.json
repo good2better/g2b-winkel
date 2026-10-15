@@ -34,13 +34,19 @@
   },
   {
    "id": "g2b-house-pack",
-   "naam": "G2B House Pack",
-   "prijs": 19.95,
+   "titel": "G2B House Pack",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "soort": "digitaal",
+   "groep": "sounds",
    "badge": "NIEUW",
    "cover": "media/g2b-housepack-cover.png",
-   "download": "housepack1",
    "beschrijving": "56 bestanden (wav+midi, 3,8 MB) eigen house sounds: 4/4 kicks, offbeat hats, piano-stabs, organ-bas, house+deephouse loops met Caribische perc erin (de G2B-mix), FX + vox. 100% eigen engine, royalty-vrij.",
-   "categorie": "sound-pack"
+   "duur": 0,
+   "download_dir": "d/housepack1",
+   "links": {
+    "koop": "bestel.html?p=g2b-house-pack"
+   }
   },
   {
    "id": "g2b-producer-bundle",
