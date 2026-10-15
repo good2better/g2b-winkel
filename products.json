@@ -1927,6 +1927,22 @@
    "download_dir": "d/h4unt",
    "badge": "HALLOWEEN",
    "stems": true
+  },
+  {
+   "id": "v0xch",
+   "titel": "G2B Vox-Chops",
+   "soort": "pack",
+   "beschrijving": "14 eigen vocal-stabs en runs (hey/oh/yeah/ooh) uit de G2B-formant-engine — geen samples van echte zangers, dus altijd royalty-vrij en geen AI-vocals. Voor club, reggaeton, drill en festival-hooks.",
+   "prijs": "€ 7,95",
+   "links": {
+    "koop": "bestel.html?p=v0xch",
+    "download": "bedankt.html?k=v0xch"
+   },
+   "groep": "soundpacks",
+   "badge": "NIEUW",
+   "cover": "media/vox-cover.png",
+   "preview": "media/vox-preview.mp3",
+   "download_dir": "d/v0xch"
   }
  ]
 }
