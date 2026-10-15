@@ -1014,7 +1014,12 @@
    "cover": "media/ritmosbundle-cover.png",
    "preview": "media/ritmosalbum-preview.mp3",
    "video": "media/ritmosbundle-promo.mp4",
-   "download_dir": "d/d74976fef7dfff6a"
+   "download_dir": "d/d74976fef7dfff6a",
+   "moods": [
+    "latin",
+    "energisch",
+    "feest"
+   ]
   },
   {
    "id": "beattape2",
@@ -1031,7 +1036,12 @@
     "koop": "bestel.html?p=beattape2",
     "download": "bedankt.html?k=beattape2"
    },
-   "cover": "media/beattape2-cover.png"
+   "cover": "media/beattape2-cover.png",
+   "moods": [
+    "urban",
+    "donker",
+    "energisch"
+   ]
   },
   {
    "id": "g2b-surinaams-pack",
