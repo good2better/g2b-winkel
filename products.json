@@ -64,7 +64,8 @@
       "download_dir": "d/housepack1",
       "links": {
         "koop": "bestel.html?p=g2b-house-pack"
-      }
+      },
+      "preview": "media/house.mp3"
     },
     {
       "id": "g2b-producer-bundle",
@@ -98,7 +99,8 @@
       "groep": "sounds",
       "download_dir": "d/drumsfx1",
       "badge": "NIEUW",
-      "cover": "media/g2b-drumsfx1-cover.png"
+      "cover": "media/g2b-drumsfx1-cover.png",
+      "preview": "media/drumsfx.mp3"
     },
     {
       "id": "g2b-soul-pack",
@@ -115,7 +117,8 @@
       "groep": "sounds",
       "download_dir": "d/soulpack1",
       "badge": "NIEUW",
-      "cover": "media/g2b-soulpack1-cover.png"
+      "cover": "media/g2b-soulpack1-cover.png",
+      "preview": "media/soul.mp3"
     },
     {
       "id": "g2b-latin-pack",
@@ -132,7 +135,8 @@
       "groep": "sounds",
       "download_dir": "d/latinpack1",
       "badge": "NIEUW",
-      "cover": "media/g2b-latinpack1-cover.png"
+      "cover": "media/g2b-latinpack1-cover.png",
+      "preview": "media/latin.mp3"
     },
     {
       "id": "g2b-mini-pack",
@@ -1075,7 +1079,8 @@
       "groep": "sounds",
       "download_dir": "d/suripack1",
       "badge": "NIEUW",
-      "cover": "media/g2b-suripack1-cover.png"
+      "cover": "media/g2b-suripack1-cover.png",
+      "preview": "media/suri.mp3"
     },
     {
       "id": "g2b-urban-drill-pack",
@@ -1091,7 +1096,8 @@
       "groep": "sounds",
       "download_dir": "d/urbandrill1",
       "badge": "NIEUW",
-      "cover": "media/g2b-urbandrill1-cover.png"
+      "cover": "media/g2b-urbandrill1-cover.png",
+      "preview": "media/urbandrill.mp3"
     },
     {
       "id": "g2b-melodic-pack",
@@ -1107,7 +1113,8 @@
       "groep": "sounds",
       "download_dir": "d/melodic1",
       "badge": "NIEUW",
-      "cover": "media/g2b-melodic1-cover.png"
+      "cover": "media/g2b-melodic1-cover.png",
+      "preview": "media/melodic.mp3"
     },
     {
       "id": "d0ab25bf1d62",
@@ -1891,7 +1898,7 @@
       "groep": "soundpacks",
       "badge": "HALLOWEEN",
       "cover": "media/spooky-cover.png",
-      "preview": "media/spooky-preview.mp3",
+      "preview": "media/spooky.mp3",
       "download_dir": "d/sp00ky",
       "eerst": true
     },
@@ -1943,7 +1950,7 @@
       "groep": "soundpacks",
       "badge": "NIEUW",
       "cover": "media/vox-cover.png",
-      "preview": "media/vox-preview.mp3",
+      "preview": "media/voxch.mp3",
       "download_dir": "d/v0xch"
     },
     {
