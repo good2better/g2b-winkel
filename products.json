@@ -1876,7 +1876,7 @@
    "id": "syncbundle",
    "titel": "G2B SYNC-BUNDLE — complete audio-catalogus",
    "soort": "bundel",
-   "beschrijving": "Alles in één koop: 38 beats & sync-tracks + alle stems + licenties — 51 downloads. Elke stemming (donker·vrolijk·chill·sport·emotioneel·horror·kids·corporate). Voor studios, editors en supervisors die direct willen schakelen.",
+   "beschrijving": "Alles in één koop: 39 beats & sync-tracks + alle stems + licenties — 52 downloads. Elke stemming (donker·vrolijk·chill·sport·emotioneel·horror·kids·corporate). Voor studios, editors en supervisors die direct willen schakelen.",
    "prijs": "€ 99",
    "links": {
     "koop": "bestel.html?p=syncbundle",
@@ -2086,6 +2086,40 @@
     "exclusief": "€ 149"
    },
    "duur": "1:04"
+  },
+  {
+   "id": "w1nt3",
+   "titel": "Winter Wens",
+   "soort": "audio",
+   "beschrijving": "Kerst/winter track 95 BPM: jingle bells, glockenspiel-melodie, warme strijker-pads en zachte drums. Sync-ready voor feestdagen-commercials en vlogs. Incl. 4 stems — supervisors snijden hem zelf op maat.",
+   "links": {
+    "koop": "bestel.html?p=w1nt3",
+    "mp3": "bestel.html?p=w1nt3&t=mp3",
+    "wav": "bestel.html?p=w1nt3&t=wav",
+    "exclusief": "bestel.html?p=w1nt3&t=exclusief",
+    "download": "bedankt.html?k=w1nt3"
+   },
+   "groep": "feest",
+   "bpm": 95,
+   "stems": true,
+   "eerst": true,
+   "cover": "media/winter-cover.png",
+   "preview": "media/winter-preview.mp3",
+   "download_dir": "d/w1nt3",
+   "moods": [
+    "kerst",
+    "winter",
+    "feest",
+    "vrolijk",
+    "warm",
+    "magisch"
+   ],
+   "prijzen": {
+    "mp3": "€ 9,95",
+    "wav": "€ 24,95",
+    "exclusief": "€ 149"
+   },
+   "duur": "1:02"
   }
  ]
 }
