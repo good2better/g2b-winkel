@@ -28,11 +28,11 @@
    "groep": "sounds",
    "badge": "NIEUW",
    "cover": "media/g2b-beatclub-cover.png",
-   "beschrijving": "Maandabonnement: elke maand een nieuwe exclusieve pack (15+ sounds die NIET in de losse packs zitten) + welkomst-pack direct. Betaal per maand via Tikkie, stop wanneer je wilt.",
+   "beschrijving": "Maandabonnement: elke maand een nieuwe exclusieve pack (15+ sounds die NIET in de losse packs zitten) + welkomst-pack direct. Betaal per maand via Tikkie, stop wanneer je wilt. ✓ Direct betalen via iDEAL/kaart — direct downloaden.",
    "duur": 0,
    "download_dir": "d/beatclub1",
    "links": {
-    "koop": "beatclub.html"
+    "koop": "https://buy.stripe.com/cNi4gz1ss0zN6jJ0hD5J603"
    },
    "preview": "media/beatclub.mp3"
   },
@@ -198,11 +198,11 @@
    "id": "g2b-studio-pack",
    "titel": "G2B Studio Pack",
    "soort": "digitaal",
-   "beschrijving": "Complete mix/master-studio voor Windows: de G2B Engineer-app mixt en master je stems automatisch (in REAPER of zelfstandig, met smaak-loop), plus de G2B Glans-plugin (VST3+CLAP) voor air en breedte. Inclusief Nederlandse handleidingen. Eenmalig, geen abonnement.",
+   "beschrijving": "Complete mix/master-studio voor Windows: de G2B Engineer-app mixt en master je stems automatisch (in REAPER of zelfstandig, met smaak-loop), plus de G2B Glans-plugin (VST3+CLAP) voor air en breedte. Inclusief Nederlandse handleidingen. Eenmalig, geen abonnement. ✓ Direct betalen via iDEAL/kaart — direct downloaden.",
    "prijs": "€ 149 intro-prijs",
    "prijzen": {},
    "links": {
-    "koop": "bestel.html?p=g2b-studio-pack"
+    "koop": "https://buy.stripe.com/dRm00j1ssciv5fF0hD5J604"
    },
    "duur": 0,
    "groep": "software",
@@ -1891,10 +1891,10 @@
    "id": "syncbundle",
    "titel": "G2B SYNC-BUNDLE — complete audio-catalogus",
    "soort": "bundel",
-   "beschrijving": "Alles in één koop: 43 beats & sync-tracks + alle stems + licenties — 56 downloads. Elke stemming (donker·vrolijk·chill·sport·emotioneel·horror·kids·corporate). Voor studios, editors en supervisors die direct willen schakelen.",
+   "beschrijving": "Alles in één koop: 43 beats & sync-tracks + alle stems + licenties — 56 downloads. Elke stemming (donker·vrolijk·chill·sport·emotioneel·horror·kids·corporate). Voor studios, editors en supervisors die direct willen schakelen. ✓ Direct betalen via iDEAL/kaart — direct downloaden.",
    "prijs": "€ 99",
    "links": {
-    "koop": "bestel.html?p=syncbundle",
+    "koop": "https://buy.stripe.com/4gMfZh1ss3LZeQf0hD5J602",
     "download": "bedankt.html?k=syncbundle"
    },
    "groep": "bundels",
