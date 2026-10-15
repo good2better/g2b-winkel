@@ -163,7 +163,7 @@
    "id": "g2b-pack-der-packs",
    "titel": "G2B Pack der Packs",
    "soort": "digitaal",
-   "beschrijving": "DE VOLLEDIGE G2B-SOUND-STUDIO: 12 complete plugins (VocalTune, Sampler v2, OneShot, Keys XL, Delay, Reverb, Sleutel-Helper, Echo-Kamer, Toon-Fixer, Glue-Comp, Chorus, Saturator — Windows + Linux) + Keys XL instrumentenbank + 1006 one-shot sounds in 35 categorieën + 182 midi-patronen + handleidingen & demo-video's. 100% royalty-vrij. Wil je álle 24 plugins? → G2B Suite (€89,95). Wil je óók de automatische mix/master-robot? → G2B Studio Pack (€149).",
+   "beschrijving": "DE VOLLEDIGE G2B-SOUND-STUDIO: 13 complete plugins (VocalTune, Sampler v2, OneShot, Keys XL, Delay, Reverb, Sleutel-Helper, Echo-Kamer, Toon-Fixer, Glue-Comp, Chorus, Saturator — Windows + Linux) + Keys XL instrumentenbank + 1006 one-shot sounds in 35 categorieën + 182 midi-patronen + handleidingen & demo-video's. 100% royalty-vrij. Wil je álle 24 plugins? → G2B Suite (€89,95). Wil je óók de automatische mix/master-robot? → G2B Studio Pack (€149).",
    "prijs": "€ 79 intro-prijs",
    "prijzen": {},
    "links": {
@@ -2084,6 +2084,21 @@
    "cover": "media/sat-cover.png",
    "download_dir": "d/s4t0r",
    "video": "media/saturator-demo.mp4"
+  },
+  {
+   "id": "w4hf1l",
+   "titel": "G2B Filter-Wah",
+   "soort": "plugin",
+   "beschrijving": "Auto-wah: resonant filter dat meeveegt. LFO-sweep (RATE/DEPTH) + envelope volgt hoe hard je speelt (SENS), RES/FREQ, parallel via KRACHT, 27 DIMENTIES, 8 skins. VST3 + CLAP + standalone voor FL Studio.",
+   "prijs": "€ 14,95",
+   "links": {
+    "koop": "bestel.html?p=w4hf1l",
+    "download": "bedankt.html?k=w4hf1l"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/sat-cover.png",
+   "download_dir": "d/w4hf1l"
   },
   {
    "id": "k4w1n",
