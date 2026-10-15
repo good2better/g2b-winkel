@@ -1,12 +1,12 @@
 // G2B Filter-Wah UI — wah-curve visual + 7 knobs + AAN + 8 skins.
 #include "DistrhoUI.hpp"
 START_NAMESPACE_DISTRHO
-static const char* lbl[8]={"PRESET","RATE","DEPTH","RES","SENS","FREQ","KRACHT","DIMS"};
-static const int pFor[8]={7,2,3,4,5,6,1,8};
+static const char* lbl[8]={"SKIN","RATE","DEPTH","RES","SENS","FREQ","KRACHT","DIMS"};
+static const int pFor[8]={8,2,3,4,5,6,1,7};
 class WahUI:public UI{
 public:WahUI():UI(560,400){loadSharedResources();fDrag=-1;fOn=1;fSkin=4;}
 protected:
-    void parameterChanged(uint32_t index,float v)override{if(index==0)fOn=v;else if(index==9)fSkin=(int)v;else for(int i=0;i<8;i++)if(pFor[i]==(int)index)fVal[i]=v;repaint();}
+    void parameterChanged(uint32_t index,float v)override{if(index==0)fOn=v;else if(index==8){fSkin=(int)v;fVal[0]=v;}else for(int i=0;i<8;i++)if(pFor[i]==(int)index)fVal[i]=v;repaint();}
     void onNanoDisplay()override{
         const float W=getWidth(),H=getHeight();
         static const int SK[8][7][3]={
@@ -30,7 +30,7 @@ protected:
         text(W-60,fBtnY+5,fOn>0.5f?"AAN":"UIT",nullptr); textAlign(ALIGN_LEFT|ALIGN_TOP);
         const float px=16,py=52,pw=188,ph=150;
         beginPath(); roundedRect(px,py,pw,ph,10); fillColor(C(cd,0.5f)); fill(); strokeColor(C(pn)); strokeWidth(1); stroke();
-        float res=0.1f+fVal[2]/100*0.85f,depth=fVal[1]/100,sw=0.5f+0.5f*std::sin(6.2832f*0.3f);
+        float res=0.1f+fVal[3]/100*0.85f,depth=fVal[2]/100,sw=0.5f+0.5f*std::sin(6.2832f*0.3f);
         for(int x=0;x<=(int)pw;x+=4){
             float xi=x/(float)pw,f0=0.5f+3.5f*depth*(1-xi);
             float amp=res*2/(0.12f+std::fabs(xi-f0*0.3f));
@@ -38,7 +38,7 @@ protected:
             beginPath(); circle(px+x,y,1.6f); fillColor(C(ac)); fill();}
         float cur=px+pw*(0.15f+sw*0.5f);
         beginPath(); circle(cur,py+ph-30,4); fillColor(C(ad)); fill();
-        char lb[40];std::snprintf(lb,40,"veeg %.0f · res %.0f",fVal[0],fVal[2]);
+        char lb[40];std::snprintf(lb,40,"veeg %.0f · res %.0f",fVal[1],fVal[3]);
         fillColor(C(ac)); fontSize(10); text(px+8,py+ph+16,lb,nullptr);
         fKnobX=222;fKnobY=90;
         for(int i=0;i<8;i++){
@@ -62,20 +62,20 @@ protected:
             const float dx=ev.pos.getX()-cx,dy=ev.pos.getY()-cy;
             if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=ev.pos.getY();return true;}}
         if(ev.pos.getY()>=fSkinY&&ev.pos.getY()<=fSkinY+32)
-            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){setParameterValue(9,(float)i);fSkin=i;repaint();return true;}
+            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){setParameterValue(8,(float)i);fSkin=i;repaint();return true;}
         return false;}
     bool onMotion(const MotionEvent&ev)override{
         if(fDrag<0)return false;
         float dy=fLastY-ev.pos.getY();fLastY=ev.pos.getY();
         float v=fVal[fDrag]+dy*100/120.0f;
-        if(v<0)v=0;if(v>100)v=100;if(fDrag==6){if(v>26)v=26;}
+        if(v<0)v=0;if(v>100)v=100;if(fDrag==0){if(v>7)v=7;}if(fDrag==7){if(v>26)v=26;}
         fVal[fDrag]=v;setParameterValue(pFor[fDrag],v);
         repaint();return true;}
     bool onScroll(const ScrollEvent&)override{return false;}
 private:
-    float norm(int i){return fVal[i]/(i==6?26:100);}
+    float norm(int i){return fVal[i]/(i==0?7:(i==7?26:100));}
     void text(float x,float y,const char*s,std::nullptr_t){if(!s)return;DGL_NAMESPACE::NanoVG::text(x,y,s,nullptr);}
-    float fVal[7]={30,70,60,50,50,100,0};
+    float fVal[8]={4,30,70,60,50,50,100,0};
     int fDrag; float fLastY; float fOn,fSkin;
     float fBtnY=14,fKnobX=0,fKnobY=0,fSkinY=0;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WahUI)};
