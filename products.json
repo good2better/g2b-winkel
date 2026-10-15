@@ -1892,7 +1892,8 @@
    "badge": "HALLOWEEN",
    "cover": "media/spooky-cover.png",
    "preview": "media/spooky-preview.mp3",
-   "download_dir": "d/sp00ky"
+   "download_dir": "d/sp00ky",
+   "eerst": true
   },
   {
    "id": "h4unt",
@@ -1926,7 +1927,8 @@
    "preview": "media/haunt-preview.mp3",
    "download_dir": "d/h4unt",
    "badge": "HALLOWEEN",
-   "stems": true
+   "stems": true,
+   "eerst": true
   },
   {
    "id": "v0xch",
