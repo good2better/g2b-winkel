@@ -48,3 +48,5 @@ Chord-generator: ladder+toonsoort in → speelt akkoorden/voicings. Params:
 - MIDI-IN akkoord-detect + audio-out met simpel electric-piano/pad timbre (sinus-partials, geen samples — regel-1 clean)
 - UI: akkoord-wiel/links-toetsenbord + voicing-visual + vaste knoppen-set
 Daarna: ALLE plugin-demo's opnieuw — schoon audio, geen ruis, 100% correct (Giorgio-eis).
+
+RONDE 7 (gedaan): presets in plugins — Melody(16), ChordLab v1.1(16), LoFi v1.1(16), Wah v1.1(16). OPEN: presets ook in saturator/chorus/glue/echo/toon-fixer/sleutel-helper (zelfde applyPreset-patroon, skin-index wordt 9).
