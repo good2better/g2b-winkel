@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bestellen — Animal Heroes</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--groen:#4CAF50;--blauw:#2196F3;--geel:#FFEB3B;--oranje:#FF9800;--teal:#004D40;--aqua:#E0F7FA;--tekst:#333333;--wit:#ffffff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Raleway,sans-serif;color:var(--tekst);background:var(--aqua);min-height:100vh;display:flex;flex-direction:column}
+header{background:var(--teal);padding:20px;text-align:center}
+.logo{font-size:clamp(20px,4vw,26px);font-weight:800;color:#fff;letter-spacing:1px}
+.logo b{color:var(--geel)}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.kaart{background:var(--wit);border-radius:24px;box-shadow:0 12px 40px rgba(0,77,64,.15);max-width:560px;width:100%;padding:38px 32px}
+h1{color:var(--teal);font-size:26px;margin-bottom:6px;text-align:center}
+.sub{color:#5a6b7a;font-size:14px;text-align:center}
+.prod{display:flex;gap:14px;align-items:center;background:var(--aqua);border-radius:16px;padding:14px 16px;margin:22px 0;text-align:left}
+.prod img{width:64px;height:64px;object-fit:cover;border-radius:12px;box-shadow:0 4px 14px rgba(0,77,64,.18);flex:none}
+.prod .t{font-weight:800;color:var(--teal)}
+.prod .l{color:#5a6b7a;font-size:13px}
+.prod .pr{color:var(--groen);font-weight:800;font-size:19px;margin-left:auto;flex:none;white-space:nowrap}
+.stappen{margin:18px 0;display:grid;gap:10px}
+.stap{display:flex;gap:10px;align-items:flex-start;background:var(--aqua);border-radius:12px;padding:12px 14px;font-size:14px}
+.stap .n{background:var(--oranje);color:#fff;font-weight:800;border-radius:50%;width:24px;height:24px;display:flex;flex:none;align-items:center;justify-content:center;font-size:13px}
+.knop{display:block;background:var(--groen);color:#fff;font-weight:800;font-size:16px;padding:15px 20px;border-radius:30px;text-decoration:none;margin-top:14px;text-align:center;cursor:pointer;border:none;width:100%;font-family:inherit}
+.knop:hover{background:#43a047}
+.knop.ander{background:#fff;color:var(--teal);border:2px solid var(--teal);font-weight:700}
+.klein{color:#8a98a5;font-size:12px;margin-top:18px;text-align:center;line-height:1.5}
+.klein a{color:var(--blauw)}
+.terug{display:inline-block;margin-top:16px;color:var(--blauw);font-size:13px;text-decoration:none;font-weight:600}
+.fout .vinkje{background:var(--oranje);color:#fff}
+.vinkje{width:64px;height:64px;border-radius:50%;background:var(--groen);color:#fff;font-size:32px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+footer{text-align:center;color:#8a98a5;font-size:12px;padding:18px}
+footer b{color:var(--groen)}
+</style>
+</head>
+<body>
+<header><div class="logo">🐾 ANIMAL <b>HEROES</b></div></header>
+<main>
+  <div class="kaart" id="kaart">
+    <div class="vinkje">…</div>
+    <h1>Even laden</h1>
+    <div class="sub">Je bestelling wordt klaargezet…</div>
+  </div>
+</main>
+<footer>Gemaakt door <b>Good2Better</b> — een deel van elke verkoop steunt goede doelen.</footer>
+<script>
+const kaart = document.getElementById("kaart");
+const esc = s => String(s || "").replace(/[&<>"']/g, c =>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const EMAIL = "g.sandvliet88@gmail.com";
+
+const PRODUCTEN = {
+  "held-tshirt-leeuw": {
+    titel: "Held T-shirt — Leeuw",
+    sub: "Zacht kindershirt met onze medaille-leeuw. Ook in olifant, giraffe en papegaai.",
+    prijs: "€ 19,95",
+    img: "img/ah-shirt.jpg",
+    extra: "Welke held wil je (leeuw / olifant / giraffe / papegaai)? Welke maat?"
+  },
+  "sunny-knuffel": {
+    titel: "Sunny-knuffel",
+    sub: "Knuffel-olifantje Sunny met haar eigen rode helden-cape. De knuffel van het boek.",
+    prijs: "€ 24,95",
+    img: "img/ah-knuffel.jpg",
+    extra: ""
+  },
+  "kaartspel-animal-heroes": {
+    titel: "Kaartspel Animal Heroes",
+    sub: "Het complete spel: 150 kaarten, spelbord en fiches — voor de hele familie.",
+    prijs: "Binnenkort",
+    img: "img/ah-kaartspel.jpg",
+    extra: ""
+  }
+};
+
+function fout(msg) {
+  kaart.classList.add("fout");
+  kaart.innerHTML = `
+    <div class="vinkje">!</div>
+    <h1>Product niet gevonden</h1>
+    <div class="sub">${esc(msg || "Deze bestel-link is niet geldig.")}</div>
+    <div style="text-align:center"><a class="terug" href="index.html">← terug naar Animal Heroes</a></div>`;
+}
+
+const params = new URLSearchParams(location.search);
+const pid = params.get("p") || "";
+const p = PRODUCTEN[pid];
+if (!p) { fout(); throw new Error("onbekend product"); }
+
+const orderTekst =
+`Bestelling bij Animal Heroes
+
+Product: ${p.titel}
+Prijs: ${p.prijs}
+${p.extra ? p.extra + "\nAntwoord: \n" : ""}
+Mijn naam:
+Mijn e-mailadres:
+
+(Animal Heroes stuurt daarna een Tikkie-betaallink. Na betaling wordt je bestelling verzonden — je krijgt een bevestiging per mail.)`;
+
+const mailto = `mailto:${EMAIL}?subject=${encodeURIComponent("Bestelling: " + p.titel)}&body=${encodeURIComponent(orderTekst)}`;
+
+kaart.innerHTML = `
+  <h1>Bestelling afronden</h1>
+  <div class="sub">Zo werkt het — simpel en veilig via Tikkie</div>
+  <div class="prod">
+    <img src="${esc(p.img)}" alt="">
+    <div>
+      <div class="t">${esc(p.titel)}</div>
+      <div class="l">${esc(p.sub)}</div>
+    </div>
+    <div class="pr">${esc(p.prijs)}</div>
+  </div>
+  <div class="stappen">
+    <div class="stap"><div class="n">1</div><div>Klik op <b>STUUR BESTELLING</b> — je mailtje naar Animal Heroes wordt automatisch klaargezet. ${p.extra ? "Vul je held + maat in en verstuur." : "Verstuur hem."}</div></div>
+    <div class="stap"><div class="n">2</div><div>Je krijgt snel antwoord met een <b>Tikkie-betaallink</b> (betaling via je eigen bank-app, veilig).</div></div>
+    <div class="stap"><div class="n">3</div><div>Na betaling wordt je bestelling <b>verzonden</b> — je krijgt een bevestiging per mail.</div></div>
+  </div>
+  <a class="knop" href="${mailto}">✉ STUUR BESTELLING</a>
+  <button class="knop ander" id="kopie">📋 OF KOPIEER DE BESTELTEKST</button>
+  <div class="klein">Liever direct mailen? Stuur je bestelling naar
+    <a href="mailto:${EMAIL}">${EMAIL}</a> met de productnaam erbij.</div>
+  <div style="text-align:center"><a class="terug" href="index.html">← terug naar Animal Heroes</a></div>`;
+
+document.getElementById("kopie").addEventListener("click", async e => {
+  try {
+    await navigator.clipboard.writeText(orderTekst + "\n\nMail naar: " + EMAIL);
+    e.target.textContent = "✓ GEKOPIEERD — plak in je mail/WhatsApp";
+  } catch {
+    e.target.textContent = orderTekst;
+  }
+});
+</script>
+</body>
+</html>
