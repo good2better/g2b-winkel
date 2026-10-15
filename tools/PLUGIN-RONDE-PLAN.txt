@@ -34,3 +34,10 @@ Build: Linux vst3+clap+standalone test -> Windows cross (make WINDOWS=true)
 - G2B Saturator (tape/tube drive)
 - G2B Gate/Transient
 - G2B Filter-Wah (XY-pad-favoriet)
+
+## RONDE 3-5 SHIPPED (2026-10-15)
+- G2B Glue-Comp (glu3c0mp) €19,95 — mix-lijm compressor + demo-video
+- G2B Chorus (ch0r45) €14,95 — stereo chorus + demo-video
+- G2B Saturator (s4t0r) €14,95 — tape/tube/crush drive + waveshaper-curve
+Pack der Packs = 12 plugins · 97 producten totaal
+Volgende kandidaten: G2B Gate/Transient, G2B Filter-Wah, G2B Limiter
