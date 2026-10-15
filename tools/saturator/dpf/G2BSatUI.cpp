@@ -1,13 +1,13 @@
 // G2B Saturator UI — waveshaper-curve visual + 7 knobs + AAN + 8 skins.
 #include "DistrhoUI.hpp"
 START_NAMESPACE_DISTRHO
-static const char* lbl[7]={"DRIVE","BIAS","TONE","SC LP","LEVEL","KRACHT","DIMENTIES"};
-static const int pFor[7]={2,3,4,6,5,1,7};
+static const char* lbl[8]={"DRIVE","BIAS","TONE","SC LP","LEVEL","KRACHT","DIMENTIES","PRESET"};
+static const int pFor[8]={2,3,4,6,5,1,7,9};
 static const char* dims3(int d){if(d<9)return "tape";if(d<18)return "tube";return "crush";}
 class SatUI:public UI{
 public:SatUI():UI(560,400){loadSharedResources();fDrag=-1;fOn=1;fSkin=3;}
 protected:
-    void parameterChanged(uint32_t index,float v)override{if(index==0)fOn=v;else if(index==8)fSkin=(int)v;else for(int i=0;i<7;i++)if(pFor[i]==(int)index)fVal[i]=v;repaint();}
+    void parameterChanged(uint32_t index,float v)override{if(index==0)fOn=v;else if(index==8)fSkin=(int)v;else for(int i=0;i<8;i++)if(pFor[i]==(int)index)fVal[i]=v;repaint();}
     void onNanoDisplay()override{
         const float W=getWidth(),H=getHeight();
         static const int SK[8][7][3]={
@@ -44,7 +44,7 @@ protected:
         fillColor(C(ac)); fontSize(10); text(px+8,py+ph+16,lb,nullptr);
         // knobs 4+3
         fKnobX=222;fKnobY=90;
-        for(int i=0;i<7;i++){
+        for(int i=0;i<8;i++){
             const float cx=fKnobX+(i%4)*86,cy=fKnobY+(i/4)*96;
             beginPath(); circle(cx,cy,22); fillColor(C(pn)); fill();
             float n=norm(i),a=-2.35f+n*4.7f;
@@ -61,7 +61,7 @@ protected:
     bool onMouse(const MouseEvent&ev)override{
         if(!ev.press){fDrag=-1;return true;}
         if(ev.pos.getY()<42&&ev.pos.getX()>getWidth()-116){setParameterValue(0,fOn>0.5f?0.f:1.f);fOn=fOn>0.5f?0:1;repaint();return true;}
-        for(int i=0;i<7;i++){
+        for(int i=0;i<8;i++){
             const float cx=fKnobX+(i%4)*86,cy=fKnobY+(i/4)*96;
             const float dx=ev.pos.getX()-cx,dy=ev.pos.getY()-cy;
             if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=ev.pos.getY();return true;}}
@@ -81,7 +81,7 @@ private:
     float norm(int i){float mx=maxOf(i);return mx>fMin[i]?(fVal[i]-fMin[i])/(mx-fMin[i]):0;}
     float maxOf(int i){const float m[7]={100,100,100,100,100,100,26};return m[i];}
     void text(float x,float y,const char*s,std::nullptr_t){if(!s)return;DGL_NAMESPACE::NanoVG::text(x,y,s,nullptr);}
-    float fVal[7]={40,50,60,0,80,100,0},fMin[7]={0,0,0,0,0,0,0};
+    float fVal[8]={40,50,60,0,80,100,0,0},fMin[8]={0,0,0,0,0,0,0,0};
     int fDrag; float fLastY; float fOn,fSkin;
     float fBtnY=14,fKnobX=0,fKnobY=0,fSkinY=0;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SatUI)};

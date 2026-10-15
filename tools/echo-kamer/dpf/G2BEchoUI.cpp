@@ -13,10 +13,10 @@ public:
     EchoUI() : UI(560,400)
     {
         loadSharedResources();
-        static const float mins[K]={0,0,0,1000,20,0}, maxs[K]={100,1000,95,18000,2000,26};
-        static const float defs[K]={40,375,40,12000,120,13};
-        static const char*  lbl[K]={"KRACHT","TIJD","FEEDBACK","LOWPASS","HIGHPASS","DIMENTIES"};
-        static const int    pids[K]={1,2,3,6,7,8};
+        static const float mins[K]={0,0,0,1000,20,0,0}, maxs[K]={100,1000,95,18000,2000,26,15};
+        static const float defs[K]={40,375,40,12000,120,13,0};
+        static const char*  lbl[K]={"KRACHT","TIJD","FEEDBACK","LOWPASS","HIGHPASS","DIMENTIES","PRESET"};
+        static const int    pids[K]={1,2,3,6,7,8,10};
         std::memcpy(fMin,mins,sizeof(mins)); std::memcpy(fMax,maxs,sizeof(maxs));
         std::memcpy(fValue,defs,sizeof(defs)); std::memcpy(fLabel,lbl,sizeof(lbl));
         std::memcpy(fParamId,pids,sizeof(pids));
@@ -151,7 +151,7 @@ protected:
         return false;
     }
 private:
-    static const int K=6;
+    static const int K=7;
     void xySet(const Point<double>& p){
         float nx=(p.getX()-fXX)/fXW; if(nx<0)nx=0;if(nx>1)nx=1;
         float ny=(p.getY()-fXY_)/fXH; if(ny<0)ny=0;if(ny>1)ny=1;

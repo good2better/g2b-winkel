@@ -13,10 +13,10 @@ public:
     ToonUI() : UI(560,400)
     {
         loadSharedResources();
-        static const float mins[K]={0,0,0,-12,0}, maxs[K]={100,11,3,12,26};
-        static const float defs[K]={60,0,0,0,9};
-        static const char*  lbl[K]={"KRACHT","TOONSOORT","LADDER","SHIFT","DIMENTIES"};
-        static const int    pids[K]={1,2,3,4,5};
+        static const float mins[K]={0,0,0,-12,0,0}, maxs[K]={100,11,3,12,26,15};
+        static const float defs[K]={60,0,0,0,9,0};
+        static const char*  lbl[K]={"KRACHT","TOONSOORT","LADDER","SHIFT","DIMENTIES","PRESET"};
+        static const int    pids[K]={1,2,3,4,5,7};
         std::memcpy(fMin,mins,sizeof(mins)); std::memcpy(fMax,maxs,sizeof(maxs));
         std::memcpy(fValue,defs,sizeof(defs)); std::memcpy(fLabel,lbl,sizeof(lbl));
         std::memcpy(fParamId,pids,sizeof(pids));
@@ -158,7 +158,7 @@ protected:
         return false;
     }
 private:
-    static const int K=5;
+    static const int K=6;
     void xySet(const Point<double>& p){
         float nx=(p.getX()-fXX)/fXW; if(nx<0)nx=0;if(nx>1)nx=1;
         float ny=(p.getY()-fXY_)/fXH; if(ny<0)ny=0;if(ny>1)ny=1;

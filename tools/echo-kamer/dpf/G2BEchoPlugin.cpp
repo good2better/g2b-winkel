@@ -13,7 +13,7 @@ class G2BEchoPlugin : public Plugin {
 public:
     enum Param {
         kOn, kKracht, kTijd, kFeedback, kPingpong, kDuck,
-        kLp, kHp, kDimensie, kSkin, kParamCount
+        kLp, kHp, kDimensie, kSkin, kPreset, kParamCount
     };
     G2BEchoPlugin() : Plugin(kParamCount, 0, 0) {
         std::memset(bufL_, 0, sizeof(bufL_)); std::memset(bufR_, 0, sizeof(bufR_));
@@ -39,10 +39,12 @@ public:
         case kHp: p.name="HIGHPASS"; p.symbol="hp"; p.unit="Hz"; p.ranges.min=20; p.ranges.max=2000; p.ranges.def=120; break;
         case kDimensie: p.name="DIMENTIES"; p.symbol="dim"; p.hints|=kParameterIsInteger; p.ranges.max=26; p.ranges.def=13; break;
         case kSkin: p.name="SKIN"; p.symbol="skin"; p.hints|=kParameterIsInteger; p.ranges.max=7; break;
+        case kPreset: p.name="PRESET"; p.symbol="pre"; p.hints|=kParameterIsInteger; p.ranges.max=15; break;
         }
     }
     float getParameterValue(uint32_t i) const override { return v_[i]; }
-    void setParameterValue(uint32_t i, float v) override { v_[i]=v; }
+    void setParameterValue(uint32_t i, float v) override { if(i==kPreset && (int)v!=(int)v_[kPreset])applyPreset((int)v); v_[i]=v; }
+    void applyPreset(int p){static const float PR[16][4]={{180,30,14000,80},{375,45,12000,120},{500,60,8000,200},{750,70,6000,300},{250,35,16000,60},{125,25,18000,40},{450,55,10000,150},{600,50,9000,180},{300,65,7000,250},{200,40,15000,90},{550,75,5000,350},{1000,80,4000,400},{150,20,17000,50},{400,50,11000,130},{700,60,8500,220},{350,55,13000,110}};const float*q=PR[p&15];v_[kTijd]=q[0];v_[kFeedback]=q[1];v_[kLp]=q[2];v_[kHp]=q[3];}
 protected:
     void run(const float** in, float** out, uint32_t n) override {
         if(v_[kOn]<0.5f){ if(in[0]!=out[0])std::memcpy(out[0],in[0],n*4); if(in[1]!=out[1])std::memcpy(out[1],in[1],n*4); return; }

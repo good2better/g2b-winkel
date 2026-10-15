@@ -13,10 +13,10 @@ public:
     GlueUI() : UI(560,400)
     {
         loadSharedResources();
-        static const float mins[K]={0,-40,1,0.1f,10,0,20,0}, maxs[K]={100,0,20,100,1000,24,300,26};
-        static const float defs[K]={100,-18,4,10,150,0,60,8};
-        static const char*  lbl[K]={"KRACHT","DREMPEL","RATIO","ATTACK","RELEASE","GAIN","SC-CUT","DIMENTIES"};
-        static const int    pids[K]={1,2,3,4,5,6,7,8};
+        static const float mins[K]={0,-40,1,0.1f,10,0,20,0,0}, maxs[K]={100,0,20,100,1000,24,300,26,15};
+        static const float defs[K]={100,-18,4,10,150,0,60,8,0};
+        static const char*  lbl[K]={"KRACHT","DREMPEL","RATIO","ATTACK","RELEASE","GAIN","SC-CUT","DIMENTIES","PRESET"};
+        static const int    pids[K]={1,2,3,4,5,6,7,8,10};
         std::memcpy(fMin,mins,sizeof(mins)); std::memcpy(fMax,maxs,sizeof(maxs));
         std::memcpy(fValue,defs,sizeof(defs)); std::memcpy(fLabel,lbl,sizeof(lbl));
         std::memcpy(fParamId,pids,sizeof(pids));
@@ -147,7 +147,7 @@ protected:
         return false;
     }
 private:
-    static const int K=8;
+    static const int K=9;
     float fMin[K],fMax[K],fValue[K]; const char* fLabel[K]; int fParamId[K];
     int fDrag; float fLastY; float fOn,fSkin;
     float fBtnY=14,fKnobX=0,fKnobY=0,fSkinY=0; float fXX=0,fXY_=0,fXW=0,fXH=0;

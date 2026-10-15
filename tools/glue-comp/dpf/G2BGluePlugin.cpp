@@ -38,6 +38,7 @@ public:
         kScHp,      // 7  sidechain highpass Hz 20..300
         kDimensie,  // 8  0..26 karakter
         kSkin,      // 9  0..7
+        kPreset,    // 10 0..15 presets
         kParamCount
     };
 
@@ -54,6 +55,7 @@ protected:
         case kScHp:    p.name="SC-LOWCUT"; p.symbol="schp"; p.ranges.min=20;p.ranges.max=300;p.ranges.def=60; p.unit="Hz"; break;
         case kDimensie:p.name="DIMENTIES"; p.symbol="dim";  p.ranges.min=0; p.ranges.max=26; p.ranges.def=8; p.hints=kParameterIsInteger; break;
         case kSkin:    p.name="SKIN";      p.symbol="skin"; p.ranges.min=0; p.ranges.max=7;  p.ranges.def=2; p.hints=kParameterIsInteger; break;
+        case kPreset:  p.name="PRESET";    p.symbol="pre";  p.ranges.min=0; p.ranges.max=15; p.ranges.def=0; p.hints=kParameterIsInteger; break;
         }
     }
 
@@ -62,7 +64,7 @@ protected:
         case kOn: return fOn; case kKracht: return fMix; case kThresh: return fThr;
         case kRatio: return fRatio; case kAttack: return fAtk; case kRelease: return fRel;
         case kMakeup: return fMake; case kScHp: return fHp; case kDimensie: return fDim;
-        case kSkin: return fSkin;
+        case kSkin: return fSkin; case kPreset: return fPre;
         }
         return 0;
     }
@@ -79,6 +81,7 @@ protected:
         case kScHp: fHp=v; break;
         case kDimensie: fDim=v; break;
         case kSkin: fSkin=v; break;
+        case kPreset: if((int)v!=(int)fPre)applyPreset((int)v); fPre=v; break;
         }
     }
 
@@ -142,7 +145,8 @@ protected:
     int getOn() const { return (int)fOn; }
 
 private:
-    float fOn=1,fMix=100,fThr=-18,fRatio=4,fAtk=10,fRel=150,fMake=0,fHp=60,fDim=8,fSkin=2;
+    void applyPreset(int p){static const float PR[16][6]={{-12,2,15,200,3,80},{-18,4,10,150,5,60},{-25,8,5,100,8,40},{-8,1.5f,30,400,2,120},{-15,3,20,250,4,100},{-22,6,8,120,7,50},{-10,2.5f,25,300,3,150},{-20,5,12,180,6,70},{-30,10,3,80,10,30},{-14,3.5f,18,220,4,90},{-16,4,15,160,5,60},{-24,7,6,110,8,45},{-9,2,35,500,2,140},{-19,4.5f,11,190,6,55},{-28,9,4,90,9,35},{-13,3,22,280,4,110}};const float*q=PR[p&15];fThr=q[0];fRatio=q[1];fAtk=q[2];fRel=q[3];fMake=q[4];fHp=q[5];}
+    float fOn=1,fMix=100,fThr=-18,fRatio=4,fAtk=10,fRel=150,fMake=0,fHp=60,fDim=8,fSkin=2,fPre=0;
     float fEnv=0,fHpL=0,fHpR=0,fGr=0,fSrd=44100;
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(G2BGluePlugin)

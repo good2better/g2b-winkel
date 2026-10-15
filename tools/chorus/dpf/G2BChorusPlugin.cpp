@@ -3,7 +3,7 @@
 START_NAMESPACE_DISTRHO
 static const char* dimNames[27]={"CLEAN 1","CLEAN 2","CLEAN 3","CLEAN 4","CLEAN 5","CLEAN 6","CLEAN 7","CLEAN 8","CLEAN 9","WARM 1","WARM 2","WARM 3","WARM 4","WARM 5","WARM 6","WARM 7","WARM 8","WARM 9","THICK 1","THICK 2","THICK 3","THICK 4","THICK 5","THICK 6","THICK 7","THICK 8","THICK 9"};
 class G2BChorusPlugin:public Plugin{
-public:enum Params{kOn,kKracht,kRate,kDepth,kDelay,kFeed,kWidth,kDimensie,kSkin,kParamCount};
+public:enum Params{kOn,kKracht,kRate,kDepth,kDelay,kFeed,kWidth,kDimensie,kSkin,kPreset,kParamCount};
     G2BChorusPlugin():Plugin(kParamCount,0,0){}
     const char*getLabel()const override{return "G2B Chorus";}
     const char*getDescription()const override{return "Stereo chorus met 27 dimensies";}
@@ -22,9 +22,9 @@ protected:
         case kFeed:p.name="Feed";p.symbol="feed";p.ranges.def=0;p.ranges.min=0;p.ranges.max=95;break;
         case kWidth:p.name="Width";p.symbol="width";p.ranges.def=70;p.ranges.min=0;p.ranges.max=100;break;
         case kDimensie:p.name="Dimenties";p.symbol="dim";p.ranges.def=0;p.ranges.min=0;p.ranges.max=26;break;
-        case kSkin:p.name="Skin";p.symbol="skin";p.ranges.def=2;p.ranges.min=0;p.ranges.max=7;break;}}
-    float getParameterValue(uint32_t i)const override{switch(i){case kOn:return fOn;case kKracht:return fKr;case kRate:return fRate;case kDepth:return fDep;case kDelay:return fDel;case kFeed:return fFeed;case kWidth:return fWid;case kDimensie:return fDim;case kSkin:return fSkin;default:return 0;}}
-    void setParameterValue(uint32_t i,float v)override{switch(i){case kOn:fOn=v;break;case kKracht:fKr=v;break;case kRate:fRate=v;break;case kDepth:fDep=v;break;case kDelay:fDel=v;break;case kFeed:fFeed=v;break;case kWidth:fWid=v;break;case kDimensie:fDim=v;break;case kSkin:fSkin=v;break;}}
+        case kSkin:p.name="Skin";p.symbol="skin";p.ranges.def=2;p.ranges.min=0;p.ranges.max=7;break;case kPreset:p.name="Preset";p.symbol="pre";p.ranges.min=0;p.ranges.max=15;p.ranges.def=0;p.hints=kParameterIsInteger;break;}}
+    float getParameterValue(uint32_t i)const override{switch(i){case kOn:return fOn;case kKracht:return fKr;case kRate:return fRate;case kDepth:return fDep;case kDelay:return fDel;case kFeed:return fFeed;case kWidth:return fWid;case kDimensie:return fDim;case kSkin:return fSkin;case kPreset:return fPre;default:return 0;}}
+    void setParameterValue(uint32_t i,float v)override{switch(i){case kOn:fOn=v;break;case kKracht:fKr=v;break;case kRate:fRate=v;break;case kDepth:fDep=v;break;case kDelay:fDel=v;break;case kFeed:fFeed=v;break;case kWidth:fWid=v;break;case kDimensie:fDim=v;break;case kSkin:fSkin=v;break;case kPreset:if((int)v!=(int)fPre)applyPreset((int)v);fPre=v;break;}}
     void activate()override{sr=getSampleRate();std::memset(buf,0,sizeof(buf));pos=0;phL=0;phR=0.5f;lpL=lpR=0;}
     void run(const float**in,float**out,uint32_t n)override{
         if(fOn<0.5f){if(in[0]!=out[0])std::memcpy(out[0],in[0],n*sizeof(float));if(in[1]!=out[1])std::memcpy(out[1],in[1],n*sizeof(float));return;}
@@ -48,7 +48,8 @@ protected:
     }
 private:
     static const int BS=8192; float buf[2][BS];int pos;float phL,phR,lpL,lpR;
-    float fOn=1,fKr=70,fRate=0.8f,fDep=50,fDel=15,fFeed=0,fWid=70,fDim=0,fSkin=2;double sr=44100;
+    void applyPreset(int p){static const float PR[16][5]={{0.5f,45,18,20,80},{1.2f,60,20,35,85},{2.5f,30,12,10,70},{4.0f,75,25,50,90},{0.2f,20,30,0,60},{1.8f,55,15,40,75},{3.5f,80,20,60,95},{0.8f,40,25,15,65},{5.0f,50,10,30,80},{0.3f,65,35,25,100},{2.0f,50,22,45,85},{6.0f,70,15,55,90},{1.0f,35,28,20,70},{3.0f,60,18,50,80},{0.6f,50,20,35,75},{4.5f,85,12,70,95}};const float*q=PR[p&15];fRate=q[0];fDep=q[1];fDel=q[2];fFeed=q[3];fWid=q[4];}
+    float fOn=1,fKr=70,fRate=0.8f,fDep=50,fDel=15,fFeed=0,fWid=70,fDim=0,fSkin=2,fPre=0;double sr=44100;
     float fWidth_()const{return fWid;}
     void put(float l,float r){buf[0][pos]=l;buf[1][pos]=r;pos=(pos+1)%BS;}
     float tap(float ms){float s=ms*0.001f*sr;int ipos=pos-(int)s-1;if(ipos<0)ipos+=BS;float fr=s-(int)s;int i2=(ipos+1)%BS;return (buf[0][ipos]+buf[1][ipos])*0.5f*(1-fr)+(buf[0][i2]+buf[1][i2])*0.5f*fr;}

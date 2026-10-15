@@ -15,7 +15,7 @@ START_NAMESPACE_DISTRHO
 class G2BToonPlugin : public Plugin
 {
 public:
-    enum Param { kOn=0, kKracht, kKey, kScale, kShift, kDimensie, kSkin, kParamCount };
+    enum Param { kOn=0, kKracht, kKey, kScale, kShift, kDimensie, kSkin, kPreset, kParamCount };
 
     G2BToonPlugin()
         : Plugin(kParamCount, 0, 0),
@@ -64,6 +64,9 @@ protected:
         case kSkin:
             p.name = "Skin"; p.symbol = "skin";
             p.ranges.def = 0.f; p.ranges.min = 0.f; p.ranges.max = 7.f; break;
+        case kPreset:
+            p.name = "Preset"; p.symbol = "pre"; p.hints |= kParameterIsInteger;
+            p.ranges.def = 0.f; p.ranges.min = 0.f; p.ranges.max = 15.f; break;
         default: break;
         }
     }
@@ -72,8 +75,10 @@ protected:
 
     void setParameterValue(uint32_t index, float value) override
     {
+        if(index==kPreset && (int)value!=(int)v_[kPreset])applyPreset((int)value);
         v_[index] = value;
     }
+    void applyPreset(int p){static const float PR[16][3]={{0,0,0},{9,1,0},{7,0,0},{2,1,0},{0,0,-12},{9,1,3},{5,0,-2},{10,1,0},{4,0,5},{7,1,-4},{0,2,0},{9,3,0},{3,1,7},{6,0,-6},{1,1,2},{11,0,-1}};const float*q=PR[p&15];v_[kKey]=q[0];v_[kScale]=q[1];v_[kShift]=q[2];}
 
     void activate() override
     {
