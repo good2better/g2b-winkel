@@ -1,7 +1,6 @@
 // G2B Sleutel-Helper UI — toonsoort + veilige noten + hints
 // FOCUS-pills · AAN/UIT · WIS · KRACHT/DIMENTIES draaiknoppen · SKIN
 #include "DistrhoUI.hpp"
-#include "sleutel_data.h"
 #include <cstring>
 #include <cstdio>
 #include <cstdlib>
@@ -27,7 +26,7 @@ public:
 protected:
     void parameterChanged(uint32_t index, float value) override
     {
-        for(int i=0;i<2;i++) if(index==fParamId[i]){fValue[i]=value;repaint();return;}
+        for(int i=0;i<2;i++) if((int)index==fParamId[i]){fValue[i]=value;repaint();return;}
         if(index==0) fOn=value;
         else if(index==1) fFocus=(int)value;
         else if(index==4) fSkin=(int)value;
@@ -64,25 +63,25 @@ protected:
             {{24,20,8},{38,32,14},{255,245,215},{165,140,80},{70,55,25},{235,190,70},{150,115,30}},
             {{15,15,15},{28,28,28},{240,240,240},{120,120,120},{48,48,48},{235,60,60},{140,30,30}},
         };
-        const int s=fSkin&7;
+        const int s=(int)fSkin&7;
         const int *bg=SK[s][0],*pn=SK[s][1],*fg=SK[s][2],*mu=SK[s][3],*cd=SK[s][4],*ac=SK[s][5],*ad=SK[s][6];
-        auto C=[](const int*c,float a=1.f){return nvgRGBA(c[0],c[1],c[2],(int)(a*255));};
+        auto C=[](const int*c,float a=1.f){return Color(c[0],c[1],c[2],a);};
 
         beginPath(); rect(0,0,W,H); fillColor(C(bg)); fill();      // achtergrond
 
         // ---- kopbalk ----
-        fontSize(15); fontFace("sans-bold"); textAlign(NVG_ALIGN_LEFT|NVG_ALIGN_MIDDLE);
-        fillColor(C(ac)); text(16,22,"G2B SLEUTEL-HELPER");
-        fillColor(C(mu)); fontSize(11); text(150,22,"theory-assist · MIDI-thru");
+        fontSize(15); fontFace("sans-bold"); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
+        fillColor(C(ac)); text(16,22,"G2B SLEUTEL-HELPER",nullptr);
+        fillColor(C(mu)); fontSize(11); text(150,22,"theory-assist · MIDI-thru",nullptr);
 
         // toonsoort blok
         beginPath(); roundedRect(W-200,8,184,44,8); fillColor(C(pn)); fill();
         fillColor(C(fg)); fontSize(17); fontFace("sans-bold");
-        textAlign(NVG_ALIGN_CENTER|NVG_ALIGN_MIDDLE);
-        text(W-108,24,fKey);
+        textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+        text(W-108,24,fKey,nullptr);
         fontSize(9); fillColor(C(mu));
-        if(fConf>0){ char b[24]; std::snprintf(b,24,"zekerheid %d%%",fConf); text(W-108,42,b); }
-        else text(W-108,42,"speel noten op je kanaal");
+        if(fConf>0){ char b[24]; std::snprintf(b,24,"zekerheid %d%%",fConf); text(W-108,42,b,nullptr); }
+        else text(W-108,42,"speel noten op je kanaal",nullptr);
 
         // ---- FOCUS pills ----
         static const char* FP[4]={"ALLES","BAS-808","AKKOORDEN","MELODIE"};
@@ -93,24 +92,19 @@ protected:
             fillColor(i==(int)fFocus?C(ac):C(pn)); fill();
             fillColor(i==(int)fFocus?C(bg):C(fg));
             fontSize(10); fontFace("sans-bold");
-            textAlign(NVG_ALIGN_CENTER|NVG_ALIGN_MIDDLE);
-            text(x+42,fPillY+12,FP[i]);
+            textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            text(x+42,fPillY+12,FP[i],nullptr);
         }
         // AAN + WIS knoppen rechts
         beginPath(); roundedRect(W-160,fPillY,66,24,12); fillColor(fOn>0.5f?C(ad):C(pn)); fill();
-        fillColor(C(fg)); fontSize(10); textAlign(NVG_ALIGN_CENTER|NVG_ALIGN_MIDDLE);
-        text(W-127,fPillY+12,fOn>0.5f?"AAN":"UIT");
+        fillColor(C(fg)); fontSize(10); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+        text(W-127,fPillY+12,fOn>0.5f?"AAN":"UIT",nullptr);
         beginPath(); roundedRect(W-88,fPillY,72,24,12); fillColor(C(pn)); fill();
-        fillColor(C(fg)); text(W-52,fPillY+12,"WIS");
+        fillColor(C(fg)); text(W-52,fPillY+12,"WIS",nullptr);
 
         // ---- piano-strip (3 octaven, C2..B4) ----
         const float py=104, ph=88, kw=(W-32)/36.f;
         fPianoY=py;
-        for(int o=0;o<3;o++)for(int i=0;i<12;i++){
-            const int pc=i; const int n=o*12+i;
-            const bool black=(pc==1||pc==3||pc==6||pc==8||pc==10);
-            if(black) continue;
-        }
         // witte toetsen
         static const int whites[7]={0,2,4,5,7,9,11};
         int wi=0;
@@ -120,7 +114,7 @@ protected:
             const int pc=wpc[i];
             const bool ins=fMask>>pc&1, inf=fFoc>>pc&1;
             beginPath(); rect(wx[i],py,kw*12/7-1,ph);
-            fillColor(ins?C(ac,inf?0.95f:0.45f):nvgRGBA(238,238,236,255)); fill();
+            fillColor(ins?C(ac,inf?0.95f:0.45f):Color(238,238,236,1.f)); fill();
             strokeColor(C(cd)); strokeWidth(1); stroke();
         }
         // zwarte toetsen
@@ -133,16 +127,16 @@ protected:
             fillColor(ins?C(ad,inf?1.f:0.55f):C(cd)); fill();
         }
         // toonnamen onder de C's
-        fillColor(C(mu)); fontSize(8); textAlign(NVG_ALIGN_CENTER|NVG_ALIGN_TOP);
-        for(int o=0;o<3;o++) text(16+o*7*(kw*12/7)+ (kw*12/7)/2, py+ph+4, o==1?"C3":"C");
+        fillColor(C(mu)); fontSize(8); textAlign(ALIGN_CENTER|ALIGN_TOP);
+        for(int o=0;o<3;o++) text(16+o*7*(kw*12/7)+ (kw*12/7)/2, py+ph+4, o==1?"C3":"C",nullptr);
 
         // ---- suggestie-kaart ----
         const float sy=py+ph+22;
         beginPath(); roundedRect(16,sy,W-32,96,10); fillColor(C(pn)); fill();
-        fillColor(C(fg)); fontSize(12); fontFace("sans"); textAlign(NVG_ALIGN_LEFT|NVG_ALIGN_TOP);
-        if(fSug1[0]) text(28,sy+12,fSug1);
-        if(fSug2[0]) text(28,sy+34,fSug2);
-        if(fSug3[0]){ fillColor(C(ac)); fontFace("sans-bold"); text(28,sy+62,fSug3); }
+        fillColor(C(fg)); fontSize(12); fontFace("sans"); textAlign(ALIGN_LEFT|ALIGN_TOP);
+        if(fSug1[0]) text(28,sy+12,fSug1,nullptr);
+        if(fSug2[0]) text(28,sy+34,fSug2,nullptr);
+        if(fSug3[0]){ fillColor(C(ac)); fontFace("sans-bold"); text(28,sy+62,fSug3,nullptr); }
 
         // ---- knobs: KRACHT · DIMENTIES ----
         fKnobY=H-64;
@@ -153,18 +147,18 @@ protected:
             beginPath(); moveTo(cx,cy); lineTo(cx+r*0.85f*std::cos(a),cy+r*0.85f*std::sin(a));
             strokeColor(C(ac)); strokeWidth(3); stroke();
             fillColor(C(mu)); fontSize(9); fontFace("sans-bold");
-            textAlign(NVG_ALIGN_CENTER|NVG_ALIGN_TOP);
-            text(cx,cy+r+6,fLabel[i]);
+            textAlign(ALIGN_CENTER|ALIGN_TOP);
+            text(cx,cy+r+6,fLabel[i],nullptr);
             fillColor(C(fg)); fontSize(10);
             char v[16];
             if(fMax[i]>2) std::snprintf(v,16,"%d",(int)fValue[i]+1);
             else std::snprintf(v,16,"%d%%",(int)(fValue[i]*100));
-            text(cx,cy+r+16,v);
+            text(cx,cy+r+16,v,nullptr);
         }
         // skin-swatcher
         beginPath(); roundedRect(16,H-52,150,32,8); fillColor(C(pn)); fill();
-        fillColor(C(mu)); fontSize(9); textAlign(NVG_ALIGN_LEFT|NVG_ALIGN_MIDDLE);
-        text(26,H-36,"SKIN"); fSkinX=56;fSkinY=H-52;
+        fillColor(C(mu)); fontSize(9); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
+        text(26,H-36,"SKIN",nullptr); fSkinX=56;fSkinY=H-52;
         for(int i=0;i<8;i++){ beginPath(); circle(66+i*13,H-36,5); fillColor(C(SK[i][5])); fill(); }
     }
 
@@ -197,7 +191,8 @@ protected:
             const float dv=(fLastY-ev.pos.getY())*(fMax[fDrag]-fMin[fDrag])/150.f;
             fLastY=ev.pos.getY();
             float v=fValue[fDrag]+dv;
-            if(v<fMin[fDrag])v=fMin[fDrag]; if(v>fMax[fDrag])v=fMax[fDrag];
+            if(v<fMin[fDrag])v=fMin[fDrag];
+            if(v>fMax[fDrag])v=fMax[fDrag];
             setParameterValue(fParamId[fDrag],v);
             return true;
         }
