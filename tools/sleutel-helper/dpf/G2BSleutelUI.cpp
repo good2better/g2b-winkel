@@ -208,14 +208,14 @@ protected:
         // focus pills
         if(ev.pos.getY()>=fPillY&&ev.pos.getY()<=fPillY+24){
             for(int i=0;i<4;i++){const float x=16+i*92;
-                if(ev.pos.getX()>=x&&ev.pos.getX()<=x+84){setParameterValue(1,(float)i);return true;}}
+                if(ev.pos.getX()>=x&&ev.pos.getX()<=x+84){setParameterValue(1,(float)i);fFocus=i;repaint();return true;}}
             if(ev.pos.getX()>=W-236&&ev.pos.getX()<=W-170){setParameterValue(12,1.f);return true;}
-            if(ev.pos.getX()>=W-164&&ev.pos.getX()<=W-96){setParameterValue(0,fOn>0.5f?0.f:1.f);return true;}
+            if(ev.pos.getX()>=W-164&&ev.pos.getX()<=W-96){const float v=fOn>0.5f?0.f:1.f;setParameterValue(0,v);fOn=v;repaint();return true;}
             if(ev.pos.getX()>=W-88){setParameterValue(5,1.f);return true;}
         }
         // skin dots
         if(ev.pos.getY()>=fSkinY&&ev.pos.getY()<=fSkinY+32)
-            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){setParameterValue(4,(float)i);return true;}
+            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){setParameterValue(4,(float)i);fSkin=i;repaint();return true;}
         return true;
     }
 
