@@ -1862,6 +1862,21 @@
    "download_dir": "d/h3ld3r",
    "badge": "CORPORATE",
    "stems": true
+  },
+  {
+   "id": "syncbundle",
+   "titel": "G2B SYNC-BUNDLE — alle 30 tracks + stems",
+   "soort": "bundel",
+   "beschrijving": "De complete sync-library in één koop: 34 tracks, alle stemmingen (donker·vrolijk·chill·sport·emotioneel·horror·kids·corporate), elk met stems + licentie. Voor studios, editors en supervisors.",
+   "prijs": "€ 99",
+   "links": {
+    "koop": "bestel.html?p=syncbundle",
+    "download": "bedankt.html?k=syncbundle"
+   },
+   "groep": "bundels",
+   "badge": "DEAL",
+   "cover": "media/syncbundle-cover.png",
+   "download_dir": "d/syncbundle"
   }
  ]
 }
