@@ -58,7 +58,7 @@ button.hoofd:hover{filter:brightness(1.1)}
 const GENRES={
  house:{bpm:124,pat:{kick:[0,4,8,12],snare:[4,12],hat:[2,6,10,14],perc:[]}},
  trap:{bpm:145,pat:{kick:[0,7,10],snare:[8],hat:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],perc:[8]}},
- bubbling:{bpm:152,pat:{kick:[0,4,8,12],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[14,30]}},
+ bubbling:{bpm:152,pat:{kick:[0,4,8,12],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[6,14]}},
  soca:{bpm:128,pat:{kick:[0,4,8,12],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[6,7,14,15]}},
  schuivel:{bpm:82,pat:{kick:[0,8],snare:[4,12],hat:[2,6,10,14],perc:[0,8]}}
 };
@@ -106,12 +106,12 @@ function tik(){
   for(const r of RIJEN)if(state[r].has(s))speel(r,volgende);
   document.querySelectorAll('.cel.speel').forEach(c=>c.classList.remove('speel'));
   const ij=s;
-  setTimeout(()=>document.querySelectorAll(`.cel[data-s="${ij}"]`).forEach(c=>{if(c.classList.contains('aan'))c.classList.add('speel')}),Math.max(0,(volgende-a.currentTime)*1000));
+  setTimeout(()=>{if(!timer)return;document.querySelectorAll(`.cel[data-s="${ij}"]`).forEach(c=>{if(c.classList.contains('aan'))c.classList.add('speel')})},Math.max(0,(volgende-a.currentTime)*1000));
   volgende+=stap;step++;
  }
 }
 document.getElementById('play').onclick=function(){
- if(timer){clearInterval(timer);timer=null;this.textContent='▶ SPEL';return}
+ if(timer){clearInterval(timer);timer=null;this.textContent='▶ SPEL';document.querySelectorAll('.cel.speel').forEach(c=>c.classList.remove('speel'));return}
  if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();NB=noiseBuf(ac)}
  ac.resume();step=0;volgende=ac.currentTime+0.06;
  timer=setInterval(tik,25);this.textContent='⏹ STOP';
