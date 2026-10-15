@@ -2129,7 +2129,8 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/sat-cover.png",
-   "download_dir": "d/l0f1m"
+   "download_dir": "d/l0f1m",
+   "video": "media/lofi-demo.mp4"
   },
   {
    "id": "k4w1n",
