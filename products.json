@@ -82,7 +82,8 @@
       "groep": "sounds",
       "download_dir": "d/bundle1",
       "badge": "DEAL",
-      "cover": "media/g2b-bundle1-cover.png"
+      "cover": "media/g2b-bundle1-cover.png",
+      "preview": "media/bundle.mp3"
     },
     {
       "id": "g2b-drumsfx-pack",
