@@ -1877,6 +1877,22 @@
    "badge": "DEAL",
    "cover": "media/syncbundle-cover.png",
    "download_dir": "d/syncbundle"
+  },
+  {
+   "id": "sp00ky",
+   "titel": "G2B Spooky-SFX",
+   "soort": "pack",
+   "beschrijving": "14 horror/Halloween-geluidseffecten: kraakdeuren, geesten, heksen, hartklop, kerkklok, griezel-musicbox. 100% eigen engine, royalty-vrij. Perfect voor horror-beats, video's en games.",
+   "prijs": "€ 7,95",
+   "links": {
+    "koop": "bestel.html?p=sp00ky",
+    "download": "bedankt.html?k=sp00ky"
+   },
+   "groep": "soundpacks",
+   "badge": "HALLOWEEN",
+   "cover": "media/spooky-cover.png",
+   "preview": "media/spooky-preview.mp3",
+   "download_dir": "d/sp00ky"
   }
  ]
 }
