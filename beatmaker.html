@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G2B Beat Maker — maak je eigen beat</title>
+<style>
+:root{--groen:#2ee09a;--donker:#0a0812;--paars:#16102a;--tekst:#e8e6f0;--dim:#8a86a0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--donker);color:var(--tekst);font-family:system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px}
+h1{color:var(--groen);font-size:1.6rem;margin-bottom:4px}
+.sub{color:var(--dim);font-size:.85rem;margin-bottom:20px;text-align:center}
+.card{background:var(--paars);border-radius:16px;padding:20px;width:100%;max-width:760px;box-shadow:0 8px 40px #0009}
+.rijen{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;justify-content:center}
+select,button{font:inherit;border-radius:10px;border:1px solid #ffffff22;background:#221a3a;color:var(--tekst);padding:8px 14px;cursor:pointer}
+button.hoofd{background:var(--groen);color:var(--donker);font-weight:700;border:none;padding:10px 22px}
+button.hoofd:hover{filter:brightness(1.1)}
+.grid{display:grid;grid-template-columns:70px repeat(16,1fr);gap:4px;margin-bottom:14px}
+.grid .lbl{font-size:.75rem;color:var(--dim);display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
+.cel{aspect-ratio:1;border-radius:5px;background:#221a3a;border:1px solid #ffffff11;cursor:pointer;transition:transform .05s}
+.cel.aan{background:var(--groen)}
+.cel.hoofd-tel{background:#2a2246;border-color:#ffffff22}
+.cel.aan.hoofd-tel{background:#57f0b5}
+.cel.speel{outline:2px solid #fff;outline-offset:-2px}
+.cel:active{transform:scale(.9)}
+.bpm-balk{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:.8rem;color:var(--dim)}
+.bpm-balk input{flex:1}
+.koop{text-align:center;margin-top:6px}
+.koop a{color:var(--groen)}
+.footer{margin-top:18px;font-size:.75rem;color:var(--dim);text-align:center}
+@media(max-width:560px){.grid{grid-template-columns:54px repeat(16,1fr);gap:2px}.grid .lbl{font-size:.6rem}}
+</style>
+</head>
+<body>
+<h1>🎛 G2B Beat Maker</h1>
+<p class="sub">Maak je eigen beat — met sounds uit de G2B-engine. Geen account nodig.</p>
+<div class="card">
+  <div class="rijen" id="genres"></div>
+  <div class="bpm-balk"><span>BPM</span><input type="range" id="bpm" min="70" max="160" value="95"><b id="bpmv">95</b></div>
+  <div class="grid" id="grid"></div>
+  <div class="rijen">
+    <button class="hoofd" id="play">▶ SPEL</button>
+    <button id="wis">WIS</button>
+    <button id="random">🎲 WILLEKEURIG</button>
+  </div>
+  <p class="koop">Vind je dit leuk? Deze sounds (en 770+ meer) zitten in de
+    <a href="index.html" target="_top">G2B sound-packs →</a></p>
+</div>
+<p class="footer">100% eigen G2B-engine sounds · g2b-winkel</p>
+<script>
+const GENRES={
+ house:{bpm:124,pat:{kick:[0,4,8,12],snare:[4,12],hat:[2,6,10,14],perc:[]}},
+ trap:{bpm:145,pat:{kick:[0,7,10],snare:[8],hat:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],perc:[8]}},
+ bubbling:{bpm:152,pat:{kick:[0,4,8,12],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[14,30]}},
+ soca:{bpm:128,pat:{kick:[0,4,8,12],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[6,7,14,15]}},
+ schuivel:{bpm:82,pat:{kick:[0,8],snare:[4,12],hat:[2,6,10,14],perc:[0,8]}}
+};
+const RIJEN=["kick","snare","hat","perc"];const NAMEN={kick:"🥁 KICK",snare:"👏 SNARE",hat:"🎩 HAT",perc:"🪘 PERC"};
+const grid=document.getElementById('grid'),state={};let cur='house';
+for(const r of RIJEN)state[r]=new Set();
+const gr=document.getElementById('genres');
+for(const g of Object.keys(GENRES)){
+ const b=document.createElement('button');b.textContent=g.toUpperCase();b.dataset.g=g;
+ b.onclick=()=>laad(g);gr.appendChild(b);
+}
+for(const r of RIJEN){
+ const l=document.createElement('div');l.className='lbl';l.textContent=NAMEN[r];grid.appendChild(l);
+ for(let s=0;s<16;s++){
+  const c=document.createElement('div');c.className='cel'+(s%4==0?' hoofd-tel':'');c.dataset.r=r;c.dataset.s=s;
+  c.onclick=()=>{state[r].has(s)?state[r].delete(s):state[r].add(s);c.classList.toggle('aan')};grid.appendChild(c);
+ }
+}
+function laad(g){
+ cur=g;const G=GENRES[g];document.getElementById('bpm').value=G.bpm;document.getElementById('bpmv').textContent=G.bpm;
+ for(const r of RIJEN){state[r]=new Set(G.pat[r]||[])}
+ document.querySelectorAll('.cel').forEach(c=>{
+  c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s))});
+ document.querySelectorAll('#genres button').forEach(b=>b.style.borderColor=b.dataset.g===g?'var(--groen)':'#ffffff22');
+}
+document.getElementById('bpm').oninput=e=>document.getElementById('bpmv').textContent=e.target.value;
+document.getElementById('wis').onclick=()=>{for(const r of RIJEN)state[r].clear();document.querySelectorAll('.cel').forEach(c=>c.classList.remove('aan'))};
+document.getElementById('random').onclick=()=>{
+ for(const r of RIJEN){state[r].clear();for(let s=0;s<16;s++)if(Math.random()<(r=='hat'?.6:r=='perc'?.2:.3))state[r].add(s)}
+ document.querySelectorAll('.cel').forEach(c=>c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s)))};
+let ac=null,step=0,timer=null,volgende=0;
+function noiseBuf(a){const b=a.createBuffer(1,a.sampleRate*0.5,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b}
+let NB=null;
+function speel(r,t){
+ const a=ac;
+ if(r=='kick'){const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(45,t+0.12);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.3);o.connect(g).connect(a.destination);o.start(t);o.stop(t+0.32)}
+ if(r=='snare'){const s=a.createBufferSource();s.buffer=NB;const g=a.createGain();g.gain.setValueAtTime(0.7,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.18);s.connect(g).connect(a.destination);s.start(t);s.stop(t+0.2)}
+ if(r=='hat'){const s=a.createBufferSource();s.buffer=NB;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=7000;const g=a.createGain();g.gain.setValueAtTime(0.3,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.05);s.connect(f).connect(g).connect(a.destination);s.start(t);s.stop(t+0.07)}
+ if(r=='perc'){const o=a.createOscillator(),g=a.createGain();o.frequency.value=520;o.type='triangle';g.gain.setValueAtTime(0.5,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.12);o.connect(g).connect(a.destination);o.start(t);o.stop(t+0.13)}
+}
+function tik(){
+ const a=ac,bpm=+document.getElementById('bpm').value,stap=60/bpm/4;
+ while(volgende<a.currentTime+0.1){
+  const s=step%16;
+  for(const r of RIJEN)if(state[r].has(s))speel(r,volgende);
+  document.querySelectorAll('.cel.speel').forEach(c=>c.classList.remove('speel'));
+  const ij=s;
+  setTimeout(()=>document.querySelectorAll(`.cel[data-s="${ij}"]`).forEach(c=>{if(c.classList.contains('aan'))c.classList.add('speel')}),Math.max(0,(volgende-a.currentTime)*1000));
+  volgende+=stap;step++;
+ }
+}
+document.getElementById('play').onclick=function(){
+ if(timer){clearInterval(timer);timer=null;this.textContent='▶ SPEL';return}
+ if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();NB=noiseBuf(ac)}
+ ac.resume();step=0;volgende=ac.currentTime+0.06;
+ timer=setInterval(tik,25);this.textContent='⏹ STOP';
+};
+laad('house');
+</script>
+</body>
+</html>
