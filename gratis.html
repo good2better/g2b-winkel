@@ -45,7 +45,7 @@ a.terug{color:var(--accent);font-size:13px}
   <p style="margin-top:18px"><a class="terug" href="index.html">← terug naar de winkel</a></p>
 </div>
 <script>
-const EV_SCRIPT_URL=''; // <- plak hier je Apps Script /exec URL (zelfde als index.html)
+const EV_SCRIPT_URL='https://script.google.com/macros/s/AKfycbycpTfDAoXZz5UPC5nSCgq7jTi7i60yhhHOaa0OBbQlD9l1KCz3mvCefgU94tshrM8r/exec'; // <- plak hier je Apps Script /exec URL (zelfde als index.html)
 const f=document.getElementById('f'),msg=document.getElementById('msg'),dl=document.getElementById('dl');
 function toon(){ dl.style.display='block'; msg.textContent='✅ Bedankt! Je pack staat klaar:'; window.scrollTo(0,document.body.scrollHeight); }
 f.addEventListener('submit',async e=>{
