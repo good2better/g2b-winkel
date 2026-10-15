@@ -881,6 +881,22 @@
       "download_dir": "d/urbandrill1",
       "badge": "NIEUW",
       "cover": "media/g2b-urbandrill1-cover.png"
+    },
+    {
+      "id": "g2b-melodic-pack",
+      "titel": "G2B Melodic Pack",
+      "soort": "digitaal",
+      "beschrijving": "54 royalty-vrije melodische sounds (25,3 MB): brass-stabs, flutes, mallets/kalimba, strings-pads, hammond-stabs, piano-hits (elk in 4-5 noten), laser-kaseko gitaar, lobi-pads + slag-gitaar one-shots. Alles eigen G2B-engine. Met LICENTIE + INFO.",
+      "prijs": "€ 24,95",
+      "prijzen": {},
+      "links": {
+        "koop": ""
+      },
+      "duur": 0,
+      "groep": "sounds",
+      "download_dir": "d/melodic1",
+      "badge": "NIEUW",
+      "cover": "media/g2b-melodic1-cover.png"
     }
   ]
 }
