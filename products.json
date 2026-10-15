@@ -2082,7 +2082,8 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/sat-cover.png",
-   "download_dir": "d/s4t0r"
+   "download_dir": "d/s4t0r",
+   "video": "media/saturator-demo.mp4"
   },
   {
    "id": "k4w1n",
