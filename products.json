@@ -2113,7 +2113,8 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/sat-cover.png",
-   "download_dir": "d/ch0rd1"
+   "download_dir": "d/ch0rd1",
+   "video": "media/chordlab-demo.mp4"
   },
   {
    "id": "k4w1n",
