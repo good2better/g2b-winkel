@@ -1,6 +1,24 @@
 {
  "producten": [
   {
+   "id": "starter1",
+   "titel": "G2B Starter-Pack — GRATIS",
+   "soort": "pack",
+   "beschrijving": "12 gratis sounds uit de G2B-engine: kicks, snares, bass, keys, perc, fx + amapiano-loop. 100% royalty-vrij. Laat je e-mail achter en download direct.",
+   "prijs": "GRATIS",
+   "prijzen": {
+    "gratis": "€ 0"
+   },
+   "links": {
+    "koop": "gratis.html",
+    "download": "gratis.html"
+   },
+   "groep": "gratis",
+   "badge": "GRATIS",
+   "cover": "media/starter-cover.png",
+   "download_dir": "d/starter1"
+  },
+  {
    "id": "g2b-beatclub",
    "titel": "G2B Beat-Club — Lidmaatschap",
    "prijs": "€ 4,95/mnd",

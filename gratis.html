@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GRATIS — G2B Starter-Pack</title>
+<style>
+:root{--bg:#0d0f0e;--panel:#171a19;--line:#2a2f2d;--txt:#e8ecea;--dim:#8fa098;--accent:#2fbf71}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font:15px/1.6 'Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:32px;max-width:480px;width:100%;text-align:center}
+h1{color:var(--accent);font-size:26px;margin-bottom:6px}
+.sub{color:var(--dim);font-size:14px;margin-bottom:22px}
+.uitgelicht{border:1px dashed var(--accent);border-radius:12px;padding:14px;margin-bottom:20px;font-size:13.5px}
+form{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;justify-content:center}
+input{flex:1;min-width:200px;background:#0d0f0e;border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:11px 14px;font-size:14px}
+input:focus{outline:none;border-color:var(--accent)}
+button{background:var(--accent);color:#04120a;border:none;border-radius:10px;padding:11px 20px;font-size:14px;font-weight:700;cursor:pointer}
+button:hover{filter:brightness(1.15)}
+#dl{display:none;margin-top:18px}
+#dl a{display:inline-block;background:var(--accent);color:#04120a;border-radius:10px;padding:13px 26px;font-size:15px;font-weight:800;text-decoration:none}
+#dl a:hover{filter:brightness(1.15)}
+.kleintext{color:var(--dim);font-size:12px;margin-top:10px}
+.msg{color:var(--accent);font-size:13px;min-height:1.2em;margin-top:6px}
+a.terug{color:var(--accent);font-size:13px}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🎁 G2B Starter-Pack — GRATIS</h1>
+  <p class="sub">12 sounds uit de G2B-engine: kicks, snares, bass, keys, perc, fx + een amapiano-loop. 100% royalty-vrij, ook voor beats die je verkoopt.</p>
+  <div class="uitgelicht">
+    Laat je e-mail achter en de download verschijnt direct.<br>
+    <b style="color:var(--accent)">Je krijgt dan ook elke maand de nieuwe packs en aanbiedingen in je mail.</b>
+  </div>
+  <form id="f">
+    <input type="email" id="em" placeholder="jouw e-mailadres" required>
+    <button type="submit">PAK MIJN PACK →</button>
+  </form>
+  <div class="msg" id="msg"></div>
+  <div id="dl">
+    <a href="https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Starter-Pack.zip">⬇ DOWNLOAD G2B-Starter-Pack.zip</a>
+    <p class="kleintext">1,2 MB · 12 WAV-sounds + LEESMIJ · werkt in elke DAW</p>
+  </div>
+  <p style="margin-top:18px"><a class="terug" href="index.html">← terug naar de winkel</a></p>
+</div>
+<script>
+const EV_SCRIPT_URL=''; // <- plak hier je Apps Script /exec URL (zelfde als index.html)
+const f=document.getElementById('f'),msg=document.getElementById('msg'),dl=document.getElementById('dl');
+function toon(){ dl.style.display='block'; msg.textContent='✅ Bedankt! Je pack staat klaar:'; window.scrollTo(0,document.body.scrollHeight); }
+f.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const em=document.getElementById('em').value.trim();
+  if(!em) return;
+  if(EV_SCRIPT_URL){
+    try{
+      await fetch(EV_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({email:em,bron:'starter-pack',tijd:new Date().toISOString()})});
+      toon();
+    }catch(_){ toon(); }
+  }else{
+    // mailto-fallback: mail ons je adres + link direct tonen
+    window.open('mailto:g.sandvliet88@gmail.com?subject='+encodeURIComponent('G2B Starter-Pack aanvraag')+'&body='+encodeURIComponent('Hoi! Ik pak de gratis Starter-Pack. Mijn e-mail: '+em));
+    toon();
+  }
+});
+</script>
+</body>
+</html>
