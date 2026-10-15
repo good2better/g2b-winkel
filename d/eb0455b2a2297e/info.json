@@ -306,6 +306,10 @@
   {
    "naam": "⬇ g2b-saturator-v1.zip — nieuwe plugin: tape/tube drive warmte (VST3+CLAP+standalone, Win)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/g2b-saturator-v1.zip"
+  },
+  {
+   "naam": "⬇ g2b-filter-wah-v1.zip — 13e plugin: auto-wah filter (LFO-veeg + envelope + 27 dimensies, VST3+CLAP+standalone, Win+Linux)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/g2b-filter-wah-v1.zip"
   }
  ]
 }
