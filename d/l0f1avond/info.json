@@ -1,9 +1,13 @@
 {
- "titel": "G2B Lofi Avond — chillhop/study track",
+ "titel": "G2B Lofi Avond — chillhop/study track (incl. STEMS)",
  "bestanden": [
   {
    "naam": "G2B-LofiAvond-TRACK.zip — volledige track (WAV+MP3) + licentie + songkaart",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-LofiAvond-TRACK.zip"
+  },
+  {
+   "naam": "G2B-LofiAvond-STEMS.zip — 5 losse sporen (drums/bass/chords/melody/vinyl)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-LofiAvond-STEMS.zip"
   }
  ]
 }

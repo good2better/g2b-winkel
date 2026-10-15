@@ -1641,7 +1641,7 @@
    "id": "l0f1avond",
    "titel": "Lofi Avond",
    "soort": "audio",
-   "beschrijving": "Chillhop/study-track · 86 BPM, F-groot · 60 sec met ruisende vinyl, warme rhodes-akkoorden en zachte drums — voor vlogs, study-content, podcasts en rustige reclame. 100% eigen engine.",
+   "beschrijving": "Chillhop/study-track · 86 BPM, F-groot · 60 sec met ruisende vinyl, warme rhodes-akkoorden en zachte drums — voor vlogs, study-content, podcasts en rustige reclame. INCL. STEMS (5 losse sporen). 100% eigen engine.",
    "prijs": "v.a. € 24,95",
    "prijzen": {
     "mp3": "€ 24,95",
@@ -1670,7 +1670,8 @@
    "cover": "media/lofi-avond-cover.png",
    "preview": "media/lofi-avond-preview.mp3",
    "download_dir": "d/l0f1avond",
-   "badge": "LOFI"
+   "badge": "LOFI",
+   "stems": true
   }
  ]
 }
