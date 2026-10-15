@@ -19,12 +19,13 @@
     "G2B-BeatClub_Welkom/shekereroll_g2b.wav",
     "G2B-BeatClub-Maand1.zip"
   ],
-  "aantekening": "Welkomst-pack voor nieuwe leden — 15 exclusieve sounds. Gebouwd 2026-10-15. + Maand-1 pack 'Afro-House' (15 club-exclusieve sounds) · + Maand-2 pack 'Latin Club' (16 club-exclusives) · + Maand-3 pack 'Caribbean Drill' (16 club-exclusives) · + Maand-4 pack 'Bubbling Bass' (16 club-exclusives)",
+  "aantekening": "Welkomst-pack voor nieuwe leden — 15 exclusieve sounds. Gebouwd 2026-10-15. + Maand-1 pack 'Afro-House' (15 club-exclusieve sounds) · + Maand-2 pack 'Latin Club' (16 club-exclusives) · + Maand-3 pack 'Caribbean Drill' (16 club-exclusives) · + Maand-4 pack 'Bubbling Bass' (16 club-exclusives) · + Maand-5 pack 'Festival Soca' (16 club-exclusives)",
   "files": [
     "G2B-BeatClub-Maand1.zip",
     "G2B-BeatClub-Maand2.zip",
     "G2B-BeatClub-Maand3.zip",
     "G2B-BeatClub-Maand4.zip",
+    "G2B-BeatClub-Maand5.zip",
     "G2B-BeatClub-Welkom.zip",
     "info.json"
   ],
@@ -33,6 +34,7 @@
     "maand1": "G2B-BeatClub-Maand1.zip (Afro-House)",
     "maand2": "G2B-BeatClub-Maand2.zip (Latin Club)",
     "maand3": "G2B-BeatClub-Maand3.zip (Caribbean Drill)",
-    "maand4": "G2B-BeatClub-Maand4.zip (Bubbling Bass)"
+    "maand4": "G2B-BeatClub-Maand4.zip (Bubbling Bass)",
+    "maand5": "G2B-BeatClub-Maand5.zip (Festival Soca)"
   }
 }
