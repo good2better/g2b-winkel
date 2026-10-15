@@ -1504,6 +1504,39 @@
    "preview": "media/c1n3ma-preview.mp3",
    "download_dir": "d/c1n3ma",
    "badge": "CINEMATIC"
+  },
+  {
+   "id": "g0ld3n",
+   "titel": "Golden Morning",
+   "soort": "audio",
+   "beschrijving": "Uplifting feelgood-track · 116 BPM, F-groot · 72 sec (intro→verse→lift→bridge→outro) — ideaal voor reclame, vlogs & feelgood-momenten. Lichte pluck-melodie, warme pads, piano-afsluiter. 100% eigen engine.",
+   "prijs": "v.a. € 24,95",
+   "prijzen": {
+    "mp3": "€ 24,95",
+    "wav": "€ 59,95",
+    "exclusief": "€ 249,95"
+   },
+   "links": {
+    "koop": "bestel.html?p=g0ld3n",
+    "mp3": "bestel.html?p=g0ld3n&t=mp3",
+    "wav": "bestel.html?p=g0ld3n&t=wav",
+    "exclusief": "bestel.html?p=g0ld3n&t=exclusief",
+    "download": "bedankt.html?k=g0ld3n"
+   },
+   "duur": 72.0,
+   "groep": "uplifting",
+   "bpm": 116,
+   "moods": [
+    "vrolijk",
+    "energisch",
+    "positief",
+    "reclame",
+    "uplifting"
+   ],
+   "cover": "media/g0ld3n-cover.png",
+   "preview": "media/g0ld3n-preview.mp3",
+   "download_dir": "d/g0ld3n",
+   "badge": "UPLIFTING"
   }
  ]
 }
