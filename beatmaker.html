@@ -28,6 +28,12 @@ button.hoofd:hover{filter:brightness(1.1)}
 .vanger{text-align:center;margin-top:14px;border-top:1px dashed #ffffff22;padding-top:14px}
 .mailknop{display:inline-block;margin-top:8px;border:1px solid var(--groen);color:var(--groen);border-radius:20px;padding:7px 18px;font-size:.8rem;font-weight:700;text-decoration:none}
 .mailknop:hover{background:var(--groen);color:var(--donker)}
+.ev-form{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.ev-form input{background:#0d0a1c;border:1px solid #ffffff33;color:#fff;border-radius:20px;padding:8px 14px;font-size:.85rem;min-width:210px}
+.ev-form input:focus{outline:none;border-color:var(--groen)}
+.ev-form button{background:var(--groen);color:var(--donker);border:none;border-radius:20px;padding:8px 18px;font-size:.8rem;font-weight:700;cursor:pointer}
+.ev-form button:hover{filter:brightness(1.15)}
+.ev-msg{margin-top:8px;font-size:.8rem;color:var(--groen);min-height:1em}
 .koop a{color:var(--groen)}
 .footer{margin-top:18px;font-size:.75rem;color:var(--dim);text-align:center}
 @media(max-width:560px){.grid{grid-template-columns:54px repeat(16,1fr);gap:2px}.grid .lbl{font-size:.6rem}}
@@ -50,7 +56,12 @@ button.hoofd:hover{filter:brightness(1.1)}
   <div class="vanger">
     <b style="color:var(--groen)">Elke maand een nieuwe pack?</b><br>
     <span style="font-size:.8rem;color:var(--dim)">Word lid van de <a href="beatclub.html" style="color:var(--groen)">Beat-Club</a> — €4,95/mnd, eerste pack direct.</span><br>
-    <a class="mailknop" id="mailknop" href="#">✉ HOUD ME OP DE HOOGTE</a>
+    <form class="ev-form" id="emailvanger">
+      <input type="email" id="ev-email" placeholder="jouw e-mailadres" required>
+      <button type="submit">✉ INSCHRIJVEN</button>
+    </form>
+    <div class="ev-msg" id="ev-msg"></div>
+    <a class="mailknop" id="mailknop" href="#" style="display:none">✉ HOUD ME OP DE HOOGTE</a>
   </div>
 </div>
 <p class="footer">100% eigen G2B-engine sounds · g2b-winkel</p>
@@ -117,7 +128,22 @@ document.getElementById('play').onclick=function(){
  timer=setInterval(tik,25);this.textContent='⏹ STOP';
 };
 laad('house');
-document.getElementById('mailknop').href='mailto:g.sandvliet88@gmail.com?subject='+encodeURIComponent('G2B: houd me op de hoogte (Beat-Club/nieuwe packs)')+'&body='+encodeURIComponent('Hoi! Houd me op de hoogte van nieuwe G2B packs en de Beat-Club. Mijn e-mail:');
+// E-mailvanger: POST naar Google Apps Script (zodra URL hieronder staat), anders mailto-fallback
+const EV_SCRIPT_URL=''; // <- Giorgio: plak hier je Apps Script /exec URL
+const evForm=document.getElementById('emailvanger'),evMsg=document.getElementById('ev-msg'),evMail=document.getElementById('mailknop');
+evMail.href='mailto:g.sandvliet88@gmail.com?subject='+encodeURIComponent('G2B: houd me op de hoogte (Beat-Club/nieuwe packs)')+'&body='+encodeURIComponent('Hoi! Houd me op de hoogte van nieuwe G2B packs en de Beat-Club. Mijn e-mail:');
+if(!EV_SCRIPT_URL){ evForm.style.display='none'; evMail.style.display='inline-block'; }
+evForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const em=document.getElementById('ev-email').value.trim();
+  if(!em) return;
+  evMsg.textContent='Bezig…';
+  try{
+    await fetch(EV_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({email:em,bron:'beatmaker',tijd:new Date().toISOString()})});
+    evMsg.textContent='✅ Bedankt! Je staat op de G2B-lijst.';
+    evForm.reset();
+  }catch(_){ evMsg.textContent=''; evMail.style.display='inline-block'; }
+});
 </script>
 </body>
 </html>

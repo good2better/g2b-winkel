@@ -114,9 +114,43 @@ footer b{color:var(--accent)}
   <div id="groepen" class="groepen" style="display:none"></div>
   <div id="lijst"><div class="leeg">Winkel wordt geladen…</div></div>
 </main>
+<div id="nieuwsbrief" style="max-width:520px;margin:0 auto 28px;text-align:center;border:1px dashed var(--line);border-radius:14px;padding:18px">
+  <b style="color:var(--accent)">✉ Blijf op de hoogte</b><br>
+  <span style="font-size:.82rem;color:var(--dim)">Nieuwe packs, plugins en beats — elke maand. Geen spam.</span>
+  <form id="ev-form" style="display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap">
+    <input class="zoek" id="ev-email" type="email" placeholder="jouw e-mailadres" required style="margin:0;flex:1;min-width:200px">
+    <button class="koop" type="submit" style="margin:0">INSCHRIJVEN</button>
+  </form>
+  <div id="ev-msg" style="margin-top:8px;font-size:.8rem;color:var(--accent);min-height:1em"></div>
+</div>
 <footer>Gebouwd door <b>Good2Better</b> — eigen winkel, geen commissie.<br>
 Vragen? <a href="mailto:g.sandvliet88@gmail.com" style="color:var(--accent)">g.sandvliet88@gmail.com</a>
 <span id="jaar"></span></footer>
+<script>
+// E-mailvanger: POST naar Apps Script zodra URL gevuld is; anders mailto-fallback
+const EV_SCRIPT_URL=''; // <- Giorgio: plak hier je Apps Script /exec URL
+const evF=document.getElementById('ev-form'),evM=document.getElementById('ev-msg');
+if(!EV_SCRIPT_URL){
+  evF.addEventListener('submit',e=>{
+    e.preventDefault();
+    const em=document.getElementById('ev-email').value.trim();
+    location.href='mailto:g.sandvliet88@gmail.com?subject='+encodeURIComponent('G2B nieuwsbrief inschrijving')+'&body='+encodeURIComponent('Hoi! Schrijf me in voor de G2B-lijst. Mijn e-mail: '+em);
+    evM.textContent='Je mailprogramma opent met een kant-en-klaar bericht — druk op versturen.';
+  });
+}else{
+  evF.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const em=document.getElementById('ev-email').value.trim();
+    if(!em) return;
+    evM.textContent='Bezig…';
+    try{
+      await fetch(EV_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({email:em,bron:'winkel',tijd:new Date().toISOString()})});
+      evM.textContent='✅ Bedankt! Je staat op de G2B-lijst.';
+      evF.reset();
+    }catch(_){ evM.textContent='Even niet gelukt — mail ons via de link hieronder.'; }
+  });
+}
+</script>
 <script type="module" src="app.js"></script>
 </body>
 </html>
