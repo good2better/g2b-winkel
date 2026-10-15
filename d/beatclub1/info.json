@@ -10,7 +10,14 @@
   "maand5": "G2B-BeatClub-Maand5.zip (Festival Soca)",
   "maand6": "G2B-BeatClub-Maand6.zip (Kaseko Carnival)",
   "maand7": "G2B-BeatClub-Maand7-LofiNights.zip (Lofi Nights)",
-  "maand8": "G2B-BeatClub-Maand8-CinemaScore.zip (Cinema Score)"
+  "maand8": "G2B-BeatClub-Maand8-CinemaScore.zip (Cinema Score)",
+  "maand9": {
+   "naam": "Dancehall Heat",
+   "zip": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand9-Dancehall-Heat.zip",
+   "sounds": 16,
+   "inhoud": "dembow-sub bassen, sirens (rise+fall), airhorns, skanks (Am/Em/Gm), laser, gunshot-fx, bubble-leads, brass-stab, steelpan, whistle, dembow-loop 95bpm — 100% eigen G2B sounds",
+   "thema": "dancehall / dembow — club exclusief voor leden"
+  }
  },
  "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Welkom.zip",
  "bestand_release": "G2B-BeatClub-Welkom.zip",
@@ -33,6 +40,10 @@
   "G2B-BeatClub-Maand1.zip"
  ],
  "bestanden": [
+  {
+   "naam": "⬇ Maand 9 — G2B-BeatClub-Maand9-Dancehall-Heat.zip (16 sounds)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand9-Dancehall-Heat.zip"
+  },
   {
    "naam": "G2B-BeatClub-Maand1.zip",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand1.zip"
