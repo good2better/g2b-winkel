@@ -1407,6 +1407,70 @@
    "preview": "media/b2ubb1-preview.mp3",
    "download_dir": "d/b2ubb1",
    "badge": "VERS"
+  },
+  {
+   "id": "k4seko",
+   "titel": "Kaseko Gold",
+   "soort": "audio",
+   "beschrijving": "Verse kaseko-beat · 128 BPM. Surinaamse big-band groove in volledige song-structuur — intro→refrein→outro. 100% eigen G2B-engine, geen samples. Incl. songkaart + licentie + buy-out.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "bestel.html?p=k4seko",
+    "mp3": "bestel.html?p=k4seko&t=mp3",
+    "wav": "bestel.html?p=k4seko&t=wav",
+    "exclusief": "bestel.html?p=k4seko&t=exclusief",
+    "download": "bedankt.html?k=k4seko"
+   },
+   "duur": 40,
+   "groep": "kaseko",
+   "bpm": 128,
+   "moods": [
+    "feest",
+    "suri",
+    "brass",
+    "energisch"
+   ],
+   "cover": "media/k4seko-cover.png",
+   "preview": "media/k4seko-preview.mp3",
+   "download_dir": "d/k4seko",
+   "badge": "VERS"
+  },
+  {
+   "id": "w1nti1",
+   "titel": "Winti Spirit",
+   "soort": "audio",
+   "beschrijving": "Verse winti-beat · 108 BPM. Apinti-rituelen in volledige song-structuur — zwevende percussie en spirit-sfeer. 100% eigen G2B-engine, geen samples. Incl. songkaart + licentie + buy-out.",
+   "prijs": "v.a. € 19,95",
+   "prijzen": {
+    "mp3": "€ 19,95",
+    "wav": "€ 49,95",
+    "exclusief": "€ 199,95"
+   },
+   "links": {
+    "koop": "bestel.html?p=w1nti1",
+    "mp3": "bestel.html?p=w1nti1&t=mp3",
+    "wav": "bestel.html?p=w1nti1&t=wav",
+    "exclusief": "bestel.html?p=w1nti1&t=exclusief",
+    "download": "bedankt.html?k=w1nti1"
+   },
+   "duur": 40,
+   "groep": "winti",
+   "bpm": 108,
+   "moods": [
+    "spiritueel",
+    "ritueel",
+    "suri",
+    "donker"
+   ],
+   "cover": "media/w1nti1-cover.png",
+   "preview": "media/w1nti1-preview.mp3",
+   "download_dir": "d/w1nti1",
+   "badge": "VERS"
   }
  ]
 }
