@@ -1891,7 +1891,7 @@
    "id": "syncbundle",
    "titel": "G2B SYNC-BUNDLE — complete audio-catalogus",
    "soort": "bundel",
-   "beschrijving": "Alles in één koop: 39 beats & sync-tracks + alle stems + licenties — 52 downloads. Elke stemming (donker·vrolijk·chill·sport·emotioneel·horror·kids·corporate). Voor studios, editors en supervisors die direct willen schakelen.",
+   "beschrijving": "Alles in één koop: 40 beats & sync-tracks + alle stems + licenties — 53 downloads. Elke stemming (donker·vrolijk·chill·sport·emotioneel·horror·kids·corporate). Voor studios, editors en supervisors die direct willen schakelen.",
    "prijs": "€ 99",
    "links": {
     "koop": "bestel.html?p=syncbundle",
@@ -2136,6 +2136,38 @@
     "exclusief": "€ 149"
    },
    "duur": "1:02"
+  },
+  {
+   "id": "ny3c0d",
+   "titel": "Countdown — NYE/party track (+6 stems)",
+   "soort": "audio",
+   "groep": "feest",
+   "prijs": "€ 9,95",
+   "prijzen": {
+    "mp3": "€ 9,95",
+    "wav": "€ 24,95",
+    "exclusief": "€ 149"
+   },
+   "links": {
+    "koop": "bestel.html?p=ny3c0d",
+    "mp3": "bestel.html?p=ny3c0d&t=mp3",
+    "wav": "bestel.html?p=ny3c0d&t=wav",
+    "exclusief": "bestel.html?p=ny3c0d&t=exclusief",
+    "download": "bedankt.html?k=ny3c0d"
+   },
+   "cover": "media/nye-cover.png",
+   "preview": "media/nye-preview.mp3",
+   "download_dir": "d/ny3c0d",
+   "moods": [
+    "feest",
+    "energiek",
+    "viering"
+   ],
+   "duur": "1:02",
+   "bpm": 126,
+   "stems": true,
+   "eerst": true,
+   "beschrijving": "Oudjaars/countdown EDM 126 BPM — build-up met 10 echte aftel-tikken, drop met big-riff en klokken. Incl. 6 stems voor eigen cutdowns. NYE-party's, jaarx-wisseling, club & commercial sync."
   }
  ]
 }
