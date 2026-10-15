@@ -1672,6 +1672,43 @@
    "download_dir": "d/l0f1avond",
    "badge": "LOFI",
    "stems": true
+  },
+  {
+   "id": "dr1ve",
+   "titel": "Drive",
+   "soort": "audio",
+   "beschrijving": "Energieke sport/promo-track · 118 BPM, A-mineur · 65 sec met pompende bas, pluck-melodie en riser→payoff — voor sport-reclame, trailers, actie-content en motivatie. INCL. STEMS (4 losse sporen). 100% eigen engine.",
+   "prijs": "v.a. € 24,95",
+   "prijzen": {
+    "mp3": "€ 24,95",
+    "wav": "€ 59,95",
+    "exclusief": "€ 249,95"
+   },
+   "links": {
+    "koop": "bestel.html?p=dr1ve",
+    "mp3": "bestel.html?p=dr1ve&t=mp3",
+    "wav": "bestel.html?p=dr1ve&t=wav",
+    "exclusief": "bestel.html?p=dr1ve&t=exclusief",
+    "download": "bedankt.html?k=dr1ve"
+   },
+   "duur": 65.0,
+   "groep": "urban",
+   "bpm": 118,
+   "moods": [
+    "energisch",
+    "sport",
+    "promo",
+    "motivatie",
+    "drive",
+    "urban",
+    "actie",
+    "episch"
+   ],
+   "cover": "media/drive-cover.png",
+   "preview": "media/drive-preview.mp3",
+   "download_dir": "d/dr1ve",
+   "badge": "SPORT",
+   "stems": true
   }
  ]
 }
