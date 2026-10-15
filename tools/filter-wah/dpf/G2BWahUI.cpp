@@ -1,12 +1,12 @@
 // G2B Filter-Wah UI — wah-curve visual + 7 knobs + AAN + 8 skins.
 #include "DistrhoUI.hpp"
 START_NAMESPACE_DISTRHO
-static const char* lbl[7]={"RATE","DEPTH","RES","SENS","FREQ","KRACHT","DIMENTIES"};
-static const int pFor[7]={2,3,4,5,6,1,7};
+static const char* lbl[8]={"PRESET","RATE","DEPTH","RES","SENS","FREQ","KRACHT","DIMS"};
+static const int pFor[8]={7,2,3,4,5,6,1,8};
 class WahUI:public UI{
 public:WahUI():UI(560,400){loadSharedResources();fDrag=-1;fOn=1;fSkin=4;}
 protected:
-    void parameterChanged(uint32_t index,float v)override{if(index==0)fOn=v;else if(index==8)fSkin=(int)v;else for(int i=0;i<7;i++)if(pFor[i]==(int)index)fVal[i]=v;repaint();}
+    void parameterChanged(uint32_t index,float v)override{if(index==0)fOn=v;else if(index==9)fSkin=(int)v;else for(int i=0;i<8;i++)if(pFor[i]==(int)index)fVal[i]=v;repaint();}
     void onNanoDisplay()override{
         const float W=getWidth(),H=getHeight();
         static const int SK[8][7][3]={
@@ -41,7 +41,7 @@ protected:
         char lb[40];std::snprintf(lb,40,"veeg %.0f · res %.0f",fVal[0],fVal[2]);
         fillColor(C(ac)); fontSize(10); text(px+8,py+ph+16,lb,nullptr);
         fKnobX=222;fKnobY=90;
-        for(int i=0;i<7;i++){
+        for(int i=0;i<8;i++){
             const float cx=fKnobX+(i%4)*86,cy=fKnobY+(i/4)*96;
             beginPath(); circle(cx,cy,22); fillColor(C(pn)); fill();
             float n=norm(i),a=-2.35f+n*4.7f;
@@ -57,12 +57,12 @@ protected:
     bool onMouse(const MouseEvent&ev)override{
         if(!ev.press){fDrag=-1;return true;}
         if(ev.pos.getY()<42&&ev.pos.getX()>getWidth()-116){setParameterValue(0,fOn>0.5f?0.f:1.f);fOn=fOn>0.5f?0:1;repaint();return true;}
-        for(int i=0;i<7;i++){
+        for(int i=0;i<8;i++){
             const float cx=fKnobX+(i%4)*86,cy=fKnobY+(i/4)*96;
             const float dx=ev.pos.getX()-cx,dy=ev.pos.getY()-cy;
             if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=ev.pos.getY();return true;}}
         if(ev.pos.getY()>=fSkinY&&ev.pos.getY()<=fSkinY+32)
-            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){setParameterValue(8,(float)i);fSkin=i;repaint();return true;}
+            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){setParameterValue(9,(float)i);fSkin=i;repaint();return true;}
         return false;}
     bool onMotion(const MotionEvent&ev)override{
         if(fDrag<0)return false;

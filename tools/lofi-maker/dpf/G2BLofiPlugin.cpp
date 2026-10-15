@@ -3,7 +3,7 @@ START_NAMESPACE_DISTRHO
 // G2B LoFi-Maker — bitcrush + vinyl-kraak + tape-wobble + warm filter
 class G2BLofiPlugin : public Plugin {
 public:
-    enum Params { kOn=0,kKracht,kCrush,kRate,kWobble,kCrackle,kTone,kDimensie,kSkin,kNum };
+    enum Params { kOn=0,kKracht,kCrush,kRate,kWobble,kCrackle,kTone,kPreset,kDimensie,kSkin,kNum };
     G2BLofiPlugin() : Plugin(kNum,0,0) { sr=getSampleRate(); dl=djr=0; wph=0; hph=0; yl=yr=0; }
 protected:
     const char* getLabel() const override { return "G2B LoFi-Maker"; }
@@ -21,12 +21,26 @@ protected:
         case kWobble: p.name="Wobble";p.symbol="wobble";p.ranges.min=0;p.ranges.max=100;p.ranges.def=15;p.unit="%";break;
         case kCrackle:p.name="Kraak";p.symbol="crackle";p.ranges.min=0;p.ranges.max=100;p.ranges.def=12;p.unit="%";break;
         case kTone:   p.name="Tone";p.symbol="tone";p.ranges.min=0;p.ranges.max=100;p.ranges.def=65;p.unit="%";break;
+        case kPreset: p.name="Preset";p.symbol="preset";p.ranges.min=0;p.ranges.max=15;p.ranges.def=0;p.hints=kParameterIsInteger;break;
         case kDimensie:p.name="Dimensies";p.symbol="dims";p.ranges.min=0;p.ranges.max=26;p.ranges.def=0;p.hints=kParameterIsInteger;break;
         case kSkin:   p.name="Skin";p.symbol="skin";p.ranges.min=0;p.ranges.max=7;p.ranges.def=5;p.hints=kParameterIsInteger;break;
         }
     }
     float getParameterValue(uint32_t i) const override { return prm[i]; }
-    void setParameterValue(uint32_t i, float v) override { prm[i]=v; }
+    void setParameterValue(uint32_t i, float v) override {
+        if(i==kPreset && (int)v!=(int)prm[kPreset]){applyPreset((int)v);}
+        prm[i]=v;
+    }
+    void applyPreset(int p){
+        // {crush,rate,wobble,crackle,tone}
+        static const int PR[16][5]={
+          {30,20,15,12,65},{50,35,25,20,50},{70,55,40,35,35},{15,10,5,5,80},
+          {40,30,60,15,55},{25,15,80,8,70},{60,45,20,50,40},{35,25,10,25,60},
+          {80,60,30,60,30},{20,10,45,10,75},{45,40,50,30,45},{55,50,15,40,50},
+          {30,25,70,15,65},{65,35,35,45,40},{25,20,20,60,55},{90,70,50,70,25}};
+        const int*q=PR[p&15];
+        prm[kCrush]=q[0];prm[kRate]=q[1];prm[kWobble]=q[2];prm[kCrackle]=q[3];prm[kTone]=q[4];
+    }
     void run(const float** ins, float** outs, uint32_t frames) override {
         const float* L=ins[0]; const float* R=ins[1];
         float* oL=outs[0]; float* oR=outs[1];

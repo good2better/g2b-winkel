@@ -5,13 +5,13 @@ static const int SK[8][7][3]={
  {26,16,14, 200,110,70, 255,200,160},{14,20,30, 70,140,200, 170,220,255},
  {30,24,10, 210,160,60, 255,220,150},{22,10,26, 180,80,180, 240,160,255},
  {10,16,30, 60,120,220, 150,200,255},{18,18,18, 140,140,140, 230,230,230}};
-static const char* LB[7]={"CRUSH","GROF","WOBBLE","KRAAK","TONE","KRACHT","DIMS"};
-static const int pFor[7]={2,3,4,5,6,1,7};
+static const char* LB[8]={"PRESET","CRUSH","GROF","WOBBLE","KRAAK","TONE","KRACHT","DIMS"};
+static const int pFor[8]={7,2,3,4,5,6,1,8};
 class G2BLofiUI : public UI {
 public:
     G2BLofiUI():UI(560,390){loadSharedResources();std::memset(fVal,0,sizeof fVal);fVal[0]=1;fSkin=5;}
 protected:
-    void parameterChanged(uint32_t i,float v)override{if(i<9)fVal[i]=v;if(i==8)fSkin=(int)v&7;repaint();}
+    void parameterChanged(uint32_t i,float v)override{if(i<9)fVal[i]=v;if(i==9)fSkin=(int)v&7;repaint();}
     void onNanoDisplay()override{
         auto C=[](const int*c,float a=1.f){return Color(c[0],c[1],c[2],a);};
         const int(*S)[3]=SK[fSkin];
@@ -24,7 +24,7 @@ protected:
         // vinyl-plaat visual met grooves + label
         float cx=110,cy=155;
         beginPath();circle(cx,cy,80);fillColor(C(S[1],0.25f));fill();
-        for(int r=70;r>20;r-=9){beginPath();arc(cx,cy,r,0,6.2832f);strokeColor(C(S[2],0.3f));strokeWidth(1);stroke();}
+        for(int r=70;r>20;r-=9){beginPath();circle(cx,cy,r);strokeColor(C(S[2],0.3f));strokeWidth(1);stroke();}
         // kraak-stippen op de grooves (animeert)
         float crk=fVal[5]/100.f;
         for(int k=0;k<14;k++){float a=k*0.9+fTick*0.03f;float rr=30+(k%6)*8;
@@ -35,7 +35,7 @@ protected:
         fTick++;
         char info[48];snprintf(info,48,"crush %d%% · kraak %d%%",(int)fVal[2],(int)fVal[5]);
         fillColor(C(S[2],0.7f));fontSize(10);textAlign(ALIGN_CENTER|ALIGN_TOP);text(cx,cy+88,info,nullptr);
-        for(int i=0;i<7;i++){float kx=fKnobX+(i%4)*86,ky=fKnobY+(i/4)*96;
+        for(int i=0;i<8;i++){float kx=fKnobX+(i%4)*86,ky=fKnobY+(i/4)*96;
             beginPath();circle(kx,ky,26);fillColor(C(S[1],0.35f));fill();
             beginPath();circle(kx,ky,26);strokeColor(C(S[2],0.25f));strokeWidth(3);stroke();
             float n=knNorm(i),a=-2.4f+n*4.8f;
@@ -51,8 +51,8 @@ protected:
         if(!ev.press){fDrag=-1;return true;}
         int mx=ev.pos.getX(),my=ev.pos.getY();
         if(mx>getWidth()-100&&mx<getWidth()-20&&my>fBtnY-12&&my<fBtnY+22){setParameterValue(0,fVal[0]>0.5f?0.f:1.f);return true;}
-        for(int i=0;i<8;i++)if(fabs(mx-(66+i*13))<8&&fabs(my-(fSkinY+8))<10){setParameterValue(8,(float)i);return true;}
-        for(int i=0;i<7;i++){float kx=fKnobX+(i%4)*86,ky=fKnobY+(i/4)*96;
+        for(int i=0;i<8;i++)if(fabs(mx-(66+i*13))<8&&fabs(my-(fSkinY+8))<10){setParameterValue(9,(float)i);return true;}
+        for(int i=0;i<8;i++){float kx=fKnobX+(i%4)*86,ky=fKnobY+(i/4)*96;
             if((mx-kx)*(mx-kx)+(my-ky)*(my-ky)<30*30){fDrag=i;fLastY=my;return true;}}
         return false;
     }
