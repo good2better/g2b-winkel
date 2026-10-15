@@ -1792,6 +1792,39 @@
    "download_dir": "d/n4cht",
    "badge": "HORROR",
    "stems": true
+  },
+  {
+   "id": "sp33ls",
+   "titel": "Speels",
+   "soort": "audio",
+   "beschrijving": "Vrolijke mallets+pizzicato, 100 BPM — kids-content, comedy, tutorials. Incl. 4 stems.",
+   "prijzen": {
+    "mp3": "€ 9,95",
+    "wav": "€ 24,95",
+    "exclusief": "€ 149"
+   },
+   "links": {
+    "koop": "bestel.html?p=sp33ls",
+    "mp3": "d/sp33ls/",
+    "wav": "d/sp33ls/",
+    "exclusief": "mailto:g.sandvliet88@gmail.com?subject=EXCLUSIEF Speels"
+   },
+   "duur": "0:21",
+   "groep": "speels",
+   "bpm": 100,
+   "moods": [
+    "vrolijk",
+    "speels",
+    "kids",
+    "comedy",
+    "luchtig",
+    "blije"
+   ],
+   "cover": "media/speels-cover.png",
+   "preview": "media/speels-preview.mp3",
+   "download_dir": "d/sp33ls",
+   "badge": "KIDS",
+   "stems": true
   }
  ]
 }
