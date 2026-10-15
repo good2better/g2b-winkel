@@ -3,7 +3,7 @@
 #define DISTRHO_PLUGIN_BRAND "G2B"
 #define DISTRHO_PLUGIN_NAME  "G2B ChordLab"
 #define DISTRHO_PLUGIN_URI   "https://good2better.github.io/g2b-winkel/chordlab"
-#define DISTRHO_PLUGIN_UNIQUE_ID 'G2Cl'
+#define DISTRHO_PLUGIN_UNIQUE_ID G2Cl
 #define DISTRHO_PLUGIN_HAS_UI 1
 #define DISTRHO_PLUGIN_IS_RT_SAFE 1
 #define DISTRHO_PLUGIN_NUM_INPUTS 0

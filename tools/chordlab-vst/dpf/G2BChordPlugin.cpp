@@ -3,7 +3,6 @@ START_NAMESPACE_DISTRHO
 
 // G2B ChordLab — akkoorden-generator: speelt strummed/stab akkoord-loops
 // met e-piano timbre. Geen inputs: de plugin GENEERT audio.
-static const char* KEYS[12] = {"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
 // ladder-interval patronen (half-tonen per toon, 7 noten)
 static const int SCALES[8][7] = {
  {0,2,4,5,7,9,11},   // majeur
@@ -31,7 +30,7 @@ struct Voice { int note; float phase,env; bool on; };
 class G2BChordPlugin : public Plugin {
 public:
     enum Params {
-        kOn=0, kKracht, kKey, kScale, kProg, kVoicing, kRate, kDimensie, kSkin, kNum
+        kOn=0, kKracht, kKey, kScale, kProg, kVoicing, kRate, kPreset, kDimensie, kSkin, kNum
     };
     G2BChordPlugin() : Plugin(kNum, 0, 0) {
         for (int i=0;i<12;i++){ v[i].on=false; v[i].phase=0; v[i].env=0; }
@@ -54,21 +53,35 @@ protected:
         case kProg:    p.name="Progressie"; p.symbol="prog"; p.ranges.min=0;p.ranges.max=5;p.ranges.def=0; p.hints=kParameterIsInteger; break;
         case kVoicing: p.name="Voicing"; p.symbol="voicing"; p.ranges.min=0;p.ranges.max=3;p.ranges.def=0; p.hints=kParameterIsInteger; break;
         case kRate:    p.name="Tempo"; p.symbol="rate"; p.ranges.min=40;p.ranges.max=160;p.ranges.def=90; p.unit="bpm"; break;
+        case kPreset: p.name="Preset"; p.symbol="preset"; p.ranges.min=0;p.ranges.max=15;p.ranges.def=0; p.hints=kParameterIsInteger; break;
         case kDimensie:p.name="Dimensies"; p.symbol="dims"; p.ranges.min=0;p.ranges.max=26;p.ranges.def=0; p.hints=kParameterIsInteger; break;
         case kSkin:    p.name="Skin"; p.symbol="skin"; p.ranges.min=0;p.ranges.max=7;p.ranges.def=0; p.hints=kParameterIsInteger; break;
         }
     }
     float getParameterValue(uint32_t i) const override { return prm[i]; }
-    void setParameterValue(uint32_t i, float v) override { prm[i]=v; }
+    void setParameterValue(uint32_t i, float v) override {
+        if(i==kPreset && (int)v!=(int)prm[kPreset]){applyPreset((int)v);}
+        prm[i]=v;
+    }
+    void applyPreset(int p){
+        // 16 presets: {key,scale,prog,voicing,rate,dims}
+        static const int PR[16][6]={
+          {0,0,0,0,90,0},{9,1,2,0,85,3},{7,0,4,1,110,6},{0,5,1,1,95,9},
+          {2,3,2,0,80,12},{5,4,5,2,105,15},{9,1,0,2,75,18},{0,0,4,0,120,21},
+          {4,6,2,1,70,24},{10,1,4,3,140,26},{0,0,0,2,100,1},{7,3,3,0,88,7},
+          {2,1,0,3,78,10},{0,0,4,0,130,4},{9,7,2,1,72,13},{5,0,5,0,115,19}};
+        const int*q=PR[p&15];
+        prm[kKey]=q[0];prm[kScale]=q[1];prm[kProg]=q[2];prm[kVoicing]=q[3];
+        prm[kRate]=q[4];prm[kDimensie]=q[5];
+    }
 
-    void run(const float**, float** outs, uint32_t frames, const MidiEvent*, uint32_t) override {
+    void run(const float**, float** outs, uint32_t frames) override {
         float* L=outs[0]; float* R=outs[1];
         double sr=getSampleRate();
         int on=(int)prm[kOn]; float mix=prm[kKracht]/100.f;
         int key=(int)prm[kKey], sc=(int)prm[kScale], pg=(int)prm[kProg], vo=(int)prm[kVoicing];
         float bpm=prm[kRate]; int dims=(int)prm[kDimensie];
         double beatsPerSec=bpm/60.0;
-        int notes; // voicing-size + dimensie-schuif
         for (uint32_t i=0;i<frames;i++){
             ph += beatsPerSec/sr;
             if (ph>=1.0){ ph-=1.0; chordIdx=(chordIdx+1)%4; strumN=0; strumAt=i; }
