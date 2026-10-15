@@ -31,6 +31,13 @@
    "sounds": 16,
    "inhoud": "sliding 808s (up/down/punch), dark bells (A/E), minor plucks, drill hats/snare/kick, riser+downlifter, dark pad Am, 2 drill-loops 140bpm — donkere UK straatsound",
    "thema": "uk drill — club exclusief voor leden"
+  },
+  "maand12": {
+   "naam": "Reggaeton Room",
+   "zip": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand12-Reggaeton-Room.zip",
+   "sounds": 18,
+   "inhoud": "dembow-subs ×3, melodische plucks (A/E/C), piano-stabs, brass-hit, rim, snare-pop, vox-stabs (hey/oh), whistle, party-siren, laser, dembow-loop 95bpm, E-pop pad — reggaeton-pop voor de club",
+   "thema": "reggaeton / dembow-pop — club exclusief voor leden"
   }
  },
  "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Welkom.zip",
@@ -54,6 +61,10 @@
   "G2B-BeatClub-Maand1.zip"
  ],
  "bestanden": [
+  {
+   "naam": "⬇ Maand 12 — G2B-BeatClub-Maand12-Reggaeton-Room.zip (18 sounds)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand12-Reggaeton-Room.zip"
+  },
   {
    "naam": "⬇ Maand 11 — G2B-BeatClub-Maand11-UK-Drill.zip (16 sounds)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BeatClub-Maand11-UK-Drill.zip"
