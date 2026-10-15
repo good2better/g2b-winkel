@@ -1,6 +1,22 @@
 {
  "producten": [
   {
+   "id": "g2b-midi-pack",
+   "titel": "G2B MIDI Melodie-Pack",
+   "soort": "digitaal",
+   "beschrijving": "84 eigen midi-bestanden: 20 genre-drumgrooves (kaseko·winti·dembow·drill·soca·amapiano...), 22 akkoord-progressies (pop·rnb·trap·kaseko·schuivel·bachata·andalusisch) + 42 loop-tweelingen. Sleep in je DAW → speelt meteen. 100% royalty-vrij.",
+   "prijs": "€ 9,95",
+   "prijzen": {},
+   "links": {
+    "koop": "bestel.html?p=g2b-midi-pack"
+   },
+   "duur": 0,
+   "groep": "sounds",
+   "download_dir": "d/midipack1",
+   "cover": "media/g2b-midipack-cover.png",
+   "badge": "NIEUW"
+  },
+  {
    "id": "g2b-producer-bundle",
    "titel": "G2B Producer Bundle — alle 6 packs",
    "soort": "bundle",
