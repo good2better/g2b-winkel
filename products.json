@@ -1,6 +1,23 @@
 {
   "producten": [
     {
+      "id": "g2b-soul-pack",
+      "titel": "G2B Soul & Schuivel Pack",
+      "soort": "sample-pack",
+      "beschrijving": "60 eigen soul/schuivel sounds — soul·schuivel loops, pads (donker/warm/licht), hammond, strings, vox-chops, lobi-sfeer + midi. 100% royalty-vrij.",
+      "prijs": "€ 19,95",
+      "prijzen": [
+        19.95
+      ],
+      "links": {
+        "koop": "https://pay.good2better.nl/soul"
+      },
+      "groep": "sounds",
+      "download_dir": "d/soulpack1",
+      "badge": "NIEUW",
+      "cover": "media/g2b-soulpack1-cover.png"
+    },
+    {
       "id": "g2b-latin-pack",
       "titel": "G2B Latin Pack",
       "soort": "sample-pack",
