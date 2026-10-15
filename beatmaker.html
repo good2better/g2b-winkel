@@ -130,7 +130,7 @@ document.getElementById('play').onclick=function(){
 };
 laad('house');
 // E-mailvanger: POST naar Google Apps Script (zodra URL hieronder staat), anders mailto-fallback
-const EV_SCRIPT_URL='https://script.google.com/macros/s/AKfycbycpTfDAoXZz5UPC5nSCgq7jTi7i60yhhHOaa0OBbQlD9l1KCz3mvCefgU94tshrM8r/exec'; // <- Giorgio: plak hier je Apps Script /exec URL
+const EV_SCRIPT_URL='https://script.google.com/macros/s/AKfycbzKWU72wn2xxXiNy040qfP4NOqz-CzmOYHrRXMK_DH-LzBEqLjwtiwTyKJAyx7MTf0/exec'; // <- Giorgio: plak hier je Apps Script /exec URL
 const evForm=document.getElementById('emailvanger'),evMsg=document.getElementById('ev-msg'),evMail=document.getElementById('mailknop');
 evMail.href='mailto:g.sandvliet88@gmail.com?subject='+encodeURIComponent('G2B: houd me op de hoogte (Beat-Club/nieuwe packs)')+'&body='+encodeURIComponent('Hoi! Houd me op de hoogte van nieuwe G2B packs en de Beat-Club. Mijn e-mail:');
 if(!EV_SCRIPT_URL){ evForm.style.display='none'; evMail.style.display='inline-block'; }
