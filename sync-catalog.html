@@ -62,9 +62,22 @@ const LATIN = [
  ["Libertad y Placer","Libertad-y-Placer.mp3","2:25","latin pop · vrijheid"]
 ];
 const EN = [
- ["Coolbreez","0b5647bf-preview.mp3","152 BPM","dutch/urban · sunny"],
- ["Love","0ef9a078-preview.mp3","133 BPM","r&b · warm"],
- ["Under","d9d479ab-preview.mp3","152 BPM","drill · dark"]
+ ["Cjfjff Houce 2026","Cjfjff Houce 2026.mp3","2:13","house · club"],
+ ["Coolbreez","Coolbreez.mp3","2:48","dutch/urban · sunny"],
+ ["Exotic Riddim","Exotic Riddim.mp3","2:27","riddim · exotic"],
+ ["G2B-BubbleNights","G2B-BubbleNights.mp3","1:30","bubble · night"],
+ ["G2B-KasekoGold","G2B-KasekoGold.mp3","1:30","kaseko · gold"],
+ ["G2B-SocaRun","G2B-SocaRun.mp3","1:30","soca · energie"],
+ ["G2B-WintiSpirit","G2B-WintiSpirit.mp3","1:30","winti · spirit"],
+ ["Houce Trap","Houce Trap.mp3","2:13","house/trap · heavy"],
+ ["KAY9","KAY9.mp3","3:22","urban · anthem"],
+ ["Khvckhvclv","Khvckhvclv.mp3","2:04","urban · raw"],
+ ["Lala Dance","Lala Dance.mp3","2:21","dance · catchy"],
+ ["Love","Love.mp3","2:29","r&b · warm"],
+ ["Midnight Dembow II","Midnight Dembow II.mp3","2:38","dembow · night"],
+ ["Midnight Dembow III","Midnight Dembow III.mp3","2:42","dembow · deep"],
+ ["Soldaat","Soldaat.mp3","2:37","urban · hard"],
+ ["Under","Under.mp3","3:24","drill · dark"]
 ];
 let cur=null,curBtn=null,tab='latin';
 const lijst=document.getElementById('lijst');
@@ -73,7 +86,7 @@ function mail(t){return "mailto:g.sandvliet88@gmail.com?subject="+encodeURICompo
 function render(){
  const arr=tab=='latin'?LATIN:EN;
  lijst.innerHTML=arr.map(x=>`<div class="track">
-  <button class="play" data-src="media/${tab=='latin'?'sync/':''}${x[1]}">▶</button>
+  <button class="play" data-src="media/sync/${x[1]}">▶</button>
   <div class="info"><div class="titel">Good2Better - ${esc(x[0])}</div>
   <div class="meta">${esc(x[3])} · ${x[2]} · instrumental + stems op aanvraag</div></div>
   <a class="aanvraag" href="${mail(x[0])}">LICENSE ➜</a></div>`).join('');
