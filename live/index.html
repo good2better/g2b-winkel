@@ -64,11 +64,16 @@ fetch('live.json').then(r=>r.json()).then(c=>{
   document.getElementById('title').textContent=c.title||'G2B Live';
   document.getElementById('note').textContent=c.note||'';
   if(c.ticket){const t=document.getElementById('ticket');t.href=c.ticket;t.style.display='inline-block'}
-  startT=new Date(c.start).getTime();
-  const d=new Date(startT);
-  document.getElementById('when').textContent='Start: '+d.toLocaleString('nl-NL',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})+' — wie later binnenkomt stapt midden in de sessie, zoals echt live.';
-  vid=document.getElementById('vid');
-  tick(); setInterval(tick,1000);
+  if(c.start){
+    startT=new Date(c.start).getTime();
+    const d=new Date(startT);
+    document.getElementById('when').textContent='Start: '+d.toLocaleString('nl-NL',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})+' — wie later binnenkomt stapt midden in de sessie, zoals echt live.';
+    vid=document.getElementById('vid');
+    tick(); setInterval(tick,1000);
+  } else {
+    document.getElementById('count').style.display='none';
+    document.getElementById('when').textContent='Eerste sessie-datum volgt snel — houd deze link bij.';
+  }
 }).catch(()=>{document.getElementById('when').textContent='Geen sessie gepland — check later opnieuw.'});
 
 function tick(){
