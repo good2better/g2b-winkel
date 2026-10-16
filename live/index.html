@@ -54,6 +54,7 @@
   </div>
   <p class="note" id="note"></p>
   <a class="ticket" id="ticket" target="_blank" style="display:none">KOOP JE TICKET</a>
+  <a class="ticket" id="vragen" target="_blank" style="display:none;background:#2a4a37;color:#e8f0ea">STEL JE VRAAG</a>
   <p class="over" id="over">Deze sessie is afgelopen — replay volgt / check de winkel voor de volgende.</p>
 </main>
 <footer>GOOD2BETTER · eigen live-platform · geen YouTube, geen tussenpartij</footer>
@@ -64,6 +65,9 @@ fetch('live.json').then(r=>r.json()).then(c=>{
   document.getElementById('title').textContent=c.title||'G2B Live';
   document.getElementById('note').textContent=c.note||'';
   if(c.ticket){const t=document.getElementById('ticket');t.href=c.ticket;t.style.display='inline-block'}
+  const v=document.getElementById('vragen');
+  v.href='mailto:'+(c.questions||'g.sandvliet88@gmail.com')+'?subject='+encodeURIComponent('Vraag — '+(c.title||'G2B Live'));
+  v.style.display='inline-block';
   if(c.recurring && c.recurring.enabled){
     const n=new Date(); let t=new Date(n);
     t.setDate(n.getDate()+((c.recurring.weekday-n.getDay()+7)%7));
