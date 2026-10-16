@@ -25,7 +25,7 @@ static const int PROGS[6][4] = {
 };
 // voicing uitbreidingen per laddergraad: toonafstanden binnen ladder
 // triad={0,2,4}, 7={0,2,4,6}, 9={0,2,4,6,8}, sus={0,4 voeg}, add9={0,2,4,8}
-struct Voice { int note; float phase,env; bool on; };
+struct Voice { int note; float phase,env,age; bool on; };
 
 class G2BChordPlugin : public Plugin {
 public:
@@ -33,7 +33,7 @@ public:
         kOn=0, kKracht, kKey, kScale, kProg, kVoicing, kRate, kPreset, kDimensie, kSkin, kNum
     };
     G2BChordPlugin() : Plugin(kNum, 0, 0) {
-        for (int i=0;i<12;i++){ v[i].on=false; v[i].phase=0; v[i].env=0; }
+        for (int i=0;i<12;i++){ v[i].on=false; v[i].phase=0; v[i].env=0; v[i].age=0; }
         ph=0.99; chordIdx=0; strumN=0;
     }
 protected:
@@ -79,6 +79,7 @@ protected:
     void run(const float**, float** outs, uint32_t frames,
              const MidiEvent*, uint32_t) override {
         float* L=outs[0]; float* R=outs[1];
+        memset(L,0,frames*sizeof(float)); memset(R,0,frames*sizeof(float));
         double sr=getSampleRate();
         int on=(int)prm[kOn]; float mix=prm[kKracht]/100.f;
         int key=(int)prm[kKey], sc=(int)prm[kScale], pg=(int)prm[kProg], vo=(int)prm[kVoicing];
@@ -110,11 +111,13 @@ protected:
                 Voice&V=v[vix]; if(!V.on)continue;
                 V.env*=expf(-1.0/(sr*0.9)); // ~0.9s decay
                 if (V.env<0.0005){V.on=false;continue;}
+                V.age+=1.0f/sr;
                 double fq=440.0*pow(2.0,(V.note-69)/12.0);
                 V.phase+=fq/sr; if(V.phase>=1)V.phase-=1;
-                // e-piano: sine + 2e/3e harmoniek die sneller wegsterft
-                float s=sinf(2*M_PI*V.phase)+0.35f*sinf(4*M_PI*V.phase)*V.env*4+0.15f*sinf(6*M_PI*V.phase)*V.env*8;
-                s*=V.env*0.22f;
+                // e-piano: grondtoon + harmonieken die sneller wegsterven (zachter, geen klik/clipt)
+                float atk=fminf(1.0f,V.age/0.006f); // 6ms fade-in tegen note-on tik
+                float s=sinf(2*M_PI*V.phase)+0.35f*sinf(4*M_PI*V.phase)*powf(V.env,3.f)+0.15f*sinf(6*M_PI*V.phase)*powf(V.env,5.f);
+                s*=atk*V.env*0.16f;
                 float pan=(vix%3-1)*0.25f+0.5f;
                 l+=s*(1.5f-pan); r+=s*(0.5f+pan);
             }
@@ -123,8 +126,8 @@ protected:
     }
 private:
     void trigger(int note){
-        for (int i=0;i<12;i++) if(!v[i].on){ v[i].on=true;v[i].note=note;v[i].phase=0;v[i].env=1;return; }
-        v[0].note=note;v[0].env=1;v[0].phase=0;
+        for (int i=0;i<12;i++) if(!v[i].on){ v[i].on=true;v[i].note=note;v[i].phase=0;v[i].env=1;v[i].age=0;return; }
+        v[0].note=note;v[0].env=1;v[0].phase=0;v[0].age=0;
     }
     float prm[kNum]={};
     Voice v[12];

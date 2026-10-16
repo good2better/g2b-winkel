@@ -55,6 +55,7 @@ protected:
     void run(const float**,float**outs,uint32_t frames,
              const MidiEvent*,uint32_t)override{
         float*L=outs[0];float*R=outs[1];
+        memset(L,0,frames*sizeof(float));memset(R,0,frames*sizeof(float));
         int on=(int)prm[kOn];float mix=prm[kKracht]/100.f;
         int key=(int)prm[kKey],sc=(int)prm[kScale],pg=(int)prm[kProg],pat=(int)prm[kPattern];
         float dens=prm[kDensity]/100.f,bpm=prm[kRate];int oct=(int)prm[kOctave];
