@@ -79,7 +79,7 @@ protected:
     bool onScroll(const ScrollEvent&)override{return false;}
 private:
     float norm(int i){float mx=maxOf(i);return mx>fMin[i]?(fVal[i]-fMin[i])/(mx-fMin[i]):0;}
-    float maxOf(int i){const float m[7]={100,100,100,100,100,100,26};return m[i];}
+    float maxOf(int i){const float m[8]={100,100,100,100,100,100,26,15};return m[i];}
     void text(float x,float y,const char*s,std::nullptr_t){if(!s)return;DGL_NAMESPACE::NanoVG::text(x,y,s,nullptr);}
     float fVal[8]={40,50,60,0,80,100,0,0},fMin[8]={0,0,0,0,0,0,0,0};
     int fDrag; float fLastY; float fOn,fSkin;
