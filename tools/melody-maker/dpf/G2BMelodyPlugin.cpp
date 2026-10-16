@@ -44,6 +44,7 @@ protected:
         case kDimensie:p.name="Dimensies";p.symbol="dims";p.ranges.min=0;p.ranges.max=26;p.ranges.def=0;p.hints=kParameterIsInteger;break;
         case kSkin:   p.name="Skin";p.symbol="skin";p.ranges.min=0;p.ranges.max=7;p.ranges.def=1;p.hints=kParameterIsInteger;break;
         }
+        prm[i]=p.ranges.def;
     }
     float getParameterValue(uint32_t i)const override{return prm[i];}
     void setParameterValue(uint32_t i,float nv)override{
@@ -51,7 +52,8 @@ protected:
         if(i==kPreset&&(int)nv!=(int)prm[kPreset]){applyPreset((int)nv);}
         prm[i]=nv;
     }
-    void run(const float**,float**outs,uint32_t frames)override{
+    void run(const float**,float**outs,uint32_t frames,
+             const MidiEvent*,uint32_t)override{
         float*L=outs[0];float*R=outs[1];
         int on=(int)prm[kOn];float mix=prm[kKracht]/100.f;
         int key=(int)prm[kKey],sc=(int)prm[kScale],pg=(int)prm[kProg],pat=(int)prm[kPattern];

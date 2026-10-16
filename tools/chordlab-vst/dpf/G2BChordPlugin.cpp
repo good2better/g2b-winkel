@@ -57,6 +57,7 @@ protected:
         case kDimensie:p.name="Dimensies"; p.symbol="dims"; p.ranges.min=0;p.ranges.max=26;p.ranges.def=0; p.hints=kParameterIsInteger; break;
         case kSkin:    p.name="Skin"; p.symbol="skin"; p.ranges.min=0;p.ranges.max=7;p.ranges.def=0; p.hints=kParameterIsInteger; break;
         }
+        prm[i]=p.ranges.def; // standalone past defaults niet toe — zelf seeden
     }
     float getParameterValue(uint32_t i) const override { return prm[i]; }
     void setParameterValue(uint32_t i, float v) override {
@@ -75,7 +76,8 @@ protected:
         prm[kRate]=q[4];prm[kDimensie]=q[5];
     }
 
-    void run(const float**, float** outs, uint32_t frames) override {
+    void run(const float**, float** outs, uint32_t frames,
+             const MidiEvent*, uint32_t) override {
         float* L=outs[0]; float* R=outs[1];
         double sr=getSampleRate();
         int on=(int)prm[kOn]; float mix=prm[kKracht]/100.f;

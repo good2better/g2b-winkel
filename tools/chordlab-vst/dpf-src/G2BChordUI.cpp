@@ -13,7 +13,7 @@ class G2BChordUI : public UI {
 public:
     G2BChordUI() : UI(560,390){ loadSharedResources(); std::memset(fVal,0,sizeof fVal); }
 protected:
-    void parameterChanged(uint32_t i,float v) override { if(i<9)fVal[i]=v; if(i==8)fSkin=(int)v&7; repaint(); }
+    void parameterChanged(uint32_t i,float v) override { if(i<10)fVal[i]=v; if(i==9)fSkin=(int)v&7; repaint(); }
     void uiIdle() override {}
     void onNanoDisplay() override {
         auto C=[](const int*c,float a=1.f){return Color(c[0],c[1],c[2],a);};
@@ -52,7 +52,7 @@ protected:
         textAlign(ALIGN_CENTER|ALIGN_TOP);text(cx,cy+R+18,info,nullptr);
         fCur=(fCur+1)%400; // pulse-animatie van huidige akkoord
         // knobs
-        static const char* LB[7]={"TOON","LADDER","PROG","VOIC","TEMPO","KRACHT","DIMS"};
+        static const char* LB[8]={"PRESET","TOON","LADDER","PROG","VOIC","TEMPO","KRACHT","DIMS"};
         for(int i=0;i<7;i++){
             float kx=fKnobX+(i%4)*86, ky=fKnobY+(i/4)*96;
             beginPath();circle(kx,ky,26);fillColor(C(S[1],0.35f));fill();
@@ -73,8 +73,8 @@ protected:
         if(!ev.press){fDrag=-1;return true;}
         int mx=ev.pos.getX(),my=ev.pos.getY();
         if(mx>getWidth()-100&&mx<getWidth()-20&&my>fBtnY-12&&my<fBtnY+22){setParameterValue(0,fVal[0]>0.5f?0.f:1.f);return true;}
-        for(int i=0;i<8;i++)if(fabs(mx-(66+i*13))<8&&fabs(my-(fSkinY+8))<10){setParameterValue(8,(float)i);return true;}
-        for(int i=0;i<7;i++){float kx=fKnobX+(i%4)*86,ky=fKnobY+(i/4)*96;
+        for(int i=0;i<8;i++)if(fabs(mx-(66+i*13))<8&&fabs(my-(fSkinY+8))<10){setParameterValue(9,(float)i);return true;}
+        for(int i=0;i<8;i++){float kx=fKnobX+(i%4)*86,ky=fKnobY+(i/4)*96;
             if((mx-kx)*(mx-kx)+(my-ky)*(my-ky)<30*30){fDrag=i;fLastY=my;return true;}}
         return false;
     }
@@ -89,15 +89,15 @@ protected:
 private:
     void text(float x,float y,const char*t,std::nullptr_t){if(!t)return;DGL_NAMESPACE::NanoVG::text(x,y,t,nullptr);}
     static const int fKnobX=222, fKnobY=90, fBtnY=18, fSkinY=330;
-    int knParam(int i)const{static const int pFor[7]={2,3,4,5,6,1,7};return pFor[i];}
-    float knMin(int i)const{static const float m[7]={0,0,0,0,40,0,0};return m[i];}
-    float knMax(int i)const{static const float m[7]={11,7,5,3,160,100,26};return m[i];}
+    int knParam(int i)const{static const int pFor[8]={7,2,3,4,5,6,1,8};return pFor[i];}
+    float knMin(int i)const{static const float m[8]={0,0,0,0,0,40,0,0};return m[i];}
+    float knMax(int i)const{static const float m[8]={15,11,7,5,3,160,100,26};return m[i];}
     float knNorm(int i)const{int p=knParam(i);return (fVal[p]-knMin(i))/(knMax(i)-knMin(i));}
     void knValStr(int i,char*b)const{
         int p=knParam(i);float v=fVal[p];
         if(i<5)snprintf(b,16,"%d",(int)v);else snprintf(b,16,"%d",(int)v);
     }
-    float fVal[9]; int fSkin=0,fDrag=-1,fCur=0;float fLastY=0;
+    float fVal[10]; int fSkin=0,fDrag=-1,fCur=0;float fLastY=0;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(G2BChordUI)
 };
 UI* createUI(){ return new G2BChordUI(); }
