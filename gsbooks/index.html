@@ -673,10 +673,10 @@ var HELDEN={
   kokos:{naam:'Chef Kokos',ico:'👨‍🍳'},sunny3:{naam:'Sunny Sterren',ico:'🌟'},
   louie:{naam:'Louie Leeuw',ico:'🦁'},lila:{naam:'Lila',ico:'🌼'},fluffy:{naam:'Fluffy',ico:'🐱'},
   paard:{naam:'Magic Paard',ico:'🐴'},zeven:{naam:'Zeven Vrienden',ico:'🦊'},superhelden:{naam:'Superhelden',ico:'🦸'},
-  sunny2:{naam:'Sunny Reis',ico:'🗺️'},ollieleo:{naam:'Ollie & Leo',ico:'🐘'}};
+  sunny2:{naam:'Sunny Reis',ico:'🗺️'},ollieleo:{naam:'Ollie & Leo',ico:'🐘'},vinnie:{naam:'Vinnie Vliegtuig',ico:'✈️'}};
 Object.keys(HELDEN).forEach(function(h){
   var base=(h==='keesje')?'img/mem-':'img/mem-'+h+'-';
-  var n=(['louie','lila','fluffy','paard','zeven','superhelden','sunny2','ollieleo'].indexOf(h)>=0)?12:6;
+  var n=(['louie','lila','fluffy','paard','zeven','superhelden','sunny2','ollieleo','vinnie'].indexOf(h)>=0)?12:6;
   HELDEN[h].mem=[...Array(n).keys()].map(function(i){return base+i+'.jpg';});
 });
 (function(){
@@ -829,7 +829,7 @@ function schaduwKlik(btn,goed){
 var pzHeld='louie',pzT=[],pzLeeg=8,pzKlaar=false,pzZetten=0,pzSrc='';
 (function(){
   var rij=document.getElementById('puzzel-held-rij');
-  ['louie','lila','fluffy','paard','zeven','superhelden','sunny2','ollieleo','keesje','ziggy'].forEach(function(h){
+  ['louie','lila','fluffy','paard','zeven','superhelden','sunny2','ollieleo','vinnie','keesje','ziggy'].forEach(function(h){
     var b=document.createElement('button');b.className='held-kies';b.dataset.ph=h;
     b.textContent=HELDEN[h].ico+' '+HELDEN[h].naam;
     b.onclick=function(){pzHeld=h;puzzelStart();
@@ -906,6 +906,7 @@ fetch('boeken.json').then(function(r){return r.ok?r.json():{boeken:[]}}).then(fu
     {id:'fluffy',titel:'🐱 Fluffy-serie',sub:'Verhalen over vriendelijkheid en zorgzaamheid'},
     {id:'paard',titel:'🐴 Het Zwarte Paard',sub:'Een magisch sprookje vol moed en mysterie'},
     {id:'zeven',titel:'🦊 De Zeven Vrienden',sub:'Een verzameling spannende vriendschapsavonturen'},
+    {id:'vinnie',titel:'✈️ Vinnie Vliegtuig',sub:'Vrolijke vliegverhalen over moed, vriendschap en gevoelens'},
   ];
   var groepen={};
   data.boeken.forEach(function(b){var s=b.serie||'dierenhelden';(groepen[s]=groepen[s]||[]).push(b);});

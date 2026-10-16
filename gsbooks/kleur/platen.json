@@ -916,5 +916,29 @@
   "naam": "Helden overal",
   "boek": "Heldenpoten 2",
   "src": "platen/moed2-13.jpg"
+ },
+ {
+  "id": "vinnie-1",
+  "naam": "Vinnie — eerste vlucht",
+  "boek": "Vinnie Vliegtuig",
+  "src": "platen/vinnie-1-kleurplaat.jpg"
+ },
+ {
+  "id": "vinnie-2",
+  "naam": "Vinnie — met de vogels",
+  "boek": "Vinnie Vliegtuig",
+  "src": "platen/vinnie-2-kleurplaat.jpg"
+ },
+ {
+  "id": "vinnie-3",
+  "naam": "Vinnie — regenboograce",
+  "boek": "Vinnie Vliegtuig",
+  "src": "platen/vinnie-3-kleurplaat.jpg"
+ },
+ {
+  "id": "vinnie-4",
+  "naam": "Vinnie — welterusten",
+  "boek": "Vinnie Vliegtuig",
+  "src": "platen/vinnie-4-kleurplaat.jpg"
  }
 ]

@@ -715,6 +715,38 @@
         "koop": ""
       },
       "id": "de-onvergetelijke-reis-van-sunny-en-vrienden"
+    },
+    {
+      "titel": "De Vrolijke Verhalen van Vinnie Vliegtuig",
+      "serie": "vinnie",
+      "cover": "media/70382fc1b144-cover.png",
+      "beschrijving": "Vinnie het rode vliegtuigje durft zijn eerste vlucht aan, leert over het weer, helpt een verdwaald vogeltje, maakt vrienden over de hele wereld en ontdekt dat een vriend helpen mooier is dan winnen. Tien warme verhalen voor kinderen van 3 tot 7 jaar. Pakket: e-boek + kleurboek + kaft + manuscript + Engels origineel als bonus.",
+      "ebook": {
+        "prijs": "5,95",
+        "koop": ""
+      },
+      "kleurboek": {
+        "prijs": "5,95",
+        "koop": ""
+      },
+      "stripboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "videoboek": {
+        "prijs": "",
+        "koop": ""
+      },
+      "pakket": {
+        "prijs": "9,95",
+        "koop": ""
+      },
+      "nieuw": true,
+      "probeer": {
+        "prijs": "",
+        "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/70382fc1b144__Voorproef.pdf"
+      },
+      "id": "de-vrolijke-verhalen-van-vinnie-vliegtuig"
     }
   ]
 }

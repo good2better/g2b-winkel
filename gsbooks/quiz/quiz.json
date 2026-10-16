@@ -858,6 +858,65 @@
      "goed": 1
     }
    ]
+  },
+  {
+   "boek": "De Vrolijke Verhalen van Vinnie Vliegtuig",
+   "vragen": [
+    {
+     "v": "Wie helpt Vinnie bij zijn eerste vlucht door de hobbelige wind?",
+     "a": [
+      "Een zwerm vogels",
+      "Een helikopter",
+      "De maan"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Wat gebruikt Vinnie in de dikke mist om de weg te vinden?",
+     "a": [
+      "Een zaklamp",
+      "Zijn kompas en hoogtemeter",
+      "Een landkaart van papier"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Waar woonde het verdwaalde vogeltje?",
+     "a": [
+      "In de hangar",
+      "Op een wolk",
+      "In een hoge boom bij de beek"
+     ],
+     "goed": 2
+    },
+    {
+     "v": "Wat leerde Sakura uit Japan aan Vinnie?",
+     "a": [
+      "Papieren kraanvogels vouwen",
+      "Snel bochten maken",
+      "Schrijven met een penseel"
+     ],
+     "goed": 0
+    },
+    {
+     "v": "Waarom kwam Vinnie als laatste over de finish bij de Regenboograce?",
+     "a": [
+      "Hij was moe",
+      "Hij hielp zijn vriend Carlos",
+      "Hij was verdwaald"
+     ],
+     "goed": 1
+    },
+    {
+     "v": "Wat doet Vinnie als hij boos wordt?",
+     "a": [
+      "Drie keer diep ademen",
+      "Hard toeteren",
+      "Snel wegvliegen"
+     ],
+     "goed": 0
+    }
+   ]
   }
  ]
 }
