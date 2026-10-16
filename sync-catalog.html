@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G2B Sync Catalog — Latin &amp; English</title>
+<style>
+:root{--bg:#0d0f0e;--panel:#171a19;--line:#2a2f2d;--txt:#e8ecea;--dim:#8fa098;--accent:#2fbf71}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font:15px/1.55 'Segoe UI',system-ui,sans-serif}
+header{padding:18px 16px 14px;text-align:center;border-bottom:1px solid var(--line);background:var(--panel)}
+.logo{font-size:22px;font-weight:800;letter-spacing:2px}.logo b{color:var(--accent)}
+.sub{color:var(--dim);font-size:12px;margin-top:3px}
+.briefing{display:inline-block;margin-top:11px;background:var(--accent);color:#04120a;font-weight:800;font-size:12.5px;padding:8px 20px;border-radius:20px;text-decoration:none}
+.tabs{display:flex;gap:8px;justify-content:center;padding:12px 12px 4px}
+.tab{background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:18px;padding:7px 22px;font-size:13px;font-weight:700;cursor:pointer}
+.tab.on{background:var(--accent);color:#04120a;border-color:var(--accent)}
+main{max-width:820px;margin:0 auto;padding:12px 14px 40px}
+.track{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}
+.play{width:40px;height:40px;min-width:40px;border-radius:50%;border:none;background:var(--accent);color:#04120a;font-size:15px;cursor:pointer}
+.info{flex:1;min-width:0}
+.titel{font-weight:700;font-size:14px}
+.meta{color:var(--dim);font-size:11.5px}
+.aanvraag{white-space:nowrap;background:transparent;border:1px solid var(--accent);color:var(--accent);font-weight:800;font-size:11px;padding:7px 12px;border-radius:16px;text-decoration:none}
+footer{color:var(--dim);font-size:11.5px;text-align:center;padding:16px;border-top:1px solid var(--line)}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">G<b>2</b>B SYNC <b>CATALOG</b></div>
+  <div class="sub">Good2Better — music for film, TV, ads &amp; games · 100% cleared, one-stop license</div>
+  <a class="briefing" href="mailto:g.sandvliet88@gmail.com?subject=Sync%20briefing%20G2B&body=Hoi%20Giorgio%2C%0A%0AProject%3A%20%0ADeadline%3A%20%0AType%20muziek%20(vibe%2Fgenre%2Freferentie)%3A%20%0A%0AGroet">◉ REQUEST A TRACK / BRIEFING</a>
+</header>
+<div class="tabs">
+  <button class="tab on" data-t="latin">🌴 Latin (Ritmos Del Corazón)</button>
+  <button class="tab" data-t="en">🎧 English</button>
+</div>
+<main id="lijst"></main>
+<footer>60-sec previews · full versions + instrumentals + stems on request · <b>Good2Better</b> · KVK 95199926</footer>
+<script>
+const LATIN = [
+ ["Hoy vamos a salir","Hoy-vamos-a-salir.mp3","4:48","reggaeton · energiek"],
+ ["A Dónde Están","A-Dónde-Están.mp3","2:42","latin pop · melancholisch"],
+ ["Hace tiempo No Nos Vemos","Hace-tiempo-No-Nos-Vemos.mp3","2:34","latin · emotie"],
+ ["Hay bailoteo","Hay-bailoteo.mp3","3:02","dembow · feest"],
+ ["Imposible Borrarte","Imposible-Borrarte.mp3","2:45","latin ballad"],
+ ["No Hay Nadi Como Tú","No-Hay-Nadi-Como-Tú.mp3","3:35","latin pop · feelgood"],
+ ["Otra Noche Más","Otra-Noche-Más.mp3","3:49","reggaeton · nacht"],
+ ["Si pudiera volver al pasado","Si-pudiera-volver-al-pasado.mp3","2:52","latin · nostalgie"],
+ ["Sigue en Mi Cabeza","Sigue-en-Mi-Cabeza.mp3","3:18","latin urban"],
+ ["Tu Eres Todo Lo Que Necesito","Tu-Eres-Todo-Lo-Que-Necesito.mp3","2:37","latin pop · romantisch"],
+ ["Ya Gane Como Si Nada","Ya-Gane-Como-Si-Nada.mp3","3:15","latin trap · winnaar"],
+ ["Llorame","llorame.mp3","3:19","latin · emotie"]
+];
+const EN = [
+ ["Coolbreez","0b5647bf-preview.mp3","152 BPM","dutch/urban · sunny"],
+ ["Love","0ef9a078-preview.mp3","133 BPM","r&b · warm"],
+ ["Under","d9d479ab-preview.mp3","152 BPM","drill · dark"]
+];
+let cur=null,curBtn=null,tab='latin';
+const lijst=document.getElementById('lijst');
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function mail(t){return "mailto:g.sandvliet88@gmail.com?subject="+encodeURIComponent("Sync-licentie: "+t)+"&body="+encodeURIComponent("Hoi Giorgio,\n\nLicentie voor \""+t+"\" graag.\nProject: \nGebruik (film/TV/reclame/game): \n\nGroet");}
+function render(){
+ const arr=tab=='latin'?LATIN:EN;
+ lijst.innerHTML=arr.map(x=>`<div class="track">
+  <button class="play" data-src="media/${tab=='latin'?'sync/':''}${x[1]}">▶</button>
+  <div class="info"><div class="titel">Good2Better - ${esc(x[0])}</div>
+  <div class="meta">${esc(x[3])} · ${x[2]} · instrumental + stems op aanvraag</div></div>
+  <a class="aanvraag" href="${mail(x[0])}">LICENSE ➜</a></div>`).join('');
+}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+ tab=b.dataset.t;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));
+ if(cur){cur.pause();cur=null;}render();});
+lijst.addEventListener('click',e=>{
+ const b=e.target.closest('.play');if(!b)return;
+ if(cur&&curBtn===b){cur.pause();return;}
+ if(cur){cur.pause();curBtn.textContent='▶';}
+ const a=new Audio(b.dataset.src);
+ a.addEventListener('ended',()=>b.textContent='▶');
+ a.addEventListener('pause',()=>b.textContent='▶');
+ a.addEventListener('play',()=>b.textContent='⏸');
+ a.play();cur=a;curBtn=b;});
+render();
+</script>
+</body>
+</html>
