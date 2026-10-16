@@ -1,8 +1,13 @@
 {
-  "title": "G2B Beat Session #1 \u2014 Live Beatmaking by GOOD2BETTER",
-  "start": null,
-  "video": "",
+  "title": "TEST — G2B Live demo (Donder Glider sessie)",
+  "start": "2026-10-16T19:26:00Z",
+  "video": "../media/donderglider-real3.mp4",
   "ticket": "",
-  "note": "Zet deze pagina klaar \u2014 de sessie start automatisch op het aangekondigde moment.",
-  "choices": []
+  "note": "DEMO: zo ziet een fake-live sessie eruit — afteller, LIVE-badge en de video speelt automatisch.",
+  "choices": [],
+  "recurring": {
+    "enabled": false,
+    "weekday": 5,
+    "hour": 20
+  }
 }

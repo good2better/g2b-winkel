@@ -64,6 +64,13 @@ fetch('live.json').then(r=>r.json()).then(c=>{
   document.getElementById('title').textContent=c.title||'G2B Live';
   document.getElementById('note').textContent=c.note||'';
   if(c.ticket){const t=document.getElementById('ticket');t.href=c.ticket;t.style.display='inline-block'}
+  if(c.recurring && c.recurring.enabled){
+    const n=new Date(); let t=new Date(n);
+    t.setDate(n.getDate()+((c.recurring.weekday-n.getDay()+7)%7));
+    t.setHours(c.recurring.hour,0,0,0);
+    if(t.getTime()<=n.getTime())t.setDate(t.getDate()+7);
+    c.start=t.toISOString();
+  }
   if(c.start){
     startT=new Date(c.start).getTime();
     const d=new Date(startT);
