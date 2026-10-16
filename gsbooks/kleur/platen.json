@@ -760,5 +760,161 @@
   "naam": "Sunny — Onvergetelijke Reis — Kleurplaat 2",
   "boek": "Sunny — Onvergetelijke Reis",
   "src": "platen/sunny2-2-kleurplaat.jpg"
+ },
+ {
+  "id": "moed-1",
+  "naam": "Titelheld",
+  "boek": "Heldenpoten",
+  "src": "platen/moed-1.jpg"
+ },
+ {
+  "id": "moed-2",
+  "naam": "Balto in de storm",
+  "boek": "Heldenpoten",
+  "src": "platen/moed-2.jpg"
+ },
+ {
+  "id": "moed-3",
+  "naam": "Duif Cher Ami",
+  "boek": "Heldenpoten",
+  "src": "platen/moed-3.jpg"
+ },
+ {
+  "id": "moed-4",
+  "naam": "Koko en het katje",
+  "boek": "Heldenpoten",
+  "src": "platen/moed-4.jpg"
+ },
+ {
+  "id": "moed-5",
+  "naam": "Binti Jua redt",
+  "boek": "Heldenpoten",
+  "src": "platen/moed-5.jpg"
+ },
+ {
+  "id": "moed-6",
+  "naam": "Olifant Tara",
+  "boek": "Heldenpoten",
+  "src": "platen/moed-6.jpg"
+ },
+ {
+  "id": "moed-7",
+  "naam": "Geleidehond",
+  "boek": "Heldenpoten",
+  "src": "platen/moed-7.jpg"
+ },
+ {
+  "id": "moed-8",
+  "naam": "Therapiepaard",
+  "boek": "Heldenpoten",
+  "src": "platen/moed-8.jpg"
+ },
+ {
+  "id": "moed-9",
+  "naam": "Gertjie en Lammie",
+  "boek": "Heldenpoten",
+  "src": "platen/moed-9.jpg"
+ },
+ {
+  "id": "moed-10",
+  "naam": "Kip Miracle Mike",
+  "boek": "Heldenpoten",
+  "src": "platen/moed-10.jpg"
+ },
+ {
+  "id": "moed-11",
+  "naam": "Dolfijn Winter",
+  "boek": "Heldenpoten",
+  "src": "platen/moed-11.jpg"
+ },
+ {
+  "id": "moed-12",
+  "naam": "Eend Buttercup",
+  "boek": "Heldenpoten",
+  "src": "platen/moed-12.jpg"
+ },
+ {
+  "id": "moed-13",
+  "naam": "Held zoals jij",
+  "boek": "Heldenpoten",
+  "src": "platen/moed-13.jpg"
+ },
+ {
+  "id": "moed2-1",
+  "naam": "Helden met banen",
+  "boek": "Heldenpoten 2",
+  "src": "platen/moed2-1.jpg"
+ },
+ {
+  "id": "moed2-2",
+  "naam": "Oorlogshond Stubby",
+  "boek": "Heldenpoten 2",
+  "src": "platen/moed2-2.jpg"
+ },
+ {
+  "id": "moed2-3",
+  "naam": "Marinehond Lucca",
+  "boek": "Heldenpoten 2",
+  "src": "platen/moed2-3.jpg"
+ },
+ {
+  "id": "moed2-4",
+  "naam": "Surfhond Ricochet",
+  "boek": "Heldenpoten 2",
+  "src": "platen/moed2-4.jpg"
+ },
+ {
+  "id": "moed2-5",
+  "naam": "Reddingshond Dory",
+  "boek": "Heldenpoten 2",
+  "src": "platen/moed2-5.jpg"
+ },
+ {
+  "id": "moed2-6",
+  "naam": "Paard Duke",
+  "boek": "Heldenpoten 2",
+  "src": "platen/moed2-6.jpg"
+ },
+ {
+  "id": "moed2-7",
+  "naam": "Paard Stormy",
+  "boek": "Heldenpoten 2",
+  "src": "platen/moed2-7.jpg"
+ },
+ {
+  "id": "moed2-8",
+  "naam": "Koala de brandverkenner",
+  "boek": "Heldenpoten 2",
+  "src": "platen/moed2-8.jpg"
+ },
+ {
+  "id": "moed2-9",
+  "naam": "Politiehond",
+  "boek": "Heldenpoten 2",
+  "src": "platen/moed2-9.jpg"
+ },
+ {
+  "id": "moed2-10",
+  "naam": "Speurhond op het puin",
+  "boek": "Heldenpoten 2",
+  "src": "platen/moed2-10.jpg"
+ },
+ {
+  "id": "moed2-11",
+  "naam": "Therapiehond",
+  "boek": "Heldenpoten 2",
+  "src": "platen/moed2-11.jpg"
+ },
+ {
+  "id": "moed2-12",
+  "naam": "Dolfijnen redden",
+  "boek": "Heldenpoten 2",
+  "src": "platen/moed2-12.jpg"
+ },
+ {
+  "id": "moed2-13",
+  "naam": "Helden overal",
+  "boek": "Heldenpoten 2",
+  "src": "platen/moed2-13.jpg"
  }
 ]

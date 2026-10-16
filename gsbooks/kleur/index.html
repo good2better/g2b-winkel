@@ -62,7 +62,11 @@ footer{padding:16px 24px;color:var(--mut);font-size:12px;text-align:center}
 <button class="tool" id="emmer">🪣 Vul</button>
 <label class="tool" style="cursor:default">📏 <input type="range" id="dikte" min="4" max="60" value="18"></label>
 <button class="tool" id="regenboog">🌈</button>
+<button class="tool" id="stempel">🐾</button>
+<button class="tool" id="stempel2">⭐</button>
+<button class="tool" id="stempel3">❤️</button>
 <button class="tool" id="undo">↩️ Ongedaan</button>
+<button class="tool" id="redo">↪️ Opnieuw</button>
 <button class="tool" id="reset">🗑️ Leeg</button>
 <button class="tool" id="opslaan" style="background:var(--g);color:#04120a">⬇️ Bewaar</button>
 <button class="tool" id="print" title="Druk de plaat af om op papier te kleuren">🖨️ Print</button>
@@ -81,7 +85,7 @@ const KLEUREN=["#e03131","#f76707","#fab005","#8ce99a","#2fbf71","#1098ad","#339
 "#9775fa","#e64980","#ff8787","#ffa94d","#fff3bf","#000000","#868e96","#ffffff","#8b5a2b","#ffd8a8"];
 const verf=document.getElementById('verf'),lijnen=document.getElementById('lijnen');
 const v=verf.getContext('2d'),l=lijnen.getContext('2d');
-let kleur='#e03131',dikte=18,gum=false,regen=false,hue=0,tekenen=false,stap=[],laatste=null,emmer=false;
+let kleur='#e03131',dikte=18,gum=false,regen=false,hue=0,tekenen=false,stap=[],redo=[],laatste=null,emmer=false,stempel='';
 let plaatUrl='';
 
 const kl=document.getElementById('kleuren');
@@ -100,6 +104,8 @@ document.getElementById('eigen').oninput=e=>{kleur=e.target.value;regen=false;
 document.getElementById('dikte').oninput=e=>dikte=+e.target.value;
 
 function zet(w){gum=(w==='gum');emmer=(w==='emmer');
+  if(['kwast','gum','emmer','regenboog'].indexOf(w)>=0)stempel='';
+  ['stempel','stempel2','stempel3'].forEach(function(s){var b=document.getElementById(s);if(b)b.classList.toggle('actief',w===s);});
   if(w!=='gum'&&w!=='emmer')regen=(w==='regenboog')?!regen:regen;
   document.getElementById('kwast').classList.toggle('actief',w==='kwast');
   document.getElementById('gum').classList.toggle('actief',w==='gum');
@@ -109,9 +115,13 @@ document.getElementById('kwast').onclick=()=>{regen=false;zet('kwast')};
 document.getElementById('gum').onclick=()=>zet('gum');
 document.getElementById('emmer').onclick=()=>zet('emmer');
 document.getElementById('regenboog').onclick=()=>{regen=!regen;zet('regenboog')};
+document.getElementById('stempel').onclick=()=>{stempel='🐾';zet('stempel')};
+document.getElementById('stempel2').onclick=()=>{stempel='⭐';zet('stempel2')};
+document.getElementById('stempel3').onclick=()=>{stempel='❤️';zet('stempel3')};
 
-function snapshot(){stap.push(v.getImageData(0,0,verf.width,verf.height));if(stap.length>25)stap.shift();}
-document.getElementById('undo').onclick=()=>{if(stap.length)v.putImageData(stap.pop(),0,0);};
+function snapshot(){stap.push(v.getImageData(0,0,verf.width,verf.height));if(stap.length>25)stap.shift();redo=[];}
+document.getElementById('undo').onclick=()=>{if(stap.length){redo.push(v.getImageData(0,0,verf.width,verf.height));v.putImageData(stap.pop(),0,0);}};
+document.getElementById('redo').onclick=()=>{if(redo.length){stap.push(v.getImageData(0,0,verf.width,verf.height));v.putImageData(redo.pop(),0,0);}};
 document.getElementById('reset').onclick=()=>{snapshot();v.fillStyle='#fff';v.fillRect(0,0,verf.width,verf.height);};
 
 function pos(e){const r=verf.getBoundingClientRect();
@@ -124,6 +134,7 @@ function lijn(a,b){v.strokeStyle=gum?'#fff':(regen?`hsl(${hue},85%,55%)`:kleur);
 verf.addEventListener('pointerdown',e=>{verf.setPointerCapture(e.pointerId);tekenen=true;
   snapshot();laatste=pos(e);
   if(emmer){vul(Math.round(laatste[0]),Math.round(laatste[1]));tekenen=false;return;}
+  if(stempel){v.font=(dikte*3)+'px serif';v.textAlign='center';v.textBaseline='middle';v.fillText(stempel,laatste[0],laatste[1]);tekenen=false;return;}
   punt(...laatste);});
 verf.addEventListener('pointermove',e=>{if(!tekenen)return;const p=pos(e);
   lijn(laatste,p);laatste=p;});
@@ -199,10 +210,14 @@ document.getElementById('opslaan').onclick=()=>{
   if(plaatUrl)try{localStorage.setItem('gskleur-'+plaatUrl,'1');}catch(e){}};
 
 document.getElementById('print').onclick=()=>{
+  const naam=(prompt('Wie heeft dit gekleurd? (laat leeg voor geen naam)')||'').trim();
+  const uit=document.createElement('canvas');uit.width=verf.width;uit.height=verf.height;
+  const u=uit.getContext('2d');u.drawImage(verf,0,0);u.drawImage(lijnen,0,0);
   const w=window.open('','_blank');
   w.document.write('<html><head><title>GS Books kleurplaat</title></head><body style="margin:0">'+
-    '<img src="'+lijnen.toDataURL('image/png')+'" style="width:100%" onload="setTimeout(()=>{print();close()},300)">'+
-    '</body></html>');
+    '<img src="'+uit.toDataURL('image/png')+'" style="width:100%">'+
+    (naam?'<div style="text-align:center;font:700 28px Comic Sans MS,sans-serif;color:#444;padding:8px">Gekleurd door '+naam.replace(/</g,'')+'</div>':'')+
+    '<scr'+'ipt>setTimeout(()=>{print();close()},400)</scr'+'ipt></body></html>');
   w.document.close();};
 </script>
 </body>
