@@ -17,7 +17,9 @@
    "badge": "GRATIS",
    "cover": "media/starter-cover.png",
    "download_dir": "d/starter1",
-   "preview": "media/starter-preview.mp3"
+   "preview": "media/starter-preview.mp3",
+   "demo": "media/starter1-preview.mp4",
+   "video": "media/starter1-preview.mp4"
   },
   {
    "id": "g2b-beatclub",
@@ -34,7 +36,9 @@
    "links": {
     "koop": "https://buy.stripe.com/cNi4gz1ss0zN6jJ0hD5J603"
    },
-   "preview": "media/beatclub.mp3"
+   "preview": "media/beatclub.mp3",
+   "demo": "media/beatclub-preview.mp4",
+   "video": "media/beatclub-preview.mp4"
   },
   {
    "id": "g2b-midi-pack",
@@ -51,7 +55,9 @@
    "download_dir": "d/midipack1",
    "cover": "media/g2b-midipack-cover.png",
    "badge": "NIEUW",
-   "preview": "media/midipack-preview.mp3"
+   "preview": "media/midipack-preview.mp3",
+   "demo": "media/midi-pack-preview.mp4",
+   "video": "media/midi-pack-preview.mp4"
   },
   {
    "id": "g2b-midi-grooves",
@@ -70,7 +76,9 @@
    "badge": "GRATIS",
    "cover": "media/g2b-midigrooves-cover.png",
    "download_dir": "d/midigrooves1",
-   "preview": "media/midipack-preview.mp3"
+   "preview": "media/midipack-preview.mp3",
+   "demo": "media/g2b-midigrooves-demo.mp4",
+   "video": "media/g2b-midigrooves-demo.mp4"
   },
   {
    "id": "g2b-midi-grooves2",
@@ -87,7 +95,9 @@
    "badge": "PRO",
    "cover": "media/g2b-midigrooves2-cover.png",
    "download_dir": "d/midigrooves2",
-   "preview": "media/midipack-preview.mp3"
+   "preview": "media/midipack-preview.mp3",
+   "demo": "media/g2b-midigrooves2-demo.mp4",
+   "video": "media/g2b-midigrooves2-demo.mp4"
   },
   {
    "id": "g2b-house-pack",
@@ -104,7 +114,9 @@
    "links": {
     "koop": "bestel.html?p=g2b-house-pack"
    },
-   "preview": "media/house.mp3"
+   "preview": "media/house.mp3",
+   "demo": "media/house-pack-preview.mp4",
+   "video": "media/house-pack-preview.mp4"
   },
   {
    "id": "g2b-producer-bundle",
@@ -122,7 +134,9 @@
    "download_dir": "d/bundle1",
    "badge": "DEAL",
    "cover": "media/g2b-bundle1-cover.png",
-   "preview": "media/bundle.mp3"
+   "preview": "media/bundle.mp3",
+   "demo": "media/producer-bundle-preview.mp4",
+   "video": "media/producer-bundle-preview.mp4"
   },
   {
    "id": "g2b-drumsfx-pack",
@@ -140,7 +154,9 @@
    "download_dir": "d/drumsfx1",
    "badge": "NIEUW",
    "cover": "media/g2b-drumsfx1-cover.png",
-   "preview": "media/drumsfx.mp3"
+   "preview": "media/drumsfx.mp3",
+   "demo": "media/drumsfx-pack-preview.mp4",
+   "video": "media/drumsfx-pack-preview.mp4"
   },
   {
    "id": "g2b-soul-pack",
@@ -158,7 +174,9 @@
    "download_dir": "d/soulpack1",
    "badge": "NIEUW",
    "cover": "media/g2b-soulpack1-cover.png",
-   "preview": "media/soul.mp3"
+   "preview": "media/soul.mp3",
+   "demo": "media/soul-pack-preview.mp4",
+   "video": "media/soul-pack-preview.mp4"
   },
   {
    "id": "g2b-latin-pack",
@@ -176,7 +194,9 @@
    "download_dir": "d/latinpack1",
    "badge": "NIEUW",
    "cover": "media/g2b-latinpack1-cover.png",
-   "preview": "media/latin.mp3"
+   "preview": "media/latin.mp3",
+   "demo": "media/latin-pack-preview.mp4",
+   "video": "media/latin-pack-preview.mp4"
   },
   {
    "id": "g2b-mini-pack",
@@ -193,7 +213,9 @@
    "download_dir": "d/min1pack",
    "badge": "GRATIS",
    "cover": "media/g2b-minipack-cover.png",
-   "preview": "media/mini-preview.mp3"
+   "preview": "media/mini-preview.mp3",
+   "demo": "media/mini-pack-preview.mp4",
+   "video": "media/mini-pack-preview.mp4"
   },
   {
    "id": "g2b-pack-der-packs",
@@ -228,7 +250,9 @@
    "cover": "media/g2b-beatbouwdoos-cover.png",
    "download_dir": "d/6d4c10171437",
    "badge": "NIEUW",
-   "preview": "media/bouwdoos.mp3"
+   "preview": "media/bouwdoos.mp3",
+   "demo": "media/beat-bouwdoos-preview.mp4",
+   "video": "media/beat-bouwdoos-preview.mp4"
   },
   {
    "id": "g2b-studio-pack",
@@ -759,7 +783,9 @@
     "energisch",
     "club",
     "vrolijk"
-   ]
+   ],
+   "demo": "media/2878e291-preview.mp4",
+   "video": "media/2878e291-preview.mp4"
   },
   {
    "id": "d9d479ab",
@@ -789,7 +815,9 @@
     "donker",
     "hard",
     "spanning"
-   ]
+   ],
+   "demo": "media/d9d479ab-preview.mp4",
+   "video": "media/d9d479ab-preview.mp4"
   },
   {
    "id": "7fe03e5c",
@@ -819,7 +847,9 @@
     "party",
     "ritmisch",
     "zomer"
-   ]
+   ],
+   "demo": "media/7fe03e5c-preview.mp4",
+   "video": "media/7fe03e5c-preview.mp4"
   },
   {
    "id": "0ef9a078",
@@ -849,7 +879,9 @@
     "zacht",
     "liefde",
     "sensueel"
-   ]
+   ],
+   "demo": "media/0ef9a078-preview.mp4",
+   "video": "media/0ef9a078-preview.mp4"
   },
   {
    "id": "8171e455",
@@ -879,7 +911,9 @@
     "episch",
     "signature",
     "eigen"
-   ]
+   ],
+   "demo": "media/8171e455-preview.mp4",
+   "video": "media/8171e455-preview.mp4"
   },
   {
    "id": "266054dc",
@@ -909,7 +943,9 @@
     "hard",
     "donker",
     "energie"
-   ]
+   ],
+   "demo": "media/266054dc-preview.mp4",
+   "video": "media/266054dc-preview.mp4"
   },
   {
    "id": "53c9dc1f",
@@ -939,7 +975,9 @@
     "energisch",
     "club",
     "vrolijk"
-   ]
+   ],
+   "demo": "media/53c9dc1f-preview.mp4",
+   "video": "media/53c9dc1f-preview.mp4"
   },
   {
    "id": "054630ff",
@@ -969,7 +1007,9 @@
     "zomer",
     "dans",
     "caribisch"
-   ]
+   ],
+   "demo": "media/054630ff-preview.mp4",
+   "video": "media/054630ff-preview.mp4"
   },
   {
    "id": "3083f3d3",
@@ -999,7 +1039,9 @@
     "donker",
     "hard",
     "spanning"
-   ]
+   ],
+   "demo": "media/3083f3d3-preview.mp4",
+   "video": "media/3083f3d3-preview.mp4"
   },
   {
    "id": "600fb829",
@@ -1029,7 +1071,9 @@
     "party",
     "ritmisch",
     "zomer"
-   ]
+   ],
+   "demo": "media/600fb829-preview.mp4",
+   "video": "media/600fb829-preview.mp4"
   },
   {
    "id": "f92b4951",
@@ -1059,7 +1103,9 @@
     "party",
     "ritmisch",
     "zomer"
-   ]
+   ],
+   "demo": "media/f92b4951-preview.mp4",
+   "video": "media/f92b4951-preview.mp4"
   },
   {
    "id": "ritmosbundel",
@@ -1123,7 +1169,9 @@
    "download_dir": "d/suripack1",
    "badge": "NIEUW",
    "cover": "media/g2b-suripack1-cover.png",
-   "preview": "media/suri.mp3"
+   "preview": "media/suri.mp3",
+   "demo": "media/surinaams-pack-preview.mp4",
+   "video": "media/surinaams-pack-preview.mp4"
   },
   {
    "id": "g2b-urban-drill-pack",
@@ -1140,7 +1188,9 @@
    "download_dir": "d/urbandrill1",
    "badge": "NIEUW",
    "cover": "media/g2b-urbandrill1-cover.png",
-   "preview": "media/urbandrill.mp3"
+   "preview": "media/urbandrill.mp3",
+   "demo": "media/urban-drill-pack-preview.mp4",
+   "video": "media/urban-drill-pack-preview.mp4"
   },
   {
    "id": "g2b-melodic-pack",
@@ -1157,7 +1207,9 @@
    "download_dir": "d/melodic1",
    "badge": "NIEUW",
    "cover": "media/g2b-melodic1-cover.png",
-   "preview": "media/melodic.mp3"
+   "preview": "media/melodic.mp3",
+   "demo": "media/melodic-pack-preview.mp4",
+   "video": "media/melodic-pack-preview.mp4"
   },
   {
    "id": "d0ab25bf1d62",
@@ -1186,7 +1238,9 @@
     "energisch",
     "club",
     "vrolijk"
-   ]
+   ],
+   "demo": "media/d0ab25bf1d62-preview.mp4",
+   "video": "media/d0ab25bf1d62-preview.mp4"
   },
   {
    "id": "ee34cf20698d",
@@ -1215,7 +1269,9 @@
     "donker",
     "hard",
     "spanning"
-   ]
+   ],
+   "demo": "media/ee34cf20698d-preview.mp4",
+   "video": "media/ee34cf20698d-preview.mp4"
   },
   {
    "id": "e1de55ff1ad0",
@@ -1244,7 +1300,9 @@
     "party",
     "ritmisch",
     "zomer"
-   ]
+   ],
+   "demo": "media/e1de55ff1ad0-preview.mp4",
+   "video": "media/e1de55ff1ad0-preview.mp4"
   },
   {
    "id": "95ec3261a9f3",
@@ -1273,7 +1331,9 @@
     "warm",
     "organisch",
     "chill"
-   ]
+   ],
+   "demo": "media/95ec3261a9f3-preview.mp4",
+   "video": "media/95ec3261a9f3-preview.mp4"
   },
   {
    "id": "39da193b81d0",
@@ -1302,7 +1362,9 @@
     "feest",
     "suri",
     "energisch"
-   ]
+   ],
+   "demo": "media/39da193b81d0-preview.mp4",
+   "video": "media/39da193b81d0-preview.mp4"
   },
   {
    "id": "5773766d87b7",
@@ -1331,7 +1393,9 @@
     "oldskool",
     "rustig",
     "straat"
-   ]
+   ],
+   "demo": "media/5773766d87b7-preview.mp4",
+   "video": "media/5773766d87b7-preview.mp4"
   },
   {
    "id": "5d9517a1c690",
@@ -1360,7 +1424,9 @@
     "zomer",
     "exotisch",
     "dans"
-   ]
+   ],
+   "demo": "media/5d9517a1c690-preview.mp4",
+   "video": "media/5d9517a1c690-preview.mp4"
   },
   {
    "id": "33454ff7df8b",
@@ -1389,7 +1455,9 @@
     "agressief",
     "hard",
     "signature"
-   ]
+   ],
+   "demo": "media/33454ff7df8b-preview.mp4",
+   "video": "media/33454ff7df8b-preview.mp4"
   },
   {
    "id": "0b5647bf",
@@ -1417,7 +1485,9 @@
     "chill",
     "luchtig",
     "afgerond"
-   ]
+   ],
+   "demo": "media/0b5647bf-preview.mp4",
+   "video": "media/0b5647bf-preview.mp4"
   },
   {
    "id": "a1s0ca",
@@ -1449,7 +1519,9 @@
    "cover": "media/a1s0ca-cover.png",
    "preview": "media/a1s0ca-preview.mp3",
    "download_dir": "d/a1s0ca",
-   "badge": "VERS"
+   "badge": "VERS",
+   "demo": "media/a1s0ca-preview.mp4",
+   "video": "media/a1s0ca-preview.mp4"
   },
   {
    "id": "b2ubb1",
@@ -1481,7 +1553,9 @@
    "cover": "media/b2ubb1-cover.png",
    "preview": "media/b2ubb1-preview.mp3",
    "download_dir": "d/b2ubb1",
-   "badge": "VERS"
+   "badge": "VERS",
+   "demo": "media/b2ubb1-preview.mp4",
+   "video": "media/b2ubb1-preview.mp4"
   },
   {
    "id": "k4seko",
@@ -1513,7 +1587,9 @@
    "cover": "media/k4seko-cover.png",
    "preview": "media/k4seko-preview.mp3",
    "download_dir": "d/k4seko",
-   "badge": "VERS"
+   "badge": "VERS",
+   "demo": "media/k4seko-preview.mp4",
+   "video": "media/k4seko-preview.mp4"
   },
   {
    "id": "w1nti1",
@@ -1545,7 +1621,9 @@
    "cover": "media/w1nti1-cover.png",
    "preview": "media/w1nti1-preview.mp3",
    "download_dir": "d/w1nti1",
-   "badge": "VERS"
+   "badge": "VERS",
+   "demo": "media/w1nti1-preview.mp4",
+   "video": "media/w1nti1-preview.mp4"
   },
   {
    "id": "c1n3ma",
@@ -1579,7 +1657,9 @@
    "preview": "media/c1n3ma-preview.mp3",
    "download_dir": "d/c1n3ma",
    "badge": "CINEMATIC",
-   "stems": true
+   "stems": true,
+   "demo": "media/c1n3ma-preview.mp4",
+   "video": "media/c1n3ma-preview.mp4"
   },
   {
    "id": "g0ld3n",
@@ -1613,7 +1693,9 @@
    "preview": "media/g0ld3n-preview.mp3",
    "download_dir": "d/g0ld3n",
    "badge": "UPLIFTING",
-   "stems": true
+   "stems": true,
+   "demo": "media/g0ld3n-preview.mp4",
+   "video": "media/g0ld3n-preview.mp4"
   },
   {
    "id": "r41ny",
@@ -1647,7 +1729,9 @@
    "preview": "media/r41ny-preview.mp3",
    "download_dir": "d/r41ny",
    "badge": "LOFI",
-   "stems": true
+   "stems": true,
+   "demo": "media/r41ny-preview.mp4",
+   "video": "media/r41ny-preview.mp4"
   },
   {
    "id": "1r0n",
@@ -1681,7 +1765,9 @@
    "preview": "media/1r0n-preview.mp3",
    "download_dir": "d/1r0n",
    "badge": "EPIC",
-   "stems": true
+   "stems": true,
+   "demo": "media/1r0n-preview.mp4",
+   "video": "media/1r0n-preview.mp4"
   },
   {
    "titel": "G2B Sleutel-Helper",
@@ -1746,7 +1832,9 @@
    "preview": "media/lofi-avond-preview.mp3",
    "download_dir": "d/l0f1avond",
    "badge": "LOFI",
-   "stems": true
+   "stems": true,
+   "demo": "media/l0f1avond-preview.mp4",
+   "video": "media/l0f1avond-preview.mp4"
   },
   {
    "id": "dr1ve",
@@ -1783,7 +1871,9 @@
    "preview": "media/drive-preview.mp3",
    "download_dir": "d/dr1ve",
    "badge": "SPORT",
-   "stems": true
+   "stems": true,
+   "demo": "media/dr1ve-preview.mp4",
+   "video": "media/dr1ve-preview.mp4"
   },
   {
    "id": "h4rt",
@@ -1816,7 +1906,9 @@
    "preview": "media/hart-preview.mp3",
    "download_dir": "d/h4rt",
    "badge": "EMOTIE",
-   "stems": true
+   "stems": true,
+   "demo": "media/h4rt-preview.mp4",
+   "video": "media/h4rt-preview.mp4"
   },
   {
    "id": "n4cht",
@@ -1850,7 +1942,9 @@
    "preview": "media/nacht-preview.mp3",
    "download_dir": "d/n4cht",
    "badge": "HORROR",
-   "stems": true
+   "stems": true,
+   "demo": "media/n4cht-preview.mp4",
+   "video": "media/n4cht-preview.mp4"
   },
   {
    "id": "sp33ls",
@@ -1884,7 +1978,9 @@
    "preview": "media/speels-preview.mp3",
    "download_dir": "d/sp33ls",
    "badge": "KIDS",
-   "stems": true
+   "stems": true,
+   "demo": "media/sp33ls-preview.mp4",
+   "video": "media/sp33ls-preview.mp4"
   },
   {
    "id": "h3ld3r",
@@ -1918,7 +2014,9 @@
    "preview": "media/helder-preview.mp3",
    "download_dir": "d/h3ld3r",
    "badge": "CORPORATE",
-   "stems": true
+   "stems": true,
+   "demo": "media/h3ld3r-preview.mp4",
+   "video": "media/h3ld3r-preview.mp4"
   },
   {
    "id": "syncbundle",
@@ -1952,7 +2050,9 @@
    "cover": "media/spooky-cover.png",
    "preview": "media/spooky.mp3",
    "download_dir": "d/sp00ky",
-   "eerst": true
+   "eerst": true,
+   "demo": "media/sp00ky-preview.mp4",
+   "video": "media/sp00ky-preview.mp4"
   },
   {
    "id": "h4unt",
@@ -1987,7 +2087,9 @@
    "download_dir": "d/h4unt",
    "badge": "HALLOWEEN",
    "stems": true,
-   "eerst": true
+   "eerst": true,
+   "demo": "media/h4unt-preview.mp4",
+   "video": "media/h4unt-preview.mp4"
   },
   {
    "id": "v0xch",
@@ -2003,7 +2105,9 @@
    "badge": "NIEUW",
    "cover": "media/vox-cover.png",
    "preview": "media/voxch.mp3",
-   "download_dir": "d/v0xch"
+   "download_dir": "d/v0xch",
+   "demo": "media/v0xch-preview.mp4",
+   "video": "media/v0xch-preview.mp4"
   },
   {
    "id": "f13sta",
@@ -2037,7 +2141,9 @@
    "preview": "media/fiesta-preview.mp3",
    "download_dir": "d/f13sta",
    "badge": "NIEUW",
-   "stems": true
+   "stems": true,
+   "demo": "media/f13sta-preview.mp4",
+   "video": "media/f13sta-preview.mp4"
   },
   {
    "id": "3ch0k",
@@ -2214,7 +2320,9 @@
     "wav": "€ 24,95",
     "exclusief": "€ 149"
    },
-   "duur": "0:23"
+   "duur": "0:23",
+   "demo": "media/k4w1n-preview.mp4",
+   "video": "media/k4w1n-preview.mp4"
   },
   {
    "id": "r3gg4",
@@ -2247,7 +2355,9 @@
     "wav": "€ 24,95",
     "exclusief": "€ 149"
    },
-   "duur": "1:04"
+   "duur": "1:04",
+   "demo": "media/r3gg4-preview.mp4",
+   "video": "media/r3gg4-preview.mp4"
   },
   {
    "id": "w1nt3",
@@ -2281,7 +2391,9 @@
     "wav": "€ 24,95",
     "exclusief": "€ 149"
    },
-   "duur": "1:02"
+   "duur": "1:02",
+   "demo": "media/w1nt3-preview.mp4",
+   "video": "media/w1nt3-preview.mp4"
   },
   {
    "id": "ny3c0d",
@@ -2313,7 +2425,9 @@
    "bpm": 126,
    "stems": true,
    "eerst": true,
-   "beschrijving": "Oudjaars/countdown EDM 126 BPM — build-up met 10 echte aftel-tikken, drop met big-riff en klokken. Incl. 6 stems voor eigen cutdowns. NYE-party's, jaarx-wisseling, club & commercial sync."
+   "beschrijving": "Oudjaars/countdown EDM 126 BPM — build-up met 10 echte aftel-tikken, drop met big-riff en klokken. Incl. 6 stems voor eigen cutdowns. NYE-party's, jaarx-wisseling, club & commercial sync.",
+   "demo": "media/ny3c0d-preview.mp4",
+   "video": "media/ny3c0d-preview.mp4"
   },
   {
    "id": "v4l3n",
@@ -2344,7 +2458,9 @@
    "duur": "1:00",
    "bpm": 92,
    "stems": true,
-   "beschrijving": "Romantische R&B 92 BPM — warme rhodes (Cmaj7-Am7-Fmaj7-G), laid-back drums, strings, bell-melodie. Incl. 6 stems. Valentijn, sieraden/chocola-ads, trouw- & romantiek-content."
+   "beschrijving": "Romantische R&B 92 BPM — warme rhodes (Cmaj7-Am7-Fmaj7-G), laid-back drums, strings, bell-melodie. Incl. 6 stems. Valentijn, sieraden/chocola-ads, trouw- & romantiek-content.",
+   "demo": "media/v4l3n-preview.mp4",
+   "video": "media/v4l3n-preview.mp4"
   },
   {
    "id": "l3nt3",
@@ -2375,7 +2491,9 @@
    "duur": "0:58",
    "bpm": 105,
    "stems": true,
-   "beschrijving": "Vrolijke lente-instrumental 105 BPM — marimba, pads, fluit, vogels. Incl. 6 stems. Lente/Pasen-commercials, tuin/DIY-ads, feelgood-content."
+   "beschrijving": "Vrolijke lente-instrumental 105 BPM — marimba, pads, fluit, vogels. Incl. 6 stems. Lente/Pasen-commercials, tuin/DIY-ads, feelgood-content.",
+   "demo": "media/l3nt3-preview.mp4",
+   "video": "media/l3nt3-preview.mp4"
   },
   {
    "id": "z0m3r",
@@ -2406,7 +2524,9 @@
    "duur": "1:00",
    "bpm": 112,
    "stems": true,
-   "beschrijving": "Tropische zomer-party 112 BPM — steel drums, pads, pluck-melodie, shaker. Incl. 6 stems. Zomer/reis/strand/festival/ijs-ads."
+   "beschrijving": "Tropische zomer-party 112 BPM — steel drums, pads, pluck-melodie, shaker. Incl. 6 stems. Zomer/reis/strand/festival/ijs-ads.",
+   "demo": "media/z0m3r-preview.mp4",
+   "video": "media/z0m3r-preview.mp4"
   },
   {
    "id": "school1",
