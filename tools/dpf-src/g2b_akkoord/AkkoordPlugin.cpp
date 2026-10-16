@@ -100,7 +100,7 @@ protected:
         // MIDI events eerst
         for(uint32_t m=0;m<midiCount;m++){
             const MidiEvent& ev=midi[m];
-            if(ev.size<4) continue;
+            if(ev.size<3) continue;
             const uint8_t st=ev.data[0]&0xF0;
             if(st==0x90 && ev.data[2]>0){          // noteOn
                 const int root=snap(ev.data[1]); const float vel=ev.data[2]/127.f;

@@ -153,6 +153,26 @@ public:
           fScopeN(0), fDecim(0)
     {
         recalc();
+        // demo-build convenience: auto-load a WAV if present (does not affect UI loads)
+        if (FILE* f = std::fopen("/tmp/g2b_samplex_demo.wav", "rb"))
+        {
+            std::fseek(f, 0, SEEK_END); long n = std::ftell(f); std::fseek(f, 0, SEEK_SET);
+            std::vector<unsigned char> bytes((size_t)n);
+            if (std::fread(bytes.data(), 1, (size_t)n, f) == (size_t)n && n > 44)
+            {
+                // reuse the WAV branch via a base64 round-trip
+                static const char* b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+                std::string s; s.reserve(n * 4 / 3 + 4);
+                for (long i = 0; i < n; i += 3)
+                {
+                    unsigned v = bytes[i] << 16 | (i + 1 < n ? bytes[i + 1] << 8 : 0) | (i + 2 < n ? bytes[i + 2] : 0);
+                    s += b64[(v >> 18) & 63]; s += b64[(v >> 12) & 63];
+                    s += i + 1 < n ? b64[(v >> 6) & 63] : '='; s += i + 2 < n ? b64[v & 63] : '=';
+                }
+                loadSampleB64(s.c_str());
+            }
+            std::fclose(f);
+        }
     }
 
 protected:
