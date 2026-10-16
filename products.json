@@ -2614,6 +2614,24 @@
    "preview": "media/midipack-preview.mp3",
    "demo": "media/g2b-midigrooves3-demo.mp4",
    "video": "media/g2b-midigrooves3-demo.mp4"
+  },
+  {
+   "id": "g2b-koptelefoon",
+   "titel": "G2B Koptelefoon",
+   "soort": "digitaal",
+   "beschrijving": "Speaker-check plugin (VST3 + CLAP): hoef je mix hoe het op echte speakers klinkt — crossfeed + hoofd-filter + mono-check. Windows. Met Nederlandse handleiding.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": "bestel.html?p=g2b-koptelefoon"
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-koptelefoon-cover.png",
+   "download_dir": "d/koptelefoon",
+   "demo": "media/g2b-koptelefoon-demo.mp4",
+   "video": "media/g2b-koptelefoon-demo.mp4",
+   "badge": "NIEUW"
   }
  ]
 }
