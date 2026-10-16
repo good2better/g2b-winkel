@@ -81,8 +81,41 @@ footer{text-align:center;color:var(--dim);font-size:12px;padding:24px;border-top
     <details><summary>Kan ik opzeggen?</summary><p>Altijd. Er is geen abonnement dat "doorloopt" — je betaalt per maand via Tikkie. Stop je met betalen, dan stop je met ontvangen.</p></details>
     <details><summary>Mag ik de sounds verkopen?</summary><p>In je beats: ja, 100% royalty-vrij. De losse samples zelf doorverkopen: nee — die blijven G2B-club-exclusief.</p></details>
   </div>
+  <div class="hoe" style="text-align:center">
+    <b>✉ Nog niet zeker?</b>
+    <p class="kleintext" style="margin:8px 0 0">Zet je e-mail hier — je krijgt als eerste een seintje bij elke nieuwe maand-pack, plus een gratis proef-sound. Geen spam.</p>
+    <form id="ev-form" style="display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap">
+      <input id="ev-email" type="email" placeholder="jouw e-mailadres" required style="flex:1;min-width:200px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:12px 14px;font-size:14px">
+      <button class="knop" type="submit" style="margin:0;padding:12px 22px">HOUD ME OP DE HOOGTE</button>
+    </form>
+    <div id="ev-msg" style="margin-top:8px;font-size:.8rem;color:var(--accent);min-height:1em"></div>
+  </div>
   <a class="terug" href="index.html">← terug naar de winkel</a>
 </main>
 <footer>Gebouwd door <b>Good2Better</b> — eigen winkel, geen commissie.</footer>
+<script>
+const EV_SCRIPT_URL='https://script.google.com/macros/s/AKfycbzKWU72wn2xxXiNy040qfP4NOqz-CzmOYHrRXMK_DH-LzBEqLjwtiwTyKJAyx7MTf0/exec'; // <- plak hier je Apps Script /exec URL (zelfde als index.html)
+const evF=document.getElementById('ev-form'),evM=document.getElementById('ev-msg');
+if(!EV_SCRIPT_URL){
+  evF.addEventListener('submit',e=>{
+    e.preventDefault();
+    const em=document.getElementById('ev-email').value.trim();
+    location.href='mailto:g.sandvliet88@gmail.com?subject='+encodeURIComponent('Beat-Club interesse')+'&body='+encodeURIComponent('Hoi! Houd me op de hoogte van de Beat-Club. Mijn e-mail: '+em);
+    evM.textContent='Je mailprogramma opent met een kant-en-klaar bericht — druk op versturen.';
+  });
+}else{
+  evF.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const em=document.getElementById('ev-email').value.trim();
+    if(!em) return;
+    evM.textContent='Bezig…';
+    try{
+      await fetch(EV_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({email:em,bron:'beatclub',tijd:new Date().toISOString()})});
+      evM.textContent='✅ Top! Je staat op de Beat-Club-lijst.';
+      evF.reset();
+    }catch(_){ evM.textContent='Even niet gelukt — mail ons via de link hieronder.'; }
+  });
+}
+</script>
 </body>
 </html>
