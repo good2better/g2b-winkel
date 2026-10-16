@@ -2424,6 +2424,57 @@
    },
    "groep": "gratis",
    "badge": "GRATIS"
+  },
+  {
+   "id": "g2b-vocaltune",
+   "titel": "G2B VocalTune",
+   "soort": "digitaal",
+   "beschrijving": "Pitch-correctie plugin (VST3 + CLAP) voor je DAW: elke zangnoot snapt netjes naar de juiste toonsoort — subtiel natuurlijk of vol effect. Windows. Met Nederlandse handleiding.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": "bestel.html?p=g2b-vocaltune"
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-vocaltune-cover.png",
+   "download_dir": "d/ed2ba866ac6b",
+   "demo": "media/g2b-vocaltune-demo.mp4",
+   "video": "media/g2b-vocaltune-demo.mp4"
+  },
+  {
+   "id": "g2b-delay",
+   "titel": "G2B Delay",
+   "soort": "digitaal",
+   "beschrijving": "Echo-plugin (VST3 + CLAP) voor je DAW: van korte slapback tot lange staarten, met feedback en stereo-breedte. Windows. Met Nederlandse handleiding.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": "bestel.html?p=g2b-delay"
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-delay-cover.png",
+   "download_dir": "d/21a2c8df0cd4",
+   "demo": "media/g2b-delay-demo.mp4",
+   "video": "media/g2b-delay-demo.mp4"
+  },
+  {
+   "id": "g2b-reverb",
+   "titel": "G2B Reverb",
+   "soort": "digitaal",
+   "beschrijving": "Reverb-plugin (VST3 + CLAP) voor je DAW: geeft elke sound plek — van kleine kamer tot grote hal. Windows. Met Nederlandse handleiding.",
+   "prijs": "€ 19,95",
+   "prijzen": {},
+   "links": {
+    "koop": "bestel.html?p=g2b-reverb"
+   },
+   "duur": 0,
+   "groep": "software",
+   "cover": "media/g2b-reverb-cover.png",
+   "download_dir": "d/a87b6891b61c",
+   "demo": "media/g2b-reverb-demo.mp4",
+   "video": "media/g2b-reverb-demo.mp4"
   }
  ]
 }
