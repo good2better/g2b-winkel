@@ -8,6 +8,7 @@
  */
 
 #include "DistrhoPlugin.hpp"
+#include <cstring>
 
 START_NAMESPACE_DISTRHO
 
@@ -111,6 +112,7 @@ public:
         kMono,        // MONO % — hoe mono de sub wordt
         kOut,         // OUTPUT dB
         kGalaxy, kDice, kPreset,
+        kOn, kKracht,
         kParameterCount
     };
 
@@ -200,6 +202,8 @@ protected:
             parameter.ranges.max = 16.0f;
             parameter.ranges.def = 0.0f;
             break;
+        case kOn: parameter.name="Aan"; parameter.symbol="aan"; parameter.hints=kParameterIsAutomatable|kParameterIsBoolean; parameter.ranges={0.0f,1.0f,1.0f}; break;
+        case kKracht: parameter.name="Kracht"; parameter.symbol="kracht"; parameter.unit="%"; parameter.ranges={0.0f,100.0f,100.0f}; break;
         }
     }
 
@@ -214,6 +218,7 @@ protected:
         case kMono:    return fMono;
         case kOut:     return fOutDb;
         case kDice: return fDice; case kPreset: return fPreset;
+        case kOn: return fOn; case kKracht: return fKr;
         }
         return 0.0f;
     }
@@ -229,6 +234,7 @@ protected:
         case kSterkte: fSterkte = value; break;
         case kMono:    fMono = value; break;
         case kOut:     fOutDb = value; break;case kDice: if(value>0.5f)rollDice(); fDice=0.f; break;
+        case kOn: fOn = value; break; case kKracht: fKr = value; break;
         }
         recalc();
     }
@@ -240,12 +246,15 @@ protected:
 
     void run(const float** inputs, float** outputs, uint32_t frames) override
     {
+        if(fOn<0.5f){if(inputs[0]!=outputs[0])std::memcpy(outputs[0],inputs[0],frames*sizeof(float));if(inputs[1]!=outputs[1])std::memcpy(outputs[1],inputs[1],frames*sizeof(float));return;}
         processFx_(inputs, outputs, frames);
         for(uint32_t i=0;i<frames;i++){
             float L=outputs[0][i],R=outputs[1][i];
             galaxy.tick(L,R,getSampleRate());
             outputs[0][i]=L; outputs[1][i]=R;
         }
+        const float k=fKr/100.f;
+        if(k<0.999f){const float d=1.f-k;for(uint32_t i=0;i<frames;i++){outputs[0][i]=inputs[0][i]*d+outputs[0][i]*k;outputs[1][i]=inputs[1][i]*d+outputs[1][i]*k;}}
     }
 
     void processFx_(const float** inputs, float** outputs, uint32_t frames)
@@ -346,7 +355,7 @@ private:
     }
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SubTamerPlugin)
-    float fGalaxy=9.f;
+    float fOn=1.f,fKr=100.f,fGalaxy=9.f;
     Galaxy galaxy;
 };
 

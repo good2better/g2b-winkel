@@ -46,6 +46,7 @@ public:
         fMin[2]=0.0f;  fMax[2]=26.0f;  fValue[2]=9.0f;
         fMin[1] = -6.0f; fMax[1] = 6.0f;
         fMin[3] = 4000.0f; fMax[3] = 16000.0f; fValue[3] = 10000.0f;
+        fMin[4] = 0.0f;    fMax[4] = 100.0f;   fValue[4] = 100.0f;
         fPunch = 0.0f;
         fScopePos = 0;
         fDrag = -1;
@@ -55,7 +56,8 @@ public:
 protected:
     void parameterChanged(uint32_t index, float value) override
     {
-        for (int i = 0; i < 4; ++i)
+        if (index == 6) fOn = value;   // AAN/UIT
+        for (int i = 0; i < 5; ++i)
             if (kParamIds[i] == (int)index) { fValue[i] = value; break; }
         repaint();
     }
@@ -269,6 +271,25 @@ protected:
         fontSize(13.5f); fillColor(200, 170, 255);
         text(gcx, gcy + gR + 23.0f, buf, nullptr);
 
+        // ---- KRACHT-knop (tussen GALAXY en FOKUS) ----
+        const float kcx = 354.0f, kcy = 175.0f, kR = 28.0f;
+        const float norm4 = (fValue[4] - fMin[4]) / (fMax[4] - fMin[4]);
+        const float ang4 = -2.4f + norm4 * 4.8f;
+        beginPath(); circle(kcx, kcy, kR); fillColor(30, 34, 33); fill();
+        strokeColor(42, 47, 45); strokeWidth(2.0f); stroke();
+        beginPath();
+        arc(kcx, kcy, kR - 5.0f, -2.4f - 1.5708f, ang4 - 1.5708f, CW);
+        strokeColor(200, 170, 80); strokeWidth(3.0f); stroke();
+        beginPath(); moveTo(kcx, kcy);
+        lineTo(kcx + std::sin(ang4) * (kR - 9.0f), kcy - std::cos(ang4) * (kR - 9.0f));
+        strokeColor(232, 236, 234); strokeWidth(3.0f); stroke();
+        fontSize(11.0f); fillColor(143, 160, 152);
+        textAlign(ALIGN_CENTER | ALIGN_TOP);
+        text(kcx, kcy + kR + 8.0f, "KRACHT", nullptr);
+        fontSize(12.0f); fillColor(232, 236, 234);
+        std::snprintf(buf, sizeof(buf), "%.0f %%", fValue[4]);
+        text(kcx, kcy + kR + 23.0f, buf, nullptr);
+
         // hulptekst
         fontSize(10.5f);
         fillColor(90, 100, 94);
@@ -310,18 +331,33 @@ protected:
             fontSize(10.0f);
             text(tx+13.0f, 42.5f, fLight>0 ? "\xF0\x9F\x8C\x99" : "\xE2\x98\x80", nullptr);
         }
+
+        // AAN/UIT-knop (rechtsboven, naast thema-knop)
+        {
+            const bool aan = fOn > 0.5f;
+            beginPath(); roundedRect(W - 96.0f, 33.0f, 52.0f, 18.0f, 9.0f);
+            fillColor(aan ? g2bsk(fLight,5) : g2bsk(fLight,1)); fill();
+            strokeColor(42,47,45); strokeWidth(1.0f); stroke();
+            fontSize(10.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            fillColor(aan ? g2bsk(fLight,0) : g2bsk(fLight,2));
+            text(W - 70.0f, 42.0f, aan ? "AAN" : "UIT", nullptr);
+        }
     }
 
     bool onMouse(const MouseEvent& ev) override
     {
         if (ev.button != 1) return false;
         const float W = getWidth();
-        const float knobs[4][3] = {{120.0f, 175.0f, 62.0f},
+        const float knobs[5][3] = {{120.0f, 175.0f, 62.0f},
                                    {W - 55.0f, 175.0f, 30.0f},
                                    {W / 2.0f, 175.0f, 44.0f},
-                                   {415.0f, 175.0f, 30.0f}};
+                                   {415.0f, 175.0f, 30.0f},
+                                   {354.0f, 175.0f, 28.0f}};
         if (ev.press)
         {
+            if (ev.pos.getX() >= W-96.0f && ev.pos.getX() <= W-44.0f &&
+                ev.pos.getY() >= 33.0f && ev.pos.getY() <= 51.0f)
+            { fOn = fOn>0.5f?0.f:1.f; setParameterValue(6, fOn); repaint(); return true; }
             if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 40.0f &&
                 ev.pos.getY() >= 48.0f && ev.pos.getY() <= 65.0f)
             { setParameterValue(3, 1.0f); repaint(); return true; }
@@ -348,7 +384,7 @@ protected:
                 }
             }
 
-            for (int i = 0; i < 4; ++i)
+            for (int i = 0; i < 5; ++i)
             {
                 const float dx = ev.pos.getX() - knobs[i][0];
                 const float dy = ev.pos.getY() - knobs[i][1];
@@ -387,11 +423,12 @@ protected:
     bool onScroll(const ScrollEvent& ev) override
     {
         const float W = getWidth();
-        const float knobs[4][3] = {{120.0f, 175.0f, 62.0f},
+        const float knobs[5][3] = {{120.0f, 175.0f, 62.0f},
                                    {W - 55.0f, 175.0f, 30.0f},
                                    {W / 2.0f, 175.0f, 44.0f},
-                                   {415.0f, 175.0f, 30.0f}};
-        for (int i = 0; i < 4; ++i)
+                                   {415.0f, 175.0f, 30.0f},
+                                   {354.0f, 175.0f, 28.0f}};
+        for (int i = 0; i < 5; ++i)
         {
             const float dx = ev.pos.getX() - knobs[i][0];
             const float dy = ev.pos.getY() - knobs[i][1];
@@ -414,8 +451,9 @@ protected:
 
 private:
     static const int kScopeSize = 256;
-    float fValue[4], fMin[4], fMax[4];
-    static const int kParamIds[4];
+    float fValue[5], fMin[5], fMax[5];
+    static const int kParamIds[5];
+    float fOn = 1.f;
     float fScope[kScopeSize];
     int fScopePos;
     float fPunch;
@@ -428,7 +466,7 @@ private:
 };
 
 // slot (UI) → param-id (DSP): POETS, OUTPUT, GALAXY, FOKUS
-const int PoetsUI::kParamIds[4] = {0, 1, 2, 5};
+const int PoetsUI::kParamIds[5] = {0, 1, 2, 5, 7};
 
 UI* createUI() { return new PoetsUI(); }
 
