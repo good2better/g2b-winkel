@@ -358,6 +358,10 @@
       "luisterboek": {
         "prijs": "9,95",
         "koop": "https://buy.stripe.com/cNieVdb32aan5fF6G15J61q"
+      },
+      "videoboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/6oU6oHb321DR8rRd4p5J61r"
       }
     },
     {
