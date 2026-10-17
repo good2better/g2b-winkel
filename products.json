@@ -218,6 +218,23 @@
    "video": "media/mini-pack-preview.mp4"
   },
   {
+   "id": "g2bgruis",
+   "titel": "G2B GRUIS ONE-SHOTS",
+   "soort": "pack",
+   "beschrijving": "155 rauwe FX one-shots uit de G2B-engine: shaker, guiro, vibraslap, skratjie, seki, cabasa, triangle, hari, belltree, deksel, droom, zug & woosh — elk droog in 2 velocities én in 8 galaxy-dimensies, plus g2b-exclusief bonus-shots + SFZ-drumkit. 100% eigen, royalty-vrij. Voor texturen, transities en percussie-lagen.",
+   "prijs": "€ 9,95",
+   "links": {
+    "koop": "bestel.html?p=g2bgruis",
+    "download": "bedankt.html?k=g2bgruis"
+   },
+   "groep": "soundpacks",
+   "badge": "NIEUW",
+   "cover": "media/g2bgruis-cover.jpg",
+   "preview": "media/g2bgruis-preview.mp3",
+   "download_dir": "d/g2bgruis1",
+   "eerst": true
+  },
+  {
    "id": "g2b-pack-der-packs",
    "titel": "G2B Pack der Packs",
    "soort": "digitaal",
