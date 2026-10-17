@@ -6,6 +6,7 @@
 #include "sus_data.h"
 #include "../g2b_verb.h"
 #include "DistrhoPlugin.hpp"
+#include "../g2b_std.h"
 #include <cstring>
 #include <cmath>
 #include <cstdint>
@@ -57,7 +58,7 @@ static const int kScales[2][7] = {
 
 class AkkoordPlugin : public Plugin {
 public:
-    enum Params { kVoicing,kTimbre,kOctave,kDecay,kLevel,kKey,kScale,kStrum,kHuman,kDice,kAuto,kPreset,kNumParams };
+    enum Params { kVoicing,kTimbre,kOctave,kDecay,kLevel,kKey,kScale,kStrum,kHuman,kDice,kAuto,kPreset,kOn,kKracht,kGalaxy,kSfeer,kNumParams };
     AkkoordPlugin() : Plugin(kNumParams, 0, 2) {}
 protected:
     const char* getLabel() const override { return "G2B Akkoord"; }
@@ -80,14 +81,21 @@ protected:
         case kStrum:  p.name="STRUM";  p.symbol="strum";  p.ranges.min=0;p.ranges.max=1;p.ranges.def=0.f;p.unit="%";break;
         case kHuman:  p.name="HUMANIZE";p.symbol="human"; p.ranges.min=0;p.ranges.max=1;p.ranges.def=0.3f;p.unit="%";break;
         case kPreset: p.name="PRESET"; p.symbol="preset"; p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=16;p.ranges.def=0;break;
+        case kOn:    p.name="Aan";      p.symbol="aan";   p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;p.ranges.def=1;break;
+        case kKracht:p.name="Kracht";   p.symbol="kracht";p.ranges.min=0;p.ranges.max=100;p.ranges.def=100;p.unit="%";break;
+        case kGalaxy:p.name="DIMENTIES";p.symbol="dim";   p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=26;p.ranges.def=9;break;
+        case kSfeer: p.name="Sfeer";    p.symbol="sfeer"; p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=2;p.ranges.def=1;break;
         }
     }
     float getParameterValue(uint32_t i) const override {
-        switch(i){case kVoicing:return fVoicing;case kTimbre:return fTimbre;case kOctave:return fOctave;case kDecay:return fDecay;case kLevel:return fLevel;case kKey:return fKey;case kScale:return fScale;case kStrum:return fStrum;case kHuman:return fHuman;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;}return 0.f;
+        switch(i){case kVoicing:return fVoicing;case kTimbre:return fTimbre;case kOctave:return fOctave;case kDecay:return fDecay;case kLevel:return fLevel;case kKey:return fKey;case kScale:return fScale;case kStrum:return fStrum;case kHuman:return fHuman;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKracht;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;}return 0.f;
     }
     void setParameterValue(uint32_t i, float v) override {
         if(i==kPreset){applyPreset((int)(v+0.5f));return;}
-        switch(i){case kVoicing:fVoicing=v;break;case kTimbre:fTimbre=v;break;case kOctave:fOctave=v;break;case kDecay:fDecay=v;break;case kLevel:fLevel=v;break;case kKey:fKey=v;break;case kScale:fScale=v;break;case kStrum:fStrum=v;break;case kHuman:fHuman=v;break;case kDice:fDice=v;if(v>0.5f)rollDice();fDice=0.f;break;case kAuto:fAuto=v;break;}
+        switch(i){case kVoicing:fVoicing=v;break;case kTimbre:fTimbre=v;break;case kOctave:fOctave=v;break;case kDecay:fDecay=v;break;case kLevel:fLevel=v;break;case kKey:fKey=v;break;case kScale:fScale=v;break;case kStrum:fStrum=v;break;case kHuman:fHuman=v;break;case kDice:fDice=v;if(v>0.5f)rollDice();fDice=0.f;break;case kAuto:fAuto=v;break;
+        case kOn:fOn=v;break;case kKracht:fKracht=v;break;
+        case kGalaxy:fGalaxyV=v;fGal.setPos((int)(v+0.5f));break;
+        case kSfeer:fSfeerV=v;fSf.setMode((int)(v+0.5f));break;}
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
@@ -97,6 +105,7 @@ protected:
 
     void run(const float** in, float** out, uint32_t frames, const MidiEvent* midi, uint32_t midiCount) override {
         const float sr=getSampleRate();if(!fVerbOn){fVerb.init(sr);fVerbOn=true;}
+        if(fOn<0.5f){std::memset(out[0],0,frames*sizeof(float));std::memset(out[1],0,frames*sizeof(float));return;}
         // MIDI events eerst
         for(uint32_t m=0;m<midiCount;m++){
             const MidiEvent& ev=midi[m];
@@ -204,6 +213,7 @@ protected:
             for(uint32_t s=0;s<fScopeN&&pos<230;++s)pos+=snprintf(buf+pos,sizeof(buf)-pos,"%.3f;",fScope[s]);
             buf[pos]=0;setState("scope",buf);fScopeN=0;
         }
+        g2b_post(nullptr,out,frames,sr,fOn,fKracht,fGal,&fSf,false);
     }
 private:
     int snap(int midi) const {
@@ -235,6 +245,8 @@ private:
     float fVoicing=1.f,fTimbre=0.35f,fOctave=0.f,fDecay=1.6f,fLevel=0.8f,fKey=0.f,fScale=0.f,fStrum=0.f,fHuman=0.3f,fPreset=0.f,fDice=0.f,fAuto=0.f;
     ChordVoice fV[24];
     unsigned fRnd=54321; int fRR=0;
+    float fOn=1.f,fKracht=100.f,fGalaxyV=9.f,fSfeerV=1.f;
+    Galaxy fGal; Sfeer fSf;
     float fScope[40];uint32_t fScopeN=0;int fDecim=0;
     G2bVerb fVerb; bool fVerbOn=false;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AkkoordPlugin)

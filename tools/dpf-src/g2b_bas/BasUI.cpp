@@ -35,11 +35,11 @@ public:
     BasUI() : UI(DISTRHO_UI_DEFAULT_WIDTH, DISTRHO_UI_DEFAULT_HEIGHT)
     {
         loadSharedResources();
-        static const float mins[7]  = {0,0,0,0,0,0,-24};
-        static const float maxs[7]  = {1,1,1,1,11,1,12};
-        static const float defs[7]  = {0.3f,0.25f,0.6f,0.8f,9,0,0};
-        static const char* lbl[7]   = {"TYPE","DRIVE","FILTER","DECAY","KEY","SCALE","OUTPUT"};
-        static const char* unt[7]   = {"%","%","%","%","k","s","dB"};
+        static const float mins[10]  = {0,0,0,0,0,0,-24,0,0,0};
+        static const float maxs[10]  = {1,1,1,1,11,1,12,100,26,2};
+        static const float defs[10]  = {0.3f,0.25f,0.6f,0.8f,9,0,0,100,9,1};
+        static const char* lbl[10]   = {"TYPE","DRIVE","FILTER","DECAY","KEY","SCALE","OUTPUT","KRACHT","DIMENTIES","SFEER"};
+        static const char* unt[10]   = {"%","%","%","%","k","s","dB","%","x",""};
         std::memcpy(fMin, mins, sizeof(mins));
         std::memcpy(fMax, maxs, sizeof(maxs));
         std::memcpy(fValue, defs, sizeof(defs));
@@ -50,16 +50,17 @@ public:
     }
 
 protected:
-    // knop-slots: 0 TYPE,1 DRIVE,2 FILTER,3 DECAY,4 KEY(5),5 SCALE(6),6 OUTPUT(4)
+    // knop-slots: 0 TYPE,1 DRIVE,2 FILTER,3 DECAY,4 KEY(5),5 SCALE(6),6 OUTPUT(4),7 KRACHT(10),8 DIMENTIES(11),9 SFEER(12)
     static int paramOf(int slot)
-    { return slot < 4 ? slot : (slot == 4 ? 5 : (slot == 5 ? 6 : 4)); }
+    { return slot < 4 ? slot : (slot == 4 ? 5 : (slot == 5 ? 6 : (slot == 6 ? 4 : slot + 3))); }
     static int slotOf(uint32_t index)
-    { return index < 4 ? (int)index : (index == 4 ? 6 : (index < 7 ? (int)index - 1 : -1)); }
+    { return index < 4 ? (int)index : (index == 4 ? 6 : (index < 7 ? (int)index - 1 : (index >= 10 ? (int)index - 3 : -1))); }
 
     void parameterChanged(uint32_t index, float value) override
     {
         const int s = slotOf(index);
         if (s >= 0) fValue[s] = value;
+        else if (index == 9) fOn = (int)(value + 0.5f);
         repaint();
     }
 
@@ -129,14 +130,25 @@ protected:
         }
         strokeColor(47, 191, 113); strokeWidth(1.5f); stroke();
 
-        // 5 knoppen
-        const int n = 7;
+        // AAN/UIT pil rechtsboven
+        {
+            const float ax = W - 48.0f, ay = 12.0f;
+            beginPath(); roundedRect(ax, ay, 44.0f, 17.0f, 4.0f);
+            fillColor(fOn ? g2bsk(fLight,5) : g2bsk(fLight,4)); fill();
+            strokeColor(g2bsk(fLight,3)); strokeWidth(1.0f); stroke();
+            fontSize(8.5f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            fillColor(fOn ? Color(232,236,234) : g2bsk(fLight,3));
+            text(ax + 22.0f, ay + 8.5f, fOn ? "AAN" : "UIT", nullptr);
+        }
+
+        // knoppen
+        const int n = 10;
         const float step = (W - 40.0f) / n;
         for (int i = 0; i < n; ++i)
         {
             const float cx = 20.0f + step * (i + 0.5f);
-            const float cy = 175.0f;
-            const float R  = 28.0f;
+            const float cy = 172.0f;
+            const float R  = 20.0f;
             const float norm = (fValue[i] - fMin[i]) / (fMax[i] - fMin[i]);
             const float ang = -2.4f + norm * 4.8f;
 
@@ -154,16 +166,42 @@ protected:
                    cy - std::cos(ang) * (R - 8.0f));
             strokeColor(232, 236, 234); strokeWidth(3.0f); stroke();
 
-            fontSize(10.5f); fillColor(143, 160, 152);
+            fontSize(8.5f); fillColor(143, 160, 152);
             textAlign(ALIGN_CENTER | ALIGN_TOP);
             text(cx, cy + R + 8.0f, fLabel[i], nullptr);
-            fontSize(12.0f); fillColor(232, 236, 234);
+            fontSize(11.0f); fillColor(232, 236, 234);
             char buf[24];
             if (i==0&&fValue[0]>=0.80f) std::snprintf(buf,sizeof(buf),"STACK");
             else if (i==0&&fValue[0]>=0.50f) std::snprintf(buf,sizeof(buf),"ECHT");
             else if (i==0) std::snprintf(buf,sizeof(buf),"SYNTH");
+            else if (i==7) std::snprintf(buf,sizeof(buf),"%.0f%%",fValue[i]);
+            else if (i==8) std::snprintf(buf,sizeof(buf),"%.0f/26",fValue[i]);
+            else if (i==9) std::snprintf(buf,sizeof(buf),"%s",(int)(fValue[i]+0.5f)==0?"DONKER":((int)(fValue[i]+0.5f)==2?"LICHT":"NEUTR"));
             else std::snprintf(buf, sizeof(buf), "%.1f %s", fValue[i], fUnit[i]);
             text(cx, cy + R + 23.0f, buf, nullptr);
+        }
+
+        // XY-pad: X = KRACHT (0-100), Y = DIMENTIES (0-26)
+        fXX = 18.0f; fXY_ = 240.0f; fXW = W - 36.0f; fXH = 62.0f;
+        {
+            const float px = fXX, py = fXY_, pw = fXW, ph = fXH;
+            beginPath(); roundedRect(px, py, pw, ph, 6.0f);
+            fillColor(g2bsk(fLight,4)); fill();
+            strokeColor(g2bsk(fLight,3)); strokeWidth(1.0f); stroke();
+            const float nx = fValue[7] / 100.0f;
+            const float ny = fValue[8] / 26.0f;
+            const float dx = px + nx * pw, dy = py + (1.0f - ny) * ph;
+            beginPath();
+            moveTo(dx, py); lineTo(dx, py + ph);
+            moveTo(px, dy); lineTo(px + pw, dy);
+            strokeColor(g2bsk(fLight,3)); strokeWidth(0.5f); stroke();
+            beginPath(); circle(dx, dy, 5.0f);
+            fillColor(g2bsk(fLight,5)); fill();
+            fontSize(9.0f); fillColor(g2bsk(fLight,3));
+            textAlign(ALIGN_LEFT | ALIGN_TOP);
+            text(px + 6.0f, py + 4.0f, "DIMENTIES ", nullptr);
+            textAlign(ALIGN_RIGHT | ALIGN_BOTTOM);
+            text(px + pw - 6.0f, py + ph - 4.0f, "KRACHT →", nullptr);
         }
 
         fontSize(10.5f); fillColor(90, 100, 94);
@@ -202,6 +240,15 @@ protected:
                 ev.pos.getY() >= 34.0f && ev.pos.getY() <= 51.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
 
+            // AAN/UIT pil
+            if (ev.pos.getX() >= W-48.0f && ev.pos.getX() <= W-4.0f &&
+                ev.pos.getY() >= 12.0f && ev.pos.getY() <= 29.0f)
+            { fOn = 1 - fOn; setParameterValue(9, (float)fOn); repaint(); return true; }
+            // XY-pad
+            if (ev.pos.getX() >= fXX && ev.pos.getX() <= fXX + fXW &&
+                ev.pos.getY() >= fXY_ && ev.pos.getY() <= fXY_ + fXH)
+            { fXYdrag = true; xySet(ev.pos.getX(), ev.pos.getY()); return true; }
+
             for (int i = 0; i < kNumPrograms; ++i)
             {
                 const float bw = 44.0f, bh = 17.0f;
@@ -217,16 +264,21 @@ protected:
                 }
             }
         }
-        const float step = (W - 40.0f) / 7;
+        else if (fXYdrag)
+        {
+            fXYdrag = false;
+            return true;
+        }
+        const float step = (W - 40.0f) / 10;
         if (ev.press)
         {
-            for (int i = 0; i < 7; ++i)
+            for (int i = 0; i < 10; ++i)
             {
                 const float cx = 20.0f + step * (i + 0.5f);
-                const float cy = 175.0f;
+                const float cy = 172.0f;
                 const float dx = ev.pos.getX() - cx;
                 const float dy = ev.pos.getY() - cy;
-                if (dx*dx + dy*dy <= 28.0f*28.0f + 80.0f)
+                if (dx*dx + dy*dy <= 20.0f*20.0f + 80.0f)
                 {
                     fDrag = i; fLastY = ev.pos.getY();
                     editParameter(paramOf(i), true);
@@ -242,8 +294,22 @@ protected:
         return true;
     }
 
+    void xySet(double mx, double my)
+    {
+        float nx = (float)((mx - fXX) / fXW);
+        float ny = (float)(1.0 - (my - fXY_) / fXH);
+        if (nx < 0) nx = 0; if (nx > 1) nx = 1;
+        if (ny < 0) ny = 0; if (ny > 1) ny = 1;
+        const float kr = nx * 100.0f, dm = ny * 26.0f;
+        fValue[7] = kr; fValue[8] = dm;
+        editParameter(10, true);  setParameterValue(10, kr); editParameter(10, false);
+        editParameter(11, true);  setParameterValue(11, dm); editParameter(11, false);
+        repaint();
+    }
+
     bool onMotion(const MotionEvent& ev) override
     {
+        if (fXYdrag) { xySet(ev.pos.getX(), ev.pos.getY()); return true; }
         if (fDrag < 0) return false;
         const float dy = fLastY - ev.pos.getY();
         fLastY = ev.pos.getY();
@@ -260,14 +326,14 @@ protected:
     bool onScroll(const ScrollEvent& ev) override
     {
         const float W = getWidth();
-        const float step = (W - 40.0f) / 7;
-        for (int i = 0; i < 7; ++i)
+        const float step = (W - 40.0f) / 10;
+        for (int i = 0; i < 10; ++i)
         {
             const float cx = 20.0f + step * (i + 0.5f);
-            const float cy = 175.0f;
+            const float cy = 172.0f;
             const float dx = ev.pos.getX() - cx;
             const float dy = ev.pos.getY() - cy;
-            if (dx*dx + dy*dy <= 28.0f*28.0f + 80.0f)
+            if (dx*dx + dy*dy <= 20.0f*20.0f + 80.0f)
             {
                 const float range = fMax[i] - fMin[i];
                 float v = fValue[i] + ev.delta.getY() * range / 100.0f;
@@ -287,15 +353,18 @@ protected:
 
 private:
     static const int kScopeSize = 256;
-    float fValue[7], fMin[7], fMax[7];
-    const char* fLabel[7];
-    const char* fUnit[7];
+    float fValue[10], fMin[10], fMax[10];
+    const char* fLabel[10];
+    const char* fUnit[10];
     float fScope[kScopeSize];
     int fScopePos;
     int fDrag;
     float fLastY;
     int fProg;
     int fLight = 0;
+    int fOn = 1;
+    bool fXYdrag = false;
+    float fXX = 18.0f, fXY_ = 240.0f, fXW = 524.0f, fXH = 62.0f;
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BasUI)
 };

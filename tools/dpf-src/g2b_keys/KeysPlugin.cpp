@@ -1,6 +1,7 @@
 #include "piano_data.h"
 #include "steinway_data.h"
 #include "DistrhoPlugin.hpp"
+#include "../g2b_std.h"
 #include <cmath>
 #include <cstdio>
 #include <cstring>
@@ -33,7 +34,7 @@ struct KVoice { bool on; int note; float vel, t, ph1, ph2, ph3, ph4; const int16
 
 class KeysPlugin : public Plugin {
 public:
-    enum Params { kTimbre,kBells,kDecay,kTrem,kLevel,kKey,kScale,kDice,kPreset,kNumParams };
+    enum Params { kTimbre,kBells,kDecay,kTrem,kLevel,kKey,kScale,kDice,kPreset,kOn,kGalaxy,kSfeer,kNumParams };
     KeysPlugin() : Plugin(kNumParams,0,2) {}
 protected:
     const char* getLabel() const override { return "G2B Keys"; }
@@ -55,10 +56,13 @@ protected:
         case kScale: p.name="SCALE";  p.symbol="scale"; p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=1;p.ranges.def=0;break;
         case kDice:  p.name="DICE";   p.symbol="dice";  p.hints|=kParameterIsInteger|kParameterIsTrigger;p.ranges.min=0;p.ranges.max=1;p.ranges.def=0;break;
         case kPreset:p.name="PRESET"; p.symbol="preset";p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=16;p.ranges.def=0;break;
+        case kOn:    p.name="Aan";      p.symbol="aan";   p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;p.ranges.def=1;break;
+        case kGalaxy:p.name="DIMENTIES";p.symbol="dim";   p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=26;p.ranges.def=9;break;
+        case kSfeer: p.name="Sfeer";    p.symbol="sfeer"; p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=2;p.ranges.def=1;break;
         }
     }
     float getParameterValue(uint32_t i) const override {
-        switch(i){case kTimbre:return fTimbre;case kBells:return fBells;case kDecay:return fDecay;case kTrem:return fTrem;case kLevel:return fLevel;case kKey:return fKey;case kScale:return fScale;case kDice:return fDice;case kPreset:return fPreset;}return 0.f;
+        switch(i){case kTimbre:return fTimbre;case kBells:return fBells;case kDecay:return fDecay;case kTrem:return fTrem;case kLevel:return fLevel;case kKey:return fKey;case kScale:return fScale;case kDice:return fDice;case kPreset:return fPreset;case kOn:return fOn;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;}return 0.f;
     }
     void setParameterValue(uint32_t i, float v) override {
         if(i==kPreset){applyPreset((int)(v+0.5f));return;}
@@ -66,6 +70,9 @@ protected:
         case kTimbre:fTimbre=v;break;case kBells:fBells=v;break;case kDecay:fDecay=v;break;
         case kTrem:fTrem=v;break;case kLevel:fLevel=v;break;case kKey:fKey=v;break;case kScale:fScale=v;break;
         case kDice:fDice=v;if(v>0.5f)rollDice();fDice=0.f;break;
+        case kOn:fOn=v;break;
+        case kGalaxy:fGalaxyV=v;fGal.setPos((int)(v+0.5f));break;
+        case kSfeer:fSfeerV=v;fSf.setMode((int)(v+0.5f));break;
         }
     }
     void initState(uint32_t index, String& name, String& def) override {
@@ -77,9 +84,10 @@ protected:
     void run(const float**, float** out, uint32_t frames,
              const MidiEvent* ev, uint32_t evc) override {
         const float sr=getSampleRate();
-        const float outG=powf(10.f,fLevel*0.05f);
         memset(out[0],0,frames*sizeof(float));
         memset(out[1],0,frames*sizeof(float));
+        if(fOn<0.5f)return;
+        const float outG=powf(10.f,fLevel*0.05f);
         uint32_t pos=0;
         for(uint32_t e=0;e<=evc;e++){
             uint32_t t=(e<evc)?ev[e].frame:frames;
@@ -157,6 +165,7 @@ protected:
             for(uint32_t s2=0;s2<fScopeN&&p<230;++s2)p+=snprintf(buf+p,sizeof(buf)-p,"%.3f;",fScope[s2]);
             buf[p]=0;setState("scope",buf);fScopeN=0;
         }
+        g2b_post(nullptr,out,frames,sr,fOn,100.f,fGal,&fSf,false);
     }
 private:
     static const int kScales_[2][7];
@@ -185,6 +194,8 @@ private:
     float fTimbre=0.45f,fBells=0.35f,fDecay=0.7f,fTrem=0.f,fLevel=0.f;
     float fKey=9.f,fScale=0.f,fDice=0.f,fPreset=0.f;
     unsigned fRnd=777777;
+    float fOn=1.f,fGalaxyV=9.f,fSfeerV=1.f;
+    Galaxy fGal; Sfeer fSf;
     float fScope[40];uint32_t fScopeN=0;int fDecim=0;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeysPlugin)
 };

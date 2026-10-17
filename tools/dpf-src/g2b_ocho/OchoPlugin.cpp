@@ -8,6 +8,7 @@
  */
 
 #include "DistrhoPlugin.hpp"
+#include "../g2b_std.h"
 #include <cmath>
 #include <cstdio>
 #include <cstring>
@@ -55,6 +56,10 @@ public:
         kScale,       // 0=minor 1=major
         kDice,        // randomize
         kPreset,
+        kOn,          // AAN/UIT bypass
+        kKracht,      // output-level 0-100%
+        kGalaxy,      // DIMENTIES 0-26
+        kSfeer,       // dark/neutraal/licht
         kParameterCount
     };
 
@@ -145,6 +150,26 @@ protected:
             parameter.ranges.max = 5.0f;
             parameter.ranges.def = 0.0f;
             break;
+        case kOn:
+            parameter.name = "Aan"; parameter.symbol = "aan";
+            parameter.hints |= kParameterIsBoolean;
+            parameter.ranges = {0.0f, 1.0f, 1.0f};
+            break;
+        case kKracht:
+            parameter.name = "Kracht"; parameter.symbol = "kracht";
+            parameter.unit = "%";
+            parameter.ranges = {0.0f, 100.0f, 100.0f};
+            break;
+        case kGalaxy:
+            parameter.name = "DIMENTIES"; parameter.symbol = "dim";
+            parameter.hints |= kParameterIsInteger;
+            parameter.ranges = {0.0f, 26.0f, 9.0f};
+            break;
+        case kSfeer:
+            parameter.name = "Sfeer"; parameter.symbol = "sfeer";
+            parameter.hints |= kParameterIsInteger;
+            parameter.ranges = {0.0f, 2.0f, 1.0f};
+            break;
         }
     }
 
@@ -163,6 +188,10 @@ protected:
         case kScale:  return fScale;
         case kDice:   return fDice;
         case kPreset: return fPreset;
+        case kOn:     return fOn;
+        case kKracht: return fKracht;
+        case kGalaxy: return fGalaxyV;
+        case kSfeer:  return fSfeerV;
         }
         return 0.0f;
     }
@@ -182,6 +211,10 @@ protected:
         case kKey:    fKey = value; break;
         case kScale:  fScale = value; break;
         case kDice:   if (value > 0.5f) rollDice(); fDice = 0.f; break;
+        case kOn:     fOn = value; break;
+        case kKracht: fKracht = value; break;
+        case kGalaxy: fGalaxyV = value; fGal.setPos((int)(value + 0.5f)); break;
+        case kSfeer:  fSfeerV = value; fSf.setMode((int)(value + 0.5f)); break;
         }
         recalc();
     }
@@ -200,6 +233,7 @@ protected:
         float* outR = outputs[1];
         std::memset(outL, 0, frames * sizeof(float));
         std::memset(outR, 0, frames * sizeof(float));
+        if (fOn < 0.5f) return;
 
         const float sr = (float)getSampleRate();
         const float decRate = fDecRate;      // amp decay per sample
@@ -241,6 +275,7 @@ protected:
             setState("scope", buf);
             fScopeN = 0;
         }
+        g2b_post(nullptr, outputs, frames, sr, fOn, fKracht, fGal, &fSf, false);
     }
 
 private:
@@ -366,6 +401,8 @@ private:
     }
 
     float fPreset = 0.0f;
+    float fOn = 1.0f, fKracht = 100.0f, fGalaxyV = 9.0f, fSfeerV = 1.0f;
+    Galaxy fGal; Sfeer fSf;
 
     void applyPreset(int i)
     {

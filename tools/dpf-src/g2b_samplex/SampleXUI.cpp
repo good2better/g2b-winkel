@@ -62,10 +62,10 @@ public:
         : UI(DISTRHO_UI_DEFAULT_WIDTH, DISTRHO_UI_DEFAULT_HEIGHT)
     {
         loadSharedResources();
-        static const float mins[7]  = {-12, 500, 0, 0, 0, 0,0};
-        static const float maxs[7]  = { 12, 15000, 100, 100, 90, 100,26};
-        static const float defs[7]  = {  0, 8000, 30, 40, 0, 85,9};
-        static const char* lbl[7]   = {"PITCH","FILTER","DRIVE","DROP","START","LEVEL","GALAXY"};
+        static const float mins[9]  = {-12, 500, 0, 0, 0, 0,0,0,0};
+        static const float maxs[9]  = { 12, 15000, 100, 100, 90, 100,26,100,2};
+        static const float defs[9]  = {  0, 8000, 30, 40, 0, 85,9,100,1};
+        static const char* lbl[9]   = {"PITCH","FILTER","DRIVE","DROP","START","LEVEL","DIMENTIES","KRACHT","SFEER"};
         std::memcpy(fMin, mins, sizeof(mins));
         std::memcpy(fMax, maxs, sizeof(maxs));
         std::memcpy(fValue, defs, sizeof(defs));
@@ -81,6 +81,9 @@ protected:
         if (index < 7) fValue[index] = value;
         if (index == 13) fChopN = (int)value;
         if (index == 14) fSnapOn = value;
+        if (index == 16) fOn = (int)(value + 0.5f);
+        if (index == 17) fValue[7] = value; // KRACHT
+        if (index == 18) fValue[8] = value; // SFEER
         repaint();
     }
 
@@ -182,14 +185,25 @@ protected:
         }
         strokeColor(47, 191, 113); strokeWidth(1.5f); stroke();
 
-        // 6 knoppen
-        const int n = 7;
+        // AAN/UIT pil (naast thema-knop)
+        {
+            const float ax = W - 96.0f, ay = 34.0f;
+            beginPath(); roundedRect(ax, ay, 50.0f, 17.0f, 4.0f);
+            fillColor(fOn ? g2bsk(fLight,5) : g2bsk(fLight,4)); fill();
+            strokeColor(g2bsk(fLight,3)); strokeWidth(1.0f); stroke();
+            fontSize(8.5f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            fillColor(fOn ? Color(232,236,234) : g2bsk(fLight,3));
+            text(ax + 25.0f, ay + 8.5f, fOn ? "AAN" : "UIT", nullptr);
+        }
+
+        // 9 knoppen
+        const int n = 9;
         const float step = (W - 40.0f) / n;
         for (int i = 0; i < n; ++i)
         {
             const float cx = 20.0f + step * (i + 0.5f);
             const float cy = 200.0f;
-            const float R  = 30.0f;
+            const float R  = 24.0f;
             const float norm = (fValue[i] - fMin[i]) / (fMax[i] - fMin[i]);
             const float ang = -2.4f + norm * 4.8f;
 
@@ -205,18 +219,46 @@ protected:
                    cy - std::cos(ang) * (R - 8.0f));
             strokeColor(232, 236, 234); strokeWidth(3.0f); stroke();
 
-            fontSize(10.5f); fillColor(143, 160, 152);
+            fontSize(8.5f); fillColor(143, 160, 152);
             textAlign(ALIGN_CENTER | ALIGN_TOP);
             text(cx, cy + R + 8.0f, fLabel[i], nullptr);
-            fontSize(11.5f); fillColor(232, 236, 234);
+            fontSize(11.0f); fillColor(232, 236, 234);
             char buf[24];
             if (i == 0)
                 std::snprintf(buf, sizeof(buf), "%+.0f st", fValue[i]);
             else if (i == 1)
                 std::snprintf(buf, sizeof(buf), "%.0f Hz", fValue[i]);
+            else if (i == 6)
+                std::snprintf(buf, sizeof(buf), "%.0f/26", fValue[i]);
+            else if (i == 7)
+                std::snprintf(buf, sizeof(buf), "%.0f%%", fValue[i]);
+            else if (i == 8)
+                std::snprintf(buf, sizeof(buf), "%s", (int)(fValue[i]+0.5f)==0?"DONKER":((int)(fValue[i]+0.5f)==2?"LICHT":"NEUTR"));
             else
                 std::snprintf(buf, sizeof(buf), "%.0f %%", fValue[i]);
             text(cx, cy + R + 23.0f, buf, nullptr);
+        }
+
+        // XY-pad: X = KRACHT (0-100), Y = DIMENTIES (0-26)
+        fXX = 18.0f; fXY_ = 258.0f; fXW = W - 36.0f; fXH = 46.0f;
+        {
+            const float px = fXX, py = fXY_, pw = fXW, ph = fXH;
+            beginPath(); roundedRect(px, py, pw, ph, 6.0f);
+            fillColor(g2bsk(fLight,4)); fill();
+            strokeColor(g2bsk(fLight,3)); strokeWidth(1.0f); stroke();
+            const float nx = fValue[7] / 100.0f, ny = fValue[6] / 26.0f;
+            const float dx = px + nx * pw, dy = py + (1.0f - ny) * ph;
+            beginPath();
+            moveTo(dx, py); lineTo(dx, py + ph);
+            moveTo(px, dy); lineTo(px + pw, dy);
+            strokeColor(g2bsk(fLight,3)); strokeWidth(0.5f); stroke();
+            beginPath(); circle(dx, dy, 5.0f);
+            fillColor(g2bsk(fLight,5)); fill();
+            fontSize(9.0f); fillColor(g2bsk(fLight,3));
+            textAlign(ALIGN_LEFT | ALIGN_TOP);
+            text(px + 6.0f, py + 4.0f, "DIMENTIES ", nullptr);
+            textAlign(ALIGN_RIGHT | ALIGN_BOTTOM);
+            text(px + pw - 6.0f, py + ph - 4.0f, "KRACHT →", nullptr);
         }
 
         // LANDR-rij: AUTO-FIT / EXPORT / SNAP / CHOP pills
@@ -310,32 +352,60 @@ protected:
                         return true;
                     }
                 }
+            // AAN/UIT pil
+            if (ev.pos.getX() >= W-96.0f && ev.pos.getX() <= W-46.0f &&
+                ev.pos.getY() >= 34.0f && ev.pos.getY() <= 51.0f)
+            { fOn = 1 - fOn; setParameterValue(16, (float)fOn); repaint(); return true; }
+            // XY-pad
+            if (ev.pos.getX() >= fXX && ev.pos.getX() <= fXX + fXW &&
+                ev.pos.getY() >= fXY_ && ev.pos.getY() <= fXY_ + fXH)
+            { fXYdrag = true; xySet(ev.pos.getX(), ev.pos.getY()); return true; }
             // knoppen
-            const float step = (W - 40.0f) / 7;
-            for (int i = 0; i < 7; ++i)
+            const float step = (W - 40.0f) / 9;
+            for (int i = 0; i < 9; ++i)
             {
                 const float cx = 20.0f + step * (i + 0.5f);
                 const float cy = 200.0f;
                 const float dx = ev.pos.getX() - cx;
                 const float dy = ev.pos.getY() - cy;
-                if (dx*dx + dy*dy <= 30.0f*30.0f + 70.0f)
+                if (dx*dx + dy*dy <= 24.0f*24.0f + 70.0f)
                 {
                     fDrag = i; fLastY = ev.pos.getY();
-                    editParameter(i, true);
+                    editParameter(paramOf(i), true);
                     return true;
                 }
             }
         }
+        else if (fXYdrag)
+        {
+            fXYdrag = false;
+            return true;
+        }
         else if (fDrag >= 0)
         {
-            editParameter(fDrag, false);
+            editParameter(paramOf(fDrag), false);
             fDrag = -1;
         }
         return true;
     }
 
+    // knop-slots: 0-6 = params 0-6 (slot6=DIMENTIES→param6), 7 KRACHT(17), 8 SFEER(18)
+    static int paramOf(int slot) { return slot < 7 ? slot : slot + 10; }
+    void xySet(double mx, double my)
+    {
+        float nx = (float)((mx - fXX) / fXW), ny = (float)(1.0 - (my - fXY_) / fXH);
+        if (nx < 0) nx = 0; if (nx > 1) nx = 1;
+        if (ny < 0) ny = 0; if (ny > 1) ny = 1;
+        const float kr = nx * 100.0f, dm = ny * 26.0f;
+        fValue[7] = kr; fValue[6] = dm;
+        editParameter(17, true); setParameterValue(17, kr); editParameter(17, false);
+        editParameter(6, true);  setParameterValue(6, dm);  editParameter(6, false);
+        repaint();
+    }
+
     bool onMotion(const MotionEvent& ev) override
     {
+        if (fXYdrag) { xySet(ev.pos.getX(), ev.pos.getY()); return true; }
         if (fDrag < 0) return false;
         const float dy = fLastY - ev.pos.getY();
         fLastY = ev.pos.getY();
@@ -344,7 +414,7 @@ protected:
         if (v < fMin[fDrag]) v = fMin[fDrag];
         if (v > fMax[fDrag]) v = fMax[fDrag];
         fValue[fDrag] = v;
-        setParameterValue(fDrag, v);
+        setParameterValue(paramOf(fDrag), v);
         repaint();
         return true;
     }
@@ -352,23 +422,24 @@ protected:
     bool onScroll(const ScrollEvent& ev) override
     {
         const float W = getWidth();
-        const float step = (W - 40.0f) / 7;
-        for (int i = 0; i < 7; ++i)
+        const float step = (W - 40.0f) / 9;
+        for (int i = 0; i < 9; ++i)
         {
             const float cx = 20.0f + step * (i + 0.5f);
             const float cy = 200.0f;
             const float dx = ev.pos.getX() - cx;
             const float dy = ev.pos.getY() - cy;
-            if (dx*dx + dy*dy <= 30.0f*30.0f + 70.0f)
+            if (dx*dx + dy*dy <= 24.0f*24.0f + 70.0f)
             {
                 const float range = fMax[i] - fMin[i];
                 float v = fValue[i] + ev.delta.getY() * range / 100.0f;
                 if (v < fMin[i]) v = fMin[i];
                 if (v > fMax[i]) v = fMax[i];
                 fValue[i] = v;
-                editParameter(i, true);
-                setParameterValue(i, v);
-                editParameter(i, false);
+                const int pi = paramOf(i);
+                editParameter(pi, true);
+                setParameterValue(pi, v);
+                editParameter(pi, false);
                 repaint();
                 return true;
             }
@@ -378,8 +449,8 @@ protected:
 
 private:
     static const int kScopeSize = 256;
-    float fValue[7], fMin[7], fMax[7];
-    const char* fLabel[7];
+    float fValue[9], fMin[9], fMax[9];
+    const char* fLabel[9];
     float fScope[kScopeSize];
     int fScopePos;
     int fDrag;
@@ -387,6 +458,8 @@ private:
     int fProg;
     float fSnapOn; int fChopN;
     int fLight = 0;
+    int fOn = 1; bool fXYdrag = false;
+    float fXX = 18.0f, fXY_ = 258.0f, fXW = 524.0f, fXH = 46.0f;
     std::string fName;
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SampleXUI)
