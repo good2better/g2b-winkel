@@ -20,7 +20,7 @@ protected:
         case kRes:p.name="Resonantie";p.symbol="res";p.ranges.def=60;p.ranges.min=0;p.ranges.max=100;break;
         case kSens:p.name="Sens";p.symbol="sens";p.ranges.def=50;p.ranges.min=0;p.ranges.max=100;break;
         case kFreq:p.name="Freq";p.symbol="freq";p.ranges.def=50;p.ranges.min=0;p.ranges.max=100;break;
-        case kDimensie:p.name="Dimenties";p.symbol="dim";p.ranges.def=0;p.ranges.min=0;p.ranges.max=26;break;
+        case kDimensie:p.name="DIMENTIES";p.symbol="dim";p.ranges.def=0;p.ranges.min=0;p.ranges.max=26;break;
         case kSkin:p.name="Skin";p.symbol="skin";p.ranges.def=4;p.ranges.min=0;p.ranges.max=7;break;}}
     float getParameterValue(uint32_t i)const override{switch(i){case kOn:return fOn;case kKracht:return fKr;case kRate:return fRa;case kDepth:return fDe;case kRes:return fRe;case kSens:return fSe;case kFreq:return fFr;case kDimensie:return fDim;case kSkin:return fSkin;default:return 0;}}
     void setParameterValue(uint32_t i,float v)override{switch(i){case kOn:fOn=v;break;case kKracht:fKr=v;break;case kRate:fRa=v;break;case kDepth:fDe=v;break;case kRes:fRe=v;break;case kSens:fSe=v;break;case kFreq:fFr=v;break;case kDimensie:fDim=v;break;case kSkin:fSkin=v;break;}}

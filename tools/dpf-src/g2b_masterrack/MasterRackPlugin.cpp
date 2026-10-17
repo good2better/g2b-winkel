@@ -101,7 +101,7 @@ struct Galaxy { Galaxy(){reset();}
 
 class MasterRackPlugin : public Plugin {
 public:
-    enum Params { kSub, kPoets, kKnip, kGlans, kRuimte, kOutput, kListen, kGalaxy, kDice, kPreset, kNumParams };
+    enum Params { kSub, kPoets, kKnip, kGlans, kRuimte, kOutput, kListen, kGalaxy, kDice, kPreset, kOn, kKracht, kNumParams };
     MasterRackPlugin() : Plugin(kNumParams, 0, 2) {
         memset(fBufL,0,sizeof(fBufL)); memset(fBufR,0,sizeof(fBufR));
         memset(fPreL,0,sizeof(fPreL)); memset(fPreR,0,sizeof(fPreR));
@@ -129,11 +129,13 @@ protected:
         case kListen: p.name="LUISTER"; p.symbol="listen";  p.hints|=kParameterIsInteger|kParameterIsTrigger;p.ranges.min=0.f;p.ranges.max=1.f;p.ranges.def=0.f;break;
         case kDice:   p.name="DICE";    p.symbol="dice";    p.hints|=kParameterIsInteger|kParameterIsTrigger;p.ranges.min=0.f;p.ranges.max=1.f;p.ranges.def=0.f;break;
         case kPreset: p.name="PRESET";  p.symbol="preset";  p.hints|=kParameterIsInteger; p.ranges.min=0.f;p.ranges.max=16.f;p.ranges.def=0.f;break;
+        case kOn: p.name="Aan"; p.symbol="aan"; p.hints|=kParameterIsBoolean; p.ranges.min=0.f;p.ranges.max=1.f;p.ranges.def=1.f;break;
+        case kKracht: p.name="Kracht"; p.symbol="kracht"; p.ranges.min=0.f;p.ranges.max=100.f;p.ranges.def=100.f;p.unit="%";break;
         }
     }
     float getParameterValue(uint32_t i) const override {
         if(i==kGalaxy)return fGalaxy;
-        switch(i){case kSub:return fSub;case kPoets:return fPoets;case kKnip:return fKnip;case kGlans:return fGlans;case kRuimte:return fRuimte;case kOutput:return fOut;case kListen:return fListen;case kDice:return fDice;case kPreset:return fPreset;}return 0.f;
+        switch(i){case kSub:return fSub;case kPoets:return fPoets;case kKnip:return fKnip;case kGlans:return fGlans;case kRuimte:return fRuimte;case kOutput:return fOut;case kListen:return fListen;case kDice:return fDice;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKr;}return 0.f;
     }
     void setParameterValue(uint32_t i, float v) override {
         if(i==kGalaxy){fGalaxy=v;galaxy.setPos((int)v);return;}
@@ -142,7 +144,8 @@ protected:
             fListen=v;
             if(v>0.9f){fListenN=(uint32_t)(2.f*getSampleRate());fAccRms=fAccLow=fAccAir=0;fPeak=0;}
             fListen=0.f;break;
-            case kDice:fDice=v;if(v>0.5f)rollDice();fDice=0.f;break;}
+            case kDice:fDice=v;if(v>0.5f)rollDice();fDice=0.f;break;
+            case kOn:fOn=v;break;case kKracht:fKr=v;break;}
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
@@ -152,12 +155,15 @@ protected:
 
     void run(const float** inputs, float** outputs, uint32_t frames) override
     {
+        if(fOn<0.5f){if(inputs[0]!=outputs[0])std::memcpy(outputs[0],inputs[0],frames*sizeof(float));if(inputs[1]!=outputs[1])std::memcpy(outputs[1],inputs[1],frames*sizeof(float));return;}
         processFx_(inputs, outputs, frames);
         for(uint32_t i=0;i<frames;i++){
             float L=outputs[0][i],R=outputs[1][i];
             galaxy.tick(L,R,getSampleRate());
             outputs[0][i]=L; outputs[1][i]=R;
         }
+        const float k=fKr/100.f;
+        if(k<0.999f){const float d=1.f-k;for(uint32_t i=0;i<frames;i++){outputs[0][i]=inputs[0][i]*d+outputs[0][i]*k;outputs[1][i]=inputs[1][i]*d+outputs[1][i]*k;}}
         // ---- LUFS-meting op de output (EBU R128, libebur128 MIT) ----
         if(!fEbur) fEbur=ebur128_init(2,(unsigned long)getSampleRate(),EBUR128_MODE_M|EBUR128_MODE_I);
         if(fEbur){
@@ -331,7 +337,7 @@ private:
     ebur128_state* fEbur;
     float fInter[512];
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MasterRackPlugin)
-    float fGalaxy=9.f;
+    float fOn=1.f,fKr=100.f,fGalaxy=9.f;
     Galaxy galaxy;
 };
 Plugin* createPlugin(){return new MasterRackPlugin();}

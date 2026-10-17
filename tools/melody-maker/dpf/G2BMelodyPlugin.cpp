@@ -41,7 +41,7 @@ protected:
         case kSwing:  p.name="Swing";p.symbol="swing";p.ranges.min=0;p.ranges.max=100;p.ranges.def=0;p.unit="%";break;
         case kPreset: p.name="Preset";p.symbol="preset";p.ranges.min=0;p.ranges.max=15;p.ranges.def=0;p.hints=kParameterIsInteger;break;
         case kRate:   p.name="Tempo";p.symbol="rate";p.ranges.min=60;p.ranges.max=180;p.ranges.def=110;p.unit="bpm";break;
-        case kDimensie:p.name="Dimensies";p.symbol="dims";p.ranges.min=0;p.ranges.max=26;p.ranges.def=0;p.hints=kParameterIsInteger;break;
+        case kDimensie:p.name="DIMENTIES";p.symbol="dims";p.ranges.min=0;p.ranges.max=26;p.ranges.def=0;p.hints=kParameterIsInteger;break;
         case kSkin:   p.name="Skin";p.symbol="skin";p.ranges.min=0;p.ranges.max=7;p.ranges.def=1;p.hints=kParameterIsInteger;break;
         }
         prm[i]=p.ranges.def;

@@ -1,5 +1,6 @@
 #include "drum_data.h"
 #include "DistrhoPlugin.hpp"
+#include "../g2b_std.h"
 #include <cstring>
 #include <cmath>
 #include <cstdint>
@@ -63,7 +64,7 @@ static float frand(unsigned& s){ s=s*1664525u+1013904223u; return (s>>8)*(1.f/16
 
 class DrumsPlugin : public Plugin {
 public:
-    enum Params { kStijl, kDrive, kSwing, kLevel, kDice, kAuto, kPreset, kNumParams };
+    enum Params { kStijl, kDrive, kSwing, kLevel, kDice, kAuto, kPreset, kOn, kKracht, kGalaxy, kSfeer, kNumParams };
     DrumsPlugin() : Plugin(kNumParams,0,3) {
         for(int i=0;i<kMaxV;i++)fV[i].active=false;
     }
@@ -85,14 +86,21 @@ protected:
         case kDice:  p.name="DICE";   p.symbol="dice"; p.hints|=kParameterIsInteger|kParameterIsTrigger;p.ranges.min=0;p.ranges.max=1;p.ranges.def=0;break;
         case kAuto:  p.name="AUTO";   p.symbol="auto"; p.hints|=kParameterIsBoolean|kParameterIsInteger;p.ranges.min=0;p.ranges.max=1;p.ranges.def=0;break;
         case kPreset:p.name="PRESET"; p.symbol="preset";p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=16;p.ranges.def=0;break;
+        case kOn:    p.name="Aan";      p.symbol="aan";   p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;p.ranges.def=1;break;
+        case kKracht:p.name="Kracht";   p.symbol="kracht";p.ranges.min=0;p.ranges.max=100;p.ranges.def=100;p.unit="%";break;
+        case kGalaxy:p.name="DIMENTIES";p.symbol="dim";   p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=26;p.ranges.def=9;break;
+        case kSfeer: p.name="Sfeer";    p.symbol="sfeer"; p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=2;p.ranges.def=1;break;
         }
     }
     float getParameterValue(uint32_t i) const override {
-        switch(i){case kStijl:return fStijl;case kDrive:return fDrive;case kSwing:return fSwing;case kLevel:return fLevel;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;}return 0.f;
+        switch(i){case kStijl:return fStijl;case kDrive:return fDrive;case kSwing:return fSwing;case kLevel:return fLevel;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKracht;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;}return 0.f;
     }
     void setParameterValue(uint32_t i, float v) override {
         if(i==kPreset){applyPreset((int)(v+0.5f));return;}
-        switch(i){case kStijl:fStijl=v;break;case kDrive:fDrive=v;break;case kSwing:fSwing=v;break;case kLevel:fLevel=v;break;case kDice:fDice=v;if(v>0.5f){mutate(0);sendPat();}fDice=0.f;break;case kAuto:fAuto=v;break;}
+        switch(i){case kStijl:fStijl=v;break;case kDrive:fDrive=v;break;case kSwing:fSwing=v;break;case kLevel:fLevel=v;break;case kDice:fDice=v;if(v>0.5f){mutate(0);sendPat();}fDice=0.f;break;case kAuto:fAuto=v;break;
+        case kOn:fOn=v;break;case kKracht:fKracht=v;break;
+        case kGalaxy:fGalaxyV=v;fGal.setPos((int)(v+0.5f));break;
+        case kSfeer:fSfeerV=v;fSf.setMode((int)(v+0.5f));break;}
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
@@ -138,6 +146,7 @@ protected:
 
     void run(const float** in, float** out, uint32_t frames, const MidiEvent*, uint32_t) override {
         const float sr=getSampleRate();
+        if(fOn<0.5f){std::memset(out[0],0,frames*sizeof(float));std::memset(out[1],0,frames*sizeof(float));return;}
         // sequencer: interne klok op DAW-tempo (default 100 als geen pos)
         double bpm=100.0;
         const TimePosition& tp=getTimePosition();
@@ -205,6 +214,7 @@ protected:
             for(uint32_t s=0;s<fScopeN&&pos<230;++s)pos+=snprintf(buf+pos,sizeof(buf)-pos,"%.3f;",fScope[s]);
             buf[pos]=0;setState("scope",buf);fScopeN=0;
         }
+        g2b_post(nullptr,out,frames,sr,fOn,fKracht,fGal,&fSf,false);
     }
 private:
     void sendPat(){
@@ -237,6 +247,8 @@ private:
     static const int kMaxV=24;
     DrumVoice fV[kMaxV];
     unsigned fRnd=24681357; unsigned fNfac=999; unsigned fRoll=0;
+    float fOn=1.f,fKracht=100.f,fGalaxyV=9.f,fSfeerV=1.f;
+    Galaxy fGal; Sfeer fSf;
     double fPhase=0; int64_t fStep=0;
     float fScope[40];uint32_t fScopeN=0;int fDecim=0;
     unsigned fNfu=7;

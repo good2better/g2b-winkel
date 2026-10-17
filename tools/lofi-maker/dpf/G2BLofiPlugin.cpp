@@ -22,7 +22,7 @@ protected:
         case kCrackle:p.name="Kraak";p.symbol="crackle";p.ranges.min=0;p.ranges.max=100;p.ranges.def=12;p.unit="%";break;
         case kTone:   p.name="Tone";p.symbol="tone";p.ranges.min=0;p.ranges.max=100;p.ranges.def=65;p.unit="%";break;
         case kPreset: p.name="Preset";p.symbol="preset";p.ranges.min=0;p.ranges.max=15;p.ranges.def=0;p.hints=kParameterIsInteger;break;
-        case kDimensie:p.name="Dimensies";p.symbol="dims";p.ranges.min=0;p.ranges.max=26;p.ranges.def=0;p.hints=kParameterIsInteger;break;
+        case kDimensie:p.name="DIMENTIES";p.symbol="dims";p.ranges.min=0;p.ranges.max=26;p.ranges.def=0;p.hints=kParameterIsInteger;break;
         case kSkin:   p.name="Skin";p.symbol="skin";p.ranges.min=0;p.ranges.max=7;p.ranges.def=5;p.hints=kParameterIsInteger;break;
         }
     }

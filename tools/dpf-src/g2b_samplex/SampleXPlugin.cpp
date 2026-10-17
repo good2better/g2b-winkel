@@ -5,6 +5,7 @@
  */
 
 #include "DistrhoPlugin.hpp"
+#include "../g2b_std.h"
 #include "vendor/signalsmith-stretch.h"
 #include <sys/stat.h>
 #ifdef _WIN32
@@ -73,77 +74,13 @@ static int b64v(char c)
 }
 
 
-// ---- GALAXY-knop (bron: backend/app/galaxy_fx.py, devin-test) — 27 posities ----
-struct GxShifter {
-    static const int N=2048; float buf[N]; int wp=0; float ph=0;
-    void reset(){std::memset(buf,0,sizeof buf);wp=0;ph=0;}
-    float tick(float in,float rate){
-        buf[wp]=in; float acc=0;
-        for(int t=0;t<2;t++){
-            float p=ph+0.5f*t; if(p>=1.f)p-=1.f;
-            float rd=(float)wp-p*(float)N;
-            int i0=(int)floorf(rd); float fr=rd-i0;
-            float a=buf[((i0%N)+N)%N],b=buf[(((i0+1)%N)+N)%N];
-            float w=p<0.5f?p*2.f:2.f-p*2.f;
-            acc+=(a+(b-a)*fr)*w;
-        }
-        ph+=(1.f-rate)/(float)N; if(ph<0)ph+=1.f; if(ph>=1.f)ph-=1.f;
-        wp=(wp+1)%N;
-        return acc;
-    }
-};
-struct Galaxy {
-    GxShifter sh[4];
-    static const int CN=2200;
-    float cb[4][CN]; int cw[4];
-    float ap[2][600]; int aw[2];
-    float lp[2];
-    int gpos=-1; float grate=2.f,gfb=0.5f,gfc=6500.f,gwet=0.6f,gdd=0.2f; int gmode=2;
-    void reset(){for(int i=0;i<4;i++)sh[i].reset();std::memset(cb,0,sizeof cb);std::memset(ap,0,sizeof ap);
-                 std::memset(cw,0,sizeof cw);std::memset(aw,0,sizeof aw);lp[0]=lp[1]=0;}
-    void setPos(int pos){
-        if(pos==gpos)return; gpos=pos;
-        gmode=pos/9; int dim=pos%9;
-        uint32_t sd=(gmode==0?10007u:(gmode==1?20011u:30017u))*9u+dim;
-        auto rng=[&](){sd^=sd<<13;sd^=sd>>17;sd^=sd<<5;return (sd&0xFFFFFFu)/16777216.f;};
-        grate=powf(2.f,(gmode==0?-12.f:12.f)/12.f);
-        gdd=(gmode==0?0.20f:(gmode==1?0.16f:0.24f))*(0.8f+0.4f*rng());
-        gfb=(gmode==0?0.50f:(gmode==1?0.40f:0.55f))*(0.85f+0.3f*rng()); if(gfb>0.72f)gfb=0.72f;
-        gfc=(gmode==0?2600.f:(gmode==1?9000.f:6500.f))*(0.85f+0.35f*rng());
-        gwet=(gmode==0?0.55f:(gmode==1?0.50f:0.62f));
-    }
-    void tick(float& L,float& R,float sr){
-        float in[2]={L,R},shim[2]={0,0};
-        for(int c=0;c<2;c++){
-            float x=sh[c].tick(in[c],grate);
-            if(gmode==2)x+=0.6f*sh[2+c].tick(in[c],1.4983f);
-            float a=expf(-6.283f*(gmode==0?gfc:320.f)/sr);
-            lp[c]=(1.f-a)*x+a*lp[c];
-            x=(gmode==0)?lp[c]:(x-lp[c]);
-            int dd=(int)(gdd*sr); if(dd<64)dd=64; if(dd>CN-8)dd=CN-8;
-            float tail=0;
-            for(int k=0;k<4;k++){
-                int rp=(cw[k]-dd-(dd*k/4)+CN*8)%CN;
-                float e=cb[k][rp]; tail+=e*0.25f;
-                cb[k][cw[k]]=x+e*gfb; cw[k]=(cw[k]+1)%CN;
-            }
-            const float g=0.5f;
-            float av=ap[c][aw[c]];
-            float y=-g*tail+av;
-            ap[c][aw[c]]=tail+g*y; aw[c]=(aw[c]+1)%600;
-            shim[c]=y;
-        }
-        L=in[0]+gwet*shim[0]*0.5f; R=in[1]+gwet*shim[1]*0.5f;
-        if(L>0.98f)L=0.98f; else if(L<-0.98f)L=-0.98f;
-        if(R>0.98f)R=0.98f; else if(R<-0.98f)R=-0.98f;
-    }
-};
+// GALAXY-engine komt uit ../g2b_std.h (gedeelde DIMENTIES-blok)
 
 class SampleXPlugin : public Plugin
 {
 public:
     enum Parameters {
-        kPitch = 0, kFilter, kDrive, kDrop, kStart, kLevel, kGalaxy, kDice, kPreset, kTime, kTone, kFormant, kAutofit, kChop, kSnap, kExport, kParameterCount
+        kPitch = 0, kFilter, kDrive, kDrop, kStart, kLevel, kGalaxy, kDice, kPreset, kTime, kTone, kFormant, kAutofit, kChop, kSnap, kExport, kOn, kKracht, kSfeer, kParameterCount
     };
 
     SampleXPlugin()
@@ -190,7 +127,7 @@ protected:
 
     void initParameter(uint32_t index, Parameter& parameter) override
     {
-        if(index==kGalaxy){parameter.name="GALAXY";parameter.symbol="galaxy";parameter.ranges.min=0;parameter.ranges.max=26;parameter.ranges.def=9;parameter.hints|=kParameterIsInteger;return;}
+        if(index==kGalaxy){parameter.name="DIMENTIES";parameter.symbol="galaxy";parameter.ranges.min=0;parameter.ranges.max=26;parameter.ranges.def=9;parameter.hints|=kParameterIsInteger;return;}
         parameter.hints = kParameterIsAutomatable;
         switch (index)
         {
@@ -230,6 +167,17 @@ protected:
         case kFormant:
             parameter.name = "Formant"; parameter.symbol = "formant"; parameter.unit = "st";
             parameter.ranges = {-12.0f, 12.0f, 0.0f}; break;
+        case kOn:
+            parameter.name = "Aan"; parameter.symbol = "aan";
+            parameter.hints |= kParameterIsBoolean;
+            parameter.ranges = {0.0f, 1.0f, 1.0f}; break;
+        case kKracht:
+            parameter.name = "Kracht"; parameter.symbol = "kracht"; parameter.unit = "%";
+            parameter.ranges = {0.0f, 100.0f, 100.0f}; break;
+        case kSfeer:
+            parameter.name = "Sfeer"; parameter.symbol = "sfeer";
+            parameter.hints |= kParameterIsInteger;
+            parameter.ranges = {0.0f, 2.0f, 1.0f}; break;
         }
     }
 
@@ -247,6 +195,7 @@ protected:
         case kDice: return fDice; case kPreset: return fPreset;
         case kTime: return fTime; case kTone: return fTone; case kFormant: return fFormant;
         case kAutofit: return 0.f; case kChop: return fChop; case kSnap: return fSnap; case kExport: return 0.f;
+        case kOn: return fOn; case kKracht: return fKracht; case kSfeer: return fSfeerV;
         }
         return 0.0f;
     }
@@ -275,6 +224,9 @@ protected:
         case kChop: fChop=value; break;
         case kSnap: fSnap=value; break;
         case kExport: if(value>0.5f){exportWav();} break;
+        case kOn: fOn=value; break;
+        case kKracht: fKracht=value; break;
+        case kSfeer: fSfeerV=value; fSf.setMode((int)(value+0.5f)); break;
         }
         recalc();
     }
@@ -296,12 +248,9 @@ protected:
     void run(const float**, float** outputs, uint32_t frames,
              const MidiEvent* midi, uint32_t midiCount) override
     {
+        if(fOn<0.5f){std::memset(outputs[0],0,frames*sizeof(float));std::memset(outputs[1],0,frames*sizeof(float));return;}
         processFx_(nullptr, outputs, frames, midi, midiCount);
-        for(uint32_t i=0;i<frames;i++){
-            float L=outputs[0][i],R=outputs[1][i];
-            galaxy.tick(L,R,getSampleRate());
-            outputs[0][i]=L; outputs[1][i]=R;
-        }
+        g2b_post(nullptr, outputs, frames, (float)getSampleRate(), fOn, fKracht, galaxy, &fSf, false);
     }
 
     void processFx_(const float**, float** outputs, uint32_t frames,
@@ -608,6 +557,8 @@ private:
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SampleXPlugin)
     float fGalaxy=9.f;
     Galaxy galaxy;
+    float fOn=1.f, fKracht=100.f, fSfeerV=1.f;
+    Sfeer fSf;
 };
 
 Plugin* createPlugin() { return new SampleXPlugin(); }
