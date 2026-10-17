@@ -38,10 +38,10 @@ public:
     DrumsUI() : UI(DISTRHO_UI_DEFAULT_WIDTH, DISTRHO_UI_DEFAULT_HEIGHT)
     {
         loadSharedResources();
-        static const float mins[4]  = {0,0,0,0};
-        static const float maxs[4]  = {1,1,0.5f,1};
-        static const float defs[4]  = {0,0.5f,0.10f,0.85f};
-        static const char* lbl[4]   = {"PATROON","DRIVE","SWING","LEVEL"};
+        static const float mins[7]  = {0,0,0,0,0,0,0};
+        static const float maxs[7]  = {1,1,0.5f,1,100,26,2};
+        static const float defs[7]  = {0,0.5f,0.10f,0.85f,100,9,1};
+        static const char* lbl[7]   = {"PATROON","DRIVE","SWING","LEVEL","KRACHT","DIMENTIES","SFEER"};
         std::memcpy(fMin,mins,sizeof(mins));
         std::memcpy(fMax,maxs,sizeof(maxs));
         std::memcpy(fValue,defs,sizeof(defs));
@@ -56,6 +56,8 @@ protected:
         if(index<4)fValue[index]=value;
         else if(index==5)fAuto=value;
         else if(index==6)fProg=(int)(value+0.5f);
+        else if(index==7)fOn=(int)(value+0.5f);
+        else if(index>=8&&index<=10)fValue[index-4]=value; // 8=KRACHT→4,9=DIMENTIES→5,10=SFEER→6
         repaint();
     }
     void stateChanged(const char* key, const char* value) override
@@ -169,11 +171,22 @@ protected:
         }
         strokeColor(47,191,113);strokeWidth(1.5f);stroke();
 
-        // 4 knoppen
-        const int n=4;
+        // AAN/UIT pil rechtsboven
+        {
+            const float ax=W-48.0f,ay=12.0f;
+            beginPath();roundedRect(ax,ay,44.0f,17.0f,4.0f);
+            fillColor(fOn?g2bsk(fLight,5):g2bsk(fLight,4));fill();
+            strokeColor(g2bsk(fLight,3));strokeWidth(1.0f);stroke();
+            fontSize(8.5f);textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            fillColor(fOn?Color(232,236,234):g2bsk(fLight,3));
+            text(ax+22.0f,ay+8.5f,fOn?"AAN":"UIT",nullptr);
+        }
+
+        // 7 knoppen
+        const int n=7;
         const float step=(W-40.0f)/n;
         for(int i=0;i<n;++i){
-            const float cx=20.0f+step*(i+0.5f),cy=222.0f,R=34.0f;
+            const float cx=20.0f+step*(i+0.5f),cy=218.0f,R=26.0f;
             const float norm=(fValue[i]-fMin[i])/(fMax[i]-fMin[i]);
             const float ang=-2.4f+norm*4.8f;
             beginPath();circle(cx,cy,R);fillColor(30,34,33);fill();
@@ -188,8 +201,33 @@ protected:
             fontSize(12.0f);fillColor(232,236,234);
             char buf[24];
             if(i==0)std::snprintf(buf,sizeof(buf),"%s",kProgramNames[(int)fValue[0]<0?0:((int)fValue[0]>16?16:(int)fValue[0])]);
+            else if(i==4)std::snprintf(buf,sizeof(buf),"%.0f%%",fValue[i]);
+            else if(i==5)std::snprintf(buf,sizeof(buf),"%.0f/26",fValue[i]);
+            else if(i==6)std::snprintf(buf,sizeof(buf),"%s",(int)(fValue[i]+0.5f)==0?"DONKER":((int)(fValue[i]+0.5f)==2?"LICHT":"NEUTR"));
             else std::snprintf(buf,sizeof(buf),"%.0f %%",fValue[i]*100.0f);
             text(cx,cy+R+23.0f,buf,nullptr);
+        }
+
+        // XY-pad: X = KRACHT (0-100), Y = DIMENTIES (0-26)
+        fXX=18.0f;fXY_=286.0f;fXW=W-36.0f;fXH=58.0f;
+        {
+            const float px=fXX,py=fXY_,pw=fXW,ph=fXH;
+            beginPath();roundedRect(px,py,pw,ph,6.0f);
+            fillColor(g2bsk(fLight,4));fill();
+            strokeColor(g2bsk(fLight,3));strokeWidth(1.0f);stroke();
+            const float nx=fValue[4]/100.0f, ny=fValue[5]/26.0f;
+            const float dx=px+nx*pw, dy=py+(1.0f-ny)*ph;
+            beginPath();
+            moveTo(dx,py);lineTo(dx,py+ph);
+            moveTo(px,dy);lineTo(px+pw,dy);
+            strokeColor(g2bsk(fLight,3));strokeWidth(0.5f);stroke();
+            beginPath();circle(dx,dy,5.0f);
+            fillColor(g2bsk(fLight,5));fill();
+            fontSize(9.0f);fillColor(g2bsk(fLight,3));
+            textAlign(ALIGN_LEFT|ALIGN_TOP);
+            text(px+6.0f,py+4.0f,"DIMENTIES ",nullptr);
+            textAlign(ALIGN_RIGHT|ALIGN_BOTTOM);
+            text(px+pw-6.0f,py+ph-4.0f,"KRACHT →",nullptr);
         }
         fontSize(10.5f);fillColor(90,100,94);textAlign(ALIGN_CENTER|ALIGN_BOTTOM);
         text(W*0.5f,H-8.0f,"groen = stap die klinkt · wit = nu · speelt zodra je DAW loopt",nullptr);
@@ -209,6 +247,14 @@ protected:
             if(ev.pos.getX()>=44.0f&&ev.pos.getX()<=82.0f&&ev.pos.getY()>=50.0f&&ev.pos.getY()<=67.0f){
                 fAuto=fAuto>0.5f?0.f:1.f;setParameterValue(5,fAuto);repaint();return true;
             }
+            // AAN/UIT pil
+            if(ev.pos.getX()>=W-48.0f&&ev.pos.getX()<=W-4.0f&&ev.pos.getY()>=12.0f&&ev.pos.getY()<=29.0f){
+                fOn=1-fOn;setParameterValue(7,(float)fOn);repaint();return true;
+            }
+            // XY-pad
+            if(ev.pos.getX()>=fXX&&ev.pos.getX()<=fXX+fXW&&ev.pos.getY()>=fXY_&&ev.pos.getY()<=fXY_+fXH){
+                fXYdrag=true;xySet(ev.pos.getX(),ev.pos.getY());return true;
+            }
             for(int i=0;i<kNumPrograms;++i){
                 const float bw=44.0f,bh=17.0f;
                 const int prow=i/8, pcol=i%8;
@@ -218,36 +264,50 @@ protected:
                 }
             }
         }
-        const float step=(W-40.0f)/4;
+        else if(fXYdrag){fXYdrag=false;return true;}
+        const float step=(W-40.0f)/7;
         if(ev.press){
-            for(int i=0;i<4;++i){
-                const float cx=20.0f+step*(i+0.5f),cy=222.0f;
+            for(int i=0;i<7;++i){
+                const float cx=20.0f+step*(i+0.5f),cy=218.0f;
                 const float dx=ev.pos.getX()-cx,dy=ev.pos.getY()-cy;
-                if(dx*dx+dy*dy<=34.0f*34.0f+80.0f){fDrag=i;fLastY=ev.pos.getY();editParameter(i,true);return true;}
+                if(dx*dx+dy*dy<=26.0f*26.0f+80.0f){fDrag=i;fLastY=ev.pos.getY();editParameter(paramOf(i),true);return true;}
             }
-        } else if(fDrag>=0){editParameter(fDrag,false);fDrag=-1;}
+        } else if(fDrag>=0){editParameter(paramOf(fDrag),false);fDrag=-1;}
         return true;
+    }
+
+    // knop-slots: 0 PATROON,1 DRIVE,2 SWING,3 LEVEL,4 KRACHT(8),5 DIMENTIES(9),6 SFEER(10)
+    static int paramOf(int slot){ return slot<4?slot:slot+4; }
+    void xySet(double mx,double my){
+        float nx=(float)((mx-fXX)/fXW), ny=(float)(1.0-(my-fXY_)/fXH);
+        if(nx<0)nx=0;if(nx>1)nx=1;if(ny<0)ny=0;if(ny>1)ny=1;
+        const float kr=nx*100.0f, dm=ny*26.0f;
+        fValue[4]=kr;fValue[5]=dm;
+        editParameter(8,true);setParameterValue(8,kr);editParameter(8,false);
+        editParameter(9,true);setParameterValue(9,dm);editParameter(9,false);
+        repaint();
     }
     bool onMotion(const MotionEvent& ev) override
     {
+        if(fXYdrag){xySet(ev.pos.getX(),ev.pos.getY());return true;}
         if(fDrag<0)return false;
         const float dy=fLastY-ev.pos.getY();fLastY=ev.pos.getY();
         const float range=fMax[fDrag]-fMin[fDrag];
         float v=fValue[fDrag]+dy*range/200.0f;
         if(v<fMin[fDrag])v=fMin[fDrag];if(v>fMax[fDrag])v=fMax[fDrag];
-        fValue[fDrag]=v;setParameterValue(fDrag,v);repaint();return true;
+        fValue[fDrag]=v;setParameterValue(paramOf(fDrag),v);repaint();return true;
     }
     bool onScroll(const ScrollEvent& ev) override
     {
-        const float W=getWidth();const float step=(W-40.0f)/4;
-        for(int i=0;i<4;++i){
-            const float cx=20.0f+step*(i+0.5f),cy=222.0f;
+        const float W=getWidth();const float step=(W-40.0f)/7;
+        for(int i=0;i<7;++i){
+            const float cx=20.0f+step*(i+0.5f),cy=218.0f;
             const float dx=ev.pos.getX()-cx,dy=ev.pos.getY()-cy;
-            if(dx*dx+dy*dy<=34.0f*34.0f+80.0f){
+            if(dx*dx+dy*dy<=26.0f*26.0f+80.0f){
                 const float range=fMax[i]-fMin[i];
                 float v=fValue[i]+ev.delta.getY()*range/100.0f;
                 if(v<fMin[i])v=fMin[i];if(v>fMax[i])v=fMax[i];
-                fValue[i]=v;editParameter(i,true);setParameterValue(i,v);editParameter(i,false);
+                fValue[i]=v;const int pi=paramOf(i);editParameter(pi,true);setParameterValue(pi,v);editParameter(pi,false);
                 repaint();return true;
             }
         }
@@ -255,10 +315,12 @@ protected:
     }
 private:
     static const int kScopeSize=256;
-    float fValue[4],fMin[4],fMax[4];
-    const char* fLabel[4];
+    float fValue[7],fMin[7],fMax[7];
+    const char* fLabel[7];
     float fScope[kScopeSize];int fScopePos;
     int fDrag;float fLastY;int fProg;int fStep;float fAuto=0;int fLight=0;
+    int fOn=1; bool fXYdrag=false;
+    float fXX=18.0f,fXY_=286.0f,fXW=524.0f,fXH=58.0f;
     char fPatGrid[4][16];
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DrumsUI)
 };

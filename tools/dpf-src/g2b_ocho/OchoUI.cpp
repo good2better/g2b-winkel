@@ -38,9 +38,9 @@ public:
         loadSharedResources();
         std::memset(fValue, 0, sizeof(fValue));
         std::memset(fScope, 0, sizeof(fScope));
-        static const float mins[9]  = {0,0,0,0,0,-12,0,0,0};
-        static const float maxs[9]  = {100,100,100,100,100,12,100,11,1};
-        static const char* lbl[9]   = {"DECAY","GLIDE","SUB","CLICK","DROP","TUNE","LEVEL","KEY","SCALE"};
+        static const float mins[12]  = {0,0,0,0,0,-12,0,0,0,0,0,0};
+        static const float maxs[12]  = {100,100,100,100,100,12,100,11,1,100,26,2};
+        static const char* lbl[12]   = {"DECAY","GLIDE","SUB","CLICK","DROP","TUNE","LEVEL","KEY","SCALE","KRACHT","DIMENTIES","SFEER"};
         std::memcpy(fMin, mins, sizeof(mins));
         std::memcpy(fMax, maxs, sizeof(maxs));
         std::memcpy(fLabel, lbl, sizeof(lbl));
@@ -51,6 +51,8 @@ protected:
     void parameterChanged(uint32_t index, float value) override
     {
         if (index < 9) fValue[index] = value;
+        else if (index == 11) fOn = (int)(value + 0.5f);
+        else if (index >= 12 && index <= 14) fValue[index - 3] = value; // 12=KRACHT→9,13=DIMENTIES→10,14=SFEER→11
         repaint();
     }
 
@@ -109,14 +111,25 @@ protected:
         }
         strokeColor(47, 191, 113); strokeWidth(1.5f); stroke();
 
-        // 7 knoppen in een rij
-        const int n = 9;
+        // AAN/UIT pil (vrij vlak tussen titel en scope)
+        {
+            const float ax = 250.0f, ay = 16.0f;
+            beginPath(); roundedRect(ax, ay, 44.0f, 17.0f, 4.0f);
+            fillColor(fOn ? g2bsk(fLight,5) : g2bsk(fLight,4)); fill();
+            strokeColor(g2bsk(fLight,3)); strokeWidth(1.0f); stroke();
+            fontSize(8.5f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            fillColor(fOn ? Color(232,236,234) : g2bsk(fLight,3));
+            text(ax + 22.0f, ay + 8.5f, fOn ? "AAN" : "UIT", nullptr);
+        }
+
+        // knoppen in een rij
+        const int n = 12;
         const float step = (W - 40.0f) / n;
         for (int i = 0; i < n; ++i)
         {
             const float cx = 20.0f + step * (i + 0.5f);
-            const float cy = 165.0f;
-            const float R  = 30.0f;
+            const float cy = 160.0f;
+            const float R  = 17.0f;
             const float norm = (fValue[i] - fMin[i]) / (fMax[i] - fMin[i]);
             const float ang = -2.4f + norm * 4.8f;
 
@@ -134,11 +147,11 @@ protected:
                    cy - std::cos(ang) * (R - 8.0f));
             strokeColor(232, 236, 234); strokeWidth(3.0f); stroke();
 
-            fontSize(10.5f); fillColor(143, 160, 152);
+            fontSize(8.5f); fillColor(143, 160, 152);
             textAlign(ALIGN_CENTER | ALIGN_TOP);
             text(cx, cy + R + 8.0f, fLabel[i], nullptr);
 
-            fontSize(12.0f); fillColor(232, 236, 234);
+            fontSize(11.0f); fillColor(232, 236, 234);
             char buf[24];
             if (fMin[i] < 0.0f)
                 std::snprintf(buf, sizeof(buf), "%+.0f st", fValue[i]);
@@ -147,9 +160,37 @@ protected:
               std::snprintf(buf, sizeof(buf), "%s", kn[(int)fValue[i]%12]); }
             else if (i == 8)
                 std::snprintf(buf, sizeof(buf), "%s", fValue[i]>0.5f?"major":"minor");
+            else if (i == 9)
+                std::snprintf(buf, sizeof(buf), "%.0f%%", fValue[i]);
+            else if (i == 10)
+                std::snprintf(buf, sizeof(buf), "%.0f/26", fValue[i]);
+            else if (i == 11)
+                std::snprintf(buf, sizeof(buf), "%s", (int)(fValue[i]+0.5f)==0?"DONKER":((int)(fValue[i]+0.5f)==2?"LICHT":"NEUTR"));
             else
                 std::snprintf(buf, sizeof(buf), "%.0f %%", fValue[i]);
             text(cx, cy + R + 23.0f, buf, nullptr);
+        }
+
+        // XY-pad: X = KRACHT (0-100), Y = DIMENTIES (0-26)
+        fXX = 18.0f; fXY_ = 225.0f; fXW = W - 36.0f; fXH = 105.0f;
+        {
+            const float px = fXX, py = fXY_, pw = fXW, ph = fXH;
+            beginPath(); roundedRect(px, py, pw, ph, 6.0f);
+            fillColor(g2bsk(fLight,4)); fill();
+            strokeColor(g2bsk(fLight,3)); strokeWidth(1.0f); stroke();
+            const float nx = fValue[9] / 100.0f, ny = fValue[10] / 26.0f;
+            const float dx = px + nx * pw, dy = py + (1.0f - ny) * ph;
+            beginPath();
+            moveTo(dx, py); lineTo(dx, py + ph);
+            moveTo(px, dy); lineTo(px + pw, dy);
+            strokeColor(g2bsk(fLight,3)); strokeWidth(0.5f); stroke();
+            beginPath(); circle(dx, dy, 5.0f);
+            fillColor(g2bsk(fLight,5)); fill();
+            fontSize(9.0f); fillColor(g2bsk(fLight,3));
+            textAlign(ALIGN_LEFT | ALIGN_TOP);
+            text(px + 6.0f, py + 4.0f, "DIMENTIES ", nullptr);
+            textAlign(ALIGN_RIGHT | ALIGN_BOTTOM);
+            text(px + pw - 6.0f, py + ph - 4.0f, "KRACHT →", nullptr);
         }
 
         fontSize(10.5f);
@@ -196,9 +237,17 @@ protected:
     {
         if (ev.button != 1) return false;
         const float W = getWidth();
-        const float step = (W - 40.0f) / 9;
+        const float step = (W - 40.0f) / 12;
         if (ev.press)
         {
+            // AAN/UIT pil
+            if (ev.pos.getX() >= 250.0f && ev.pos.getX() <= 294.0f &&
+                ev.pos.getY() >= 16.0f && ev.pos.getY() <= 33.0f)
+            { fOn = 1 - fOn; setParameterValue(11, (float)fOn); repaint(); return true; }
+            // XY-pad
+            if (ev.pos.getX() >= fXX && ev.pos.getX() <= fXX + fXW &&
+                ev.pos.getY() >= fXY_ && ev.pos.getY() <= fXY_ + fXH)
+            { fXYdrag = true; xySet(ev.pos.getX(), ev.pos.getY()); return true; }
             // preset-klik?
             {
                 float bx = W - 14.0f;
@@ -217,30 +266,50 @@ protected:
                 }
             }
 
-            for (int i = 0; i < 9; ++i)
+            for (int i = 0; i < 12; ++i)
             {
                 const float cx = 20.0f + step * (i + 0.5f);
-                const float cy = 165.0f;
+                const float cy = 160.0f;
                 const float dx = ev.pos.getX() - cx;
                 const float dy = ev.pos.getY() - cy;
-                if (dx*dx + dy*dy <= 30.0f*30.0f + 60.0f)
+                if (dx*dx + dy*dy <= 17.0f*17.0f + 60.0f)
                 {
                     fDrag = i; fLastY = ev.pos.getY();
-                    editParameter(i, true);
+                    editParameter(paramOf(i), true);
                     return true;
                 }
             }
         }
+        else if (fXYdrag)
+        {
+            fXYdrag = false;
+            return true;
+        }
         else if (fDrag >= 0)
         {
-            editParameter(fDrag, false);
+            editParameter(paramOf(fDrag), false);
             fDrag = -1;
         }
         return true;
     }
 
+    // knop-slots: 0-8 = params 0-8, 9 KRACHT(12), 10 DIMENTIES(13), 11 SFEER(14)
+    static int paramOf(int slot) { return slot < 9 ? slot : slot + 3; }
+    void xySet(double mx, double my)
+    {
+        float nx = (float)((mx - fXX) / fXW), ny = (float)(1.0 - (my - fXY_) / fXH);
+        if (nx < 0) nx = 0; if (nx > 1) nx = 1;
+        if (ny < 0) ny = 0; if (ny > 1) ny = 1;
+        const float kr = nx * 100.0f, dm = ny * 26.0f;
+        fValue[9] = kr; fValue[10] = dm;
+        editParameter(12, true); setParameterValue(12, kr); editParameter(12, false);
+        editParameter(13, true); setParameterValue(13, dm); editParameter(13, false);
+        repaint();
+    }
+
     bool onMotion(const MotionEvent& ev) override
     {
+        if (fXYdrag) { xySet(ev.pos.getX(), ev.pos.getY()); return true; }
         if (fDrag < 0) return false;
         const float dy = fLastY - ev.pos.getY();
         fLastY = ev.pos.getY();
@@ -249,7 +318,7 @@ protected:
         if (v < fMin[fDrag]) v = fMin[fDrag];
         if (v > fMax[fDrag]) v = fMax[fDrag];
         fValue[fDrag] = v;
-        setParameterValue(fDrag, v);
+        setParameterValue(paramOf(fDrag), v);
         repaint();
         return true;
     }
@@ -257,23 +326,24 @@ protected:
     bool onScroll(const ScrollEvent& ev) override
     {
         const float W = getWidth();
-        const float step = (W - 40.0f) / 9;
-        for (int i = 0; i < 9; ++i)
+        const float step = (W - 40.0f) / 12;
+        for (int i = 0; i < 12; ++i)
         {
             const float cx = 20.0f + step * (i + 0.5f);
-            const float cy = 165.0f;
+            const float cy = 160.0f;
             const float dx = ev.pos.getX() - cx;
             const float dy = ev.pos.getY() - cy;
-            if (dx*dx + dy*dy <= 30.0f*30.0f + 60.0f)
+            if (dx*dx + dy*dy <= 17.0f*17.0f + 60.0f)
             {
                 const float range = fMax[i] - fMin[i];
                 float v = fValue[i] + ev.delta.getY() * range / 100.0f;
                 if (v < fMin[i]) v = fMin[i];
                 if (v > fMax[i]) v = fMax[i];
                 fValue[i] = v;
-                editParameter(i, true);
-                setParameterValue(i, v);
-                editParameter(i, false);
+                const int pi = paramOf(i);
+                editParameter(pi, true);
+                setParameterValue(pi, v);
+                editParameter(pi, false);
                 repaint();
                 return true;
             }
@@ -283,14 +353,16 @@ protected:
 
 private:
     static const int kScopeSize = 256;
-    float fValue[9], fMin[9], fMax[9];
-    const char* fLabel[9];
+    float fValue[12], fMin[12], fMax[12];
+    const char* fLabel[12];
     float fScope[kScopeSize];
     int fScopePos;
     int fDrag;
     float fLastY;
     int fProg = -1;
     int fLight = 0;
+    int fOn = 1; bool fXYdrag = false;
+    float fXX = 18.0f, fXY_ = 225.0f, fXW = 524.0f, fXH = 105.0f;
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OchoUI)
 };
