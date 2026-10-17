@@ -1,1 +1,5 @@
 tools/__pycache__/
+tools/build/
+tools/dgl
+tools/distrho
+tools/utils
