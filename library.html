@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>G2B Sync Library — muziek voor film, reclame & games</title>
-<meta name="description" content="Good2Better Sync Library — doorzoekbare muziek-catalogus voor sync-licenties: film, reclame, games en online video. Direct contact met de maker.">
-<meta property="og:title" content="G2B Sync Library">
+<title>G2B Beats — beat licenties & packs</title>
+<meta name="description" content="Good2Better Beats — beat-licenties, beat-packs en sample-packs direct uit de winkel. 100% eigen gemaakt, buy-out mogelijk.">
+<meta property="og:title" content="G2B Beats — beat licenties & packs">
 <meta property="og:description" content="Browse beats & tracks op mood en genre — direct licentie aanvragen.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0d0f0e">
@@ -77,11 +77,12 @@ footer a{color:var(--accent)}
 </head>
 <body>
 <header>
-  <div class="logo">G2B <b>SYNC LIBRARY</b></div>
-  <div class="sub">Muziek voor film, reclame, games & online video</div>
-  <div class="hero">Alle tracks 100% eigen gemaakt door Good2Better — geen samples,
-  geen AI, geen claims. Stems & instrumentals leverbaar. Zoek op genre/mood,
-  luister de preview en vraag direct een licentie aan bij de maker zelf.</div>
+  <div class="logo">G2B <b>BEATS & PACKS</b></div>
+  <div class="sub">Beat-licenties, beat-packs & sample-packs — koop direct uit</div>
+  <div class="hero">Alle beats en packs 100% eigen gemaakt door Good2Better —
+  geen samples, geen AI, geen claims. Lease een beat of koop 'm exclusief uit,
+  of pak een hele beat-/sample-pack. Luister de preview en vraag direct
+  een licentie aan bij de maker zelf.</div>
   <a class="briefing" href="briefing.html">📋 STEL JE BRIEFING — track op maat</a>
 </header>
 <main>
@@ -92,16 +93,16 @@ footer a{color:var(--accent)}
   <section class="licenties">
     <h3>LICENTIES — simpel & snel</h3>
     <div class="tiers">
-      <div class="tier"><b>MP3 / WAV-lease</b><span>Voor singles, video's & indie-projecten. Niet-exclusief.</span></div>
-      <div class="tier"><b>EXCLUSIEF (buy-out)</b><span>Track gaat uit de verkoop — volledige rechten voor jouw project.</span></div>
-      <div class="tier"><b>SYNC op maat</b><span>Track op maat voor je briefing. Stems & instrumentals leverbaar.</span></div>
+      <div class="tier"><b>MP3 / WAV-lease</b><span>Beat gebruiken voor je track, video of project. Niet-exclusief.</span></div>
+      <div class="tier"><b>EXCLUSIEF (buy-out)</b><span>Beat gaat uit de verkoop — alle rechten voor jou.</span></div>
+      <div class="tier"><b>PACKS & BUNDELS</b><span>Hele beat-packs en sample-packs — direct download.</span></div>
     </div>
     <p class="onestop">✅ <b>One-stop clearance:</b> alles is 100% van Good2Better — geen samples, geen AI, geen derden. Één handtekening en je bent klaar.</p>
   </section>
 </main>
 <footer>
-  Sync-licentie op maat, exclusive rechten of een track laten aanpassen?
-  <br><a href="mailto:g.sandvliet88@gmail.com?subject=Sync-licentie%20G2B">g.sandvliet88@gmail.com</a>
+  Beat-licentie op maat, exclusive rechten of een beat laten aanpassen?
+  <br><a href="mailto:g.sandvliet88@gmail.com?subject=Beat-licentie%20G2B">g.sandvliet88@gmail.com</a>
   · <b>Good2Better</b> · KVK 95199926
 </footer>
 <script>
@@ -109,10 +110,21 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g,
   c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let prods = [], mood = "", curAudio = null, curBtn = null;
 
+// Engine-beats die op de sync-pagina ook als BUY-OUT staan — die horen
+// hier bij de verkoop-beats.
+const BUYOUT_BEATS = new Set(["Coolbreez", "Soca Run", "Bubble Nights",
+  "Kaseko Gold", "Winti Spirit"]);
+
 fetch("products.json").then(r => r.json()).then(d => {
-  // alleen echte tracks voor sync — beat-packs/bundels horen hier niet
-  prods = d.producten.filter(p =>
-    p.soort === "audio" && p.preview && !/pack|bundel/i.test(p.titel || ""));
+  // BEAT LICENTIES & PACKS — sync-tracks (zijn eigen nummers + film-moods)
+  // horen op de echte sync library, niet hier.
+  prods = d.producten.filter(p => {
+    const t = p.titel || "";
+    const isBeat = p.soort === "audio" && p.preview &&
+      (/^G2B[\s-]/i.test(t) || /beat[- ]?pack/i.test(t) || BUYOUT_BEATS.has(t));
+    const isPack = /^(pack|sample-pack|bundel|bundle)$/.test(p.soort || "");
+    return (isBeat || isPack) && !/sync-bundle/i.test(t);
+  });
   bouwMoods(); render();
 });
 
@@ -143,10 +155,10 @@ function render() {
     const prijzen = Object.entries(p.prijzen || {})
       .map(([k, v]) => `${esc(k)} ${esc(v)}`).join(" · ");
     const mail = "mailto:g.sandvliet88@gmail.com?subject=" +
-      encodeURIComponent(`Sync-licentie: ${p.titel} (${p.id})`) +
+      encodeURIComponent(`Beat-licentie: ${p.titel} (${p.id})`) +
       "&body=" + encodeURIComponent(
         `Hoi Giorgio,\n\nIk wil graag een licentie voor "${p.titel}" ` +
-        `voor mijn project.\n\nProject: \nGebruik (film/reclame/game/video): \n\nGroet`);
+        `voor mijn project.\n\nProject: \nGebruik (track/video/game/other): \n\nGroet`);
     return `<div class="track">
       <button class="play" data-src="${esc(p.preview)}"
         aria-label="Speel ${esc(p.titel)}">▶</button>
