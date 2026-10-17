@@ -36,11 +36,11 @@ public:
         : UI(DISTRHO_UI_DEFAULT_WIDTH, DISTRHO_UI_DEFAULT_HEIGHT)
     {
         loadSharedResources();
-        static const float mins[7]  = {0,-6,0,0,0,-6,0};
-        static const float maxs[7]  = {100,0,200,100,100,6,26};
-        static const float defs[7]  = {35,-1,110,100,50,0,9};
-        static const char* lbl[7]   = {"CLIP","CEILING","BREEDTE","MIX","SOFT","OUTPUT","GALAXY"};
-        static const char* unt[7]   = {"%","dB","%","%","%","dB",""};
+        static const float mins[8]  = {0,-6,0,0,0,-6,0,0};
+        static const float maxs[8]  = {100,0,200,100,100,6,26,100};
+        static const float defs[8]  = {35,-1,110,100,50,0,9,100};
+        static const char* lbl[8]   = {"CLIP","CEILING","BREEDTE","MIX","SOFT","OUTPUT","GALAXY","KRACHT"};
+        static const char* unt[8]   = {"%","dB","%","%","%","dB","","%"};
         std::memcpy(fMin, mins, sizeof(mins));
         std::memcpy(fMax, maxs, sizeof(maxs));
         std::memcpy(fValue, defs, sizeof(defs));
@@ -53,7 +53,8 @@ public:
 protected:
     void parameterChanged(uint32_t index, float value) override
     {
-        for (int i = 0; i < 7; ++i)
+        if (index == 9) fOn = value;   // AAN/UIT
+        for (int i = 0; i < 8; ++i)
             if (kParamIds[i] == (int)index) { fValue[i] = value; break; }
         repaint();
     }
@@ -131,13 +132,13 @@ protected:
         strokeColor(47, 191, 113); strokeWidth(1.5f); stroke();
 
         // 7 knoppen
-        const int n = 7;
+        const int n = 8;
         const float step = (W - 40.0f) / n;
         for (int i = 0; i < n; ++i)
         {
             const float cx = 20.0f + step * (i + 0.5f);
             const float cy = 175.0f;
-            const float R  = 34.0f;
+            const float R  = 30.0f;
             const float norm = (fValue[i] - fMin[i]) / (fMax[i] - fMin[i]);
             const float ang = -2.4f + norm * 4.8f;
 
@@ -184,6 +185,17 @@ protected:
             fontSize(10.0f);
             text(tx+13.0f, 42.5f, fLight>0 ? "\xF0\x9F\x8C\x99" : "\xE2\x98\x80", nullptr);
         }
+
+        // AAN/UIT-knop (rechtsboven, naast thema-knop)
+        {
+            const bool aan = fOn > 0.5f;
+            beginPath(); roundedRect(W - 96.0f, 33.0f, 52.0f, 18.0f, 9.0f);
+            fillColor(aan ? g2bsk(fLight,5) : g2bsk(fLight,1)); fill();
+            strokeColor(42,47,45); strokeWidth(1.0f); stroke();
+            fontSize(10.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            fillColor(aan ? g2bsk(fLight,0) : g2bsk(fLight,2));
+            text(W - 70.0f, 42.0f, aan ? "AAN" : "UIT", nullptr);
+        }
     }
 
     bool onMouse(const MouseEvent& ev) override
@@ -193,6 +205,9 @@ protected:
         // preset-klik?
         if (ev.press)
         {
+            if (ev.pos.getX() >= W-96.0f && ev.pos.getX() <= W-44.0f &&
+                ev.pos.getY() >= 33.0f && ev.pos.getY() <= 51.0f)
+            { fOn = fOn>0.5f?0.f:1.f; setParameterValue(9, fOn); repaint(); return true; }
             if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 40.0f &&
                 ev.pos.getY() >= 48.0f && ev.pos.getY() <= 65.0f)
             { setParameterValue(6, 1.0f); repaint(); return true; }
@@ -216,10 +231,10 @@ protected:
                     }
                 }
         }
-        const float step = (W - 40.0f) / 7;
+        const float step = (W - 40.0f) / 8;
         if (ev.press)
         {
-            for (int i = 0; i < 7; ++i)
+            for (int i = 0; i < 8; ++i)
             {
                 const float cx = 20.0f + step * (i + 0.5f);
                 const float cy = 175.0f;
@@ -259,8 +274,8 @@ protected:
     bool onScroll(const ScrollEvent& ev) override
     {
         const float W = getWidth();
-        const float step = (W - 40.0f) / 7;
-        for (int i = 0; i < 7; ++i)
+        const float step = (W - 40.0f) / 8;
+        for (int i = 0; i < 8; ++i)
         {
             const float cx = 20.0f + step * (i + 0.5f);
             const float cy = 175.0f;
@@ -285,10 +300,11 @@ protected:
 
 private:
     static const int kScopeSize = 256;
-    float fValue[7], fMin[7], fMax[7];
-    const char* fLabel[7];
-    const char* fUnit[7];
-    static const int kParamIds[7];
+    float fValue[8], fMin[8], fMax[8];
+    const char* fLabel[8];
+    const char* fUnit[8];
+    static const int kParamIds[8];
+    float fOn = 1.f;
     float fScope[kScopeSize];
     int fScopePos;
     int fDrag;
@@ -300,7 +316,7 @@ private:
 };
 
 // slot (UI) → param-id (DSP): CLIP,CEIL,BREEDTE,MIX,SOFT,OUTPUT,GALAXY
-const int KnipUI::kParamIds[7] = {0, 1, 2, 3, 8, 4, 5};
+const int KnipUI::kParamIds[8] = {0, 1, 2, 3, 8, 4, 5, 10};
 
 UI* createUI() { return new KnipUI(); }
 

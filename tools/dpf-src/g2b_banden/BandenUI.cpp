@@ -35,11 +35,11 @@ public:
     BandenUI() : UI(DISTRHO_UI_DEFAULT_WIDTH, DISTRHO_UI_DEFAULT_HEIGHT)
     {
         loadSharedResources();
-        static const float mins[8]  = {-12,-12,-12,-12,0,0,-24,0};
-        static const float maxs[8]  = {12,12,12,12,2,1,12,26};
-        static const float defs[8]  = {0,0,0,0,1.0f,0.15f,0,9};
-        static const char* lbl[8]   = {"SUB","LAAG","MID","AIR","WIDTH","DRIVE","OUTPUT","GALAXY"};
-        static const char* unt[8]   = {"dB","dB","dB","dB","x","%","dB",""};
+        static const float mins[9]  = {-12,-12,-12,-12,0,0,-24,0,0};
+        static const float maxs[9]  = {12,12,12,12,2,1,12,26,100};
+        static const float defs[9]  = {0,0,0,0,1.0f,0.15f,0,9,100};
+        static const char* lbl[9]   = {"SUB","LAAG","MID","AIR","WIDTH","DRIVE","OUTPUT","GALAXY","KRACHT"};
+        static const char* unt[9]   = {"dB","dB","dB","dB","x","%","dB","","%"};
         std::memcpy(fMin, mins, sizeof(mins));
         std::memcpy(fMax, maxs, sizeof(maxs));
         std::memcpy(fValue, defs, sizeof(defs));
@@ -56,6 +56,8 @@ protected:
         else if (index == 7) fListenState = value;
         else if (index == 8) fValue[7] = value;   // GALAXY
         else if (index == 10) fProg = (int)value; // PRESET-highlight
+        else if (index == 11) fOn = value;         // AAN/UIT
+        else if (index == 12) fValue[8] = value;   // KRACHT
         repaint();
     }
 
@@ -126,7 +128,7 @@ protected:
         strokeColor(47, 191, 113); strokeWidth(1.5f); stroke();
 
         // 5 knoppen
-        const int n = 8;
+        const int n = 9;
         const float step = (W - 40.0f) / n;
         for (int i = 0; i < n; ++i)
         {
@@ -204,6 +206,17 @@ protected:
             fontSize(10.0f);
             text(tx+13.0f, 42.5f, fLight>0 ? "\xF0\x9F\x8C\x99" : "\xE2\x98\x80", nullptr);
         }
+
+        // AAN/UIT-knop (rechtsboven, naast thema-knop)
+        {
+            const bool aan = fOn > 0.5f;
+            beginPath(); roundedRect(W - 96.0f, 33.0f, 52.0f, 18.0f, 9.0f);
+            fillColor(aan ? g2bsk(fLight,5) : g2bsk(fLight,1)); fill();
+            strokeColor(42,47,45); strokeWidth(1.0f); stroke();
+            fontSize(10.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            fillColor(aan ? g2bsk(fLight,0) : g2bsk(fLight,2));
+            text(W - 70.0f, 42.0f, aan ? "AAN" : "UIT", nullptr);
+        }
     }
 
     bool onMouse(const MouseEvent& ev) override
@@ -213,6 +226,9 @@ protected:
         // preset-klik?
         if (ev.press)
         {
+            if (ev.pos.getX() >= W-96.0f && ev.pos.getX() <= W-44.0f &&
+                ev.pos.getY() >= 33.0f && ev.pos.getY() <= 51.0f)
+            { fOn = fOn>0.5f?0.f:1.f; setParameterValue(11, fOn); repaint(); return true; }
             if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 40.0f &&
                 ev.pos.getY() >= 48.0f && ev.pos.getY() <= 65.0f)
             { setParameterValue(9, 1.0f); repaint(); return true; }
@@ -239,10 +255,10 @@ protected:
                     }
                 }
         }
-        const float step = (W - 40.0f) / 8;
+        const float step = (W - 40.0f) / 9;
         if (ev.press)
         {
-            for (int i = 0; i < 8; ++i)
+            for (int i = 0; i < 9; ++i)
             {
                 const float cx = 20.0f + step * (i + 0.5f);
                 const float cy = 175.0f;
@@ -251,14 +267,14 @@ protected:
                 if (dx*dx + dy*dy <= 28.0f*28.0f + 80.0f)
                 {
                     fDrag = i; fLastY = ev.pos.getY();
-                    editParameter(i, true);
+                    editParameter(i < 7 ? i : (i == 7 ? 8 : 12), true);
                     return true;
                 }
             }
         }
         else if (fDrag >= 0)
         {
-            editParameter(fDrag, false);
+            editParameter(fDrag < 7 ? fDrag : (fDrag == 7 ? 8 : 12), false);
             fDrag = -1;
         }
         return true;
@@ -274,7 +290,7 @@ protected:
         if (v < fMin[fDrag]) v = fMin[fDrag];
         if (v > fMax[fDrag]) v = fMax[fDrag];
         fValue[fDrag] = v;
-        setParameterValue(fDrag < 7 ? fDrag : 8, v);
+        setParameterValue(fDrag < 7 ? fDrag : (fDrag == 7 ? 8 : 12), v);
         repaint();
         return true;
     }
@@ -282,8 +298,8 @@ protected:
     bool onScroll(const ScrollEvent& ev) override
     {
         const float W = getWidth();
-        const float step = (W - 40.0f) / 8;
-        for (int i = 0; i < 8; ++i)
+        const float step = (W - 40.0f) / 9;
+        for (int i = 0; i < 9; ++i)
         {
             const float cx = 20.0f + step * (i + 0.5f);
             const float cy = 175.0f;
@@ -296,9 +312,9 @@ protected:
                 if (v < fMin[i]) v = fMin[i];
                 if (v > fMax[i]) v = fMax[i];
                 fValue[i] = v;
-                editParameter(i < 7 ? i : 8, true);
-                setParameterValue(i < 7 ? i : 8, v);
-                editParameter(i < 7 ? i : 8, false);
+                editParameter(i < 7 ? i : (i == 7 ? 8 : 12), true);
+                setParameterValue(i < 7 ? i : (i == 7 ? 8 : 12), v);
+                editParameter(i < 7 ? i : (i == 7 ? 8 : 12), false);
                 repaint();
                 return true;
             }
@@ -308,9 +324,10 @@ protected:
 
 private:
     static const int kScopeSize = 256;
-    float fValue[8], fMin[8], fMax[8];
-    const char* fLabel[8]; float fListenState=0;
-    const char* fUnit[8];
+    float fValue[9], fMin[9], fMax[9];
+    const char* fLabel[9]; float fListenState=0;
+    const char* fUnit[9];
+    float fOn = 1.f;
     float fScope[kScopeSize];
     int fScopePos;
     int fDrag;

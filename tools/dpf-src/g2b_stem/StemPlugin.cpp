@@ -97,7 +97,7 @@ struct Galaxy { Galaxy(){reset();}
 
 class StemPlugin : public Plugin {
 public:
-    enum Params { kDess,kBody,kAir,kComp,kWidth,kOut,kGalaxy,kDice,kPreset,kNumParams };
+    enum Params { kDess,kBody,kAir,kComp,kWidth,kOut,kGalaxy,kDice,kPreset,kOn,kKracht,kNumParams };
     StemPlugin() : Plugin(kNumParams,0,2) {}
 protected:
     const char* getLabel() const override { return "G2B Stem"; }
@@ -119,11 +119,13 @@ protected:
         case kOut:   p.name="OUTPUT";   p.symbol="out";   p.ranges.min=-24;p.ranges.max=12;p.ranges.def=0;p.unit="dB";break;
         case kDice:  p.name="DICE";     p.symbol="dice";  p.hints|=kParameterIsInteger|kParameterIsTrigger;p.ranges.min=0;p.ranges.max=1;p.ranges.def=0;break;
         case kPreset:p.name="PRESET";   p.symbol="preset";p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=16;p.ranges.def=0;break;
+        case kOn:p.name="Aan";p.symbol="aan";p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;p.ranges.def=1;break;
+        case kKracht:p.name="Kracht";p.symbol="kracht";p.ranges.min=0;p.ranges.max=100;p.ranges.def=100;p.unit="%";break;
         }
     }
     float getParameterValue(uint32_t i) const override {
         if(i==kGalaxy)return fGalaxy;
-        switch(i){case kDess:return fDess;case kBody:return fBody;case kAir:return fAir;case kComp:return fComp;case kWidth:return fWidth;case kOut:return fOut;case kDice:return fDice;case kPreset:return fPreset;}return 0.f;
+        switch(i){case kDess:return fDess;case kBody:return fBody;case kAir:return fAir;case kComp:return fComp;case kWidth:return fWidth;case kOut:return fOut;case kDice:return fDice;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKr;}return 0.f;
     }
     void setParameterValue(uint32_t i, float v) override {
         if(i==kGalaxy){fGalaxy=v;galaxy.setPos((int)v);return;}
@@ -132,6 +134,7 @@ protected:
         case kDess:fDess=v;break;case kBody:fBody=v;break;case kAir:fAir=v;break;
         case kComp:fComp=v;break;case kWidth:fWidth=v;break;case kOut:fOut=v;break;
         case kDice:fDice=v;if(v>0.5f)rollDice();fDice=0.f;break;
+        case kOn:fOn=v;break;case kKracht:fKr=v;break;
         }
     }
     void initState(uint32_t index, String& name, String& def) override {
@@ -142,12 +145,15 @@ protected:
 
     void run(const float** in, float** out, uint32_t frames) override
     {
+        if(fOn<0.5f){if(in[0]!=out[0])std::memcpy(out[0],in[0],frames*sizeof(float));if(in[1]!=out[1])std::memcpy(out[1],in[1],frames*sizeof(float));return;}
         processFx_(in, out, frames);
         for(uint32_t i=0;i<frames;i++){
-            float L=in[0][i],R=in[1][i];
+            float L=out[0][i],R=out[1][i];
             galaxy.tick(L,R,getSampleRate());
             out[0][i]=L; out[1][i]=R;
         }
+        const float k=fKr/100.f;
+        if(k<0.999f){const float d=1.f-k;for(uint32_t i=0;i<frames;i++){out[0][i]=in[0][i]*d+out[0][i]*k;out[1][i]=in[1][i]*d+out[1][i]*k;}}
     }
 
     void processFx_(const float** in, float** out, uint32_t frames) {
@@ -223,7 +229,7 @@ private:
     unsigned fRnd=112233;
     float fScope[40];uint32_t fScopeN=0;int fDecim=0;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StemPlugin)
-    float fGalaxy=9.f;
+    float fOn=1.f,fKr=100.f,fGalaxy=9.f;
     Galaxy galaxy;
 };
 Plugin* createPlugin(){return new StemPlugin();}
