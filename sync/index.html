@@ -143,7 +143,7 @@ header{position:relative;padding:0;overflow:hidden}
       <dt>BTW</dt><dd>NL005139345B30</dd>
       <dt>IPI (Buma/Stemra)</dt><dd>01273893907 — songwriter Giorgio T.J.S.</dd>
       <dt>Sena</dt><dd>1104985 (performing artist) · 2065125 (producer)</dd>
-      <dt>ISRC owner code</dt><dd>NL-5R7 — masters NL-5R7-25-00001 … NL-5R7-25-00013 (Latin catalog)</dd>
+      <dt>ISRC owner code</dt><dd>NL-5R7 — masters NL-5R7-25-00001 … 00013 · 00034–00036 · NL-5R7-26-00001–00002 (Sena-geregistreerd)</dd>
       <dt>Distribution</dt><dd>Ditto Music — released + unreleased catalog available for sync</dd>
       <dt>Contact</dt><dd>g.sandvliet88@gmail.com · +31 6 45288465</dd>
       <dt>YouTube</dt><dd><a href="https://www.youtube.com/@beatsbygood2better" style="color:var(--green)">@beatsbygood2better</a></dd>
@@ -152,7 +152,7 @@ header{position:relative;padding:0;overflow:hidden}
   </div>
 
   <div class="card">
-    <h3>ISRC — Latin masters</h3>
+    <h3>ISRC — masters (Sena-register)</h3>
     <div class="isrclist" id="isrc"></div>
   </div>
 </div>
@@ -177,7 +177,9 @@ const LATIN=[
 const INSTR=['14 - Si Pudiera Volver al Pasado (Instrumental)','15 - Libertad y Placer (Instrumental)','16 - Ya Gané Como Si Nada (Instrumental)','17 - Otra Noche Más (Instrumental)','19 - G2B Reggaeton Instrumental','20 - No Hay Nadi Como Tú (Instrumental)','22 - Llorame (Instrumental)','23 - Hoy Vamos a Salir (Instrumental)','25 - Imposible Borrarte (Instrumental)','28 - Hay Bailoteo (Instrumental)','29 - Hace Tiempo No Nos Vemos (Instrumental)','32 - A Dónde Están (Instrumental)'];
 const CAT=['Cjfjff Houce 2026','Coolbreez','Exotic Riddim','Houce Trap','Ik Ben Onderweg','Ik Ben Onderweg (Instrumental)','Us Both','Khvckhvclv','Lala Dance','Love','Love (Instrumental)','Meisje Luister','Meisje Luister (Instrumental)','Midnight Dembow II','Midnight Dembow III','Soldaat','Under','Under (Instrumental)'];
 const ENG=['G2B-RockabillyRacer','G2B-SouthernRodeo','G2B-BubbleNights','G2B-KasekoGold','G2B-SocaRun','G2B-WintiSpirit'];
-const ISRC=['NL-5R7-25-00001','NL-5R7-25-00002','NL-5R7-25-00003','NL-5R7-25-00004','NL-5R7-25-00005','NL-5R7-25-00006','NL-5R7-25-00007','NL-5R7-25-00008','NL-5R7-25-00009','NL-5R7-25-00010','NL-5R7-25-00011','NL-5R7-25-00012','NL-5R7-25-00013'];
+// ISRC's zoals bij Sena geregistreerd (export 17-10-2026)
+const ISRC={'A Dónde Están':'NL-5R7-25-00001','Imposible Borrarte':'NL-5R7-25-00002','Llorame':'NL-5R7-25-00003','Si Pudiera Volver al Pasado':'NL-5R7-25-00004','Hace Tiempo No Nos Vemos':'NL-5R7-25-00005','No Hay Nadi Como Tú':'NL-5R7-25-00006','Hay Bailoteo':'NL-5R7-25-00007','Otra Noche Más':'NL-5R7-25-00008','Hoy Vamos a Salir':'NL-5R7-25-00009','Sigue en Mi Cabeza':'NL-5R7-25-00010','Ya Gané Como Si Nada':'NL-5R7-25-00011','Tu Eres Todo Lo Que Necesito':'NL-5R7-25-00012','Libertad y Placer':'NL-5R7-25-00013'};
+const ISRC_XTRA=[['NL-5R7-25-00034','Coolbreez'],['NL-5R7-25-00035','Love'],['NL-5R7-25-00036','Love Hurts'],['NL-5R7-26-00001','Ik Ben Onderweg'],['NL-5R7-26-00002','Meisje Luister']];
 
 function lic(t,buy){
   const m=(kind)=>`mailto:g.sandvliet88@gmail.com?subject=${encodeURIComponent(kind+': '+t)}&body=${encodeURIComponent('Hoi Giorgio,\n\n'+kind+' voor "'+t+'" graag.\nProject: \nGebruik (film/TV/reclame/game/social): \nTerritorium + looptijd: \n\nGroet')}`;
@@ -188,7 +190,7 @@ document.getElementById('voc').innerHTML=LATIN.map(([n,t])=>row(n,t,`media/latin
 document.getElementById('ins').innerHTML=INSTR.map(f=>{const m=f.match(/^(\d+) - (.+)$/);return row(m[1],m[2],`media/latin/${encodeURIComponent(f)}.mp3`,'instr');}).join('');
 document.getElementById('cat').innerHTML=CAT.map((t,i)=>row(String(i+1).padStart(2,'0'),t,`media/english/${encodeURIComponent(t)}.mp3`,'','GOOD2BETTER · LICENSE-READY')).join('');
 document.getElementById('eng').innerHTML=ENG.map((t,i)=>row(String(i+1).padStart(2,'0'),t,`media/english/${encodeURIComponent(t)}.mp3`,'','G2B ENGINE · 100% owned · BUY-OUT OK',true)).join('');
-document.getElementById('isrc').innerHTML=LATIN.map(([n,t],i)=>`${ISRC[i]} — ${t}`).join('<br>');
+document.getElementById('isrc').innerHTML=LATIN.map(([n,t])=>`${ISRC[t]} — ${t}`).join('<br>')+'<br>'+ISRC_XTRA.map(([c,t])=>`${c} — ${t}`).join('<br>');
 </script>
 </body>
 </html>
