@@ -39,6 +39,11 @@ header{position:relative;padding:0;overflow:hidden}
 .track .t{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .track .k{font-size:11px;color:var(--gray);letter-spacing:.5px}
 .track audio{width:190px;height:34px}
+.track .lic{display:flex;flex-direction:column;gap:5px;min-width:86px}
+.lic a{display:block;text-align:center;padding:5px 10px;border-radius:8px;font-size:10.5px;font-weight:700;letter-spacing:1px;text-decoration:none;border:1px solid var(--green);color:var(--green)}
+.lic a:hover{background:var(--green);color:#06220f}
+.lic a.buy{background:var(--green);color:#06220f}
+.lic a.buy:hover{filter:brightness(1.15)}
 .instr{background:#101610;border-color:#1c3324}
 .instr .num{background:#0a1f12}
 .sec{margin:34px 0 14px;color:var(--green);font-size:13px;letter-spacing:3px;font-weight:700;text-transform:uppercase}
@@ -174,11 +179,15 @@ const CAT=['Cjfjff Houce 2026','Coolbreez','Exotic Riddim','Houce Trap','Ik Ben 
 const ENG=['G2B-BubbleNights','G2B-KasekoGold','G2B-SocaRun','G2B-WintiSpirit'];
 const ISRC=['NL-5R7-25-00001','NL-5R7-25-00002','NL-5R7-25-00003','NL-5R7-25-00004','NL-5R7-25-00005','NL-5R7-25-00006','NL-5R7-25-00007','NL-5R7-25-00008','NL-5R7-25-00009','NL-5R7-25-00010','NL-5R7-25-00011','NL-5R7-25-00012','NL-5R7-25-00013'];
 
-function row(n,t,file,cls,tag){return `<div class="track ${cls||''}"><div class="num">${n}</div><div class="info"><div class="t">${t}</div><div class="k">${tag||'GOOD2BETTER · 100% owned'}</div></div><audio controls preload="none" src="${file}"></audio></div>`;}
+function lic(t,buy){
+  const m=(kind)=>`mailto:g.sandvliet88@gmail.com?subject=${encodeURIComponent(kind+': '+t)}&body=${encodeURIComponent('Hoi Giorgio,\n\n'+kind+' voor "'+t+'" graag.\nProject: \nGebruik (film/TV/reclame/game/social): \nTerritorium + looptijd: \n\nGroet')}`;
+  return `<div class="lic"><a href="${m('Sync license')}">LICENSE</a>${buy?`<a class="buy" href="${m('Buy-out')}">BUY-OUT</a>`:''}</div>`;
+}
+function row(n,t,file,cls,tag,buy){return `<div class="track ${cls||''}"><div class="num">${n}</div><div class="info"><div class="t">${t}</div><div class="k">${tag||'GOOD2BETTER · 100% owned'}</div></div><audio controls preload="none" src="${file}"></audio>${lic(t,buy)}</div>`;}
 document.getElementById('voc').innerHTML=LATIN.map(([n,t])=>row(n,t,`media/latin/${n} - ${encodeURIComponent(t)}.mp3`)).join('');
 document.getElementById('ins').innerHTML=INSTR.map(f=>{const m=f.match(/^(\d+) - (.+)$/);return row(m[1],m[2],`media/latin/${encodeURIComponent(f)}.mp3`,'instr');}).join('');
 document.getElementById('cat').innerHTML=CAT.map((t,i)=>row(String(i+1).padStart(2,'0'),t,`media/english/${encodeURIComponent(t)}.mp3`,'','GOOD2BETTER · LICENSE-READY')).join('');
-document.getElementById('eng').innerHTML=ENG.map((t,i)=>row(String(i+1).padStart(2,'0'),t,`media/english/${encodeURIComponent(t)}.mp3`,'','G2B ENGINE · 100% owned · BUY-OUT OK')).join('');
+document.getElementById('eng').innerHTML=ENG.map((t,i)=>row(String(i+1).padStart(2,'0'),t,`media/english/${encodeURIComponent(t)}.mp3`,'','G2B ENGINE · 100% owned · BUY-OUT OK',true)).join('');
 document.getElementById('isrc').innerHTML=LATIN.map(([n,t],i)=>`${ISRC[i]} — ${t}`).join('<br>');
 </script>
 </body>
