@@ -354,7 +354,12 @@
         "koop": "https://buy.stripe.com/7sYeVdefe5U7azZ5BX5J60O"
       },
       "ebook": null,
-      "id": "de-avonturen-van-keesje-konijn"
+      "id": "de-avonturen-van-keesje-konijn",
+      "audioboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/TEVOORDEEL_KEESJE_AUDIOBOEK"
+      },
+      "audioboek_info": "Alle 9 audioboek-hoofdstukken als MP3 — luisteren op telefoon/tablet."
     },
     {
       "titel": "Animal Heroes Verzamelkleurboek",
