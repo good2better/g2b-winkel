@@ -51,9 +51,20 @@ protected:
         char info[64];snprintf(info,64,"%s %s · %s",NAM[key],SCH[sc],VOI[(int)fVal[5]]);
         textAlign(ALIGN_CENTER|ALIGN_TOP);text(cx,cy+R+18,info,nullptr);
         fCur=(fCur+1)%400; // pulse-animatie van huidige akkoord
+        // XY-pad: kracht → · dimensies ↑
+        fXX=16;fXY_=254;fXW=188;fXH=62;
+        beginPath();roundedRect(fXX,fXY_,fXW,fXH,10);fillColor(C(S[1],0.25f));fill();strokeColor(C(S[2],0.25f));strokeWidth(1);stroke();
+        { const float nx=fVal[1]/100.f, ny=1.f-fVal[8]/26.f;
+          const float pxx=fXX+nx*fXW, pyy=fXY_+ny*fXH;
+          beginPath();circle(pxx,pyy,6);fillColor(C(S[1]));fill();
+          strokeColor(C(S[1],0.5f));strokeWidth(1);
+          beginPath();moveTo(fXX,pyy);lineTo(fXX+fXW,pyy);stroke();
+          beginPath();moveTo(pxx,fXY_);lineTo(pxx,fXY_+fXH);stroke(); }
+        fillColor(C(S[2],0.6f));fontSize(8.5f);textAlign(ALIGN_CENTER|ALIGN_TOP);
+        text(fXX+fXW/2,fXY_+fXH+5,"XY · kracht → dimensies ↑",nullptr);
         // knobs
-        static const char* LB[8]={"PRESET","TOON","LADDER","PROG","VOIC","TEMPO","KRACHT","DIMS"};
-        for(int i=0;i<7;i++){
+        static const char* LB[8]={"PRESET","TOON","LADDER","PROG","VOIC","TEMPO","KRACHT","DIMENTIES"};
+        for(int i=0;i<8;i++){
             float kx=fKnobX+(i%4)*86, ky=fKnobY+(i/4)*96;
             beginPath();circle(kx,ky,26);fillColor(C(S[1],0.35f));fill();
             beginPath();circle(kx,ky,26);strokeColor(C(S[2],0.25f));strokeWidth(3);stroke();
@@ -70,15 +81,17 @@ protected:
             if(i==fSkin){beginPath();circle(66+i*13,fSkinY+8,7);strokeColor(Color(255,255,255));strokeWidth(1.5f);stroke();}}
     }
     bool onMouse(const MouseEvent&ev) override {
-        if(!ev.press){fDrag=-1;return true;}
+        if(!ev.press){fDrag=-1;fXYdrag=false;return true;}
         int mx=ev.pos.getX(),my=ev.pos.getY();
         if(mx>getWidth()-100&&mx<getWidth()-20&&my>fBtnY-12&&my<fBtnY+22){setParameterValue(0,fVal[0]>0.5f?0.f:1.f);return true;}
+        if(mx>=fXX&&mx<=fXX+fXW&&my>=fXY_&&my<=fXY_+fXH){fXYdrag=true;xySet(mx,my);return true;}
         for(int i=0;i<8;i++)if(fabs(mx-(66+i*13))<8&&fabs(my-(fSkinY+8))<10){setParameterValue(9,(float)i);return true;}
         for(int i=0;i<8;i++){float kx=fKnobX+(i%4)*86,ky=fKnobY+(i/4)*96;
             if((mx-kx)*(mx-kx)+(my-ky)*(my-ky)<30*30){fDrag=i;fLastY=my;return true;}}
         return false;
     }
     bool onMotion(const MotionEvent&ev) override {
+        if(fXYdrag){xySet((float)ev.pos.getX(),(float)ev.pos.getY());return true;}
         if(fDrag<0)return false;
         float dy=fLastY-(float)ev.pos.getY();fLastY=(float)ev.pos.getY();
         float n=knNorm(fDrag)+dy*0.005f;
@@ -97,7 +110,8 @@ private:
         int p=knParam(i);float v=fVal[p];
         if(i<5)snprintf(b,16,"%d",(int)v);else snprintf(b,16,"%d",(int)v);
     }
-    float fVal[10]; int fSkin=0,fDrag=-1,fCur=0;float fLastY=0;
+    void xySet(float px,float py){float nx=(px-fXX)/fXW;if(nx<0)nx=0;if(nx>1)nx=1;float ny=(py-fXY_)/fXH;if(ny<0)ny=0;if(ny>1)ny=1;float kr=nx*100.f,dim=std::round((1.f-ny)*26.f);setParameterValue(1,kr);setParameterValue(8,dim);fVal[1]=kr;fVal[8]=dim;repaint();}
+    float fVal[10]; int fSkin=0,fDrag=-1,fCur=0;float fLastY=0; bool fXYdrag=false; float fXX=0,fXY_=0,fXW=0,fXH=0;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(G2BChordUI)
 };
 UI* createUI(){ return new G2BChordUI(); }
