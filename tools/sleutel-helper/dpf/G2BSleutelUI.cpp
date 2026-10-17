@@ -171,6 +171,19 @@ protected:
             text(28,sy+12,"akkoord-, bas- en melodie-hints verschijnen",nullptr);
             text(28,sy+28,"in je DAW-host (VST3/CLAP)",nullptr); }
 
+        // ---- XY-pad: kracht → · dimensies ↑ ----
+        fXX=16;fXY_=318;fXW=188;fXH=68;
+        beginPath(); roundedRect(fXX,fXY_,fXW,fXH,10); fillColor(C(pn)); fill(); strokeColor(C(cd)); strokeWidth(1); stroke();
+        { const float nx=(fValue[0]-fMin[0])/(fMax[0]-fMin[0]), ny=1.f-(fValue[1]-fMin[1])/(fMax[1]-fMin[1]);
+          const float pxx=fXX+nx*fXW, pyy=fXY_+ny*fXH;
+          beginPath(); circle(pxx,pyy,6); fillColor(C(ac)); fill();
+          strokeColor(C(ac,0.35f)); strokeWidth(1);
+          beginPath(); moveTo(fXX,pyy); lineTo(fXX+fXW,pyy); stroke();
+          beginPath(); moveTo(pxx,fXY_); lineTo(pxx,fXY_+fXH); stroke(); }
+        fillColor(C(mu)); fontSize(8.5f); textAlign(ALIGN_CENTER|ALIGN_TOP);
+        text(fXX+fXW/2,fXY_+fXH+5,"XY · kracht → dimensies ↑",nullptr);
+        textAlign(ALIGN_LEFT|ALIGN_TOP);
+
         // ---- knobs: KRACHT · DIMENTIES ----
         fKnobY=H-64;
         for(int i=0;i<2;i++){
@@ -198,7 +211,8 @@ protected:
     bool onMouse(const MouseEvent& ev) override
     {
         const float W=getWidth();
-        if(!ev.press){ fDrag=-1; return true; }
+        if(!ev.press){ fDrag=-1; fXYdrag=false; return true; }
+        if(ev.pos.getX()>=fXX&&ev.pos.getX()<=fXX+fXW&&ev.pos.getY()>=fXY_&&ev.pos.getY()<=fXY_+fXH){fXYdrag=true;xySet(ev.pos);return true;}
         // knobs eerst (drag-start)
         for(int i=0;i<2;i++){
             const float cx=W-190+i*100, cy=fKnobY+18;
@@ -221,6 +235,7 @@ protected:
 
     bool onMotion(const MotionEvent& ev) override
     {
+        if(fXYdrag){xySet(ev.pos);return true;}
         if(fDrag>=0){
             const float dv=(fLastY-ev.pos.getY())*(fMax[fDrag]-fMin[fDrag])/150.f;
             fLastY=ev.pos.getY();
@@ -239,6 +254,8 @@ private:
     float fOn,fFocus,fSkin; uint32_t fMask,fFoc; int fConf;
     char fKey[32], fSug1[64], fSug2[64], fSug3[96], fChord[16]={0}, fHint[40]={0};
     float fPillY=62,fPianoY=104,fKnobY=0,fSkinX=0,fSkinY=0;
+    bool fXYdrag=false; float fXX=0,fXY_=0,fXW=0,fXH=0;
+    void xySet(const Point<double>&p){float nx=(p.getX()-fXX)/fXW;if(nx<0)nx=0;if(nx>1)nx=1;float ny=(p.getY()-fXY_)/fXH;if(ny<0)ny=0;if(ny>1)ny=1;float kr=fMin[0]+nx*(fMax[0]-fMin[0]),dim=fMin[1]+std::round((1.f-ny)*(fMax[1]-fMin[1]));setParameterValue(fParamId[0],kr);setParameterValue(fParamId[1],dim);fValue[0]=kr;fValue[1]=dim;repaint();}
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SleutelUI)
 };

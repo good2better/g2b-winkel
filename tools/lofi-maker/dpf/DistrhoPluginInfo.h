@@ -4,6 +4,7 @@
 #define DISTRHO_PLUGIN_NAME  "G2B LoFi-Maker"
 #define DISTRHO_PLUGIN_URI   "https://good2better.github.io/g2b-winkel/lofi"
 #define DISTRHO_PLUGIN_UNIQUE_ID G2Lf
+#define DISTRHO_PLUGIN_CLAP_ID "nl.g2b.lofi"
 #define DISTRHO_PLUGIN_HAS_UI 1
 #define DISTRHO_PLUGIN_IS_RT_SAFE 1
 #define DISTRHO_PLUGIN_NUM_INPUTS 2

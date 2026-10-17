@@ -21,7 +21,7 @@ protected:
         case kDelay:p.name="Delay";p.symbol="delay";p.unit="ms";p.ranges.def=15;p.ranges.min=5;p.ranges.max=40;break;
         case kFeed:p.name="Feed";p.symbol="feed";p.ranges.def=0;p.ranges.min=0;p.ranges.max=95;break;
         case kWidth:p.name="Width";p.symbol="width";p.ranges.def=70;p.ranges.min=0;p.ranges.max=100;break;
-        case kDimensie:p.name="Dimenties";p.symbol="dim";p.ranges.def=0;p.ranges.min=0;p.ranges.max=26;break;
+        case kDimensie:p.name="DIMENTIES";p.symbol="dim";p.ranges.def=0;p.ranges.min=0;p.ranges.max=26;break;
         case kSkin:p.name="Skin";p.symbol="skin";p.ranges.def=2;p.ranges.min=0;p.ranges.max=7;break;case kPreset:p.name="Preset";p.symbol="pre";p.ranges.min=0;p.ranges.max=15;p.ranges.def=0;p.hints=kParameterIsInteger;break;}}
     float getParameterValue(uint32_t i)const override{switch(i){case kOn:return fOn;case kKracht:return fKr;case kRate:return fRate;case kDepth:return fDep;case kDelay:return fDel;case kFeed:return fFeed;case kWidth:return fWid;case kDimensie:return fDim;case kSkin:return fSkin;case kPreset:return fPre;default:return 0;}}
     void setParameterValue(uint32_t i,float v)override{switch(i){case kOn:fOn=v;break;case kKracht:fKr=v;break;case kRate:fRate=v;break;case kDepth:fDep=v;break;case kDelay:fDel=v;break;case kFeed:fFeed=v;break;case kWidth:fWid=v;break;case kDimensie:fDim=v;break;case kSkin:fSkin=v;break;case kPreset:if((int)v!=(int)fPre)applyPreset((int)v);fPre=v;break;}}
