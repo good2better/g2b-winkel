@@ -14,7 +14,7 @@ START_NAMESPACE_DISTRHO
 class SleutelPlugin : public Plugin
 {
 public:
-    SleutelPlugin() : Plugin(15, 0, 0) { pushAna_(); }
+    SleutelPlugin() : Plugin(16, 0, 0) { pushAna_(); }
 
 protected:
     const char* getLabel() const override { return "G2B Sleutel-Helper"; }
@@ -31,7 +31,7 @@ protected:
 
     enum { kOn, kFocus, kKracht, kDim, kSkin, kClear, kThru, kHold,
            kOutKey, kOutConf, kOutMask, kOutFoc,
-           kPlay, kOutChord, kOutHint };
+           kPlay, kOutChord, kOutHint, kDemo };
 
     void initParameter(uint32_t i, Parameter& p) override {
         p.hints = kParameterIsAutomatable;
@@ -51,6 +51,7 @@ protected:
         case kPlay:  p.name="SPEEL HINT";  p.symbol="play";  p.ranges.min=0; p.ranges.max=1;   p.hints|=kParameterIsTrigger; break;
         case kOutChord:p.name="chord-out";p.symbol="ochord";p.ranges.min=0; p.ranges.max=4095; p.hints|=kParameterIsInteger|kParameterIsOutput|kParameterIsHidden; break;
         case kOutHint:p.name="hint-out";  p.symbol="ohint"; p.ranges.min=0; p.ranges.max=255;  p.hints|=kParameterIsInteger|kParameterIsOutput|kParameterIsHidden; break;
+        case kDemo:  p.name="DEMO";         p.symbol="demo";  p.ranges.min=0; p.ranges.max=1;   p.hints|=kParameterIsTrigger; break;
         }
     }
 
@@ -79,6 +80,7 @@ protected:
         case kThru:  fThru=v; break;
         case kHold:  fHold=v; break;
         case kPlay:  if(v>0.5f) playHint_(); break;
+        case kDemo:  if(v>0.5f) demoPhrase_(); break;
         }
     }
 
@@ -190,6 +192,14 @@ private:
                 pend_[nPend_++]={now+len,0x80,(uint8_t)notes[i],0,false};
             }
         }
+    }
+
+    // DEMO: injecteer een korte melodie alsof iemand speelt — bewijs dat analyse werkt
+    void demoPhrase_(){
+        const uint32_t sr=(uint32_t)getSampleRate();
+        const int seq[10]={57,60,64,62,60,57,55,57,60,64}; // A-mineur loopje + akkoord A C E
+        for(int i=0;i<10;i++) noteOn_((uint8_t)seq[i],100,fAbs+(uint64_t)(i*sr/6));
+        analyse_(); chordDetect_();
     }
 
     void noteOn_(uint8_t n, uint8_t v, uint64_t at){

@@ -120,6 +120,9 @@ protected:
             text(x+42,fPillY+12,FP[i],nullptr);
         }
         // SPEEL + AAN + WIS knoppen rechts
+        beginPath(); roundedRect(W-308,fPillY,64,24,12); fillColor(C(pn)); fill();
+        fillColor(C(ac)); fontSize(10); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+        text(W-276,fPillY+12,"DEMO",nullptr);
         beginPath(); roundedRect(W-236,fPillY,66,24,12); fillColor(C(pn)); fill();
         fillColor(C(ac)); fontSize(10); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
         text(W-203,fPillY+12,"SPEEL",nullptr);
@@ -223,6 +226,7 @@ protected:
         if(ev.pos.getY()>=fPillY&&ev.pos.getY()<=fPillY+24){
             for(int i=0;i<4;i++){const float x=16+i*92;
                 if(ev.pos.getX()>=x&&ev.pos.getX()<=x+84){spv(1,(float)i);fFocus=i;repaint();return true;}}
+            if(ev.pos.getX()>=W-308&&ev.pos.getX()<=W-244){spv(15,1.f);return true;}
             if(ev.pos.getX()>=W-236&&ev.pos.getX()<=W-170){spv(12,1.f);return true;}
             if(ev.pos.getX()>=W-164&&ev.pos.getX()<=W-96){const float v=fOn>0.5f?0.f:1.f;spv(0,v);fOn=v;repaint();return true;}
             if(ev.pos.getX()>=W-88){spv(5,1.f);return true;}
