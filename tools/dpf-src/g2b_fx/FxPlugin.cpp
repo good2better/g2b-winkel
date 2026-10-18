@@ -296,15 +296,26 @@ protected:
 private:
     void listenApply(){
         // stijl-doelen: hoeveel laag/air mag de stijl hebben {lowShare, airShare}
-        static const float kTgt[6][2]={
+        static const float kTgt[17][2]={
             {0.35f,0.12f}, // G2B
             {0.45f,0.09f}, // DEMBOW (dikke sub hoort)
             {0.42f,0.10f}, // DRILL
             {0.32f,0.14f}, // RNB
             {0.38f,0.12f}, // HOUSE
-            {0.37f,0.12f}  // AFRO
+            {0.37f,0.12f}, // AFRO
+            {0.44f,0.08f}, // TRAP (808-heavig)
+            {0.40f,0.10f}, // BOOM
+            {0.36f,0.13f}, // UKG
+            {0.38f,0.11f}, // JERSEY
+            {0.39f,0.11f}, // BOUNCE
+            {0.30f,0.15f}, // SOUL
+            {0.34f,0.09f}, // LOFI
+            {0.37f,0.12f}, // FUNK
+            {0.41f,0.10f}, // REGGAE
+            {0.37f,0.14f}, // DANCE
+            {0.38f,0.13f}  // KAWINA
         };
-        int pi=(int)(fPreset+0.5f);if(pi<0)pi=0;if(pi>5)pi=5;
+        int pi=(int)(fPreset+0.5f);if(pi<0)pi=0;if(pi>16)pi=16;
         float tot=fAccRms+1e-9f;
         float lowShare=fAccLow/tot, airShare=fAccAir/tot, rms=fAccRms/(2.f*getSampleRate());
         float dSub=(lowShare-kTgt[pi][0])*2.5f, dGla=(kTgt[pi][1]-airShare)*5.f, dKni=(0.12f-rms)*3.f;
@@ -338,7 +349,7 @@ private:
         return x;
     }
     void applyPreset(int i){
-        if(i<0)i=0;if(i>5)i=5;fPreset=(float)i;
+        if(i<0)i=0;if(i>16)i=16;fPreset=(float)i;
         setParameterValue(kSub,kPresetParams[i][0]);
         setParameterValue(kPoets,kPresetParams[i][1]);
         setParameterValue(kKnip,kPresetParams[i][2]);

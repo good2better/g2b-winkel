@@ -28,6 +28,26 @@ static const int kNumPrograms = 17;
 static const char* kProgramNames[kNumPrograms] = {
     "G2B","DEMBOW","DRILL","RNB","HOUSE","AFRO","TRAP","BOOM","UKG","JERSEY","BOUNCE","SOUL","LOFI","FUNK","REGGAE","DANCE","KAW"
 };
+// spiegel van kPresetParams in FxPlugin.cpp — UI pusht de 6 knopwaarden zelf
+static const float kUiPresetParams[17][6] = {
+    {0.55f,0.35f,0.40f,0.30f,0.30f, 0.f},  // G2B
+    {0.60f,0.40f,0.45f,0.25f,0.22f, 0.f},  // DEMBOW
+    {0.65f,0.45f,0.55f,0.15f,0.18f, 0.f},  // DRILL
+    {0.45f,0.30f,0.30f,0.40f,0.35f, 0.f},  // RNB
+    {0.50f,0.38f,0.42f,0.35f,0.28f, 0.f},  // HOUSE
+    {0.55f,0.36f,0.40f,0.30f,0.26f, 0.f},  // AFRO
+    {0.62f,0.42f,0.50f,0.22f,0.20f, 0.f},  // TRAP
+    {0.50f,0.40f,0.35f,0.25f,0.28f, 0.f},  // BOOM
+    {0.52f,0.38f,0.44f,0.36f,0.30f, 0.f},  // UKG
+    {0.58f,0.40f,0.46f,0.28f,0.24f, 0.f},  // JERSEY
+    {0.55f,0.38f,0.42f,0.32f,0.27f, 0.f},  // BOUNCE
+    {0.42f,0.32f,0.28f,0.42f,0.36f, 0.f},  // SOUL
+    {0.48f,0.50f,0.30f,0.20f,0.26f, 0.f},  // LOFI
+    {0.50f,0.36f,0.44f,0.34f,0.28f, 0.f},  // FUNK
+    {0.56f,0.40f,0.36f,0.30f,0.30f, 0.f},  // REGGAE
+    {0.52f,0.36f,0.44f,0.38f,0.28f, 0.f},  // DANCE
+    {0.55f,0.37f,0.41f,0.31f,0.27f, 0.f},  // KAWINA
+};
 
 class MasterRackUI : public UI
 {
@@ -56,6 +76,11 @@ protected:
         if (index < 6) fValue[index] = value;
         else if (index == 6) fListenState = value;
         else if (index == 7) fValue[6] = value;
+        else if (index == 9) {
+            fProg = (int)(value + 0.5f);
+            if (fProg < 0) fProg = 0; if (fProg > 16) fProg = 16;
+            for (int p = 0; p < 6; ++p) fValue[p] = kUiPresetParams[fProg][p];
+        }
         else if (index == 10) fOn = value;
         else if (index == 11) fValue[7] = value;
         else if (index >= 13 && index <= 15) fValue[index - 5] = value;
@@ -99,23 +124,26 @@ protected:
         fontSize(11.5f); fillColor(143, 160, 152);
         text(18.0f, 41.0f, "menger + alle effecten: EQ · sub · vet · luid · air · ruimte", nullptr);
 
-        // preset-knoppen (rechtsboven)
-        float bx = W - 14.0f;
-        for (int i = kNumPrograms - 1; i >= 0; --i)
+        // preset-knoppen (2 rijen: 9 + 8 — auto-mix per genre)
+        for (int i = 0; i < kNumPrograms; ++i)
         {
-            const float bw = 62.0f, bh = 17.0f;
-            bx -= bw + 5.0f;
+            const int row = i < 9 ? 0 : 1, col = i < 9 ? i : i - 9;
+            const int nin = row == 0 ? 9 : 8;
+            const float bw = 59.0f, bh = 17.0f, gap = 5.0f;
+            const float rowW = nin * bw + (nin - 1) * gap;
+            const float bx = (W - rowW) * 0.5f + col * (bw + gap);
+            const float by = row == 0 ? 56.0f : 76.0f;
             const bool on = (i == fProg);
-            beginPath(); roundedRect(bx, 12.0f, bw, bh, 4.0f);
+            beginPath(); roundedRect(bx, by, bw, bh, 4.0f);
             if (on) { fillColor(29, 122, 72); fill(); }
             strokeColor(42, 47, 45); strokeWidth(1.0f); stroke();
             fontSize(10.0f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
             fillColor(on ? Color(232, 236, 234) : Color(143, 160, 152));
-            text(bx + bw * 0.5f, 12.0f + bh * 0.5f, kProgramNames[i], nullptr);
+            text(bx + bw * 0.5f, by + bh * 0.5f, kProgramNames[i], nullptr);
         }
 
         // scope (onder presets)
-        const float sx = 18.0f, sy = 58.0f, sw = W - 36.0f, sh = 44.0f;
+        const float sx = 18.0f, sy = 100.0f, sw = W - 36.0f, sh = 30.0f;
         beginPath(); rect(sx, sy, sw, sh);
         fillColor(8, 10, 9); fill();
         strokeColor(42, 47, 45); strokeWidth(1.0f); stroke();
@@ -192,24 +220,24 @@ protected:
 
         {
             float bx2 = 14.0f;
-            beginPath(); roundedRect(bx2, 48.0f, 26.0f, 17.0f, 4.0f);
+            beginPath(); roundedRect(bx2, 140.0f, 26.0f, 17.0f, 4.0f);
             fillColor(g2bsk(fLight,1)); fill();
             strokeColor(42,47,45); strokeWidth(1.0f); stroke();
             fontSize(11.0f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
             fillColor(g2bsk(fLight,2));
-            text(bx2+13.0f, 56.5f, "🎲", nullptr);
-            beginPath(); roundedRect(44.0f, 48.0f, 34.0f, 17.0f, 4.0f);
+            text(bx2+13.0f, 148.5f, "🎲", nullptr);
+            beginPath(); roundedRect(44.0f, 140.0f, 34.0f, 17.0f, 4.0f);
             fillColor(g2bsk(fLight,1)); fill();
             strokeColor(42,47,45); strokeWidth(1.0f); stroke();
             fontSize(10.0f);
             fillColor(g2bsk(fLight,fLight==4?2:5));
-            text(61.0f, 56.5f, "🧠", nullptr);
+            text(61.0f, 148.5f, "🧠", nullptr);
             {   // status-dot: groen=AL GOED · wit=aangepast · amber=heet
                 if (fListenState > 0.2f) {
                     if (fListenState > 0.6f) fillColor(235,205,60);
                     else if (fListenState < 0.4f) fillColor(232,236,234);
                     else fillColor(47,191,113);
-                    beginPath(); arc(75.0f, 52.5f, 3.0f, 0.f, 6.2832f, CW); fill();
+                    beginPath(); arc(75.0f, 144.5f, 3.0f, 0.f, 6.2832f, CW); fill();
                 }
             }
             const float tx = W - 40.0f;
@@ -243,24 +271,31 @@ protected:
                 ev.pos.getY() >= 33.0f && ev.pos.getY() <= 51.0f)
             { fOn = fOn>0.5f?0.f:1.f; setParameterValue(10, fOn); repaint(); return true; }
             if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 40.0f &&
-                ev.pos.getY() >= 48.0f && ev.pos.getY() <= 65.0f)
+                ev.pos.getY() >= 140.0f && ev.pos.getY() <= 157.0f)
             { setParameterValue(8, 1.0f); repaint(); return true; }
             if (ev.pos.getX() >= 44.0f && ev.pos.getX() <= 78.0f &&
-                ev.pos.getY() >= 48.0f && ev.pos.getY() <= 65.0f)
+                ev.pos.getY() >= 140.0f && ev.pos.getY() <= 157.0f)
             { setParameterValue(6, 1.0f); repaint(); return true; }
             if (ev.pos.getX() >= W-40.0f && ev.pos.getX() <= W-14.0f &&
                 ev.pos.getY() >= 34.0f && ev.pos.getY() <= 51.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
             {
-                float hbx = W - 14.0f;
-                for (int i = kNumPrograms - 1; i >= 0; --i)
+                for (int i = 0; i < kNumPrograms; ++i)
                 {
-                    const float bw = 62.0f, bh = 17.0f;
-                    hbx -= bw + 5.0f;
-                    if (ev.pos.getX() >= hbx && ev.pos.getX() <= hbx + bw &&
-                        ev.pos.getY() >= 12.0f && ev.pos.getY() <= 12.0f + bh)
+                    const int row = i < 9 ? 0 : 1, col = i < 9 ? i : i - 9;
+                    const int nin = row == 0 ? 9 : 8;
+                    const float bw = 59.0f, bh = 17.0f, gap = 5.0f;
+                    const float rowW = nin * bw + (nin - 1) * gap;
+                    const float bx = (W - rowW) * 0.5f + col * (bw + gap);
+                    const float by = row == 0 ? 56.0f : 76.0f;
+                    if (ev.pos.getX() >= bx && ev.pos.getX() <= bx + bw &&
+                        ev.pos.getY() >= by && ev.pos.getY() <= by + bh)
                     {
-                        setParameterValue(8, (float)i);
+                        setParameterValue(9, (float)i);
+                        for (int p = 0; p < 6; ++p)
+                            setParameterValue(p, kUiPresetParams[i][p]);
+                        for (int p = 0; p < 6; ++p)
+                            fValue[p] = kUiPresetParams[i][p];
                         fProg = i;
                         repaint();
                         return true;
