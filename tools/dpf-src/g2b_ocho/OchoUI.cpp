@@ -271,6 +271,13 @@ protected:
             const int cur = (fProg >= 0 && fProg < total) ? fProg : 0;
             const char* nm = cur < kNumPresets ? kPresetNames[cur] : fUsrNames[cur - kNumPresets].c_str();
             text(48.0f, ay+9.0f, nm, nullptr);
+            // teller cur/totaal — zie meteen hoeveel shots geladen zijn (ook eigen samples)
+            {
+                char cb[24]; std::snprintf(cb, sizeof(cb), "%d/%d", cur + 1, total);
+                fontSize(8.5f); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
+                fillColor(g2bsk(fLight,3));
+                text(158.0f, ay+9.0f, cb, nullptr);
+            }
             // "808 ✓": maak de shot een echte 808 (sub + val + lengte + aanslag)
             beginPath(); roundedRect(246.0f, ay, 46.0f, 18.0f, 4.0f);
             fillColor(29, 122, 72); fill();
@@ -313,16 +320,16 @@ protected:
         if (ev.press)
         {
             // AAN/UIT pil
-            if (ev.pos.getX() >= 250.0f && ev.pos.getX() <= 294.0f &&
-                ev.pos.getY() >= 16.0f && ev.pos.getY() <= 33.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= 250.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 294.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 16.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 33.0f)
             { fOn = 1 - fOn; spv(11, (float)fOn); repaint(); return true; }
             // dobbelsteen (links onder titel)
-            if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 44.0f &&
-                ev.pos.getY() >= 46.0f && ev.pos.getY() <= 66.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 44.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 46.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 66.0f)
             { spv(9, 1.0f); repaint(); return true; }
             // 🌙 skin (rechtsboven)
-            if (ev.pos.getX() >= W - 40.0f && ev.pos.getX() <= W - 14.0f &&
-                ev.pos.getY() >= 34.0f && ev.pos.getY() <= 51.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= W - 40.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W - 14.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 34.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
             { fLight = (fLight + 1) % 8; repaint(); return true; }
             // ‹ › pijltjes: vorige / volgende smaak
             {
@@ -330,14 +337,14 @@ protected:
                 if (total > 0)
                 {
                     int cur = (fProg >= 0 && fProg < total) ? fProg : 0;
-                    if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 40.0f &&
-                        ev.pos.getY() >= 106.0f && ev.pos.getY() <= 124.0f)
+                    if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 40.0f &&
+                        (float)(ev.pos.getY()/getScaleFactor()) >= 106.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 124.0f)
                     {
                         cur = (cur + total - 1) % total;
                         spv(10, (float)cur); fProg = cur; repaint(); return true;
                     }
-                    if (ev.pos.getX() >= 212.0f && ev.pos.getX() <= 238.0f &&
-                        ev.pos.getY() >= 106.0f && ev.pos.getY() <= 124.0f)
+                    if ((float)(ev.pos.getX()/getScaleFactor()) >= 212.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 238.0f &&
+                        (float)(ev.pos.getY()/getScaleFactor()) >= 106.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 124.0f)
                     {
                         cur = (cur + 1) % total;
                         spv(10, (float)cur); fProg = cur; repaint(); return true;
@@ -345,8 +352,8 @@ protected:
                 }
             }
             // "808 ✓": perfecte 808-instellingen voor de gekozen shot
-            if (ev.pos.getX() >= 246.0f && ev.pos.getX() <= 292.0f &&
-                ev.pos.getY() >= 106.0f && ev.pos.getY() <= 124.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= 246.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 292.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 106.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 124.0f)
             {
                 // kick-punchy 808: korte staart, harde aanslag, snelle val
                 static const float v808[6] = {50.0f, 55.0f, 100.0f, 55.0f, 75.0f, 100.0f};
@@ -359,9 +366,9 @@ protected:
                 repaint(); return true;
             }
             // XY-pad
-            if (ev.pos.getX() >= fXX && ev.pos.getX() <= fXX + fXW &&
-                ev.pos.getY() >= fXY_ && ev.pos.getY() <= fXY_ + fXH)
-            { fXYdrag = true; xySet(ev.pos.getX(), ev.pos.getY()); return true; }
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= fXX && (float)(ev.pos.getX()/getScaleFactor()) <= fXX + fXW &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= fXY_ && (float)(ev.pos.getY()/getScaleFactor()) <= fXY_ + fXH)
+            { fXYdrag = true; xySet((float)(ev.pos.getX()/getScaleFactor()), (float)(ev.pos.getY()/getScaleFactor())); return true; }
             // smaak-klik? (2 rijen van 6)
             {
                 const float bw = 56.0f, bh = 17.0f, gap = 4.0f;
@@ -370,8 +377,8 @@ protected:
                     const int row = i / 8, col = i % 8;
                     const float bx = W - 14.0f - (8 - col) * (bw + gap);
                     const float by = 62.0f + row * (bh + 4.0f);
-                    if (ev.pos.getX() >= bx && ev.pos.getX() <= bx + bw &&
-                        ev.pos.getY() >= by && ev.pos.getY() <= by + bh)
+                    if ((float)(ev.pos.getX()/getScaleFactor()) >= bx && (float)(ev.pos.getX()/getScaleFactor()) <= bx + bw &&
+                        (float)(ev.pos.getY()/getScaleFactor()) >= by && (float)(ev.pos.getY()/getScaleFactor()) <= by + bh)
                     {
                         spv(10, (float)i);
                         fProg = i;
@@ -389,8 +396,8 @@ protected:
                     const int row = i / 8, col = i % 8;
                     const float bx = W - 14.0f - (8 - col) * (bw + gap);
                     const float by = 128.0f + row * (bh + 4.0f);
-                    if (ev.pos.getX() >= bx && ev.pos.getX() <= bx + bw &&
-                        ev.pos.getY() >= by && ev.pos.getY() <= by + bh)
+                    if ((float)(ev.pos.getX()/getScaleFactor()) >= bx && (float)(ev.pos.getX()/getScaleFactor()) <= bx + bw &&
+                        (float)(ev.pos.getY()/getScaleFactor()) >= by && (float)(ev.pos.getY()/getScaleFactor()) <= by + bh)
                     {
                         spv(10, (float)slot);
                         fProg = slot;
@@ -403,11 +410,11 @@ protected:
             {
                 const float cx = 20.0f + step * (i + 0.5f);
                 const float cy = 160.0f;
-                const float dx = ev.pos.getX() - cx;
-                const float dy = ev.pos.getY() - cy;
+                const float dx = (float)(ev.pos.getX()/getScaleFactor()) - cx;
+                const float dy = (float)(ev.pos.getY()/getScaleFactor()) - cy;
                 if (dx*dx + dy*dy <= 17.0f*17.0f + 60.0f)
                 {
-                    fDrag = i; fLastY = ev.pos.getY();
+                    fDrag = i; fLastY = (float)(ev.pos.getY()/getScaleFactor());
                     editParameter(paramOf(i), true);
                     return true;
                 }
@@ -442,10 +449,10 @@ protected:
 
     bool onMotion(const MotionEvent& ev) override
     {
-        if (fXYdrag) { xySet(ev.pos.getX(), ev.pos.getY()); return true; }
+        if (fXYdrag) { xySet((float)(ev.pos.getX()/getScaleFactor()), (float)(ev.pos.getY()/getScaleFactor())); return true; }
         if (fDrag < 0) return false;
-        const float dy = fLastY - ev.pos.getY();
-        fLastY = ev.pos.getY();
+        const float dy = fLastY - (float)(ev.pos.getY()/getScaleFactor());
+        fLastY = (float)(ev.pos.getY()/getScaleFactor());
         const float range = fMax[fDrag] - fMin[fDrag];
         float v = fValue[fDrag] + dy * range / 200.0f;
         if (v < fMin[fDrag]) v = fMin[fDrag];
@@ -464,8 +471,8 @@ protected:
         {
             const float cx = 20.0f + step * (i + 0.5f);
             const float cy = 160.0f;
-            const float dx = ev.pos.getX() - cx;
-            const float dy = ev.pos.getY() - cy;
+            const float dx = (float)(ev.pos.getX()/getScaleFactor()) - cx;
+            const float dy = (float)(ev.pos.getY()/getScaleFactor()) - cy;
             if (dx*dx + dy*dy <= 17.0f*17.0f + 60.0f)
             {
                 const float range = fMax[i] - fMin[i];
