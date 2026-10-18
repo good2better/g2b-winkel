@@ -9,11 +9,15 @@ static const int SK[8][7][3]={
  {22,10,26, 180,80,180, 240,160,255},
  {10,16,30, 60,120,220, 150,200,255},
  {18,18,18, 140,140,140, 230,230,230}};
+static const char* SNDNAMES[16]={"E-Piano","Rhodes","Orgel","Strings","Pad","Harp","Pluck","Marimba","Kalimba","Nylon","Steel","Sub Bas","Round Bas","Bell","Vibe","Chime"};
+static const char* GRPNAMES[6]={"KEYS","STRINGS","PLUCK","GITAAR","BAS","BELLS"};
+static const int GRPFIRST[6]={0,3,6,9,11,13};
+static const int GRPCOUNT[6]={3,3,3,2,2,3};
 class G2BChordUI : public UI {
 public:
     G2BChordUI() : UI(560,430){ loadSharedResources(); std::memset(fVal,0,sizeof fVal); }
 protected:
-    void parameterChanged(uint32_t i,float v) override { if(i<13)fVal[i]=v; if(i==9)fSkin=(int)v&7; repaint(); }
+    void parameterChanged(uint32_t i,float v) override { if(i<14)fVal[i]=v; if(i==9)fSkin=(int)v&7; repaint(); }
     void uiIdle() override {}
     void onNanoDisplay() override {
         auto C=[](const int*c,float a=1.f){return Color(c[0],c[1],c[2],a);};
@@ -42,7 +46,7 @@ protected:
         static const int PRG[16][4]={{0,5,3,4},{0,3,4,0},{5,3,0,4},{0,3,5,4},{0,4,5,3},{1,4,0,5},{5,4,0,3},{0,4,3,4},{2,5,0,4},{3,4,0,5},{0,2,3,4},{5,0,3,4},{0,3,0,4},{1,5,3,4},{0,4,5,5},{4,3,0,5}};
         static const char* SCH[8]={"majeur","mineur","dor","phryg","lyd","mixo","harm","mel"};
         static const char* VOI[4]={"triad","7th","9th","sus"};
-        static const char* KLN[8]={"e-piano","pad","pluck","orgel","bas","bel","strings","gitaar"};
+        static const char* KLN[16]={"E-Piano","Rhodes","Orgel","Strings","Pad","Harp","Pluck","Marimba","Kalimba","Nylon","Steel","SubBas","RoundBas","Bell","Vibe","Chime"};
         for(int k=0;k<4;k++){
             float a=-1.5708f+k*1.5708f;
             float x=cx+cosf(a)*R, y=cy+sinf(a)*R;
@@ -54,7 +58,7 @@ protected:
             text(x,y+1,nm,nullptr);
         }
         fillColor(C(S[2],0.7f));fontSize(10);
-        char info[64];snprintf(info,64,"%s %s · %s · %s",NAM[key],SCH[sc],VOI[(int)fVal[5]],KLN[(int)fVal[10]%8]);
+        char info[64];snprintf(info,64,"%s %s · %s · %s",NAM[key],SCH[sc],VOI[(int)fVal[5]],KLN[(int)fVal[10]%16]);
         textAlign(ALIGN_CENTER|ALIGN_TOP);text(cx,cy+R+18,info,nullptr);
         fCur=(fCur+1)%400;
         // XY-pad: kracht → · dimensies ↑
@@ -69,7 +73,7 @@ protected:
         fillColor(C(S[2],0.6f));fontSize(8.5f);textAlign(ALIGN_CENTER|ALIGN_TOP);
         text(fXX+fXW/2,fXY_+fXH+5,"XY · kracht → dimensies ↑",nullptr);
         // knobs — 9 stuks in raster van 4
-        static const char* LB[9]={"PRESET","TOON","LADDER","PROG","VOIC","TEMPO","KRACHT","DIMENTIES","KLANK"};
+        static const char* LB[9]={"PRESET","TOON","LADDER","PROG","VOIC","TEMPO","KRACHT","DIMENTIES","GELUID"};
         for(int i=0;i<9;i++){
             float kx=fKnobX+(i%4)*86, ky=fKnobY+(i/4)*96;
             beginPath();circle(kx,ky,26);fillColor(C(S[1],0.35f));fill();
@@ -80,6 +84,30 @@ protected:
             text(kx,ky+30,LB[i],nullptr);
             char vs[16];knValStr(i,vs);
             fontSize(10);fillColor(C(S[2]));text(kx,ky+40,vs,nullptr);
+        }
+        // klankkiezer — SOORT → GELUID (zoals normale VST's)
+        {
+          int g=(int)fVal[13]; if(g<0)g=0;if(g>5)g=5;
+          int cur=(int)fVal[10];
+          fontSize(9);fillColor(C(S[2],0.55f));textAlign(ALIGN_LEFT|ALIGN_TOP);
+          text(222,fBrY-12,"SOORT",nullptr);
+          text(312,fBrY-12,"GELUID",nullptr);
+          for(int i=0;i<6;i++){
+            float by=fBrY+i*19;
+            bool on=(i==g);
+            beginPath();roundedRect(222,by,84,17,4);
+            fillColor(on?C(S[1]):C(S[1],0.3f));fill();
+            fontSize(9.5f);fillColor(on?Color(255,255,255):C(S[2],0.65f));
+            textAlign(ALIGN_CENTER|ALIGN_MIDDLE);text(264,by+8.5f,GRPNAMES[i],nullptr);
+          }
+          for(int i=0;i<GRPCOUNT[g];i++){
+            int snd=GRPFIRST[g]+i; float by=fBrY+i*19;
+            bool on=(snd==cur);
+            beginPath();roundedRect(312,by,116,17,4);
+            fillColor(on?C(S[1]):C(S[1],0.3f));fill();
+            fontSize(9.5f);fillColor(on?Color(255,255,255):C(S[2],0.65f));
+            textAlign(ALIGN_CENTER|ALIGN_MIDDLE);text(370,by+8.5f,SNDNAMES[snd],nullptr);
+          }
         }
         // skin dots
         // dobbelsteen-knop: nieuwe deuntje+klank
@@ -99,6 +127,9 @@ protected:
         if(mx>=fXX&&mx<=fXX+fXW&&my>=fXY_&&my<=fXY_+fXH){fXYdrag=true;xySet(mx,my);return true;}
         for(int i=0;i<8;i++)if(fabs(mx-(66+i*13))<8&&fabs(my-(fSkinY+8))<10){setParameterValue(9,(float)i);return true;}
         if(mx>getWidth()-76&&mx<getWidth()-12&&my>fSkinY-2&&my<fSkinY+22){setParameterValue(11,1.0f);repaint();return true;}
+        // klankkiezer: SOORT- of GELUID-pil geklikt
+        if(mx>=222&&mx<=306&&my>=fBrY&&my<=fBrY+6*19){int g=(my-(int)fBrY)/19;setParameterValue(13,(float)g);fVal[13]=g;fVal[10]=GRPFIRST[g];repaint();return true;}
+        if(mx>=312&&mx<=428&&my>=fBrY&&my<=fBrY+3*19){int g=(int)fVal[13];if(g<0)g=0;if(g>5)g=5;int i=(my-(int)fBrY)/19;if(i<GRPCOUNT[g]){float snd=(float)(GRPFIRST[g]+i);setParameterValue(10,snd);fVal[10]=snd;repaint();return true;}}
         for(int i=0;i<9;i++){float kx=fKnobX+(i%4)*86,ky=fKnobY+(i/4)*96;
             if((mx-kx)*(mx-kx)+(my-ky)*(my-ky)<30*30){fDrag=i;fLastY=my;fMoved=false;return true;}}
         return false;
@@ -115,17 +146,18 @@ protected:
 private:
     void text(float x,float y,const char*t,std::nullptr_t){if(!t)return;DGL_NAMESPACE::NanoVG::text(x,y,t,nullptr);}
     static const int fKnobX=222, fKnobY=90, fBtnY=18, fSkinY=370;
+    static constexpr float fBrY=250.0f;   // klankkiezer-paneel
     int knParam(int i)const{static const int pFor[9]={7,2,3,4,5,6,1,8,10};return pFor[i];}
     float knMin(int i)const{static const float m[9]={0,0,0,0,0,40,0,0,0};return m[i];}
-    float knMax(int i)const{static const float m[9]={15,11,7,15,3,160,100,26,7};return m[i];}
+    float knMax(int i)const{static const float m[9]={15,11,7,15,3,160,100,26,15};return m[i];}
     float knNorm(int i)const{int p=knParam(i);return (fVal[p]-knMin(i))/(knMax(i)-knMin(i));}
     void knValStr(int i,char*b)const{
         int p=knParam(i);float v=fVal[p];
-        if(i==8){static const char* K[8]={"e-piano","pad","pluck","orgel","bas","bel","strings","gitaar"};snprintf(b,16,"%s",K[(int)v%8]);}
+        if(i==8){snprintf(b,16,"%s",SNDNAMES[(int)v%16]);}
         else snprintf(b,16,"%d",(int)v);
     }
     void xySet(float px,float py){float nx=(px-fXX)/fXW;if(nx<0)nx=0;if(nx>1)nx=1;float ny=(py-fXY_)/fXH;if(ny<0)ny=0;if(ny>1)ny=1;float kr=nx*100.f,dim=std::round((1.f-ny)*26.f);setParameterValue(1,kr);setParameterValue(8,dim);fVal[1]=kr;fVal[8]=dim;repaint();}
-    float fVal[13]; int fSkin=0,fDrag=-1,fCur=0;float fLastY=0; bool fXYdrag=false,fMoved=false; float fXX=0,fXY_=0,fXW=0,fXH=0;
+    float fVal[14]; int fSkin=0,fDrag=-1,fCur=0;float fLastY=0; bool fXYdrag=false,fMoved=false; float fXX=0,fXY_=0,fXW=0,fXH=0;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(G2BChordUI)
 };
 UI* createUI(){ return new G2BChordUI(); }
