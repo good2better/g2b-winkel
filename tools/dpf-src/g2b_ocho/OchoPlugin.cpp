@@ -45,7 +45,7 @@ static const float kSmpRel[16] = {0.12f, 0.04f, 0.04f, 0.12f, 0.10f, 0.06f, 0.04
 static const float kSmpLp[16]  = {90.0f, 0.0f, 0.0f, 0.0f, 120.0f, 0.0f, 0.0f, 0.0f,
                                   0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
-struct UsrSmp { char name[16]; std::vector<int16_t> d; int len = 0; float fix = 1.0f; }; // fix = pitch-correctie naar C
+struct UsrSmp { char name[16]; char set[16] = "MIJN"; std::vector<int16_t> d; int len = 0; float fix = 1.0f; }; // fix = pitch-correctie naar C; set = geluiden-map
 
 // minimale PCM16-wav lezer (mono/stereo → mono, resampled naar kSmpSR)
 static bool loadWav(const char* path, UsrSmp& u)
@@ -170,7 +170,7 @@ public:
     OchoPlugin()
         : Plugin(kParameterCount, 0, 0),
           fDecay(60.0f), fGlide(0.0f), fSub(30.0f), fClick(25.0f),
-          fPitchD(50.0f), fTune(0.0f), fLevel(80.0f), fKey(9.0f), fScale(0.0f),
+          fPitchD(50.0f), fTune(0.0f), fLevel(80.0f), fKey(0.0f), fScale(0.0f),
           fLastFreq(0.0f), fScopeN(0), fDecim(0)
     {
         recalc();
@@ -232,7 +232,7 @@ protected:
         case kKey:
             parameter.name = "Key"; parameter.symbol = "key";
             parameter.hints = kParameterIsInteger;
-            parameter.ranges = {0.0f, 11.0f, 9.0f};
+            parameter.ranges = {0.0f, 11.0f, 0.0f};
             break;
         case kScale:
             parameter.name = "Scale"; parameter.symbol = "scale";
@@ -364,7 +364,13 @@ protected:
                 const uint8_t* data = ev.data;
                 const uint8_t status = data[0] & 0xF0;
                 if (status == 0x90 && data[2] > 0)
-                    noteOn(snapKey(data[1]), data[2] / 127.0f, tuneMul);
+                {
+                    // KEY transponéért je hele patroon naar die toonsoort
+                    // (C3 = gekozen key), SCALE houdt het daarna in toon.
+                    const int tk = std::min(127, std::max(0,
+                        (int)data[1] + (int)std::lround(fKey)));
+                    noteOn(snapKey((uint8_t)tk), data[2] / 127.0f, tuneMul);
+                }
                 else if (status == 0x80 || (status == 0x90 && data[2] == 0))
                     noteOff(data[1]);
             }
@@ -375,9 +381,15 @@ protected:
             fNamesSent = true;
             if (!fUsr.empty())
             {
-                std::string nm;
-                for (const UsrSmp& u : fUsr) { if (!nm.empty()) nm += '|'; nm += u.name; }
+                std::string nm, st;
+                for (const UsrSmp& u : fUsr)
+                {
+                    if (!nm.empty()) nm += '|';
+                    if (!st.empty()) st += '|';
+                    nm += u.name; st += u.set;
+                }
                 setState("usrsmp", nm.c_str());
+                setState("usrset", st.c_str());
             }
         }
 
@@ -566,7 +578,7 @@ private:
     bool fNamesSent = false;
 
 #ifdef DISTRHO_OS_WINDOWS
-    void scanDirWin(const std::string& dir, int depth)
+    void scanDirWin(const std::string& dir, int depth, const char* set = nullptr)
     {
         WIN32_FIND_DATAA fd;
         HANDLE h = FindFirstFileA((dir + "\\*").c_str(), &fd);
@@ -577,7 +589,7 @@ private:
             const std::string full = dir + "\\" + fd.cFileName;
             if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
             {
-                if (depth < 2) scanDirWin(full, depth + 1);
+                if (depth < 2) scanDirWin(full, depth + 1, depth == 0 ? fd.cFileName : set);
                 continue;
             }
             const size_t L = std::strlen(fd.cFileName);
@@ -586,6 +598,7 @@ private:
             if (_stricmp(ext, ".wav")) continue;
             UsrSmp u;
             std::snprintf(u.name, sizeof(u.name), "%.12s", fd.cFileName);
+            if (set) std::snprintf(u.set, sizeof(u.set), "%.12s", set);
             char* dot = std::strchr(u.name, '.');
             if (dot) *dot = '\0';
             if (loadWav(full.c_str(), u)) fUsr.push_back(std::move(u));
@@ -593,7 +606,7 @@ private:
         FindClose(h);
     }
 #else
-    void scanDirNix(const std::string& dir, int depth)
+    void scanDirNix(const std::string& dir, int depth, const char* set = nullptr)
     {
         DIR* dp = opendir(dir.c_str());
         if (!dp) return;
@@ -607,7 +620,7 @@ private:
             if (stat(full.c_str(), &st)) continue;
             if (S_ISDIR(st.st_mode))
             {
-                if (depth < 2) scanDirNix(full, depth + 1);
+                if (depth < 2) scanDirNix(full, depth + 1, depth == 0 ? nm : set);
                 continue;
             }
             const size_t L = std::strlen(nm);
@@ -616,6 +629,7 @@ private:
             if (std::strcmp(ext, ".wav") && std::strcmp(ext, ".WAV")) continue;
             UsrSmp u;
             std::snprintf(u.name, sizeof(u.name), "%.12s", nm);
+            if (set) std::snprintf(u.set, sizeof(u.set), "%.12s", set);
             char* dot = std::strchr(u.name, '.');
             if (dot) *dot = '\0';
             if (loadWav(full.c_str(), u)) fUsr.push_back(std::move(u));
@@ -631,14 +645,20 @@ private:
 #ifdef DISTRHO_OS_WINDOWS
         const char* up = std::getenv("USERPROFILE");
         if (!up) return;
-        std::string dirs[2] = { std::string(up) + "\\Music\\G2B-Ocho-Samples",
-                                std::string(up) + "\\Documents\\G2B-Ocho-Samples" };
-        for (int d = 0; d < 2 && fUsr.empty(); ++d)
-            scanDirWin(dirs[d], 0);
+        // G2B-Ocho-Samples = je eigen shots (set "MIJN" of per submap);
+        // G2B-SMAAK-SETS = genre-mappen — elke submap = één set met de naam
+        // van de map (AFRO\*.wav → set AFRO). Zo werkt SET-wisselen.
+        const char* roots[4] = { "\\Music\\G2B-Ocho-Samples",
+                                 "\\Documents\\G2B-Ocho-Samples",
+                                 "\\Music\\G2B-SMAAK-SETS",
+                                 "\\Documents\\G2B-SMAAK-SETS" };
+        for (int d = 0; d < 4; ++d)
+            scanDirWin(std::string(up) + roots[d], 0);
 #else
         const char* home = std::getenv("HOME");
         if (!home) return;
         scanDirNix(std::string(home) + "/G2B-Ocho-Samples", 0);
+        scanDirNix(std::string(home) + "/G2B-SMAAK-SETS", 0);
 #endif
     }
 
