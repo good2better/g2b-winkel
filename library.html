@@ -166,12 +166,13 @@ function render() {
       "&body=" + encodeURIComponent(
         `Hoi Giorgio,\n\nIk wil graag een licentie voor "${p.titel}" ` +
         `voor mijn project.\n\nProject: \nGebruik (track/video/game/other): \n\nGroet`);
+    const duur = p.duur == null ? "" : (typeof p.duur === "string" ? p.duur : Math.round(p.duur) + "s");
     return `<div class="track">
-      <button class="play" data-src="${esc(p.preview)}"
-        aria-label="Speel ${esc(p.titel)}">▶</button>
+      ${p.preview ? `<button class="play" data-src="${esc(p.preview)}"
+        aria-label="Speel ${esc(p.titel)}">▶</button>` : `<span class="play" style="visibility:hidden">▶</span>`}
       <div class="info">
         <div class="titel">${esc(p.titel)}</div>
-        <div class="meta">${esc(p.groep || "")}${p.bpm ? " · " + p.bpm + " BPM" : ""} · ${p.duur ? Math.round(p.duur) + "s" : ""} · 100% eigenaar${p.stems ? ' · <span class="stems">STEMS ✓</span>' : ""}${(p.moods && p.moods.length) ? ' · <span class="moods">' + esc(p.moods.join(" · ")) + '</span>' : ""}</div>
+        <div class="meta">${esc(p.groep || "")}${p.bpm ? " · " + p.bpm + " BPM" : ""}${duur ? " · " + duur : ""} · 100% eigenaar${p.stems ? ' · <span class="stems">STEMS ✓</span>' : ""}${(p.moods && p.moods.length) ? ' · <span class="moods">' + esc(p.moods.join(" · ")) + '</span>' : ""}</div>
         <div class="prijzen">${prijzen || "prijs op aanvraag"}</div>
       </div>
       <a class="aanvraag" href="${mail}">LICENTIE ➜</a>
