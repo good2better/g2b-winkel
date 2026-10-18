@@ -150,7 +150,7 @@ protected:
         text(18.0f, 24.0f, "G2B OCHO-OCHO", nullptr);
         fontSize(10.0f);
         fillColor(143, 160, 152);
-        text(178.0f, 24.0f, "v6.8", nullptr);
+        text(178.0f, 24.0f, "v6.9", nullptr);
         fontSize(11.5f);
         fillColor(143, 160, 152);
         text(18.0f, 43.0f, "jouw Surinaamse one-shot machine — speel hem als een instrument", nullptr);
@@ -193,62 +193,6 @@ protected:
             fontSize(8.5f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
             fillColor(fOn ? Color(232,236,234) : g2bsk(fLight,3));
             text(ax + 22.0f, ay + 8.5f, fOn ? "AAN" : "UIT", nullptr);
-        }
-
-        // knoppen in een rij
-        const int n = 12;
-        const float step = (W - 40.0f) / n;
-        for (int i = 0; i < n; ++i)
-        {
-            const float cx = 20.0f + step * (i + 0.5f);
-            const float cy = 160.0f;
-            const float R  = 17.0f;
-            const float norm = (fValue[i] - fMin[i]) / (fMax[i] - fMin[i]);
-            const float ang = -2.4f + norm * 4.8f;
-
-            beginPath(); circle(cx, cy, R);
-            fillColor(30, 34, 33); fill();
-            strokeColor(42, 47, 45); strokeWidth(2.0f); stroke();
-
-            beginPath();
-            arc(cx, cy, R - 4.0f, -2.4f - 1.5708f, ang - 1.5708f, CW);
-            strokeColor(g2bsk(fLight,5)); strokeWidth(3.0f); stroke();
-
-            beginPath();
-            moveTo(cx, cy);
-            lineTo(cx + std::sin(ang) * (R - 8.0f),
-                   cy - std::cos(ang) * (R - 8.0f));
-            strokeColor(232, 236, 234); strokeWidth(3.0f); stroke();
-
-            fontSize(8.5f); fillColor(143, 160, 152);
-            textAlign(ALIGN_CENTER | ALIGN_TOP);
-            text(cx, cy + R + 8.0f, fLabel[i], nullptr);
-
-            // klik-flits: groene ring om de knop die je net klikte
-            if (fFlashTick > 0 && i == fFlash)
-            {
-                beginPath(); circle(cx, cy, R + 3.0f);
-                strokeColor(g2bsk(fLight,5)); strokeWidth(2.0f); stroke();
-            }
-            if (fFlashTick > 0 && i == 11) --fFlashTick;
-            fontSize(11.0f); fillColor(232, 236, 234);
-            char buf[24];
-            if (fMin[i] < 0.0f)
-                std::snprintf(buf, sizeof(buf), "%+.0f st", fValue[i]);
-            else if (i == 7)
-            { static const char* kn[12]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
-              std::snprintf(buf, sizeof(buf), "%s", kn[(int)fValue[i]%12]); }
-            else if (i == 8)
-                std::snprintf(buf, sizeof(buf), "%s", fValue[i]>0.5f?"major":"minor");
-            else if (i == 9)
-                std::snprintf(buf, sizeof(buf), "%.0f%%", fValue[i]);
-            else if (i == 10)
-                std::snprintf(buf, sizeof(buf), "%.0f/26", fValue[i]);
-            else if (i == 11)
-                std::snprintf(buf, sizeof(buf), "%s", (int)(fValue[i]+0.5f)==0?"DONKER":((int)(fValue[i]+0.5f)==2?"LICHT":"NEUTR"));
-            else
-                std::snprintf(buf, sizeof(buf), "%.0f %%", fValue[i]);
-            text(cx, cy + R + 23.0f, buf, nullptr);
         }
 
         fontSize(10.5f);
@@ -410,7 +354,6 @@ protected:
     {
         if (ev.button != 1) return false;
         const float W = getWidth();
-        const float step = (W - 40.0f) / 12;
         if (ev.press)
         {
             // AAN/UIT pil
@@ -513,53 +456,6 @@ protected:
                     }
                 }
             }
-            for (int i = 0; i < 12; ++i)
-            {
-                const float cx = 20.0f + step * (i + 0.5f);
-                const float cy = 160.0f;
-                const float dx = (float)(ev.pos.getX()/getScaleFactor()) - cx;
-                const float dy = (float)(ev.pos.getY()/getScaleFactor()) - cy;
-                // hele kolom: knop + label + waarde-tekst zijn allemaal klikbaar
-                if (std::fabs(dx) <= step / 2.0f && dy >= -19.0f && dy <= 45.0f)
-                {
-                    // discrete knoppen (KEY 0-11, SCALE 0-1, SFEER 0-2):
-                    // klik = volgende optie — slepen over zo'n klein bereik
-                    // komt nooit over de hele stap (zijn bug: "key werkt niet")
-                    if (i == 7 || i == 8 || i == 11)
-                    {
-                        float v = fValue[i] + 1.0f;
-                        if (v > fMax[i] + 0.5f) v = fMin[i];
-                        fValue[i] = v;
-                        const int pi = paramOf(i);
-                        editParameter(pi, true); spv(pi, v); editParameter(pi, false);
-                        fFlash = i; fFlashTick = 18;
-                        repaint();
-                        return true;
-                    }
-                    // gewone knoppen: klik links = stap omlaag, rechts = omhoog
-                    // (zodat ze ook werken zonder slepen — zijn "dode knoppen"-bug)
-                    {
-                        const float range2 = fMax[i] - fMin[i];
-                        const float dir = (float)(ev.pos.getX()/getScaleFactor()) < cx ? -1.0f : 1.0f;
-                        float v2 = fValue[i] + dir * range2 / 10.0f;
-                        if (v2 < fMin[i]) v2 = fMin[i];
-                        if (v2 > fMax[i]) v2 = fMax[i];
-                        fValue[i] = v2;
-                        const int pi2 = paramOf(i);
-                        editParameter(pi2, true); spv(pi2, v2); editParameter(pi2, false);
-                        fFlash = i; fFlashTick = 18;
-                    }
-                    fDrag = i; fLastY = (float)(ev.pos.getY()/getScaleFactor());
-                    editParameter(paramOf(i), true);
-                    repaint();
-                    return true;
-                }
-            }
-        }
-        else if (fDrag >= 0)
-        {
-            editParameter(paramOf(fDrag), false);
-            fDrag = -1;
         }
         return true;
     }
@@ -567,48 +463,6 @@ protected:
     // knop-slots: 0-8 = params 0-8, 9 KRACHT(12), 10 DIMENTIES(13), 11 SFEER(14)
     static int paramOf(int slot) { return slot < 9 ? slot : slot + 3; }
 
-    bool onMotion(const MotionEvent& ev) override
-    {
-        if (fDrag < 0) return false;
-        const float dy = fLastY - (float)(ev.pos.getY()/getScaleFactor());
-        fLastY = (float)(ev.pos.getY()/getScaleFactor());
-        const float range = fMax[fDrag] - fMin[fDrag];
-        float v = fValue[fDrag] + dy * range / 200.0f;
-        if (v < fMin[fDrag]) v = fMin[fDrag];
-        if (v > fMax[fDrag]) v = fMax[fDrag];
-        fValue[fDrag] = v;
-        spv(paramOf(fDrag), v);
-        repaint();
-        return true;
-    }
-
-    bool onScroll(const ScrollEvent& ev) override
-    {
-        const float W = getWidth();
-        const float step = (W - 40.0f) / 12;
-        for (int i = 0; i < 12; ++i)
-        {
-            const float cx = 20.0f + step * (i + 0.5f);
-            const float cy = 160.0f;
-            const float dx = (float)(ev.pos.getX()/getScaleFactor()) - cx;
-            const float dy = (float)(ev.pos.getY()/getScaleFactor()) - cy;
-            if (std::fabs(dx) <= step / 2.0f && dy >= -19.0f && dy <= 45.0f)
-            {
-                const float range = fMax[i] - fMin[i];
-                float v = fValue[i] + ev.delta.getY() * range / 100.0f;
-                if (v < fMin[i]) v = fMin[i];
-                if (v > fMax[i]) v = fMax[i];
-                fValue[i] = v;
-                const int pi = paramOf(i);
-                editParameter(pi, true);
-                spv(pi, v);
-                editParameter(pi, false);
-                repaint();
-                return true;
-            }
-        }
-        return true;
-    }
 
 private:
     static const int kScopeSize = 256;
