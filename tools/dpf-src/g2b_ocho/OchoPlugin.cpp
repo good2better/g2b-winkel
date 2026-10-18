@@ -591,10 +591,10 @@ private:
     void recalc()
     {
         const float sr = (float)getSampleRate();
-        // decay-knop → amp factor per sample (0%=0.12s .. 100%=3.5s)
-        const float decSec = 0.12f + (fDecay / 100.0f) * 3.38f;
+        // decay-knop → amp factor per sample (0%=0.06s .. 100%=0.9s — kick-strak, geen zoem)
+        const float decSec = 0.06f + (fDecay / 100.0f) * 0.84f;
         fDecRate = std::exp(-1.0f / (sr * decSec));
-        fRelRate = std::exp(-1.0f / (sr * 0.12f)); // ~120ms release bij note-off
+        fRelRate = std::exp(-1.0f / (sr * 0.04f)); // ~40ms release bij note-off — stopt als kick
         // glide-knop → freq approach (0=uit .. 100%=~0.35s)
         const float glSec = (fGlide / 100.0f) * 0.35f;
         fGlRate = glSec > 0.0001f ? 1.0f - std::exp(-1.0f / (sr * glSec)) : 1.0f;

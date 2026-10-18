@@ -347,8 +347,8 @@ protected:
             if (ev.pos.getX() >= 246.0f && ev.pos.getX() <= 292.0f &&
                 ev.pos.getY() >= 106.0f && ev.pos.getY() <= 124.0f)
             {
-                // DECAY lang, GLIDE aan, SUB vol, CLICK kort, DROP val, LEVEL vol
-                static const float v808[6] = {85.0f, 55.0f, 100.0f, 35.0f, 70.0f, 100.0f};
+                // kick-punchy 808: korte staart, harde aanslag, snelle val
+                static const float v808[6] = {50.0f, 55.0f, 100.0f, 55.0f, 75.0f, 100.0f};
                 static const int   p808[6] = {0, 1, 2, 3, 4, 6};
                 for (int i = 0; i < 6; ++i)
                 {
