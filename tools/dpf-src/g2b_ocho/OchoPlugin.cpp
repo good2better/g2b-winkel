@@ -37,6 +37,13 @@ static const int kNumPresets = kNumSmp;
 static const int kMaxVoices = 8;
 static const int kMaxUsr = 16;
 
+// per-smaak karakter (808-gidsen): release seconden + lowpass Hz op sub (0 = uit)
+// DONDER KICKBAS TRAP BOOM AFRO DEMBOW DRILL SUB808 SKRATJI BANGI KOTI AGOGO SEKI SURDO TIMBAL KLAP
+static const float kSmpRel[16] = {0.12f, 0.04f, 0.04f, 0.12f, 0.10f, 0.06f, 0.04f, 0.04f,
+                                  0.05f, 0.05f, 0.05f, 0.05f, 0.05f, 0.06f, 0.05f, 0.05f};
+static const float kSmpLp[16]  = {90.0f, 0.0f, 0.0f, 0.0f, 120.0f, 0.0f, 0.0f, 0.0f,
+                                  0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+
 struct UsrSmp { char name[16]; std::vector<int16_t> d; int len = 0; };
 
 // minimale PCM16-wav lezer (mono/stereo → mono, resampled naar kSmpSR)
@@ -118,6 +125,8 @@ struct Voice
     float rate = 1.0f;      // afspeel-snelheid (pitch)
     float trate = 1.0f;     // doel-snelheid (glide)
     int   smp = 0;          // welke one-shot
+    float relRate = 0.99f;  // per-smaak release (gids: trap kort, kawina/winti langer)
+    float lpA = 0.0f, lpS = 0.0f; // per-smaak lowpass op de sub-laag
 };
 
 class OchoPlugin : public Plugin
@@ -446,6 +455,12 @@ private:
         v->vel = vel;
         v->age = 0.0f;
         v->releasing = false;
+        // per-smaak release + sub-lowpass (eigen wav's: standaard 40ms, geen lp)
+        const float rel = (v->smp < kNumSmp) ? kSmpRel[v->smp] : 0.04f;
+        v->relRate = std::exp(-1.0f / (getSampleRate() * rel));
+        const float lp = (v->smp < kNumSmp) ? kSmpLp[v->smp] : 0.0f;
+        v->lpA = (lp > 0.0f) ? (1.0f - std::exp(-6.2831853f * lp / getSampleRate())) : 0.0f;
+        v->lpS = 0.0f;
         fLastFreq = f;
         fLastRate = rt;
     }
@@ -492,6 +507,7 @@ private:
             float xs = std::sin(v.phase * 6.28318530717959f);
             const float xd = std::tanh(xs * (1.0f + 2.5f * drive));
             xs = xs * (1.0f - drive) + xd * drive;
+            if (v.lpA > 0.0f) { v.lpS += v.lpA * (xs - v.lpS); xs = v.lpS; } // sub lowpass (Winti/Afro)
             x = x * (1.0f - drive * 0.5f) + xs * drive;
 
             // click: hoge korte tik bij de aanslag
@@ -507,7 +523,7 @@ private:
             v.pos += v.rate * drop * (float)kSmpSR / sr;
 
             s += x * v.amp * v.vel;
-            v.amp *= (v.releasing ? fRelRate : decRate);
+            v.amp *= (v.releasing ? v.relRate : decRate);
             v.age += 1.0f;
         }
 
