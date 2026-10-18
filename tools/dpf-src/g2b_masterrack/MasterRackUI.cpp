@@ -250,14 +250,14 @@ protected:
             if (ev.pos.getX() >= W-40.0f && ev.pos.getX() <= W-14.0f &&
                 ev.pos.getY() >= 34.0f && ev.pos.getY() <= 51.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
-            for (int i = 0; i < kNumPrograms; ++i)
+            {
+                float hbx = W - 14.0f;
+                for (int i = kNumPrograms - 1; i >= 0; --i)
                 {
-                    const float bw = 40.0f, bh = 14.0f;
-                    const int prow = i / 9, pcol = i % 9;
-                    const int cols = (prow == 0 ? 9 : 8);
-                    const float px = W - 48.0f - (cols - pcol) * (bw + 3.0f), py = 54.0f + prow * 15.0f;
-                    if (ev.pos.getX() >= px && ev.pos.getX() <= px + bw &&
-                        ev.pos.getY() >= py && ev.pos.getY() <= py + bh)
+                    const float bw = 62.0f, bh = 17.0f;
+                    hbx -= bw + 5.0f;
+                    if (ev.pos.getX() >= hbx && ev.pos.getX() <= hbx + bw &&
+                        ev.pos.getY() >= 12.0f && ev.pos.getY() <= 12.0f + bh)
                     {
                         spv(8, (float)i);
                         fProg = i;
@@ -265,6 +265,7 @@ protected:
                         return true;
                     }
                 }
+            }
         }
         const float step = (W - 40.0f) / 8;
         if (ev.press)
