@@ -75,6 +75,20 @@ protected:
             repaint();
             return;
         }
+        if (std::strcmp(key, "usrset") == 0)
+        {
+            fUsrSets.clear();
+            const char* p = value;
+            while (*p != '\0')
+            {
+                const char* bar = std::strchr(p, '|');
+                fUsrSets.push_back(bar ? std::string(p, bar - p) : std::string(p));
+                if (!bar) break;
+                p = bar + 1;
+            }
+            repaint();
+            return;
+        }
         if (std::strcmp(key, "scope") == 0)
         {
             const char* p = value;
@@ -271,13 +285,28 @@ protected:
             const int cur = (fProg >= 0 && fProg < total) ? fProg : 0;
             const char* nm = cur < kNumPresets ? kPresetNames[cur] : fUsrNames[cur - kNumPresets].c_str();
             text(48.0f, ay+9.0f, nm, nullptr);
-            // teller cur/totaal — zie meteen hoeveel shots geladen zijn (ook eigen samples)
+            // SET-label: welke geluiden-set je in zit (< > bladert erbinnen)
             {
-                char cb[24]; std::snprintf(cb, sizeof(cb), "%d/%d", cur + 1, total);
+                fontSize(8.5f); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
+                fillColor(29, 122, 72);
+                char sb[24]; std::snprintf(sb, sizeof(sb), "SET: %s", setOf(cur));
+                text(48.0f, ay - 3.0f, sb, nullptr);
+            }
+            // teller binnen de set + aantal shots in set
+            {
+                int lo, hi; setRange(cur, lo, hi);
+                char cb[24]; std::snprintf(cb, sizeof(cb), "%d/%d in set", cur - lo + 1, hi - lo);
                 fontSize(8.5f); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
                 fillColor(g2bsk(fLight,3));
-                text(158.0f, ay+9.0f, cb, nullptr);
+                text(158.0f, ay - 3.0f, cb, nullptr);
             }
+            // SET> knop: spring naar de volgende geluiden-set
+            beginPath(); roundedRect(158.0f, ay, 46.0f, 18.0f, 4.0f);
+            fillColor(g2bsk(fLight,1)); fill();
+            strokeColor(29, 122, 72); strokeWidth(1.0f); stroke();
+            fontSize(9.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            fillColor(g2bsk(fLight,2));
+            text(181.0f, ay+9.0f, "SET>", nullptr);
             // "808 ✓": maak de shot een echte 808 (sub + val + lengte + aanslag)
             beginPath(); roundedRect(246.0f, ay, 46.0f, 18.0f, 4.0f);
             fillColor(29, 122, 72); fill();
@@ -331,22 +360,30 @@ protected:
             if ((float)(ev.pos.getX()/getScaleFactor()) >= W - 40.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W - 14.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 34.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
             { fLight = (fLight + 1) % 8; repaint(); return true; }
-            // ‹ › pijltjes: vorige / volgende smaak
+            // ‹ › pijltjes: vorige / volgende shot BINNEN je set
             {
                 const int total = kNumPresets + (int)fUsrNames.size();
                 if (total > 0)
                 {
                     int cur = (fProg >= 0 && fProg < total) ? fProg : 0;
+                    int lo, hi; setRange(cur, lo, hi);
                     if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 40.0f &&
                         (float)(ev.pos.getY()/getScaleFactor()) >= 106.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 124.0f)
                     {
-                        cur = (cur + total - 1) % total;
+                        cur = cur - 1 < lo ? hi - 1 : cur - 1;
                         spv(10, (float)cur); fProg = cur; repaint(); return true;
                     }
                     if ((float)(ev.pos.getX()/getScaleFactor()) >= 212.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 238.0f &&
                         (float)(ev.pos.getY()/getScaleFactor()) >= 106.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 124.0f)
                     {
-                        cur = (cur + 1) % total;
+                        cur = cur + 1 >= hi ? lo : cur + 1;
+                        spv(10, (float)cur); fProg = cur; repaint(); return true;
+                    }
+                    // SET>: spring naar de eerste shot van de volgende set
+                    if ((float)(ev.pos.getX()/getScaleFactor()) >= 158.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 204.0f &&
+                        (float)(ev.pos.getY()/getScaleFactor()) >= 106.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 124.0f)
+                    {
+                        cur = hi >= total ? 0 : hi;
                         spv(10, (float)cur); fProg = cur; repaint(); return true;
                     }
                 }
@@ -501,6 +538,24 @@ private:
     float fLastY;
     int fProg = -1;
     std::vector<std::string> fUsrNames;
+    std::vector<std::string> fUsrSets;
+    // set-helpers: gebakken 16 = set "OCHO"; eigen shots dragen hun mapnaam
+    const char* setOf(int slot) const
+    {
+        if (slot < kNumPresets) return "OCHO";
+        const int u = slot - kNumPresets;
+        return (u >= 0 && u < (int)fUsrSets.size()) ? fUsrSets[u].c_str() : "MIJN";
+    }
+    void setRange(int slot, int& lo, int& hi) const
+    {
+        const int total = kNumPresets + (int)fUsrNames.size();
+        if (slot < kNumPresets) { lo = 0; hi = kNumPresets; return; }
+        const char* s = setOf(slot);
+        lo = slot;
+        while (lo > kNumPresets && std::strcmp(setOf(lo - 1), s) == 0) --lo;
+        hi = slot + 1;
+        while (hi < total && std::strcmp(setOf(hi), s) == 0) ++hi;
+    }
     int fLight = 0;
     int fOn = 1; bool fXYdrag = false;
     float fXX = 18.0f, fXY_ = 225.0f, fXW = 524.0f, fXH = 105.0f;
