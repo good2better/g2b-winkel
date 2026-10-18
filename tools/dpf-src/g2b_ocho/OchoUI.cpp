@@ -276,25 +276,31 @@ protected:
             strokeColor(42,47,45); strokeWidth(1.0f); stroke();
             fontSize(9.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
             fillColor(232,236,234);
-            text(269.0f, ay+9.0f, "808 \xE2\x9C\x93", nullptr);
+            text(269.0f, ay+9.0f, "808!", nullptr);
         }
 
         text(W * 0.5f, H - 8.0f,
              "MIDI-keyboard of piano-roll nodig — sleep = draaien · < > = smaak", nullptr);
         {
+            // dobbelsteen: vierkantje met 5 stippen (geen emoji-font nodig)
             float bx2 = 14.0f;
-            beginPath(); roundedRect(bx2, 48.0f, 26.0f, 17.0f, 4.0f);
+            beginPath(); roundedRect(bx2, 46.0f, 30.0f, 20.0f, 4.0f);
             fillColor(g2bsk(fLight,1)); fill();
-            strokeColor(42,47,45); strokeWidth(1.0f); stroke();
-            fontSize(11.0f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
-            fillColor(g2bsk(fLight,2));
-            text(bx2+13.0f, 56.5f, "🎲", nullptr);
+            strokeColor(g2bsk(fLight,5)); strokeWidth(1.2f); stroke();
+            fillColor(g2bsk(fLight,5));
+            {
+                const float dx2[5] = {bx2+7.5f, bx2+22.5f, bx2+15.0f, bx2+7.5f, bx2+22.5f};
+                const float dy2[5] = {52.0f,    52.0f,     56.0f,     60.0f,    60.0f};
+                for (int i = 0; i < 5; ++i)
+                { beginPath(); circle(dx2[i], dy2[i], 1.7f); fill(); }
+            }
             const float tx = W - 40.0f;
             beginPath(); roundedRect(tx, 34.0f, 26.0f, 17.0f, 4.0f);
             fillColor(g2bsk(fLight,1)); fill();
             strokeColor(42,47,45); strokeWidth(1.0f); stroke();
-            fontSize(10.0f);
-            text(tx+13.0f, 42.5f, fLight>0 ? "🌙" : "☀", nullptr);
+            fontSize(6.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            fillColor(g2bsk(fLight,2));
+            text(tx+13.0f, 42.5f, "SKIN", nullptr);
         }
     }
 
@@ -309,9 +315,9 @@ protected:
             if (ev.pos.getX() >= 250.0f && ev.pos.getX() <= 294.0f &&
                 ev.pos.getY() >= 16.0f && ev.pos.getY() <= 33.0f)
             { fOn = 1 - fOn; spv(11, (float)fOn); repaint(); return true; }
-            // 🎲 dobbelsteen (links onder titel)
-            if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 40.0f &&
-                ev.pos.getY() >= 48.0f && ev.pos.getY() <= 65.0f)
+            // dobbelsteen (links onder titel)
+            if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 44.0f &&
+                ev.pos.getY() >= 46.0f && ev.pos.getY() <= 66.0f)
             { spv(9, 1.0f); repaint(); return true; }
             // 🌙 skin (rechtsboven)
             if (ev.pos.getX() >= W - 40.0f && ev.pos.getX() <= W - 14.0f &&
