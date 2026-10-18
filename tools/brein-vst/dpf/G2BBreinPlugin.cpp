@@ -175,7 +175,7 @@ private:
     }
     // ---- EXPORT .MID: huidige patroon (met kracht + laag-schakelaars) wegschrijven ----
     void writeMid_(){
-        smf::MidiFile mf; mf.setTicksPerQuarterNote(480); mf.addTrack(1);
+        smf::MidiFile mf; mf.setTicksPerQuarterNote(480);
         int seq=0;
         for(const BNote&n:gen_){
             if(n.ch==9&&fDrums<0.5f)continue;
