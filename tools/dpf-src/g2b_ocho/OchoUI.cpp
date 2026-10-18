@@ -270,6 +270,13 @@ protected:
             const int cur = (fProg >= 0 && fProg < total) ? fProg : 0;
             const char* nm = cur < kNumPresets ? kPresetNames[cur] : fUsrNames[cur - kNumPresets].c_str();
             text(48.0f, ay+9.0f, nm, nullptr);
+            // "808 ✓": maak de shot een echte 808 (sub + val + lengte + aanslag)
+            beginPath(); roundedRect(246.0f, ay, 46.0f, 18.0f, 4.0f);
+            fillColor(29, 122, 72); fill();
+            strokeColor(42,47,45); strokeWidth(1.0f); stroke();
+            fontSize(9.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            fillColor(232,236,234);
+            text(269.0f, ay+9.0f, "808 \xE2\x9C\x93", nullptr);
         }
 
         text(W * 0.5f, H - 8.0f,
@@ -302,6 +309,48 @@ protected:
             if (ev.pos.getX() >= 250.0f && ev.pos.getX() <= 294.0f &&
                 ev.pos.getY() >= 16.0f && ev.pos.getY() <= 33.0f)
             { fOn = 1 - fOn; spv(11, (float)fOn); repaint(); return true; }
+            // 🎲 dobbelsteen (links onder titel)
+            if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 40.0f &&
+                ev.pos.getY() >= 48.0f && ev.pos.getY() <= 65.0f)
+            { spv(9, 1.0f); repaint(); return true; }
+            // 🌙 skin (rechtsboven)
+            if (ev.pos.getX() >= W - 40.0f && ev.pos.getX() <= W - 14.0f &&
+                ev.pos.getY() >= 34.0f && ev.pos.getY() <= 51.0f)
+            { fLight = (fLight + 1) % 8; repaint(); return true; }
+            // ‹ › pijltjes: vorige / volgende smaak
+            {
+                const int total = kNumPresets + (int)fUsrNames.size();
+                if (total > 0)
+                {
+                    int cur = (fProg >= 0 && fProg < total) ? fProg : 0;
+                    if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 40.0f &&
+                        ev.pos.getY() >= 106.0f && ev.pos.getY() <= 124.0f)
+                    {
+                        cur = (cur + total - 1) % total;
+                        spv(10, (float)cur); fProg = cur; repaint(); return true;
+                    }
+                    if (ev.pos.getX() >= 212.0f && ev.pos.getX() <= 238.0f &&
+                        ev.pos.getY() >= 106.0f && ev.pos.getY() <= 124.0f)
+                    {
+                        cur = (cur + 1) % total;
+                        spv(10, (float)cur); fProg = cur; repaint(); return true;
+                    }
+                }
+            }
+            // "808 ✓": perfecte 808-instellingen voor de gekozen shot
+            if (ev.pos.getX() >= 246.0f && ev.pos.getX() <= 292.0f &&
+                ev.pos.getY() >= 106.0f && ev.pos.getY() <= 124.0f)
+            {
+                // DECAY lang, GLIDE aan, SUB vol, CLICK kort, DROP val, LEVEL vol
+                static const float v808[6] = {85.0f, 55.0f, 100.0f, 35.0f, 70.0f, 100.0f};
+                static const int   p808[6] = {0, 1, 2, 3, 4, 6};
+                for (int i = 0; i < 6; ++i)
+                {
+                    const int p = p808[i];
+                    editParameter(p, true); spv(p, v808[i]); editParameter(p, false);
+                }
+                repaint(); return true;
+            }
             // XY-pad
             if (ev.pos.getX() >= fXX && ev.pos.getX() <= fXX + fXW &&
                 ev.pos.getY() >= fXY_ && ev.pos.getY() <= fXY_ + fXH)
