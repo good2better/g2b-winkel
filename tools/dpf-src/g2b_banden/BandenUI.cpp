@@ -228,13 +228,13 @@ protected:
         {
             if (ev.pos.getX() >= W-96.0f && ev.pos.getX() <= W-44.0f &&
                 ev.pos.getY() >= 33.0f && ev.pos.getY() <= 51.0f)
-            { fOn = fOn>0.5f?0.f:1.f; setParameterValue(11, fOn); repaint(); return true; }
+            { fOn = fOn>0.5f?0.f:1.f; spv(11, fOn); repaint(); return true; }
             if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 40.0f &&
                 ev.pos.getY() >= 48.0f && ev.pos.getY() <= 65.0f)
-            { setParameterValue(9, 1.0f); repaint(); return true; }
+            { spv(9, 1.0f); repaint(); return true; }
             if (ev.pos.getX() >= 44.0f && ev.pos.getX() <= 78.0f &&
                 ev.pos.getY() >= 48.0f && ev.pos.getY() <= 65.0f)
-            { setParameterValue(7, 1.0f); repaint(); return true; }
+            { spv(7, 1.0f); repaint(); return true; }
             if (ev.pos.getX() >= W-40.0f && ev.pos.getX() <= W-14.0f &&
                 ev.pos.getY() >= 34.0f && ev.pos.getY() <= 51.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
@@ -248,7 +248,7 @@ protected:
                     if (ev.pos.getX() >= px && ev.pos.getX() <= px + bw &&
                         ev.pos.getY() >= py && ev.pos.getY() <= py + bh)
                     {
-                        setParameterValue(9, (float)i);
+                        spv(9, (float)i);
                         fProg = i;
                         repaint();
                         return true;
@@ -290,7 +290,7 @@ protected:
         if (v < fMin[fDrag]) v = fMin[fDrag];
         if (v > fMax[fDrag]) v = fMax[fDrag];
         fValue[fDrag] = v;
-        setParameterValue(fDrag < 7 ? fDrag : (fDrag == 7 ? 8 : 12), v);
+        spv(fDrag < 7 ? fDrag : (fDrag == 7 ? 8 : 12), v);
         repaint();
         return true;
     }
@@ -313,7 +313,7 @@ protected:
                 if (v > fMax[i]) v = fMax[i];
                 fValue[i] = v;
                 editParameter(i < 7 ? i : (i == 7 ? 8 : 12), true);
-                setParameterValue(i < 7 ? i : (i == 7 ? 8 : 12), v);
+                spv(i < 7 ? i : (i == 7 ? 8 : 12), v);
                 editParameter(i < 7 ? i : (i == 7 ? 8 : 12), false);
                 repaint();
                 return true;
@@ -335,6 +335,7 @@ private:
     int fProg;
     int fLight = 0;
 
+    void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BandenUI)
 };
 

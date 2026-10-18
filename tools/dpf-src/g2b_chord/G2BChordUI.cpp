@@ -81,22 +81,22 @@ protected:
             if(i==fSkin){beginPath();circle(66+i*13,fSkinY+8,7);strokeColor(Color(255,255,255));strokeWidth(1.5f);stroke();}}
     }
     bool onMouse(const MouseEvent&ev) override {
-        if(!ev.press){fDrag=-1;fXYdrag=false;return true;}
+        if(!ev.press){if(fDrag>=0&&!fMoved){int i=fDrag;float mn=knMin(i),mx=knMax(i),st=(mx-mn)<=32?1.f:(mx-mn)/20.f;float v=fVal[knParam(i)]+st;if(v>mx)v=mn;spv(knParam(i),v);fVal[knParam(i)]=v;repaint();}fDrag=-1;fXYdrag=false;fMoved=false;return true;}
         int mx=ev.pos.getX(),my=ev.pos.getY();
-        if(mx>getWidth()-100&&mx<getWidth()-20&&my>fBtnY-12&&my<fBtnY+22){setParameterValue(0,fVal[0]>0.5f?0.f:1.f);return true;}
+        if(mx>getWidth()-100&&mx<getWidth()-20&&my>fBtnY-12&&my<fBtnY+22){float ov=fVal[0]>0.5f?0.f:1.f;spv(0,ov);fVal[0]=ov;repaint();return true;}
         if(mx>=fXX&&mx<=fXX+fXW&&my>=fXY_&&my<=fXY_+fXH){fXYdrag=true;xySet(mx,my);return true;}
-        for(int i=0;i<8;i++)if(fabs(mx-(66+i*13))<8&&fabs(my-(fSkinY+8))<10){setParameterValue(9,(float)i);return true;}
+        for(int i=0;i<8;i++)if(fabs(mx-(66+i*13))<8&&fabs(my-(fSkinY+8))<10){spv(9,(float)i);return true;}
         for(int i=0;i<8;i++){float kx=fKnobX+(i%4)*86,ky=fKnobY+(i/4)*96;
-            if((mx-kx)*(mx-kx)+(my-ky)*(my-ky)<30*30){fDrag=i;fLastY=my;return true;}}
+            if((mx-kx)*(mx-kx)+(my-ky)*(my-ky)<30*30){fDrag=i;fLastY=my;fMoved=false;return true;}}
         return false;
     }
     bool onMotion(const MotionEvent&ev) override {
         if(fXYdrag){xySet((float)ev.pos.getX(),(float)ev.pos.getY());return true;}
         if(fDrag<0)return false;
-        float dy=fLastY-(float)ev.pos.getY();fLastY=(float)ev.pos.getY();
+        float dy=fLastY-(float)ev.pos.getY();fLastY=(float)ev.pos.getY();if(dy!=0)fMoved=true;
         float n=knNorm(fDrag)+dy*0.005f;
         if(n<0)n=0;if(n>1)n=1;
-        setParameterValue(knParam(fDrag),knMin(fDrag)+n*(knMax(fDrag)-knMin(fDrag)));
+        float nv=knMin(fDrag)+n*(knMax(fDrag)-knMin(fDrag));spv(knParam(fDrag),nv);fVal[knParam(fDrag)]=nv;repaint();
         return true;
     }
 private:
@@ -110,8 +110,9 @@ private:
         int p=knParam(i);float v=fVal[p];
         if(i<5)snprintf(b,16,"%d",(int)v);else snprintf(b,16,"%d",(int)v);
     }
-    void xySet(float px,float py){float nx=(px-fXX)/fXW;if(nx<0)nx=0;if(nx>1)nx=1;float ny=(py-fXY_)/fXH;if(ny<0)ny=0;if(ny>1)ny=1;float kr=nx*100.f,dim=std::round((1.f-ny)*26.f);setParameterValue(1,kr);setParameterValue(8,dim);fVal[1]=kr;fVal[8]=dim;repaint();}
-    float fVal[10]; int fSkin=0,fDrag=-1,fCur=0;float fLastY=0; bool fXYdrag=false; float fXX=0,fXY_=0,fXW=0,fXH=0;
+    void xySet(float px,float py){float nx=(px-fXX)/fXW;if(nx<0)nx=0;if(nx>1)nx=1;float ny=(py-fXY_)/fXH;if(ny<0)ny=0;if(ny>1)ny=1;float kr=nx*100.f,dim=std::round((1.f-ny)*26.f);spv(1,kr);spv(8,dim);fVal[1]=kr;fVal[8]=dim;repaint();}
+    float fVal[10]; int fSkin=0,fDrag=-1,fCur=0;float fLastY=0; bool fXYdrag=false,fMoved=false; float fXX=0,fXY_=0,fXW=0,fXH=0;
+    void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(G2BChordUI)
 };
 UI* createUI(){ return new G2BChordUI(); }

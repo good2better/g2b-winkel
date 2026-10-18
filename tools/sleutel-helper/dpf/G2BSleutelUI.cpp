@@ -211,38 +211,38 @@ protected:
     bool onMouse(const MouseEvent& ev) override
     {
         const float W=getWidth();
-        if(!ev.press){ fDrag=-1; fXYdrag=false; return true; }
+        if(!ev.press){if(fDrag>=0&&!fMoved){int i=fDrag;float mn=fMin[i],mx=fMax[i],st=(mx-mn)<=32?1.f:(mx-mn)/20.f;float v=fValue[i]+st;if(v>mx)v=mn;spv(fParamId[i],v);fValue[i]=v;repaint();}fDrag=-1;fXYdrag=false;fMoved=false;return true;}
         if(ev.pos.getX()>=fXX&&ev.pos.getX()<=fXX+fXW&&ev.pos.getY()>=fXY_&&ev.pos.getY()<=fXY_+fXH){fXYdrag=true;xySet(ev.pos);return true;}
         // knobs eerst (drag-start)
         for(int i=0;i<2;i++){
             const float cx=W-190+i*100, cy=fKnobY+18;
             const float dx=ev.pos.getX()-cx, dy=ev.pos.getY()-cy;
-            if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=ev.pos.getY();return true;}
+            if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=ev.pos.getY();fMoved=false;return true;}
         }
         // focus pills
         if(ev.pos.getY()>=fPillY&&ev.pos.getY()<=fPillY+24){
             for(int i=0;i<4;i++){const float x=16+i*92;
-                if(ev.pos.getX()>=x&&ev.pos.getX()<=x+84){setParameterValue(1,(float)i);fFocus=i;repaint();return true;}}
-            if(ev.pos.getX()>=W-236&&ev.pos.getX()<=W-170){setParameterValue(12,1.f);return true;}
-            if(ev.pos.getX()>=W-164&&ev.pos.getX()<=W-96){const float v=fOn>0.5f?0.f:1.f;setParameterValue(0,v);fOn=v;repaint();return true;}
-            if(ev.pos.getX()>=W-88){setParameterValue(5,1.f);return true;}
+                if(ev.pos.getX()>=x&&ev.pos.getX()<=x+84){spv(1,(float)i);fFocus=i;repaint();return true;}}
+            if(ev.pos.getX()>=W-236&&ev.pos.getX()<=W-170){spv(12,1.f);return true;}
+            if(ev.pos.getX()>=W-164&&ev.pos.getX()<=W-96){const float v=fOn>0.5f?0.f:1.f;spv(0,v);fOn=v;repaint();return true;}
+            if(ev.pos.getX()>=W-88){spv(5,1.f);return true;}
         }
         // skin dots
         if(ev.pos.getY()>=fSkinY&&ev.pos.getY()<=fSkinY+32)
-            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){setParameterValue(4,(float)i);fSkin=i;repaint();return true;}
+            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){spv(4,(float)i);fSkin=i;repaint();return true;}
         return true;
     }
 
     bool onMotion(const MotionEvent& ev) override
     {
         if(fXYdrag){xySet(ev.pos);return true;}
-        if(fDrag>=0){
+        if(fDrag>=0){fMoved=true;
             const float dv=(fLastY-ev.pos.getY())*(fMax[fDrag]-fMin[fDrag])/150.f;
             fLastY=ev.pos.getY();
             float v=fValue[fDrag]+dv;
             if(v<fMin[fDrag])v=fMin[fDrag];
             if(v>fMax[fDrag])v=fMax[fDrag];
-            setParameterValue(fParamId[fDrag],v);
+            spv(fParamId[fDrag],v);
             return true;
         }
         return false;
@@ -250,13 +250,14 @@ protected:
 
 private:
     float fMin[2],fMax[2],fValue[2]; const char* fLabel[2]; int fParamId[2];
-    int fDrag; float fLastY;
+    int fDrag; bool fMoved=false; float fLastY;
     float fOn,fFocus,fSkin; uint32_t fMask,fFoc; int fConf;
     char fKey[32], fSug1[64], fSug2[64], fSug3[96], fChord[16]={0}, fHint[40]={0};
     float fPillY=62,fPianoY=104,fKnobY=0,fSkinX=0,fSkinY=0;
     bool fXYdrag=false; float fXX=0,fXY_=0,fXW=0,fXH=0;
-    void xySet(const Point<double>&p){float nx=(p.getX()-fXX)/fXW;if(nx<0)nx=0;if(nx>1)nx=1;float ny=(p.getY()-fXY_)/fXH;if(ny<0)ny=0;if(ny>1)ny=1;float kr=fMin[0]+nx*(fMax[0]-fMin[0]),dim=fMin[1]+std::round((1.f-ny)*(fMax[1]-fMin[1]));setParameterValue(fParamId[0],kr);setParameterValue(fParamId[1],dim);fValue[0]=kr;fValue[1]=dim;repaint();}
+    void xySet(const Point<double>&p){float nx=(p.getX()-fXX)/fXW;if(nx<0)nx=0;if(nx>1)nx=1;float ny=(p.getY()-fXY_)/fXH;if(ny<0)ny=0;if(ny>1)ny=1;float kr=fMin[0]+nx*(fMax[0]-fMin[0]),dim=fMin[1]+std::round((1.f-ny)*(fMax[1]-fMin[1]));spv(fParamId[0],kr);spv(fParamId[1],dim);fValue[0]=kr;fValue[1]=dim;repaint();}
 
+    void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SleutelUI)
 };
 

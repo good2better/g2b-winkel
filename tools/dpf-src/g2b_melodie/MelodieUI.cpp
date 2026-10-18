@@ -272,16 +272,16 @@ protected:
                 const int prow=i/8, pcol=i%8;
                 const float px=W-48.0f-((prow<2?8:1)-pcol)*(bw+4.0f), py=12.0f+prow*18.0f;
                 if(ev.pos.getX()>=px&&ev.pos.getX()<=px+bw&&ev.pos.getY()>=py&&ev.pos.getY()<=py+bh){
-                    setParameterValue(9,(float)i);fProg=i;repaint();return true;
+                    spv(9,(float)i);fProg=i;repaint();return true;
                 }
             }
             if(ev.pos.getX()>=44.0f&&ev.pos.getX()<=82.0f&&ev.pos.getY()>=48.0f&&ev.pos.getY()<=65.0f){
-                fAuto=fAuto>0.5f?0.f:1.f;setParameterValue(8,fAuto);repaint();return true;}
+                fAuto=fAuto>0.5f?0.f:1.f;spv(8,fAuto);repaint();return true;}
             if(ev.pos.getX()>=14.0f&&ev.pos.getX()<=40.0f&&ev.pos.getY()>=48.0f&&ev.pos.getY()<=65.0f){
-                setParameterValue(7,1.0f);repaint();return true;}
+                spv(7,1.0f);repaint();return true;}
             // AAN/UIT pil
             if(ev.pos.getX()>=W-48.0f&&ev.pos.getX()<=W-4.0f&&ev.pos.getY()>=12.0f&&ev.pos.getY()<=29.0f){
-                fOn=1-fOn;setParameterValue(10,(float)fOn);repaint();return true;}
+                fOn=1-fOn;spv(10,(float)fOn);repaint();return true;}
             // XY-pad
             if(ev.pos.getX()>=fXX&&ev.pos.getX()<=fXX+fXW&&ev.pos.getY()>=fXY_&&ev.pos.getY()<=fXY_+fXH){
                 fXYdrag=true;xySet(ev.pos.getX(),ev.pos.getY());return true;}
@@ -305,8 +305,8 @@ protected:
         if(nx<0)nx=0;if(nx>1)nx=1;if(ny<0)ny=0;if(ny>1)ny=1;
         const float kr=nx*100.0f, dm=ny*26.0f;
         fValue[7]=kr;fValue[8]=dm;
-        editParameter(11,true);setParameterValue(11,kr);editParameter(11,false);
-        editParameter(12,true);setParameterValue(12,dm);editParameter(12,false);
+        editParameter(11,true);spv(11,kr);editParameter(11,false);
+        editParameter(12,true);spv(12,dm);editParameter(12,false);
         repaint();
     }
     bool onMotion(const MotionEvent& ev) override
@@ -319,7 +319,7 @@ protected:
         if(v<fMin[fDrag])v=fMin[fDrag];if(v>fMax[fDrag])v=fMax[fDrag];
         // integer params afronden
         if(fDrag<=3)v=std::floor(v+0.5f);
-        fValue[fDrag]=v;setParameterValue(paramOf(fDrag),v);repaint();return true;
+        fValue[fDrag]=v;spv(paramOf(fDrag),v);repaint();return true;
     }
     bool onScroll(const ScrollEvent& ev) override
     {
@@ -332,7 +332,7 @@ protected:
                 float v=fValue[i]+ev.delta.getY()*range/100.0f;
                 if(i<=3)v=std::floor(v+0.5f);
                 if(v<fMin[i])v=fMin[i];if(v>fMax[i])v=fMax[i];
-                fValue[i]=v;const int pi=paramOf(i);editParameter(pi,true);setParameterValue(pi,v);editParameter(pi,false);
+                fValue[i]=v;const int pi=paramOf(i);editParameter(pi,true);spv(pi,v);editParameter(pi,false);
                 repaint();return true;
             }
         }
@@ -347,6 +347,7 @@ private:
     int fDrag;float fLastY;int fProg;int fStep;float fAuto;int fLight;
     int fOn=1; bool fXYdrag=false;
     float fXX=18.0f,fXY_=282.0f,fXW=524.0f,fXH=58.0f;
+    void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MelodieUI)
 };
 

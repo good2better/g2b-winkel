@@ -121,26 +121,26 @@ protected:
     bool onMouse(const MouseEvent& ev) override
     {
         const float W=getWidth();
-        if(!ev.press){ fDrag=-1; return true; }
+        if(!ev.press){if(fDrag>=0&&!fMoved){int i=fDrag;float mn=fMin[i],mx=fMax[i],st=(mx-mn)<=32?1.f:(mx-mn)/20.f;float v=fValue[i]+st;if(v>mx)v=mn;spv(fParamId[i],v);fValue[i]=v;repaint();}fDrag=-1;fMoved=false;return true;}
         if(ev.pos.getY()>=fBtnY-8&&ev.pos.getY()<=fBtnY+18&&ev.pos.getX()>=W-96){
-            const float v=fOn>0.5f?0.f:1.f;setParameterValue(0,v);fOn=v;repaint();return true;}
+            const float v=fOn>0.5f?0.f:1.f;spv(0,v);fOn=v;repaint();return true;}
         for(int i=0;i<K;i++){
             const float cx=fKnobX+(i%4)*86, cy=fKnobY+(i/4)*96;
             const float dx=ev.pos.getX()-cx, dy=ev.pos.getY()-cy;
-            if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=ev.pos.getY();return true;}
+            if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=ev.pos.getY();fMoved=false;return true;}
         }
         if(ev.pos.getY()>=fSkinY&&ev.pos.getY()<=fSkinY+32)
-            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){setParameterValue(9,(float)i);fSkin=i;repaint();return true;}
+            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){spv(9,(float)i);fSkin=i;repaint();return true;}
         return true;
     }
     bool onMotion(const MotionEvent& ev) override
     {
-        if(fDrag>=0){
+        if(fDrag>=0){fMoved=true;
             const float dv=(fLastY-ev.pos.getY())*(fMax[fDrag]-fMin[fDrag])/150.f;
             fLastY=ev.pos.getY();
             float v=fValue[fDrag]+dv;
             if(v<fMin[fDrag])v=fMin[fDrag]; if(v>fMax[fDrag])v=fMax[fDrag];
-            setParameterValue(fParamId[fDrag],v);
+            spv(fParamId[fDrag],v);
             fValue[fDrag]=v; repaint();
             return true;
         }
@@ -149,8 +149,9 @@ protected:
 private:
     static const int K=9;
     float fMin[K],fMax[K],fValue[K]; const char* fLabel[K]; int fParamId[K];
-    int fDrag; float fLastY; float fOn,fSkin;
+    int fDrag; bool fMoved=false; float fLastY; float fOn,fSkin;
     float fBtnY=14,fKnobX=0,fKnobY=0,fSkinY=0; float fXX=0,fXY_=0,fXW=0,fXH=0;
+    void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GlueUI)
 };
 

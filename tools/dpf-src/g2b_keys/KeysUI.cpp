@@ -237,7 +237,7 @@ protected:
         {
             if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 40.0f &&
                 ev.pos.getY() >= 48.0f && ev.pos.getY() <= 65.0f)
-            { setParameterValue(7, 1.0f); repaint(); return true; }
+            { spv(7, 1.0f); repaint(); return true; }
             if (ev.pos.getX() >= W-40.0f && ev.pos.getX() <= W-14.0f &&
                 ev.pos.getY() >= 34.0f && ev.pos.getY() <= 51.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
@@ -245,7 +245,7 @@ protected:
             // AAN/UIT pil
             if (ev.pos.getX() >= W-48.0f && ev.pos.getX() <= W-4.0f &&
                 ev.pos.getY() >= 12.0f && ev.pos.getY() <= 29.0f)
-            { fOn = 1 - fOn; setParameterValue(9, (float)fOn); repaint(); return true; }
+            { fOn = 1 - fOn; spv(9, (float)fOn); repaint(); return true; }
             // XY-pad
             if (ev.pos.getX() >= fXX && ev.pos.getX() <= fXX + fXW &&
                 ev.pos.getY() >= fXY_ && ev.pos.getY() <= fXY_ + fXH)
@@ -259,7 +259,7 @@ protected:
                 if (ev.pos.getX() >= px && ev.pos.getX() <= px + bw &&
                     ev.pos.getY() >= py && ev.pos.getY() <= py + bh)
                 {
-                    setParameterValue(8, (float)i);
+                    spv(8, (float)i);
                     fProg = i;
                     repaint();
                     return true;
@@ -305,8 +305,8 @@ protected:
         const float lv = fMin[6] + nx * (fMax[6] - fMin[6]);
         const float dm = ny * 26.0f;
         fValue[6] = lv; fValue[7] = dm;
-        editParameter(4, true);  setParameterValue(4, lv); editParameter(4, false);
-        editParameter(10, true); setParameterValue(10, dm); editParameter(10, false);
+        editParameter(4, true);  spv(4, lv); editParameter(4, false);
+        editParameter(10, true); spv(10, dm); editParameter(10, false);
         repaint();
     }
 
@@ -321,7 +321,7 @@ protected:
         if (v < fMin[fDrag]) v = fMin[fDrag];
         if (v > fMax[fDrag]) v = fMax[fDrag];
         fValue[fDrag] = v;
-        setParameterValue(paramOf(fDrag), v);
+        spv(paramOf(fDrag), v);
         repaint();
         return true;
     }
@@ -345,7 +345,7 @@ protected:
                 fValue[i] = v;
                 const int p = paramOf(i);
                 editParameter(p, true);
-                setParameterValue(p, v);
+                spv(p, v);
                 editParameter(p, false);
                 repaint();
                 return true;
@@ -369,6 +369,7 @@ private:
     bool fXYdrag = false;
     float fXX = 18.0f, fXY_ = 240.0f, fXW = 524.0f, fXH = 62.0f;
 
+    void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeysUI)
 };
 

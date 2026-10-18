@@ -242,14 +242,14 @@ protected:
                 fLight=(fLight+1)%8;repaint();return true;
             }
             if(ev.pos.getX()>=14.0f&&ev.pos.getX()<=40.0f&&ev.pos.getY()>=50.0f&&ev.pos.getY()<=67.0f){
-                setParameterValue(4,1.0f);repaint();return true;
+                spv(4,1.0f);repaint();return true;
             }
             if(ev.pos.getX()>=44.0f&&ev.pos.getX()<=82.0f&&ev.pos.getY()>=50.0f&&ev.pos.getY()<=67.0f){
-                fAuto=fAuto>0.5f?0.f:1.f;setParameterValue(5,fAuto);repaint();return true;
+                fAuto=fAuto>0.5f?0.f:1.f;spv(5,fAuto);repaint();return true;
             }
             // AAN/UIT pil
             if(ev.pos.getX()>=W-48.0f&&ev.pos.getX()<=W-4.0f&&ev.pos.getY()>=12.0f&&ev.pos.getY()<=29.0f){
-                fOn=1-fOn;setParameterValue(7,(float)fOn);repaint();return true;
+                fOn=1-fOn;spv(7,(float)fOn);repaint();return true;
             }
             // XY-pad
             if(ev.pos.getX()>=fXX&&ev.pos.getX()<=fXX+fXW&&ev.pos.getY()>=fXY_&&ev.pos.getY()<=fXY_+fXH){
@@ -260,7 +260,7 @@ protected:
                 const int prow=i/8, pcol=i%8;
                 const float px=W-48.0f-((prow<2?8:1)-pcol)*(bw+4.0f), py=12.0f+prow*18.0f;
                 if(ev.pos.getX()>=px&&ev.pos.getX()<=px+bw&&ev.pos.getY()>=py&&ev.pos.getY()<=py+bh){
-                    setParameterValue(6,(float)i);fProg=i;repaint();return true;
+                    spv(6,(float)i);fProg=i;repaint();return true;
                 }
             }
         }
@@ -283,8 +283,8 @@ protected:
         if(nx<0)nx=0;if(nx>1)nx=1;if(ny<0)ny=0;if(ny>1)ny=1;
         const float kr=nx*100.0f, dm=ny*26.0f;
         fValue[4]=kr;fValue[5]=dm;
-        editParameter(8,true);setParameterValue(8,kr);editParameter(8,false);
-        editParameter(9,true);setParameterValue(9,dm);editParameter(9,false);
+        editParameter(8,true);spv(8,kr);editParameter(8,false);
+        editParameter(9,true);spv(9,dm);editParameter(9,false);
         repaint();
     }
     bool onMotion(const MotionEvent& ev) override
@@ -295,7 +295,7 @@ protected:
         const float range=fMax[fDrag]-fMin[fDrag];
         float v=fValue[fDrag]+dy*range/200.0f;
         if(v<fMin[fDrag])v=fMin[fDrag];if(v>fMax[fDrag])v=fMax[fDrag];
-        fValue[fDrag]=v;setParameterValue(paramOf(fDrag),v);repaint();return true;
+        fValue[fDrag]=v;spv(paramOf(fDrag),v);repaint();return true;
     }
     bool onScroll(const ScrollEvent& ev) override
     {
@@ -307,7 +307,7 @@ protected:
                 const float range=fMax[i]-fMin[i];
                 float v=fValue[i]+ev.delta.getY()*range/100.0f;
                 if(v<fMin[i])v=fMin[i];if(v>fMax[i])v=fMax[i];
-                fValue[i]=v;const int pi=paramOf(i);editParameter(pi,true);setParameterValue(pi,v);editParameter(pi,false);
+                fValue[i]=v;const int pi=paramOf(i);editParameter(pi,true);spv(pi,v);editParameter(pi,false);
                 repaint();return true;
             }
         }
@@ -322,6 +322,7 @@ private:
     int fOn=1; bool fXYdrag=false;
     float fXX=18.0f,fXY_=286.0f,fXW=524.0f,fXH=58.0f;
     char fPatGrid[4][16];
+    void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DrumsUI)
 };
 UI* createUI(){return new DrumsUI();}
