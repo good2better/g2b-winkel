@@ -103,6 +103,11 @@ protected:
             }
             repaint();
         }
+        if (std::strcmp(key, "dbg") == 0)
+        {
+            std::snprintf(fDbg, sizeof(fDbg), "%s", value);
+            repaint();
+        }
     }
 
     void onNanoDisplay() override
@@ -116,10 +121,14 @@ protected:
         text(18.0f, 24.0f, "G2B OCHO-OCHO", nullptr);
         fontSize(10.0f);
         fillColor(143, 160, 152);
-        text(178.0f, 24.0f, "v6.3", nullptr);
+        text(178.0f, 24.0f, "v6.4", nullptr);
         fontSize(11.5f);
         fillColor(143, 160, 152);
         text(18.0f, 43.0f, "jouw Surinaamse one-shot machine — speel hem als een instrument", nullptr);
+        // DSP-echo: wat de plugin zelf heeft (beweegt mee = knoppen bereiken de DSP)
+        fontSize(9.0f); fillColor(90, 100, 94);
+        textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+        text(208.0f, 24.0f, fDbg, nullptr);
 
         // scope (rechtsboven)
         const float sx = 300.0f, sy = 12.0f, sw = W - 318.0f, sh = 46.0f;
@@ -496,7 +505,8 @@ protected:
                 const float cy = 160.0f;
                 const float dx = (float)(ev.pos.getX()/getScaleFactor()) - cx;
                 const float dy = (float)(ev.pos.getY()/getScaleFactor()) - cy;
-                if (dx*dx + dy*dy <= 17.0f*17.0f + 60.0f)
+                // hele kolom: knop + label + waarde-tekst zijn allemaal klikbaar
+                if (std::fabs(dx) <= step / 2.0f && dy >= -19.0f && dy <= 45.0f)
                 {
                     // discrete knoppen (KEY 0-11, SCALE 0-1, SFEER 0-2):
                     // klik = volgende optie — slepen over zo'n klein bereik
@@ -585,7 +595,7 @@ protected:
             const float cy = 160.0f;
             const float dx = (float)(ev.pos.getX()/getScaleFactor()) - cx;
             const float dy = (float)(ev.pos.getY()/getScaleFactor()) - cy;
-            if (dx*dx + dy*dy <= 17.0f*17.0f + 60.0f)
+            if (std::fabs(dx) <= step / 2.0f && dy >= -19.0f && dy <= 45.0f)
             {
                 const float range = fMax[i] - fMin[i];
                 float v = fValue[i] + ev.delta.getY() * range / 100.0f;
@@ -638,6 +648,7 @@ private:
     int fBtnSlots[8] = {0,0,0,0,0,0,0,0};
     int fBtnCount = 0;
     int fFlash = -1, fFlashTick = 0;
+    char fDbg[64] = "";
     static bool eqNoCase(const char* a, const char* b)
     {
         while (*a && *b)
