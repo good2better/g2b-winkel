@@ -1,65 +1,6 @@
 {
   "producten": [
     {
-      "id": "g2b-midi-pack",
-      "titel": "G2B MIDI Melodie-Pack",
-      "soort": "digitaal",
-      "beschrijving": "84 eigen midi-bestanden: 20 genre-drumgrooves (kaseko·winti·dembow·drill·soca·amapiano...), 22 akkoord-progressies (pop·rnb·trap·kaseko·schuivel·bachata·andalusisch) + 42 loop-tweelingen. Sleep in je DAW → speelt meteen. 100% royalty-vrij.",
-      "prijs": "€ 9,95",
-      "prijzen": {},
-      "links": {
-        "koop": "bestel.html?p=g2b-midi-pack"
-      },
-      "duur": 0,
-      "groep": "sounds",
-      "download_dir": "d/midipack1",
-      "cover": "media/g2b-midipack-cover.png",
-      "badge": "NIEUW",
-      "preview": "media/midipack-preview.mp3",
-      "demo": "media/midi-pack-preview.mp4",
-      "video": "media/midi-pack-preview.mp4"
-    },
-    {
-      "id": "g2b-midi-grooves",
-      "titel": "G2B MIDI Grooves VOL.1 — GRATIS",
-      "soort": "pack",
-      "beschrijving": "16 eigen drum-grooves als .mid: dembow, drill, afro, house, trap, boombap, garage, ukg, dnb, kawina, zouk, soca, lofi, pop, soul en latin. Sleep in je DAW → speelt meteen. 100% eigen G2B-engine, royalty-vrij.",
-      "prijs": "GRATIS",
-      "prijzen": {
-        "gratis": "€ 0"
-      },
-      "links": {
-        "koop": "gratis.html",
-        "download": "gratis.html"
-      },
-      "groep": "gratis",
-      "badge": "GRATIS",
-      "cover": "media/g2b-midigrooves-cover.png",
-      "download_dir": "d/midigrooves1",
-      "preview": "media/midipack-preview.mp3",
-      "demo": "media/g2b-midigrooves-demo.mp4",
-      "video": "media/g2b-midigrooves-demo.mp4"
-    },
-    {
-      "id": "g2b-midi-grooves2",
-      "titel": "G2B MIDI Grooves VOL.2 — PRO",
-      "soort": "digitaal",
-      "beschrijving": "11 pro-grooves als .mid: elk 8 bars lang met een echte fill in de laatste bar + eigen melodie-laag per toonsoort (bounce, afro, bubble, edm, funky, dance, reggae, funk, rnb, grime). Sleep in je DAW → direct gebruiken. 100% eigen G2B-engine, royalty-vrij.",
-      "prijs": "€ 14,95",
-      "prijzen": {},
-      "links": {
-        "koop": "bestel.html?p=g2b-midi-grooves2"
-      },
-      "duur": 0,
-      "groep": "sounds",
-      "badge": "PRO",
-      "cover": "media/g2b-midigrooves2-cover.png",
-      "download_dir": "d/midigrooves2",
-      "preview": "media/midipack-preview.mp3",
-      "demo": "media/g2b-midigrooves2-demo.mp4",
-      "video": "media/g2b-midigrooves2-demo.mp4"
-    },
-    {
       "id": "g2bgruis",
       "titel": "G2B GRUIS ONE-SHOTS",
       "soort": "pack",
@@ -714,25 +655,6 @@
       },
       "groep": "gratis",
       "badge": "GRATIS"
-    },
-    {
-      "id": "g2b-midi-grooves3",
-      "titel": "G2B MIDI Grooves VOL.3 — BEAT-GROOVES PRO",
-      "soort": "digitaal",
-      "beschrijving": "27 grooves uit de G2B beat-engine: de échte pockets uit Coolbreez, BubbleNights, SocaRun, WintiSpirit en de packs + 7 bonus-loops (amapiano, bachata, cumbia, dancehall, kaseko, bubbling, soca). GM-drums, humanisatie erin. Royalty-vrij.",
-      "prijs": "€ 14,95",
-      "prijzen": {},
-      "links": {
-        "koop": "bestel.html?p=g2b-midi-grooves2"
-      },
-      "duur": 0,
-      "groep": "sounds",
-      "badge": "NIEUW",
-      "cover": "media/g2b-midigrooves3-cover.png",
-      "download_dir": "d/midigrooves3",
-      "preview": "media/midipack-preview.mp3",
-      "demo": "media/g2b-midigrooves3-demo.mp4",
-      "video": "media/g2b-midigrooves3-demo.mp4"
     }
   ]
 }
