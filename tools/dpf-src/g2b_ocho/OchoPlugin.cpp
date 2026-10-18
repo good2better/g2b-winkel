@@ -8,6 +8,12 @@
  * TUNE, LEVEL — plus de vaste G2B-knoppen.
  */
 
+// KF-API (SHGetKnownFolderPath) vereist Vista-target; MinGW default is lager.
+// Moet vóór álle Windows-headers staan, dus check de compiler-macro, niet DPF's.
+#if defined(_WIN32) && (!defined(_WIN32_WINNT) || _WIN32_WINNT < 0x0600)
+#undef _WIN32_WINNT
+#define _WIN32_WINNT 0x0601
+#endif
 #include "DistrhoPlugin.hpp"
 #include "../g2b_std.h"
 #include <cmath>
@@ -21,6 +27,7 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>
+#include <shlobj.h>
 #else
 #include <dirent.h>
 #include <sys/stat.h>
@@ -169,7 +176,7 @@ public:
     };
 
     OchoPlugin()
-        : Plugin(kParameterCount, 0, 0),
+        : Plugin(kParameterCount, 0, 4),
           fDecay(60.0f), fGlide(0.0f), fSub(30.0f), fClick(25.0f),
           fPitchD(50.0f), fTune(0.0f), fLevel(80.0f), fKey(0.0f), fScale(0.0f),
           fLastFreq(0.0f), fScopeN(0), fDecim(0)
@@ -232,25 +239,25 @@ protected:
             break;
         case kKey:
             parameter.name = "Key"; parameter.symbol = "key";
-            parameter.hints = kParameterIsInteger;
+            parameter.hints |= kParameterIsInteger;
             parameter.ranges = {0.0f, 11.0f, 0.0f};
             break;
         case kScale:
             parameter.name = "Scale"; parameter.symbol = "scale";
-            parameter.hints = kParameterIsInteger;
+            parameter.hints |= kParameterIsInteger;
             parameter.ranges = {0.0f, 1.0f, 0.0f};
             break;
         case kDice:
             parameter.name = "Dice";
             parameter.symbol = "dice";
-            parameter.hints = kParameterIsInteger|kParameterIsTrigger;
+            parameter.hints |= kParameterIsInteger|kParameterIsTrigger;
             parameter.ranges = {0.0f, 1.0f, 0.0f};
             break;
         case kPreset:
             parameter.name = "Smaak";
             parameter.symbol = "smaak";
             parameter.unit = "";
-            parameter.hints = kParameterIsInteger;
+            parameter.hints |= kParameterIsInteger;
             parameter.ranges.min = 0.0f;
             parameter.ranges.max = (float)(kNumPresets + kMaxUsr - 1);
             parameter.ranges.def = 0.0f;
@@ -276,6 +283,12 @@ protected:
             parameter.ranges = {0.0f, 2.0f, 1.0f};
             break;
         }
+    }
+
+    void initState(uint32_t index, String& name, String& def) override
+    {
+        static const char* keys[4] = {"usrsmp", "usrset", "scope", "dbg"};
+        if (index < 4) { name = keys[index]; def = ""; }
     }
 
     float getParameterValue(uint32_t index) const override
@@ -404,6 +417,11 @@ protected:
             buf[pos] = '\0';
             setState("scope", buf);
             fScopeN = 0;
+            // dbg: echo wat de DSP écht heeft — UI toont dit naast de
+            // knoppen zodat je ziet of knop-wijzigingen aankomen
+            std::snprintf(buf, sizeof(buf), "L%.0f K%.0f S%.0f D%.0f",
+                          fLevel, fKey, fScale, fDecay);
+            setState("dbg", buf);
         }
         g2b_post(nullptr, outputs, frames, sr, fOn, fKracht, fGal, &fSf, false);
     }
@@ -616,6 +634,17 @@ private:
         while (*p) { if (tolower((unsigned char)*s++) != tolower((unsigned char)*p++)) return false; }
         return true;
     }
+    // echte locatie van een bekende map (Documenten/Muziek/Downloads/
+    // Bureaublad) — lost OneDrive-verplaatsing en eigen locaties op
+    void knownDirWin(REFKNOWNFOLDERID id, std::vector<std::string>& out)
+    {
+        PWSTR w = nullptr;
+        if (SHGetKnownFolderPath(id, KF_FLAG_DEFAULT, nullptr, &w) != S_OK || !w) return;
+        char buf[1024];
+        const int n = WideCharToMultiByte(CP_UTF8, 0, w, -1, buf, sizeof(buf), nullptr, nullptr);
+        CoTaskMemFree(w);
+        if (n > 1) out.emplace_back(buf, n - 1);
+    }
     void findRootsWin(const std::string& dir, int depth, std::vector<std::string>& out, int& budget)
     {
         if (depth > 5 || budget <= 0) return;
@@ -678,17 +707,28 @@ private:
         // G2B-Ocho-Samples = je eigen shots (set "MIJN" of per submap);
         // G2B-SMAAK-SETS = genre-mappen — elke submap = één set met de naam
         // van de map (AFRO\*.wav → set AFRO). Zo werkt SET-wisselen.
-        // Scan álle plekken waar de mappen kunnen staan: bij OneDrive-
-        // backup staat "Documenten" echt in OneDrive\Documents — daar
-        // zocht de plugin nooit (zijn sets werden niet gevonden).
+        const char* subs[2]  = { "\\G2B-Ocho-Samples", "\\G2B-SMAAK-SETS" };
+        // 1) echte Windows-mappen via de KF-API — volgt OneDrive-KFM en
+        // handmatige verplaatsing van Documenten (zijn "0 eigen"-bug:
+        // %USERPROFILE%\Documenten-paden raken de werkelijke map niet)
+        {
+            std::vector<std::string> dirs;
+            knownDirWin(FOLDERID_Documents, dirs);
+            knownDirWin(FOLDERID_Music, dirs);
+            knownDirWin(FOLDERID_Downloads, dirs);
+            knownDirWin(FOLDERID_Desktop, dirs);
+            for (const std::string& d : dirs)
+                for (int s = 0; s < 2; ++s)
+                    scanDirWin(d + subs[s], 0);
+        }
+        // 2) klassieke paden onder het profiel (OneDrive-varianten inbegrepen)
         const char* bases[8] = { "\\Music", "\\Documents", "\\Downloads", "\\Desktop",
                                  "\\OneDrive\\Documents", "\\OneDrive\\Music",
                                  "\\OneDrive\\Downloads", "\\OneDrive\\Desktop" };
-        const char* subs[2]  = { "\\G2B-Ocho-Samples", "\\G2B-SMAAK-SETS" };
         for (int b = 0; b < 8; ++b)
             for (int s = 0; s < 2; ++s)
                 scanDirWin(std::string(up) + bases[b] + subs[s], 0);
-        // vond-ie niks? doorzoek dan de HELE gebruikersmap naar de
+        // 3) vond-ie niks? doorzoek dan de HELE gebruikersmap naar de
         // root-mappen (waar ze ook uitgepakt zijn — zelfs genest)
         if (fUsr.empty())
         {
