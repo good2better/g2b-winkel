@@ -114,6 +114,9 @@ protected:
         textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
         fillColor(47, 191, 113);
         text(18.0f, 24.0f, "G2B OCHO-OCHO", nullptr);
+        fontSize(10.0f);
+        fillColor(143, 160, 152);
+        text(178.0f, 24.0f, "v6", nullptr);
         fontSize(11.5f);
         fillColor(143, 160, 152);
         text(18.0f, 43.0f, "jouw Surinaamse one-shot machine — speel hem als een instrument", nullptr);
@@ -246,23 +249,30 @@ protected:
             }
         }
 
-        // eigen samples: 1 rij van 8 (rest bereik je met < >)
+        // eigen samples: knoppen voor de shots van je HUIDIGE set (max 8)
         {
             const float bw = 56.0f, bh = 17.0f, gap = 4.0f;
-            const int maxBtn = 8;
-            for (int i = 0; i < (int)fUsrNames.size() && i < maxBtn; ++i)
+            const int cur0 = (fProg >= 0 && fProg < kNumPresets + (int)fUsrNames.size()) ? fProg : 0;
+            const char* cs = setOf(cur0);
+            fBtnCount = 0;
+            for (int u = 0; u < (int)fUsrNames.size() && fBtnCount < 8; ++u)
             {
-                const int slot = kNumPresets + i;
-                const int row = i / 8, col = i % 8;
+                const char* s = (u < (int)fUsrSets.size()) ? fUsrSets[u].c_str() : "MIJN";
+                if (std::strcmp(s, cs)) continue;
+                const int slot = kNumPresets + u;
+                fBtnSlots[fBtnCount] = slot;
+                const int i = fBtnCount;
+                const int col = i % 8;
                 const float bx = W - 14.0f - (8 - col) * (bw + gap);
-                const float by = 128.0f + row * (bh + 4.0f);
+                const float by = 128.0f;
                 const bool on = (slot == fProg);
                 beginPath(); roundedRect(bx, by, bw, bh, 4.0f);
                 if (on) { fillColor(29, 122, 72); fill(); }
                 strokeColor(42, 47, 45); strokeWidth(1.0f); stroke();
                 fontSize(8.0f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
                 fillColor(on ? Color(232, 236, 234) : Color(143, 160, 152));
-                text(bx + bw * 0.5f, by + bh * 0.5f, fUsrNames[i].c_str(), nullptr);
+                text(bx + bw * 0.5f, by + bh * 0.5f, fUsrNames[u].c_str(), nullptr);
+                ++fBtnCount;
             }
         }
 
@@ -423,7 +433,8 @@ protected:
             if ((float)(ev.pos.getX()/getScaleFactor()) >= fXX && (float)(ev.pos.getX()/getScaleFactor()) <= fXX + fXW &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= fXY_ && (float)(ev.pos.getY()/getScaleFactor()) <= fXY_ + fXH)
             { fXYdrag = true; xySet((float)(ev.pos.getX()/getScaleFactor()), (float)(ev.pos.getY()/getScaleFactor())); return true; }
-            // smaak-klik? (2 rijen van 6)
+            // smaak-klik? (2 rijen van 8) — springt meteen in die SET
+            // als er een gelijknamige gebruikers-set bestaat (TRAP → TRAP-set)
             {
                 const float bw = 56.0f, bh = 17.0f, gap = 4.0f;
                 for (int i = 0; i < kNumPresets; ++i)
@@ -434,25 +445,30 @@ protected:
                     if ((float)(ev.pos.getX()/getScaleFactor()) >= bx && (float)(ev.pos.getX()/getScaleFactor()) <= bx + bw &&
                         (float)(ev.pos.getY()/getScaleFactor()) >= by && (float)(ev.pos.getY()/getScaleFactor()) <= by + bh)
                     {
-                        spv(10, (float)i);
-                        fProg = i;
+                        int slot = i;
+                        for (int u = 0; u < (int)fUsrSets.size(); ++u)
+                            if (eqNoCase(fUsrSets[u].c_str(), kPresetNames[i]))
+                            { slot = kNumPresets + u; break; }
+                        spv(10, (float)slot);
+                        fProg = slot;
                         repaint();
                         return true;
                     }
                 }
             }
 
+            // knoppen voor de shots van je huidige set (fBtnSlots uit onNanoDisplay)
             {
                 const float bw = 56.0f, bh = 17.0f, gap = 4.0f;
-                for (int i = 0; i < (int)fUsrNames.size() && i < 8; ++i)
+                for (int i = 0; i < fBtnCount && i < 8; ++i)
                 {
-                    const int slot = kNumPresets + i;
-                    const int row = i / 8, col = i % 8;
+                    const int col = i % 8;
                     const float bx = W - 14.0f - (8 - col) * (bw + gap);
-                    const float by = 128.0f + row * (bh + 4.0f);
+                    const float by = 128.0f;
                     if ((float)(ev.pos.getX()/getScaleFactor()) >= bx && (float)(ev.pos.getX()/getScaleFactor()) <= bx + bw &&
                         (float)(ev.pos.getY()/getScaleFactor()) >= by && (float)(ev.pos.getY()/getScaleFactor()) <= by + bh)
                     {
+                        const int slot = fBtnSlots[i];
                         spv(10, (float)slot);
                         fProg = slot;
                         repaint();
@@ -590,6 +606,20 @@ private:
     }
     int fLight = 0;
     int fOn = 1; bool fXYdrag = false;
+    int fBtnSlots[8] = {0,0,0,0,0,0,0,0};
+    int fBtnCount = 0;
+    static bool eqNoCase(const char* a, const char* b)
+    {
+        while (*a && *b)
+        {
+            char ca = *a, cb = *b;
+            if (ca >= 'a' && ca <= 'z') ca -= 32;
+            if (cb >= 'a' && cb <= 'z') cb -= 32;
+            if (ca != cb) return false;
+            ++a; ++b;
+        }
+        return *a == *b;
+    }
     float fXX = 18.0f, fXY_ = 225.0f, fXW = 524.0f, fXH = 105.0f;
 
     void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
