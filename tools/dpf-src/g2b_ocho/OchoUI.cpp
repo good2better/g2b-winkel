@@ -116,7 +116,7 @@ protected:
         text(18.0f, 24.0f, "G2B OCHO-OCHO", nullptr);
         fontSize(10.0f);
         fillColor(143, 160, 152);
-        text(178.0f, 24.0f, "v6", nullptr);
+        text(178.0f, 24.0f, "v6.1", nullptr);
         fontSize(11.5f);
         fillColor(143, 160, 152);
         text(18.0f, 43.0f, "jouw Surinaamse one-shot machine — speel hem als een instrument", nullptr);
@@ -293,14 +293,16 @@ protected:
             fillColor(232,236,234);
             const int total = kNumPresets + (int)fUsrNames.size();
             const int cur = (fProg >= 0 && fProg < total) ? fProg : 0;
-            const char* nm = cur < kNumPresets ? kPresetNames[cur] : fUsrNames[cur - kNumPresets].c_str();
+            // grote naam = de SMAAK (blijft staan); erboven de shot-naam
+            const char* nm = cur < kNumPresets ? kPresetNames[cur] : setOf(cur);
             text(48.0f, ay+9.0f, nm, nullptr);
-            // SET-label: welke geluiden-set je in zit (< > bladert erbinnen)
             {
                 fontSize(8.5f); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
                 fillColor(29, 122, 72);
-                char sb[24]; std::snprintf(sb, sizeof(sb), "SET: %s", setOf(cur));
-                text(48.0f, ay - 3.0f, sb, nullptr);
+                if (cur < kNumPresets)
+                    text(48.0f, ay - 3.0f, "SET: OCHO", nullptr);
+                else
+                    text(48.0f, ay - 3.0f, fUsrNames[cur - kNumPresets].c_str(), nullptr);
             }
             // teller binnen de set + aantal shots in set
             {
