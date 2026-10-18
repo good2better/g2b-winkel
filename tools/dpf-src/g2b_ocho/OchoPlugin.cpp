@@ -13,10 +13,21 @@
 #include <cmath>
 #include <cstdio>
 #include <cstring>
+#include <vector>
+#include <string>
+#ifdef DISTRHO_OS_WINDOWS
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+#else
+#include <dirent.h>
+#endif
 
 START_NAMESPACE_DISTRHO
 
 #include "ocho_samples.h"
+
 
 // volgorde = kSmpOff/kSmpLen in ocho_samples.h
 static const char* kPresetNames[kNumSmp] = {"DONDER","KICKBAS","TRAP","BOOM","AFRO","DEMBOW","DRILL","SUB808","SKRATJI","BANGI","KOTI","AGOGO","SEKI","SURDO","TIMBAL","KLAP"};
@@ -24,6 +35,73 @@ static const int kNumPresets = kNumSmp;
 
 
 static const int kMaxVoices = 8;
+static const int kMaxUsr = 16;
+
+struct UsrSmp { char name[16]; std::vector<int16_t> d; int len = 0; };
+
+// minimale PCM16-wav lezer (mono/stereo → mono, resampled naar kSmpSR)
+static bool loadWav(const char* path, UsrSmp& u)
+{
+    FILE* f = std::fopen(path, "rb");
+    if (!f) return false;
+    unsigned char hdr[12];
+    if (std::fread(hdr, 1, 12, f) != 12 || std::memcmp(hdr, "RIFF", 4)) { std::fclose(f); return false; }
+    int ch = 0, bits = 0, srate = 0; long dpos = -1, dlen = 0;
+    for (;;)
+    {
+        unsigned char ck[8];
+        if (std::fread(ck, 1, 8, f) != 8) break;
+        const unsigned sz = ck[4] | (ck[5]<<8) | (ck[6]<<16) | ((unsigned)ck[7]<<24);
+        if (!std::memcmp(ck, "fmt ", 4))
+        {
+            unsigned char fm[16];
+            if (std::fread(fm, 1, 16, f) != 16) break;
+            ch = fm[2] | (fm[3]<<8); srate = fm[4] | (fm[5]<<8) | (fm[6]<<16) | (fm[7]<<24);
+            bits = fm[14] | (fm[15]<<8);
+            if (sz > 16) std::fseek(f, sz - 16, SEEK_CUR);
+        }
+        else if (!std::memcmp(ck, "data", 4)) { dpos = std::ftell(f); dlen = sz; std::fseek(f, sz, SEEK_CUR); }
+        else std::fseek(f, sz, SEEK_CUR);
+    }
+    if (!ch || !srate || dpos < 0) { std::fclose(f); return false; }
+    std::fseek(f, dpos, SEEK_SET);
+    std::vector<int16_t> raw;
+    if (bits == 16)
+    {
+        raw.resize(dlen / 2);
+        std::fread(raw.data(), 2, raw.size(), f);
+    }
+    else if (bits == 8)
+    {
+        std::vector<unsigned char> b(dlen);
+        std::fread(b.data(), 1, dlen, f);
+        raw.resize(dlen);
+        for (unsigned i = 0; i < dlen; ++i) raw[i] = ((int)b[i] - 128) << 8;
+    }
+    else { std::fclose(f); return false; }
+    std::fclose(f);
+    const int frames = (int)raw.size() / ch;
+    if (frames < 64) return false;
+    // mono + resample naar kSmpSR
+    const double step = (double)srate / kSmpSR;
+    const int outN = std::min((int)(frames / step), kSmpSR * 4);
+    u.d.resize(outN);
+    for (int i = 0; i < outN; ++i)
+    {
+        const double src = i * step;
+        const int i0 = (int)src; const int i1 = i0 + 1 < frames ? i0 + 1 : i0;
+        const double fr = src - i0;
+        double a0 = raw[i0*ch], a1 = raw[i1*ch];
+        if (ch > 1) { a0 = (a0 + raw[i0*ch+1]) * 0.5; a1 = (a1 + raw[i1*ch+1]) * 0.5; }
+        u.d[i] = (int16_t)(a0 + (a1 - a0) * fr);
+    }
+    u.len = outN;
+    // piek-norm zodat eigen shots net zo luid zijn als de ingebakken
+    int mx = 1; for (int i = 0; i < outN; ++i) { int a = u.d[i] < 0 ? -u.d[i] : u.d[i]; if (a > mx) mx = a; }
+    const double g = 0.92 * 32767.0 / mx;
+    for (int i = 0; i < outN; ++i) u.d[i] = (int16_t)(u.d[i] * g);
+    return true;
+}
 
 struct Voice
 {
@@ -148,7 +226,7 @@ protected:
             parameter.unit = "";
             parameter.hints = kParameterIsInteger;
             parameter.ranges.min = 0.0f;
-            parameter.ranges.max = (float)(kNumPresets - 1);
+            parameter.ranges.max = (float)(kNumPresets + kMaxUsr - 1);
             parameter.ranges.def = 0.0f;
             break;
         case kOn:
@@ -224,6 +302,8 @@ protected:
     {
         for (int v = 0; v < kMaxVoices; ++v) fVoice[v] = Voice();
         fLastFreq = 0.0f; fLastRate = 0.0f;
+        scanUserDir();
+        fNamesSent = false;
         fScopeN = 0;
     }
 
@@ -262,6 +342,17 @@ protected:
                     noteOn(snapKey(data[1]), data[2] / 127.0f, tuneMul);
                 else if (status == 0x80 || (status == 0x90 && data[2] == 0))
                     noteOff(data[1]);
+            }
+        }
+
+        if (!fNamesSent)
+        {
+            fNamesSent = true;
+            if (!fUsr.empty())
+            {
+                std::string nm;
+                for (const UsrSmp& u : fUsr) { if (!nm.empty()) nm += '|'; nm += u.name; }
+                setState("usrsmp", nm.c_str());
             }
         }
 
@@ -342,7 +433,7 @@ private:
         v->trate = rt;
         v->smp = (int)(fPreset + 0.5f);
         if (v->smp < 0) v->smp = 0;
-        if (v->smp >= kNumSmp) v->smp = kNumSmp - 1;
+        if (v->smp >= kNumSmp + (int)fUsr.size()) v->smp = kNumSmp + (int)fUsr.size() - 1;
         // glide: start vanaf vorige noot; zonder glide meteen op toonhoogte
         v->freq = (fGlide > 0.5f && fLastFreq > 0.0f) ? fLastFreq : f;
         v->rate = (fGlide > 0.5f && fLastRate > 0.0f) ? fLastRate : rt;
@@ -385,13 +476,12 @@ private:
 
             // one-shot afspelen (pitch = rate × drop-envelope)
             float x = 0.0f;
-            const int si = v.smp;
-            const int len = kSmpLen[si];
+            int len = 0;
+            const int16_t* d = smpData(v.smp, len);
             const int i0 = (int)v.pos;
-            if (i0 < len - 1)
+            if (d && i0 < len - 1)
             {
                 const float fr = v.pos - (float)i0;
-                const int16_t* d = &kSmpBlob[kSmpOff[si]];
                 x = (d[i0] * (1.0f - fr) + d[i0 + 1] * fr) / 32768.0f;
             }
             // sine-sub laag eronder (SUB-knop mengt hem erin)
@@ -431,12 +521,71 @@ private:
     float fPreset = 0.0f;
     float fOn = 1.0f, fKracht = 100.0f, fGalaxyV = 9.0f, fSfeerV = 1.0f;
     Galaxy fGal; Sfeer fSf;
+    std::vector<UsrSmp> fUsr;
+    bool fNamesSent = false;
+
+    // eigen samples-map: <Muziek>/G2B-Ocho-Samples — elke .wav = extra smaak
+    void scanUserDir()
+    {
+        fUsr.clear();
+#ifdef DISTRHO_OS_WINDOWS
+        const char* up = std::getenv("USERPROFILE");
+        if (!up) return;
+        std::string dirs[2] = { std::string(up) + "\\Music\\G2B-Ocho-Samples",
+                                std::string(up) + "\\Documents\\G2B-Ocho-Samples" };
+        for (int d = 0; d < 2 && fUsr.empty(); ++d)
+        {
+            WIN32_FIND_DATAA fd;
+            HANDLE h = FindFirstFileA((dirs[d] + "\\*.wav").c_str(), &fd);
+            if (h == INVALID_HANDLE_VALUE) continue;
+            do {
+                if ((int)fUsr.size() >= kMaxUsr) break;
+                UsrSmp u;
+                std::snprintf(u.name, sizeof(u.name), "%.12s", fd.cFileName);
+                char* dot = std::strchr(u.name, '.');
+                if (dot) *dot = '\0';
+                if (loadWav((dirs[d] + "\\" + fd.cFileName).c_str(), u)) fUsr.push_back(std::move(u));
+            } while (FindNextFileA(h, &fd));
+            FindClose(h);
+        }
+#else
+        const char* home = std::getenv("HOME");
+        if (!home) return;
+        std::string dir = std::string(home) + "/G2B-Ocho-Samples";
+        DIR* dp = opendir(dir.c_str());
+        if (!dp) return;
+        struct dirent* e;
+        while ((e = readdir(dp)) && (int)fUsr.size() < kMaxUsr)
+        {
+            const char* nm = e->d_name;
+            const size_t L = std::strlen(nm);
+            if (L < 5) continue;
+            const char* ext = nm + L - 4;
+            if (std::strcmp(ext, ".wav") && std::strcmp(ext, ".WAV")) continue;
+            UsrSmp u;
+            std::snprintf(u.name, sizeof(u.name), "%.12s", nm);
+            char* dot = std::strchr(u.name, '.');
+            if (dot) *dot = '\0';
+            if (loadWav((dir + "/" + nm).c_str(), u)) fUsr.push_back(std::move(u));
+        }
+        closedir(dp);
+#endif
+    }
+
+    const int16_t* smpData(int i, int& len) const
+    {
+        if (i >= 0 && i < kNumSmp) { len = kSmpLen[i]; return &kSmpBlob[kSmpOff[i]]; }
+        const int u = i - kNumSmp;
+        if (u >= 0 && u < (int)fUsr.size()) { len = fUsr[u].len; return fUsr[u].d.data(); }
+        len = 0; return nullptr;
+    }
 
     void applyPreset(int i)
     {
         if (i < 0) i = 0;
-        if (i >= kNumPresets) i = kNumPresets - 1;
-        fPreset = (float)i; // smaak = welke one-shot; knoppen blijven van jou
+        const int mx = kNumPresets + (int)fUsr.size();
+        if (i >= mx) i = mx - 1;
+        fPreset = (float)i; // smaak = welke one-shot (gebakken of eigen); knoppen blijven van jou
     }
 
     void recalc()

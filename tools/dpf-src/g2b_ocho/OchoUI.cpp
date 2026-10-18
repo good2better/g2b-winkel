@@ -8,6 +8,8 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <string>
+#include <vector>
 
 // G2B skins (8 thema's): bg,pn,tx,gy,ed,GR,DG
 static const float G2BSK[8][7][3]={
@@ -51,6 +53,7 @@ protected:
     void parameterChanged(uint32_t index, float value) override
     {
         if (index < 9) fValue[index] = value;
+        else if (index == 10) fProg = (int)(value + 0.5f);
         else if (index == 11) fOn = (int)(value + 0.5f);
         else if (index >= 12 && index <= 14) fValue[index - 3] = value; // 12=KRACHT→9,13=DIMENTIES→10,14=SFEER→11
         repaint();
@@ -58,6 +61,20 @@ protected:
 
     void stateChanged(const char* key, const char* value) override
     {
+        if (std::strcmp(key, "usrsmp") == 0)
+        {
+            fUsrNames.clear();
+            const char* p = value;
+            while (*p != '\0')
+            {
+                const char* bar = std::strchr(p, '|');
+                fUsrNames.push_back(bar ? std::string(p, bar - p) : std::string(p));
+                if (!bar) break;
+                p = bar + 1;
+            }
+            repaint();
+            return;
+        }
         if (std::strcmp(key, "scope") == 0)
         {
             const char* p = value;
@@ -215,6 +232,25 @@ protected:
             }
         }
 
+        // eigen samples (uit G2B-Ocho-Samples map): extra rijen van 8
+        {
+            const float bw = 56.0f, bh = 17.0f, gap = 4.0f;
+            for (int i = 0; i < (int)fUsrNames.size(); ++i)
+            {
+                const int slot = kNumPresets + i;
+                const int row = slot / 8, col = slot % 8;
+                const float bx = W - 14.0f - (8 - col) * (bw + gap);
+                const float by = 62.0f + row * (bh + 4.0f);
+                const bool on = (slot == fProg);
+                beginPath(); roundedRect(bx, by, bw, bh, 4.0f);
+                if (on) { fillColor(29, 122, 72); fill(); }
+                strokeColor(42, 47, 45); strokeWidth(1.0f); stroke();
+                fontSize(8.0f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+                fillColor(on ? Color(232, 236, 234) : Color(143, 160, 152));
+                text(bx + bw * 0.5f, by + bh * 0.5f, fUsrNames[i].c_str(), nullptr);
+            }
+        }
+
         // huidige smaak + ‹ › pijltjes
         {
             const float ay = 106.0f;
@@ -230,8 +266,10 @@ protected:
             text(225.0f, ay+9.0f, ">", nullptr);
             fontSize(13.0f); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
             fillColor(232,236,234);
-            const int cur = (fProg >= 0 && fProg < kNumPresets) ? fProg : 0;
-            text(48.0f, ay+9.0f, kPresetNames[cur], nullptr);
+            const int total = kNumPresets + (int)fUsrNames.size();
+            const int cur = (fProg >= 0 && fProg < total) ? fProg : 0;
+            const char* nm = cur < kNumPresets ? kPresetNames[cur] : fUsrNames[cur - kNumPresets].c_str();
+            text(48.0f, ay+9.0f, nm, nullptr);
         }
 
         text(W * 0.5f, H - 8.0f,
@@ -287,6 +325,24 @@ protected:
                 }
             }
 
+            {
+                const float bw = 56.0f, bh = 17.0f, gap = 4.0f;
+                for (int i = 0; i < (int)fUsrNames.size(); ++i)
+                {
+                    const int slot = kNumPresets + i;
+                    const int row = slot / 8, col = slot % 8;
+                    const float bx = W - 14.0f - (8 - col) * (bw + gap);
+                    const float by = 62.0f + row * (bh + 4.0f);
+                    if (ev.pos.getX() >= bx && ev.pos.getX() <= bx + bw &&
+                        ev.pos.getY() >= by && ev.pos.getY() <= by + bh)
+                    {
+                        spv(10, (float)slot);
+                        fProg = slot;
+                        repaint();
+                        return true;
+                    }
+                }
+            }
             for (int i = 0; i < 12; ++i)
             {
                 const float cx = 20.0f + step * (i + 0.5f);
@@ -381,6 +437,7 @@ private:
     int fDrag;
     float fLastY;
     int fProg = -1;
+    std::vector<std::string> fUsrNames;
     int fLight = 0;
     int fOn = 1; bool fXYdrag = false;
     float fXX = 18.0f, fXY_ = 225.0f, fXW = 524.0f, fXH = 105.0f;
