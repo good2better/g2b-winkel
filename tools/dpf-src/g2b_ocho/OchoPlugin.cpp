@@ -385,6 +385,7 @@ private:
 
     float fDecay, fGlide, fSub, fClick, fPitchD, fTune, fLevel, fKey, fScale;
     float fDecRate, fGlRate, fDrive, fClickA, fDropAmt, fTuneMul, fLevelGain, fRelRate;
+    float fHp = 0.0f, fHpA = 0.01f;
     float fLastFreq, fLastRate = 0.0f;
     Voice fVoice[kMaxVoices];
     static const int kScopeLen = 96;
@@ -415,6 +416,9 @@ private:
 
     void noteOn(uint8_t note, float vel, float tuneMul)
     {
+        // cut-itself: nieuwe noot kapt alle lopende stemmen af (808-mono, nooit modder)
+        for (int i = 0; i < kMaxVoices; ++i)
+            if (fVoice[i].active) fVoice[i].releasing = true;
         // zoek vrije stem, anders steel de oudste
         Voice* v = nullptr;
         for (int i = 0; i < kMaxVoices; ++i)
@@ -507,7 +511,9 @@ private:
             v.age += 1.0f;
         }
 
-        const float y = std::tanh(s * 1.1f) * level;
+        // rumble-filter: alles onder ~25Hz eruit (sub blijft schoon)
+        fHp += fHpA * (s - fHp);
+        const float y = std::tanh((s - fHp) * 1.1f) * level;
         outL[i] = y;
         outR[i] = y;
 
@@ -603,6 +609,7 @@ private:
         fDropAmt = (fPitchD / 100.0f) * 0.9f;   // tot +0.9 oct-achtige bump
         fTuneMul = std::pow(2.0f, fTune / 12.0f);
         fLevelGain = (fLevel / 100.0f) * 0.9f;
+        fHpA = 1.0f - std::exp(-6.2831853f * 25.0f / sr); // high-pass ~25Hz
     }
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OchoPlugin)
