@@ -39,6 +39,7 @@ struct Voice
     float amp = 0.0f;
     float vel = 0.0f;
     float age = 0.0f;       // samples sinds note-on (voor pitch-drop)
+    bool  releasing = false; // toets los → snelle release i.p.v. lange decay
 };
 
 class OchoPlugin : public Plugin
@@ -290,7 +291,7 @@ private:
     unsigned fRnd = 1357911;
 
     float fDecay, fGlide, fSub, fClick, fPitchD, fTune, fLevel, fKey, fScale;
-    float fDecRate, fGlRate, fDrive, fClickA, fDropAmt, fTuneMul, fLevelGain;
+    float fDecRate, fGlRate, fDrive, fClickA, fDropAmt, fTuneMul, fLevelGain, fRelRate;
     float fLastFreq;
     Voice fVoice[kMaxVoices];
     static const int kScopeLen = 96;
@@ -340,6 +341,7 @@ private:
         v->amp = 1.0f;
         v->vel = vel;
         v->age = 0.0f;
+        v->releasing = false;
         fLastFreq = f;
     }
 
@@ -347,7 +349,7 @@ private:
     {
         for (int i = 0; i < kMaxVoices; ++i)
             if (fVoice[i].active && fVoice[i].note == note)
-                fVoice[i].active = false;   // amp dooft vanzelf uit
+                fVoice[i].releasing = true; // snelle release-ramp, geen eindeloze tail
     }
 
     inline void renderOne(float* outL, float* outR, uint32_t i,
@@ -385,7 +387,7 @@ private:
             }
 
             s += x * v.amp * v.vel;
-            v.amp *= decRate;
+            v.amp *= (v.releasing ? fRelRate : decRate);
             v.age += 1.0f;
         }
 
@@ -424,6 +426,7 @@ private:
         // decay-knop → amp factor per sample (0%=0.12s .. 100%=3.5s)
         const float decSec = 0.12f + (fDecay / 100.0f) * 3.38f;
         fDecRate = std::exp(-1.0f / (sr * decSec));
+        fRelRate = std::exp(-1.0f / (sr * 0.12f)); // ~120ms release bij note-off
         // glide-knop → freq approach (0=uit .. 100%=~0.35s)
         const float glSec = (fGlide / 100.0f) * 0.35f;
         fGlRate = glSec > 0.0001f ? 1.0f - std::exp(-1.0f / (sr * glSec)) : 1.0f;
