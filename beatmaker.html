@@ -56,7 +56,7 @@ button.hoofd:hover{filter:brightness(1.1)}
     <a href="gratis.html" style="color:var(--groen);font-weight:700">🎁 Of pak eerst de GRATIS Starter-Pack (12 sounds)</a></p>
   <div class="vanger">
     <b style="color:var(--groen)">Elke maand een nieuwe pack?</b><br>
-    <span style="font-size:.8rem;color:var(--dim)">Word lid van de <a href="beatclub.html" style="color:var(--groen)">Beat-Club</a> — €4,95/mnd, eerste pack direct.</span><br>
+    
     <form class="ev-form" id="emailvanger">
       <input type="email" id="ev-email" placeholder="jouw e-mailadres" required>
       <button type="submit">✉ INSCHRIJVEN</button>
@@ -132,7 +132,7 @@ laad('house');
 // E-mailvanger: POST naar Google Apps Script (zodra URL hieronder staat), anders mailto-fallback
 const EV_SCRIPT_URL='https://script.google.com/macros/s/AKfycbzKWU72wn2xxXiNy040qfP4NOqz-CzmOYHrRXMK_DH-LzBEqLjwtiwTyKJAyx7MTf0/exec'; // <- Giorgio: plak hier je Apps Script /exec URL
 const evForm=document.getElementById('emailvanger'),evMsg=document.getElementById('ev-msg'),evMail=document.getElementById('mailknop');
-evMail.href='mailto:g.sandvliet88@gmail.com?subject='+encodeURIComponent('G2B: houd me op de hoogte (Beat-Club/nieuwe packs)')+'&body='+encodeURIComponent('Hoi! Houd me op de hoogte van nieuwe G2B packs en de Beat-Club. Mijn e-mail:');
+evMail.href='mailto:g.sandvliet88@gmail.com?subject='+encodeURIComponent('G2B: houd me op de hoogte (nieuwe packs)')+'&body='+encodeURIComponent('Hoi! Houd me op de hoogte van nieuwe G2B packs. Mijn e-mail:');
 if(!EV_SCRIPT_URL){ evForm.style.display='none'; evMail.style.display='inline-block'; }
 evForm.addEventListener('submit',async e=>{
   e.preventDefault();
