@@ -422,8 +422,8 @@ protected:
             std::snprintf(buf, sizeof(buf), "L%.0f K%.0f S%.0f D%.0f",
                           fLevel, fKey, fScale, fDecay);
             setState("dbg", buf);
-            std::snprintf(buf, sizeof(buf), "R%d W%d F%d",
-                          fScanRoots, fScanWavs, fScanFail);
+            std::snprintf(buf, sizeof(buf), "R%d W%d F%d T%d",
+                          fScanRoots, fScanWavs, fScanFail, fScanTried);
             setState("scan", buf);
         }
         g2b_post(nullptr, outputs, frames, sr, fOn, fKracht, fGal, &fSf, false);
@@ -602,6 +602,7 @@ private:
 #ifdef DISTRHO_OS_WINDOWS
     void scanDirWin(const std::string& dir, int depth, const char* set = nullptr)
     {
+        if (depth == 0) ++fScanTried;
         WIN32_FIND_DATAA fd;
         HANDLE h = FindFirstFileA((dir + "\\*").c_str(), &fd);
         if (h == INVALID_HANDLE_VALUE) return;
@@ -709,14 +710,23 @@ private:
 #endif
 
     // eigen samples-map: <Muziek>/G2B-Ocho-Samples — elke .wav = extra smaak (ook submappen)
-    int fScanRoots = 0, fScanWavs = 0, fScanFail = 0;
+    int fScanRoots = 0, fScanWavs = 0, fScanFail = 0, fScanTried = 0;
     void scanUserDir()
     {
         fUsr.clear();
-        fScanRoots = 0; fScanWavs = 0; fScanFail = 0;
+        fScanRoots = 0; fScanWavs = 0; fScanFail = 0; fScanTried = 0;
 #ifdef DISTRHO_OS_WINDOWS
         const char* up = std::getenv("USERPROFILE");
-        if (!up) return;
+        // USERPROFILE kan leeg zijn in een gesandboxte host (zijn R0-bug:
+        // de scan stopte dan vóór álles). KF-API en schijf-scan werken
+        // óók zonder USERPROFILE — dus nooit vroeg terugkeren.
+        if (!up)
+        {
+            const char* hd = std::getenv("HOMEDRIVE");
+            const char* hp = std::getenv("HOMEPATH");
+            static std::string upb;
+            if (hd && hp) { upb = std::string(hd) + hp; up = upb.c_str(); }
+        }
         // G2B-Ocho-Samples = je eigen shots (set "MIJN" of per submap);
         // G2B-SMAAK-SETS = genre-mappen — elke submap = één set met de naam
         // van de map (AFRO\*.wav → set AFRO). Zo werkt SET-wisselen.
@@ -738,12 +748,13 @@ private:
         const char* bases[8] = { "\\Music", "\\Documents", "\\Downloads", "\\Desktop",
                                  "\\OneDrive\\Documents", "\\OneDrive\\Music",
                                  "\\OneDrive\\Downloads", "\\OneDrive\\Desktop" };
-        for (int b = 0; b < 8; ++b)
-            for (int s = 0; s < 2; ++s)
-                scanDirWin(std::string(up) + bases[b] + subs[s], 0);
+        if (up)
+            for (int b = 0; b < 8; ++b)
+                for (int s = 0; s < 2; ++s)
+                    scanDirWin(std::string(up) + bases[b] + subs[s], 0);
         // 3) vond-ie niks? doorzoek dan de HELE gebruikersmap naar de
         // root-mappen (waar ze ook uitgepakt zijn — zelfs genest)
-        if (fUsr.empty())
+        if (fUsr.empty() && up)
         {
             std::vector<std::string> roots;
             int budget = 6000;
@@ -774,8 +785,8 @@ private:
         // mappen gevonden, wavs gezien, wavs geweigerd → lost "0 eigen" op
         {
             char rb[96];
-            std::snprintf(rb, sizeof(rb), "R%d W%d F%d",
-                          fScanRoots, fScanWavs, fScanFail);
+            std::snprintf(rb, sizeof(rb), "R%d W%d F%d T%d",
+                          fScanRoots, fScanWavs, fScanFail, fScanTried);
             setState("scan", rb);
         }
 #else
