@@ -1,25 +1,6 @@
 {
  "producten": [
   {
-   "id": "g2b-beatclub",
-   "titel": "G2B Beat-Club — Lidmaatschap",
-   "prijs": "€ 4,95/mnd",
-   "prijzen": {},
-   "soort": "abonnement",
-   "groep": "sounds",
-   "badge": "NIEUW",
-   "cover": "media/g2b-beatclub-cover.png",
-   "beschrijving": "Maandabonnement: elke maand een nieuwe exclusieve pack (15+ sounds die NIET in de losse packs zitten) + welkomst-pack direct. Betaal per maand via Tikkie, stop wanneer je wilt. ✓ Direct betalen via iDEAL/kaart — direct downloaden.",
-   "duur": 0,
-   "download_dir": "d/beatclub1",
-   "links": {
-    "koop": "https://buy.stripe.com/cNi4gz1ss0zN6jJ0hD5J603"
-   },
-   "preview": "media/beatclub.mp3",
-   "demo": "media/beatclub-preview.mp4",
-   "video": "media/beatclub-preview.mp4"
-  },
-  {
    "id": "g2b-midi-pack",
    "titel": "G2B MIDI Melodie-Pack",
    "soort": "digitaal",
