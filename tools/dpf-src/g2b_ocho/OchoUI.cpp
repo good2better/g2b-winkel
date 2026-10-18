@@ -116,7 +116,7 @@ protected:
         text(18.0f, 24.0f, "G2B OCHO-OCHO", nullptr);
         fontSize(10.0f);
         fillColor(143, 160, 152);
-        text(178.0f, 24.0f, "v6.2", nullptr);
+        text(178.0f, 24.0f, "v6.3", nullptr);
         fontSize(11.5f);
         fillColor(143, 160, 152);
         text(18.0f, 43.0f, "jouw Surinaamse one-shot machine — speel hem als een instrument", nullptr);
@@ -512,8 +512,22 @@ protected:
                         repaint();
                         return true;
                     }
+                    // gewone knoppen: klik links = stap omlaag, rechts = omhoog
+                    // (zodat ze ook werken zonder slepen — zijn "dode knoppen"-bug)
+                    {
+                        const float range2 = fMax[i] - fMin[i];
+                        const float dir = (float)(ev.pos.getX()/getScaleFactor()) < cx ? -1.0f : 1.0f;
+                        float v2 = fValue[i] + dir * range2 / 10.0f;
+                        if (v2 < fMin[i]) v2 = fMin[i];
+                        if (v2 > fMax[i]) v2 = fMax[i];
+                        fValue[i] = v2;
+                        const int pi2 = paramOf(i);
+                        editParameter(pi2, true); spv(pi2, v2); editParameter(pi2, false);
+                        fFlash = i; fFlashTick = 18;
+                    }
                     fDrag = i; fLastY = (float)(ev.pos.getY()/getScaleFactor());
                     editParameter(paramOf(i), true);
+                    repaint();
                     return true;
                 }
             }
