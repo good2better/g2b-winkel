@@ -116,7 +116,7 @@ protected:
         text(18.0f, 24.0f, "G2B OCHO-OCHO", nullptr);
         fontSize(10.0f);
         fillColor(143, 160, 152);
-        text(178.0f, 24.0f, "v6.1", nullptr);
+        text(178.0f, 24.0f, "v6.2", nullptr);
         fontSize(11.5f);
         fillColor(143, 160, 152);
         text(18.0f, 43.0f, "jouw Surinaamse one-shot machine — speel hem als een instrument", nullptr);
@@ -185,6 +185,13 @@ protected:
             textAlign(ALIGN_CENTER | ALIGN_TOP);
             text(cx, cy + R + 8.0f, fLabel[i], nullptr);
 
+            // klik-flits: groene ring om de knop die je net klikte
+            if (fFlashTick > 0 && i == fFlash)
+            {
+                beginPath(); circle(cx, cy, R + 3.0f);
+                strokeColor(47, 191, 113); strokeWidth(2.0f); stroke();
+            }
+            if (fFlashTick > 0 && i == 11) --fFlashTick;
             fontSize(11.0f); fillColor(232, 236, 234);
             char buf[24];
             if (fMin[i] < 0.0f)
@@ -300,7 +307,12 @@ protected:
                 fontSize(8.5f); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
                 fillColor(29, 122, 72);
                 if (cur < kNumPresets)
-                    text(48.0f, ay - 3.0f, "SET: OCHO", nullptr);
+                {
+                    // toon ook hoeveel eigen shots hij vond — direct zichtbaar
+                    // of de mappen geladen zijn (0 = mappen niet gevonden)
+                    char ob[32]; std::snprintf(ob, sizeof(ob), "SET: OCHO · %d eigen", (int)fUsrNames.size());
+                    text(48.0f, ay - 3.0f, ob, nullptr);
+                }
                 else
                     text(48.0f, ay - 3.0f, fUsrNames[cur - kNumPresets].c_str(), nullptr);
             }
@@ -496,6 +508,7 @@ protected:
                         fValue[i] = v;
                         const int pi = paramOf(i);
                         editParameter(pi, true); spv(pi, v); editParameter(pi, false);
+                        fFlash = i; fFlashTick = 18;
                         repaint();
                         return true;
                     }
@@ -610,6 +623,7 @@ private:
     int fOn = 1; bool fXYdrag = false;
     int fBtnSlots[8] = {0,0,0,0,0,0,0,0};
     int fBtnCount = 0;
+    int fFlash = -1, fFlashTick = 0;
     static bool eqNoCase(const char* a, const char* b)
     {
         while (*a && *b)
