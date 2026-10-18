@@ -120,10 +120,17 @@ fetch("products.json").then(r => r.json()).then(d => {
   // horen op de echte sync library, niet hier.
   prods = d.producten.filter(p => {
     const t = p.titel || "";
-    const isBeat = p.soort === "audio" && p.preview &&
-      (/^G2B[\s-]/i.test(t) || /beat[- ]?pack/i.test(t) || BUYOUT_BEATS.has(t));
-    const isPack = /^(pack|sample-pack|bundel|bundle)$/.test(p.soort || "");
-    return (isBeat || isPack) && !/sync-bundle/i.test(t);
+    const g = p.groep || "";
+    const s = p.soort || "";
+    // Alleen zijn EIGEN muziek + eigen packs: elke audio-track is een
+    // G2B-beat; packs blijven als het MIDI-packs, eigen soundpacks of
+    // gratis packs zijn. Losse sample-packs/software/apps horen hier niet.
+    const isBeat = s === "audio" && p.preview;
+    const isMidi = /midi/i.test(t);
+    const isPack = /^(pack|sample-pack|bundel|bundle|digitaal)$/.test(s);
+    const isEigenPack = (isMidi && isPack) || (s === "pack" && (g === "soundpacks" || g === "gratis"))
+      || (isPack && /beat[- ]?tape/i.test(t));
+    return (isBeat || isEigenPack) && !/sync-bundle/i.test(t);
   });
   bouwMoods(); render();
 });
