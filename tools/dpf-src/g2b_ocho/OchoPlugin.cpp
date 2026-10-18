@@ -648,12 +648,16 @@ private:
         // G2B-Ocho-Samples = je eigen shots (set "MIJN" of per submap);
         // G2B-SMAAK-SETS = genre-mappen — elke submap = één set met de naam
         // van de map (AFRO\*.wav → set AFRO). Zo werkt SET-wisselen.
-        const char* roots[4] = { "\\Music\\G2B-Ocho-Samples",
-                                 "\\Documents\\G2B-Ocho-Samples",
-                                 "\\Music\\G2B-SMAAK-SETS",
-                                 "\\Documents\\G2B-SMAAK-SETS" };
-        for (int d = 0; d < 4; ++d)
-            scanDirWin(std::string(up) + roots[d], 0);
+        // Scan álle plekken waar de mappen kunnen staan: bij OneDrive-
+        // backup staat "Documenten" echt in OneDrive\Documents — daar
+        // zocht de plugin nooit (zijn sets werden niet gevonden).
+        const char* bases[8] = { "\\Music", "\\Documents", "\\Downloads", "\\Desktop",
+                                 "\\OneDrive\\Documents", "\\OneDrive\\Music",
+                                 "\\OneDrive\\Downloads", "\\OneDrive\\Desktop" };
+        const char* subs[2]  = { "\\G2B-Ocho-Samples", "\\G2B-SMAAK-SETS" };
+        for (int b = 0; b < 8; ++b)
+            for (int s = 0; s < 2; ++s)
+                scanDirWin(std::string(up) + bases[b] + subs[s], 0);
 #else
         const char* home = std::getenv("HOME");
         if (!home) return;

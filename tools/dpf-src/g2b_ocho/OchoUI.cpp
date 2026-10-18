@@ -116,7 +116,7 @@ protected:
         text(18.0f, 24.0f, "G2B OCHO-OCHO", nullptr);
         fontSize(10.0f);
         fillColor(143, 160, 152);
-        text(178.0f, 24.0f, "v6.1", nullptr);
+        text(178.0f, 24.0f, "v6.2", nullptr);
         fontSize(11.5f);
         fillColor(143, 160, 152);
         text(18.0f, 43.0f, "jouw Surinaamse one-shot machine — speel hem als een instrument", nullptr);
@@ -300,7 +300,12 @@ protected:
                 fontSize(8.5f); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
                 fillColor(29, 122, 72);
                 if (cur < kNumPresets)
-                    text(48.0f, ay - 3.0f, "SET: OCHO", nullptr);
+                {
+                    // toon ook hoeveel eigen shots hij vond — direct zichtbaar
+                    // of de mappen geladen zijn (0 = mappen niet gevonden)
+                    char ob[32]; std::snprintf(ob, sizeof(ob), "SET: OCHO · %d eigen", (int)fUsrNames.size());
+                    text(48.0f, ay - 3.0f, ob, nullptr);
+                }
                 else
                     text(48.0f, ay - 3.0f, fUsrNames[cur - kNumPresets].c_str(), nullptr);
             }
