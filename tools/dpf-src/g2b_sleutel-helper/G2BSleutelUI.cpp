@@ -215,25 +215,25 @@ protected:
     {
         const float W=getWidth();
         if(!ev.press){if(fDrag>=0&&!fMoved){int i=fDrag;float mn=fMin[i],mx=fMax[i],st=(mx-mn)<=32?1.f:(mx-mn)/20.f;float v=fValue[i]+st;if(v>mx)v=mn;spv(fParamId[i],v);fValue[i]=v;repaint();}fDrag=-1;fXYdrag=false;fMoved=false;return true;}
-        if(ev.pos.getX()>=fXX&&ev.pos.getX()<=fXX+fXW&&ev.pos.getY()>=fXY_&&ev.pos.getY()<=fXY_+fXH){fXYdrag=true;xySet(ev.pos);return true;}
+        if((float)(ev.pos.getX()/getScaleFactor())>=fXX&&(float)(ev.pos.getX()/getScaleFactor())<=fXX+fXW&&(float)(ev.pos.getY()/getScaleFactor())>=fXY_&&(float)(ev.pos.getY()/getScaleFactor())<=fXY_+fXH){fXYdrag=true;xySet(ev.pos);return true;}
         // knobs eerst (drag-start)
         for(int i=0;i<2;i++){
             const float cx=W-190+i*100, cy=fKnobY+18;
-            const float dx=ev.pos.getX()-cx, dy=ev.pos.getY()-cy;
-            if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=ev.pos.getY();fMoved=false;return true;}
+            const float dx=(float)(ev.pos.getX()/getScaleFactor())-cx, dy=(float)(ev.pos.getY()/getScaleFactor())-cy;
+            if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=(float)(ev.pos.getY()/getScaleFactor());fMoved=false;return true;}
         }
         // focus pills
-        if(ev.pos.getY()>=fPillY&&ev.pos.getY()<=fPillY+24){
+        if((float)(ev.pos.getY()/getScaleFactor())>=fPillY&&(float)(ev.pos.getY()/getScaleFactor())<=fPillY+24){
             for(int i=0;i<4;i++){const float x=16+i*92;
-                if(ev.pos.getX()>=x&&ev.pos.getX()<=x+84){spv(1,(float)i);fFocus=i;repaint();return true;}}
-            if(ev.pos.getX()>=W-308&&ev.pos.getX()<=W-244){spv(15,1.f);return true;}
-            if(ev.pos.getX()>=W-236&&ev.pos.getX()<=W-170){spv(12,1.f);return true;}
-            if(ev.pos.getX()>=W-164&&ev.pos.getX()<=W-96){const float v=fOn>0.5f?0.f:1.f;spv(0,v);fOn=v;repaint();return true;}
-            if(ev.pos.getX()>=W-88){spv(5,1.f);return true;}
+                if((float)(ev.pos.getX()/getScaleFactor())>=x&&(float)(ev.pos.getX()/getScaleFactor())<=x+84){spv(1,(float)i);fFocus=i;repaint();return true;}}
+            if((float)(ev.pos.getX()/getScaleFactor())>=W-308&&(float)(ev.pos.getX()/getScaleFactor())<=W-244){spv(15,1.f);return true;}
+            if((float)(ev.pos.getX()/getScaleFactor())>=W-236&&(float)(ev.pos.getX()/getScaleFactor())<=W-170){spv(12,1.f);return true;}
+            if((float)(ev.pos.getX()/getScaleFactor())>=W-164&&(float)(ev.pos.getX()/getScaleFactor())<=W-96){const float v=fOn>0.5f?0.f:1.f;spv(0,v);fOn=v;repaint();return true;}
+            if((float)(ev.pos.getX()/getScaleFactor())>=W-88){spv(5,1.f);return true;}
         }
         // skin dots
-        if(ev.pos.getY()>=fSkinY&&ev.pos.getY()<=fSkinY+32)
-            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){spv(4,(float)i);fSkin=i;repaint();return true;}
+        if((float)(ev.pos.getY()/getScaleFactor())>=fSkinY&&(float)(ev.pos.getY()/getScaleFactor())<=fSkinY+32)
+            for(int i=0;i<8;i++) if(std::fabs((float)(ev.pos.getX()/getScaleFactor())-(66+i*13))<8){spv(4,(float)i);fSkin=i;repaint();return true;}
         return true;
     }
 
@@ -241,8 +241,8 @@ protected:
     {
         if(fXYdrag){xySet(ev.pos);return true;}
         if(fDrag>=0){fMoved=true;
-            const float dv=(fLastY-ev.pos.getY())*(fMax[fDrag]-fMin[fDrag])/150.f;
-            fLastY=ev.pos.getY();
+            const float dv=(fLastY-(float)(ev.pos.getY()/getScaleFactor()))*(fMax[fDrag]-fMin[fDrag])/150.f;
+            fLastY=(float)(ev.pos.getY()/getScaleFactor());
             float v=fValue[fDrag]+dv;
             if(v<fMin[fDrag])v=fMin[fDrag];
             if(v>fMax[fDrag])v=fMax[fDrag];

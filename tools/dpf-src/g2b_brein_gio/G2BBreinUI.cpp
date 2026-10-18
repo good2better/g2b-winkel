@@ -227,13 +227,13 @@ protected:
             // genre pills
             for(int i=0;i<5;i++){
                 float px=14.f+i*80.f;
-                if(ev.pos.getX()>=px&&ev.pos.getX()<=px+74&&ev.pos.getY()>=54&&ev.pos.getY()<=74){
+                if((float)(ev.pos.getX()/getScaleFactor())>=px&&(float)(ev.pos.getX()/getScaleFactor())<=px+74&&(float)(ev.pos.getY()/getScaleFactor())>=54&&(float)(ev.pos.getY()/getScaleFactor())<=74){
                     fGenre=i;fKit=0;spv(0,(float)i);spv(1,0.f);repaint();return true;}}
             // GENEREER
-            if(ev.pos.getX()>=W-180&&ev.pos.getX()<=W-14&&ev.pos.getY()>=48&&ev.pos.getY()<=78){
+            if((float)(ev.pos.getX()/getScaleFactor())>=W-180&&(float)(ev.pos.getX()/getScaleFactor())<=W-14&&(float)(ev.pos.getY()/getScaleFactor())>=48&&(float)(ev.pos.getY()/getScaleFactor())<=78){
                 spv(10,1.f);return true;}
             // DICE — UI telt zelf random, parameters volgen
-            if(ev.pos.getX()>=14&&ev.pos.getX()<=40&&ev.pos.getY()>=84&&ev.pos.getY()<=101){
+            if((float)(ev.pos.getX()/getScaleFactor())>=14&&(float)(ev.pos.getX()/getScaleFactor())<=40&&(float)(ev.pos.getY()/getScaleFactor())>=84&&(float)(ev.pos.getY()/getScaleFactor())<=101){
                 fGenre=rand()%5; const BGK& g=kGenreKits[fGenre]; fKit=rand()%g.n;
                 fValue[1]=(float)(rand()%256);
                 spv(0,(float)fGenre);spv(1,(float)fKit);spv(3,fValue[1]);
@@ -242,40 +242,40 @@ protected:
                               kNames[kKits[g.off+fKit].name]);
                 repaint();return true;}
             // SPEEL
-            if(ev.pos.getX()>=44&&ev.pos.getX()<=90&&ev.pos.getY()>=84&&ev.pos.getY()<=101){
+            if((float)(ev.pos.getX()/getScaleFactor())>=44&&(float)(ev.pos.getX()/getScaleFactor())<=90&&(float)(ev.pos.getY()/getScaleFactor())>=84&&(float)(ev.pos.getY()/getScaleFactor())<=101){
                 fPlay=fPlay>0.5f?0.f:1.f;spv(9,fPlay);repaint();return true;}
             // ↓MID
-            if(ev.pos.getX()>=94&&ev.pos.getX()<=136&&ev.pos.getY()>=84&&ev.pos.getY()<=101){
+            if((float)(ev.pos.getX()/getScaleFactor())>=94&&(float)(ev.pos.getX()/getScaleFactor())<=136&&(float)(ev.pos.getY()/getScaleFactor())>=84&&(float)(ev.pos.getY()/getScaleFactor())<=101){
                 spv(12,1.f);return true;}
             // LEER → midi-file kiezen
-            if(ev.pos.getX()>=140&&ev.pos.getX()<=184&&ev.pos.getY()>=84&&ev.pos.getY()<=101){
+            if((float)(ev.pos.getX()/getScaleFactor())>=140&&(float)(ev.pos.getX()/getScaleFactor())<=184&&(float)(ev.pos.getY()/getScaleFactor())>=84&&(float)(ev.pos.getY()/getScaleFactor())<=101){
                 openFileBrowser(); return true;}
             // MIJN → leer-mode
-            if(ev.pos.getX()>=188&&ev.pos.getX()<=238&&ev.pos.getY()>=84&&ev.pos.getY()<=101){
+            if((float)(ev.pos.getX()/getScaleFactor())>=188&&(float)(ev.pos.getX()/getScaleFactor())<=238&&(float)(ev.pos.getY()/getScaleFactor())>=84&&(float)(ev.pos.getY()/getScaleFactor())<=101){
                 fLeer=fLeer>0.5f?0.f:1.f;spv(16,fLeer);repaint();return true;}
             // GEN8 → 8 variaties naar map
-            if(ev.pos.getX()>=242&&ev.pos.getX()<=286&&ev.pos.getY()>=84&&ev.pos.getY()<=101){
+            if((float)(ev.pos.getX()/getScaleFactor())>=242&&(float)(ev.pos.getX()/getScaleFactor())<=286&&(float)(ev.pos.getY()/getScaleFactor())>=84&&(float)(ev.pos.getY()/getScaleFactor())<=101){
                 spv(17,1.f);return true;}
             // SKIN
-            if(ev.pos.getX()>=W-40&&ev.pos.getX()<=W-14&&ev.pos.getY()>=84&&ev.pos.getY()<=101){
+            if((float)(ev.pos.getX()/getScaleFactor())>=W-40&&(float)(ev.pos.getX()/getScaleFactor())<=W-14&&(float)(ev.pos.getY()/getScaleFactor())>=84&&(float)(ev.pos.getY()/getScaleFactor())<=101){
                 fLight=((int)fLight+1)%8;spv(13,fLight);repaint();return true;}
             // kit ◀ ▶
             { const BGK& g=kGenreKits[fGenre<0?0:(fGenre>4?4:fGenre)];
-              if(ev.pos.getX()>=14&&ev.pos.getX()<=40&&ev.pos.getY()>=118&&ev.pos.getY()<=140){
+              if((float)(ev.pos.getX()/getScaleFactor())>=14&&(float)(ev.pos.getX()/getScaleFactor())<=40&&(float)(ev.pos.getY()/getScaleFactor())>=118&&(float)(ev.pos.getY()/getScaleFactor())<=140){
                   fKit=fKit-1; if(fKit<0)fKit=(int)g.n-1; spv(1,(float)fKit);repaint();return true;}
-              if(ev.pos.getX()>=W-58&&ev.pos.getX()<=W-32&&ev.pos.getY()>=118&&ev.pos.getY()<=140){
+              if((float)(ev.pos.getX()/getScaleFactor())>=W-58&&(float)(ev.pos.getX()/getScaleFactor())<=W-32&&(float)(ev.pos.getY()/getScaleFactor())>=118&&(float)(ev.pos.getY()/getScaleFactor())<=140){
                   fKit=fKit+1; if(fKit>=(int)g.n)fKit=0; spv(1,(float)fKit);repaint();return true;} }
             // laag-toggles
             for(int i=0;i<3;i++){
                 float px=14.f+i*100.f;
-                if(ev.pos.getX()>=px&&ev.pos.getX()<=px+92&&ev.pos.getY()>=342&&ev.pos.getY()<=364){
+                if((float)(ev.pos.getX()/getScaleFactor())>=px&&(float)(ev.pos.getX()/getScaleFactor())<=px+92&&(float)(ev.pos.getY()/getScaleFactor())>=342&&(float)(ev.pos.getY()/getScaleFactor())<=364){
                     float* tv=i==0?&fDrums:(i==1?&fMel:&fMidi);
                     *tv=*tv>0.5f?0.f:1.f; spv(6+i,*tv); repaint();return true;}}
             // knobs
             for(int i=0;i<5;i++){
                 float cx=40+(W-80)/5.f*(i+0.5f),cy=258.f,R=24;
-                float dx=ev.pos.getX()-cx,dy=ev.pos.getY()-cy;
-                if(dx*dx+dy*dy<(R+8)*(R+8)){fDrag=i;fLastY=ev.pos.getY();return true;}
+                float dx=(float)(ev.pos.getX()/getScaleFactor())-cx,dy=(float)(ev.pos.getY()/getScaleFactor())-cy;
+                if(dx*dx+dy*dy<(R+8)*(R+8)){fDrag=i;fLastY=(float)(ev.pos.getY()/getScaleFactor());return true;}
             }
         }
         if(fDrag>=0&&ev.press==false){fDrag=-1;repaint();return true;}
@@ -284,7 +284,7 @@ protected:
     bool onMotion(const MotionEvent& ev) override
     {
         if(fDrag<0)return false;
-        float dy=fLastY-ev.pos.getY(); fLastY=ev.pos.getY();
+        float dy=fLastY-(float)(ev.pos.getY()/getScaleFactor()); fLastY=(float)(ev.pos.getY()/getScaleFactor());
         float range=fMax[fDrag]-fMin[fDrag];
         float v=fValue[fDrag]+dy*range/200.f;
         if(v<fMin[fDrag])v=fMin[fDrag];if(v>fMax[fDrag])v=fMax[fDrag];

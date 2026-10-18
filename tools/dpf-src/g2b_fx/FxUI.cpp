@@ -267,17 +267,17 @@ protected:
         // preset-klik?
         if (ev.press)
         {
-            if (ev.pos.getX() >= W-96.0f && ev.pos.getX() <= W-44.0f &&
-                ev.pos.getY() >= 33.0f && ev.pos.getY() <= 51.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= W-96.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-44.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 33.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
             { fOn = fOn>0.5f?0.f:1.f; setParameterValue(10, fOn); repaint(); return true; }
-            if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 40.0f &&
-                ev.pos.getY() >= 140.0f && ev.pos.getY() <= 157.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 40.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 140.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 157.0f)
             { setParameterValue(8, 1.0f); repaint(); return true; }
-            if (ev.pos.getX() >= 44.0f && ev.pos.getX() <= 78.0f &&
-                ev.pos.getY() >= 140.0f && ev.pos.getY() <= 157.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= 44.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 78.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 140.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 157.0f)
             { setParameterValue(6, 1.0f); repaint(); return true; }
-            if (ev.pos.getX() >= W-40.0f && ev.pos.getX() <= W-14.0f &&
-                ev.pos.getY() >= 34.0f && ev.pos.getY() <= 51.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= W-40.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-14.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 34.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
             {
                 for (int i = 0; i < kNumPrograms; ++i)
@@ -288,8 +288,8 @@ protected:
                     const float rowW = nin * bw + (nin - 1) * gap;
                     const float bx = (W - rowW) * 0.5f + col * (bw + gap);
                     const float by = row == 0 ? 56.0f : 76.0f;
-                    if (ev.pos.getX() >= bx && ev.pos.getX() <= bx + bw &&
-                        ev.pos.getY() >= by && ev.pos.getY() <= by + bh)
+                    if ((float)(ev.pos.getX()/getScaleFactor()) >= bx && (float)(ev.pos.getX()/getScaleFactor()) <= bx + bw &&
+                        (float)(ev.pos.getY()/getScaleFactor()) >= by && (float)(ev.pos.getY()/getScaleFactor()) <= by + bh)
                     {
                         setParameterValue(9, (float)i);
                         for (int p = 0; p < 6; ++p)
@@ -310,11 +310,11 @@ protected:
             {
                 const float cx = 20.0f + step * (i + 0.5f);
                 const float cy = 178.0f;
-                const float dx = ev.pos.getX() - cx;
-                const float dy = ev.pos.getY() - cy;
+                const float dx = (float)(ev.pos.getX()/getScaleFactor()) - cx;
+                const float dy = (float)(ev.pos.getY()/getScaleFactor()) - cy;
                 if (dx*dx + dy*dy <= 21.0f*21.0f + 80.0f)
                 {
-                    fDrag = i; fLastY = ev.pos.getY();
+                    fDrag = i; fLastY = (float)(ev.pos.getY()/getScaleFactor());
                     editParameter(parOf(i), true);
                     return true;
                 }
@@ -331,8 +331,8 @@ protected:
     bool onMotion(const MotionEvent& ev) override
     {
         if (fDrag < 0) return false;
-        const float dy = fLastY - ev.pos.getY();
-        fLastY = ev.pos.getY();
+        const float dy = fLastY - (float)(ev.pos.getY()/getScaleFactor());
+        fLastY = (float)(ev.pos.getY()/getScaleFactor());
         const float range = fMax[fDrag] - fMin[fDrag];
         float v = fValue[fDrag] + dy * range / 200.0f;
         if (v < fMin[fDrag]) v = fMin[fDrag];
@@ -351,8 +351,8 @@ protected:
         {
             const float cx = 20.0f + step * (i + 0.5f);
             const float cy = 178.0f;
-            const float dx = ev.pos.getX() - cx;
-            const float dy = ev.pos.getY() - cy;
+            const float dx = (float)(ev.pos.getX()/getScaleFactor()) - cx;
+            const float dy = (float)(ev.pos.getY()/getScaleFactor()) - cy;
             if (dx*dx + dy*dy <= 21.0f*21.0f + 80.0f)
             {
                 const float range = fMax[i] - fMin[i];

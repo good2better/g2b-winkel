@@ -74,19 +74,19 @@ protected:
     }
     bool onMouse(const MouseEvent&ev)override{
         if(!ev.press){if(fDrag>=0&&!fMoved){int i=fDrag;float mn=fMin[i],mx=maxOf(i),st=(mx-mn)<=32?1.f:(mx-mn)/20.f;float v=fVal[i]+st;if(v>mx)v=mn;spv(pFor[i],v);fVal[i]=v;repaint();}fDrag=-1;fXYdrag=false;fMoved=false;return true;}
-        if(ev.pos.getY()<42&&ev.pos.getX()>getWidth()-116){spv(0,fOn>0.5f?0.f:1.f);fOn=fOn>0.5f?0:1;repaint();return true;}
-        if(ev.pos.getX()>=fXX&&ev.pos.getX()<=fXX+fXW&&ev.pos.getY()>=fXY_&&ev.pos.getY()<=fXY_+fXH){fXYdrag=true;xySet(ev.pos);return true;}
+        if((float)(ev.pos.getY()/getScaleFactor())<42&&(float)(ev.pos.getX()/getScaleFactor())>getWidth()-116){spv(0,fOn>0.5f?0.f:1.f);fOn=fOn>0.5f?0:1;repaint();return true;}
+        if((float)(ev.pos.getX()/getScaleFactor())>=fXX&&(float)(ev.pos.getX()/getScaleFactor())<=fXX+fXW&&(float)(ev.pos.getY()/getScaleFactor())>=fXY_&&(float)(ev.pos.getY()/getScaleFactor())<=fXY_+fXH){fXYdrag=true;xySet(ev.pos);return true;}
         for(int i=0;i<8;i++){
             const float cx=fKnobX+(i%4)*86,cy=fKnobY+(i/4)*96;
-            const float dx=ev.pos.getX()-cx,dy=ev.pos.getY()-cy;
-            if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=ev.pos.getY();fMoved=false;return true;}}
-        if(ev.pos.getY()>=fSkinY&&ev.pos.getY()<=fSkinY+32)
-            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){spv(8,(float)i);fSkin=i;repaint();return true;}
+            const float dx=(float)(ev.pos.getX()/getScaleFactor())-cx,dy=(float)(ev.pos.getY()/getScaleFactor())-cy;
+            if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=(float)(ev.pos.getY()/getScaleFactor());fMoved=false;return true;}}
+        if((float)(ev.pos.getY()/getScaleFactor())>=fSkinY&&(float)(ev.pos.getY()/getScaleFactor())<=fSkinY+32)
+            for(int i=0;i<8;i++) if(std::fabs((float)(ev.pos.getX()/getScaleFactor())-(66+i*13))<8){spv(8,(float)i);fSkin=i;repaint();return true;}
         return false;}
     bool onMotion(const MotionEvent&ev)override{
         if(fXYdrag){xySet(ev.pos);return true;}
         if(fDrag<0)return false;fMoved=true;
-        float dy=fLastY-ev.pos.getY();fLastY=ev.pos.getY();
+        float dy=fLastY-(float)(ev.pos.getY()/getScaleFactor());fLastY=(float)(ev.pos.getY()/getScaleFactor());
         float v=fVal[fDrag]+dy*(maxOf(fDrag)-fMin[fDrag])/120.0f;
         float mx=maxOf(fDrag);
         if(v<fMin[fDrag])v=fMin[fDrag]; if(v>mx)v=mx;
