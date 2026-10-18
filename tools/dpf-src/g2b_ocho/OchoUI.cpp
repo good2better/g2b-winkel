@@ -108,6 +108,11 @@ protected:
             std::snprintf(fDbg, sizeof(fDbg), "%s", value);
             repaint();
         }
+        if (std::strcmp(key, "scan") == 0)
+        {
+            std::snprintf(fScan, sizeof(fScan), "%s", value);
+            repaint();
+        }
     }
 
     void onNanoDisplay() override
@@ -121,7 +126,7 @@ protected:
         text(18.0f, 24.0f, "G2B OCHO-OCHO", nullptr);
         fontSize(10.0f);
         fillColor(143, 160, 152);
-        text(178.0f, 24.0f, "v6.4", nullptr);
+        text(178.0f, 24.0f, "v6.5", nullptr);
         fontSize(11.5f);
         fillColor(143, 160, 152);
         text(18.0f, 43.0f, "jouw Surinaamse one-shot machine — speel hem als een instrument", nullptr);
@@ -129,6 +134,7 @@ protected:
         fontSize(9.0f); fillColor(90, 100, 94);
         textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
         text(208.0f, 24.0f, fDbg, nullptr);
+        text(208.0f, 34.0f, fScan, nullptr);
 
         // scope (rechtsboven)
         const float sx = 300.0f, sy = 12.0f, sw = W - 318.0f, sh = 46.0f;
@@ -649,6 +655,7 @@ private:
     int fBtnCount = 0;
     int fFlash = -1, fFlashTick = 0;
     char fDbg[64] = "";
+    char fScan[64] = "";
     static bool eqNoCase(const char* a, const char* b)
     {
         while (*a && *b)
