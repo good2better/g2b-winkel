@@ -44,7 +44,7 @@ static const float kSmpRel[16] = {0.12f, 0.04f, 0.04f, 0.12f, 0.10f, 0.06f, 0.04
 static const float kSmpLp[16]  = {90.0f, 0.0f, 0.0f, 0.0f, 120.0f, 0.0f, 0.0f, 0.0f,
                                   0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
-struct UsrSmp { char name[16]; std::vector<int16_t> d; int len = 0; };
+struct UsrSmp { char name[16]; std::vector<int16_t> d; int len = 0; float fix = 1.0f; }; // fix = pitch-correctie naar C
 
 // minimale PCM16-wav lezer (mono/stereo → mono, resampled naar kSmpSR)
 static bool loadWav(const char* path, UsrSmp& u)
@@ -107,6 +107,12 @@ static bool loadWav(const char* path, UsrSmp& u)
     int mx = 1; for (int i = 0; i < outN; ++i) { int a = u.d[i] < 0 ? -u.d[i] : u.d[i]; if (a > mx) mx = a; }
     const double g = 0.92 * 32767.0 / mx;
     for (int i = 0; i < outN; ++i) u.d[i] = (int16_t)(u.d[i] * g);
+    // grondtoon-detectie (zero-crossing) → pitch-fix zodat noot 36 = C
+    int zc = 0; const int s0 = outN / 5, s1 = std::min(outN, s0 + kSmpSR / 2);
+    for (int i = s0 + 1; i < s1; ++i)
+        if ((u.d[i-1] < 0) != (u.d[i] < 0)) ++zc;
+    const double fDet = (double)zc * kSmpSR / (2.0 * (s1 - s0));
+    if (fDet > 30.0 && fDet < 800.0) u.fix = (float)(65.4064 / fDet);
     return true;
 }
 
@@ -438,15 +444,17 @@ private:
             for (int i = 1; i < kMaxVoices; ++i)
                 if (fVoice[i].age > v->age) v = &fVoice[i];
         }
+        int si = (int)(fPreset + 0.5f);
+        if (si < 0) si = 0;
+        if (si >= kNumSmp + (int)fUsr.size()) si = kNumSmp + (int)fUsr.size() - 1;
+        const float fix = (si >= kNumSmp && si - kNumSmp < (int)fUsr.size()) ? fUsr[si - kNumSmp].fix : 1.0f;
         const float f = noteFreq(note) * tuneMul;
-        const float rt = std::pow(2.0f, ((float)note - 36.0f) / 12.0f) * tuneMul;
+        const float rt = std::pow(2.0f, ((float)note - 36.0f) / 12.0f) * tuneMul * fix;
         v->active = true;
         v->note = note;
         v->target = f;
         v->trate = rt;
-        v->smp = (int)(fPreset + 0.5f);
-        if (v->smp < 0) v->smp = 0;
-        if (v->smp >= kNumSmp + (int)fUsr.size()) v->smp = kNumSmp + (int)fUsr.size() - 1;
+        v->smp = si;
         // glide: start vanaf vorige noot; zonder glide meteen op toonhoogte
         v->freq = (fGlide > 0.5f && fLastFreq > 0.0f) ? fLastFreq : f;
         v->rate = (fGlide > 0.5f && fLastRate > 0.0f) ? fLastRate : rt;
