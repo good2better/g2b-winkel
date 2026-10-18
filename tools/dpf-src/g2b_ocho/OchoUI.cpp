@@ -13,7 +13,7 @@
 
 // G2B skins (8 thema's): bg,pn,tx,gy,ed,GR,DG
 static const float G2BSK[8][7][3]={
-    {{13,15,14},{23,26,25},{232,236,234},{100,110,103},{42,47,45},{47,191,113},{29,122,72}},
+    {{12,20,14},{20,34,24},{245,240,220},{115,140,120},{48,75,58},{47,191,113},{190,40,45}}, // SRANANG: jungle-nacht + G2B-merkgroen + vlag-rood
     {{14,14,22},{22,22,34},{230,232,255},{110,110,150},{40,40,58},{120,110,255},{70,60,170}},
     {{10,20,22},{16,30,32},{225,245,245},{95,130,130},{30,55,55},{40,200,210},{20,120,130}},
     {{24,14,20},{34,20,28},{250,230,240},{150,105,125},{60,38,50},{255,110,180},{180,60,120}},
@@ -21,7 +21,7 @@ static const float G2BSK[8][7][3]={
     {{18,10,10},{28,16,16},{240,225,220},{140,100,95},{55,35,32},{200,80,60},{130,45,35}},
     {{14,14,10},{22,22,16},{245,240,220},{120,115,95},{50,48,35},{230,190,80},{160,125,45}},
     {{12,14,20},{20,24,32},{235,240,250},{105,115,135},{36,44,58},{80,160,255},{45,110,200}}};
-static const char* G2BSKN[8]={"MELIOR","SPECTRUM","LAGOON","CANDY","GHOST","MAROON","GOLD","STUDIO"};
+static const char* G2BSKN[8]={"SRANANG","SPECTRUM","LAGOON","CANDY","GHOST","MAROON","GOLD","STUDIO"};
 static inline Color g2bsk(int sk,int r){if(sk<0)sk=0;if(sk>7)sk=7;const float*c=G2BSK[sk&7][r];return Color((int)c[0],(int)c[1],(int)c[2]);}
 
 START_NAMESPACE_DISTRHO
@@ -120,13 +120,37 @@ protected:
         const float W = getWidth(), H = getHeight();
         beginPath(); rect(0, 0, W, H); fillColor(g2bsk(fLight,0)); fill();
 
+        // Surinaamse vlag-streep bovenin (alleen in de SRANANG-skin):
+        // groen-wit-rood-wit-groen + gouden ster in de rode band
+        if (fLight == 0)
+        {
+            beginPath(); rect(0, 0, W, 2);   fillColor(35, 125, 65); fill();
+            beginPath(); rect(0, 2, W, 1);   fillColor(240, 242, 240); fill();
+            beginPath(); rect(0, 3, W, 4);   fillColor(190, 40, 45); fill();
+            beginPath(); rect(0, 7, W, 1);   fillColor(240, 242, 240); fill();
+            beginPath(); rect(0, 8, W, 2);   fillColor(35, 125, 65); fill();
+            // gouden ster (5-punt, gecentreerd in de rode band)
+            {
+                const float cx = W * 0.5f, cy = 5.0f, r1 = 2.6f, r2 = 1.1f;
+                beginPath();
+                for (int p = 0; p < 10; ++p)
+                {
+                    const float a = -1.5708f + p * 0.6283f;
+                    const float r = (p % 2 == 0) ? r1 : r2;
+                    const float px = cx + std::cos(a) * r, py = cy + std::sin(a) * r;
+                    if (p == 0) moveTo(px, py); else lineTo(px, py);
+                }
+                closePath(); fillColor(235, 200, 60); fill();
+            }
+        }
+
         fontSize(20.0f);
         textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
-        fillColor(47, 191, 113);
+        fillColor(g2bsk(fLight,5));
         text(18.0f, 24.0f, "G2B OCHO-OCHO", nullptr);
         fontSize(10.0f);
         fillColor(143, 160, 152);
-        text(178.0f, 24.0f, "v6.7", nullptr);
+        text(178.0f, 24.0f, "v6.8", nullptr);
         fontSize(11.5f);
         fillColor(143, 160, 152);
         text(18.0f, 43.0f, "jouw Surinaamse one-shot machine — speel hem als een instrument", nullptr);
@@ -158,7 +182,7 @@ protected:
             if (i == 0) moveTo(x0, y0); else lineTo(x0, y0);
             lineTo(x1, y1);
         }
-        strokeColor(47, 191, 113); strokeWidth(1.5f); stroke();
+        strokeColor(g2bsk(fLight,5)); strokeWidth(1.5f); stroke();
 
         // AAN/UIT pil (vrij vlak tussen titel en scope)
         {
@@ -188,7 +212,7 @@ protected:
 
             beginPath();
             arc(cx, cy, R - 4.0f, -2.4f - 1.5708f, ang - 1.5708f, CW);
-            strokeColor(47, 191, 113); strokeWidth(3.0f); stroke();
+            strokeColor(g2bsk(fLight,5)); strokeWidth(3.0f); stroke();
 
             beginPath();
             moveTo(cx, cy);
@@ -204,7 +228,7 @@ protected:
             if (fFlashTick > 0 && i == fFlash)
             {
                 beginPath(); circle(cx, cy, R + 3.0f);
-                strokeColor(47, 191, 113); strokeWidth(2.0f); stroke();
+                strokeColor(g2bsk(fLight,5)); strokeWidth(2.0f); stroke();
             }
             if (fFlashTick > 0 && i == 11) --fFlashTick;
             fontSize(11.0f); fillColor(232, 236, 234);
@@ -227,28 +251,6 @@ protected:
             text(cx, cy + R + 23.0f, buf, nullptr);
         }
 
-        // XY-pad: X = KRACHT (0-100), Y = DIMENTIES (0-26)
-        fXX = 18.0f; fXY_ = 225.0f; fXW = W - 36.0f; fXH = 105.0f;
-        {
-            const float px = fXX, py = fXY_, pw = fXW, ph = fXH;
-            beginPath(); roundedRect(px, py, pw, ph, 6.0f);
-            fillColor(g2bsk(fLight,4)); fill();
-            strokeColor(g2bsk(fLight,3)); strokeWidth(1.0f); stroke();
-            const float nx = fValue[9] / 100.0f, ny = fValue[10] / 26.0f;
-            const float dx = px + nx * pw, dy = py + (1.0f - ny) * ph;
-            beginPath();
-            moveTo(dx, py); lineTo(dx, py + ph);
-            moveTo(px, dy); lineTo(px + pw, dy);
-            strokeColor(g2bsk(fLight,3)); strokeWidth(0.5f); stroke();
-            beginPath(); circle(dx, dy, 5.0f);
-            fillColor(g2bsk(fLight,5)); fill();
-            fontSize(9.0f); fillColor(g2bsk(fLight,3));
-            textAlign(ALIGN_LEFT | ALIGN_TOP);
-            text(px + 6.0f, py + 4.0f, "DIMENTIES ", nullptr);
-            textAlign(ALIGN_RIGHT | ALIGN_BOTTOM);
-            text(px + pw - 6.0f, py + ph - 4.0f, "KRACHT →", nullptr);
-        }
-
         fontSize(10.5f);
         fillColor(90, 100, 94);
         textAlign(ALIGN_CENTER | ALIGN_BOTTOM);
@@ -263,7 +265,7 @@ protected:
                 const float by = 62.0f + row * (bh + 4.0f);
                 const bool on = (i == fProg);
                 beginPath(); roundedRect(bx, by, bw, bh, 4.0f);
-                if (on) { fillColor(29, 122, 72); fill(); }
+                if (on) { fillColor(g2bsk(fLight,6)); fill(); }
                 strokeColor(42, 47, 45); strokeWidth(1.0f); stroke();
                 fontSize(9.5f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
                 fillColor(on ? Color(232, 236, 234) : Color(143, 160, 152));
@@ -289,7 +291,7 @@ protected:
                 const float by = 128.0f;
                 const bool on = (slot == fProg);
                 beginPath(); roundedRect(bx, by, bw, bh, 4.0f);
-                if (on) { fillColor(29, 122, 72); fill(); }
+                if (on) { fillColor(g2bsk(fLight,6)); fill(); }
                 strokeColor(42, 47, 45); strokeWidth(1.0f); stroke();
                 fontSize(8.0f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
                 fillColor(on ? Color(232, 236, 234) : Color(143, 160, 152));
@@ -320,12 +322,16 @@ protected:
             text(48.0f, ay+9.0f, nm, nullptr);
             {
                 fontSize(8.5f); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
-                fillColor(29, 122, 72);
+                fillColor(g2bsk(fLight,6));
                 if (cur < kNumPresets)
                 {
-                    // toon ook hoeveel eigen shots hij vond — direct zichtbaar
-                    // of de mappen geladen zijn (0 = mappen niet gevonden)
-                    char ob[32]; std::snprintf(ob, sizeof(ob), "SET: OCHO · %d eigen", (int)fUsrNames.size());
+                    // toon de eigen-teller alleen als er écht eigen shots
+                    // geladen zijn — "0 eigen" oogt als een storing
+                    char ob[32];
+                    if (!fUsrNames.empty())
+                        std::snprintf(ob, sizeof(ob), "SET: OCHO · %d eigen", (int)fUsrNames.size());
+                    else
+                        std::snprintf(ob, sizeof(ob), "SET: OCHO");
                     text(48.0f, ay - 3.0f, ob, nullptr);
                 }
                 else
@@ -339,16 +345,20 @@ protected:
                 fillColor(g2bsk(fLight,3));
                 text(158.0f, ay - 3.0f, cb, nullptr);
             }
-            // SET> knop: spring naar de volgende geluiden-set
-            beginPath(); roundedRect(158.0f, ay, 46.0f, 18.0f, 4.0f);
-            fillColor(g2bsk(fLight,1)); fill();
-            strokeColor(29, 122, 72); strokeWidth(1.0f); stroke();
-            fontSize(9.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
-            fillColor(g2bsk(fLight,2));
-            text(181.0f, ay+9.0f, "SET>", nullptr);
+            // SET> knop: alleen zichtbaar als er meerdere sets zijn
+            // (zonder eigen mappen springt hij terug naar OCHO = dode knop)
+            if (!fUsrNames.empty())
+            {
+                beginPath(); roundedRect(158.0f, ay, 46.0f, 18.0f, 4.0f);
+                fillColor(g2bsk(fLight,1)); fill();
+                strokeColor(g2bsk(fLight,6)); strokeWidth(1.0f); stroke();
+                fontSize(9.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+                fillColor(g2bsk(fLight,2));
+                text(181.0f, ay+9.0f, "SET>", nullptr);
+            }
             // "808 ✓": maak de shot een echte 808 (sub + val + lengte + aanslag)
             beginPath(); roundedRect(246.0f, ay, 46.0f, 18.0f, 4.0f);
-            fillColor(29, 122, 72); fill();
+            fillColor(g2bsk(fLight,6)); fill();
             strokeColor(42,47,45); strokeWidth(1.0f); stroke();
             fontSize(9.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
             fillColor(232,236,234);
@@ -380,9 +390,9 @@ protected:
             if (fDiceTick > 0)
             {
                 beginPath(); roundedRect(bx2 - 2.0f, 44.0f, 34.0f, 24.0f, 5.0f);
-                strokeColor(47, 191, 113); strokeWidth(2.0f); stroke();
+                strokeColor(g2bsk(fLight,5)); strokeWidth(2.0f); stroke();
                 fontSize(8.5f); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
-                fillColor(47, 191, 113);
+                fillColor(g2bsk(fLight,5));
                 text(bx2 + 36.0f, 56.0f, "GEROLD", nullptr);
                 --fDiceTick;
             }
@@ -435,7 +445,9 @@ protected:
                         spv(10, (float)cur); fProg = cur; repaint(); return true;
                     }
                     // SET>: spring naar de eerste shot van de volgende set
-                    if ((float)(ev.pos.getX()/getScaleFactor()) >= 158.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 204.0f &&
+                    // (alleen actief als er eigen sets zijn — anders dode knop)
+                    if (!fUsrNames.empty() &&
+                        (float)(ev.pos.getX()/getScaleFactor()) >= 158.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 204.0f &&
                         (float)(ev.pos.getY()/getScaleFactor()) >= 106.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 124.0f)
                     {
                         cur = hi >= total ? 0 : hi;
@@ -458,10 +470,6 @@ protected:
                 fFxTick = 18;
                 repaint(); return true;
             }
-            // XY-pad
-            if ((float)(ev.pos.getX()/getScaleFactor()) >= fXX && (float)(ev.pos.getX()/getScaleFactor()) <= fXX + fXW &&
-                (float)(ev.pos.getY()/getScaleFactor()) >= fXY_ && (float)(ev.pos.getY()/getScaleFactor()) <= fXY_ + fXH)
-            { fXYdrag = true; xySet((float)(ev.pos.getX()/getScaleFactor()), (float)(ev.pos.getY()/getScaleFactor())); return true; }
             // smaak-klik? (2 rijen van 8) — springt meteen in die SET
             // als er een gelijknamige gebruikers-set bestaat (TRAP → TRAP-set)
             {
@@ -548,11 +556,6 @@ protected:
                 }
             }
         }
-        else if (fXYdrag)
-        {
-            fXYdrag = false;
-            return true;
-        }
         else if (fDrag >= 0)
         {
             editParameter(paramOf(fDrag), false);
@@ -563,21 +566,9 @@ protected:
 
     // knop-slots: 0-8 = params 0-8, 9 KRACHT(12), 10 DIMENTIES(13), 11 SFEER(14)
     static int paramOf(int slot) { return slot < 9 ? slot : slot + 3; }
-    void xySet(double mx, double my)
-    {
-        float nx = (float)((mx - fXX) / fXW), ny = (float)(1.0 - (my - fXY_) / fXH);
-        if (nx < 0) nx = 0; if (nx > 1) nx = 1;
-        if (ny < 0) ny = 0; if (ny > 1) ny = 1;
-        const float kr = nx * 100.0f, dm = ny * 26.0f;
-        fValue[9] = kr; fValue[10] = dm;
-        editParameter(12, true); spv(12, kr); editParameter(12, false);
-        editParameter(13, true); spv(13, dm); editParameter(13, false);
-        repaint();
-    }
 
     bool onMotion(const MotionEvent& ev) override
     {
-        if (fXYdrag) { xySet((float)(ev.pos.getX()/getScaleFactor()), (float)(ev.pos.getY()/getScaleFactor())); return true; }
         if (fDrag < 0) return false;
         const float dy = fLastY - (float)(ev.pos.getY()/getScaleFactor());
         fLastY = (float)(ev.pos.getY()/getScaleFactor());
@@ -650,7 +641,7 @@ private:
         while (hi < total && std::strcmp(setOf(hi), s) == 0) ++hi;
     }
     int fLight = 0;
-    int fOn = 1; bool fXYdrag = false;
+    int fOn = 1;
     int fBtnSlots[8] = {0,0,0,0,0,0,0,0};
     int fBtnCount = 0;
     int fFlash = -1, fFlashTick = 0;
@@ -668,7 +659,6 @@ private:
         }
         return *a == *b;
     }
-    float fXX = 18.0f, fXY_ = 225.0f, fXW = 524.0f, fXH = 105.0f;
 
     void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OchoUI)
