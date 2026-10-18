@@ -529,7 +529,8 @@ private:
 
         // rumble-filter: alles onder ~25Hz eruit (sub blijft schoon)
         fHp += fHpA * (s - fHp);
-        const float y = std::tanh((s - fHp) * 1.1f) * level;
+        float y = std::tanh((s - fHp) * 1.1f) * level;
+        if (y > 0.95f) y = 0.95f; else if (y < -0.95f) y = -0.95f; // hard clip: pieken strak aftoppen
         outL[i] = y;
         outR[i] = y;
 
@@ -617,8 +618,8 @@ private:
         const float decSec = 0.06f + (fDecay / 100.0f) * 0.84f;
         fDecRate = std::exp(-1.0f / (sr * decSec));
         fRelRate = std::exp(-1.0f / (sr * 0.04f)); // ~40ms release bij note-off — stopt als kick
-        // glide-knop → freq approach (0=uit .. 100%=~0.35s)
-        const float glSec = (fGlide / 100.0f) * 0.35f;
+        // glide-knop → freq approach (0=uit .. 100%=0.12s — juiste 808 slide-zone 60-90ms)
+        const float glSec = (fGlide / 100.0f) * 0.12f;
         fGlRate = glSec > 0.0001f ? 1.0f - std::exp(-1.0f / (sr * glSec)) : 1.0f;
         fDrive = fSub / 100.0f;
         fClickA = (fClick / 100.0f) * 0.5f;
