@@ -308,16 +308,16 @@ protected:
         const float W = getWidth();
         if (ev.press)
         {
-            if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 40.0f &&
-                ev.pos.getY() >= 48.0f && ev.pos.getY() <= 65.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 40.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 48.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 65.0f)
             { spv(7, 1.0f); repaint(); return true; }
-            if (ev.pos.getX() >= W-40.0f && ev.pos.getX() <= W-14.0f &&
-                ev.pos.getY() >= 34.0f && ev.pos.getY() <= 51.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= W-40.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-14.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 34.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
 
             // LAAD SAMPLE knop
-            if (ev.pos.getX() >= 18.0f && ev.pos.getX() <= 168.0f &&
-                ev.pos.getY() >= 56.0f && ev.pos.getY() <= 80.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= 18.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 168.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 56.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 80.0f)
             {
                 openFileBrowser();
                 return true;
@@ -327,7 +327,7 @@ protected:
                 const float pw=86.f,ph=20.f,py=getHeight()-46.f;
                 for(int i=0;i<4;i++){
                     const float px=18.f+i*(pw+8.f);
-                    if(ev.pos.getX()>=px&&ev.pos.getX()<=px+pw&&ev.pos.getY()>=py&&ev.pos.getY()<=py+ph){
+                    if((float)(ev.pos.getX()/getScaleFactor())>=px&&(float)(ev.pos.getX()/getScaleFactor())<=px+pw&&(float)(ev.pos.getY()/getScaleFactor())>=py&&(float)(ev.pos.getY()/getScaleFactor())<=py+ph){
                         if(i==0)spv(12,1.f);
                         else if(i==1)spv(15,1.f);
                         else if(i==2){fSnapOn=fSnapOn>0.5f?0.f:1.f;spv(14,fSnapOn);}
@@ -343,8 +343,8 @@ protected:
                 {
                     const float bw = 62.0f, bh = 17.0f;
                     hbx -= bw + 5.0f;
-                    if (ev.pos.getX() >= hbx && ev.pos.getX() <= hbx + bw &&
-                        ev.pos.getY() >= 12.0f && ev.pos.getY() <= 12.0f + bh)
+                    if ((float)(ev.pos.getX()/getScaleFactor()) >= hbx && (float)(ev.pos.getX()/getScaleFactor()) <= hbx + bw &&
+                        (float)(ev.pos.getY()/getScaleFactor()) >= 12.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 12.0f + bh)
                     {
                         spv(8, (float)i);
                         fProg = i;
@@ -354,24 +354,24 @@ protected:
                 }
             }
             // AAN/UIT pil
-            if (ev.pos.getX() >= W-96.0f && ev.pos.getX() <= W-46.0f &&
-                ev.pos.getY() >= 34.0f && ev.pos.getY() <= 51.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= W-96.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-46.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 34.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
             { fOn = 1 - fOn; spv(16, (float)fOn); repaint(); return true; }
             // XY-pad
-            if (ev.pos.getX() >= fXX && ev.pos.getX() <= fXX + fXW &&
-                ev.pos.getY() >= fXY_ && ev.pos.getY() <= fXY_ + fXH)
-            { fXYdrag = true; xySet(ev.pos.getX(), ev.pos.getY()); return true; }
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= fXX && (float)(ev.pos.getX()/getScaleFactor()) <= fXX + fXW &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= fXY_ && (float)(ev.pos.getY()/getScaleFactor()) <= fXY_ + fXH)
+            { fXYdrag = true; xySet((float)(ev.pos.getX()/getScaleFactor()), (float)(ev.pos.getY()/getScaleFactor())); return true; }
             // knoppen
             const float step = (W - 40.0f) / 9;
             for (int i = 0; i < 9; ++i)
             {
                 const float cx = 20.0f + step * (i + 0.5f);
                 const float cy = 200.0f;
-                const float dx = ev.pos.getX() - cx;
-                const float dy = ev.pos.getY() - cy;
+                const float dx = (float)(ev.pos.getX()/getScaleFactor()) - cx;
+                const float dy = (float)(ev.pos.getY()/getScaleFactor()) - cy;
                 if (dx*dx + dy*dy <= 24.0f*24.0f + 70.0f)
                 {
-                    fDrag = i; fLastY = ev.pos.getY();
+                    fDrag = i; fLastY = (float)(ev.pos.getY()/getScaleFactor());
                     editParameter(paramOf(i), true);
                     return true;
                 }
@@ -406,10 +406,10 @@ protected:
 
     bool onMotion(const MotionEvent& ev) override
     {
-        if (fXYdrag) { xySet(ev.pos.getX(), ev.pos.getY()); return true; }
+        if (fXYdrag) { xySet((float)(ev.pos.getX()/getScaleFactor()), (float)(ev.pos.getY()/getScaleFactor())); return true; }
         if (fDrag < 0) return false;
-        const float dy = fLastY - ev.pos.getY();
-        fLastY = ev.pos.getY();
+        const float dy = fLastY - (float)(ev.pos.getY()/getScaleFactor());
+        fLastY = (float)(ev.pos.getY()/getScaleFactor());
         const float range = fMax[fDrag] - fMin[fDrag];
         float v = fValue[fDrag] + dy * range / 200.0f;
         if (v < fMin[fDrag]) v = fMin[fDrag];
@@ -428,8 +428,8 @@ protected:
         {
             const float cx = 20.0f + step * (i + 0.5f);
             const float cy = 200.0f;
-            const float dx = ev.pos.getX() - cx;
-            const float dy = ev.pos.getY() - cy;
+            const float dx = (float)(ev.pos.getX()/getScaleFactor()) - cx;
+            const float dy = (float)(ev.pos.getY()/getScaleFactor()) - cy;
             if (dx*dx + dy*dy <= 24.0f*24.0f + 70.0f)
             {
                 const float range = fMax[i] - fMin[i];

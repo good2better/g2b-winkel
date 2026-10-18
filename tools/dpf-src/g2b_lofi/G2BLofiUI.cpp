@@ -60,7 +60,7 @@ protected:
     }
     bool onMouse(const MouseEvent&ev)override{
         if(!ev.press){if(fDrag>=0&&!fMoved){int i=fDrag;float v=fVal[pFor[i]]+5;if(v>100)v=0;spv(pFor[i],v);fVal[pFor[i]]=v;repaint();}fDrag=-1;fXYdrag=false;fMoved=false;return true;}
-        int mx=ev.pos.getX(),my=ev.pos.getY();
+        int mx=(float)(ev.pos.getX()/getScaleFactor()),my=(float)(ev.pos.getY()/getScaleFactor());
         if(mx>getWidth()-100&&mx<getWidth()-20&&my>fBtnY-12&&my<fBtnY+22){float ov=fVal[0]>0.5f?0.f:1.f;spv(0,ov);fVal[0]=ov;repaint();return true;}
         if(mx>=fXX&&mx<=fXX+fXW&&my>=fXY_&&my<=fXY_+fXH){fXYdrag=true;xySet(mx,my);return true;}
         for(int i=0;i<8;i++)if(fabs(mx-(66+i*13))<8&&fabs(my-(fSkinY+8))<10){spv(9,(float)i);return true;}
@@ -69,9 +69,9 @@ protected:
         return false;
     }
     bool onMotion(const MotionEvent&ev)override{
-        if(fXYdrag){xySet((float)ev.pos.getX(),(float)ev.pos.getY());return true;}
+        if(fXYdrag){xySet((float)(ev.pos.getX()/getScaleFactor()),(float)(ev.pos.getY()/getScaleFactor()));return true;}
         if(fDrag<0)return false;
-        float dy=fLastY-(float)ev.pos.getY();fLastY=(float)ev.pos.getY();if(dy!=0)fMoved=true;
+        float dy=fLastY-(float)(ev.pos.getY()/getScaleFactor());fLastY=(float)(ev.pos.getY()/getScaleFactor());if(dy!=0)fMoved=true;
         float n=knNorm(fDrag)+dy*0.005f;if(n<0)n=0;if(n>1)n=1;
         spv(pFor[fDrag],n*100.f);fVal[pFor[fDrag]]=n*100.f;repaint();
         return true;
