@@ -1,10 +1,11 @@
 /*
- * G2B OchoOcho — de G2B 808: diepe sub-bas, zoals zijn DNA het meet
- * (63% energie onder 120Hz, zachte piek, lange uithaal).
- * Mono-synth, 8 stemmen: sine + pitch-drop + zachte drive + click.
- * Knoppen: DECAY (uithaal), GLIDE (portamento), SUB (diepte vs drive),
- * CLICK (aanslag-punt), LEVEL, TUNE (halve tonen).
- * Stuurt een live golfvorm naar de UI (state "scope").
+ * G2B OchoOcho — Giorgio's Surinaamse one-shot machine.
+ * SMAAK = échte ingebakken one-shots uit eigen bron (VCSL-hits + eigen
+ * 808-synths): DONDER, SKRATJI, BANGI, KOTI, AGOGO, SEKI, SURDO, TIMBAL,
+ * KLAP, DEMBOW, DRILL, SUB808. Toetsenbord plicht ze mee.
+ * Knoppen: DECAY (uithaal), GLIDE (portamento op de pitch), SUB (extra
+ * sine-sub onder de shot), CLICK (aanslag-tik), DROP (pitch-drop),
+ * TUNE, LEVEL — plus de vaste G2B-knoppen.
  */
 
 #include "DistrhoPlugin.hpp"
@@ -15,16 +16,11 @@
 
 START_NAMESPACE_DISTRHO
 
-static const char* kPresetNames[6] = {"G2B","DEMBOW","DRILL","RNB","HOUSE","AFRO"};
-static const int kNumPresets = 6;
-static const float kPresetParams[6][7] = {
-    { 60, 30, 30, 25, 50, 0, 80 },
-    { 55, 40, 40, 30, 55, 0, 80 },
-    { 70, 55, 50, 20, 60, 0, 80 },
-    { 65, 25, 20, 15, 35, 0, 80 },
-    { 50, 20, 45, 35, 45, 0, 80 },
-    { 55, 35, 35, 30, 50, 0, 80 },
-};
+#include "ocho_samples.h"
+
+// volgorde = kSmpOff/kSmpLen in ocho_samples.h
+static const char* kPresetNames[kNumSmp] = {"DONDER","KICKBAS","TRAP","BOOM","AFRO","DEMBOW","DRILL","SUB808","SKRATJI","BANGI","KOTI","AGOGO","SEKI","SURDO","TIMBAL","KLAP"};
+static const int kNumPresets = kNumSmp;
 
 
 static const int kMaxVoices = 8;
@@ -40,6 +36,10 @@ struct Voice
     float vel = 0.0f;
     float age = 0.0f;       // samples sinds note-on (voor pitch-drop)
     bool  releasing = false; // toets los → snelle release i.p.v. lange decay
+    float pos = 0.0f;       // lees-positie in de one-shot
+    float rate = 1.0f;      // afspeel-snelheid (pitch)
+    float trate = 1.0f;     // doel-snelheid (glide)
+    int   smp = 0;          // welke one-shot
 };
 
 class OchoPlugin : public Plugin
@@ -77,8 +77,8 @@ protected:
     const char* getLabel() const override { return "G2B OchoOcho"; }
     const char* getDescription() const override
     {
-        return "De G2B 808: diepe mono sub-bas met glide, pitch-drop en "
-               "zachte drive — gebouwd op het G2B-subgeluid.";
+        return "Giorgio's Surinaamse one-shot machine: 12 echte eigen "
+               "klanken (DONDER tot SUB808) met glide, drop en sub-laag.";
     }
     const char* getMaker() const override { return "G2B (good2better)"; }
     const char* getHomePage() const override { return "https://github.com/good2better"; }
@@ -143,12 +143,12 @@ protected:
             parameter.ranges = {0.0f, 1.0f, 0.0f};
             break;
         case kPreset:
-            parameter.name = "Preset";
-            parameter.symbol = "preset";
+            parameter.name = "Smaak";
+            parameter.symbol = "smaak";
             parameter.unit = "";
             parameter.hints = kParameterIsInteger;
             parameter.ranges.min = 0.0f;
-            parameter.ranges.max = 5.0f;
+            parameter.ranges.max = (float)(kNumPresets - 1);
             parameter.ranges.def = 0.0f;
             break;
         case kOn:
@@ -223,7 +223,7 @@ protected:
     void activate() override
     {
         for (int v = 0; v < kMaxVoices; ++v) fVoice[v] = Voice();
-        fLastFreq = 0.0f;
+        fLastFreq = 0.0f; fLastRate = 0.0f;
         fScopeN = 0;
     }
 
@@ -281,9 +281,11 @@ protected:
 
 private:
     void rollDice(){
-        fRnd=fRnd*1664525u+1013904223u; setParameterValue(kDecay,10.f+(fRnd>>8)%91);
-        fRnd=fRnd*1664525u+1013904223u; setParameterValue(kGlide,(fRnd>>8)%80);
-        fRnd=fRnd*1664525u+1013904223u; setParameterValue(kSub,(fRnd>>8)%101);
+        // nuttige dobbel: nieuwe SMAAK + passende klank-settings
+        fRnd=fRnd*1664525u+1013904223u; setParameterValue(kPreset,(float)((fRnd>>8)%kNumPresets));
+        fRnd=fRnd*1664525u+1013904223u; setParameterValue(kDecay,25.f+(fRnd>>8)%66);
+        fRnd=fRnd*1664525u+1013904223u; setParameterValue(kGlide,(fRnd>>8)%70);
+        fRnd=fRnd*1664525u+1013904223u; setParameterValue(kSub,15.f+(fRnd>>8)%71);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kClick,(fRnd>>8)%60);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kPitchD,(fRnd>>8)%101);
     }
@@ -292,7 +294,7 @@ private:
 
     float fDecay, fGlide, fSub, fClick, fPitchD, fTune, fLevel, fKey, fScale;
     float fDecRate, fGlRate, fDrive, fClickA, fDropAmt, fTuneMul, fLevelGain, fRelRate;
-    float fLastFreq;
+    float fLastFreq, fLastRate = 0.0f;
     Voice fVoice[kMaxVoices];
     static const int kScopeLen = 96;
     float fScope[kScopeLen];
@@ -333,16 +335,24 @@ private:
                 if (fVoice[i].age > v->age) v = &fVoice[i];
         }
         const float f = noteFreq(note) * tuneMul;
+        const float rt = std::pow(2.0f, ((float)note - 36.0f) / 12.0f) * tuneMul;
         v->active = true;
         v->note = note;
         v->target = f;
+        v->trate = rt;
+        v->smp = (int)(fPreset + 0.5f);
+        if (v->smp < 0) v->smp = 0;
+        if (v->smp >= kNumSmp) v->smp = kNumSmp - 1;
         // glide: start vanaf vorige noot; zonder glide meteen op toonhoogte
         v->freq = (fGlide > 0.5f && fLastFreq > 0.0f) ? fLastFreq : f;
+        v->rate = (fGlide > 0.5f && fLastRate > 0.0f) ? fLastRate : rt;
+        v->pos = 0.0f;
         v->amp = 1.0f;
         v->vel = vel;
         v->age = 0.0f;
         v->releasing = false;
         fLastFreq = f;
+        fLastRate = rt;
     }
 
     void noteOff(uint8_t note)
@@ -373,10 +383,22 @@ private:
             v.phase += f / sr;
             if (v.phase >= 1.0f) v.phase -= 1.0f;
 
-            float x = std::sin(v.phase * 6.28318530717959f);
-            // sub<->drive: pure sine vs licht gedreven
-            const float xd = std::tanh(x * (1.0f + 2.5f * drive));
-            x = x * (1.0f - drive) + xd * drive;
+            // one-shot afspelen (pitch = rate × drop-envelope)
+            float x = 0.0f;
+            const int si = v.smp;
+            const int len = kSmpLen[si];
+            const int i0 = (int)v.pos;
+            if (i0 < len - 1)
+            {
+                const float fr = v.pos - (float)i0;
+                const int16_t* d = &kSmpBlob[kSmpOff[si]];
+                x = (d[i0] * (1.0f - fr) + d[i0 + 1] * fr) / 32768.0f;
+            }
+            // sine-sub laag eronder (SUB-knop mengt hem erin)
+            float xs = std::sin(v.phase * 6.28318530717959f);
+            const float xd = std::tanh(xs * (1.0f + 2.5f * drive));
+            xs = xs * (1.0f - drive) + xd * drive;
+            x = x * (1.0f - drive * 0.5f) + xs * drive;
 
             // click: hoge korte tik bij de aanslag
             if (v.age < sr * 0.012f)
@@ -385,6 +407,10 @@ private:
                                * std::exp(-v.age * 4.0f / (sr * 0.012f));
                 x += ck * clickA;
             }
+
+            // rate glide + drop gelden voor de sample-positie
+            v.rate += glRate * (v.trate - v.rate);
+            v.pos += v.rate * drop * (float)kSmpSR / sr;
 
             s += x * v.amp * v.vel;
             v.amp *= (v.releasing ? fRelRate : decRate);
@@ -408,16 +434,9 @@ private:
 
     void applyPreset(int i)
     {
-        if (i < 0 || i >= kNumPresets) return;
-        const float* p = kPresetParams[i];
-        setParameterValue(kDecay, p[0]);
-        setParameterValue(kGlide, p[1]);
-        setParameterValue(kSub, p[2]);
-        setParameterValue(kClick, p[3]);
-        setParameterValue(kPitchD, p[4]);
-        setParameterValue(kTune, p[5]);
-        setParameterValue(kLevel, p[6]);
-        recalc();
+        if (i < 0) i = 0;
+        if (i >= kNumPresets) i = kNumPresets - 1;
+        fPreset = (float)i; // smaak = welke one-shot; knoppen blijven van jou
     }
 
     void recalc()

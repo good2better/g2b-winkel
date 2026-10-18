@@ -52,6 +52,7 @@ struct Galaxy { Galaxy(){reset();}
         gwet=(gmode==0?0.55f:(gmode==1?0.50f:0.62f));
     }
     void tick(float& L,float& R,float sr){
+        if(gpos<=0)return; // stand 0 = helemaal geen effect (clean)
         float in[2]={L,R},shim[2]={0,0};
         for(int c=0;c<2;c++){
             float x=sh[c].tick(in[c],grate);

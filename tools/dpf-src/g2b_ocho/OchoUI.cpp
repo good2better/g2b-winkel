@@ -24,8 +24,8 @@ static inline Color g2bsk(int sk,int r){if(sk<0)sk=0;if(sk>7)sk=7;const float*c=
 
 START_NAMESPACE_DISTRHO
 
-static const char* kPresetNames[6] = {"G2B","DEMBOW","DRILL","RNB","HOUSE","AFRO"};
-static const int kNumPresets = 6;
+static const char* kPresetNames[16] = {"DONDER","KICKBAS","TRAP","BOOM","AFRO","DEMBOW","DRILL","SUB808","SKRATJI","BANGI","KOTI","AGOGO","SEKI","SURDO","TIMBAL","KLAP"};
+static const int kNumPresets = 16;
 
 
 
@@ -85,7 +85,7 @@ protected:
         text(18.0f, 24.0f, "G2B OCHO-OCHO", nullptr);
         fontSize(11.5f);
         fillColor(143, 160, 152);
-        text(18.0f, 43.0f, "jouw 808 sub-bas — speel hem als een instrument", nullptr);
+        text(18.0f, 43.0f, "jouw Surinaamse one-shot machine — speel hem als een instrument", nullptr);
 
         // scope (rechtsboven)
         const float sx = 300.0f, sy = 12.0f, sw = W - 318.0f, sh = 46.0f;
@@ -197,25 +197,45 @@ protected:
         fillColor(90, 100, 94);
         textAlign(ALIGN_CENTER | ALIGN_BOTTOM);
         
-        // preset-knoppen
+        // smaak-knoppen: 2 rijen van 6 rechtsboven
         {
-            float bx = W - 14.0f;
-            for (int i = kNumPresets - 1; i >= 0; --i)
+            const float bw = 56.0f, bh = 17.0f, gap = 4.0f;
+            for (int i = 0; i < kNumPresets; ++i)
             {
-                const float bw = 62.0f, bh = 17.0f;
-                bx -= bw + 5.0f;
+                const int row = i / 8, col = i % 8;
+                const float bx = W - 14.0f - (8 - col) * (bw + gap);
+                const float by = 62.0f + row * (bh + 4.0f);
                 const bool on = (i == fProg);
-                beginPath(); roundedRect(bx, 62.0f, bw, bh, 4.0f);
+                beginPath(); roundedRect(bx, by, bw, bh, 4.0f);
                 if (on) { fillColor(29, 122, 72); fill(); }
                 strokeColor(42, 47, 45); strokeWidth(1.0f); stroke();
-                fontSize(10.0f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+                fontSize(9.5f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
                 fillColor(on ? Color(232, 236, 234) : Color(143, 160, 152));
-                text(bx + bw * 0.5f, 62.0f + bh * 0.5f, kPresetNames[i], nullptr);
+                text(bx + bw * 0.5f, by + bh * 0.5f, kPresetNames[i], nullptr);
             }
         }
 
+        // huidige smaak + ‹ › pijltjes
+        {
+            const float ay = 106.0f;
+            beginPath(); roundedRect(14.0f, ay, 26.0f, 18.0f, 4.0f);
+            fillColor(g2bsk(fLight,1)); fill();
+            strokeColor(42,47,45); strokeWidth(1.0f); stroke();
+            fontSize(13.0f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            fillColor(g2bsk(fLight,2));
+            text(27.0f, ay+9.0f, "<", nullptr);
+            beginPath(); roundedRect(212.0f, ay, 26.0f, 18.0f, 4.0f);
+            fillColor(g2bsk(fLight,1)); fill();
+            strokeColor(42,47,45); strokeWidth(1.0f); stroke();
+            text(225.0f, ay+9.0f, ">", nullptr);
+            fontSize(13.0f); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
+            fillColor(232,236,234);
+            const int cur = (fProg >= 0 && fProg < kNumPresets) ? fProg : 0;
+            text(48.0f, ay+9.0f, kPresetNames[cur], nullptr);
+        }
+
         text(W * 0.5f, H - 8.0f,
-             "MIDI-keyboard of piano-roll nodig — sleep = draaien", nullptr);
+             "MIDI-keyboard of piano-roll nodig — sleep = draaien · < > = smaak", nullptr);
         {
             float bx2 = 14.0f;
             beginPath(); roundedRect(bx2, 48.0f, 26.0f, 17.0f, 4.0f);
@@ -248,15 +268,16 @@ protected:
             if (ev.pos.getX() >= fXX && ev.pos.getX() <= fXX + fXW &&
                 ev.pos.getY() >= fXY_ && ev.pos.getY() <= fXY_ + fXH)
             { fXYdrag = true; xySet(ev.pos.getX(), ev.pos.getY()); return true; }
-            // preset-klik?
+            // smaak-klik? (2 rijen van 6)
             {
-                float bx = W - 14.0f;
-                for (int i = kNumPresets - 1; i >= 0; --i)
+                const float bw = 56.0f, bh = 17.0f, gap = 4.0f;
+                for (int i = 0; i < kNumPresets; ++i)
                 {
-                    const float bw = 62.0f, bh = 17.0f;
-                    bx -= bw + 5.0f;
+                    const int row = i / 8, col = i % 8;
+                    const float bx = W - 14.0f - (8 - col) * (bw + gap);
+                    const float by = 62.0f + row * (bh + 4.0f);
                     if (ev.pos.getX() >= bx && ev.pos.getX() <= bx + bw &&
-                        ev.pos.getY() >= 62.0f && ev.pos.getY() <= 62.0f + bh)
+                        ev.pos.getY() >= by && ev.pos.getY() <= by + bh)
                     {
                         spv(10, (float)i);
                         fProg = i;
