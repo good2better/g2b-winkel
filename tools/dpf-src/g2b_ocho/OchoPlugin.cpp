@@ -36,7 +36,7 @@ static const int kNumPresets = kNumSmp;
 
 
 static const int kMaxVoices = 8;
-static const int kMaxUsr = 256; // ook submappen (genre-sets) — alles bereikbaar met < >
+static const int kMaxUsr = 1024; // ook submappen (genre-sets) — alles bereikbaar met < >
 
 // per-smaak karakter (808-gidsen): release seconden + lowpass Hz op sub (0 = uit)
 // DONDER KICKBAS TRAP BOOM AFRO DEMBOW DRILL SUB808 SKRATJI BANGI KOTI AGOGO SEKI SURDO TIMBAL KLAP
@@ -589,7 +589,7 @@ private:
             const std::string full = dir + "\\" + fd.cFileName;
             if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
             {
-                if (depth < 2) scanDirWin(full, depth + 1, depth == 0 ? fd.cFileName : set);
+                if (depth < 2) scanDirWin(full, depth + 1, fd.cFileName);
                 continue;
             }
             const size_t L = std::strlen(fd.cFileName);
@@ -620,7 +620,7 @@ private:
             if (stat(full.c_str(), &st)) continue;
             if (S_ISDIR(st.st_mode))
             {
-                if (depth < 2) scanDirNix(full, depth + 1, depth == 0 ? nm : set);
+                if (depth < 2) scanDirNix(full, depth + 1, nm);
                 continue;
             }
             const size_t L = std::strlen(nm);
