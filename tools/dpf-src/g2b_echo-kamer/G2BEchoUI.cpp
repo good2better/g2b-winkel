@@ -119,29 +119,29 @@ protected:
         const float W=getWidth();
         if(!ev.press){if(fDrag>=0&&!fMoved){int i=fDrag;float mn=fMin[i],mx=fMax[i],st=(mx-mn)<=32?1.f:(mx-mn)/20.f;float v=fValue[i]+st;if(v>mx)v=mn;spv(fParamId[i],v);fValue[i]=v;repaint();}fDrag=-1;fXY=false;fMoved=false;return true;}
         // toggles
-        if(ev.pos.getY()>=fBtnY-8&&ev.pos.getY()<=fBtnY+18){
-            if(ev.pos.getX()>=W-164&&ev.pos.getX()<=W-96){const float v=fOn>0.5f?0.f:1.f;spv(0,v);fOn=v;repaint();return true;}
-            if(ev.pos.getX()>=W-88){const float v=fPP>0.5f?0.f:1.f;spv(4,v);fPP=v;repaint();return true;}
+        if((float)(ev.pos.getY()/getScaleFactor())>=fBtnY-8&&(float)(ev.pos.getY()/getScaleFactor())<=fBtnY+18){
+            if((float)(ev.pos.getX()/getScaleFactor())>=W-164&&(float)(ev.pos.getX()/getScaleFactor())<=W-96){const float v=fOn>0.5f?0.f:1.f;spv(0,v);fOn=v;repaint();return true;}
+            if((float)(ev.pos.getX()/getScaleFactor())>=W-88){const float v=fPP>0.5f?0.f:1.f;spv(4,v);fPP=v;repaint();return true;}
         }
         // XY
-        if((ev.pos.getX()>=fXX&&ev.pos.getX()<=fXX+fXW&&ev.pos.getY()>=fXY_&&ev.pos.getY()<=fXY_+fXH)){ fXY=true; xySet(ev.pos); return true; }
+        if(((float)(ev.pos.getX()/getScaleFactor())>=fXX&&(float)(ev.pos.getX()/getScaleFactor())<=fXX+fXW&&(float)(ev.pos.getY()/getScaleFactor())>=fXY_&&(float)(ev.pos.getY()/getScaleFactor())<=fXY_+fXH)){ fXY=true; xySet(ev.pos); return true; }
         // knobs
         for(int i=0;i<K;i++){
             const float cx=fKnobX+(i%3)*116, cy=fKnobY+(i/3)*88;
-            const float dx=ev.pos.getX()-cx, dy=ev.pos.getY()-cy;
-            if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=ev.pos.getY();fMoved=false;return true;}
+            const float dx=(float)(ev.pos.getX()/getScaleFactor())-cx, dy=(float)(ev.pos.getY()/getScaleFactor())-cy;
+            if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=(float)(ev.pos.getY()/getScaleFactor());fMoved=false;return true;}
         }
         // skin dots
-        if(ev.pos.getY()>=fSkinY&&ev.pos.getY()<=fSkinY+32)
-            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){spv(9,(float)i);fSkin=i;repaint();return true;}
+        if((float)(ev.pos.getY()/getScaleFactor())>=fSkinY&&(float)(ev.pos.getY()/getScaleFactor())<=fSkinY+32)
+            for(int i=0;i<8;i++) if(std::fabs((float)(ev.pos.getX()/getScaleFactor())-(66+i*13))<8){spv(9,(float)i);fSkin=i;repaint();return true;}
         return true;
     }
     bool onMotion(const MotionEvent& ev) override
     {
         if(fXY){ xySet(ev.pos); return true; }
         if(fDrag>=0){fMoved=true;
-            const float dv=(fLastY-ev.pos.getY())*(fMax[fDrag]-fMin[fDrag])/150.f;
-            fLastY=ev.pos.getY();
+            const float dv=(fLastY-(float)(ev.pos.getY()/getScaleFactor()))*(fMax[fDrag]-fMin[fDrag])/150.f;
+            fLastY=(float)(ev.pos.getY()/getScaleFactor());
             float v=fValue[fDrag]+dv;
             if(v<fMin[fDrag])v=fMin[fDrag]; if(v>fMax[fDrag])v=fMax[fDrag];
             spv(fParamId[fDrag],v);

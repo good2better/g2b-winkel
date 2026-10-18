@@ -205,14 +205,14 @@ protected:
         // preset-klik?
         if (ev.press)
         {
-            if (ev.pos.getX() >= W-96.0f && ev.pos.getX() <= W-44.0f &&
-                ev.pos.getY() >= 33.0f && ev.pos.getY() <= 51.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= W-96.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-44.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 33.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
             { fOn = fOn>0.5f?0.f:1.f; spv(9, fOn); repaint(); return true; }
-            if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 40.0f &&
-                ev.pos.getY() >= 48.0f && ev.pos.getY() <= 65.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 40.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 48.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 65.0f)
             { spv(6, 1.0f); repaint(); return true; }
-            if (ev.pos.getX() >= W-40.0f && ev.pos.getX() <= W-14.0f &&
-                ev.pos.getY() >= 34.0f && ev.pos.getY() <= 51.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= W-40.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-14.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 34.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
 
             {
@@ -221,8 +221,8 @@ protected:
                 {
                     const float bw = 62.0f, bh = 17.0f;
                     hbx -= bw + 5.0f;
-                    if (ev.pos.getX() >= hbx && ev.pos.getX() <= hbx + bw &&
-                        ev.pos.getY() >= 12.0f && ev.pos.getY() <= 12.0f + bh)
+                    if ((float)(ev.pos.getX()/getScaleFactor()) >= hbx && (float)(ev.pos.getX()/getScaleFactor()) <= hbx + bw &&
+                        (float)(ev.pos.getY()/getScaleFactor()) >= 12.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 12.0f + bh)
                     {
                         spv(7, (float)i);
                         fProg = i;
@@ -239,11 +239,11 @@ protected:
             {
                 const float cx = 20.0f + step * (i + 0.5f);
                 const float cy = 175.0f;
-                const float dx = ev.pos.getX() - cx;
-                const float dy = ev.pos.getY() - cy;
+                const float dx = (float)(ev.pos.getX()/getScaleFactor()) - cx;
+                const float dy = (float)(ev.pos.getY()/getScaleFactor()) - cy;
                 if (dx*dx + dy*dy <= 34.0f*34.0f + 80.0f)
                 {
-                    fDrag = i; fLastY = ev.pos.getY();
+                    fDrag = i; fLastY = (float)(ev.pos.getY()/getScaleFactor());
                     editParameter(kParamIds[i], true);
                     return true;
                 }
@@ -260,8 +260,8 @@ protected:
     bool onMotion(const MotionEvent& ev) override
     {
         if (fDrag < 0) return false;
-        const float dy = fLastY - ev.pos.getY();
-        fLastY = ev.pos.getY();
+        const float dy = fLastY - (float)(ev.pos.getY()/getScaleFactor());
+        fLastY = (float)(ev.pos.getY()/getScaleFactor());
         const float range = fMax[fDrag] - fMin[fDrag];
         float v = fValue[fDrag] + dy * range / 200.0f;
         if (v < fMin[fDrag]) v = fMin[fDrag];
@@ -280,8 +280,8 @@ protected:
         {
             const float cx = 20.0f + step * (i + 0.5f);
             const float cy = 175.0f;
-            const float dx = ev.pos.getX() - cx;
-            const float dy = ev.pos.getY() - cy;
+            const float dx = (float)(ev.pos.getX()/getScaleFactor()) - cx;
+            const float dy = (float)(ev.pos.getY()/getScaleFactor()) - cy;
             if (dx*dx + dy*dy <= 34.0f*34.0f + 80.0f)
             {
                 const float range = fMax[i] - fMin[i];

@@ -263,7 +263,7 @@ protected:
         const float W=getWidth();
         if(ev.press){
             // thema-knopje
-            if(ev.pos.getX()>=W-40.0f&&ev.pos.getX()<=W-14.0f&&ev.pos.getY()>=46.0f&&ev.pos.getY()<=63.0f){
+            if((float)(ev.pos.getX()/getScaleFactor())>=W-40.0f&&(float)(ev.pos.getX()/getScaleFactor())<=W-14.0f&&(float)(ev.pos.getY()/getScaleFactor())>=46.0f&&(float)(ev.pos.getY()/getScaleFactor())<=63.0f){
                 fLight=(fLight+1)%8;repaint();return true;
             }
             // presets + dice + auto (zelfde geometrie als draw)
@@ -271,28 +271,28 @@ protected:
                 const float bw=44.0f,bh=17.0f;
                 const int prow=i/8, pcol=i%8;
                 const float px=W-48.0f-((prow<2?8:1)-pcol)*(bw+4.0f), py=12.0f+prow*18.0f;
-                if(ev.pos.getX()>=px&&ev.pos.getX()<=px+bw&&ev.pos.getY()>=py&&ev.pos.getY()<=py+bh){
+                if((float)(ev.pos.getX()/getScaleFactor())>=px&&(float)(ev.pos.getX()/getScaleFactor())<=px+bw&&(float)(ev.pos.getY()/getScaleFactor())>=py&&(float)(ev.pos.getY()/getScaleFactor())<=py+bh){
                     spv(9,(float)i);fProg=i;repaint();return true;
                 }
             }
-            if(ev.pos.getX()>=44.0f&&ev.pos.getX()<=82.0f&&ev.pos.getY()>=48.0f&&ev.pos.getY()<=65.0f){
+            if((float)(ev.pos.getX()/getScaleFactor())>=44.0f&&(float)(ev.pos.getX()/getScaleFactor())<=82.0f&&(float)(ev.pos.getY()/getScaleFactor())>=48.0f&&(float)(ev.pos.getY()/getScaleFactor())<=65.0f){
                 fAuto=fAuto>0.5f?0.f:1.f;spv(8,fAuto);repaint();return true;}
-            if(ev.pos.getX()>=14.0f&&ev.pos.getX()<=40.0f&&ev.pos.getY()>=48.0f&&ev.pos.getY()<=65.0f){
+            if((float)(ev.pos.getX()/getScaleFactor())>=14.0f&&(float)(ev.pos.getX()/getScaleFactor())<=40.0f&&(float)(ev.pos.getY()/getScaleFactor())>=48.0f&&(float)(ev.pos.getY()/getScaleFactor())<=65.0f){
                 spv(7,1.0f);repaint();return true;}
             // AAN/UIT pil
-            if(ev.pos.getX()>=W-48.0f&&ev.pos.getX()<=W-4.0f&&ev.pos.getY()>=12.0f&&ev.pos.getY()<=29.0f){
+            if((float)(ev.pos.getX()/getScaleFactor())>=W-48.0f&&(float)(ev.pos.getX()/getScaleFactor())<=W-4.0f&&(float)(ev.pos.getY()/getScaleFactor())>=12.0f&&(float)(ev.pos.getY()/getScaleFactor())<=29.0f){
                 fOn=1-fOn;spv(10,(float)fOn);repaint();return true;}
             // XY-pad
-            if(ev.pos.getX()>=fXX&&ev.pos.getX()<=fXX+fXW&&ev.pos.getY()>=fXY_&&ev.pos.getY()<=fXY_+fXH){
-                fXYdrag=true;xySet(ev.pos.getX(),ev.pos.getY());return true;}
+            if((float)(ev.pos.getX()/getScaleFactor())>=fXX&&(float)(ev.pos.getX()/getScaleFactor())<=fXX+fXW&&(float)(ev.pos.getY()/getScaleFactor())>=fXY_&&(float)(ev.pos.getY()/getScaleFactor())<=fXY_+fXH){
+                fXYdrag=true;xySet((float)(ev.pos.getX()/getScaleFactor()),(float)(ev.pos.getY()/getScaleFactor()));return true;}
         }
         else if(fXYdrag){fXYdrag=false;return true;}
         const float step=(W-40.0f)/10;
         if(ev.press){
             for(int i=0;i<10;++i){
                 const float cx=20.0f+step*(i+0.5f),cy=215.0f;
-                const float dx=ev.pos.getX()-cx,dy=ev.pos.getY()-cy;
-                if(dx*dx+dy*dy<=20.0f*20.0f+80.0f){fDrag=i;fLastY=ev.pos.getY();editParameter(paramOf(i),true);return true;}
+                const float dx=(float)(ev.pos.getX()/getScaleFactor())-cx,dy=(float)(ev.pos.getY()/getScaleFactor())-cy;
+                if(dx*dx+dy*dy<=20.0f*20.0f+80.0f){fDrag=i;fLastY=(float)(ev.pos.getY()/getScaleFactor());editParameter(paramOf(i),true);return true;}
             }
         } else if(fDrag>=0){editParameter(paramOf(fDrag),false);fDrag=-1;}
         return true;
@@ -311,9 +311,9 @@ protected:
     }
     bool onMotion(const MotionEvent& ev) override
     {
-        if(fXYdrag){xySet(ev.pos.getX(),ev.pos.getY());return true;}
+        if(fXYdrag){xySet((float)(ev.pos.getX()/getScaleFactor()),(float)(ev.pos.getY()/getScaleFactor()));return true;}
         if(fDrag<0)return false;
-        const float dy=fLastY-ev.pos.getY();fLastY=ev.pos.getY();
+        const float dy=fLastY-(float)(ev.pos.getY()/getScaleFactor());fLastY=(float)(ev.pos.getY()/getScaleFactor());
         const float range=fMax[fDrag]-fMin[fDrag];
         float v=fValue[fDrag]+dy*range/200.0f;
         if(v<fMin[fDrag])v=fMin[fDrag];if(v>fMax[fDrag])v=fMax[fDrag];
@@ -326,7 +326,7 @@ protected:
         const float W=getWidth();const float step=(W-40.0f)/10;
         for(int i=0;i<10;++i){
             const float cx=20.0f+step*(i+0.5f),cy=215.0f;
-            const float dx=ev.pos.getX()-cx,dy=ev.pos.getY()-cy;
+            const float dx=(float)(ev.pos.getX()/getScaleFactor())-cx,dy=(float)(ev.pos.getY()/getScaleFactor())-cy;
             if(dx*dx+dy*dy<=20.0f*20.0f+80.0f){
                 const float range=fMax[i]-fMin[i];
                 float v=fValue[i]+ev.delta.getY()*range/100.0f;
