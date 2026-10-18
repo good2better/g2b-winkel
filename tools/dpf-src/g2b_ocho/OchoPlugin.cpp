@@ -663,6 +663,11 @@ private:
             if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) continue;
             --budget;
             if (!_stricmp(fd.cFileName, "AppData")) continue;
+            if (!_stricmp(fd.cFileName, "Windows") || !_stricmp(fd.cFileName, "ProgramData") ||
+                !_stricmp(fd.cFileName, "Program Files") || !_stricmp(fd.cFileName, "Program Files (x86)") ||
+                !_stricmp(fd.cFileName, "$Recycle.Bin") || !_stricmp(fd.cFileName, "PerfLogs") ||
+                !_stricmp(fd.cFileName, "System Volume Information") || !_stricmp(fd.cFileName, "Recovery"))
+                continue; // systeemmappen: geen user-sets + houdt de scan snel
             const std::string full = dir + "\\" + fd.cFileName;
             if (startsI(fd.cFileName, "G2B-Ocho-Samples") || startsI(fd.cFileName, "G2B-SMAAK-SETS"))
                 out.push_back(full);
@@ -745,6 +750,25 @@ private:
             findRootsWin(up, 0, roots, budget);
             for (const std::string& r : roots)
                 scanDirWin(r, 0);
+        }
+        // 4) nog steeds niks? dan staan ze buiten het profiel — scan
+        // ALLE vaste schijven (D:\Documenten, andere partitie, of
+        // mappen op zijn tweede pc-schijf). R0-bug: zijn sets bleken
+        // nergens onder %USERPROFILE% te staan.
+        if (fUsr.empty())
+        {
+            char drv[4] = "A:\\";
+            for (char c = 'A'; c <= 'Z' && fUsr.empty(); ++c)
+            {
+                drv[0] = c;
+                const UINT t = GetDriveTypeA(drv);
+                if (t != DRIVE_FIXED && t != DRIVE_REMOTE) continue;
+                std::vector<std::string> roots;
+                int budget = 3000;
+                findRootsWin(drv, 0, roots, budget);
+                for (const std::string& r : roots)
+                    scanDirWin(r, 0);
+            }
         }
         // rapporteer aan de UI wat de scan zag — "R<n> W<n> F<n>" =
         // mappen gevonden, wavs gezien, wavs geweigerd → lost "0 eigen" op
