@@ -1816,6 +1816,51 @@
    ]
   },
   {
+   "id": "prod01",
+   "titel": "G2B Producer",
+   "soort": "plugin",
+   "beschrijving": "DE DEUNTJES-MACHINE: 16 akkoord-progressies × 8 klanken (e-piano, pad, pluck, orgel, bas, bel, strings, gitaar). AUTO speelt zelf, ZELF = alleen jouw keyboard. 🎲 GOOI = nieuwe combi. 12 keys, ladders, voicings, 27 DIMENSIES, 8 skins, XY-pad. VST3 + CLAP + standalone.",
+   "prijs": "€ 19,95",
+   "links": {
+    "koop": "bestel.html?p=prod01",
+    "download": "bedankt.html?k=prod01"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/sat-cover.png",
+   "download_dir": "d/prod01"
+  },
+  {
+   "id": "drbs01",
+   "titel": "G2B Drums & Bas",
+   "soort": "plugin",
+   "beschrijving": "DRUM + BASLIJN in één: 17 genre-patronen (dembow, drill, rnb, house, trap, boombap, kawina...) met automatisch passende baslijn. BAS aan/uit, bas-type, key-keuze, swing, drive. Keyboard = bas meespelen. VST3 + CLAP + standalone.",
+   "prijs": "€ 19,95",
+   "links": {
+    "koop": "bestel.html?p=drbs01",
+    "download": "bedankt.html?k=drbs01"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/sat-cover.png",
+   "download_dir": "d/drbs01"
+  },
+  {
+   "id": "g2bfx1",
+   "titel": "G2B FX",
+   "soort": "plugin",
+   "beschrijving": "DE MENGER + ALLE EFFECTEN in één: 3-bands EQ (lo/mid/hi), SUB, POETS (vet), KNIP, GLANS (air), RUIMTE, OUTPUT + 🌌 GALAXY 27-standen + LUFS-meter + 🧠 luistert zelf en stelt in. Alles om je track klaar te maken. VST3 + CLAP + standalone.",
+   "prijs": "€ 24,95",
+   "links": {
+    "koop": "bestel.html?p=g2bfx1",
+    "download": "bedankt.html?k=g2bfx1"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/sat-cover.png",
+   "download_dir": "d/g2bfx1"
+  },
+  {
    "id": "l0f1avond",
    "titel": "Lofi Avond",
    "soort": "audio",
@@ -2161,150 +2206,6 @@
    "stems": true,
    "demo": "media/f13sta-preview.mp4",
    "video": "media/f13sta-preview.mp4"
-  },
-  {
-   "id": "3ch0k",
-   "titel": "G2B Echo-Kamer",
-   "soort": "plugin",
-   "beschrijving": "Stereo delay-plugin: ping-pong, ducking (echo zakt weg terwijl je speelt), lowpass+highpass kleuring, 27 DIMENTIES van clean tot tape-crush, XY-pad, 8 skins. VST3 + CLAP + standalone voor FL Studio.",
-   "prijs": "€ 14,95",
-   "links": {
-    "koop": "bestel.html?p=3ch0k",
-    "download": "bedankt.html?k=3ch0k"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/echo-cover.png",
-   "download_dir": "d/3ch0k",
-   "video": "media/echo-kamer-demo.mp4"
-  },
-  {
-   "id": "t00nf",
-   "titel": "G2B Toon-Fixer",
-   "soort": "plugin",
-   "beschrijving": "Pitch-correctie plugin (autotune-stijl): snapt elke noot naar je gekozen toonsoort + ladder (majeur/mineur/pentatoon). KRACHT = subtiel → robot, SHIFT ±12 halve tonen, 27 DIMENTIES (natuurlijk/modern/robot), XY-pad, 8 skins. VST3 + CLAP + standalone voor FL Studio.",
-   "prijs": "€ 19,95",
-   "links": {
-    "koop": "bestel.html?p=t00nf",
-    "download": "bedankt.html?k=t00nf"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/toon-cover.png",
-   "download_dir": "d/t00nf",
-   "video": "media/toon-fixer-demo.mp4"
-  },
-  {
-   "id": "glu3c0mp",
-   "titel": "G2B Glue-Comp",
-   "soort": "plugin",
-   "beschrijving": "Bus-compressor (mix-lijm): RMS-detector met zachte knee, sidechain high-pass zodat je kick blijft staan, auto makeup-gain, parallel-comp via KRACHT, 27 DIMENTIES van clean tot tape-saturatie, live compressor-curve display, 8 skins. VST3 + CLAP + standalone voor FL Studio. Mix klinkt meteen strakker en luider zonder pompen.",
-   "prijs": "€ 19,95",
-   "links": {
-    "koop": "bestel.html?p=glu3c0mp",
-    "download": "bedankt.html?k=glu3c0mp"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/glue-cover.png",
-   "download_dir": "d/glu3c0mp",
-   "video": "media/glue-comp-demo.mp4"
-  },
-  {
-   "id": "ch0r45",
-   "titel": "G2B Chorus",
-   "soort": "plugin",
-   "beschrijving": "Stereo chorus: LFO-gemoduleerde delay-taps maken elke klank breder en rijker. Live LFO-golf display, WIDTH-breedte, FEED voor metallic, 27 DIMENTIES (clean/warm/thick met saturatie), 8 skins. VST3 + CLAP + standalone voor FL Studio.",
-   "prijs": "€ 14,95",
-   "links": {
-    "koop": "bestel.html?p=ch0r45",
-    "download": "bedankt.html?k=ch0r45"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/chorus-cover.png",
-   "download_dir": "d/ch0r45",
-   "video": "media/chorus-demo.mp4"
-  },
-  {
-   "id": "s4t0r",
-   "titel": "G2B Saturator",
-   "soort": "plugin",
-   "beschrijving": "Tape/tube-saturatie: warmte en karakter voor je mix. Live waveshaper-curve die meebuigt, DRIVE/BIAS/TONE/SC-LP/LEVEL, parallel via KRACHT, 27 DIMENTIES (tape/tube/crush met even-harmonieken), 8 skins. VST3 + CLAP + standalone voor FL Studio.",
-   "prijs": "€ 14,95",
-   "links": {
-    "koop": "bestel.html?p=s4t0r",
-    "download": "bedankt.html?k=s4t0r"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/sat-cover.png",
-   "download_dir": "d/s4t0r",
-   "video": "media/saturator-demo.mp4"
-  },
-  {
-   "id": "w4hf1l",
-   "titel": "G2B Filter-Wah",
-   "soort": "plugin",
-   "beschrijving": "Auto-wah: resonant filter dat meeveegt. LFO-sweep (RATE/DEPTH) + envelope volgt hoe hard je speelt (SENS), RES/FREQ, parallel via KRACHT, 27 DIMENTIES, 8 skins. VST3 + CLAP + standalone voor FL Studio.",
-   "prijs": "€ 14,95",
-   "links": {
-    "koop": "bestel.html?p=w4hf1l",
-    "download": "bedankt.html?k=w4hf1l"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/sat-cover.png",
-   "download_dir": "d/w4hf1l",
-   "video": "media/wah-demo.mp4"
-  },
-  {
-   "id": "ch0rd1",
-   "titel": "G2B ChordLab",
-   "soort": "plugin",
-   "beschrijving": "Akkoord-GENERATOR: kies toonsoort + ladder + progressie en hij speelt meteen strummed akkoord-loops (e-piano sound). 12 keys, 8 ladders, 6 progressies, triad/7th/9th/sus voicings, tempo 40-160bpm, 27 DIMENSIES, 8 skins. VST3 + standalone voor FL Studio.",
-   "prijs": "€ 14,95",
-   "links": {
-    "koop": "bestel.html?p=ch0rd1",
-    "download": "bedankt.html?k=ch0rd1"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/sat-cover.png",
-   "download_dir": "d/ch0rd1",
-   "video": "media/chordlab-demo.mp4"
-  },
-  {
-   "id": "l0f1m",
-   "titel": "G2B LoFi-Maker",
-   "soort": "plugin",
-   "beschrijving": "LoFi-texture: bitcrush (CRUSH) + grof sample-hold (GROF) + tape-wobble (WOBBLE) + vinyl-kraak (KRAAK) + warm TONE-filter. Vinyl-plaat visual. 27 DIMENSIES (licht/medium/heavy), 8 skins. VST3 + standalone voor FL Studio.",
-   "prijs": "€ 14,95",
-   "links": {
-    "koop": "bestel.html?p=l0f1m",
-    "download": "bedankt.html?k=l0f1m"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/sat-cover.png",
-   "download_dir": "d/l0f1m",
-   "video": "media/lofi-demo.mp4"
-  },
-  {
-   "id": "m3l0dy",
-   "titel": "G2B Melody-Maker",
-   "soort": "plugin",
-   "beschrijving": "Melodie/baslijn-GENERATOR: speelt melodie-lijnen bovenop akkoord-progressies. 16 PRESETS (Trap-Bas, House-Pluck, LoFi-Melody...), 8 patronen, DENS/OCT/SWING/TEMPO, pluck-timbre, piano-roll visual. 27 DIMENSIES, 8 skins. VST3 + standalone voor FL Studio.",
-   "prijs": "€ 14,95",
-   "links": {
-    "koop": "bestel.html?p=m3l0dy",
-    "download": "bedankt.html?k=m3l0dy"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/sat-cover.png",
-   "download_dir": "d/m3l0dy",
-   "video": "media/melody-demo.mp4"
   },
   {
    "id": "k4w1n",
