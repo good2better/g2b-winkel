@@ -117,11 +117,11 @@ protected:
     bool onMouse(const MouseEvent& ev) override
     {
         const float W=getWidth();
-        if(!ev.press){ fDrag=-1; fXY=false; return true; }
+        if(!ev.press){if(fDrag>=0&&!fMoved){int i=fDrag;float mn=fMin[i],mx=fMax[i],st=(mx-mn)<=32?1.f:(mx-mn)/20.f;float v=fValue[i]+st;if(v>mx)v=mn;spv(fParamId[i],v);fValue[i]=v;repaint();}fDrag=-1;fXY=false;fMoved=false;return true;}
         // toggles
         if(ev.pos.getY()>=fBtnY-8&&ev.pos.getY()<=fBtnY+18){
-            if(ev.pos.getX()>=W-164&&ev.pos.getX()<=W-96){const float v=fOn>0.5f?0.f:1.f;setParameterValue(0,v);fOn=v;repaint();return true;}
-            if(ev.pos.getX()>=W-88){const float v=fPP>0.5f?0.f:1.f;setParameterValue(4,v);fPP=v;repaint();return true;}
+            if(ev.pos.getX()>=W-164&&ev.pos.getX()<=W-96){const float v=fOn>0.5f?0.f:1.f;spv(0,v);fOn=v;repaint();return true;}
+            if(ev.pos.getX()>=W-88){const float v=fPP>0.5f?0.f:1.f;spv(4,v);fPP=v;repaint();return true;}
         }
         // XY
         if((ev.pos.getX()>=fXX&&ev.pos.getX()<=fXX+fXW&&ev.pos.getY()>=fXY_&&ev.pos.getY()<=fXY_+fXH)){ fXY=true; xySet(ev.pos); return true; }
@@ -129,22 +129,22 @@ protected:
         for(int i=0;i<K;i++){
             const float cx=fKnobX+(i%3)*116, cy=fKnobY+(i/3)*88;
             const float dx=ev.pos.getX()-cx, dy=ev.pos.getY()-cy;
-            if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=ev.pos.getY();return true;}
+            if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=ev.pos.getY();fMoved=false;return true;}
         }
         // skin dots
         if(ev.pos.getY()>=fSkinY&&ev.pos.getY()<=fSkinY+32)
-            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){setParameterValue(9,(float)i);fSkin=i;repaint();return true;}
+            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){spv(9,(float)i);fSkin=i;repaint();return true;}
         return true;
     }
     bool onMotion(const MotionEvent& ev) override
     {
         if(fXY){ xySet(ev.pos); return true; }
-        if(fDrag>=0){
+        if(fDrag>=0){fMoved=true;
             const float dv=(fLastY-ev.pos.getY())*(fMax[fDrag]-fMin[fDrag])/150.f;
             fLastY=ev.pos.getY();
             float v=fValue[fDrag]+dv;
             if(v<fMin[fDrag])v=fMin[fDrag]; if(v>fMax[fDrag])v=fMax[fDrag];
-            setParameterValue(fParamId[fDrag],v);
+            spv(fParamId[fDrag],v);
             fValue[fDrag]=v; repaint();   // standalone echoot niet terug — zelf spiegelen
             return true;
         }
@@ -155,13 +155,14 @@ private:
     void xySet(const Point<double>& p){
         float nx=(p.getX()-fXX)/fXW; if(nx<0)nx=0;if(nx>1)nx=1;
         float ny=(p.getY()-fXY_)/fXH; if(ny<0)ny=0;if(ny>1)ny=1;
-        setParameterValue(2,20+nx*980);       // tijd
-        setParameterValue(3,(1-ny)*95);       // feedback
+        spv(2,20+nx*980);       // tijd
+        spv(3,(1-ny)*95);       // feedback
         fValue[1]=20+nx*980; fValue[2]=(1-ny)*95; repaint();
     }
     float fMin[K],fMax[K],fValue[K]; const char* fLabel[K]; int fParamId[K];
-    int fDrag; float fLastY; float fOn,fPP,fSkin; bool fXY;
+    int fDrag; bool fMoved=false; float fLastY; float fOn,fPP,fSkin; bool fXY;
     float fBtnY=14,fKnobX=0,fKnobY=0,fSkinY=0; float fXX=0,fXY_=0,fXW=0,fXH=0;
+    void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EchoUI)
 };
 

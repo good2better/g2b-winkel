@@ -77,13 +77,28 @@ protected:
     }
 
     void run(const float**, float** outs, uint32_t frames,
-             const MidiEvent*, uint32_t) override {
+             const MidiEvent* mev, uint32_t nmev) override {
         float* L=outs[0]; float* R=outs[1];
         memset(L,0,frames*sizeof(float)); memset(R,0,frames*sizeof(float));
         double sr=getSampleRate();
         int on=(int)prm[kOn]; float mix=prm[kKracht]/100.f;
         int key=(int)prm[kKey], sc=(int)prm[kScale], pg=(int)prm[kProg], vo=(int)prm[kVoicing];
         float bpm=prm[kRate]; int dims=(int)prm[kDimensie];
+        // MIDI-keyboard: elke noot die je speelt triggert een akkoord op die grondtoon
+        for (uint32_t m=0;m<nmev;m++){
+            const MidiEvent&e=mev[m];
+            if (e.size<3 || (e.data[0]&0xF0)!=0x90 || e.data[2]==0) continue;
+            int root=e.data[1];
+            int nn=(vo==0?3:vo==1?4:vo==2?5:4)+((dims%3)==0?0:((dims%3)==1?-1:1));
+            if(nn<3)nn=3; if(nn>5)nn=5;
+            int steps[5]={0,2,4,6,8};
+            if(vo==3)steps[1]=4;
+            for(int k=0;k<nn;k++){
+                int degx=steps[k];
+                int note=root+SCALES[sc][degx%7]+12*(degx/7);
+                trigger(note);
+            }
+        }
         double beatsPerSec=bpm/60.0;
         for (uint32_t i=0;i<frames;i++){
             ph += beatsPerSec/sr;
@@ -99,7 +114,7 @@ protected:
                     if (vo==3) steps[1]=4; // sus4
                     int st=steps[strumN];
                     int degx=deg+st;
-                    int note=36+key+SCALES[sc][degx%7]+12*(degx/7);
+                    int note=60+key+SCALES[sc][degx%7]+12*(degx/7);
                     if (strumN==0) note-=12; // bas
                     trigger(note);
                     strumN++;
@@ -117,11 +132,11 @@ protected:
                 // e-piano: grondtoon + harmonieken die sneller wegsterven (zachter, geen klik/clipt)
                 float atk=fminf(1.0f,V.age/0.006f); // 6ms fade-in tegen note-on tik
                 float s=sinf(2*M_PI*V.phase)+0.35f*sinf(4*M_PI*V.phase)*powf(V.env,3.f)+0.15f*sinf(6*M_PI*V.phase)*powf(V.env,5.f);
-                s*=atk*V.env*0.16f;
+                s*=atk*V.env*0.40f;
                 float pan=(vix%3-1)*0.25f+0.5f;
                 l+=s*(1.5f-pan); r+=s*(0.5f+pan);
             }
-            L[i]+=l*mix*on; R[i]+=r*mix*on;
+            L[i]+=tanhf(l*mix*on*1.4f); R[i]+=tanhf(r*mix*on*1.4f);
         }
     }
 private:

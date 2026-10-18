@@ -201,10 +201,10 @@ protected:
         {
             if (ev.pos.getX() >= W-96.0f && ev.pos.getX() <= W-44.0f &&
                 ev.pos.getY() >= 33.0f && ev.pos.getY() <= 51.0f)
-            { fOn = fOn>0.5f?0.f:1.f; setParameterValue(8, fOn); repaint(); return true; }
+            { fOn = fOn>0.5f?0.f:1.f; spv(8, fOn); repaint(); return true; }
             if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 40.0f &&
                 ev.pos.getY() >= 48.0f && ev.pos.getY() <= 65.0f)
-            { setParameterValue(6, 1.0f); repaint(); return true; }
+            { spv(6, 1.0f); repaint(); return true; }
             if (ev.pos.getX() >= W-40.0f && ev.pos.getX() <= W-14.0f &&
                 ev.pos.getY() >= 34.0f && ev.pos.getY() <= 51.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
@@ -220,7 +220,7 @@ protected:
                     if (ev.pos.getX() >= px && ev.pos.getX() <= px + bw &&
                         ev.pos.getY() >= py && ev.pos.getY() <= py + bh)
                     {
-                        setParameterValue(7, (float)i);
+                        spv(7, (float)i);
                         fProg = i;
                         repaint();
                         return true;
@@ -261,7 +261,7 @@ protected:
         if (v < fMin[fDrag]) v = fMin[fDrag];
         if (v > fMax[fDrag]) v = fMax[fDrag];
         fValue[fDrag] = v;
-        setParameterValue(fDrag == 6 ? 9 : fDrag, v);
+        spv(fDrag == 6 ? 9 : fDrag, v);
         repaint();
         return true;
     }
@@ -284,7 +284,7 @@ protected:
                 if (v > fMax[i]) v = fMax[i];
                 fValue[i] = v;
                 editParameter(i == 6 ? 9 : i, true);
-                setParameterValue(i == 6 ? 9 : i, v);
+                spv(i == 6 ? 9 : i, v);
                 editParameter(i == 6 ? 9 : i, false);
                 repaint();
                 return true;
@@ -303,6 +303,7 @@ private:
     int fProg = -1;
     int fLight = 0;
 
+    void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GlansUI)
 };
 

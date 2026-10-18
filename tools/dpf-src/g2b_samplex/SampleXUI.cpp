@@ -310,7 +310,7 @@ protected:
         {
             if (ev.pos.getX() >= 14.0f && ev.pos.getX() <= 40.0f &&
                 ev.pos.getY() >= 48.0f && ev.pos.getY() <= 65.0f)
-            { setParameterValue(7, 1.0f); repaint(); return true; }
+            { spv(7, 1.0f); repaint(); return true; }
             if (ev.pos.getX() >= W-40.0f && ev.pos.getX() <= W-14.0f &&
                 ev.pos.getY() >= 34.0f && ev.pos.getY() <= 51.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
@@ -328,10 +328,10 @@ protected:
                 for(int i=0;i<4;i++){
                     const float px=18.f+i*(pw+8.f);
                     if(ev.pos.getX()>=px&&ev.pos.getX()<=px+pw&&ev.pos.getY()>=py&&ev.pos.getY()<=py+ph){
-                        if(i==0)setParameterValue(12,1.f);
-                        else if(i==1)setParameterValue(15,1.f);
-                        else if(i==2){fSnapOn=fSnapOn>0.5f?0.f:1.f;setParameterValue(14,fSnapOn);}
-                        else {fChopN=(fChopN+4)%20;if(fChopN>16)fChopN=0;setParameterValue(13,(float)fChopN);}
+                        if(i==0)spv(12,1.f);
+                        else if(i==1)spv(15,1.f);
+                        else if(i==2){fSnapOn=fSnapOn>0.5f?0.f:1.f;spv(14,fSnapOn);}
+                        else {fChopN=(fChopN+4)%20;if(fChopN>16)fChopN=0;spv(13,(float)fChopN);}
                         repaint(); return true;
                     }
                 }
@@ -346,7 +346,7 @@ protected:
                     if (ev.pos.getX() >= px && ev.pos.getX() <= px + bw &&
                         ev.pos.getY() >= py && ev.pos.getY() <= py + bh)
                     {
-                        setParameterValue(8, (float)i);
+                        spv(8, (float)i);
                         fProg = i;
                         repaint();
                         return true;
@@ -355,7 +355,7 @@ protected:
             // AAN/UIT pil
             if (ev.pos.getX() >= W-96.0f && ev.pos.getX() <= W-46.0f &&
                 ev.pos.getY() >= 34.0f && ev.pos.getY() <= 51.0f)
-            { fOn = 1 - fOn; setParameterValue(16, (float)fOn); repaint(); return true; }
+            { fOn = 1 - fOn; spv(16, (float)fOn); repaint(); return true; }
             // XY-pad
             if (ev.pos.getX() >= fXX && ev.pos.getX() <= fXX + fXW &&
                 ev.pos.getY() >= fXY_ && ev.pos.getY() <= fXY_ + fXH)
@@ -398,8 +398,8 @@ protected:
         if (ny < 0) ny = 0; if (ny > 1) ny = 1;
         const float kr = nx * 100.0f, dm = ny * 26.0f;
         fValue[7] = kr; fValue[6] = dm;
-        editParameter(17, true); setParameterValue(17, kr); editParameter(17, false);
-        editParameter(6, true);  setParameterValue(6, dm);  editParameter(6, false);
+        editParameter(17, true); spv(17, kr); editParameter(17, false);
+        editParameter(6, true);  spv(6, dm);  editParameter(6, false);
         repaint();
     }
 
@@ -414,7 +414,7 @@ protected:
         if (v < fMin[fDrag]) v = fMin[fDrag];
         if (v > fMax[fDrag]) v = fMax[fDrag];
         fValue[fDrag] = v;
-        setParameterValue(paramOf(fDrag), v);
+        spv(paramOf(fDrag), v);
         repaint();
         return true;
     }
@@ -438,7 +438,7 @@ protected:
                 fValue[i] = v;
                 const int pi = paramOf(i);
                 editParameter(pi, true);
-                setParameterValue(pi, v);
+                spv(pi, v);
                 editParameter(pi, false);
                 repaint();
                 return true;
@@ -462,6 +462,7 @@ private:
     float fXX = 18.0f, fXY_ = 258.0f, fXW = 524.0f, fXH = 46.0f;
     std::string fName;
 
+    void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SampleXUI)
 };
 

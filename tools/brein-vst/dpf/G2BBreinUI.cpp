@@ -209,40 +209,40 @@ protected:
             for(int i=0;i<5;i++){
                 float px=14.f+i*80.f;
                 if(ev.pos.getX()>=px&&ev.pos.getX()<=px+74&&ev.pos.getY()>=54&&ev.pos.getY()<=74){
-                    fGenre=i;fKit=0;setParameterValue(0,(float)i);setParameterValue(1,0.f);repaint();return true;}}
+                    fGenre=i;fKit=0;spv(0,(float)i);spv(1,0.f);repaint();return true;}}
             // GENEREER
             if(ev.pos.getX()>=W-180&&ev.pos.getX()<=W-14&&ev.pos.getY()>=48&&ev.pos.getY()<=78){
-                setParameterValue(10,1.f);return true;}
+                spv(10,1.f);return true;}
             // DICE — UI telt zelf random, parameters volgen
             if(ev.pos.getX()>=14&&ev.pos.getX()<=40&&ev.pos.getY()>=84&&ev.pos.getY()<=101){
                 fGenre=rand()%5; const BGK& g=kGenreKits[fGenre]; fKit=rand()%g.n;
                 fValue[1]=(float)(rand()%256);
-                setParameterValue(0,(float)fGenre);setParameterValue(1,(float)fKit);setParameterValue(3,fValue[1]);
+                spv(0,(float)fGenre);spv(1,(float)fKit);spv(3,fValue[1]);
                 // label direct bijwerken — wacht niet op DSP-state echo
                 std::snprintf(fKitMsg,sizeof(fKitMsg),"%s · nieuw patroon",
                               kNames[kKits[g.off+fKit].name]);
                 repaint();return true;}
             // SPEEL
             if(ev.pos.getX()>=44&&ev.pos.getX()<=90&&ev.pos.getY()>=84&&ev.pos.getY()<=101){
-                fPlay=fPlay>0.5f?0.f:1.f;setParameterValue(9,fPlay);repaint();return true;}
+                fPlay=fPlay>0.5f?0.f:1.f;spv(9,fPlay);repaint();return true;}
             // ↓MID
             if(ev.pos.getX()>=94&&ev.pos.getX()<=136&&ev.pos.getY()>=84&&ev.pos.getY()<=101){
-                setParameterValue(12,1.f);return true;}
+                spv(12,1.f);return true;}
             // SKIN
             if(ev.pos.getX()>=W-40&&ev.pos.getX()<=W-14&&ev.pos.getY()>=84&&ev.pos.getY()<=101){
-                fLight=((int)fLight+1)%8;setParameterValue(13,fLight);repaint();return true;}
+                fLight=((int)fLight+1)%8;spv(13,fLight);repaint();return true;}
             // kit ◀ ▶
             { const BGK& g=kGenreKits[fGenre<0?0:(fGenre>4?4:fGenre)];
               if(ev.pos.getX()>=14&&ev.pos.getX()<=40&&ev.pos.getY()>=118&&ev.pos.getY()<=140){
-                  fKit=fKit-1; if(fKit<0)fKit=(int)g.n-1; setParameterValue(1,(float)fKit);repaint();return true;}
+                  fKit=fKit-1; if(fKit<0)fKit=(int)g.n-1; spv(1,(float)fKit);repaint();return true;}
               if(ev.pos.getX()>=W-58&&ev.pos.getX()<=W-32&&ev.pos.getY()>=118&&ev.pos.getY()<=140){
-                  fKit=fKit+1; if(fKit>=(int)g.n)fKit=0; setParameterValue(1,(float)fKit);repaint();return true;} }
+                  fKit=fKit+1; if(fKit>=(int)g.n)fKit=0; spv(1,(float)fKit);repaint();return true;} }
             // laag-toggles
             for(int i=0;i<3;i++){
                 float px=14.f+i*100.f;
                 if(ev.pos.getX()>=px&&ev.pos.getX()<=px+92&&ev.pos.getY()>=342&&ev.pos.getY()<=364){
                     float* tv=i==0?&fDrums:(i==1?&fMel:&fMidi);
-                    *tv=*tv>0.5f?0.f:1.f; setParameterValue(6+i,*tv); repaint();return true;}}
+                    *tv=*tv>0.5f?0.f:1.f; spv(6+i,*tv); repaint();return true;}}
             // knobs
             for(int i=0;i<4;i++){
                 float cx=40+(W-80)/4.f*(i+0.5f),cy=258.f,R=24;
@@ -260,10 +260,11 @@ protected:
         float range=fMax[fDrag]-fMin[fDrag];
         float v=fValue[fDrag]+dy*range/200.f;
         if(v<fMin[fDrag])v=fMin[fDrag];if(v>fMax[fDrag])v=fMax[fDrag];
-        fValue[fDrag]=v; setParameterValue(fParamId[fDrag],v); repaint(); return true;
+        fValue[fDrag]=v; spv(fParamId[fDrag],v); repaint(); return true;
     }
 
 private:
+    void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     float fValue[4],fMin[4],fMax[4];
     const char* fLabel[4]; int fParamId[4];
     int fDrag; float fLastY;

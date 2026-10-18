@@ -68,32 +68,33 @@ protected:
         for(int i=0;i<8;i++){beginPath(); circle(66+i*13,fSkinY+8,5); fillColor(C(SK[i][5])); fill();}
     }
     bool onMouse(const MouseEvent&ev)override{
-        if(!ev.press){fDrag=-1;fXYdrag=false;return true;}
-        if(ev.pos.getY()<42&&ev.pos.getX()>getWidth()-116){setParameterValue(0,fOn>0.5f?0.f:1.f);fOn=fOn>0.5f?0:1;repaint();return true;}
+        if(!ev.press){if(fDrag>=0&&!fMoved){int i=fDrag;float mx=i==0?7:(i==7?26:100);float st=mx<=32?1:5;float v=fVal[i]+st;if(v>mx)v=0;spv(pFor[i],v);fVal[i]=v;repaint();}fDrag=-1;fXYdrag=false;fMoved=false;return true;}
+        if(ev.pos.getY()<42&&ev.pos.getX()>getWidth()-116){spv(0,fOn>0.5f?0.f:1.f);fOn=fOn>0.5f?0:1;repaint();return true;}
         if(ev.pos.getX()>=fXX&&ev.pos.getX()<=fXX+fXW&&ev.pos.getY()>=fXY_&&ev.pos.getY()<=fXY_+fXH){fXYdrag=true;xySet(ev.pos);return true;}
         for(int i=0;i<8;i++){
             const float cx=fKnobX+(i%4)*86,cy=fKnobY+(i/4)*96;
             const float dx=ev.pos.getX()-cx,dy=ev.pos.getY()-cy;
-            if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=ev.pos.getY();return true;}}
+            if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=ev.pos.getY();fMoved=false;return true;}}
         if(ev.pos.getY()>=fSkinY&&ev.pos.getY()<=fSkinY+32)
-            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){setParameterValue(8,(float)i);fSkin=i;repaint();return true;}
+            for(int i=0;i<8;i++) if(std::fabs(ev.pos.getX()-(66+i*13))<8){spv(8,(float)i);fSkin=i;repaint();return true;}
         return false;}
     bool onMotion(const MotionEvent&ev)override{
         if(fXYdrag){xySet(ev.pos);return true;}
         if(fDrag<0)return false;
-        float dy=fLastY-ev.pos.getY();fLastY=ev.pos.getY();
+        float dy=fLastY-ev.pos.getY();fLastY=ev.pos.getY();if(dy!=0)fMoved=true;
         float v=fVal[fDrag]+dy*100/120.0f;
         if(v<0)v=0;if(v>100)v=100;if(fDrag==0){if(v>7)v=7;}if(fDrag==7){if(v>26)v=26;}
-        fVal[fDrag]=v;setParameterValue(pFor[fDrag],v);
+        fVal[fDrag]=v;spv(pFor[fDrag],v);
         repaint();return true;}
     bool onScroll(const ScrollEvent&)override{return false;}
 private:
     float norm(int i){return fVal[i]/(i==0?7:(i==7?26:100));}
     void text(float x,float y,const char*s,std::nullptr_t){if(!s)return;DGL_NAMESPACE::NanoVG::text(x,y,s,nullptr);}
-    void xySet(const Point<double>&p){float nx=(p.getX()-fXX)/fXW;if(nx<0)nx=0;if(nx>1)nx=1;float ny=(p.getY()-fXY_)/fXH;if(ny<0)ny=0;if(ny>1)ny=1;float kr=nx*100.f,dim=std::round((1.f-ny)*26.f);setParameterValue(1,kr);setParameterValue(7,dim);fVal[6]=kr;fVal[7]=dim;repaint();}
+    void xySet(const Point<double>&p){float nx=(p.getX()-fXX)/fXW;if(nx<0)nx=0;if(nx>1)nx=1;float ny=(p.getY()-fXY_)/fXH;if(ny<0)ny=0;if(ny>1)ny=1;float kr=nx*100.f,dim=std::round((1.f-ny)*26.f);spv(1,kr);spv(7,dim);fVal[6]=kr;fVal[7]=dim;repaint();}
     float fVal[8]={4,30,70,60,50,50,100,0};
-    int fDrag; float fLastY; float fOn,fSkin; bool fXYdrag=false;
+    int fDrag; float fLastY; float fOn,fSkin; bool fXYdrag=false,fMoved=false;
     float fBtnY=14,fKnobX=0,fKnobY=0,fSkinY=0; float fXX=0,fXY_=0,fXW=0,fXH=0;
+    void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WahUI)};
 END_NAMESPACE_DISTRHO
 DISTRHO::UI*DISTRHO::createUI(){return new DISTRHO::WahUI();}
