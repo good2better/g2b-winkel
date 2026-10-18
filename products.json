@@ -1364,17 +1364,19 @@
    "id": "ocho01",
    "titel": "G2B Ocho — Surinaamse one-shot machine",
    "soort": "plugin",
-   "beschrijving": "SURINAAMSE ONE-SHOT MACHINE: 16 ingebakken smaken (DONDER/kawina-sub, TRAP, DRILL, AFRO, DEMBOW, agogo, bangi, seki, surdo, timbal, klap) + 16 genre-sets met ~250 shots + eigen .wav erin gooien = extra smaken. 808!-knop = perfecte 808-sound in 1 klik, dobbelsteen voor verrassing, pitch-correctie op eigen samples, KEY+SCALE snapping, GLIDE/SUB/DROP/DECAY/CLICK, XY-pad, 8 skins. Kick-strak, mono-sub, mix-ready. Windows VST3 + CLAP + standalone.",
+   "beschrijving": "SURINAAMSE ONE-SHOT MACHINE — simpel en echt goed: 16 ingebakken smaken (DONDER/kawina-sub, TRAP, DRILL, AFRO, DEMBOW, bangi, seki, surdo, timbal, klap), < > bladeren door de set, dobbelsteen voor verrassing, 808!-knop = perfecte 808-bas in 1 klik, SKIN met 8 uiterlijken (SRANANG-standaard), scope met Surinaamse vlag. Eigen .wav in Documenten\\G2B-SMAAK-SETS = eigen sets erbij. Setup.exe installeert VST3 + CLAP + standalone met nette uninstall — handleiding-PDF en demo-video inbegrepen. Windows, klaar voor Reason/FL/Ableton.",
    "prijs": "€ 19,95",
    "links": {
     "koop": "bestel.html?p=ocho01",
-    "download": "bedankt.html?k=ocho01"
+    "download": "bedankt.html?k=ocho01",
+    "handleiding": "media/G2B-Ocho-Handleiding.pdf"
    },
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/ocho-cover.png",
    "download_dir": "d/ocho01",
-   "demo": "media/ocho-demo.mp4"
+   "demo": "media/ocho-demo.mp4",
+   "video": "media/ocho-demo.mp4"
   },
   {
    "titel": "G2B Sleutel-Helper",
