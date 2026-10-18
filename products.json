@@ -1375,7 +1375,8 @@
    "badge": "NIEUW",
    "cover": "media/ocho-cover.png",
    "download_dir": "d/ocho01",
-   "demo": "media/ocho-demo.mp4"
+   "demo": "media/ocho-demo.mp4",
+   "video": "media/ocho-demo.mp4"
   },
   {
    "titel": "G2B Sleutel-Helper",
