@@ -414,6 +414,19 @@ protected:
                 const float dy = (float)(ev.pos.getY()/getScaleFactor()) - cy;
                 if (dx*dx + dy*dy <= 17.0f*17.0f + 60.0f)
                 {
+                    // discrete knoppen (KEY 0-11, SCALE 0-1, SFEER 0-2):
+                    // klik = volgende optie — slepen over zo'n klein bereik
+                    // komt nooit over de hele stap (zijn bug: "key werkt niet")
+                    if (i == 7 || i == 8 || i == 11)
+                    {
+                        float v = fValue[i] + 1.0f;
+                        if (v > fMax[i] + 0.5f) v = fMin[i];
+                        fValue[i] = v;
+                        const int pi = paramOf(i);
+                        editParameter(pi, true); spv(pi, v); editParameter(pi, false);
+                        repaint();
+                        return true;
+                    }
                     fDrag = i; fLastY = (float)(ev.pos.getY()/getScaleFactor());
                     editParameter(paramOf(i), true);
                     return true;
