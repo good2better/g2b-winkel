@@ -314,6 +314,12 @@ protected:
             fontSize(9.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
             fillColor(232,236,234);
             text(269.0f, ay+9.0f, "808!", nullptr);
+            if (fFxTick > 0)
+            {
+                beginPath(); roundedRect(244.0f, ay - 2.0f, 50.0f, 22.0f, 5.0f);
+                strokeColor(232, 190, 60); strokeWidth(2.0f); stroke();
+                --fFxTick;
+            }
         }
 
         text(W * 0.5f, H - 8.0f,
@@ -330,6 +336,16 @@ protected:
                 const float dy2[5] = {52.0f,    52.0f,     56.0f,     60.0f,    60.0f};
                 for (int i = 0; i < 5; ++i)
                 { beginPath(); circle(dx2[i], dy2[i], 1.7f); fill(); }
+            }
+            // dobbel-feedback: flits + "GEROLD" zodat je ziet dat hij rolde
+            if (fDiceTick > 0)
+            {
+                beginPath(); roundedRect(bx2 - 2.0f, 44.0f, 34.0f, 24.0f, 5.0f);
+                strokeColor(47, 191, 113); strokeWidth(2.0f); stroke();
+                fontSize(8.5f); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
+                fillColor(47, 191, 113);
+                text(bx2 + 36.0f, 56.0f, "GEROLD", nullptr);
+                --fDiceTick;
             }
             const float tx = W - 40.0f;
             beginPath(); roundedRect(tx, 34.0f, 26.0f, 17.0f, 4.0f);
@@ -355,7 +371,7 @@ protected:
             // dobbelsteen (links onder titel)
             if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 44.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 46.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 66.0f)
-            { spv(9, 1.0f); repaint(); return true; }
+            { spv(9, 1.0f); fDiceTick = 18; repaint(); return true; }
             // 🌙 skin (rechtsboven)
             if ((float)(ev.pos.getX()/getScaleFactor()) >= W - 40.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W - 14.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 34.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
@@ -400,6 +416,7 @@ protected:
                     const int p = p808[i];
                     editParameter(p, true); spv(p, v808[i]); editParameter(p, false);
                 }
+                fFxTick = 18;
                 repaint(); return true;
             }
             // XY-pad
@@ -537,6 +554,8 @@ private:
     int fDrag;
     float fLastY;
     int fProg = -1;
+    int fDiceTick = 0;
+    int fFxTick = 0;
     std::vector<std::string> fUsrNames;
     std::vector<std::string> fUsrSets;
     // set-helpers: gebakken 16 = set "OCHO"; eigen shots dragen hun mapnaam
