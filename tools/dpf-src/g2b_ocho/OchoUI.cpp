@@ -160,10 +160,35 @@ protected:
         text(208.0f, 24.0f, fDbg, nullptr);
         text(208.0f, 34.0f, fScan, nullptr);
 
-        // scope (rechtsboven)
+        // scope (rechtsboven) — in de SRANANG-skin de Surinaamse vlag
+        // als achtergrond van het zwarte vak, ster in het midden
         const float sx = 300.0f, sy = 12.0f, sw = W - 318.0f, sh = 46.0f;
-        beginPath(); rect(sx, sy, sw, sh);
-        fillColor(8, 10, 9); fill();
+        if (fLight == 0)
+        {
+            beginPath(); rect(sx, sy, sw, sh * 0.20f);        fillColor(18, 70, 36); fill();
+            beginPath(); rect(sx, sy + sh * 0.20f, sw, sh * 0.10f); fillColor(120, 122, 118); fill();
+            beginPath(); rect(sx, sy + sh * 0.30f, sw, sh * 0.40f); fillColor(95, 20, 22); fill();
+            beginPath(); rect(sx, sy + sh * 0.70f, sw, sh * 0.10f); fillColor(120, 122, 118); fill();
+            beginPath(); rect(sx, sy + sh * 0.80f, sw, sh * 0.20f); fillColor(18, 70, 36); fill();
+            // gouden ster, gecentreerd in de rode band
+            {
+                const float cx = sx + sw * 0.5f, cy = sy + sh * 0.5f, r1 = sh * 0.28f, r2 = r1 * 0.42f;
+                beginPath();
+                for (int p = 0; p < 10; ++p)
+                {
+                    const float a = -1.5708f + p * 0.6283f;
+                    const float r = (p % 2 == 0) ? r1 : r2;
+                    const float px = cx + std::cos(a) * r, py = cy + std::sin(a) * r;
+                    if (p == 0) moveTo(px, py); else lineTo(px, py);
+                }
+                closePath(); fillColor(150, 128, 40); fill();
+            }
+        }
+        else
+        {
+            beginPath(); rect(sx, sy, sw, sh);
+            fillColor(8, 10, 9); fill();
+        }
         strokeColor(42, 47, 45); strokeWidth(1.0f); stroke();
         beginPath();
         const float mid = sy + sh * 0.5f;
