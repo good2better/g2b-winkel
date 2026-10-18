@@ -176,7 +176,7 @@ public:
     };
 
     OchoPlugin()
-        : Plugin(kParameterCount, 0, 4),
+        : Plugin(kParameterCount, 0, 5),
           fDecay(60.0f), fGlide(0.0f), fSub(30.0f), fClick(25.0f),
           fPitchD(50.0f), fTune(0.0f), fLevel(80.0f), fKey(0.0f), fScale(0.0f),
           fLastFreq(0.0f), fScopeN(0), fDecim(0)
@@ -287,8 +287,8 @@ protected:
 
     void initState(uint32_t index, String& name, String& def) override
     {
-        static const char* keys[4] = {"usrsmp", "usrset", "scope", "dbg"};
-        if (index < 4) { name = keys[index]; def = ""; }
+        static const char* keys[5] = {"usrsmp", "usrset", "scope", "dbg", "scan"};
+        if (index < 5) { name = keys[index]; def = ""; }
     }
 
     float getParameterValue(uint32_t index) const override
@@ -422,6 +422,9 @@ protected:
             std::snprintf(buf, sizeof(buf), "L%.0f K%.0f S%.0f D%.0f",
                           fLevel, fKey, fScale, fDecay);
             setState("dbg", buf);
+            std::snprintf(buf, sizeof(buf), "R%d W%d F%d",
+                          fScanRoots, fScanWavs, fScanFail);
+            setState("scan", buf);
         }
         g2b_post(nullptr, outputs, frames, sr, fOn, fKracht, fGal, &fSf, false);
     }
@@ -602,6 +605,7 @@ private:
         WIN32_FIND_DATAA fd;
         HANDLE h = FindFirstFileA((dir + "\\*").c_str(), &fd);
         if (h == INVALID_HANDLE_VALUE) return;
+        if (depth == 0) ++fScanRoots;
         do {
             if ((int)fUsr.size() >= kMaxUsr) break;
             if (!std::strcmp(fd.cFileName, ".") || !std::strcmp(fd.cFileName, "..")) continue;
@@ -615,12 +619,14 @@ private:
             if (L < 5) continue;
             const char* ext = fd.cFileName + L - 4;
             if (_stricmp(ext, ".wav")) continue;
+            ++fScanWavs;
             UsrSmp u;
             std::snprintf(u.name, sizeof(u.name), "%.12s", fd.cFileName);
             if (set) std::snprintf(u.set, sizeof(u.set), "%.12s", set);
             char* dot = std::strchr(u.name, '.');
             if (dot) *dot = '\0';
             if (loadWav(full.c_str(), u)) fUsr.push_back(std::move(u));
+            else ++fScanFail;
         } while (FindNextFileA(h, &fd));
         FindClose(h);
     }
@@ -698,9 +704,11 @@ private:
 #endif
 
     // eigen samples-map: <Muziek>/G2B-Ocho-Samples — elke .wav = extra smaak (ook submappen)
+    int fScanRoots = 0, fScanWavs = 0, fScanFail = 0;
     void scanUserDir()
     {
         fUsr.clear();
+        fScanRoots = 0; fScanWavs = 0; fScanFail = 0;
 #ifdef DISTRHO_OS_WINDOWS
         const char* up = std::getenv("USERPROFILE");
         if (!up) return;
@@ -737,6 +745,14 @@ private:
             findRootsWin(up, 0, roots, budget);
             for (const std::string& r : roots)
                 scanDirWin(r, 0);
+        }
+        // rapporteer aan de UI wat de scan zag — "R<n> W<n> F<n>" =
+        // mappen gevonden, wavs gezien, wavs geweigerd → lost "0 eigen" op
+        {
+            char rb[96];
+            std::snprintf(rb, sizeof(rb), "R%d W%d F%d",
+                          fScanRoots, fScanWavs, fScanFail);
+            setState("scan", rb);
         }
 #else
         const char* home = std::getenv("HOME");
