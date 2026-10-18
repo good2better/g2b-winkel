@@ -11,6 +11,7 @@
 #include "DistrhoPlugin.hpp"
 #include "../g2b_std.h"
 #include <cmath>
+#include <cctype>
 #include <cstdio>
 #include <cstring>
 #include <vector>
@@ -605,6 +606,35 @@ private:
         } while (FindNextFileA(h, &fd));
         FindClose(h);
     }
+
+    // zoek mappen waarvan de naam begint met een van de twee roots,
+    // diep in de gebruikersmap (max 5 niveaus, AppData overgeslagen) —
+    // zo vindt hij de sets óók als ze genest in een zip-map staan
+    // (bijv. Documenten\G2B-Ocho\G2B-SMAAK-SETS) of in OneDrive.
+    bool startsI(const char* s, const char* p)
+    {
+        while (*p) { if (tolower((unsigned char)*s++) != tolower((unsigned char)*p++)) return false; }
+        return true;
+    }
+    void findRootsWin(const std::string& dir, int depth, std::vector<std::string>& out, int& budget)
+    {
+        if (depth > 5 || budget <= 0) return;
+        WIN32_FIND_DATAA fd;
+        HANDLE h = FindFirstFileA((dir + "\\*").c_str(), &fd);
+        if (h == INVALID_HANDLE_VALUE) return;
+        do {
+            if (budget <= 0) break;
+            if (!std::strcmp(fd.cFileName, ".") || !std::strcmp(fd.cFileName, "..")) continue;
+            if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) continue;
+            --budget;
+            if (!_stricmp(fd.cFileName, "AppData")) continue;
+            const std::string full = dir + "\\" + fd.cFileName;
+            if (startsI(fd.cFileName, "G2B-Ocho-Samples") || startsI(fd.cFileName, "G2B-SMAAK-SETS"))
+                out.push_back(full);
+            findRootsWin(full, depth + 1, out, budget);
+        } while (FindNextFileA(h, &fd));
+        FindClose(h);
+    }
 #else
     void scanDirNix(const std::string& dir, int depth, const char* set = nullptr)
     {
@@ -658,6 +688,16 @@ private:
         for (int b = 0; b < 8; ++b)
             for (int s = 0; s < 2; ++s)
                 scanDirWin(std::string(up) + bases[b] + subs[s], 0);
+        // vond-ie niks? doorzoek dan de HELE gebruikersmap naar de
+        // root-mappen (waar ze ook uitgepakt zijn — zelfs genest)
+        if (fUsr.empty())
+        {
+            std::vector<std::string> roots;
+            int budget = 6000;
+            findRootsWin(up, 0, roots, budget);
+            for (const std::string& r : roots)
+                scanDirWin(r, 0);
+        }
 #else
         const char* home = std::getenv("HOME");
         if (!home) return;
