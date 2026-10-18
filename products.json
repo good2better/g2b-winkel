@@ -1390,6 +1390,22 @@
    ]
   },
   {
+   "id": "g2b-brein",
+   "titel": "G2B Brein",
+   "soort": "digitaal",
+   "beschrijving": "Patroon-brein als plugin: 219 GELEERDE kits → echte MIDI-noten naar jouw instrumenten. Kies een genre (808/KAWINA/KEYS/MISC/TRAP), blader door kits met ◀ ▶, GENEREER voor nieuwe variaties, DICE voor verrassing. Drums op kanaal 10, melodie op kanaal 1 — routeer naar je eigen drum/keys-plugins of exporteer direct als .mid-bestand. BARS 1-16, SEED, KRACHT (velocity), SWING, DRUMS/MEL/MIDI-OUT schakelaars, playhead-grid, 8 skins. Windows VST3 + CLAP.",
+   "prijs": 19.95,
+   "links": {
+    "koop": "bestel.html?p=g2b-brein"
+   },
+   "groep": "plugins",
+   "cover": "media/g2b-brein-cover.png",
+   "download_dir": "d/f6da0caecdf195",
+   "demo": "media/g2b-brein-demo.mp4",
+   "video": "media/g2b-brein-demo.mp4",
+   "badge": "NIEUW"
+  },
+  {
    "id": "prod01",
    "titel": "G2B Producer",
    "soort": "plugin",
