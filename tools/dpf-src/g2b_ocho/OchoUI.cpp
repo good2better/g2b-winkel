@@ -232,15 +232,16 @@ protected:
             }
         }
 
-        // eigen samples (uit G2B-Ocho-Samples map): extra rijen van 8
+        // eigen samples: 1 rij van 8 (rest bereik je met < >)
         {
             const float bw = 56.0f, bh = 17.0f, gap = 4.0f;
-            for (int i = 0; i < (int)fUsrNames.size(); ++i)
+            const int maxBtn = 8;
+            for (int i = 0; i < (int)fUsrNames.size() && i < maxBtn; ++i)
             {
                 const int slot = kNumPresets + i;
-                const int row = slot / 8, col = slot % 8;
+                const int row = i / 8, col = i % 8;
                 const float bx = W - 14.0f - (8 - col) * (bw + gap);
-                const float by = 62.0f + row * (bh + 4.0f);
+                const float by = 128.0f + row * (bh + 4.0f);
                 const bool on = (slot == fProg);
                 beginPath(); roundedRect(bx, by, bw, bh, 4.0f);
                 if (on) { fillColor(29, 122, 72); fill(); }
@@ -382,12 +383,12 @@ protected:
 
             {
                 const float bw = 56.0f, bh = 17.0f, gap = 4.0f;
-                for (int i = 0; i < (int)fUsrNames.size(); ++i)
+                for (int i = 0; i < (int)fUsrNames.size() && i < 8; ++i)
                 {
                     const int slot = kNumPresets + i;
-                    const int row = slot / 8, col = slot % 8;
+                    const int row = i / 8, col = i % 8;
                     const float bx = W - 14.0f - (8 - col) * (bw + gap);
-                    const float by = 62.0f + row * (bh + 4.0f);
+                    const float by = 128.0f + row * (bh + 4.0f);
                     if (ev.pos.getX() >= bx && ev.pos.getX() <= bx + bw &&
                         ev.pos.getY() >= by && ev.pos.getY() <= by + bh)
                     {

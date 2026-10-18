@@ -22,6 +22,7 @@
 #include <windows.h>
 #else
 #include <dirent.h>
+#include <sys/stat.h>
 #endif
 
 START_NAMESPACE_DISTRHO
@@ -35,7 +36,7 @@ static const int kNumPresets = kNumSmp;
 
 
 static const int kMaxVoices = 8;
-static const int kMaxUsr = 16;
+static const int kMaxUsr = 256; // ook submappen (genre-sets) — alles bereikbaar met < >
 
 // per-smaak karakter (808-gidsen): release seconden + lowpass Hz op sub (0 = uit)
 // DONDER KICKBAS TRAP BOOM AFRO DEMBOW DRILL SUB808 SKRATJI BANGI KOTI AGOGO SEKI SURDO TIMBAL KLAP
@@ -107,6 +108,15 @@ static bool loadWav(const char* path, UsrSmp& u)
     int mx = 1; for (int i = 0; i < outN; ++i) { int a = u.d[i] < 0 ? -u.d[i] : u.d[i]; if (a > mx) mx = a; }
     const double g = 0.92 * 32767.0 / mx;
     for (int i = 0; i < outN; ++i) u.d[i] = (int16_t)(u.d[i] * g);
+    // DC-offset eruit + korte staart-fade → geen klik/dreun bij eigen shots
+    double dc = 0.0; for (int i = 0; i < outN; ++i) dc += u.d[i]; dc /= outN;
+    const int fadeN = std::min(outN, 441); // ~20ms uitfade
+    for (int i = 0; i < outN; ++i)
+    {
+        double v = u.d[i] - dc;
+        if (i >= outN - fadeN) v *= (double)(outN - 1 - i) / fadeN;
+        u.d[i] = (int16_t)v;
+    }
     // grondtoon-detectie (zero-crossing) → pitch-fix zodat noot 36 = C
     int zc = 0; const int s0 = outN / 5, s1 = std::min(outN, s0 + kSmpSR / 2);
     for (int i = s0 + 1; i < s1; ++i)
@@ -170,8 +180,8 @@ protected:
     const char* getLabel() const override { return "G2B OchoOcho"; }
     const char* getDescription() const override
     {
-        return "Giorgio's Surinaamse one-shot machine: 12 echte eigen "
-               "klanken (DONDER tot SUB808) met glide, drop en sub-laag.";
+        return "Giorgio's Surinaamse one-shot machine: 16 echte eigen "
+               "klanken + je eigen samples (auto in toon), 808-motor inbegrepen.";
     }
     const char* getMaker() const override { return "G2B (good2better)"; }
     const char* getHomePage() const override { return "https://github.com/good2better"; }
@@ -388,7 +398,7 @@ protected:
 private:
     void rollDice(){
         // nuttige dobbel: nieuwe SMAAK + passende klank-settings
-        fRnd=fRnd*1664525u+1013904223u; setParameterValue(kPreset,(float)((fRnd>>8)%kNumPresets));
+        fRnd=fRnd*1664525u+1013904223u; setParameterValue(kPreset,(float)((fRnd>>8)%(kNumPresets+(int)fUsr.size())));
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kDecay,25.f+(fRnd>>8)%66);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kGlide,(fRnd>>8)%70);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kSub,15.f+(fRnd>>8)%71);
@@ -555,7 +565,66 @@ private:
     std::vector<UsrSmp> fUsr;
     bool fNamesSent = false;
 
-    // eigen samples-map: <Muziek>/G2B-Ocho-Samples — elke .wav = extra smaak
+#ifdef DISTRHO_OS_WINDOWS
+    void scanDirWin(const std::string& dir, int depth)
+    {
+        WIN32_FIND_DATAA fd;
+        HANDLE h = FindFirstFileA((dir + "\\*").c_str(), &fd);
+        if (h == INVALID_HANDLE_VALUE) return;
+        do {
+            if ((int)fUsr.size() >= kMaxUsr) break;
+            if (!std::strcmp(fd.cFileName, ".") || !std::strcmp(fd.cFileName, "..")) continue;
+            const std::string full = dir + "\\" + fd.cFileName;
+            if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+            {
+                if (depth < 2) scanDirWin(full, depth + 1);
+                continue;
+            }
+            const size_t L = std::strlen(fd.cFileName);
+            if (L < 5) continue;
+            const char* ext = fd.cFileName + L - 4;
+            if (_stricmp(ext, ".wav")) continue;
+            UsrSmp u;
+            std::snprintf(u.name, sizeof(u.name), "%.12s", fd.cFileName);
+            char* dot = std::strchr(u.name, '.');
+            if (dot) *dot = '\0';
+            if (loadWav(full.c_str(), u)) fUsr.push_back(std::move(u));
+        } while (FindNextFileA(h, &fd));
+        FindClose(h);
+    }
+#else
+    void scanDirNix(const std::string& dir, int depth)
+    {
+        DIR* dp = opendir(dir.c_str());
+        if (!dp) return;
+        struct dirent* e;
+        while ((e = readdir(dp)) && (int)fUsr.size() < kMaxUsr)
+        {
+            const char* nm = e->d_name;
+            if (!std::strcmp(nm, ".") || !std::strcmp(nm, "..")) continue;
+            const std::string full = dir + "/" + nm;
+            struct stat st;
+            if (stat(full.c_str(), &st)) continue;
+            if (S_ISDIR(st.st_mode))
+            {
+                if (depth < 2) scanDirNix(full, depth + 1);
+                continue;
+            }
+            const size_t L = std::strlen(nm);
+            if (L < 5) continue;
+            const char* ext = nm + L - 4;
+            if (std::strcmp(ext, ".wav") && std::strcmp(ext, ".WAV")) continue;
+            UsrSmp u;
+            std::snprintf(u.name, sizeof(u.name), "%.12s", nm);
+            char* dot = std::strchr(u.name, '.');
+            if (dot) *dot = '\0';
+            if (loadWav(full.c_str(), u)) fUsr.push_back(std::move(u));
+        }
+        closedir(dp);
+    }
+#endif
+
+    // eigen samples-map: <Muziek>/G2B-Ocho-Samples — elke .wav = extra smaak (ook submappen)
     void scanUserDir()
     {
         fUsr.clear();
@@ -565,41 +634,11 @@ private:
         std::string dirs[2] = { std::string(up) + "\\Music\\G2B-Ocho-Samples",
                                 std::string(up) + "\\Documents\\G2B-Ocho-Samples" };
         for (int d = 0; d < 2 && fUsr.empty(); ++d)
-        {
-            WIN32_FIND_DATAA fd;
-            HANDLE h = FindFirstFileA((dirs[d] + "\\*.wav").c_str(), &fd);
-            if (h == INVALID_HANDLE_VALUE) continue;
-            do {
-                if ((int)fUsr.size() >= kMaxUsr) break;
-                UsrSmp u;
-                std::snprintf(u.name, sizeof(u.name), "%.12s", fd.cFileName);
-                char* dot = std::strchr(u.name, '.');
-                if (dot) *dot = '\0';
-                if (loadWav((dirs[d] + "\\" + fd.cFileName).c_str(), u)) fUsr.push_back(std::move(u));
-            } while (FindNextFileA(h, &fd));
-            FindClose(h);
-        }
+            scanDirWin(dirs[d], 0);
 #else
         const char* home = std::getenv("HOME");
         if (!home) return;
-        std::string dir = std::string(home) + "/G2B-Ocho-Samples";
-        DIR* dp = opendir(dir.c_str());
-        if (!dp) return;
-        struct dirent* e;
-        while ((e = readdir(dp)) && (int)fUsr.size() < kMaxUsr)
-        {
-            const char* nm = e->d_name;
-            const size_t L = std::strlen(nm);
-            if (L < 5) continue;
-            const char* ext = nm + L - 4;
-            if (std::strcmp(ext, ".wav") && std::strcmp(ext, ".WAV")) continue;
-            UsrSmp u;
-            std::snprintf(u.name, sizeof(u.name), "%.12s", nm);
-            char* dot = std::strchr(u.name, '.');
-            if (dot) *dot = '\0';
-            if (loadWav((dir + "/" + nm).c_str(), u)) fUsr.push_back(std::move(u));
-        }
-        closedir(dp);
+        scanDirNix(std::string(home) + "/G2B-Ocho-Samples", 0);
 #endif
     }
 
