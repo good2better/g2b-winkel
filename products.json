@@ -8,13 +8,13 @@
    "prijs": "€ 6,95",
    "links": {
     "koop": "bestel.html?p=g2b-loops",
-    "download": "bedankt.html?k=g2b-loops"
+    "download": "bedankt.html?k=g2bloops"
    },
    "groep": "soundpacks",
    "badge": "NIEUW",
    "cover": "media/g2b-loops-cover.png",
    "preview": "media/g2b-loops-preview.mp3",
-   "download_dir": "d/g2b-loops-1"
+   "download_dir": "d/g2bloops"
   },
   {
    "id": "g2b-melodieshots",
@@ -24,13 +24,13 @@
    "prijs": "€ 6,95",
    "links": {
     "koop": "bestel.html?p=g2b-melodieshots",
-    "download": "bedankt.html?k=g2b-melodieshots"
+    "download": "bedankt.html?k=g2bmelodieshots"
    },
    "groep": "soundpacks",
    "badge": "NIEUW",
    "cover": "media/g2b-melodieshots-cover.png",
    "preview": "media/g2b-melodieshots-preview.mp3",
-   "download_dir": "d/g2b-melodieshots-1"
+   "download_dir": "d/g2bmelodieshots"
   },
   {
    "id": "g2b-drumshots",
@@ -40,13 +40,13 @@
    "prijs": "€ 6,95",
    "links": {
     "koop": "bestel.html?p=g2b-drumshots",
-    "download": "bedankt.html?k=g2b-drumshots"
+    "download": "bedankt.html?k=g2bdrumshots"
    },
    "groep": "soundpacks",
    "badge": "NIEUW",
    "cover": "media/g2b-drumshots-cover.png",
    "preview": "media/g2b-drumshots-preview.mp3",
-   "download_dir": "d/g2b-drumshots-1"
+   "download_dir": "d/g2bdrumshots"
   },
   {
    "id": "g2bgruis",

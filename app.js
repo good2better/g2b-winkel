@@ -170,7 +170,7 @@ async function laden() {
             ? `<div class="beschr">${esc(p.beschrijving)}</div>` : ""}
         </div>
       </div>
-      ${p.soort === "audio" ? `
+      ${(p.soort === "audio" || p.preview) ? `
       <div class="player">
         <button class="playbtn" data-play="${esc(p.id)}"
           aria-label="Speel preview van ${esc(p.titel)}">▶</button>
