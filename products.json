@@ -593,23 +593,6 @@
    "demo": "media/producer-demo.mp4"
   },
   {
-   "id": "g2bfx1",
-   "titel": "G2B FX",
-   "soort": "plugin",
-   "beschrijving": "DE MENGER + ALLE EFFECTEN in één: 3-bands EQ (lo/mid/hi), SUB, POETS (vet), KNIP, GLANS (air), RUIMTE, OUTPUT + 🌌 GALAXY 27-standen + LUFS-meter + 🧠 luistert zelf en stelt in. Alles om je track klaar te maken. VST3 + CLAP + standalone.",
-   "prijs": "€ 24,95",
-   "links": {
-    "koop": "bestel.html?p=g2bfx1",
-    "download": "bedankt.html?k=g2bfx1"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/sat-cover.png",
-   "download_dir": "d/g2bfx1",
-   "video": "media/fx-demo.mp4",
-   "demo": "media/fx-demo.mp4"
-  },
-  {
    "id": "sp00ky",
    "titel": "G2B Spooky-SFX",
    "soort": "pack",
