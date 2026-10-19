@@ -220,12 +220,16 @@ protected:
 
             // LUISTER-analyse op input (lp250 + hp4k + rms)
             if(fListenN>0){
-                fALpL+=(1.f-expf(-2.f*M_PI*250.f*srInv))*(L-fALpL);
-                fAHpL+=(1.f-expf(-2.f*M_PI*4000.f*srInv))*(L-fAHpL);
-                fAccRms+=fabsf(L);
-                fAccLow+=fabsf(fALpL);
-                fAccAir+=fabsf(L-fAHpL);
-                float ax=fabsf(L);if(ax>fPeak)fPeak=ax;
+                const float aLp=1.f-expf(-2.f*M_PI*250.f*srInv);
+                const float aHp=1.f-expf(-2.f*M_PI*4000.f*srInv);
+                fALpL+=aLp*(L-fALpL); fALpR+=aLp*(R-fALpR);
+                fAHpL+=aHp*(L-fAHpL); fAHpR+=aHp*(R-fAHpR);
+                const float midL=fAHpL-fALpL, midR=fAHpR-fALpR;
+                fAccRms+=fabsf(L)+fabsf(R);
+                fAccLow+=fabsf(fALpL)+fabsf(fALpR);
+                fAccMid+=fabsf(midL)+fabsf(midR);
+                fAccAir+=fabsf(L-fAHpL)+fabsf(R-fAHpR);
+                float ax=fmaxf(fabsf(L),fabsf(R));if(ax>fPeak)fPeak=ax;
                 if(--fListenN==0) listenApply();
             }
 
@@ -317,17 +321,23 @@ private:
         };
         int pi=(int)(fPreset+0.5f);if(pi<0)pi=0;if(pi>16)pi=16;
         float tot=fAccRms+1e-9f;
-        float lowShare=fAccLow/tot, airShare=fAccAir/tot, rms=fAccRms/(2.f*getSampleRate());
-        float dSub=(lowShare-kTgt[pi][0])*2.5f, dGla=(kTgt[pi][1]-airShare)*5.f, dKni=(0.12f-rms)*3.f;
+        float lowShare=fAccLow/tot, midShare=fAccMid/tot, airShare=fAccAir/tot;
+        float rms=fAccRms/(4.f*getSampleRate());
+        float crest=fPeak/fmaxf(rms,1e-6f);            // dynamiek: hoog=pits/levendig, laag=geperst
+        float dSub=(lowShare-kTgt[pi][0])*2.5f, dGla=(kTgt[pi][1]-airShare)*3.5f, dKni=(0.12f-rms)*3.f;
         float amax=fmaxf(fabsf(dSub),fmaxf(fabsf(dGla),fabsf(dKni)));
+        // EQ-trims richting stijl-doel (zacht, +/-4dB max)
+        setParameterValue(kLo, fminf(3.f,fmaxf(-3.f,(kTgt[pi][0]-lowShare)*14.f)));
+        setParameterValue(kHi, fminf(3.f,fmaxf(-3.f,(airShare-kTgt[pi][1])*-16.f)));
         if(amax<0.15f){
             setParameterValue(kListen,0.5f); // AL GOED
         }else{
-            setParameterValue(kSub,  fminf(0.8f,fmaxf(0.2f,0.5f+dSub)));
-            setParameterValue(kGlans,fminf(0.8f,fmaxf(0.2f,0.5f+dGla)));
-            setParameterValue(kKnip, fminf(0.7f,fmaxf(0.15f,0.4f+dKni)));
-            setParameterValue(kPoets,0.35f);
-            setParameterValue(kRuimte,0.20f);
+            setParameterValue(kSub,  fminf(0.55f,fmaxf(0.2f,0.5f+dSub*0.6f)));
+            setParameterValue(kGlans,fminf(0.6f,fmaxf(0.2f,0.5f+dGla)));
+            setParameterValue(kKnip, fminf(0.30f,fmaxf(0.10f,0.08f+crest*0.06f)));
+            setParameterValue(kPoets,fminf(0.55f,fmaxf(0.2f,0.42f+(0.45f-midShare)*0.7f)));
+            setParameterValue(kRuimte,fminf(0.20f,fmaxf(0.08f,0.24f-crest*0.03f)));
+            setParameterValue(kOutput,fminf(0.f,fmaxf(-8.f,-2.f-(rms-0.10f)*20.f))); // headroom: luide track -> output omlaag
             setParameterValue(kListen,0.35f);
         }
         if(fPeak>0.9f){ setParameterValue(kOutput,-3.f); setParameterValue(kListen,0.75f); }
@@ -340,7 +350,7 @@ private:
         }
     }
     float fListen=0.f,fDice=0.f;
-    uint32_t fListenN=0; float fAccRms=0,fAccLow=0,fAccAir=0,fALpL=0,fAHpL=0,fPeak=0;
+    uint32_t fListenN=0; float fAccRms=0,fAccLow=0,fAccMid=0,fAccAir=0,fALpL=0,fALpR=0,fAHpL=0,fAHpR=0,fPeak=0;
     unsigned fRnd=777777;
     static inline float clipAt(float x,float c){
         const float th=c*0.9f;
