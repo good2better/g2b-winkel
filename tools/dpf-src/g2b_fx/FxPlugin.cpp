@@ -145,7 +145,11 @@ protected:
         if(i==kPreset){applyPreset((int)(v+0.5f));return;}
         switch(i){case kSub:fSub=v;break;case kPoets:fPoets=v;break;case kKnip:fKnip=v;break;case kGlans:fGlans=v;break;case kRuimte:fRuimte=v;break;case kOutput:fOut=v;break;case kListen:
             fListen=v;
-            if(v>0.9f){fListenN=(uint32_t)(2.f*getSampleRate());fAccRms=fAccLow=fAccAir=0;fPeak=0;}
+            #ifdef GIO_BRAIN
+            if(v>0.9f){fListenN=(uint32_t)(4.f*getSampleRate());fAccRms=fAccLow=fAccMid=fAccAir=0;fPeak=0;}
+#else
+            if(v>0.9f){fListenN=(uint32_t)(2.f*getSampleRate());fAccRms=fAccLow=fAccMid=fAccAir=0;fPeak=0;}
+#endif
             fListen=0.f;break;
             case kDice:fDice=v;if(v>0.5f)rollDice();fDice=0.f;break;
             case kOn:fOn=v;break;case kKracht:fKr=v;break;case kLo:fLo=v;break;case kMid:fMid=v;break;case kHi:fHi=v;break;}
@@ -326,6 +330,28 @@ private:
         float crest=fPeak/fmaxf(rms,1e-6f);            // dynamiek: hoog=pits/levendig, laag=geperst
         float dSub=(lowShare-kTgt[pi][0])*2.5f, dGla=(kTgt[pi][1]-airShare)*3.5f, dKni=(0.12f-rms)*3.f;
         float amax=fmaxf(fabsf(dSub),fmaxf(fabsf(dGla),fabsf(dKni)));
+#ifdef GIO_BRAIN
+        // GIO-brein: EQ mag verder (+/-6dB), knoppen verder, + kiest GALAXY-stand en KRACHT mee
+        setParameterValue(kLo, fminf(6.f,fmaxf(-6.f,(kTgt[pi][0]-lowShare)*22.f)));
+        setParameterValue(kHi, fminf(6.f,fmaxf(-6.f,(airShare-kTgt[pi][1])*-24.f)));
+        if(amax<0.15f){
+            setParameterValue(kListen,0.5f); // AL GOED
+        }else{
+            setParameterValue(kSub,  fminf(0.70f,fmaxf(0.2f,0.5f+dSub*0.7f)));
+            setParameterValue(kGlans,fminf(0.70f,fmaxf(0.2f,0.5f+dGla)));
+            setParameterValue(kKnip, fminf(0.40f,fmaxf(0.10f,0.08f+crest*0.08f)));
+            setParameterValue(kPoets,fminf(0.60f,fmaxf(0.2f,0.42f+(0.45f-midShare)*0.8f)));
+            setParameterValue(kRuimte,fminf(0.28f,fmaxf(0.08f,0.26f-crest*0.03f)));
+            setParameterValue(kOutput,fminf(0.f,fmaxf(-8.f,-2.f-(rms-0.10f)*20.f)));
+            // GALAXY mee kiezen: dikke sub -> lage shimmer, luchtige track -> hoge shimmer, anders donker-warm
+            int gmode=(lowShare>0.42f)?0:((airShare>0.15f)?1:2);
+            int gdim=(int)fminf(8.f,fmaxf(0.f,crest*1.2f));
+            setParameterValue(kGalaxy,(float)(gmode*9+gdim));
+            // KRACHT mee zetten: grotere ingreep -> iets lager percentage (blijft veilig)
+            setParameterValue(kKracht,fminf(100.f,fmaxf(70.f,95.f-amax*25.f)));
+            setParameterValue(kListen,0.35f);
+        }
+#else
         // EQ-trims richting stijl-doel (zacht, +/-4dB max)
         setParameterValue(kLo, fminf(3.f,fmaxf(-3.f,(kTgt[pi][0]-lowShare)*14.f)));
         setParameterValue(kHi, fminf(3.f,fmaxf(-3.f,(airShare-kTgt[pi][1])*-16.f)));
@@ -340,6 +366,7 @@ private:
             setParameterValue(kOutput,fminf(0.f,fmaxf(-8.f,-2.f-(rms-0.10f)*20.f))); // headroom: luide track -> output omlaag
             setParameterValue(kListen,0.35f);
         }
+#endif
         if(fPeak>0.9f){ setParameterValue(kOutput,-3.f); setParameterValue(kListen,0.75f); }
         fPeak=0.f;
     }
