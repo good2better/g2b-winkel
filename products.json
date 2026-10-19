@@ -1,6 +1,54 @@
 {
  "producten": [
   {
+   "id": "g2b-loops",
+   "titel": "G2B LOOPS VOL1",
+   "soort": "pack",
+   "beschrijving": "12 drumloops uit de G2B-engine in 4 smaken: TRAP 140, BOOMBAP 90, ZOUK 100 & KAWINA 115 — elke smaak in 3 varianten, met bpm in de bestandsnaam. Royalty-vrij, drag & drop in je project.",
+   "prijs": "€ 6,95",
+   "links": {
+    "koop": "bestel.html?p=g2b-loops",
+    "download": "bedankt.html?k=g2b-loops"
+   },
+   "groep": "soundpacks",
+   "badge": "NIEUW",
+   "cover": "media/g2b-loops-cover.png",
+   "preview": "media/g2b-loops-preview.mp3",
+   "download_dir": "d/g2b-loops-1"
+  },
+  {
+   "id": "g2b-melodieshots",
+   "titel": "G2B MELODIE SHOTS VOL1",
+   "soort": "pack",
+   "beschrijving": "20 melodische one-shots uit de G2B-engine: stab, pluck, bass, sub808, logdrum & donderpiano — elk in 4 toonhoogtes. Schoon gerenderd, royalty-vrij. Voor je eigen melodieën en baslijnen.",
+   "prijs": "€ 6,95",
+   "links": {
+    "koop": "bestel.html?p=g2b-melodieshots",
+    "download": "bedankt.html?k=g2b-melodieshots"
+   },
+   "groep": "soundpacks",
+   "badge": "NIEUW",
+   "cover": "media/g2b-melodieshots-cover.png",
+   "preview": "media/g2b-melodieshots-preview.mp3",
+   "download_dir": "d/g2b-melodieshots-1"
+  },
+  {
+   "id": "g2b-drumshots",
+   "titel": "G2B DRUM SHOTS VOL1",
+   "soort": "pack",
+   "beschrijving": "24 drum one-shots uit de G2B-engine: kick, snare, hat, klap, rim, conga, timbal & openhat — elk in 3 aanslag-hardheden (zacht/midden/hard). Schoon gerenderd, piek-genormaliseerd, royalty-vrij. Drag & drop in je DAW of drum-machine.",
+   "prijs": "€ 6,95",
+   "links": {
+    "koop": "bestel.html?p=g2b-drumshots",
+    "download": "bedankt.html?k=g2b-drumshots"
+   },
+   "groep": "soundpacks",
+   "badge": "NIEUW",
+   "cover": "media/g2b-drumshots-cover.png",
+   "preview": "media/g2b-drumshots-preview.mp3",
+   "download_dir": "d/g2b-drumshots-1"
+  },
+  {
    "id": "g2bgruis",
    "titel": "G2B GRUIS ONE-SHOTS",
    "soort": "pack",
