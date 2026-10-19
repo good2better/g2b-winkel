@@ -625,23 +625,6 @@
    "demo": "media/producer-demo.mp4"
   },
   {
-   "id": "drbs01",
-   "titel": "G2B Drums & Bas",
-   "soort": "plugin",
-   "beschrijving": "DRUM + BASLIJN in één: 17 genre-patronen (dembow, drill, rnb, house, trap, boombap, kawina...) met automatisch passende baslijn. BAS aan/uit, bas-type, key-keuze, swing, drive. Keyboard = bas meespelen. VST3 + CLAP + standalone.",
-   "prijs": "€ 19,95",
-   "links": {
-    "koop": "bestel.html?p=drbs01",
-    "download": "bedankt.html?k=drbs01"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/sat-cover.png",
-   "download_dir": "d/drbs01",
-   "video": "media/drumsbas-demo.mp4",
-   "demo": "media/drumsbas-demo.mp4"
-  },
-  {
    "id": "g2bfx1",
    "titel": "G2B FX",
    "soort": "plugin",
