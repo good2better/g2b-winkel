@@ -644,6 +644,21 @@
    },
    "groep": "gratis",
    "badge": "GRATIS"
+  },
+  {
+   "id": "g2bgen1",
+   "titel": "G2B Generator",
+   "soort": "plugin",
+   "beschrijving": "De eindeloze drum + baslijn FABRIEK: kies uit 17 stijlen (dembow, kwina, drill, afro, house...) en elke druk op MAAK geeft een nieuw ritme én nieuwe klanken — kicks, snares, hats, perc en bassen worden allemaal opnieuw gegeneerd. 16-staps LED sequencer, swing/drive/bas-knoppen, 27-standen DIMENTIES ruimte. Geen samples van anderen: alles 100% eigen gegenereerd. VST3 + CLAP + standalone.",
+   "prijs": "€ 24,95",
+   "links": {
+    "koop": "bestel.html?p=g2bgen1",
+    "download": "bedankt.html?k=g2bgen1"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/gen-cover.png",
+   "download_dir": "d/g2bgen1"
   }
  ]
 }
