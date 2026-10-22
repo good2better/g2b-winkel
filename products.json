@@ -1,6 +1,22 @@
 {
  "producten": [
   {
+   "id": "g2bbestof",
+   "titel": "G2B Best Of",
+   "soort": "plugin",
+   "beschrijving": "HET BESTE VAN ALLES IN ÉÉN PLUGIN: 21 top-instrumenten uit de hele G2B-collectie — vleugel-piano, DonderPiano, marimba, vibes, strijkers-ensemble, hoorn, pauken, hammond, steeldrum, kawina-fluit, nylon + Spaanse + elektrische gitaar, e-bas, schuivel-zouk bas & gitaar, mbira, dan tranh, darbuka + 2 pad-banken (SCHUIVEL & ZOUK). Plus 63 losse ONE-SHOT wav-samples erbij. Alle echte studio-opnames, 3 aanslag-lagen, ingebouwde limiter — nooit te hard. 100% CC0-bronnen, royaltyvrij commercieel gebruik. VST3 + CLAP + standalone EXE.",
+   "prijs": "€ 34,95",
+   "links": {
+    "koop": "bestel.html?p=g2bbestof",
+    "download": "bedankt.html?k=g2bbestof"
+   },
+   "groep": "plugins",
+   "badge": "TOPPER",
+   "cover": "media/bestof-cover.png",
+   "preview": "media/bestof-demo.mp3",
+   "download_dir": "d/g2bbestof"
+  },
+  {
    "id": "g2b-oneshots",
    "titel": "G2B ONE-SHOTS VOL1",
    "soort": "pack",
