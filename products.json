@@ -14,7 +14,9 @@
    "badge": "TOPPER",
    "cover": "media/bestof-cover.png",
    "preview": "media/bestof-demo.mp3",
-   "download_dir": "d/g2bbestof"
+   "download_dir": "d/g2bbestof",
+   "demo": "media/bestof-demo.mp4",
+   "video": "media/bestof-demo.mp4"
   },
   {
    "id": "g2b-oneshots",
