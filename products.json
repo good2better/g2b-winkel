@@ -676,6 +676,8 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/gen-cover.png",
+   "demo": "media/g2bgen-demo.mp4",
+   "video": "media/g2bgen-demo.mp4",
    "download_dir": "d/g2bgen1"
   }
  ]
