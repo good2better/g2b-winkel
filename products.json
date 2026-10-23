@@ -32,6 +32,8 @@
    "badge": "NIEUW",
    "cover": "media/g2b-oneshots-cover.png",
    "preview": "media/g2b-oneshots-preview.mp3",
+   "demo": "media/oneshots-demo.mp4",
+   "video": "media/oneshots-demo.mp4",
    "download_dir": "d/g2boneshots",
    "eerst": true
   },
