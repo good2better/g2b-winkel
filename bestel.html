@@ -108,9 +108,13 @@ const tierNaam = tier && LIC_NAMEN[tier] ? LIC_NAMEN[tier] : "";
 const prijs = tier && p.prijzen && p.prijzen[tier] ? p.prijzen[tier]
   : (typeof p.prijs === "number" ? "€ " + p.prijs.toFixed(2).replace(".", ",") : p.prijs);
 const titelLang = p.titel + (tierNaam ? " — " + tierNaam : "");
+const isSteun = p.soort === "steun";
+const stap3 = isSteun
+  ? "Na betaling sturen wij je een <b>persoonlijk bedankje</b> — jij helpt nieuwe plugins en packs maken."
+  : "Na betaling ontvang je <b>binnen 24 uur je download-link</b> — meestal veel sneller.";
 
 const orderTekst =
-`Bestelling bij G2B Winkel
+`${isSteun ? "Steun" : "Bestelling"} bij G2B Winkel
 
 Product: ${titelLang}
 Prijs: ${prijs}
@@ -118,12 +122,12 @@ Prijs: ${prijs}
 Mijn naam:
 Mijn e-mailadres:
 
-(G2B stuurt daarna een Tikkie-betaallink. Na betaling komt de download-link binnen 24 uur.)`;
+(G2B stuurt daarna een Tikkie-betaallink. ${isSteun ? "Na betaling volgt een persoonlijk bedankje." : "Na betaling komt de download-link binnen 24 uur."})`;
 
-const mailto = `mailto:${EMAIL}?subject=${encodeURIComponent("Bestelling: " + titelLang)}&body=${encodeURIComponent(orderTekst)}`;
+const mailto = `mailto:${EMAIL}?subject=${encodeURIComponent((isSteun ? "Steun voor G2B: " : "Bestelling: ") + titelLang)}&body=${encodeURIComponent(orderTekst)}`;
 
 kaart.innerHTML = `
-  <h1>Bestelling afronden</h1>
+  <h1>${isSteun ? "Steun afronden" : "Bestelling afronden"}</h1>
   <div class="sub">Zo werkt het — simpel en veilig via Tikkie</div>
   <div class="prod">
     ${p.cover ? `<img src="${esc(p.cover)}" alt="">` : ""}
@@ -136,7 +140,7 @@ kaart.innerHTML = `
   <div class="stappen">
     <div class="stap"><div class="n">1</div><div>Klik op <b>STUUR BESTELLING</b> — je mailtje naar de winkel wordt automatisch klaargezet. Verstuur hem.</div></div>
     <div class="stap"><div class="n">2</div><div>Je krijgt snel antwoord met een <b>Tikkie-betaallink</b> (betaling via je eigen bank-app, veilig).</div></div>
-    <div class="stap"><div class="n">3</div><div>Na betaling ontvang je <b>binnen 24 uur je download-link</b> — meestal veel sneller.</div></div>
+    <div class="stap"><div class="n">3</div><div>${stap3}</div></div>
   </div>
   <a class="knop" href="${mailto}">✉ STUUR BESTELLING</a>
   <button class="knop ander" id="kopie">📋 OF KOPIEER DE BESTELTEKST</button>
