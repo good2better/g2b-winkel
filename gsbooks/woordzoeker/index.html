@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woordzoeker — GS Books</title>
+<meta name="description" content="Eindeloze woordzoekers voor kinderen: kies een thema of eigen woorden — speel meteen digitaal of print als werkblad.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--zee:#0E6BA8;--zeedonker:#084E7C;--zand:#FFF8EC;--goud:#F5A623;--groen:#7BC47F;--tint:#E8F4FB;--tekst:#2E3A45}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Raleway,sans-serif;color:var(--tekst);background:var(--zand);min-height:100vh;display:flex;flex-direction:column}
+header{background:var(--zeedonker);padding:20px;text-align:center}
+.logo{font-family:'Playfair Display',serif;font-size:clamp(20px,4vw,26px);font-weight:700;color:#fff;letter-spacing:1px;text-decoration:none}
+.logo b{color:var(--goud)}
+nav{max-width:960px;margin:0 auto;padding:10px 16px;text-align:center}
+nav a{color:var(--zee);text-decoration:none;font-size:13px;font-weight:600}
+main{max-width:960px;margin:0 auto;padding:8px 16px 48px;flex:1}
+h1{font-family:'Playfair Display',serif;color:var(--zeedonker);font-size:clamp(24px,5vw,34px);text-align:center;margin:14px 0 4px}
+.sub{color:#5a6b7a;text-align:center;font-size:15px;margin-bottom:18px}
+.themas{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px}
+.chip{background:#fff;border:2px solid var(--zee);color:var(--zee);border-radius:20px;padding:8px 16px;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit}
+.chip.actief{background:var(--zee);color:#fff}
+.spel{display:flex;gap:22px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+.bord{background:#fff;border-radius:18px;box-shadow:0 10px 30px rgba(8,78,124,.15);padding:16px;user-select:none;touch-action:none}
+.rij{display:flex}
+.cel{width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:var(--zeedonker);border-radius:8px;cursor:pointer;transition:background .08s}
+.cel.sel{background:var(--goud);color:#4A3400}
+.cel.goed{background:var(--groen);color:#fff}
+.zijkant{min-width:220px;max-width:280px}
+.woordenlijst{background:#fff;border-radius:16px;padding:16px;box-shadow:0 6px 20px rgba(8,78,124,.10)}
+.woordenlijst h3{color:var(--zeedonker);font-size:15px;margin-bottom:8px}
+.woordenlijst .w{font-weight:700;font-size:14px;padding:5px 8px;border-radius:8px;display:inline-block;margin:2px;color:var(--tekst)}
+.woordenlijst .w.gevonden{background:var(--groen);color:#fff;text-decoration:line-through}
+.acties{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.knop{background:var(--goud);color:#4A3400;font-weight:800;font-size:14px;padding:11px 18px;border-radius:24px;border:none;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block}
+.knop.wit{background:#fff;color:var(--zee);border:2px solid var(--zee)}
+.eigen{background:#fff;border-radius:16px;padding:16px;box-shadow:0 6px 20px rgba(8,78,124,.10);margin-top:14px}
+.eigen input{width:100%;border:2px solid var(--tint);border-radius:10px;padding:10px;font-family:inherit;font-size:14px;margin:6px 0}
+.eigen .titel{font-weight:800;color:var(--zeedonker);font-size:14px}
+.eigen small{color:#8a98a5}
+.win{background:var(--groen);color:#fff;border-radius:16px;padding:18px;text-align:center;font-weight:800;font-size:19px;margin-top:14px;display:none}
+footer{text-align:center;color:#8a98a5;font-size:12px;padding:18px}
+footer b{color:var(--zee)}
+/* PRINT */
+.print-dagkop,.print-opl{display:none}
+@media print{
+  header,nav,.themas,.zijkant,.acties,.win,footer,.sub{display:none!important}
+  body{background:#fff}
+  main{padding:0}
+  .bord{box-shadow:none;page-break-inside:avoid}
+  .cel{border:1px solid #ccc;border-radius:0;font-size:15px;width:32px;height:32px}
+  .cel.sel,.cel.goed{background:#fff;color:#000}
+  .print-dagkop{display:block;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:10px}
+  .print-woorden{display:block;font-size:14px;margin-top:12px}
+  .print-opl{display:block;page-break-before:always}
+  .print-opl .cel{border:none;font-size:11px;width:22px;height:22px;color:#000}
+  .print-opl .cel.goed{background:#bfe3c6!important}
+}
+</style>
+</head>
+<body>
+<header><a class="logo" href="../index.html">GS <b>BOOKS</b></a></header>
+<nav><a href="../index.html">← terug</a> · <a href="../kleur/">🎨 KleurStudio</a></nav>
+<main>
+  <h1>🧩 Woordzoeker</h1>
+  <p class="sub">Kies een thema of vul eigen woorden in — elke keer een nieuwe puzzel. Speel digitaal of print als werkblad!</p>
+  <div class="themas" id="themas"></div>
+  <div class="spel">
+    <div>
+      <div class="print-dagkop">WOORDZOEKER — <span id="print-thema"></span></div>
+      <div class="bord" id="bord"></div>
+      <div class="print-woorden" id="print-woorden" style="display:none"></div>
+      <div class="print-opl" id="print-opl"></div>
+    </div>
+    <div class="zijkant">
+      <div class="woordenlijst">
+        <h3>Vind deze woorden:</h3>
+        <div id="lijst"></div>
+      </div>
+      <div class="acties">
+        <button class="knop" id="nieuw">🔀 NIEUWE PUZZEL</button>
+        <button class="knop wit" id="print">🖨️ PRINT WERKBLAD</button>
+      </div>
+      <div class="eigen">
+        <div class="titel">✏️ Eigen woorden?</div>
+        <small>Typ woorden met komma's (max 10):</small>
+        <input id="eigen" placeholder="bijv. FIETS, HOND, IJSCO, PAPA">
+        <button class="knop" id="eigenGo" style="width:100%">MAAK PUZZEL</button>
+      </div>
+      <div class="win" id="win">🎉 ALLE WOORDEN GEVONDEN!<br><small style="font-weight:600">Klik op NIEUWE PUZZEL voor nog één!</small></div>
+    </div>
+  </div>
+</main>
+<footer>Gemaakt door <b>Good2Better</b> — 100% van je bezoek steunt de maker.</footer>
+<script src="woordzoeker.js"></script>
+<script>
+"use strict";
+const THEMAS = {
+  "🦖 Dino's": ["DINO","EI","TANDEN","STAART","KLAW","REUS","VULKAAN","BOT","BRUL","REPTIEL"],
+  "🐶 Dieren": ["HOND","POES","PAARD","VOS","VOGEL","KONIJN","SCHAAP","KIKKER","BEER","MOL"],
+  "🍎 Eten": ["APPEL","BOTERHAM","KAAS","MELK","AARDBEI","KOEK","BANAAN","TAART","SOEP","EI"],
+  "🚀 Ruimte": ["PLANEET","STER","MAAN","RAKET","ASTRONAUT","ZON","KOMEET","MARS","UFO","WOLK"],
+  "🏰 Sprookjes": ["PRINSES","DRAAK","KASTEEL","RIDDER","TOVENAAR","KROON","ZWAARD","FEE","DWERG","BRUG"],
+  "🏫 School": ["POTLOOD","BOEK","JUF","MEESTER","GUM","SCHRIJF","LEREN","REKENEN","KLAS","TAS"]
+};
+const state = { woorden: [], puzzel: null, gevonden: new Set(), selectie: [], drag: false };
+const bord = document.getElementById("bord");
+const lijst = document.getElementById("lijst");
+const win = document.getElementById("win");
+
+function startPuzzel(woorden, themaNaam) {
+  state.woorden = woorden;
+  state.gevonden = new Set();
+  state.selectie = [];
+  win.style.display = "none";
+  state.puzzel = Woordzoeker.maakPuzzel(woorden, 12, 12, Math.floor(Math.random() * 1e9));
+  document.getElementById("print-thema").textContent = themaNaam || "EIGEN WOORDEN";
+  render();
+}
+
+function render() {
+  const { raster } = state.puzzel;
+  bord.innerHTML = "";
+  raster.forEach((rij, r) => {
+    const div = document.createElement("div");
+    div.className = "rij";
+    rij.forEach((letter, c) => {
+      const cel = document.createElement("div");
+      cel.className = "cel";
+      cel.textContent = letter;
+      cel.dataset.r = r; cel.dataset.c = c;
+      div.appendChild(cel);
+    });
+    bord.appendChild(div);
+  });
+  lijst.innerHTML = state.puzzel.geplaatst.map(p =>
+    `<span class="w" id="w-${p.woord}">${p.woord}</span>`).join("") +
+    (state.puzzel.over.length ? `<div style="font-size:12px;color:#999;margin-top:6px">te lang: ${state.puzzel.over.join(", ")}</div>` : "");
+  document.getElementById("print-woorden").textContent =
+    "Vind: " + state.puzzel.geplaatst.map(p => p.woord).join("  ·  ");
+  renderOpl();
+}
+
+function renderOpl() {
+  const opl = document.getElementById("print-opl");
+  const gevonden = new Set();
+  for (const p of state.puzzel.geplaatst)
+    for (let i = 0; i < p.woord.length; i++)
+      gevonden.add((p.r + p.dr * i) + "," + (p.c + p.dc * i));
+  opl.innerHTML = "<h3 style='font-size:16px;margin-bottom:8px'>OPLOSSING</h3>" +
+    state.puzzel.raster.map((rij, r) => '<div class="rij">' +
+      rij.map((l, c) => `<div class="cel ${gevonden.has(r + "," + c) ? "goed" : ""}">${l}</div>`).join("") +
+      "</div>").join("");
+}
+
+function celBij(e) {
+  const t = e.touches ? e.touches[0] : e;
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+  return el && el.classList.contains("cel") ? el : null;
+}
+function markeer(cel) {
+  if (!cel || cel.classList.contains("goed")) return;
+  const k = cel.dataset.r + "," + cel.dataset.c;
+  if (state.selectie.some(s => s.k === k)) return;
+  state.selectie.push({ k, el: cel, r: +cel.dataset.r, c: +cel.dataset.c });
+  cel.classList.add("sel");
+}
+function checkSelectie() {
+  const woord = state.selectie.map(s => s.el.textContent).join("");
+  const match = state.puzzel.geplaatst.find(p => p.woord === woord && !state.gevonden.has(p.woord));
+  if (match) {
+    state.gevonden.add(match.woord);
+    state.selectie.forEach(s => { s.el.classList.remove("sel"); s.el.classList.add("goed"); });
+    document.getElementById("w-" + match.woord).classList.add("gevonden");
+    if (state.gevonden.size === state.puzzel.geplaatst.length) win.style.display = "block";
+  } else {
+    state.selectie.forEach(s => s.el.classList.remove("sel"));
+  }
+  state.selectie = [];
+}
+bord.addEventListener("mousedown", e => { state.drag = true; markeer(celBij(e)); });
+bord.addEventListener("mousemove", e => { if (state.drag) markeer(celBij(e)); });
+window.addEventListener("mouseup", () => { if (state.drag) { state.drag = false; checkSelectie(); } });
+bord.addEventListener("touchstart", e => { state.drag = true; markeer(celBij(e)); e.preventDefault(); }, { passive: false });
+bord.addEventListener("touchmove", e => { if (state.drag) markeer(celBij(e)); e.preventDefault(); }, { passive: false });
+bord.addEventListener("touchend", () => { if (state.drag) { state.drag = false; checkSelectie(); } });
+
+const chipHouder = document.getElementById("themas");
+Object.keys(THEMAS).forEach((naam, i) => {
+  const b = document.createElement("button");
+  b.className = "chip" + (i === 0 ? " actief" : "");
+  b.textContent = naam;
+  b.onclick = () => {
+    document.querySelectorAll(".chip").forEach(x => x.classList.remove("actief"));
+    b.classList.add("actief");
+    state.thema = naam;
+    startPuzzel(THEMAS[naam], naam);
+  };
+  chipHouder.appendChild(b);
+});
+document.getElementById("nieuw").onclick = () =>
+  startPuzzel(state.woorden.length ? state.woorden : THEMAS[Object.keys(THEMAS)[0]], state.thema || Object.keys(THEMAS)[0]);
+document.getElementById("print").onclick = () => {
+  document.getElementById("print-woorden").style.display = "block";
+  window.print();
+};
+document.getElementById("eigenGo").onclick = () => {
+  const ws = document.getElementById("eigen").value.split(",").map(w => w.trim()).filter(Boolean).slice(0, 10);
+  if (ws.length < 2) { alert("Vul minstens 2 woorden in!"); return; }
+  document.querySelectorAll(".chip").forEach(x => x.classList.remove("actief"));
+  state.thema = "EIGEN WOORDEN";
+  startPuzzel(ws, "EIGEN WOORDEN");
+};
+state.thema = Object.keys(THEMAS)[0];
+startPuzzel(THEMAS[state.thema], state.thema);
+</script>
+</body>
+</html>
