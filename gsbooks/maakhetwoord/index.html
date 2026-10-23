@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maak het Woord — GS Books</title>
+<meta name="description" content="Door elkaar gehutselde letters weer goed zetten — woordpuzzelspel voor kinderen met thema's en eigen woorden.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--zee:#0E6BA8;--zeedonker:#084E7C;--zand:#FFF8EC;--goud:#F5A623;--groen:#7BC47F;--koraal:#FF7F50;--tint:#E8F4FB;--tekst:#2E3A45}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Raleway,sans-serif;color:var(--tekst);background:var(--zand);min-height:100vh;display:flex;flex-direction:column}
+header{background:var(--zeedonker);padding:20px;text-align:center}
+.logo{font-family:'Playfair Display',serif;font-size:clamp(20px,4vw,26px);font-weight:700;color:#fff;letter-spacing:1px;text-decoration:none}
+.logo b{color:var(--goud)}
+nav{max-width:960px;margin:0 auto;padding:10px 16px;text-align:center}
+nav a{color:var(--zee);text-decoration:none;font-size:13px;font-weight:600}
+main{max-width:760px;margin:0 auto;padding:8px 16px 48px;flex:1;text-align:center}
+h1{font-family:'Playfair Display',serif;color:var(--zeedonker);font-size:clamp(24px,5vw,34px);margin:14px 0 4px}
+.sub{color:#5a6b7a;font-size:15px;margin-bottom:18px}
+.themas{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:18px}
+.chip{background:#fff;border:2px solid var(--zee);color:var(--zee);border-radius:20px;padding:8px 16px;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit}
+.chip.actief{background:var(--zee);color:#fff}
+.hint-emoji{font-size:72px;margin:8px 0 4px}
+.hint-tekst{color:#8a98a5;font-size:14px;margin-bottom:16px}
+.slots{display:flex;gap:8px;justify-content:center;margin-bottom:18px;min-height:74px}
+.slot{width:56px;height:66px;border:3px dashed var(--zee);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;color:var(--zeedonker);background:#fff}
+.slot.gevuld{border-style:solid;background:var(--tint)}
+.slots.goed .slot{border-color:var(--groen);background:var(--groen);color:#fff}
+.slots.fout .slot{border-color:var(--koraal);background:#FFE9E2}
+.letters{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.letter{width:58px;height:66px;background:#fff;border:3px solid var(--goud);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#4A3400;cursor:pointer;transition:transform .1s,opacity .2s;user-select:none}
+.letter:hover{transform:translateY(-4px)}
+.letter.weg{opacity:.18;pointer-events:none}
+.acties{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.knop{background:var(--goud);color:#4A3400;font-weight:800;font-size:14px;padding:11px 18px;border-radius:24px;border:none;cursor:pointer;font-family:inherit}
+.knop.wit{background:#fff;color:var(--zee);border:2px solid var(--zee)}
+.score{font-weight:800;color:var(--zeedonker);font-size:16px;margin:14px 0}
+.eigen{background:#fff;border-radius:16px;padding:16px;box-shadow:0 6px 20px rgba(8,78,124,.10);margin:22px auto 0;max-width:480px}
+.eigen input{width:100%;border:2px solid var(--tint);border-radius:10px;padding:10px;font-family:inherit;font-size:14px;margin:6px 0}
+.eigen .titel{font-weight:800;color:var(--zeedonker);font-size:14px}
+.eigen small{color:#8a98a5}
+footer{text-align:center;color:#8a98a5;font-size:12px;padding:18px}
+footer b{color:var(--zee)}
+.print-werkblad{display:none}
+@media print{
+  header,nav,.themas,.hint-emoji,.hint-tekst,.slots,.letters,.acties,.score,.eigen,footer,.sub,h1{display:none!important}
+  .print-werkblad{display:block;text-align:left}
+  .print-werkblad h2{font-family:'Playfair Display',serif;margin-bottom:14px}
+  .print-werkblad .rijw{font-size:20px;margin:12px 0;letter-spacing:4px}
+  .print-werkblad .opl{page-break-before:always;margin-top:20px}
+  .print-werkblad .opl div{font-size:16px;margin:6px 0}
+}
+</style>
+</head>
+<body>
+<header><a class="logo" href="../index.html">GS <b>BOOKS</b></a></header>
+<nav><a href="../index.html">← terug</a> · <a href="../woordzoeker/">🧩 Woordzoeker</a> · <a href="../kleur/">🎨 KleurStudio</a></nav>
+<main>
+  <h1>🔀 Maak het Woord</h1>
+  <p class="sub">De letters zijn door elkaar gehutseld — tik ze in de juiste volgorde en maak het woord!</p>
+  <div class="themas" id="themas"></div>
+  <div class="hint-emoji" id="hintEmoji">🦖</div>
+  <div class="hint-tekst" id="hintTekst"></div>
+  <div class="slots" id="slots"></div>
+  <div class="letters" id="letters"></div>
+  <div class="score" id="score">⭐ 0 woorden goed</div>
+  <div class="acties">
+    <button class="knop" id="volgend">➜ VOLGEND WOORD</button>
+    <button class="knop wit" id="tip">💡 TIP</button>
+    <button class="knop wit" id="print">🖨️ PRINT WERKBLAD</button>
+  </div>
+  <div class="eigen">
+    <div class="titel">✏️ Eigen woorden?</div>
+    <small>Typ woorden met komma's — wij hutselsen ze:</small>
+    <input id="eigen" placeholder="bijv. FIETS, HOND, IJSCO, PAPA">
+    <button class="knop" id="eigenGo" style="width:100%">SPEEL EIGEN WOORDEN</button>
+  </div>
+  <div class="print-werkblad" id="werkblad"></div>
+</main>
+<footer>Gemaakt door <b>Good2Better</b> — 100% van je bezoek steunt de maker.</footer>
+<script>
+"use strict";
+const THEMAS = {
+  "🦖 Dino's": [["DINO","🦖","een hele grote saurier"],["EI","🥚","daar kruipt een baby uit"],["STAART","🦕","lang ding achteraan"],["VULKAAN","🌋","vuurspuwende berg"],["KLAW","🐾","scherpe teen van een beest"],["BRUL","📢","heel hard geluid"]],
+  "🐶 Dieren": [["HOND","🐶","blaffende beste vriend"],["POES","🐱","miauwt en spint"],["PAARD","🐴","daar rij je op"],["KONIJN","🐰","huppelt met lange oren"],["BEER","🐻","groot harig bosdier"],["KIKKER","🐸","springt en zegt kwaak"]],
+  "🍎 Eten": [["APPEL","🍎","rode knapperige vrucht"],["KAAS","🧀","geel en op je boterham"],["MELK","🥛","wit drinken uit de koe"],["KOEK","🍪","zoete traktatie"],["BANAAN","🍌","lang geel fruit"],["TAART","🎂","op je verjaardag"]],
+  "🚀 Ruimte": [["MAAN","🌙","gloeit 's nachts"],["STER","⭐","knippert in de lucht"],["RAKET","🚀","vloei naar de ruimte"],["PLANEET","🪐","grote bol in de ruimte"],["ZON","☀️","warme ster"],["MARS","🔴","rode planeet"]],
+  "🏰 Sprookjes": [["PRINSES","👸","woont in een kasteel"],["DRAAK","🐉","vurig sprookjesbeest"],["KASTEEL","🏰","waar de koning woont"],["RIDDER","🛡️","held met zwaard"],["KROON","👑","op het hoofd van de koning"],["FEE","🧚","klein wicht met toverstaf"]],
+  "🏫 School": [["POTLOOD","✏️","daar schrijf je mee"],["BOEK","📖","vol met verhalen"],["JUF","👩‍🏫","help je op school"],["GUM","🩹","gumt fouten weg"],["KLAS","🏫","jouw groep op school"],["TAS","🎒","al je spullen erin"]]
+};
+const state = { woorden: [], idx: 0, score: 0, gekozen: [], letters: [], doel: "", hint: "" };
+const slotsEl = document.getElementById("slots");
+const lettersEl = document.getElementById("letters");
+const scoreEl = document.getElementById("score");
+
+function schud(arr, seed) {
+  const a = arr.slice();
+  let s = seed;
+  for (let i = a.length - 1; i > 0; i--) {
+    s = (s * 9301 + 49297) % 233280;
+    const j = Math.floor(s / 233280 * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startThema(lijst, themaNaam) {
+  state.woorden = lijst.slice();
+  state.idx = 0; state.score = 0;
+  state.thema = themaNaam;
+  updateScore(); woord();
+}
+
+function woord() {
+  const [w, emoji, hint] = state.woorden[state.idx % state.woorden.length];
+  state.doel = w; state.hint = hint; state.gekozen = [];
+  document.getElementById("hintEmoji").textContent = emoji;
+  document.getElementById("hintTekst").textContent = hint + " — " + w.length + " letters";
+  slotsEl.className = "slots";
+  slotsEl.innerHTML = "";
+  for (let i = 0; i < w.length; i++) {
+    const s = document.createElement("div");
+    s.className = "slot";
+    slotsEl.appendChild(s);
+  }
+  let letters = w.split("");
+  do { letters = schud(letters, Date.now() % 100000); }
+  while (letters.join("") === w && letters.length > 2);
+  state.letters = letters;
+  renderLetters();
+}
+
+function renderLetters() {
+  lettersEl.innerHTML = "";
+  state.letters.forEach((l, i) => {
+    if (l === null) return;
+    const t = document.createElement("div");
+    t.className = "letter";
+    t.textContent = l;
+    t.onclick = () => kies(i);
+    lettersEl.appendChild(t);
+  });
+}
+
+function kies(i) {
+  const pos = state.gekozen.length;
+  if (pos >= state.doel.length) return;
+  state.gekozen.push({ letter: state.letters[i], bron: i });
+  state.letters[i] = null;
+  const s = slotsEl.children[pos];
+  s.textContent = state.doel === undefined ? "" : state.gekozen[pos].letter;
+  s.classList.add("gevuld");
+  s.onclick = () => terug(pos);
+  renderLetters();
+  if (state.gekozen.length === state.doel.length) controleer();
+}
+
+function terug(pos) {
+  if (state.gekozen.length <= pos || !state.gekozen[pos]) return;
+  while (state.gekozen.length > pos) {
+    const g = state.gekozen.pop();
+    state.letters[g.bron] = g.letter;
+    const s = slotsEl.children[state.gekozen.length];
+    s.textContent = ""; s.classList.remove("gevuld"); s.onclick = null;
+  }
+  slotsEl.className = "slots";
+  renderLetters();
+}
+
+function controleer() {
+  const gemaakt = state.gekozen.map(g => g.letter).join("");
+  if (gemaakt === state.doel) {
+    slotsEl.classList.add("goed");
+    state.score++;
+    updateScore();
+    state.idx++;
+    setTimeout(woord, 1200);
+  } else {
+    slotsEl.classList.add("fout");
+    setTimeout(() => terug(0), 900);
+  }
+}
+
+function updateScore() {
+  scoreEl.textContent = `⭐ ${state.score} woord${state.score === 1 ? "" : "en"} goed`;
+}
+
+document.getElementById("volgend").onclick = () => { state.idx++; woord(); };
+document.getElementById("tip").onclick = () => {
+  const pos = state.gekozen.length;
+  if (pos < state.doel.length) {
+    const juiste = state.doel[pos];
+    const i = state.letters.indexOf(juiste);
+    if (i >= 0) kies(i);
+  }
+};
+document.getElementById("print").onclick = () => {
+  const wb = document.getElementById("werkblad");
+  const wlist = state.woorden.map(([w]) => {
+    let l = w.split(""); do { l = schud(l, Math.floor(Math.random() * 1e6)); }
+    while (l.join("") === w && l.length > 2);
+    return `<div class="rijw">${l.join(" ")}&nbsp;&nbsp;→&nbsp;&nbsp;_ _ _ _ _ _ _ _</div>`;
+  }).join("");
+  const opl = state.woorden.map(([w, e]) => `<div>${e} ${w}</div>`).join("");
+  wb.innerHTML = `<h2>MAAK HET WOORD — ${state.thema || "EIGEN"}</h2>${wlist}
+    <div class="opl"><h2>ANTWOORDEN</h2>${opl}</div>`;
+  window.print();
+};
+document.getElementById("eigenGo").onclick = () => {
+  const ws = document.getElementById("eigen").value.split(",")
+    .map(w => w.trim().toUpperCase().replace(/[^A-Z]/g, ""))
+    .filter(w => w.length >= 2 && w.length <= 10).slice(0, 10);
+  if (ws.length < 2) { alert("Vul minstens 2 woorden in!"); return; }
+  document.querySelectorAll(".chip").forEach(x => x.classList.remove("actief"));
+  startThema(ws.map(w => [w, "✏️", "jouw eigen woord"]), "EIGEN WOORDEN");
+};
+const chipHouder = document.getElementById("themas");
+Object.keys(THEMAS).forEach((naam, i) => {
+  const b = document.createElement("button");
+  b.className = "chip" + (i === 0 ? " actief" : "");
+  b.textContent = naam;
+  b.onclick = () => {
+    document.querySelectorAll(".chip").forEach(x => x.classList.remove("actief"));
+    b.classList.add("actief");
+    startThema(THEMAS[naam], naam);
+  };
+  chipHouder.appendChild(b);
+});
+startThema(THEMAS[Object.keys(THEMAS)[0]], Object.keys(THEMAS)[0]);
+</script>
+</body>
+</html>
