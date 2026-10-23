@@ -717,21 +717,6 @@
    "links": {
     "koop": "bestel.html?p=steun-10"
    }
-  },
-  {
-   "id": "b0394cf3",
-   "titel": "Test Hit",
-   "soort": "beat",
-   "beschrijving": "G2B Test Hit — eigen productie.",
-   "prijs": "€ 9,95",
-   "prijzen": {
-    "mp3": "€ 9,95"
-   },
-   "links": {
-    "koop": "",
-    "digitaal": "d/b0394cf3/G2B GRUIS ONE-SHOTS_oneshots.zip"
-   },
-   "groep": "beats"
   }
  ]
 }
