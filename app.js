@@ -105,7 +105,8 @@ async function laden() {
   const CAT_VOLGORDE = ["instrumenten", "studiotools", "bundels", "sounds",
     "beats", "muziek", "apps"];
 
-  const prods = [...(data.producten || [])].sort((a, b) =>
+  const prods = [...(data.producten || [])].filter(p => !p.verborgen)
+    .sort((a, b) =>
     (CAT_VOLGORDE.indexOf(CAT(a)) - CAT_VOLGORDE.indexOf(CAT(b))) ||
     ((a.eerst ? 0 : 1) - (b.eerst ? 0 : 1)) ||
     (a.titel || "").localeCompare(b.titel || ""));
