@@ -1,6 +1,23 @@
 {
  "producten": [
   {
+   "id": "g2bvibe1",
+   "titel": "G2B VIBE — pomp + band in één",
+   "soort": "plugin",
+   "beschrijving": "TWEE KARAKTERS IN ÉÉN PLUGIN: POMP laat je mat automatisch op de beat wegduiken (sidechain zonder routing — POMP-diepte, 16 CURVE-vormen van strakke house tot lange zwel, RATE 1/4–1/16 sync op je DAW-tempo) plus een TAPE-sectie voor vintage band-karakter (WOW meedeinen, TAPE warmte, STOF kraakjes, ping-pong ECHO, DARK top-filter, AGE: 0 = gloednieuw tot 100 = band uit 1978). 16 presets: G2B CASSETTE VINYL BOOMBAP DUB JAREN-70 LOFI WALKMAN NACHT RADIO SOUL TRAP DRILL BOOM NEON WARM. VST3 + CLAP + standalone EXE + handleiding-PDF.",
+   "prijs": "€ 24,95",
+   "links": {
+    "koop": "bestel.html?p=g2bvibe1",
+    "download": "bedankt.html?k=g2bvibe1"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/g2bvibe-cover.png",
+   "download_dir": "d/g2bvibe1",
+   "demo": "media/g2bvibe-demo.mp4",
+   "video": "media/g2bvibe-demo.mp4"
+  },
+  {
    "id": "g2bbestof",
    "titel": "G2B Best Of",
    "soort": "plugin",
