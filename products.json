@@ -1,6 +1,23 @@
 {
  "producten": [
   {
+   "id": "g2bsong1",
+   "titel": "G2B SONG — all-in-one song-machine",
+   "soort": "plugin",
+   "beschrijving": "DE OPVOLGER VAN DONDER GLIDER: een complete song-machine als instrument — hij speelt hele song-ideeën (drums, 808-bas met de echte Donder-GLIDE, akkoorden en melodie) in 27 stijlen: G2B DEMBOW DRILL RNB HOUSE AFRO TRAP BOOM UKG JERSEY BOUNCE SOUL LOFI FUNK REGGAE DANCE KAW DNB GRIME AFROT LATIN ZOUK BUBBLE EDM MELOR. DICE = nieuwe beat, AUTO = engine muteert door of jij stuurt, ↓MID = alles als echt .mid-bestand naar je piano roll. Speel mee op je MIDI-keyboard: kanaal 1 = 808 live (legato = glijden, engine antwoordt terug), 2 = akkoord-stabs, 3 = melodie → hook-cellen, 4 = live drums. 1-TOETS-modes: SMART/BEAT/WALK/RUN/ARP. VST3 + CLAP + standalone EXE + handleiding-PDF.",
+   "prijs": "€ 29,95",
+   "links": {
+    "koop": "bestel.html?p=g2bsong1",
+    "download": "bedankt.html?k=g2bsong1"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/g2bsong-cover.png",
+   "download_dir": "d/g2bsong1",
+   "demo": "media/g2bsong-demo.mp4",
+   "video": "media/g2bsong-demo.mp4"
+  },
+  {
    "id": "g2bvibe1",
    "titel": "G2B VIBE — pomp + band in één",
    "soort": "plugin",
