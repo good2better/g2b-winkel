@@ -70,6 +70,10 @@ footer{padding:16px 24px;color:var(--mut);font-size:12px;text-align:center}
 <button class="tool" id="reset">🗑️ Leeg</button>
 <button class="tool" id="opslaan" style="background:var(--g);color:#04120a">⬇️ Bewaar</button>
 <button class="tool" id="print" title="Druk de plaat af om op papier te kleuren">🖨️ Print</button>
+<button class="tool" id="foto" title="Maak van je eigen foto een kleurplaat">📸 Foto</button>
+<button class="tool" id="naamplaat" title="Kleurplaat met jouw naam in ballonletters">🔤 Naam</button>
+<input type="file" id="fotoFile" accept="image/*" style="display:none">
+<label class="tool" id="detailWrap" style="cursor:default;display:none" title="Meer of minder lijntjes">✏️ <input type="range" id="detail" min="5" max="22" value="11"></label>
 </div>
 <div class="doek-wrap" id="doekWrap">
 <canvas id="verf"></canvas>
@@ -173,6 +177,101 @@ function laadPlaat(src,el){
     document.querySelectorAll('.plaatjes img').forEach(x=>x.classList.remove('actief'));
     if(el)el.classList.add('actief');
   };img.src=src;}
+
+// ===== EIGEN FOTO -> kleurplaat (lijntekening in de browser, niets wordt verstuurd)
+let laatsteFoto=null;
+function nieuwDoek(w,h){
+  verf.width=lijnen.width=w;verf.height=lijnen.height=h;
+  stap=[];redo=[];v.fillStyle='#fff';v.fillRect(0,0,w,h);
+  l.clearRect(0,0,w,h);plaatUrl='';
+  document.querySelectorAll('.plaatjes img').forEach(x=>x.classList.remove('actief'));}
+function fotoNaarLijn(img){
+  const maxW=1100,w=Math.min(maxW,img.width),h=Math.round(w*img.height/img.width);
+  const c=document.createElement('canvas');c.width=w;c.height=h;
+  const x=c.getContext('2d');x.drawImage(img,0,0,w,h);
+  const d=x.getImageData(0,0,w,h).data,g=new Float32Array(w*h);
+  for(let i=0;i<w*h;i++)g[i]=d[i*4]*.299+d[i*4+1]*.587+d[i*4+2]*.114;
+  const b=new Float32Array(w*h);
+  for(let y=1;y<h-1;y++)for(let xx=1;xx<w-1;xx++){
+    let s=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)s+=g[(y+dy)*w+xx+dx];
+    b[y*w+xx]=s/9;}
+  for(let i=0;i<w;i++){b[i]=g[i];b[(h-1)*w+i]=g[(h-1)*w+i];}
+  for(let i=0;i<h;i++){b[i*w]=g[i*w];b[i*w+w-1]=g[i*w+w-1];}
+  const m=new Float32Array(w*h),vals=[];
+  for(let y=1;y<h-1;y++)for(let xx=1;xx<w-1;xx++){
+    const i=y*w+xx;
+    const gx=-b[i-w-1]-2*b[i-1]-b[i+w-1]+b[i-w+1]+2*b[i+1]+b[i+w+1];
+    const gy=-b[i-w-1]-2*b[i-w]-b[i-w+1]+b[i+w-1]+2*b[i+w]+b[i+w+1];
+    m[i]=Math.sqrt(gx*gx+gy*gy);vals.push(m[i]);}
+  vals.sort((a,b2)=>a-b2);
+  const pct=+document.getElementById('detail').value/100;
+  const th=vals[Math.floor(vals.length*(1-pct))]||30;
+  const out=l.createImageData(w,h),o=out.data;
+  for(let i=0;i<w*h;i++){const v2=m[i]>th?0:255;
+    o[i*4]=v2;o[i*4+1]=v2;o[i*4+2]=v2;o[i*4+3]=v2<128?255:0;}
+  return{data:out,w:w,h:h};}
+function toonFoto(){
+  if(!laatsteFoto)return;
+  const r=fotoNaarLijn(laatsteFoto);
+  nieuwDoek(r.w,r.h);l.putImageData(r.data,0,0);}
+document.getElementById('foto').onclick=()=>document.getElementById('fotoFile').click();
+document.getElementById('fotoFile').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const rd=new FileReader();rd.onload=ev=>{
+    const img=new Image();img.onload=()=>{
+      laatsteFoto=img;toonFoto();
+      document.getElementById('detailWrap').style.display='';
+      document.querySelector('.hint').textContent='📸 Jouw foto is nu een kleurplaat — pak de 🪣 Vul-emmer voor grote vlakken!';
+      confetti();};
+    img.src=ev.target.result;};
+  rd.readAsDataURL(f);e.target.value='';};
+document.getElementById('detail').oninput=()=>toonFoto();
+
+// ===== NAAM-KLEURPLAAT: ballonletters om in te kleuren
+function vorm(x,type,cx,cy,s){
+  x.beginPath();
+  if(type==='ster'){for(let i=0;i<5;i++){
+    const a=-Math.PI/2+i*2*Math.PI/5,a2=a+Math.PI/5;
+    x.lineTo(cx+Math.cos(a)*s,cy+Math.sin(a)*s);x.lineTo(cx+Math.cos(a2)*s*.45,cy+Math.sin(a2)*s*.45);}
+    x.closePath();}
+  else if(type==='bal'){x.ellipse(cx,cy,s*.8,s,0,0,7);x.stroke();
+    x.beginPath();x.moveTo(cx,cy+s);x.quadraticCurveTo(cx+s*.3,cy+s*1.7,cx-s*.2,cy+s*2.4);return;}
+  else if(type==='hart'){x.moveTo(cx,cy+s*.9);
+    x.bezierCurveTo(cx-s*1.6,cy-s*.2,cx-s*.8,cy-s*1.4,cx,cy-s*.5);
+    x.bezierCurveTo(cx+s*.8,cy-s*1.4,cx+s*1.6,cy-s*.2,cx,cy+s*.9);}
+  else{x.arc(cx,cy,s,0,7);}
+  x.stroke();}
+function naamPlaat(naam){
+  const W=1200,H=900;nieuwDoek(W,H);
+  l.strokeStyle='#000';l.lineWidth=9;l.lineJoin='round';
+  l.strokeRect(24,24,W-48,H-48);
+  l.lineWidth=4;l.strokeRect(40,40,W-80,H-80);
+  // bovenband
+  l.font="bold 60px 'Comic Sans MS',Verdana,sans-serif";l.textAlign='center';l.lineWidth=3;
+  l.strokeText("KLEURBOEK VAN",W/2,150);
+  // naam in ballonletters
+  const n=naam.toUpperCase();
+  l.font="bold "+Math.min(300,Math.floor((W-160)/n.length*1.15))+"px 'Comic Sans MS',Verdana,sans-serif";
+  l.lineWidth=7;
+  l.strokeText(n,W/2,430);
+  l.font="bold 52px 'Comic Sans MS',Verdana,sans-serif";l.lineWidth=3;
+  l.strokeText("KLEUR MIJ MOOI IN!",W/2,560);
+  // versier-vlakken
+  l.lineWidth=5;
+  const vormen=['ster','bal','hart','cirkel','ster','bal'];
+  for(let i=0;i<8;i++){
+    const vx=100+i*145,cy2=700+((i%2)?60:-30);
+    vorm(l,vormen[i%vormen.length],vx,cy2,55);}
+  // confetti-stippen
+  l.lineWidth=3;
+  for(let i=0;i<40;i++){const rx=80+Math.random()*(W-160),ry=80+Math.random()*(H-160);
+    if(ry>600)continue;l.beginPath();l.arc(rx,ry,6,0,7);l.stroke();}
+  plaatUrl='naam:'+n;}
+document.getElementById('naamplaat').onclick=()=>{
+  const nm=(prompt('Welke naam komt op de kleurplaat?')||'').trim();
+  if(!nm)return;
+  naamPlaat(nm.slice(0,12));
+  document.querySelector('.hint').textContent='🔤 Jouw naam als kleurplaat — pak de emmer of kwast!';};
 
 fetch('platen.json').then(r=>r.json()).then(p=>{
   const lijst=document.getElementById('lijst');let boek=null,grid=null;
