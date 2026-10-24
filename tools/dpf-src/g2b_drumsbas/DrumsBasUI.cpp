@@ -3,7 +3,6 @@
  */
 
 #include "DistrhoUI.hpp"
-#include "DrumsShared.h"
 #include <cmath>
 #include <cstdio>
 #include <cstring>
@@ -31,6 +30,16 @@ static const char* kProgramNames[kNumPrograms] = {
 // patroon-LED's per rij (K/S/H/P) — zelfde patronen als DSP
 static const char* kPatternRows[4] = {
     "K...K...K..K...","....S.......S...","H.H.H.H.H.H.H.H.","............P..."
+};
+
+// spiegel van kPresetParams in DrumsBasPlugin.cpp: DRIVE,SWING,LEVEL | KRACHT,DIMENTIES,SFEER — standalone-UI krijgt geen param-terugkoppeling, dus zelf zetten
+static const float kUiPresetParams[17][6] = {
+    {0.5f,0.10f,0.85f, 100,9,1},   {0.55f,0.08f,0.9f, 100,10,1},  {0.65f,0.06f,0.85f, 100,3,0},
+    {0.4f,0.14f,0.8f, 100,11,1},   {0.5f,0.02f,0.9f, 100,8,2},    {0.5f,0.12f,0.85f, 100,9,1},
+    {0.7f,0.03f,0.88f, 100,3,0},   {0.6f,0.05f,0.85f, 100,5,1},   {0.45f,0.13f,0.85f, 100,14,1},
+    {0.55f,0.10f,0.9f, 100,10,2},  {0.5f,0.09f,0.85f, 100,8,1},   {0.35f,0.12f,0.8f, 100,12,1},
+    {0.4f,0.15f,0.78f, 90,10,0},   {0.55f,0.11f,0.85f, 100,7,1},  {0.45f,0.14f,0.82f, 100,13,1},
+    {0.5f,0.07f,0.88f, 100,9,2},   {0.55f,0.11f,0.88f, 100,8,1},
 };
 
 class DrumsUI : public UI
@@ -62,6 +71,9 @@ protected:
         else if(index==9)fValue[9]=value;   // DIMENTIES
         else if(index==10)fValue[10]=value; // SFEER
         else if(index>=11&&index<=14)fValue[index-7]=value; // 11=BAS→4,12=BASTYPE→5,13=BASVOL→6,14=KEY→7
+        else if(index==15)fDrum=(int)(value+0.5f);
+        else if(index==16)fHand=(int)(value+0.5f);
+        else if(index==17)fRun=value;
         repaint();
     }
     void stateChanged(const char* key, const char* value) override
@@ -90,9 +102,6 @@ protected:
     }
     void onNanoDisplay() override
     {
-        if(const DrumsGridView* gv=gDrumsView)
-            for(int r=0;r<4;r++)for(int c=0;c<16;c++)fPatGrid[r][c]=gv->pat[r][c];
-
         const float W=getWidth(),H=getHeight();
         const Color BG=g2bsk(fLight,0);const Color TXT=g2bsk(fLight,2);const Color DIMC=g2bsk(fLight,3);
         beginPath();rect(0,0,W,H);fillColor(BG);fill();
@@ -123,15 +132,34 @@ protected:
             fillColor(g2bsk(fLight,1));fill();
             strokeColor(42,47,45);strokeWidth(1.0f);stroke();
             fontSize(10.0f);textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
-            fillColor(g2bsk(fLight,2));
-            text(tx+13.0f,ty+8.5f,fLight>0?"🌙":"☀",nullptr);
+            {   // zon/maan icoon (geen emoji — font heeft die niet)
+                const float cx=tx+13.0f,cy=ty+8.5f;
+                if(fLight>0){
+                    fillColor(g2bsk(fLight,2));
+                    beginPath();arc(cx+1.5f,cy,5.0f,0.f,6.2832f,CW);fill();
+                    fillColor(g2bsk(fLight,1));
+                    beginPath();arc(cx-1.8f,cy,4.4f,0.f,6.2832f,CW);fill();
+                } else {
+                    fillColor(g2bsk(fLight,2));
+                    beginPath();arc(cx,cy,4.2f,0.f,6.2832f,CW);fill();
+                    strokeColor(g2bsk(fLight,2));strokeWidth(1.2f);
+                    for(int r=0;r<8;++r){const float a=r*0.7854f;
+                        beginPath();moveTo(cx+cosf(a)*5.6f,cy+sinf(a)*5.6f);
+                        lineTo(cx+cosf(a)*7.4f,cy+sinf(a)*7.4f);stroke();}
+                }
+            }
             float bx2=14.0f;
-            { // DICE
+            { // DICE — dobbelsteen-pips (geen emoji)
                 beginPath();roundedRect(bx2,50.0f,26.0f,17.0f,4.0f);
                 fillColor(g2bsk(fLight,1));fill();
                 strokeColor(42,47,45);strokeWidth(1.0f);stroke();
-                fontSize(11.0f);fillColor(g2bsk(fLight,2));
-                text(bx2+13.0f,58.5f,"🎲",nullptr);
+                fillColor(g2bsk(fLight,2));
+                const float cx=bx2+13.0f,cy=58.5f,r=1.4f;
+                beginPath();arc(cx-3.5f,cy-3.5f,r,0.f,6.2832f,CW);fill();
+                beginPath();arc(cx+3.5f,cy-3.5f,r,0.f,6.2832f,CW);fill();
+                beginPath();arc(cx,cy,r,0.f,6.2832f,CW);fill();
+                beginPath();arc(cx-3.5f,cy+3.5f,r,0.f,6.2832f,CW);fill();
+                beginPath();arc(cx+3.5f,cy+3.5f,r,0.f,6.2832f,CW);fill();
             }
             bx2+=30.0f;
             { // AUTO
@@ -142,36 +170,64 @@ protected:
                 fontSize(9.5f);fillColor(fAuto>0.5f?Color(13,15,14):Color(143,160,152));
                 text(bx2+19.0f,58.5f,"AUTO",nullptr);
             }
+            bx2+=42.0f;
+            { // DRUM aan/uit
+                beginPath();roundedRect(bx2,50.0f,40.0f,17.0f,4.0f);
+                if(fDrum>0){fillColor(47,191,113);fill();}
+                else{fillColor(g2bsk(fLight,1));fill();}
+                strokeColor(42,47,45);strokeWidth(1.0f);stroke();
+                fontSize(9.5f);fillColor(fDrum>0?Color(13,15,14):Color(143,160,152));
+                text(bx2+20.0f,58.5f,"DRUM",nullptr);
+            }
+            bx2+=44.0f;
+            { // BAS aan/uit
+                beginPath();roundedRect(bx2,50.0f,34.0f,17.0f,4.0f);
+                if(fValue[4]>0.5f){fillColor(47,191,113);fill();}
+                else{fillColor(g2bsk(fLight,1));fill();}
+                strokeColor(42,47,45);strokeWidth(1.0f);stroke();
+                fontSize(9.5f);fillColor(fValue[4]>0.5f?Color(13,15,14):Color(143,160,152));
+                text(bx2+17.0f,58.5f,"BAS",nullptr);
+            }
+            bx2+=38.0f;
+            { // HAND: auto-patroon uit, keyboard speelt pads 36-51 + bas
+                beginPath();roundedRect(bx2,50.0f,36.0f,17.0f,4.0f);
+                if(fHand>0){fillColor(232,190,60);fill();}
+                else{fillColor(g2bsk(fLight,1));fill();}
+                strokeColor(42,47,45);strokeWidth(1.0f);stroke();
+                fontSize(9.5f);fillColor(fHand>0?Color(13,15,14):Color(143,160,152));
+                text(bx2+18.0f,58.5f,"HAND",nullptr);
+            }
+            bx2+=40.0f;
+            { // SPEEL/STOP: sequencer pauzeren (losse exe speelt anders altijd door)
+                beginPath();roundedRect(bx2,50.0f,38.0f,17.0f,4.0f);
+                if(fRun>0.5f){fillColor(47,191,113);fill();}
+                else{fillColor(g2bsk(fLight,1));fill();}
+                strokeColor(42,47,45);strokeWidth(1.0f);stroke();
+                fontSize(9.5f);fillColor(fRun>0.5f?Color(13,15,14):Color(143,160,152));
+                text(bx2+19.0f,58.5f,fRun>0.5f?"SPEEL":"STOP",nullptr);
+            }
         }
 
-        // 16-staps klik-grid (4 rijen: K S H P) + dobbelsteen per rij
-        const float gx=56.0f, gy=70.0f, gw=W-74.0f;
-        const char* rowN[5]={"KICK","SNAR","HAT","PERC","BAS"};
-        for(int r=0;r<4;r++){
-            const float y=gy+r*19.0f;
-            fontSize(8.0f);fillColor(90,100,94);textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
-            text(6.0f,y+9.5f,rowN[r],nullptr);
-            // dobbelsteen
-            beginPath();roundedRect(38.0f,y+2.0f,13.0f,13.0f,3.0f);
-            fillColor(g2bsk(fLight,4));fill();strokeColor(g2bsk(fLight,3));strokeWidth(1.0f);stroke();
-            fillColor(200,210,204);
-            { const float dx[5]={41.5f,47.5f,41.5f,47.5f,44.5f};
-              const float dy[5]={y+5.5f,y+5.5f,y+11.5f,y+11.5f,y+8.5f};
-              for(int d=0;d<5;d++){beginPath();circle(dx[d],dy[d],1.2f);fill();} }
+        // 16-staps LED-grid (4 rijen: K S H P)
+        const float gx=18.0f, gy=74.0f, gw=W-36.0f;
+        const char rowN[5]={'K','S','H','P','B'};
+        for(int r=0;r<5;r++){
             for(int s=0;s<16;s++){
                 const float cw=gw/16.0f;
-                const float x=gx+s*cw;
+                const float x=gx+s*cw, y=gy+r*16.0f;
                 const bool hit=(fPatGrid[r][s]!='.');
                 const bool now=(s==fStep);
-                beginPath();rect(x+1.5f,y+1.0f,cw-3.0f,16.0f);
+                beginPath();rect(x+1.5f,y+1.5f,cw-3.0f,12.0f);
                 if(hit) fillColor(now?Color(232,236,234):Color(47,191,113));
                 else    fillColor(now?Color(29,122,72):Color(24,28,27));
                 fill();
             }
+            fontSize(9.0f);fillColor(90,100,94);textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
+            text(gx-2.0f,gy+r*16.0f+7.0f,&rowN[r],nullptr); // rij-letter links (valt deels buiten grid, ok)
         }
 
         // scope onder grid
-        const float sx=18.0f,sy=152.0f,sw=W-36.0f,sh=28.0f;
+        const float sx=18.0f,sy=160.0f,sw=W-36.0f,sh=30.0f;
         beginPath();rect(sx,sy,sw,sh);fillColor(8,10,9);fill();
         strokeColor(42,47,45);strokeWidth(1.0f);stroke();
         beginPath();
@@ -264,22 +320,25 @@ protected:
             if((float)(ev.pos.getX()/getScaleFactor())>=44.0f&&(float)(ev.pos.getX()/getScaleFactor())<=82.0f&&(float)(ev.pos.getY()/getScaleFactor())>=50.0f&&(float)(ev.pos.getY()/getScaleFactor())<=67.0f){
                 fAuto=fAuto>0.5f?0.f:1.f;setParameterValue(5,fAuto);repaint();return true;
             }
+            // DRUM pill
+            if((float)(ev.pos.getX()/getScaleFactor())>=86.0f&&(float)(ev.pos.getX()/getScaleFactor())<=126.0f&&(float)(ev.pos.getY()/getScaleFactor())>=50.0f&&(float)(ev.pos.getY()/getScaleFactor())<=67.0f){
+                fDrum=1-fDrum;setParameterValue(15,(float)fDrum);repaint();return true;
+            }
+            // BAS pill
+            if((float)(ev.pos.getX()/getScaleFactor())>=130.0f&&(float)(ev.pos.getX()/getScaleFactor())<=164.0f&&(float)(ev.pos.getY()/getScaleFactor())>=50.0f&&(float)(ev.pos.getY()/getScaleFactor())<=67.0f){
+                fValue[4]=fValue[4]>0.5f?0.f:1.f;setParameterValue(11,fValue[4]);repaint();return true;
+            }
+            // HAND pill
+            if((float)(ev.pos.getX()/getScaleFactor())>=168.0f&&(float)(ev.pos.getX()/getScaleFactor())<=204.0f&&(float)(ev.pos.getY()/getScaleFactor())>=50.0f&&(float)(ev.pos.getY()/getScaleFactor())<=67.0f){
+                fHand=1-fHand;setParameterValue(16,(float)fHand);repaint();return true;
+            }
+            // SPEEL/STOP pill
+            if((float)(ev.pos.getX()/getScaleFactor())>=208.0f&&(float)(ev.pos.getX()/getScaleFactor())<=246.0f&&(float)(ev.pos.getY()/getScaleFactor())>=50.0f&&(float)(ev.pos.getY()/getScaleFactor())<=67.0f){
+                fRun=fRun>0.5f?0.f:1.f;setParameterValue(17,fRun);repaint();return true;
+            }
             // AAN/UIT pil
             if((float)(ev.pos.getX()/getScaleFactor())>=W-48.0f&&(float)(ev.pos.getX()/getScaleFactor())<=W-4.0f&&(float)(ev.pos.getY()/getScaleFactor())>=12.0f&&(float)(ev.pos.getY()/getScaleFactor())<=29.0f){
                 fOn=1-fOn;setParameterValue(7,(float)fOn);repaint();return true;
-            }
-            // grid: dobbelsteen per rij + vakjes aan/uit
-            {
-                const float mx=(float)(ev.pos.getX()/getScaleFactor()),my=(float)(ev.pos.getY()/getScaleFactor());
-                if(my>=70.0f&&my<70.0f+4*19.0f){
-                    int r=(int)((my-70.0f)/19.0f);
-                    if(mx>=38.0f&&mx<51.0f){setParameterValue(15,64.0f+r);return true;} // rij-dice
-                    const float gx=56.0f,cw=(W-74.0f)/16.0f;
-                    if(mx>=gx){int s=(int)((mx-gx)/cw);if(s<0)s=0;if(s>15)s=15;
-                        setParameterValue(15,(float)(r*16+s));
-                        fPatGrid[r][s]=(fPatGrid[r][s]=='.')?(r==0?'K':(r==1?'S':(r==2?'H':'P'))):'.';
-                        repaint();return true;}
-                }
             }
             // XY-pad
             if((float)(ev.pos.getX()/getScaleFactor())>=fXX&&(float)(ev.pos.getX()/getScaleFactor())<=fXX+fXW&&(float)(ev.pos.getY()/getScaleFactor())>=fXY_&&(float)(ev.pos.getY()/getScaleFactor())<=fXY_+fXH){
@@ -290,7 +349,10 @@ protected:
                 const int prow=i/8, pcol=i%8;
                 const float px=W-48.0f-((prow<2?8:1)-pcol)*(bw+4.0f), py=12.0f+prow*18.0f;
                 if((float)(ev.pos.getX()/getScaleFactor())>=px&&(float)(ev.pos.getX()/getScaleFactor())<=px+bw&&(float)(ev.pos.getY()/getScaleFactor())>=py&&(float)(ev.pos.getY()/getScaleFactor())<=py+bh){
-                    setParameterValue(6,(float)i);fProg=i;repaint();return true;
+                    setParameterValue(6,(float)i);fProg=i;
+                    fValue[1]=kUiPresetParams[i][0];fValue[2]=kUiPresetParams[i][1];fValue[3]=kUiPresetParams[i][2];
+                    fValue[8]=kUiPresetParams[i][3];fValue[9]=kUiPresetParams[i][4];fValue[10]=kUiPresetParams[i][5];
+                    repaint();return true;
                 }
             }
         }
@@ -349,7 +411,7 @@ private:
     const char* fLabel[11];
     float fScope[kScopeSize];int fScopePos;
     int fDrag;float fLastY;int fProg;int fStep;float fAuto=0;int fLight=0;
-    int fOn=1; bool fXYdrag=false;
+    int fOn=1,fDrum=1,fHand=0; bool fXYdrag=false; float fRun=1.f;
     float fXX=18.0f,fXY_=286.0f,fXW=524.0f,fXH=58.0f;
     char fPatGrid[5][16];
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DrumsUI)
