@@ -111,6 +111,19 @@ protected:
             if (semi) fLufsI = std::strtof(semi + 1, nullptr);
             repaint();
         }
+        else if (std::strcmp(key, "knobs") == 0)
+        {
+            const char* p = value;
+            for (int i = 0; i < 11 && *p != '\0'; ++i)
+            {
+                char* end = nullptr;
+                const float v = std::strtof(p, &end);
+                if (end == p) break;
+                fValue[i] = v;
+                p = (*end == ';') ? end + 1 : end;
+            }
+            repaint();
+        }
     }
 
     void onNanoDisplay() override
@@ -272,7 +285,10 @@ protected:
             { fOn = fOn>0.5f?0.f:1.f; setParameterValue(10, fOn); repaint(); return true; }
             if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 40.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 140.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 157.0f)
-            { setParameterValue(8, 1.0f); repaint(); return true; }
+            {
+            fProg = -1;
+            for (int p = 0; p < 5; ++p){ fRndUi=fRndUi*1664525u+1013904223u; const float v=((fRndUi>>8)%100)/100.f; fValue[p]=v; setParameterValue(p,v); parameterChanged(p,v); }
+            repaint(); return true; }
             if ((float)(ev.pos.getX()/getScaleFactor()) >= 44.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 78.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 140.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 157.0f)
             { setParameterValue(6, 1.0f); repaint(); return true; }
@@ -385,6 +401,7 @@ private:
     int fDrag;
     float fLastY;
     int fProg;
+    unsigned fRndUi=987654u;
     int fLight = 0;
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MasterRackUI)

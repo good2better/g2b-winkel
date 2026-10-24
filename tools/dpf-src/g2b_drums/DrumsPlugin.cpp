@@ -1,5 +1,6 @@
 #include "drum_data.h"
 #include "DistrhoPlugin.hpp"
+#include "DrumsShared.h"
 #include "../g2b_std.h"
 #include <cstring>
 #include <cmath>
@@ -7,6 +8,8 @@
 #include <algorithm>
 #include <cstdio>
 #include <cstdlib>
+
+DrumsGridView* gDrumsView=nullptr;
 
 START_NAMESPACE_DISTRHO
 
@@ -64,9 +67,9 @@ static float frand(unsigned& s){ s=s*1664525u+1013904223u; return (s>>8)*(1.f/16
 
 class DrumsPlugin : public Plugin {
 public:
-    enum Params { kStijl, kDrive, kSwing, kLevel, kDice, kAuto, kPreset, kOn, kKracht, kGalaxy, kSfeer, kNumParams };
+    enum Params { kStijl, kDrive, kSwing, kLevel, kDice, kAuto, kPreset, kOn, kKracht, kGalaxy, kSfeer, kCell, kNumParams };
     DrumsPlugin() : Plugin(kNumParams,0,3) {
-        for(int i=0;i<kMaxV;i++)fV[i].active=false;
+        gDrumsView=&gridView_;for(int i=0;i<kMaxV;i++)fV[i].active=false;
     }
 protected:
     const char* getLabel() const override { return "G2B Drums"; }
@@ -90,17 +93,19 @@ protected:
         case kKracht:p.name="Kracht";   p.symbol="kracht";p.ranges.min=0;p.ranges.max=100;p.ranges.def=100;p.unit="%";break;
         case kGalaxy:p.name="DIMENTIES";p.symbol="dim";   p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=26;p.ranges.def=9;break;
         case kSfeer: p.name="Sfeer";    p.symbol="sfeer"; p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=2;p.ranges.def=1;break;
+        case kCell: p.name="CELL";   p.symbol="cell"; p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=255;p.ranges.def=0;break;
         }
     }
     float getParameterValue(uint32_t i) const override {
-        switch(i){case kStijl:return fStijl;case kDrive:return fDrive;case kSwing:return fSwing;case kLevel:return fLevel;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKracht;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;}return 0.f;
+        switch(i){case kStijl:return fStijl;case kDrive:return fDrive;case kSwing:return fSwing;case kLevel:return fLevel;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKracht;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;case kCell:return 0.f;}return 0.f;
     }
     void setParameterValue(uint32_t i, float v) override {
         if(i==kPreset){applyPreset((int)(v+0.5f));return;}
         switch(i){case kStijl:fStijl=v;break;case kDrive:fDrive=v;break;case kSwing:fSwing=v;break;case kLevel:fLevel=v;break;case kDice:fDice=v;if(v>0.5f){mutate(0);sendPat();}fDice=0.f;break;case kAuto:fAuto=v;break;
         case kOn:fOn=v;break;case kKracht:fKracht=v;break;
         case kGalaxy:fGalaxyV=v;fGal.setPos((int)(v+0.5f));break;
-        case kSfeer:fSfeerV=v;fSf.setMode((int)(v+0.5f));break;}
+        case kSfeer:fSfeerV=v;fSf.setMode((int)(v+0.5f));break;
+        case kCell:if(v>0.5f)handleCell((int)(v+0.5f));break;}
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
@@ -217,7 +222,21 @@ protected:
         g2b_post(nullptr,out,frames,sr,fOn,fKracht,fGal,&fSf,false);
     }
 private:
+    void handleCell(int c){ // 0..63 = vakje rij*16+stap aan/uit; 64..67 = rij-dice
+        if(c>=64){int r=c-64; fRnd=fRnd*1664525u+1013904223u;
+            for(int s=0;s<16;s++){fRnd=fRnd*1664525u+1013904223u;
+                int dens=(r==2)?45:((r==0)?30:25); bool on=((fRnd>>8)%100)<dens;
+                if(r==0&&s%4==0)on=true;
+                if(r==1&&(s==4||s==12))on=true;
+                if(r==2) fPat[r][s]=on?(((fRnd>>9)%5==0)?'o':'H'):'.';
+                else fPat[r][s]=on?(r==0?'K':(r==1?'S':'P')):'.';}
+            sendPat();return;}
+        int r=c/16,s=c%16; if(r<0||r>3)return;
+        char ch=(r==0)?'K':(r==1?'S':(r==2?'H':'P'));
+        fPat[r][s]=(fPat[r][s]=='.')?ch:'.';
+        sendPat();}
     void sendPat(){
+        for(int r=0;r<4;r++)for(int c=0;c<16;c++)gridView_.pat[r][c]=fPat[r][c];
         char buf[70];int p=0;
         for(int r=0;r<4;r++){for(int c=0;c<16;c++)buf[p++]=fPat[r][c];buf[p++]=';';}
         buf[p]=0;setState("pat",buf);
@@ -243,7 +262,7 @@ private:
     }
     float fStijl=0,fDrive=0.5f,fSwing=0.10f,fLevel=0.85f,fDice=0,fAuto=0,fPreset=0;
     uint32_t fRr=0;
-    char fPat[4][17];bool fPatInit=false;int fLastStijl=0;
+    char fPat[4][17];DrumsGridView gridView_{};bool fPatInit=false;int fLastStijl=0;
     static const int kMaxV=24;
     DrumVoice fV[kMaxV];
     unsigned fRnd=24681357; unsigned fNfac=999; unsigned fRoll=0;

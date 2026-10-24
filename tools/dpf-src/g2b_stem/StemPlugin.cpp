@@ -98,7 +98,7 @@ struct Galaxy { Galaxy(){reset();}
 class StemPlugin : public Plugin {
 public:
     enum Params { kDess,kBody,kAir,kComp,kWidth,kOut,kGalaxy,kDice,kPreset,kOn,kKracht,kNumParams };
-    StemPlugin() : Plugin(kNumParams,0,2) {}
+    StemPlugin() : Plugin(kNumParams,0,3) {}
 protected:
     const char* getLabel() const override { return "G2B Stem"; }
     const char* getDescription() const override { return "Complete vocal-keten in één scherm: de-esser, body, air, compressie, breedte"; }
@@ -139,7 +139,9 @@ protected:
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
+        else if(index==2){name="knobs";def="";}
         else{name="presetnames";def="";for(int i=0;i<17;i++){def+=kPresetNames[i];if(i<16)def+=";";}}
+
     }
     void setState(const char* k, const char* v) override {(void)k;(void)v;}
 
@@ -207,21 +209,28 @@ protected:
         }
     }
 private:
+    void pushKnobs(){
+        char buf[96];
+        snprintf(buf,sizeof buf,"%.4f;%.4f;%.4f;%.4f;%.4f;%.4f",fDess,fBody,fAir,fComp,fWidth,fOut);
+        setState("knobs",buf);
+    }
     void rollDice(){
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kDess,0.2f+((fRnd>>8)%100)/100.f*0.5f);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kBody,0.15f+((fRnd>>8)%100)/100.f*0.5f);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kAir,0.1f+((fRnd>>8)%100)/100.f*0.5f);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kComp,0.2f+((fRnd>>8)%100)/100.f*0.6f);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kWidth,0.8f+((fRnd>>8)%100)/100.f*0.8f);
+        pushKnobs();
     }
     void applyPreset(int i){
-        if(i<0)i=0;if(i>5)i=5;fPreset=(float)i;
+        if(i<0)i=0;if(i>16)i=16;fPreset=(float)i;
         setParameterValue(kDess,kPresetParams[i][0]);
         setParameterValue(kBody,kPresetParams[i][1]);
         setParameterValue(kAir,kPresetParams[i][2]);
         setParameterValue(kComp,kPresetParams[i][3]);
         setParameterValue(kWidth,kPresetParams[i][4]);
         setParameterValue(kOut,kPresetParams[i][5]);
+        pushKnobs();
     }
     float fDess=0.4f,fBody=0.35f,fAir=0.3f,fComp=0.45f,fWidth=1.1f,fOut=0.f;
     float fHp0=0,fHp1=0,fEssE0=0,fEssE1=0,fBL=0,fBR=0,fAL=0,fAR=0,fCL=0,fCR=0;

@@ -19,7 +19,7 @@ static const int PAT[8][8] = {
 struct Voice{int note;float ph,env;bool on;};
 class G2BMelodyPlugin : public Plugin {
 public:
-    enum Params{ kOn=0,kKracht,kKey,kScale,kProg,kPattern,kDensity,kOctave,kSwing,kPreset,kRate,kDimensie,kSkin,kNum };
+    enum Params{ kOn=0,kKracht,kKey,kScale,kProg,kPattern,kDensity,kOctave,kSwing,kPreset,kRate,kDimensie,kSkin,kPlay,kUser,kNum };
     G2BMelodyPlugin():Plugin(kNum,0,0){for(auto&x:v)x.on=false;ph=0;step=0;chord=0;lastdeg=-9;}
 protected:
     const char* getLabel()const override{return "G2B Melody-Maker";}
@@ -43,6 +43,8 @@ protected:
         case kRate:   p.name="Tempo";p.symbol="rate";p.ranges.min=60;p.ranges.max=180;p.ranges.def=110;p.unit="bpm";break;
         case kDimensie:p.name="DIMENTIES";p.symbol="dims";p.ranges.min=0;p.ranges.max=26;p.ranges.def=0;p.hints=kParameterIsInteger;break;
         case kSkin:   p.name="Skin";p.symbol="skin";p.ranges.min=0;p.ranges.max=7;p.ranges.def=1;p.hints=kParameterIsInteger;break;
+        case kPlay:   p.name="Loop";p.symbol="play";p.ranges.min=0;p.ranges.max=1;p.ranges.def=1;p.hints=kParameterIsBoolean;break;
+        case kUser:   p.name="Grid";p.symbol="grid";p.ranges.min=0;p.ranges.max=255;p.ranges.def=255;p.hints=kParameterIsInteger;break;
         }
         prm[i]=p.ranges.def;
     }
@@ -72,7 +74,7 @@ protected:
                 ph=0;step=(step+1)%8;if(step==0)chord=(chord+1)%4;
                 int deg=PROGS[pg][chord];
                 float rnd=frand();
-                if(rnd<dens){
+                if(prm[kPlay]>0.5f&&rnd<dens&&(((int)prm[kUser]>>step)&1)){
                     int st=PAT[patx][step]+deg;
                     int note=48+key+SCALES[sc][st%7]+12*(st/7)+12*oct;
                     if(patx==6)note-=12;

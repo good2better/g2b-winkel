@@ -21,3 +21,5 @@
 #define DISTRHO_PLUGIN_CLAP_FEATURES "instrument", "drum-machine", "stereo"
 #define DISTRHO_PLUGIN_UNIQUE_ID G2Dr
 #endif
+
+#define DISTRHO_UI_USER_RESIZABLE 1

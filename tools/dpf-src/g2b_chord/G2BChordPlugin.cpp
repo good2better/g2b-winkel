@@ -30,7 +30,7 @@ struct Voice { int note; float phase,env,age; bool on; };
 class G2BChordPlugin : public Plugin {
 public:
     enum Params {
-        kOn=0, kKracht, kKey, kScale, kProg, kVoicing, kRate, kPreset, kDimensie, kSkin, kNum
+        kOn=0, kKracht, kKey, kScale, kProg, kVoicing, kRate, kPreset, kDimensie, kSkin, kPlay, kNum
     };
     G2BChordPlugin() : Plugin(kNum, 0, 0) {
         for (int i=0;i<12;i++){ v[i].on=false; v[i].phase=0; v[i].env=0; v[i].age=0; }
@@ -56,6 +56,7 @@ protected:
         case kPreset: p.name="Preset"; p.symbol="preset"; p.ranges.min=0;p.ranges.max=15;p.ranges.def=0; p.hints=kParameterIsInteger; break;
         case kDimensie:p.name="DIMENTIES"; p.symbol="dims"; p.ranges.min=0;p.ranges.max=26;p.ranges.def=0; p.hints=kParameterIsInteger; break;
         case kSkin:    p.name="Skin"; p.symbol="skin"; p.ranges.min=0;p.ranges.max=7;p.ranges.def=0; p.hints=kParameterIsInteger; break;
+        case kPlay:    p.name="Loop"; p.symbol="play"; p.ranges.min=0;p.ranges.max=1;p.ranges.def=1; p.hints=kParameterIsBoolean; break;
         }
         prm[i]=p.ranges.def; // standalone past defaults niet toe — zelf seeden
     }
@@ -100,11 +101,12 @@ protected:
             }
         }
         double beatsPerSec=bpm/60.0;
+        const bool loop=prm[kPlay]>0.5f;
         for (uint32_t i=0;i<frames;i++){
             ph += beatsPerSec/sr;
-            if (ph>=1.0){ ph-=1.0; chordIdx=(chordIdx+1)%4; strumN=0; strumAt=i; }
+            if (loop && ph>=1.0){ ph-=1.0; chordIdx=(chordIdx+1)%4; strumN=0; strumAt=i; }
             // strum: elke ~22ms volgende noot aan
-            if (strumN>=0 && (int)(i-strumAt)>=strumN*(int)(sr*0.022)){
+            if (loop && strumN>=0 && (int)(i-strumAt)>=strumN*(int)(sr*0.022)){
                 int deg=PROGS[pg][chordIdx];
                 static const int VN[4]={3,4,5,4}; // triad/7/9/sus-ish
                 int nn=VN[vo]+((dims%3)==0?0:((dims%3)==1?-1:1));

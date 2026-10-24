@@ -27,3 +27,5 @@
 #define DISTRHO_PLUGIN_UNIQUE_ID G2Ru
 
 #endif
+
+#define DISTRHO_UI_USER_RESIZABLE 1

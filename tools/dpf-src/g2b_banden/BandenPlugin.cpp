@@ -98,7 +98,7 @@ struct Galaxy { Galaxy(){reset();}
 class BandenPlugin : public Plugin {
 public:
     enum Params { kSub,kLaag,kMid,kAir,kWidth,kDrive,kOut,kListen,kGalaxy,kDice,kPreset,kOn,kKracht,kNumParams };
-    BandenPlugin() : Plugin(kNumParams,0,2) {}
+    BandenPlugin() : Plugin(kNumParams,0,3) {}
 protected:
     const char* getLabel() const override { return "G2B Banden"; }
     const char* getDescription() const override { return "Multiband-mixer: 4 freq-lagen elk met gain — 🧠 LUISTER stelt alles automatisch in balans"; }
@@ -151,7 +151,9 @@ protected:
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
+        else if(index==2){name="knobs";def="";}
         else{name="presetnames";def="";for(int i=0;i<17;i++){def+=kPresetNames[i];if(i<16)def+=";";}}
+
     }
     void setState(const char* k, const char* v) override {(void)k;(void)v;}
 
@@ -244,6 +246,11 @@ private:
         if(fPeak>0.9f){ setParameterValue(kOut,-3.f); setParameterValue(kListen,0.75f); }
         fPeak=0.f;
     }
+    void pushKnobs(){
+        char buf[160];
+        snprintf(buf,sizeof buf,"%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f",fSub,fLaag,fMid,fAir,fWidth,fDrive,fOut,fGalaxy,fKr);
+        setState("knobs",buf);
+    }
     void rollDice(){
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kSub,(((fRnd>>8)%100)/100.f-0.4f)*4.f);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kLaag,(((fRnd>>8)%100)/100.f-0.5f)*4.f);
@@ -251,9 +258,10 @@ private:
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kAir,(((fRnd>>8)%100)/100.f-0.4f)*4.f);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kWidth,0.6f+((fRnd>>8)%100)/100.f*0.8f);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kDrive,((fRnd>>8)%100)/100.f*0.5f);
+        pushKnobs();
     }
     void applyPreset(int i){
-        if(i<0)i=0;if(i>5)i=5;fPreset=(float)i;
+        if(i<0)i=0;if(i>16)i=16;fPreset=(float)i;
         setParameterValue(kSub, kPresetParams[i][0]);
         setParameterValue(kLaag,kPresetParams[i][1]);
         setParameterValue(kMid, kPresetParams[i][2]);
@@ -261,6 +269,7 @@ private:
         setParameterValue(kWidth,kPresetParams[i][4]);
         setParameterValue(kDrive,kPresetParams[i][5]);
         setParameterValue(kOut,  kPresetParams[i][6]);
+        pushKnobs();
     }
     float fSub=0,fLaag=0,fMid=0,fAir=0,fWidth=1.f,fDrive=0.15f,fOut=0.f;
     float fLp1[2]={0,0},fLp2[2]={0,0},fLp3[2]={0,0};

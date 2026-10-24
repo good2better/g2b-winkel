@@ -11,9 +11,9 @@ static const int SK[8][7][3]={
  {18,18,18, 140,140,140, 230,230,230}};
 class G2BChordUI : public UI {
 public:
-    G2BChordUI() : UI(560,390){ loadSharedResources(); std::memset(fVal,0,sizeof fVal); }
+    G2BChordUI() : UI(560,390){ loadSharedResources(); std::memset(fVal,0,sizeof fVal); fVal[0]=1; fVal[10]=1; }
 protected:
-    void parameterChanged(uint32_t i,float v) override { if(i<10)fVal[i]=v; if(i==9)fSkin=(int)v&7; repaint(); }
+    void parameterChanged(uint32_t i,float v) override { if(i<11)fVal[i]=v; if(i==9)fSkin=(int)v&7; repaint(); }
     void uiIdle() override {}
     void onNanoDisplay() override {
         auto C=[](const int*c,float a=1.f){return Color(c[0],c[1],c[2],a);};
@@ -29,6 +29,12 @@ protected:
         fillColor(on?C(S[1]):C(S[1],0.3f));fill();
         fillColor(on?Color(255,255,255):C(S[2],0.6f));
         textAlign(ALIGN_CENTER|ALIGN_MIDDLE);text(getWidth()-60,fBtnY+5,on?"AAN":"UIT",nullptr);
+        // LOOP/ZELF pill: LOOP = auto-akkoorden, ZELF = alleen jouw noten
+        bool play=fVal[10]>0.5f;
+        beginPath();roundedRect(getWidth()-176,fBtnY-8,72,26,13);
+        fillColor(play?C(S[1]):C(S[1],0.3f));fill();
+        fillColor(play?Color(255,255,255):C(S[2],0.6f));
+        textAlign(ALIGN_CENTER|ALIGN_MIDDLE);text(getWidth()-140,fBtnY+5,play?"LOOP":"ZELF",nullptr);
         // akkoord-wiel: huidige progressie als cirkel van 4 akkoorden
         float cx=110,cy=150,R=82;
         int key=(int)fVal[2], sc=(int)fVal[3], pg=(int)fVal[4];
@@ -84,6 +90,7 @@ protected:
         if(!ev.press){if(fDrag>=0&&!fMoved){int i=fDrag;float mn=knMin(i),mx=knMax(i),st=(mx-mn)<=32?1.f:(mx-mn)/20.f;float v=fVal[knParam(i)]+st;if(v>mx)v=mn;spv(knParam(i),v);fVal[knParam(i)]=v;repaint();}fDrag=-1;fXYdrag=false;fMoved=false;return true;}
         int mx=(float)(ev.pos.getX()/getScaleFactor()),my=(float)(ev.pos.getY()/getScaleFactor());
         if(mx>getWidth()-100&&mx<getWidth()-20&&my>fBtnY-12&&my<fBtnY+22){float ov=fVal[0]>0.5f?0.f:1.f;spv(0,ov);fVal[0]=ov;repaint();return true;}
+        if(mx>getWidth()-180&&mx<getWidth()-100&&my>fBtnY-12&&my<fBtnY+22){float pv=fVal[10]>0.5f?0.f:1.f;spv(10,pv);fVal[10]=pv;repaint();return true;}
         if(mx>=fXX&&mx<=fXX+fXW&&my>=fXY_&&my<=fXY_+fXH){fXYdrag=true;xySet(mx,my);return true;}
         for(int i=0;i<8;i++)if(fabs(mx-(66+i*13))<8&&fabs(my-(fSkinY+8))<10){spv(9,(float)i);return true;}
         for(int i=0;i<8;i++){float kx=fKnobX+(i%4)*86,ky=fKnobY+(i/4)*96;
@@ -111,7 +118,7 @@ private:
         if(i<5)snprintf(b,16,"%d",(int)v);else snprintf(b,16,"%d",(int)v);
     }
     void xySet(float px,float py){float nx=(px-fXX)/fXW;if(nx<0)nx=0;if(nx>1)nx=1;float ny=(py-fXY_)/fXH;if(ny<0)ny=0;if(ny>1)ny=1;float kr=nx*100.f,dim=std::round((1.f-ny)*26.f);spv(1,kr);spv(8,dim);fVal[1]=kr;fVal[8]=dim;repaint();}
-    float fVal[10]; int fSkin=0,fDrag=-1,fCur=0;float fLastY=0; bool fXYdrag=false,fMoved=false; float fXX=0,fXY_=0,fXW=0,fXH=0;
+    float fVal[11]; int fSkin=0,fDrag=-1,fCur=0;float fLastY=0; bool fXYdrag=false,fMoved=false; float fXX=0,fXY_=0,fXW=0,fXH=0;
     void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(G2BChordUI)
 };
