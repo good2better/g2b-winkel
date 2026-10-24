@@ -42,6 +42,7 @@ public:
         loadSharedResources();
         std::memset(fValue, 0, sizeof(fValue));
         std::memset(fScope, 0, sizeof(fScope));
+        std::memset(fLocked, 0, sizeof(fLocked));
         fMin[0] = 0.0f;  fMax[0] = 100.0f;
         fMin[2]=0.0f;  fMax[2]=26.0f;  fValue[2]=9.0f;
         fMin[1] = -6.0f; fMax[1] = 6.0f;
@@ -290,6 +291,21 @@ protected:
         std::snprintf(buf, sizeof(buf), "%.0f %%", fValue[4]);
         text(kcx, kcy + kR + 23.0f, buf, nullptr);
 
+        // ---- slotjes (dice-lock) rechtsboven elke knop ----
+        {
+            const float lkn[5][3] = {{120.0f, 175.0f, 62.0f},
+                                     {W - 55.0f, 175.0f, 30.0f},
+                                     {W / 2.0f, 175.0f, 44.0f},
+                                     {415.0f, 175.0f, 30.0f},
+                                     {354.0f, 175.0f, 28.0f}};
+            for (int i = 0; i < 5; ++i)
+            {
+                const float lx = lkn[i][0] + lkn[i][2] - 9.0f, ly = lkn[i][1] - lkn[i][2] - 3.0f;
+                beginPath(); roundedRect(lx, ly, 9.0f, 9.0f, 2.0f);
+                fillColor(fLocked[i] ? Color(80, 220, 235) : g2bsk(fLight, 4)); fill();
+            }
+        }
+
         // hulptekst
         fontSize(10.5f);
         fillColor(90, 100, 94);
@@ -360,7 +376,16 @@ protected:
             { fOn = fOn>0.5f?0.f:1.f; spv(6, fOn); repaint(); return true; }
             if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 40.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 48.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 65.0f)
-            { spv(3, 1.0f); repaint(); return true; }
+            { rollUiDice_(); return true; }
+
+            // slotjes: klik op het vierkantje rechtsboven een knop
+            for (int i = 0; i < 5; ++i)
+            {
+                const float lx = knobs[i][0] + knobs[i][2] - 9.0f, ly = knobs[i][1] - knobs[i][2] - 3.0f;
+                if ((float)(ev.pos.getX()/getScaleFactor()) >= lx && (float)(ev.pos.getX()/getScaleFactor()) <= lx + 9.0f &&
+                    (float)(ev.pos.getY()/getScaleFactor()) >= ly && (float)(ev.pos.getY()/getScaleFactor()) <= ly + 9.0f)
+                { fLocked[i] = !fLocked[i]; repaint(); return true; }
+            }
             if ((float)(ev.pos.getX()/getScaleFactor()) >= W-40.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-14.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 34.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
@@ -452,6 +477,7 @@ protected:
 private:
     static const int kScopeSize = 256;
     float fValue[5], fMin[5], fMax[5];
+    bool fLocked[5];
     static const int kParamIds[5];
     float fOn = 1.f;
     float fScope[kScopeSize];
@@ -463,6 +489,31 @@ private:
     int fLight = 0;
 
     void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
+
+    // Smart Dice: gooit zelf producer-ranges (zichtbaar op de knoppen),
+    // slaat gelockte knoppen over en compenseert OUTPUT bij veel POETS.
+    void rollUiDice_()
+    {
+        static unsigned rng = 987654u;
+        auto fr = [&](float lo, float hi) {
+            rng = rng * 1664525u + 1013904223u;
+            return lo + (float)((rng >> 8) & 0xffffff) * (hi - lo) / 16777216.f;
+        };
+        static const float kDL[5] = { 15.f, -2.f, 0.f,  6000.f, 0.f };
+        static const float kDH[5] = { 75.f,  1.f, 0.f, 14000.f, 0.f };
+        static const bool  kRoll[5] = { true, true, false, true, false };
+        for (int i = 0; i < 5; ++i)
+            if (kRoll[i] && !fLocked[i]) fValue[i] = fr(kDL[i], kDH[i]);
+        if (!fLocked[1])
+        {
+            fValue[1] -= (fValue[0] - 45.f) * 0.05f;
+            if (fValue[1] < -4.f) fValue[1] = -4.f;
+            if (fValue[1] >  2.f) fValue[1] =  2.f;
+        }
+        for (int i = 0; i < 5; ++i)
+            if (kRoll[i]) spv(kParamIds[i], fValue[i]);
+        repaint();
+    }
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PoetsUI)
 };
 

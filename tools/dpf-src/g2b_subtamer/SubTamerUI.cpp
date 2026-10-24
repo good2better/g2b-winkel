@@ -37,6 +37,7 @@ public:
         std::memset(fValue, 0, sizeof(fValue));
         std::memset(fMin,   0, sizeof(fMin));
         std::memset(fMax,   0, sizeof(fMax));
+        std::memset(fLocked, 0, sizeof(fLocked));
         fDrag = -1;
         fLastY = 0.0f;
 
@@ -114,6 +115,13 @@ protected:
             strokeColor(232, 236, 234);
             strokeWidth(3.0f);
             stroke();
+
+            // slotje (dice-lock) rechtsboven de knop
+            {
+                const float lx = cx + R - 9.0f, ly = cy - R - 3.0f;
+                beginPath(); roundedRect(lx, ly, 9.0f, 9.0f, 2.0f);
+                fillColor(fLocked[i] ? Color(80, 220, 235) : g2bsk(fLight, 4)); fill();
+            }
 
             fontSize(11.0f);
             fillColor(143, 160, 152);
@@ -195,7 +203,17 @@ protected:
             { fOn = fOn>0.5f?0.f:1.f; spv(8, fOn); repaint(); return true; }
             if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 40.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 48.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 65.0f)
-            { spv(6, 1.0f); repaint(); return true; }
+            { rollUiDice_(); return true; }
+
+            // slotjes: klik op het vierkantje rechtsboven een knop
+            for (int i = 0; i < 7; ++i)
+            {
+                const float cx = 40.0f + step * (i + 0.5f);
+                const float lx = cx + 34.0f - 9.0f, ly = 120.0f - 34.0f - 3.0f;
+                if ((float)(ev.pos.getX()/getScaleFactor()) >= lx && (float)(ev.pos.getX()/getScaleFactor()) <= lx + 9.0f &&
+                    (float)(ev.pos.getY()/getScaleFactor()) >= ly && (float)(ev.pos.getY()/getScaleFactor()) <= ly + 9.0f)
+                { fLocked[i] = !fLocked[i]; repaint(); return true; }
+            }
             if ((float)(ev.pos.getX()/getScaleFactor()) >= W-40.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-14.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 34.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
@@ -287,15 +305,39 @@ protected:
 
 private:
     float fValue[7], fMin[7], fMax[7];
+    bool fLocked[7];
     float fOn = 1.f;
-    const char* fLabel[6];
-    const char* fUnit[6];
+    const char* fLabel[7];
+    const char* fUnit[7];
     int fDrag;
     float fLastY;
     int fProg = -1;
     int fLight = 0;
 
     void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
+
+    // Smart Dice: gooit zelf producer-ranges (zichtbaar op de knoppen),
+    // slaat gelockte knoppen over en compenseert OUTPUT bij veel STERKTE.
+    void rollUiDice_()
+    {
+        static unsigned rng = 987654u;
+        auto fr = [&](float lo, float hi) {
+            rng = rng * 1664525u + 1013904223u;
+            return lo + (float)((rng >> 8) & 0xffffff) * (hi - lo) / 16777216.f;
+        };
+        static const float kDL[7] = { 20.f,  70.f, -8.f,  70.f, -2.f, 0.f, 0.f };
+        static const float kDH[7] = { 80.f, 130.f,  3.f, 100.f,  1.f, 0.f, 0.f };
+        for (int i = 0; i < 5; ++i)
+            if (!fLocked[i]) fValue[i] = fr(kDL[i], kDH[i]);
+        if (!fLocked[4])
+        {
+            fValue[4] -= (fValue[2] + 3.f) * 0.25f;
+            if (fValue[4] < -4.f) fValue[4] = -4.f;
+            if (fValue[4] >  2.f) fValue[4] =  2.f;
+        }
+        for (int i = 0; i < 5; ++i) spv(i, fValue[i]);
+        repaint();
+    }
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SubTamerUI)
 };
 
