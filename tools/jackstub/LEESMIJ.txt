@@ -1,0 +1,3 @@
+JACK stub voor losse (standalone) plugin-testen op Linux.
+Gebruik: LD_LIBRARY_PATH=$(pwd)/tools/jackstub setsid ./tools/bin/<plugin> >/tmp/x.log 2>&1 &
+Rebuild: gcc -shared -fPIC -o libjack.so.0 stub.c

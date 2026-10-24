@@ -46,6 +46,7 @@ public:
         std::memcpy(fLabel, lbl, sizeof(lbl));
         std::memcpy(fUnit, unt, sizeof(unt));
         std::memset(fScope, 0, sizeof(fScope));
+        std::memset(fLocked, 0, sizeof(fLocked));
         fScopePos = 0; fDrag = -1; fLastY = 0.0f; fProg = -1;
     }
 
@@ -170,6 +171,13 @@ protected:
                    cy - std::cos(ang) * (R - 8.0f));
             strokeColor(232, 236, 234); strokeWidth(3.0f); stroke();
 
+            // slotje (dice-lock) rechtsboven de knop
+            {
+                const float lx = cx + R - 9.0f, ly = cy - R - 3.0f;
+                beginPath(); roundedRect(lx, ly, 9.0f, 9.0f, 2.0f);
+                fillColor(fLocked[i] ? Color(80, 220, 235) : g2bsk(fLight, 4)); fill();
+            }
+
             fontSize(8.5f); fillColor(143, 160, 152);
             textAlign(ALIGN_CENTER | ALIGN_TOP);
             text(cx, cy + R + 8.0f, fLabel[i], nullptr);
@@ -237,7 +245,17 @@ protected:
         {
             if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 40.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 48.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 65.0f)
-            { spv(7, 1.0f); repaint(); return true; }
+            { rollUiDice_(); return true; }
+
+            // slotjes: klik op het vierkantje rechtsboven een knop
+            for (int i = 0; i < 9; ++i)
+            {
+                const float cx = 20.0f + (W - 40.0f) / 9 * (i + 0.5f);
+                const float lx = cx + 22.0f - 9.0f, ly = 172.0f - 22.0f - 3.0f;
+                if ((float)(ev.pos.getX()/getScaleFactor()) >= lx && (float)(ev.pos.getX()/getScaleFactor()) <= lx + 9.0f &&
+                    (float)(ev.pos.getY()/getScaleFactor()) >= ly && (float)(ev.pos.getY()/getScaleFactor()) <= ly + 9.0f)
+                { fLocked[i] = !fLocked[i]; repaint(); return true; }
+            }
             if ((float)(ev.pos.getX()/getScaleFactor()) >= W-40.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-14.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 34.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
@@ -357,6 +375,7 @@ protected:
 private:
     static const int kScopeSize = 256;
     float fValue[9], fMin[9], fMax[9];
+    bool fLocked[9];
     const char* fLabel[9];
     const char* fUnit[9];
     float fScope[kScopeSize];
@@ -370,6 +389,31 @@ private:
     float fXX = 18.0f, fXY_ = 240.0f, fXW = 524.0f, fXH = 62.0f;
 
     void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
+
+    // Smart Dice: gooit zelf producer-ranges (zichtbaar op de knoppen),
+    // slaat gelockte knoppen over en compenseert OUTPUT bij veel BELLS.
+    void rollUiDice_()
+    {
+        static unsigned rng = 987654u;
+        auto fr = [&](float lo, float hi) {
+            rng = rng * 1664525u + 1013904223u;
+            return lo + (float)((rng >> 8) & 0xffffff) * (hi - lo) / 16777216.f;
+        };
+        static const float kDL[9] = { 0.f, 0.f,  0.3f, 0.f,  0.f, 0.f, -6.f, 0.f, 0.f };
+        static const float kDH[9] = { 1.f, 0.8f, 1.0f, 0.6f, 0.f, 0.f,  3.f, 0.f, 0.f };
+        static const bool  kRoll[9] = { true, true, true, true, false, false, true, false, false };
+        for (int i = 0; i < 9; ++i)
+            if (kRoll[i] && !fLocked[i]) fValue[i] = fr(kDL[i], kDH[i]);
+        if (!fLocked[6])
+        {
+            fValue[6] -= fValue[1] * 3.f;
+            if (fValue[6] < -8.f) fValue[6] = -8.f;
+            if (fValue[6] >  4.f) fValue[6] =  4.f;
+        }
+        for (int i = 0; i < 9; ++i)
+            if (kRoll[i]) spv(paramOf(i), fValue[i]);
+        repaint();
+    }
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeysUI)
 };
 
