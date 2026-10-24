@@ -102,7 +102,7 @@ struct Galaxy { Galaxy(){reset();}
 class MasterRackPlugin : public Plugin {
 public:
     enum Params { kSub, kPoets, kKnip, kGlans, kRuimte, kOutput, kListen, kGalaxy, kDice, kPreset, kOn, kKracht, kLo, kMid, kHi, kNumParams };
-    MasterRackPlugin() : Plugin(kNumParams, 0, 2) {
+    MasterRackPlugin() : Plugin(kNumParams,0,4) {
         memset(fBufL,0,sizeof(fBufL)); memset(fBufR,0,sizeof(fBufR));
         memset(fPreL,0,sizeof(fPreL)); memset(fPreR,0,sizeof(fPreR));
     }
@@ -156,6 +156,8 @@ protected:
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
+        else if(index==2){name="lufs";def="";}
+        else if(index==3){name="knobs";def="";}
         else{name="presetnames";def="";for(int i=0;i<17;i++){def+=kPresetNames[i];if(i<16)def+=";";}}
     }
     void setState(const char* k, const char* v) override {(void)k;(void)v;}
@@ -370,11 +372,17 @@ private:
         if(fPeak>0.9f){ setParameterValue(kOutput,-3.f); setParameterValue(kListen,0.75f); }
         fPeak=0.f;
     }
+    void pushKnobs(){
+        char buf[160];
+        snprintf(buf,sizeof buf,"%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f",fSub,fPoets,fKnip,fGlans,fRuimte,fOut,fGalaxy,fKr,fLo,fMid,fHi);
+        setState("knobs",buf);
+    }
     void rollDice(){
         for(int p=kSub;p<=kRuimte;p++){
             fRnd=fRnd*1664525u+1013904223u;
             setParameterValue(p,((fRnd>>8)%100)/100.f);
         }
+        pushKnobs();
     }
     float fListen=0.f,fDice=0.f;
     uint32_t fListenN=0; float fAccRms=0,fAccLow=0,fAccMid=0,fAccAir=0,fALpL=0,fALpR=0,fAHpL=0,fAHpR=0,fPeak=0;
@@ -393,6 +401,7 @@ private:
         setParameterValue(kGlans,kPresetParams[i][3]);
         setParameterValue(kRuimte,kPresetParams[i][4]);
         setParameterValue(kOutput,kPresetParams[i][5]);
+        pushKnobs();
     }
     float fSub=0.55f,fPoets=0.35f,fKnip=0.40f,fGlans=0.30f,fRuimte=0.30f,fOut=0.f,fPreset=0.f;
     float fLo=0.f,fMid=0.f,fHi=0.f;

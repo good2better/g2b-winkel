@@ -60,7 +60,7 @@ struct MVoice { bool active=false; float freq=0,phase=0,amp=0,vel=0; int age=0; 
 
 class MelodiePlugin : public Plugin {
 public:
-    enum Params { kStijl, kKey, kScale, kOctave, kTimbre, kSwing, kLevel, kDice, kAuto, kPreset, kOn, kKracht, kGalaxy, kSfeer, kNumParams };
+    enum Params { kStijl, kKey, kScale, kOctave, kTimbre, kSwing, kLevel, kDice, kAuto, kPreset, kOn, kKracht, kGalaxy, kSfeer, kPlay, kNumParams };
     MelodiePlugin() : Plugin(kNumParams,0,2) {}
 protected:
     const char* getLabel() const override { return "G2B Melodie"; }
@@ -84,20 +84,22 @@ protected:
         case kAuto:  p.name="AUTO";   p.symbol="auto"; p.hints|=kParameterIsBoolean|kParameterIsInteger;p.ranges.min=0;p.ranges.max=1;p.ranges.def=0;break;
         case kPreset:p.name="PRESET"; p.symbol="preset";p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=16;p.ranges.def=0;break;
         case kOn:    p.name="Aan";      p.symbol="aan";   p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;p.ranges.def=1;break;
+        case kPlay:  p.name="Loop";    p.symbol="play";  p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;p.ranges.def=1;break;
         case kKracht:p.name="Kracht";   p.symbol="kracht";p.ranges.min=0;p.ranges.max=100;p.ranges.def=100;p.unit="%";break;
         case kGalaxy:p.name="DIMENTIES";p.symbol="dim";   p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=26;p.ranges.def=9;break;
         case kSfeer: p.name="Sfeer";    p.symbol="sfeer"; p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=2;p.ranges.def=1;break;
         }
     }
     float getParameterValue(uint32_t i) const override {
-        switch(i){case kStijl:return fStijl;case kKey:return fKey;case kScale:return fScale;case kOctave:return fOctave;case kTimbre:return fTimbre;case kSwing:return fSwing;case kLevel:return fLevel;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKracht;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;}return 0.f;
+        switch(i){case kStijl:return fStijl;case kKey:return fKey;case kScale:return fScale;case kOctave:return fOctave;case kTimbre:return fTimbre;case kSwing:return fSwing;case kLevel:return fLevel;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKracht;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;case kPlay:return fPlay;}return 0.f;
     }
     void setParameterValue(uint32_t i, float v) override {
         if(i==kPreset){applyPreset((int)(v+0.5f));return;}
         switch(i){case kStijl:fStijl=v;break;case kKey:fKey=v;break;case kScale:fScale=v;break;case kOctave:fOctave=v;break;case kTimbre:fTimbre=v;break;case kSwing:fSwing=v;break;case kLevel:fLevel=v;break;case kDice:fDice=v;if(v>0.5f)mutate();fDice=0.f;break;case kAuto:fAuto=v;break;
         case kOn:fOn=v;break;case kKracht:fKracht=v;break;
         case kGalaxy:fGalaxyV=v;fGal.setPos((int)(v+0.5f));break;
-        case kSfeer:fSfeerV=v;fSf.setMode((int)(v+0.5f));break;}
+        case kSfeer:fSfeerV=v;fSf.setMode((int)(v+0.5f));break;
+        case kPlay:fPlay=v;break;}
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
@@ -110,7 +112,9 @@ protected:
         // degree → midi-noot in key+scale+octave
         int sc=(int)fScale<0?0:((int)fScale>1?1:(int)fScale);
         int oct=degree/7, st=degree%7;
-        int midi=60+(int)fKey+kScales[sc][st]+oct*12+((int)fOctave-1)*12;
+        triggerMidi(60+(int)fKey+kScales[sc][st]+oct*12+((int)fOctave-1)*12, vel);
+    }
+    void triggerMidi(int midi, float vel){
         float f=440.f*powf(2.f,(midi-69)/12.f);
         for(auto& lg:fV){ // LEGATO: actieve sample-voice glijdt door naar de nieuwe noot (geen re-attack)
             if(lg.active&&lg.smp&&fTimbre>=0.46f){
@@ -194,7 +198,9 @@ protected:
         fV[0].active=true;fV[0].freq=f;fV[0].phase=0;fV[0].amp=vel;fV[0].vel=vel;fV[0].age=0;
     }
 
-    void run(const float** in, float** out, uint32_t frames, const MidiEvent*, uint32_t) override {
+    void run(const float** in, float** out, uint32_t frames, const MidiEvent* evs, uint32_t nev) override {
+        for(uint32_t m=0;m<nev;m++){const MidiEvent&e=evs[m];
+            if(e.size>=3&&(e.data[0]&0xF0)==0x90&&e.data[2]>0)triggerMidi(e.data[1],e.data[2]/127.f);}
         const float sr=getSampleRate();if(!fVerbOn){fVerb.init(sr);fVerbOn=true;}
         if(fOn<0.5f){std::memset(out[0],0,frames*sizeof(float));std::memset(out[1],0,frames*sizeof(float));return;}
         double bpm=100.0;
@@ -216,7 +222,7 @@ protected:
                 int s=(int)fStep%16;
                 if(fAuto>0.5f && s==0 && (fStep%64)==0) mutate(1);
                 int deg=fPat[s];
-                if(deg!=99) triggerDegree(deg,0.85f);
+                if(fPlay>0.5f&&deg!=99) triggerDegree(deg,0.85f);
                 char sb[12];snprintf(sb,sizeof(sb),"%d:%d",s,deg==99?-1:deg);setState("step",sb);
             }
             float o=0.f;
@@ -274,7 +280,7 @@ private:
     double fPhase=0;int64_t fStep=0;
     float fScope[40];uint32_t fScopeN=0;int fDecim=0;
     G2bVerb fVerb; bool fVerbOn=false;
-    float fOn=1.f,fKracht=100.f,fGalaxyV=9.f,fSfeerV=1.f;
+    float fOn=1.f,fKracht=100.f,fGalaxyV=9.f,fSfeerV=1.f,fPlay=1.f;
     Galaxy fGal; Sfeer fSf;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MelodiePlugin)
 };

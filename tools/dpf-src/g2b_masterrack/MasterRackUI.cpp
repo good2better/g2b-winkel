@@ -29,6 +29,27 @@ static const char* kProgramNames[kNumPrograms] = {
     "G2B","DEMBOW","DRILL","RNB","HOUSE","AFRO","TRAP","BOOM","UKG","JERSEY","BOUNCE","SOUL","LOFI","FUNK","REGGAE","DANCE","KAW"
 };
 
+static const float kUiPresetParams[17][6] = {
+    {0.55f,0.35f,0.40f,0.30f,0.30f, 0.f},  // G2B
+    {0.60f,0.40f,0.45f,0.25f,0.22f, 0.f},  // DEMBOW
+    {0.65f,0.45f,0.55f,0.15f,0.18f, 0.f},  // DRILL
+    {0.45f,0.30f,0.30f,0.40f,0.35f, 0.f},  // RNB
+    {0.50f,0.38f,0.42f,0.35f,0.28f, 0.f},  // HOUSE
+    {0.55f,0.36f,0.40f,0.30f,0.26f, 0.f},  // AFRO
+    {0.62f,0.42f,0.50f,0.22f,0.20f, 0.f},  // TRAP
+    {0.50f,0.40f,0.35f,0.25f,0.28f, 0.f},  // BOOM
+    {0.52f,0.38f,0.44f,0.36f,0.30f, 0.f},  // UKG
+    {0.58f,0.40f,0.46f,0.28f,0.24f, 0.f},  // JERSEY
+    {0.55f,0.38f,0.42f,0.32f,0.27f, 0.f},  // BOUNCE
+    {0.42f,0.32f,0.28f,0.42f,0.36f, 0.f},  // SOUL
+    {0.48f,0.50f,0.30f,0.20f,0.26f, 0.f},  // LOFI
+    {0.50f,0.36f,0.44f,0.34f,0.28f, 0.f},  // FUNK
+    {0.56f,0.40f,0.36f,0.30f,0.30f, 0.f},  // REGGAE
+    {0.52f,0.36f,0.44f,0.38f,0.28f, 0.f},  // DANCE
+    {0.55f,0.37f,0.41f,0.31f,0.27f, 0.f},  // KAWINA
+
+};
+
 class MasterRackUI : public UI
 {
 public:
@@ -85,6 +106,19 @@ protected:
             if (semi) fLufsI = std::strtof(semi + 1, nullptr);
             repaint();
         }
+        else if (std::strcmp(key, "knobs") == 0)
+        {
+            const char* p = value;
+            for (int i = 0; i < 8 && *p != '\0'; ++i)
+            {
+                char* end = nullptr;
+                const float v = std::strtof(p, &end);
+                if (end == p) break;
+                fValue[i] = v;
+                p = (*end == ';') ? end + 1 : end;
+            }
+            repaint();
+        }
     }
 
     void onNanoDisplay() override
@@ -92,25 +126,28 @@ protected:
         const float W = getWidth(), H = getHeight();
         beginPath(); rect(0, 0, W, H); fillColor(g2bsk(fLight,0)); fill();
 
-        fontSize(20.0f); textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+        fontSize(13.0f); textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
         fillColor(47, 191, 113);
-        text(18.0f, 22.0f, "G2B MASTERRACK", nullptr);
-        fontSize(11.5f); fillColor(143, 160, 152);
-        text(18.0f, 41.0f, "alles in één: sub+vet+luid+air+ruimte — je complete keten", nullptr);
+        text(14.0f, H - 12.0f, "G2B MASTERRACK", nullptr);
+        fontSize(10.0f); fillColor(143, 160, 152);
+        text(76.0f, 53.0f, "sub+vet+luid+air+ruimte — je keten", nullptr);
 
-        // preset-knoppen (rechtsboven)
-        float bx = W - 14.0f;
+        // preset-knoppen (2 rijen rechtsboven: 9 + 8)
+        const float pbw = 52.0f, pbh = 15.0f;
         for (int i = kNumPrograms - 1; i >= 0; --i)
         {
-            const float bw = 62.0f, bh = 17.0f;
-            bx -= bw + 5.0f;
+            const int row = (i < 9) ? 0 : 1;
+            const int col = (i < 9) ? i : i - 9;
+            const int cnt = (row == 0) ? 9 : 8;
+            const float bx = W - 14.0f - (float)(cnt - col) * (pbw + 5.0f);
+            const float by = (row == 0) ? 12.0f : 31.0f;
             const bool on = (i == fProg);
-            beginPath(); roundedRect(bx, 12.0f, bw, bh, 4.0f);
+            beginPath(); roundedRect(bx, by, pbw, pbh, 4.0f);
             if (on) { fillColor(29, 122, 72); fill(); }
             strokeColor(42, 47, 45); strokeWidth(1.0f); stroke();
-            fontSize(10.0f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            fontSize(9.0f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
             fillColor(on ? Color(232, 236, 234) : Color(143, 160, 152));
-            text(bx + bw * 0.5f, 12.0f + bh * 0.5f, kProgramNames[i], nullptr);
+            text(bx + pbw * 0.5f, by + pbh * 0.5f, kProgramNames[i], nullptr);
         }
 
         // scope (onder presets)
@@ -191,43 +228,43 @@ protected:
 
         {
             float bx2 = 14.0f;
-            beginPath(); roundedRect(bx2, 48.0f, 26.0f, 17.0f, 4.0f);
+            beginPath(); roundedRect(bx2, 12.0f, 26.0f, 15.0f, 4.0f);
             fillColor(g2bsk(fLight,1)); fill();
             strokeColor(42,47,45); strokeWidth(1.0f); stroke();
             fontSize(11.0f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
             fillColor(g2bsk(fLight,2));
-            text(bx2+13.0f, 56.5f, "🎲", nullptr);
-            beginPath(); roundedRect(44.0f, 48.0f, 34.0f, 17.0f, 4.0f);
+            text(bx2+13.0f, 19.5f, "🎲", nullptr);
+            beginPath(); roundedRect(46.0f, 12.0f, 34.0f, 15.0f, 4.0f);
             fillColor(g2bsk(fLight,1)); fill();
             strokeColor(42,47,45); strokeWidth(1.0f); stroke();
             fontSize(10.0f);
             fillColor(g2bsk(fLight,fLight==4?2:5));
-            text(61.0f, 56.5f, "🧠", nullptr);
+            text(63.0f, 19.5f, "🧠", nullptr);
             {   // status-dot: groen=AL GOED · wit=aangepast · amber=heet
                 if (fListenState > 0.2f) {
                     if (fListenState > 0.6f) fillColor(235,205,60);
                     else if (fListenState < 0.4f) fillColor(232,236,234);
                     else fillColor(47,191,113);
-                    beginPath(); arc(75.0f, 52.5f, 3.0f, 0.f, 6.2832f, CW); fill();
+                    beginPath(); arc(78.0f, 18.5f, 3.0f, 0.f, 6.2832f, CW); fill();
                 }
             }
-            const float tx = W - 40.0f;
-            beginPath(); roundedRect(tx, 34.0f, 26.0f, 17.0f, 4.0f);
+            const float tx = 86.0f;
+            beginPath(); roundedRect(tx, 12.0f, 26.0f, 15.0f, 4.0f);
             fillColor(g2bsk(fLight,1)); fill();
             strokeColor(42,47,45); strokeWidth(1.0f); stroke();
             fontSize(10.0f);
-            text(tx+13.0f, 42.5f, fLight>0 ? "🌙" : "☀", nullptr);
+            text(tx+13.0f, 19.5f, fLight>0 ? "🌙" : "☀", nullptr);
         }
 
         // AAN/UIT-knop (rechtsboven, naast thema-knop)
         {
             const bool aan = fOn > 0.5f;
-            beginPath(); roundedRect(W - 96.0f, 33.0f, 52.0f, 18.0f, 9.0f);
+            beginPath(); roundedRect(14.0f, 31.0f, 52.0f, 15.0f, 7.0f);
             fillColor(aan ? g2bsk(fLight,5) : g2bsk(fLight,1)); fill();
             strokeColor(42,47,45); strokeWidth(1.0f); stroke();
             fontSize(10.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
             fillColor(aan ? g2bsk(fLight,0) : g2bsk(fLight,2));
-            text(W - 70.0f, 42.0f, aan ? "AAN" : "UIT", nullptr);
+            text(40.0f, 38.5f, aan ? "AAN" : "UIT", nullptr);
         }
     }
 
@@ -238,29 +275,40 @@ protected:
         // preset-klik?
         if (ev.press)
         {
-            if ((float)(ev.pos.getX()/getScaleFactor()) >= W-96.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-44.0f &&
-                (float)(ev.pos.getY()/getScaleFactor()) >= 33.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 66.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 31.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 46.0f)
             { fOn = fOn>0.5f?0.f:1.f; spv(10, fOn); repaint(); return true; }
             if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 40.0f &&
-                (float)(ev.pos.getY()/getScaleFactor()) >= 48.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 65.0f)
-            { spv(8, 1.0f); repaint(); return true; }
-            if ((float)(ev.pos.getX()/getScaleFactor()) >= 44.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 78.0f &&
-                (float)(ev.pos.getY()/getScaleFactor()) >= 48.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 65.0f)
+                (float)(ev.pos.getY()/getScaleFactor()) >= 12.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 27.0f)
+            {
+            fProg = -1;
+            fRndUi=fRndUi*1664525u+1013904223u; { const float v=0.0f+((fRndUi>>8)%100)/100.f*(1.0f-(0.0f)); fValue[0]=v; spv(0,v); }
+            fRndUi=fRndUi*1664525u+1013904223u; { const float v=0.0f+((fRndUi>>8)%100)/100.f*(1.0f-(0.0f)); fValue[1]=v; spv(1,v); }
+            fRndUi=fRndUi*1664525u+1013904223u; { const float v=0.0f+((fRndUi>>8)%100)/100.f*(1.0f-(0.0f)); fValue[2]=v; spv(2,v); }
+            fRndUi=fRndUi*1664525u+1013904223u; { const float v=0.0f+((fRndUi>>8)%100)/100.f*(1.0f-(0.0f)); fValue[3]=v; spv(3,v); }
+            fRndUi=fRndUi*1664525u+1013904223u; { const float v=0.0f+((fRndUi>>8)%100)/100.f*(1.0f-(0.0f)); fValue[4]=v; spv(4,v); }
+            repaint(); return true; }
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= 46.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 80.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 12.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 27.0f)
             { spv(6, 1.0f); repaint(); return true; }
-            if ((float)(ev.pos.getX()/getScaleFactor()) >= W-40.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-14.0f &&
-                (float)(ev.pos.getY()/getScaleFactor()) >= 34.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= 86.0 && (float)(ev.pos.getX()/getScaleFactor()) <= 112.0 &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 12.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 27.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
             {
-                float hbx = W - 14.0f;
+                const float hbw = 52.0f, hbh = 15.0f;
                 for (int i = kNumPrograms - 1; i >= 0; --i)
                 {
-                    const float bw = 62.0f, bh = 17.0f;
-                    hbx -= bw + 5.0f;
-                    if ((float)(ev.pos.getX()/getScaleFactor()) >= hbx && (float)(ev.pos.getX()/getScaleFactor()) <= hbx + bw &&
-                        (float)(ev.pos.getY()/getScaleFactor()) >= 12.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 12.0f + bh)
+                    const int row = (i < 9) ? 0 : 1;
+                    const int col = (i < 9) ? i : i - 9;
+                    const int cnt = (row == 0) ? 9 : 8;
+                    const float hbx = W - 14.0f - (float)(cnt - col) * (hbw + 5.0f);
+                    const float hby = (row == 0) ? 12.0f : 31.0f;
+                    if ((float)(ev.pos.getX()/getScaleFactor()) >= hbx && (float)(ev.pos.getX()/getScaleFactor()) <= hbx + hbw &&
+                        (float)(ev.pos.getY()/getScaleFactor()) >= hby && (float)(ev.pos.getY()/getScaleFactor()) <= hby + hbh)
                     {
-                        spv(8, (float)i);
                         fProg = i;
+                        for (int p = 0; p < 6; ++p){ fValue[p] = kUiPresetParams[i][p]; spv(p, fValue[p]); }
+                        spv(9, (float)i);
                         repaint();
                         return true;
                     }
@@ -347,6 +395,7 @@ private:
     int fDrag;
     float fLastY;
     int fProg;
+    unsigned fRndUi=987654u;
     int fLight = 0;
 
     void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}

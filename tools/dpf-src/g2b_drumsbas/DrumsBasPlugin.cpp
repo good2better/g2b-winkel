@@ -1,5 +1,6 @@
 #include "drum_data.h"
 #include "DistrhoPlugin.hpp"
+#include "DrumsShared.h"
 #include "../g2b_std.h"
 #include <cstring>
 #include <cmath>
@@ -7,6 +8,8 @@
 #include <algorithm>
 #include <cstdio>
 #include <cstdlib>
+
+DrumsGridView* gDrumsView=nullptr;
 
 START_NAMESPACE_DISTRHO
 
@@ -87,9 +90,9 @@ static float frand(unsigned& s){ s=s*1664525u+1013904223u; return (s>>8)*(1.f/16
 
 class DrumsPlugin : public Plugin {
 public:
-    enum Params { kStijl, kDrive, kSwing, kLevel, kDice, kAuto, kPreset, kOn, kKracht, kGalaxy, kSfeer, kBas, kBasType, kBasVol, kKey, kNumParams };
+    enum Params { kStijl, kDrive, kSwing, kLevel, kDice, kAuto, kPreset, kOn, kKracht, kGalaxy, kSfeer, kBas, kBasType, kBasVol, kKey, kCell, kNumParams };
     DrumsPlugin() : Plugin(kNumParams,0,3) {
-        for(int i=0;i<kMaxV;i++)fV[i].active=false;
+        gDrumsView=&gridView_;for(int i=0;i<kMaxV;i++)fV[i].active=false;
     }
 protected:
     const char* getLabel() const override { return "G2B Drums & Bas"; }
@@ -117,6 +120,7 @@ protected:
         case kBasType:p.name="BASTYPE";  p.symbol="bastype";p.ranges.min=0;p.ranges.max=1;p.ranges.def=0.3f;p.unit="%";break;
         case kBasVol: p.name="BASVOL";   p.symbol="basvol";p.ranges.min=0;p.ranges.max=1;p.ranges.def=0.7f;p.unit="%";break;
         case kKey:    p.name="KEY";      p.symbol="key";   p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=11;p.ranges.def=9;break;
+        case kCell:   p.name="Cell";     p.symbol="cell";  p.hints|=kParameterIsInteger|kParameterIsTrigger;p.ranges.min=0;p.ranges.max=255;p.ranges.def=0;break;
         }
     }
     float getParameterValue(uint32_t i) const override {
@@ -128,7 +132,8 @@ protected:
         case kOn:fOn=v;break;case kKracht:fKracht=v;break;
         case kGalaxy:fGalaxyV=v;fGal.setPos((int)(v+0.5f));break;
         case kSfeer:fSfeerV=v;fSf.setMode((int)(v+0.5f));break;
-        case kBas:fBas=v;break;case kBasType:fBasType=v;break;case kBasVol:fBasVol=v;break;case kKey:fKey=v;break;}
+        case kBas:fBas=v;break;case kBasType:fBasType=v;break;case kBasVol:fBasVol=v;break;case kKey:fKey=v;break;
+        case kCell:if(v>0.5f)handleCell((int)v);break;}
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
@@ -286,6 +291,7 @@ private:
         fBV[0].on=true;fBV[0].note=note;fBV[0].vel=vel;fBV[0].t=0;fBV[0].lp=0;
     }
     void sendPat(){
+        for(int r=0;r<4;r++)for(int c=0;c<16;c++)gridView_.pat[r][c]=fPat[r][c];
         char buf[70];int p=0;
         for(int r=0;r<4;r++){for(int c=0;c<16;c++)buf[p++]=fPat[r][c];buf[p++]=';';}
         buf[p]=0;setState("pat",buf);
@@ -311,7 +317,23 @@ private:
     }
     float fStijl=0,fDrive=0.5f,fSwing=0.10f,fLevel=0.85f,fDice=0,fAuto=0,fPreset=0;
     uint32_t fRr=0;
-    char fPat[4][17];bool fPatInit=false;int fLastStijl=0;
+    void handleCell(int c){
+        if(c>=64&&c<68){ // rij-dobbelsteen: gooi die ene lijn opnieuw
+            int r=c-64;
+            for(int s=0;s<16;s++){
+                fRnd=fRnd*1664525u+1013904223u; int on=(fRnd>>8)%100;
+                int dens=r==2?45:(r==0?30:25);
+                fPat[r][s]=on<dens?(r==0?'K':(r==1?'S':(r==2?(((fRnd>>9)%5==0)?'o':'H'):'P'))):'.';
+            }
+            fPat[r][0]='.';if(r<2)fPat[r][0]=(r==0?'K':'S'); // beat 1 houdt staan
+            sendPat();return;
+        }
+        if(c<0||c>=64)return;
+        int r=c/16,s=c%16;
+        if(fPat[r][s]=='.')fPat[r][s]=(r==0?'K':(r==1?'S':(r==2?'H':'P')));else fPat[r][s]='.';
+        sendPat();
+    }
+    char fPat[4][17];DrumsGridView gridView_{};bool fPatInit=false;int fLastStijl=0;
     static const int kMaxV=24;
     DrumVoice fV[kMaxV];
     unsigned fRnd=24681357; unsigned fNfac=999; unsigned fRoll=0;

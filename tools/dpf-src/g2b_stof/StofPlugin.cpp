@@ -98,7 +98,7 @@ struct Galaxy { Galaxy(){reset();}
 class StofPlugin : public Plugin {
 public:
     enum Params { kKraak,kWobble,kToon,kCrush,kMix,kOut,kGalaxy,kDice,kPreset,kOn,kKracht,kNumParams };
-    StofPlugin() : Plugin(kNumParams,0,2) {}
+    StofPlugin() : Plugin(kNumParams,0,3) {}
 protected:
     const char* getLabel() const override { return "G2B Stof"; }
     const char* getDescription() const override { return "Lo-fi machine: vinyl-kraak, wow/flutter, donkere toon en bit-crush"; }
@@ -139,7 +139,9 @@ protected:
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
+        else if(index==2){name="knobs";def="";}
         else{name="presetnames";def="";for(int i=0;i<17;i++){def+=kPresetNames[i];if(i<16)def+=";";}}
+
     }
     void setState(const char* k, const char* v) override {(void)k;(void)v;}
 
@@ -202,20 +204,27 @@ protected:
         }
     }
 private:
+    void pushKnobs(){
+        char buf[160];
+        snprintf(buf,sizeof buf,"%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f",fKraak,fWobble,fToon,fCrush,fMix,fOut,fGalaxy,fKr);
+        setState("knobs",buf);
+    }
     void rollDice(){
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kKraak,((fRnd>>8)%100)/100.f*0.6f);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kWobble,((fRnd>>8)%100)/100.f*0.5f);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kToon,0.1f+((fRnd>>8)%100)/100.f*0.6f);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kCrush,((fRnd>>8)%100)/100.f*0.4f);
+        pushKnobs();
     }
     void applyPreset(int i){
-        if(i<0)i=0;if(i>5)i=5;fPreset=(float)i;
+        if(i<0)i=0;if(i>16)i=16;fPreset=(float)i;
         setParameterValue(kKraak,kPresetParams[i][0]);
         setParameterValue(kWobble,kPresetParams[i][1]);
         setParameterValue(kToon,kPresetParams[i][2]);
         setParameterValue(kCrush,kPresetParams[i][3]);
         setParameterValue(kMix,kPresetParams[i][4]);
         setParameterValue(kOut,kPresetParams[i][5]);
+        pushKnobs();
     }
     float fKraak=0.25f,fWobble=0.2f,fToon=0.35f,fCrush=0.15f,fMix=1.0f,fOut=0.f;
     float fLp0=0,fLp1=0,fLpNoise=0,fWobPh=0;

@@ -102,6 +102,7 @@ protected:
     void run(const float**, float** out, uint32_t frames, const MidiEvent*, uint32_t) override {
         const double sr=getSampleRate();
         for(uint32_t i=0;i<frames;i++){out[0][i]=0.f;out[1][i]=0.f;}
+        float pvMix[8];
         double bpm=120.0;
         const TimePosition& tp=getTimePosition();
         if(tp.playing && tp.bbt.valid && tp.bbt.beatsPerMinute>1.0) bpm=tp.bbt.beatsPerMinute;
@@ -140,6 +141,18 @@ protected:
                 }
             }
         }
+        // preview-klank: ook hoorbaar als er geen MIDI-routing is (standalone)
+        for(uint32_t i=0;i<frames;i++){
+            float m=0.f;
+            for(PVoice&c:pv_)if(c.on){
+                c.t+=1.0/(float)sr; float e=expf(-c.t/c.dec);
+                if(e<0.002f){c.on=false;continue;}
+                float w=sinf(6.28318f*c.f*c.t);
+                if(c.noise>0.f){fPN=fPN*1664525u+1013904223u;w=w*(1.f-c.noise)+(((float)(fPN>>9&0xFFFF)/32768.f-1.f))*c.noise;}
+                m+=w*e*c.amp;
+            }
+            out[0][i]+=m*0.5f;out[1][i]+=m*0.5f;
+        }
         fAbs+=frames;
     }
 
@@ -147,6 +160,19 @@ private:
     // ---- MIDI-out: note-on nu, note-off via absolute-frame queue ----
     struct PendingOff{uint8_t note,ch;uint64_t at;};
     PendingOff offq_[128]; int offw_=0,offr_=0;
+    // hoorbaar zonder MIDI-routing: lichte preview-klank per noot
+    struct PVoice{float f=0,t=0,dec=.2f,amp=0,noise=0;bool on=false;} pv_[12];
+    unsigned fPN=1;
+    void pvStart_(int note,int ch){
+        if(fOn<0.5f)return;
+        PVoice* v=&pv_[0];
+        for(PVoice&c:pv_)if(!c.on){v=&c;break;}
+        if(ch==9){ v->f=(note<40)?52.f:(note<50)?185.f:650.f;
+                   v->dec=(note<40)?0.18f:(note<50)?0.10f:0.045f;
+                   v->noise=(note>=42)?0.75f:0.12f; v->amp=0.8f; }
+        else     { v->f=440.f*powf(2.f,(note-69)/12.f); v->dec=0.22f; v->noise=0.08f; v->amp=0.5f; }
+        v->t=0; v->on=true;
+    }
     std::vector<BNote> gen_; int ni_=0; int genN_=0;
     double fPhase=0,fpt_=1.0,fBpm=100.0; int fStep=-1; uint64_t fAbs=0;
     bool wasPlaying_=false;
@@ -157,6 +183,7 @@ private:
         writeMidiEvent(e);
     }
     void hit_(int note,int ch,int vel,uint32_t i,double durFr){
+        pvStart_(note,ch);
         vel=vel<20?20:(vel>127?127:vel);
         if(fMidi<0.5f||fOn<0.5f)return;
         emitMidi_(0x90|ch,(uint8_t)note,(uint8_t)vel,i);

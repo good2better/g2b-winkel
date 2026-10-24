@@ -55,6 +55,7 @@ protected:
         else if(index==8)fAuto=value;
         else if(index==9)fProg=(int)(value+0.5f);
         else if(index==10)fOn=(int)(value+0.5f);
+        else if(index==14)fPlay=(int)(value+0.5f);
         else if(index>=11&&index<=13)fValue[index-4]=value; // 11=KRACHT→7,12=DIMENTIES→8,13=SFEER→9
         repaint();
     }
@@ -181,7 +182,16 @@ protected:
         }
         strokeColor(47,191,113);strokeWidth(1.5f);stroke();
 
-        // AAN/UIT pil rechtsboven
+        // LOOP/ZELF + AAN/UIT pils rechtsboven
+        {
+            const float px=W-96.0f,ay=12.0f;
+            beginPath();roundedRect(px,ay,44.0f,17.0f,4.0f);
+            fillColor(fPlay?g2bsk(fLight,5):g2bsk(fLight,4));fill();
+            strokeColor(edge);strokeWidth(1.0f);stroke();
+            fontSize(8.5f);textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            fillColor(fPlay?Color(232,236,234):g2bsk(fLight,3));
+            text(px+22.0f,ay+8.5f,fPlay?"LOOP":"ZELF",nullptr);
+        }
         {
             const float ax=W-48.0f,ay=12.0f;
             beginPath();roundedRect(ax,ay,44.0f,17.0f,4.0f);
@@ -279,6 +289,9 @@ protected:
                 fAuto=fAuto>0.5f?0.f:1.f;spv(8,fAuto);repaint();return true;}
             if((float)(ev.pos.getX()/getScaleFactor())>=14.0f&&(float)(ev.pos.getX()/getScaleFactor())<=40.0f&&(float)(ev.pos.getY()/getScaleFactor())>=48.0f&&(float)(ev.pos.getY()/getScaleFactor())<=65.0f){
                 spv(7,1.0f);repaint();return true;}
+            // LOOP/ZELF pil
+            if((float)(ev.pos.getX()/getScaleFactor())>=W-96.0f&&(float)(ev.pos.getX()/getScaleFactor())<=W-52.0f&&(float)(ev.pos.getY()/getScaleFactor())>=12.0f&&(float)(ev.pos.getY()/getScaleFactor())<=29.0f){
+                fPlay=1-fPlay;spv(14,(float)fPlay);repaint();return true;}
             // AAN/UIT pil
             if((float)(ev.pos.getX()/getScaleFactor())>=W-48.0f&&(float)(ev.pos.getX()/getScaleFactor())<=W-4.0f&&(float)(ev.pos.getY()/getScaleFactor())>=12.0f&&(float)(ev.pos.getY()/getScaleFactor())<=29.0f){
                 fOn=1-fOn;spv(10,(float)fOn);repaint();return true;}
@@ -345,7 +358,7 @@ private:
     float fScope[kScopeSize];int fScopePos;
     int fDeg[16];
     int fDrag;float fLastY;int fProg;int fStep;float fAuto;int fLight;
-    int fOn=1; bool fXYdrag=false;
+    int fOn=1,fPlay=1; bool fXYdrag=false;
     float fXX=18.0f,fXY_=282.0f,fXW=524.0f,fXH=58.0f;
     void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MelodieUI)

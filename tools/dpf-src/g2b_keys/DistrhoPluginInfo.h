@@ -21,3 +21,5 @@
 #define DISTRHO_PLUGIN_CLAP_FEATURES "instrument", "synthesizer", "stereo"
 #define DISTRHO_PLUGIN_UNIQUE_ID G2Ky
 #endif
+
+#define DISTRHO_UI_USER_RESIZABLE 1

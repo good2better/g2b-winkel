@@ -14,9 +14,9 @@ static const char* PRESET_NAMES[16]={
  "Harm-Min","Deep-Bas","Echo-Pluck","Phryg-Fire","Slow-Soul","Anthem-G","Mel-Min-Walk","Drive-Bas"};
 class G2BMelodyUI : public UI {
 public:
-    G2BMelodyUI():UI(560,390){loadSharedResources();std::memset(fVal,0,sizeof fVal);fVal[0]=1;fSkin=1;}
+    G2BMelodyUI():UI(560,390){loadSharedResources();std::memset(fVal,0,sizeof fVal);fVal[0]=1;fVal[14]=255;fSkin=1;}
 protected:
-    void parameterChanged(uint32_t i,float v)override{if(i<13)fVal[i]=v;if(i==12)fSkin=(int)v&7;repaint();}
+    void parameterChanged(uint32_t i,float v)override{if(i<15)fVal[i]=v;if(i==12)fSkin=(int)v&7;repaint();}
     void onNanoDisplay()override{
         auto C=[](const int*c,float a=1.f){return Color(c[0],c[1],c[2],a);};
         const int(*S)[3]=SK[fSkin];
@@ -26,18 +26,25 @@ protected:
         bool on=fVal[0]>0.5f;
         beginPath();roundedRect(getWidth()-96,fBtnY-8,72,26,13);fillColor(on?C(S[1]):C(S[1],0.3f));fill();
         fillColor(on?Color(255,255,255):C(S[2],0.6f));textAlign(ALIGN_CENTER|ALIGN_MIDDLE);text(getWidth()-60,fBtnY+5,on?"AAN":"UIT",nullptr);
+        bool play=fVal[13]>0.5f;
+        beginPath();roundedRect(getWidth()-176,fBtnY-8,72,26,13);fillColor(play?C(S[1]):C(S[1],0.3f));fill();
+        fillColor(play?Color(255,255,255):C(S[2],0.6f));textAlign(ALIGN_CENTER|ALIGN_MIDDLE);text(getWidth()-140,fBtnY+5,play?"LOOP":"ZELF",nullptr);
         // piano-roll visual: 8 stappen met noot-hoogtes
         float px=26,py=52,pw=160,phh=140;
         beginPath();roundedRect(px,py,pw,phh,8);fillColor(C(S[1],0.18f));fill();
         int pat=(int)fVal[5]+((int)fVal[11]>=13?1:0);if(pat>7)pat-=8;
         static const int PAT[8][8]={{0,1,2,1,0,1,2,4},{0,2,4,7,4,2,0,-2},{0,2,4,7,9,7,4,2},{7,4,2,0,-3,0,2,4},
           {0,2,0,4,0,2,4,2},{0,0,4,0,0,4,0,2},{0,0,0,4,0,0,7,0},{0,3,2,5,4,1,2,4}};
+        int umask=(int)fVal[14];
         for(int s=0;s<8;s++){
             float nx=px+10+s*18;float h=PAT[pat][s];
             float ny=py+phh*0.5f-h*7;
+            bool en=(umask>>s)&1;
             beginPath();roundedRect(nx,ny-4,13,8,3);
-            fillColor(C(S[2],s==fStep?1.f:0.55f));fill();
+            fillColor(en?C(S[2],s==fStep?1.f:0.55f):C(S[2],0.15f));fill();
+            if(!en){beginPath();roundedRect(nx,ny-4,13,8,3);strokeColor(C(S[2],0.35f));strokeWidth(1);stroke();}
         }
+        text(px,py+phh+20,"klik noten aan/uit",nullptr);
         fStep=(fStep+1)%80;
         char info[48];snprintf(info,48,"%s · %d%%",PRESET_NAMES[(int)fVal[9]&15],(int)fVal[6]);
         fillColor(C(S[2],0.75f));fontSize(10);textAlign(ALIGN_CENTER|ALIGN_TOP);text(px+pw/2,py+phh+8,info,nullptr);
@@ -69,6 +76,8 @@ protected:
         if(!ev.press){if(fDrag>=0&&!fMoved){int i=fDrag;float mn=pMin[i],mx=pMax[i],st=(mx-mn)<=32?1.f:(mx-mn)/20.f;float v=fVal[pFor[i]]+st;if(v>mx)v=mn;spv(pFor[i],v);fVal[pFor[i]]=v;repaint();}fDrag=-1;fXYdrag=false;fMoved=false;return true;}
         int mx=(float)(ev.pos.getX()/getScaleFactor()),my=(float)(ev.pos.getY()/getScaleFactor());
         if(mx>getWidth()-100&&mx<getWidth()-20&&my>fBtnY-12&&my<fBtnY+22){float ov=fVal[0]>0.5f?0.f:1.f;spv(0,ov);fVal[0]=ov;repaint();return true;}
+        if(mx>getWidth()-180&&mx<getWidth()-100&&my>fBtnY-12&&my<fBtnY+22){float pv=fVal[13]>0.5f?0.f:1.f;spv(13,pv);fVal[13]=pv;repaint();return true;}
+        if(mx>=26&&mx<=186&&my>=52&&my<=52+140){int s=(mx-26-10)/18;if(s>=0&&s<8){int m=(int)fVal[14];m^=(1<<s);spv(14,(float)m);fVal[14]=m;repaint();return true;}}
         if(mx>=fXX&&mx<=fXX+fXW&&my>=fXY_&&my<=fXY_+fXH){fXYdrag=true;xySet(mx,my);return true;}
         for(int i=0;i<8;i++)if(fabs(mx-(66+i*13))<8&&fabs(my-(fSkinY+8))<10){spv(12,(float)i);return true;}
         for(int i=0;i<10;i++){float kx=fKnobX+(i%5)*70,ky=fKnobY+(i/5)*96;
@@ -88,7 +97,7 @@ private:
     static const int fKnobX=222,fKnobY=82,fBtnY=18,fSkinY=330;
     float knNorm(int i)const{return (fVal[pFor[i]]-pMin[i])/(pMax[i]-pMin[i]);}
     void xySet(float px,float py){float nx=(px-fXX)/fXW;if(nx<0)nx=0;if(nx>1)nx=1;float ny=(py-fXY_)/fXH;if(ny<0)ny=0;if(ny>1)ny=1;float kr=nx*100.f,dim=std::round((1.f-ny)*26.f);spv(1,kr);spv(11,dim);fVal[1]=kr;fVal[11]=dim;repaint();}
-    float fVal[13];int fSkin=0,fDrag=-1,fStep=0;float fLastY=0; bool fXYdrag=false,fMoved=false; float fXX=0,fXY_=0,fXW=0,fXH=0;
+    float fVal[15];int fSkin=0,fDrag=-1,fStep=0;float fLastY=0; bool fXYdrag=false,fMoved=false; float fXX=0,fXY_=0,fXW=0,fXH=0;
     void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(G2BMelodyUI)
 };

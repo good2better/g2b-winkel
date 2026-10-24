@@ -18,3 +18,5 @@
 #define DISTRHO_PLUGIN_CLAP_FEATURES "audio-effect", "distortion", "stereo"
 #define DISTRHO_PLUGIN_UNIQUE_ID G2Sf
 #endif
+
+#define DISTRHO_UI_USER_RESIZABLE 1

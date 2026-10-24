@@ -100,7 +100,7 @@ struct Galaxy { Galaxy(){reset();}
 class RuimtePlugin : public Plugin {
 public:
     enum Params { kRuimte, kTijd, kDemp, kBreedte, kPredelay, kOutput, kGalaxy, kDice, kPreset, kOn, kKracht, kNumParams };
-    RuimtePlugin() : Plugin(kNumParams, 0, 2) {
+    RuimtePlugin() : Plugin(kNumParams,0,3) {
         for (int i=0;i<kMaxDel;i++){fBufL[i]=0.f;fBufR[i]=0.f;}
         for (int i=0;i<kMaxPre;i++){fPreL[i]=0.f;fPreR[i]=0.f;}
     }
@@ -139,7 +139,9 @@ protected:
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
+        else if(index==2){name="knobs";def="";}
         else {name="presetnames";def=""; for(int i=0;i<6;i++){def+=kPresetNames[i]; if(i<5)def+=";";}}
+
     }
     void setState(const char* key, const char* value) override {
         (void)key; (void)value;
@@ -199,18 +201,24 @@ protected:
         }
     }
 private:
+    void pushKnobs(){
+        char buf[160];
+        snprintf(buf,sizeof buf,"%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f",fRuimte,fTijd,fDemp,fBreedte,fPredelay,fOutput,fGalaxy,fKr);
+        setState("knobs",buf);
+    }
     void rollDice(){
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kRuimte,0.1f+((fRnd>>8)%100)/100.f*0.7f);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kTijd,80.f+((fRnd>>8)%100)/100.f*800.f);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kDemp,2000.f+((fRnd>>8)%100)/100.f*8000.f);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kBreedte,0.7f+((fRnd>>8)%100)/100.f*1.2f);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kPredelay,((fRnd>>8)%100)/100.f*40.f);
+        pushKnobs();
     }
     float fDice = 0.f;
     unsigned fRnd = 998877;
 
     void applyPreset(int i){
-        if(i<0)i=0; if(i>5)i=5;
+        if(i<0)i=0; if(i>16)i=16;
         fPreset=(float)i;
         setParameterValue(kRuimte,kPresetParams[i][0]);
         setParameterValue(kTijd,kPresetParams[i][1]);
@@ -218,6 +226,7 @@ private:
         setParameterValue(kBreedte,kPresetParams[i][3]);
         setParameterValue(kPredelay,kPresetParams[i][4]);
         setParameterValue(kOutput,kPresetParams[i][5]);
+        pushKnobs();
     }
     static const int kMaxDel = 96000*2;   // tot 2s @48k
     static const int kMaxPre = 4800;      // 100ms predelay

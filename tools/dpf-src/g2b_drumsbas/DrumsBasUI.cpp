@@ -3,6 +3,7 @@
  */
 
 #include "DistrhoUI.hpp"
+#include "DrumsShared.h"
 #include <cmath>
 #include <cstdio>
 #include <cstring>
@@ -89,6 +90,9 @@ protected:
     }
     void onNanoDisplay() override
     {
+        if(const DrumsGridView* gv=gDrumsView)
+            for(int r=0;r<4;r++)for(int c=0;c<16;c++)fPatGrid[r][c]=gv->pat[r][c];
+
         const float W=getWidth(),H=getHeight();
         const Color BG=g2bsk(fLight,0);const Color TXT=g2bsk(fLight,2);const Color DIMC=g2bsk(fLight,3);
         beginPath();rect(0,0,W,H);fillColor(BG);fill();
@@ -140,26 +144,34 @@ protected:
             }
         }
 
-        // 16-staps LED-grid (4 rijen: K S H P)
-        const float gx=18.0f, gy=74.0f, gw=W-36.0f;
-        const char rowN[5]={'K','S','H','P','B'};
-        for(int r=0;r<5;r++){
+        // 16-staps klik-grid (4 rijen: K S H P) + dobbelsteen per rij
+        const float gx=56.0f, gy=70.0f, gw=W-74.0f;
+        const char* rowN[5]={"KICK","SNAR","HAT","PERC","BAS"};
+        for(int r=0;r<4;r++){
+            const float y=gy+r*19.0f;
+            fontSize(8.0f);fillColor(90,100,94);textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
+            text(6.0f,y+9.5f,rowN[r],nullptr);
+            // dobbelsteen
+            beginPath();roundedRect(38.0f,y+2.0f,13.0f,13.0f,3.0f);
+            fillColor(g2bsk(fLight,4));fill();strokeColor(g2bsk(fLight,3));strokeWidth(1.0f);stroke();
+            fillColor(200,210,204);
+            { const float dx[5]={41.5f,47.5f,41.5f,47.5f,44.5f};
+              const float dy[5]={y+5.5f,y+5.5f,y+11.5f,y+11.5f,y+8.5f};
+              for(int d=0;d<5;d++){beginPath();circle(dx[d],dy[d],1.2f);fill();} }
             for(int s=0;s<16;s++){
                 const float cw=gw/16.0f;
-                const float x=gx+s*cw, y=gy+r*16.0f;
+                const float x=gx+s*cw;
                 const bool hit=(fPatGrid[r][s]!='.');
                 const bool now=(s==fStep);
-                beginPath();rect(x+1.5f,y+1.5f,cw-3.0f,12.0f);
+                beginPath();rect(x+1.5f,y+1.0f,cw-3.0f,16.0f);
                 if(hit) fillColor(now?Color(232,236,234):Color(47,191,113));
                 else    fillColor(now?Color(29,122,72):Color(24,28,27));
                 fill();
             }
-            fontSize(9.0f);fillColor(90,100,94);textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
-            text(gx-2.0f,gy+r*16.0f+7.0f,&rowN[r],nullptr); // rij-letter links (valt deels buiten grid, ok)
         }
 
         // scope onder grid
-        const float sx=18.0f,sy=160.0f,sw=W-36.0f,sh=30.0f;
+        const float sx=18.0f,sy=152.0f,sw=W-36.0f,sh=28.0f;
         beginPath();rect(sx,sy,sw,sh);fillColor(8,10,9);fill();
         strokeColor(42,47,45);strokeWidth(1.0f);stroke();
         beginPath();
@@ -255,6 +267,19 @@ protected:
             // AAN/UIT pil
             if((float)(ev.pos.getX()/getScaleFactor())>=W-48.0f&&(float)(ev.pos.getX()/getScaleFactor())<=W-4.0f&&(float)(ev.pos.getY()/getScaleFactor())>=12.0f&&(float)(ev.pos.getY()/getScaleFactor())<=29.0f){
                 fOn=1-fOn;setParameterValue(7,(float)fOn);repaint();return true;
+            }
+            // grid: dobbelsteen per rij + vakjes aan/uit
+            {
+                const float mx=(float)(ev.pos.getX()/getScaleFactor()),my=(float)(ev.pos.getY()/getScaleFactor());
+                if(my>=70.0f&&my<70.0f+4*19.0f){
+                    int r=(int)((my-70.0f)/19.0f);
+                    if(mx>=38.0f&&mx<51.0f){setParameterValue(15,64.0f+r);return true;} // rij-dice
+                    const float gx=56.0f,cw=(W-74.0f)/16.0f;
+                    if(mx>=gx){int s=(int)((mx-gx)/cw);if(s<0)s=0;if(s>15)s=15;
+                        setParameterValue(15,(float)(r*16+s));
+                        fPatGrid[r][s]=(fPatGrid[r][s]=='.')?(r==0?'K':(r==1?'S':(r==2?'H':'P'))):'.';
+                        repaint();return true;}
+                }
             }
             // XY-pad
             if((float)(ev.pos.getX()/getScaleFactor())>=fXX&&(float)(ev.pos.getX()/getScaleFactor())<=fXX+fXW&&(float)(ev.pos.getY()/getScaleFactor())>=fXY_&&(float)(ev.pos.getY()/getScaleFactor())<=fXY_+fXH){
