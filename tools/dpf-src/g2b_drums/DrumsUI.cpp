@@ -56,6 +56,7 @@ protected:
     {
         if(index<4)fValue[index]=value;
         else if(index==5)fAuto=value;
+        else if(index==12)fRun=value;
         else if(index==6)fProg=(int)(value+0.5f);
         else if(index==7)fOn=(int)(value+0.5f);
         else if(index>=8&&index<=10)fValue[index-4]=value; // 8=KRACHT→4,9=DIMENTIES→5,10=SFEER→6
@@ -138,6 +139,15 @@ protected:
                 strokeColor(42,47,45);strokeWidth(1.0f);stroke();
                 fontSize(9.5f);fillColor(fAuto>0.5f?Color(13,15,14):Color(143,160,152));
                 text(bx2+19.0f,58.5f,"AUTO",nullptr);
+            }
+            bx2+=40.0f;
+            { // SPEEL/STOP
+                beginPath();roundedRect(bx2,50.0f,40.0f,17.0f,4.0f);
+                if(fRun>0.5f){fillColor(47,191,113);fill();}
+                else{fillColor(g2bsk(fLight,1));fill();}
+                strokeColor(42,47,45);strokeWidth(1.0f);stroke();
+                fontSize(9.5f);fillColor(fRun>0.5f?Color(13,15,14):Color(143,160,152));
+                text(bx2+20.0f,58.5f,fRun>0.5f?"SPEEL":"STOP",nullptr);
             }
         }
 
@@ -258,6 +268,9 @@ protected:
             if((float)(ev.pos.getX()/getScaleFactor())>=44.0f&&(float)(ev.pos.getX()/getScaleFactor())<=82.0f&&(float)(ev.pos.getY()/getScaleFactor())>=50.0f&&(float)(ev.pos.getY()/getScaleFactor())<=67.0f){
                 fAuto=fAuto>0.5f?0.f:1.f;spv(5,fAuto);repaint();return true;
             }
+            if((float)(ev.pos.getX()/getScaleFactor())>=84.0f&&(float)(ev.pos.getX()/getScaleFactor())<=124.0f&&(float)(ev.pos.getY()/getScaleFactor())>=50.0f&&(float)(ev.pos.getY()/getScaleFactor())<=67.0f){
+                fRun=fRun>0.5f?0.f:1.f;spv(12,fRun);repaint();return true;
+            }
             // AAN/UIT pil
             if((float)(ev.pos.getX()/getScaleFactor())>=W-48.0f&&(float)(ev.pos.getX()/getScaleFactor())<=W-4.0f&&(float)(ev.pos.getY()/getScaleFactor())>=12.0f&&(float)(ev.pos.getY()/getScaleFactor())<=29.0f){
                 fOn=1-fOn;spv(7,(float)fOn);repaint();return true;
@@ -338,7 +351,7 @@ private:
     float fValue[7],fMin[7],fMax[7];
     const char* fLabel[7];
     float fScope[kScopeSize];int fScopePos;
-    int fDrag;float fLastY;int fProg;int fStep;float fAuto=0;int fLight=0;
+    int fDrag;float fLastY;int fProg;int fStep;float fAuto=0;float fRun=1.f;int fLight=0;
     int fOn=1; bool fXYdrag=false;
     float fXX=18.0f,fXY_=286.0f,fXW=524.0f,fXH=58.0f;
     char fPatGrid[4][16];
