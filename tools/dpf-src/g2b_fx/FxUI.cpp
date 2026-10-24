@@ -48,6 +48,10 @@ static const float kUiPresetParams[17][6] = {
     {0.52f,0.36f,0.44f,0.38f,0.28f, 0.f},  // DANCE
     {0.55f,0.37f,0.41f,0.31f,0.27f, 0.f},  // KAWINA
 };
+// slimme dobbelsteen: producer-ranges + slotjes om knoppen vast te zetten
+static const int kDiceN = 5;
+static const float kDiceLo[kDiceN] = {0.f,0.f,0.f,0.f,0.f};
+static const float kDiceHi[kDiceN] = {1.f,1.f,1.f,1.f,1.f};
 
 class MasterRackUI : public UI
 {
@@ -109,19 +113,6 @@ protected:
             fLufsM = std::strtof(value, nullptr);
             const char* semi = std::strchr(value, ';');
             if (semi) fLufsI = std::strtof(semi + 1, nullptr);
-            repaint();
-        }
-        else if (std::strcmp(key, "knobs") == 0)
-        {
-            const char* p = value;
-            for (int i = 0; i < 11 && *p != '\0'; ++i)
-            {
-                char* end = nullptr;
-                const float v = std::strtof(p, &end);
-                if (end == p) break;
-                fValue[i] = v;
-                p = (*end == ';') ? end + 1 : end;
-            }
             repaint();
         }
     }
@@ -224,6 +215,14 @@ protected:
             else
                 std::snprintf(buf, sizeof(buf), "%.1f %s", fValue[i], fUnit[i]);
             text(cx, cy + R + 23.0f, buf, nullptr);
+
+            // slotje: zet deze knop vast zodat de dobbelsteen hem overslaat
+            if (i <= 5)
+            {
+                beginPath(); rect(cx + R - 7.0f, cy - R - 3.0f, 9.0f, 9.0f);
+                fillColor(fLocked[i] ? Color(0, 220, 255) : Color(85, 92, 88));
+                fill();
+            }
         }
 
         fontSize(10.5f); fillColor(90, 100, 94);
@@ -285,10 +284,7 @@ protected:
             { fOn = fOn>0.5f?0.f:1.f; setParameterValue(10, fOn); repaint(); return true; }
             if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 40.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 140.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 157.0f)
-            {
-            fProg = -1;
-            for (int p = 0; p < 5; ++p){ fRndUi=fRndUi*1664525u+1013904223u; const float v=((fRndUi>>8)%100)/100.f; fValue[p]=v; setParameterValue(p,v); parameterChanged(p,v); }
-            repaint(); return true; }
+            { rollUiDice(); return true; }
             if ((float)(ev.pos.getX()/getScaleFactor()) >= 44.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 78.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 140.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 157.0f)
             { setParameterValue(6, 1.0f); repaint(); return true; }
@@ -317,6 +313,20 @@ protected:
                         return true;
                     }
                 }
+            }
+        }
+        // slotjes eerst: klik op het blauwe/grijze vierkantje = knop vastzetten
+        if (ev.press)
+        {
+            const float stepl = (W - 40.0f) / 11;
+            for (int i = 0; i <= 5; ++i)
+            {
+                const float cx = 20.0f + stepl * (i + 0.5f);
+                const float lx = cx + 21.0f - 9.0f, ly = 178.0f - 21.0f - 5.0f;
+                const float ex = (float)(ev.pos.getX()/getScaleFactor());
+                const float ey = (float)(ev.pos.getY()/getScaleFactor());
+                if (ex >= lx && ex <= lx + 12.0f && ey >= ly && ey <= ly + 12.0f)
+                { fLocked[i] = !fLocked[i]; repaint(); return true; }
             }
         }
         const float step = (W - 40.0f) / 11;
@@ -401,8 +411,29 @@ private:
     int fDrag;
     float fLastY;
     int fProg;
-    unsigned fRndUi=987654u;
     int fLight = 0;
+    bool fLocked[16] = {};
+    unsigned fRndUi = 0x2b7e1516u;
+
+    // slimme dobbelsteen: muzikale ranges, gelockte knoppen overslaan,
+    // SUB omhoog -> OUTPUT automatisch wat omlaag (compensatie)
+    void rollUiDice()
+    {
+        for (int p = 0; p < kDiceN; ++p)
+        {
+            if (fLocked[p]) continue;
+            fRndUi = fRndUi * 1664525u + 1013904223u;
+            const float v = kDiceLo[p] + ((fRndUi >> 8) % 1000) / 1000.0f * (kDiceHi[p] - kDiceLo[p]);
+            fValue[p] = v;
+            setParameterValue(p, v);
+        }
+        if (!fLocked[5])
+        {
+            fValue[5] = -(fValue[0] * 6.0f);
+            setParameterValue(5, fValue[5]);
+        }
+        repaint();
+    }
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MasterRackUI)
 };

@@ -29,6 +29,8 @@ static const char* kProgramNames[kNumPrograms] = {
     "G2B","DEMBOW","DRILL","RNB","HOUSE","AFRO","TRAP","BOOM","UKG","JERSEY","BOUNCE","SOUL","LOFI","FUNK","REGGAE","DANCE","KAW"
 };
 
+// spiegel van kPresetParams uit de DSP — UI pusht de knopwaarden zelf
+// (JACK-standalone heeft geen DSP->UI terugweg)
 static const float kUiPresetParams[17][6] = {
     {0.30f, 280.f, 6000.f, 1.2f, 12.f, 0.f},   // G2B
     {0.22f, 300.f, 7000.f, 1.1f, 10.f, 0.f},   // DEMBOW
@@ -49,6 +51,10 @@ static const float kUiPresetParams[17][6] = {
     {0.29f, 290.f, 6000.f, 1.25f, 12.f, 0.f},  // KAWINA
 
 };
+// slimme dobbelsteen: producer-ranges per parameter + slotjes om te locken
+static const int kDiceN = 5;
+static const float kDiceLo[kDiceN] = {0.1f,80.f,2000.f,0.7f,0.f};
+static const float kDiceHi[kDiceN] = {0.8f,880.f,10000.f,1.9f,40.f};
 
 class RuimteUI : public UI
 {
@@ -77,6 +83,7 @@ protected:
         if (index < 7) fValue[index] = value;
         else if (index == 9) fOn = value;
         else if (index == 10) fValue[7] = value;
+        else if (index == 8) { fProg = (int)(value + 0.5f); if (fProg<0) fProg=0; if (fProg>16) fProg=16; for (int p = 0; p < 6; ++p) fValue[p] = kUiPresetParams[fProg][p]; }
         repaint();
     }
 
@@ -96,19 +103,6 @@ protected:
             }
             repaint();
         }
-        else if (std::strcmp(key, "knobs") == 0)
-        {
-            const char* p = value;
-            for (int i = 0; i < 8 && *p != '\0'; ++i)
-            {
-                char* end = nullptr;
-                const float v = std::strtof(p, &end);
-                if (end == p) break;
-                fValue[i] = v;
-                p = (*end == ';') ? end + 1 : end;
-            }
-            repaint();
-        }
     }
 
     void onNanoDisplay() override
@@ -116,28 +110,28 @@ protected:
         const float W = getWidth(), H = getHeight();
         beginPath(); rect(0, 0, W, H); fillColor(g2bsk(fLight,0)); fill();
 
-        fontSize(13.0f); textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+        fontSize(20.0f); textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
         fillColor(47, 191, 113);
-        text(14.0f, H - 12.0f, "G2B RUIMTE", nullptr);
+        text(18.0f, 22.0f, "G2B RUIMTE", nullptr);
         fontSize(10.0f); fillColor(143, 160, 152);
-        text(76.0f, 53.0f, "plek in de mix — delay + reverb", nullptr);
+        text(76.0f, 53.0f, "plek in de mix — delay + reverb in één draai", nullptr);
 
-        // preset-knoppen (2 rijen rechtsboven: 9 + 8)
-        const float pbw = 52.0f, pbh = 15.0f;
-        for (int i = kNumPrograms - 1; i >= 0; --i)
+        // preset-knoppen (rechtsboven)
+        for (int i = 0; i < kNumPrograms; ++i)
         {
-            const int row = (i < 9) ? 0 : 1;
-            const int col = (i < 9) ? i : i - 9;
-            const int cnt = (row == 0) ? 9 : 8;
-            const float bx = W - 14.0f - (float)(cnt - col) * (pbw + 5.0f);
-            const float by = (row == 0) ? 12.0f : 31.0f;
+            const int row = i < 9 ? 0 : 1, col = i < 9 ? i : i - 9;
+            const int nin = row == 0 ? 9 : 8;
+            const float bw = 52.0f, bh = 15.0f, gap = 4.0f;
+            const float rowW = nin * bw + (nin - 1) * gap;
+            const float bx = W - 14.0f - rowW + col * (bw + gap);
+            const float by = row == 0 ? 12.0f : 31.0f;
             const bool on = (i == fProg);
-            beginPath(); roundedRect(bx, by, pbw, pbh, 4.0f);
+            beginPath(); roundedRect(bx, by, bw, bh, 4.0f);
             if (on) { fillColor(29, 122, 72); fill(); }
             strokeColor(42, 47, 45); strokeWidth(1.0f); stroke();
-            fontSize(9.0f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            fontSize(10.0f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
             fillColor(on ? Color(232, 236, 234) : Color(143, 160, 152));
-            text(bx + pbw * 0.5f, by + pbh * 0.5f, kProgramNames[i], nullptr);
+            text(bx + bw * 0.5f, by + bh * 0.5f, kProgramNames[i], nullptr);
         }
 
         // scope (onder presets)
@@ -194,6 +188,14 @@ protected:
             char buf[24];
             std::snprintf(buf, sizeof(buf), "%.1f %s", fValue[i], fUnit[i]);
             text(cx, cy + R + 23.0f, buf, nullptr);
+
+            // slotje: zet deze knop vast zodat de dobbelsteen hem overslaat
+            if (i <= 5)
+            {
+                beginPath(); rect(cx + 28.0f - 7.0f, cy - 28.0f - 3.0f, 9.0f, 9.0f);
+                fillColor(fLocked[i] ? Color(0, 220, 255) : Color(85, 92, 88));
+                fill();
+            }
         }
 
         fontSize(10.5f); fillColor(90, 100, 94);
@@ -203,29 +205,29 @@ protected:
 
         {
             float bx2 = 14.0f;
-            beginPath(); roundedRect(bx2, 12.0f, 26.0f, 15.0f, 4.0f);
+            beginPath(); roundedRect(bx2, 48.0f, 26.0f, 17.0f, 4.0f);
             fillColor(g2bsk(fLight,1)); fill();
             strokeColor(42,47,45); strokeWidth(1.0f); stroke();
             fontSize(11.0f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
             fillColor(g2bsk(fLight,2));
-            text(bx2+13.0f, 19.5f, "\xF0\x9F\x8E\xB2", nullptr);
-            const float tx = 46.0f;
-            beginPath(); roundedRect(tx, 12.0f, 26.0f, 15.0f, 4.0f);
+            text(bx2+13.0f, 56.5f, "\xF0\x9F\x8E\xB2", nullptr);
+            const float tx = W - 40.0f;
+            beginPath(); roundedRect(tx, 34.0f, 26.0f, 17.0f, 4.0f);
             fillColor(g2bsk(fLight,1)); fill();
             strokeColor(42,47,45); strokeWidth(1.0f); stroke();
             fontSize(10.0f);
-            text(tx+13.0f, 19.5f, fLight>0 ? "\xF0\x9F\x8C\x99" : "\xE2\x98\x80", nullptr);
+            text(tx+13.0f, 42.5f, fLight>0 ? "\xF0\x9F\x8C\x99" : "\xE2\x98\x80", nullptr);
         }
 
         // AAN/UIT-knop (rechtsboven, naast thema-knop)
         {
             const bool aan = fOn > 0.5f;
-            beginPath(); roundedRect(14.0f, 31.0f, 52.0f, 15.0f, 7.0f);
+            beginPath(); roundedRect(W - 96.0f, 33.0f, 52.0f, 18.0f, 9.0f);
             fillColor(aan ? g2bsk(fLight,5) : g2bsk(fLight,1)); fill();
             strokeColor(42,47,45); strokeWidth(1.0f); stroke();
             fontSize(10.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
             fillColor(aan ? g2bsk(fLight,0) : g2bsk(fLight,2));
-            text(40.0f, 38.5f, aan ? "AAN" : "UIT", nullptr);
+            text(W - 70.0f, 42.0f, aan ? "AAN" : "UIT", nullptr);
         }
     }
 
@@ -236,42 +238,48 @@ protected:
         // preset-klik?
         if (ev.press)
         {
-            if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 66.0f &&
-                (float)(ev.pos.getY()/getScaleFactor()) >= 31.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 46.0f)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= W-96.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-44.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 33.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
             { fOn = fOn>0.5f?0.f:1.f; spv(9, fOn); repaint(); return true; }
             if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 40.0f &&
-                (float)(ev.pos.getY()/getScaleFactor()) >= 12.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 27.0f)
-            {
-            fProg = -1;
-            fRndUi=fRndUi*1664525u+1013904223u; { const float v=0.1f+((fRndUi>>8)%100)/100.f*(0.8f-(0.1f)); fValue[0]=v; spv(0,v); }
-            fRndUi=fRndUi*1664525u+1013904223u; { const float v=80.0f+((fRndUi>>8)%100)/100.f*(880.0f-(80.0f)); fValue[1]=v; spv(1,v); }
-            fRndUi=fRndUi*1664525u+1013904223u; { const float v=2000.0f+((fRndUi>>8)%100)/100.f*(10000.0f-(2000.0f)); fValue[2]=v; spv(2,v); }
-            fRndUi=fRndUi*1664525u+1013904223u; { const float v=0.7f+((fRndUi>>8)%100)/100.f*(1.9f-(0.7f)); fValue[3]=v; spv(3,v); }
-            fRndUi=fRndUi*1664525u+1013904223u; { const float v=0.0f+((fRndUi>>8)%100)/100.f*(40.0f-(0.0f)); fValue[4]=v; spv(4,v); }
-            repaint(); return true; }
-            if ((float)(ev.pos.getX()/getScaleFactor()) >= 46.0 && (float)(ev.pos.getX()/getScaleFactor()) <= 72.0 &&
-                (float)(ev.pos.getY()/getScaleFactor()) >= 12.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 27.0f)
+                (float)(ev.pos.getY()/getScaleFactor()) >= 48.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 65.0f)
+            { rollUiDice(); return true; }
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= W-40.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-14.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 34.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
 
             {
-                const float hbw = 52.0f, hbh = 15.0f;
-                for (int i = kNumPrograms - 1; i >= 0; --i)
+                for (int i = 0; i < kNumPrograms; ++i)
                 {
-                    const int row = (i < 9) ? 0 : 1;
-                    const int col = (i < 9) ? i : i - 9;
-                    const int cnt = (row == 0) ? 9 : 8;
-                    const float hbx = W - 14.0f - (float)(cnt - col) * (hbw + 5.0f);
-                    const float hby = (row == 0) ? 12.0f : 31.0f;
-                    if ((float)(ev.pos.getX()/getScaleFactor()) >= hbx && (float)(ev.pos.getX()/getScaleFactor()) <= hbx + hbw &&
-                        (float)(ev.pos.getY()/getScaleFactor()) >= hby && (float)(ev.pos.getY()/getScaleFactor()) <= hby + hbh)
+                    const int row = i < 9 ? 0 : 1, col = i < 9 ? i : i - 9;
+                    const int nin = row == 0 ? 9 : 8;
+                    const float bw = 52.0f, bh = 15.0f, gap = 4.0f;
+                    const float rowW = nin * bw + (nin - 1) * gap;
+                    const float bx = W - 14.0f - rowW + col * (bw + gap);
+                    const float by = row == 0 ? 12.0f : 31.0f;
+                    if ((float)(ev.pos.getX()/getScaleFactor()) >= bx && (float)(ev.pos.getX()/getScaleFactor()) <= bx + bw &&
+                        (float)(ev.pos.getY()/getScaleFactor()) >= by && (float)(ev.pos.getY()/getScaleFactor()) <= by + bh)
                     {
-                        fProg = i;
-                        for (int p = 0; p < 6; ++p){ fValue[p] = kUiPresetParams[i][p]; spv(p, fValue[p]); }
+                        for (int p = 0; p < 6; ++p) spv(p, kUiPresetParams[i][p]);
                         spv(8, (float)i);
+                        fProg = i;
                         repaint();
                         return true;
                     }
                 }
+            }
+        }
+        if (ev.press)
+        {
+            const float stepl = (W - 40.0f) / 8;
+            for (int i = 0; i <= 5; ++i)
+            {
+                const float cx = 20.0f + stepl * (i + 0.5f);
+                const float lx = cx + 28.0f - 9.0f, ly = 178.0f - 28.0f - 5.0f;
+                const float ex = (float)(ev.pos.getX()/getScaleFactor());
+                const float ey = (float)(ev.pos.getY()/getScaleFactor());
+                if (ex >= lx && ex <= lx + 12.0f && ey >= ly && ey <= ly + 12.0f)
+                { fLocked[i] = !fLocked[i]; repaint(); return true; }
             }
         }
         const float step = (W - 40.0f) / 8;
@@ -352,8 +360,29 @@ private:
     int fDrag;
     float fLastY;
     int fProg;
-    unsigned fRndUi=987654u;
     int fLight = 0;
+
+    bool fLocked[16] = {};
+    unsigned fRndUi = 0x2b7e1516u;
+
+    // slimme dobbelsteen: muzikale ranges, slotjes overslaan, OUTPUT mee-compenseren
+    void rollUiDice()
+    {
+        for (int p = 0; p < kDiceN; ++p)
+        {
+            if (fLocked[p]) continue;
+            fRndUi = fRndUi * 1664525u + 1013904223u;
+            const float v = kDiceLo[p] + ((fRndUi >> 8) % 1000) / 1000.0f * (kDiceHi[p] - kDiceLo[p]);
+            fValue[p] = v;
+            spv(p, v);
+        }
+        if (!fLocked[5])
+        {
+            fValue[5] = -(fValue[0]*4.0f);
+            spv(5, fValue[5]);
+        }
+        repaint();
+    }
 
     void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RuimteUI)

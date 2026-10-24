@@ -12,4 +12,5 @@ TARGETS += vst3
 TARGETS += clap
 TARGETS += jack
 
+TARGETS += jack
 all: $(TARGETS)
