@@ -1,6 +1,5 @@
 #include "drum_data.h"
 #include "DistrhoPlugin.hpp"
-#include "DrumsShared.h"
 #include "../g2b_std.h"
 #include <cstring>
 #include <cmath>
@@ -8,8 +7,6 @@
 #include <algorithm>
 #include <cstdio>
 #include <cstdlib>
-
-DrumsGridView* gDrumsView=nullptr;
 
 START_NAMESPACE_DISTRHO
 
@@ -37,25 +34,25 @@ static const char* kPatterns[17][4] = {
     {"K..K.K..K..K.K..","....S.....S.S...","H.H.HH.H.H.HH.H.",".P..P..P..P..P."}    // KAWINA
 };
 
-// sintemper: DRIVE, SWING(0-0.5), LEVEL
-static const float kPresetParams[17][3] = {
-    {0.5f,0.10f,0.85f},   // G2B
-    {0.55f,0.08f,0.9f},   // DEMBOW
-    {0.65f,0.06f,0.85f},  // DRILL
-    {0.4f,0.14f,0.8f},    // RNB
-    {0.5f,0.02f,0.9f},    // HOUSE
-    {0.5f,0.12f,0.85f},   // AFRO
-    {0.7f,0.03f,0.88f},   // TRAP
-    {0.6f,0.05f,0.85f},   // BOOM
-    {0.45f,0.13f,0.85f},  // UKG
-    {0.55f,0.10f,0.9f},   // JERSEY
-    {0.5f,0.09f,0.85f},   // BOUNCE
-    {0.35f,0.12f,0.8f},   // SOUL
-    {0.4f,0.15f,0.78f},   // LOFI
-    {0.55f,0.11f,0.85f},  // FUNK
-    {0.45f,0.14f,0.82f},  // REGGAE
-    {0.5f,0.07f,0.88f},   // DANCE
-    {0.55f,0.11f,0.88f}   // KAWINA
+// sintemper: DRIVE, SWING(0-0.5), LEVEL | KRACHT(0-100), DIMENTIES(0-26), SFEER(0-2)
+static const float kPresetParams[17][6] = {
+    {0.5f,0.10f,0.85f, 100,9,1},   // G2B
+    {0.55f,0.08f,0.9f, 100,10,1},  // DEMBOW
+    {0.65f,0.06f,0.85f, 100,3,0},  // DRILL
+    {0.4f,0.14f,0.8f, 100,11,1},   // RNB
+    {0.5f,0.02f,0.9f, 100,8,2},    // HOUSE
+    {0.5f,0.12f,0.85f, 100,9,1},   // AFRO
+    {0.7f,0.03f,0.88f, 100,3,0},   // TRAP
+    {0.6f,0.05f,0.85f, 100,5,1},   // BOOM
+    {0.45f,0.13f,0.85f, 100,14,1}, // UKG
+    {0.55f,0.10f,0.9f, 100,10,2},  // JERSEY
+    {0.5f,0.09f,0.85f, 100,8,1},   // BOUNCE
+    {0.35f,0.12f,0.8f, 100,12,1},  // SOUL
+    {0.4f,0.15f,0.78f, 90,10,0},   // LOFI
+    {0.55f,0.11f,0.85f, 100,7,1},  // FUNK
+    {0.45f,0.14f,0.82f, 100,13,1}, // REGGAE
+    {0.5f,0.07f,0.88f, 100,9,2},   // DANCE
+    {0.55f,0.11f,0.88f, 100,8,1}   // KAWINA
 };
 
 struct BVoice { bool on=false; int note=0; float vel=0,t=0,ph=0,phD=0,lp=0; };
@@ -90,9 +87,9 @@ static float frand(unsigned& s){ s=s*1664525u+1013904223u; return (s>>8)*(1.f/16
 
 class DrumsPlugin : public Plugin {
 public:
-    enum Params { kStijl, kDrive, kSwing, kLevel, kDice, kAuto, kPreset, kOn, kKracht, kGalaxy, kSfeer, kBas, kBasType, kBasVol, kKey, kCell, kNumParams };
+    enum Params { kStijl, kDrive, kSwing, kLevel, kDice, kAuto, kPreset, kOn, kKracht, kGalaxy, kSfeer, kBas, kBasType, kBasVol, kKey, kDrumOn, kHand, kRun, kNumParams };
     DrumsPlugin() : Plugin(kNumParams,0,3) {
-        gDrumsView=&gridView_;for(int i=0;i<kMaxV;i++)fV[i].active=false;
+        for(int i=0;i<kMaxV;i++)fV[i].active=false;
     }
 protected:
     const char* getLabel() const override { return "G2B Drums & Bas"; }
@@ -120,11 +117,13 @@ protected:
         case kBasType:p.name="BASTYPE";  p.symbol="bastype";p.ranges.min=0;p.ranges.max=1;p.ranges.def=0.3f;p.unit="%";break;
         case kBasVol: p.name="BASVOL";   p.symbol="basvol";p.ranges.min=0;p.ranges.max=1;p.ranges.def=0.7f;p.unit="%";break;
         case kKey:    p.name="KEY";      p.symbol="key";   p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=11;p.ranges.def=9;break;
-        case kCell:   p.name="Cell";     p.symbol="cell";  p.hints|=kParameterIsInteger|kParameterIsTrigger;p.ranges.min=0;p.ranges.max=255;p.ranges.def=0;break;
+        case kDrumOn:   p.name="DRUM";     p.symbol="drum";  p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;p.ranges.def=1;break;
+        case kHand:     p.name="HAND";     p.symbol="hand";  p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;p.ranges.def=0;break;
+        case kRun:      p.name="SPEEL";    p.symbol="speel"; p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;p.ranges.def=1;break;
         }
     }
     float getParameterValue(uint32_t i) const override {
-        switch(i){case kStijl:return fStijl;case kDrive:return fDrive;case kSwing:return fSwing;case kLevel:return fLevel;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKracht;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;case kBas:return fBas;case kBasType:return fBasType;case kBasVol:return fBasVol;case kKey:return fKey;}return 0.f;
+        switch(i){case kStijl:return fStijl;case kDrive:return fDrive;case kSwing:return fSwing;case kLevel:return fLevel;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKracht;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;case kBas:return fBas;case kBasType:return fBasType;case kBasVol:return fBasVol;case kKey:return fKey;case kDrumOn:return fDrum;case kHand:return fHand;case kRun:return fRun;}return 0.f;
     }
     void setParameterValue(uint32_t i, float v) override {
         if(i==kPreset){applyPreset((int)(v+0.5f));return;}
@@ -132,8 +131,7 @@ protected:
         case kOn:fOn=v;break;case kKracht:fKracht=v;break;
         case kGalaxy:fGalaxyV=v;fGal.setPos((int)(v+0.5f));break;
         case kSfeer:fSfeerV=v;fSf.setMode((int)(v+0.5f));break;
-        case kBas:fBas=v;break;case kBasType:fBasType=v;break;case kBasVol:fBasVol=v;break;case kKey:fKey=v;break;
-        case kCell:if(v>0.5f)handleCell((int)v);break;}
+        case kBas:fBas=v;break;case kBasType:fBasType=v;break;case kBasVol:fBasVol=v;break;case kKey:fKey=v;break;case kDrumOn:fDrum=v;break;case kHand:fHand=v;break;case kRun:fRun=v;break;}
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
@@ -178,10 +176,13 @@ protected:
     }
 
     void run(const float** in, float** out, uint32_t frames, const MidiEvent* mev, uint32_t nmev) override {
-        // MIDI-keyboard = bas meespelen (noot-on triggert een bas-noot)
+        // MIDI-keyboard: HAND aan → noten 36-51 = drum-pads, rest = bas. HAND uit → alles = bas.
         for(uint32_t m=0;m<nmev;m++){
             const MidiEvent&e=mev[m];
-            if(e.size>=3&&(e.data[0]&0xF0)==0x90&&e.data[2]>0) basTrigger(e.data[1],e.data[2]/127.f);
+            if(e.size>=3&&(e.data[0]&0xF0)==0x90&&e.data[2]>0){
+                if(fHand>0.5f&&e.data[1]>=36&&e.data[1]<=51) handDrum(e.data[1]-36,e.data[2]/127.f);
+                else basTrigger(e.data[1],e.data[2]/127.f);
+            }
         }
         const float sr=getSampleRate();
         if(fOn<0.5f){std::memset(out[0],0,frames*sizeof(float));std::memset(out[1],0,frames*sizeof(float));return;}
@@ -193,6 +194,7 @@ protected:
         const int st=(int)fStijl<0?0:((int)fStijl>16?16:(int)fStijl);
         if(!fPatInit||st!=fLastStijl){for(int r=0;r<4;r++)for(int c=0;c<16;c++)fPat[r][c]=kPatterns[st][r][c];fPatInit=true;fLastStijl=st;sendPat();}
         for(uint32_t i=0;i<frames;i++){
+            if(fRun>0.5f){ // SPEEL/STOP: bij STOP staat de sequencer stil (voices klinken uit)
             fPhase+=1.0/sr;
             double stepDur=stepLen;
             int stepIdx=(int)fStep%16;
@@ -203,6 +205,7 @@ protected:
                 int s=(int)fStep%16;
                 const char* pat;
                 if(fAuto>0.5f && s==0 && (fStep%64)==0){mutate(1);sendPat();}
+                if(fDrum>0.5f&&fHand<0.5f){
                 if(s==0 && (fStep%64)==0) trigger(5); // echte crash-cymbal elke 4 maten op de 1
                 // timpani-roll: laatste maat van elke 4-maten cyclus, crescendo → landt op de crash (DRILL/TRAP/BOUNCE/DANCE)
                 const int g64=(int)(fStep%64);
@@ -214,8 +217,9 @@ protected:
                 if(fPat[1][s]!='.')trigger(1);
                 if(fPat[2][s]=='H')trigger(2); else if(fPat[2][s]=='o')trigger(3);
                 if(fPat[3][s]!='.')trigger(4);
+                }
                 // bas-stap: cijfer in het patroon = laddergreep
-                if(fBas>0.5f){
+                if(fBas>0.5f&&fHand<0.5f){
                     char bc=kBassPat[st][s];
                     if(bc>='0'&&bc<='6'){
                         int deg=bc-'0';
@@ -224,6 +228,7 @@ protected:
                 }
                 char sb[8];snprintf(sb,sizeof(sb),"%d",s);setState("step",sb);
             }
+            } else fPhase=0; // STOP: fase niet laten oplopen
             // voices renderen
             float o=0.f;
             for(auto& v:fV){
@@ -253,7 +258,7 @@ protected:
             }
             // bas-stemmen renderen (sub→reese synth)
             float b=0.f;
-            if(fBas>0.5f){
+            if(fBas>0.5f||fHand>0.5f){
                 for(auto& v:fBV){
                     if(!v.on)continue;
                     float f0=440.f*powf(2.f,(v.note-69)/12.f);
@@ -286,12 +291,23 @@ protected:
         g2b_post(nullptr,out,frames,sr,fOn,fKracht,fGal,&fSf,false);
     }
 private:
+    // HAND-modus: pad-index (0-15) → kDrum-samplenummer (kick,snare,hat,ohat,clap,darbuka,bell,clave,bongoH,bongoL,agogo,tomH,tomL,cabasa,shaker,crash)
+    void handDrum(int pad,float vel){
+        static const char kHandMap[16]={0,1,2,3,6,5,7,8,15,17,19,21,23,25,27,29};
+        const int ti=kHandMap[pad<0?0:(pad>15?15:pad)];
+        for(auto& v:fV){
+            if(v.active)continue;
+            v.active=true;v.type=2;v.t=0;
+            v.smp=kDrum[ti].d;v.slen=kDrum[ti].len;v.spos=0;v.sstep=0;
+            v.f0=8000.f;v.f1=8000.f;v.dec=v.slen/22050.0f;v.amp=0.9f*vel;
+            return;
+        }
+    }
     void basTrigger(int note,float vel){
         for(auto& v:fBV){ if(!v.on){v.on=true;v.note=note;v.vel=vel;v.t=0;v.ph=0;v.phD=0;v.lp=0;return;} }
         fBV[0].on=true;fBV[0].note=note;fBV[0].vel=vel;fBV[0].t=0;fBV[0].lp=0;
     }
     void sendPat(){
-        for(int r=0;r<4;r++)for(int c=0;c<16;c++)gridView_.pat[r][c]=fPat[r][c];
         char buf[70];int p=0;
         for(int r=0;r<4;r++){for(int c=0;c<16;c++)buf[p++]=fPat[r][c];buf[p++]=';';}
         buf[p]=0;setState("pat",buf);
@@ -314,31 +330,18 @@ private:
         setParameterValue(kDrive,kPresetParams[i][0]);
         setParameterValue(kSwing,kPresetParams[i][1]);
         setParameterValue(kLevel,kPresetParams[i][2]);
+        setParameterValue(kKracht,kPresetParams[i][3]);
+        setParameterValue(kGalaxy,kPresetParams[i][4]);
+        setParameterValue(kSfeer,kPresetParams[i][5]);
     }
     float fStijl=0,fDrive=0.5f,fSwing=0.10f,fLevel=0.85f,fDice=0,fAuto=0,fPreset=0;
     uint32_t fRr=0;
-    void handleCell(int c){
-        if(c>=64&&c<68){ // rij-dobbelsteen: gooi die ene lijn opnieuw
-            int r=c-64;
-            for(int s=0;s<16;s++){
-                fRnd=fRnd*1664525u+1013904223u; int on=(fRnd>>8)%100;
-                int dens=r==2?45:(r==0?30:25);
-                fPat[r][s]=on<dens?(r==0?'K':(r==1?'S':(r==2?(((fRnd>>9)%5==0)?'o':'H'):'P'))):'.';
-            }
-            fPat[r][0]='.';if(r<2)fPat[r][0]=(r==0?'K':'S'); // beat 1 houdt staan
-            sendPat();return;
-        }
-        if(c<0||c>=64)return;
-        int r=c/16,s=c%16;
-        if(fPat[r][s]=='.')fPat[r][s]=(r==0?'K':(r==1?'S':(r==2?'H':'P')));else fPat[r][s]='.';
-        sendPat();
-    }
-    char fPat[4][17];DrumsGridView gridView_{};bool fPatInit=false;int fLastStijl=0;
+    char fPat[4][17];bool fPatInit=false;int fLastStijl=0;
     static const int kMaxV=24;
     DrumVoice fV[kMaxV];
     unsigned fRnd=24681357; unsigned fNfac=999; unsigned fRoll=0;
-    float fOn=1.f,fKracht=100.f,fGalaxyV=9.f,fSfeerV=1.f;
-    float fBas=1.f,fBasType=0.3f,fBasVol=0.7f,fKey=9.f;
+    float fOn=1.f,fKracht=100.f,fGalaxyV=9.f,fSfeerV=1.f,fHand=0.f,fRun=1.f;
+    float fBas=1.f,fBasType=0.3f,fBasVol=0.7f,fKey=9.f,fDrum=1.f;
     BVoice fBV[4];
     Galaxy fGal; Sfeer fSf;
     double fPhase=0; int64_t fStep=0;
