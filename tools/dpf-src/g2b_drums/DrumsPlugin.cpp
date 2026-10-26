@@ -67,7 +67,7 @@ static float frand(unsigned& s){ s=s*1664525u+1013904223u; return (s>>8)*(1.f/16
 
 class DrumsPlugin : public Plugin {
 public:
-    enum Params { kStijl, kDrive, kSwing, kLevel, kDice, kAuto, kPreset, kOn, kKracht, kGalaxy, kSfeer, kCell, kNumParams };
+    enum Params { kStijl, kDrive, kSwing, kLevel, kDice, kAuto, kPreset, kOn, kKracht, kGalaxy, kSfeer, kCell, kRun, kNumParams };
     DrumsPlugin() : Plugin(kNumParams,0,3) {
         gDrumsView=&gridView_;for(int i=0;i<kMaxV;i++)fV[i].active=false;
     }
@@ -94,10 +94,11 @@ protected:
         case kGalaxy:p.name="DIMENTIES";p.symbol="dim";   p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=26;p.ranges.def=9;break;
         case kSfeer: p.name="Sfeer";    p.symbol="sfeer"; p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=2;p.ranges.def=1;break;
         case kCell: p.name="CELL";   p.symbol="cell"; p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=255;p.ranges.def=0;break;
+        case kRun:  p.name="SPEEL";  p.symbol="speel"; p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;p.ranges.def=1;break;
         }
     }
     float getParameterValue(uint32_t i) const override {
-        switch(i){case kStijl:return fStijl;case kDrive:return fDrive;case kSwing:return fSwing;case kLevel:return fLevel;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKracht;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;case kCell:return 0.f;}return 0.f;
+        switch(i){case kStijl:return fStijl;case kDrive:return fDrive;case kSwing:return fSwing;case kLevel:return fLevel;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKracht;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;case kCell:return 0.f;case kRun:return fRun;}return 0.f;
     }
     void setParameterValue(uint32_t i, float v) override {
         if(i==kPreset){applyPreset((int)(v+0.5f));return;}
@@ -105,7 +106,8 @@ protected:
         case kOn:fOn=v;break;case kKracht:fKracht=v;break;
         case kGalaxy:fGalaxyV=v;fGal.setPos((int)(v+0.5f));break;
         case kSfeer:fSfeerV=v;fSf.setMode((int)(v+0.5f));break;
-        case kCell:if(v>0.5f)handleCell((int)(v+0.5f));break;}
+        case kCell:if(v>0.5f)handleCell((int)(v+0.5f));break;
+        case kRun:fRun=v;break;}
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
@@ -160,6 +162,7 @@ protected:
         const int st=(int)fStijl<0?0:((int)fStijl>16?16:(int)fStijl);
         if(!fPatInit||st!=fLastStijl){for(int r=0;r<4;r++)for(int c=0;c<16;c++)fPat[r][c]=kPatterns[st][r][c];fPatInit=true;fLastStijl=st;sendPat();}
         for(uint32_t i=0;i<frames;i++){
+            if(fRun>0.5f){
             fPhase+=1.0/sr;
             double stepDur=stepLen;
             int stepIdx=(int)fStep%16;
@@ -182,7 +185,7 @@ protected:
                 if(fPat[2][s]=='H')trigger(2); else if(fPat[2][s]=='o')trigger(3);
                 if(fPat[3][s]!='.')trigger(4);
                 char sb[8];snprintf(sb,sizeof(sb),"%d",s);setState("step",sb);
-            }
+            }} else fPhase=0;
             // voices renderen
             float o=0.f;
             for(auto& v:fV){
@@ -266,7 +269,7 @@ private:
     static const int kMaxV=24;
     DrumVoice fV[kMaxV];
     unsigned fRnd=24681357; unsigned fNfac=999; unsigned fRoll=0;
-    float fOn=1.f,fKracht=100.f,fGalaxyV=9.f,fSfeerV=1.f;
+    float fOn=1.f,fKracht=100.f,fGalaxyV=9.f,fSfeerV=1.f,fRun=1.f;
     Galaxy fGal; Sfeer fSf;
     double fPhase=0; int64_t fStep=0;
     float fScope[40];uint32_t fScopeN=0;int fDecim=0;
