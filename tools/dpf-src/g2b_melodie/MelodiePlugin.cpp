@@ -206,6 +206,8 @@ protected:
         double bpm=100.0;
         const TimePosition& tp=getTimePosition();
         if(tp.playing && tp.bbt.valid && tp.bbt.beatsPerMinute>1.0) bpm=tp.bbt.beatsPerMinute;
+        const bool hostHasTransport=tp.bbt.valid;
+        const bool playNow=fPlay>0.5f&&(!hostHasTransport||tp.playing); // host-gate: stopt zodra de host stopt; losse exe speelt door
         const double stepLen=60.0/bpm/4.0;
         const int st=(int)fStijl<0?0:((int)fStijl>16?16:(int)fStijl);
         if(!fPatInit){memcpy(fPat,kMelPat[st],sizeof(fPat));fPatInit=true;fLastStijl=st;}
@@ -213,7 +215,7 @@ protected:
         const float lpA=1.f-expf(-2.f*M_PI*(800.f+fTimbre*6000.f)/sr);
         const float decRate=expf(-1.f/( (0.3f+fTimbre*1.6f)*sr ));
         for(uint32_t i=0;i<frames;i++){
-            fPhase+=1.0/sr;
+            if(playNow)fPhase+=1.0/sr; else fPhase=0;
             double stepDur=stepLen;
             int si=(int)fStep%16;
             if(si%2==1) stepDur*=1.0+fSwing*0.8;

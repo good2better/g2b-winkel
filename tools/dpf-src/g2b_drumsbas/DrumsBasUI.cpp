@@ -74,6 +74,7 @@ protected:
         else if(index==15)fDrum=(int)(value+0.5f);
         else if(index==16)fHand=(int)(value+0.5f);
         else if(index==17)fRun=value;
+        else if(index==19)fSlot=(int)(value+0.5f);
         repaint();
     }
     void stateChanged(const char* key, const char* value) override
@@ -98,8 +99,11 @@ protected:
             repaint();
         } else if(std::strcmp(key,"step")==0){
             fStep=atoi(value);repaint();
+        } else if(std::strcmp(key,"mid")==0){
+            std::snprintf(fMidMsg,sizeof(fMidMsg),"%s",value);fMidT=300;repaint();
         }
     }
+    void uiIdle() override { if(fMidT>0){fMidT--;repaint();} }
     void onNanoDisplay() override
     {
         const float W=getWidth(),H=getHeight();
@@ -206,6 +210,31 @@ protected:
                 fontSize(9.5f);fillColor(fRun>0.5f?Color(13,15,14):Color(143,160,152));
                 text(bx2+19.0f,58.5f,fRun>0.5f?"SPEEL":"STOP",nullptr);
             }
+            bx2+=42.0f;
+            { // SLOT: patroon-blok kiezen (4 stuks, clip-blok gevoel)
+                beginPath();roundedRect(bx2,50.0f,34.0f,17.0f,4.0f);
+                fillColor(g2bsk(fLight,4));fill();
+                strokeColor(42,47,45);strokeWidth(1.0f);stroke();
+                fontSize(9.0f);fillColor(g2bsk(fLight,2));
+                char sl[8];std::snprintf(sl,sizeof(sl),"S%d",fSlot+1);
+                text(bx2+17.0f,58.5f,sl,nullptr);
+            }
+            bx2+=38.0f;
+            { // DUP: huidige blok kopieren naar de volgende slot
+                beginPath();roundedRect(bx2,50.0f,32.0f,17.0f,4.0f);
+                fillColor(g2bsk(fLight,1));fill();
+                strokeColor(42,47,45);strokeWidth(1.0f);stroke();
+                fontSize(9.0f);fillColor(g2bsk(fLight,2));
+                text(bx2+16.0f,58.5f,"DUP",nullptr);
+            }
+            bx2+=36.0f;
+            { // MID: huidige patroon als .mid bestand opslaan
+                beginPath();roundedRect(bx2,50.0f,36.0f,17.0f,4.0f);
+                fillColor(g2bsk(fLight,1));fill();
+                strokeColor(42,47,45);strokeWidth(1.0f);stroke();
+                fontSize(8.0f);fillColor(g2bsk(fLight,2));
+                text(bx2+18.0f,58.5f,"\xE2\x86\x93MID",nullptr);
+            }
         }
 
         // 16-staps LED-grid (4 rijen: K S H P)
@@ -223,7 +252,14 @@ protected:
                 fill();
             }
             fontSize(9.0f);fillColor(90,100,94);textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
-            text(gx-2.0f,gy+r*16.0f+7.0f,&rowN[r],nullptr); // rij-letter links (valt deels buiten grid, ok)
+            char rb[2]={rowN[r],0}; text(gx-2.0f,gy+r*16.0f+7.0f,rb,nullptr); // rij-letter links (valt deels buiten grid, ok)
+        }
+
+        // sleep-hint onder grid
+        if(fMidT>0){
+            fontSize(8.0f);textAlign(ALIGN_RIGHT|ALIGN_MIDDLE);
+            fillColor(47,191,113);
+            text(W-20.0f,150.0f,fMidMsg,nullptr);
         }
 
         // scope onder grid
@@ -336,6 +372,33 @@ protected:
             if((float)(ev.pos.getX()/getScaleFactor())>=208.0f&&(float)(ev.pos.getX()/getScaleFactor())<=246.0f&&(float)(ev.pos.getY()/getScaleFactor())>=50.0f&&(float)(ev.pos.getY()/getScaleFactor())<=67.0f){
                 fRun=fRun>0.5f?0.f:1.f;setParameterValue(17,fRun);repaint();return true;
             }
+            // SLOT pill: cyclus 0..3 (clip-blok select)
+            if((float)(ev.pos.getX()/getScaleFactor())>=250.0f&&(float)(ev.pos.getX()/getScaleFactor())<=284.0f&&(float)(ev.pos.getY()/getScaleFactor())>=50.0f&&(float)(ev.pos.getY()/getScaleFactor())<=67.0f){
+                fSlot=(fSlot+1)%4;setParameterValue(19,(float)fSlot);repaint();return true;
+            }
+            // DUP pill: patroon-blok dupliceren naar volgende slot
+            if((float)(ev.pos.getX()/getScaleFactor())>=288.0f&&(float)(ev.pos.getX()/getScaleFactor())<=320.0f&&(float)(ev.pos.getY()/getScaleFactor())>=50.0f&&(float)(ev.pos.getY()/getScaleFactor())<=67.0f){
+                setParameterValue(20,1.0f);fSlot=(fSlot+1)%4;repaint();return true;
+            }
+            // MID pill: .mid export
+            if((float)(ev.pos.getX()/getScaleFactor())>=324.0f&&(float)(ev.pos.getX()/getScaleFactor())<=360.0f&&(float)(ev.pos.getY()/getScaleFactor())>=50.0f&&(float)(ev.pos.getY()/getScaleFactor())<=67.0f){
+                setParameterValue(21,1.0f);repaint();return true;
+            }
+            // 16-staps grid: klik = stap aan/uit, sleep = meerdere stappen schilderen
+            {
+                const float mx=(float)(ev.pos.getX()/getScaleFactor()),my=(float)(ev.pos.getY()/getScaleFactor());
+                const float cw=(W-36.0f)/16.0f;
+                if(mx>=18.0f&&mx<W-18.0f&&my>=74.0f&&my<154.0f){
+                    const int r=(int)((my-74.0f)/16.0f),s=(int)((mx-18.0f)/cw);
+                    if(r>=0&&r<5&&s>=0&&s<16){
+                        fPaint=(fPatGrid[r][s]=='.')?1:2; // 1 = aan schilderen, 2 = uit
+                        const int base=(fPaint==1)?100:200;
+                        setParameterValue(18,(float)(base+r*16+s));
+                        fPatGrid[r][s]=(fPaint==1)?'x':'.';
+                        fLastCell=r*16+s;repaint();return true;
+                    }
+                }
+            }
             // AAN/UIT pil
             if((float)(ev.pos.getX()/getScaleFactor())>=W-48.0f&&(float)(ev.pos.getX()/getScaleFactor())<=W-4.0f&&(float)(ev.pos.getY()/getScaleFactor())>=12.0f&&(float)(ev.pos.getY()/getScaleFactor())<=29.0f){
                 fOn=1-fOn;setParameterValue(7,(float)fOn);repaint();return true;
@@ -357,6 +420,7 @@ protected:
             }
         }
         else if(fXYdrag){fXYdrag=false;return true;}
+        else if(fPaint>0){fPaint=0;fLastCell=-1;return true;}
         const float step=(W-40.0f)/11;
         if(ev.press){
             for(int i=0;i<11;++i){
@@ -382,6 +446,29 @@ protected:
     bool onMotion(const MotionEvent& ev) override
     {
         if(fXYdrag){xySet((float)(ev.pos.getX()/getScaleFactor()),(float)(ev.pos.getY()/getScaleFactor()));return true;}
+        if(fPaint>0){ // grid-sleep: cellen onderweg ook zetten
+            const float W=getWidth();
+            const float mx=(float)(ev.pos.getX()/getScaleFactor()),my=(float)(ev.pos.getY()/getScaleFactor());
+            const float cw=(W-36.0f)/16.0f;
+            if(mx>=18.0f&&mx<W-18.0f&&my>=74.0f&&my<154.0f){
+                const int r=(int)((my-74.0f)/16.0f),s=(int)((mx-18.0f)/cw);
+                if(r>=0&&r<5&&s>=0&&s<16&&(r*16+s)!=fLastCell){
+                    if(r==fLastCell/16){ // tussen-cellen op dezelfde rij meenemen (Reason-vulling)
+                        const int s0=fLastCell%16, lo=s0<s?s0:s, hi=s0<s?s:s0;
+                        for(int s2=lo;s2<=hi;s2++){
+                            setParameterValue(18,(float)((fPaint==1?100:200)+r*16+s2));
+                            fPatGrid[r][s2]=(fPaint==1)?'x':'.';
+                        }
+                    } else {
+                        setParameterValue(18,(float)((fPaint==1?100:200)+r*16+s));
+                        fPatGrid[r][s]=(fPaint==1)?'x':'.';
+                    }
+                    fLastCell=r*16+s;
+                    repaint();return true;
+                }
+            }
+            return true;
+        }
         if(fDrag<0)return false;
         const float dy=fLastY-(float)(ev.pos.getY()/getScaleFactor());fLastY=(float)(ev.pos.getY()/getScaleFactor());
         const float range=fMax[fDrag]-fMin[fDrag];
@@ -412,6 +499,7 @@ private:
     float fScope[kScopeSize];int fScopePos;
     int fDrag;float fLastY;int fProg;int fStep;float fAuto=0;int fLight=0;
     int fOn=1,fDrum=1,fHand=0; bool fXYdrag=false; float fRun=1.f;
+    int fSlot=0; int fPaint=0,fLastCell=-1; char fMidMsg[96]={0}; int fMidT=0;
     float fXX=18.0f,fXY_=286.0f,fXW=524.0f,fXH=58.0f;
     char fPatGrid[5][16];
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DrumsUI)
