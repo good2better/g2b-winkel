@@ -65,16 +65,20 @@ protected:
         int key=(int)prm[kKey],sc=(int)prm[kScale],pg=(int)prm[kProg],pat=(int)prm[kPattern];
         float dens=prm[kDensity]/100.f,bpm=prm[kRate];int oct=(int)prm[kOctave];
         float swing=prm[kSwing]/100.f;int dims=(int)prm[kDimensie];
+        const TimePosition& tp=getTimePosition(); // host-transport: bpm + speelt/stopt
+        const bool hostHasTransport=tp.bbt.valid;
+        if(hostHasTransport&&tp.bbt.beatsPerMinute>1.0)bpm=(float)tp.bbt.beatsPerMinute;
+        const bool playNow=prm[kPlay]>0.5f&&(!hostHasTransport||tp.playing); // host-gate: stopt zodra de host stopt; losse exe speelt door
         double sr=getSampleRate();double step8=bpm/60.0/2.0;
         int patx=pat+(dims>=13?1:0);if(patx>7)patx-=8;
         for(uint32_t i=0;i<frames;i++){
             double sw=(step%2==1)?swing*0.4:0;
-            ph+=step8/sr;
-            if(ph>=1.0+sw*step8/8.0){
+            if(playNow)ph+=step8/sr;
+            if(playNow&&ph>=1.0+sw*step8/8.0){
                 ph=0;step=(step+1)%8;if(step==0)chord=(chord+1)%4;
                 int deg=PROGS[pg][chord];
                 float rnd=frand();
-                if(prm[kPlay]>0.5f&&rnd<dens&&(((int)prm[kUser]>>step)&1)){
+                if(rnd<dens&&(((int)prm[kUser]>>step)&1)){
                     int st=PAT[patx][step]+deg;
                     int note=48+key+SCALES[sc][st%7]+12*(st/7)+12*oct;
                     if(patx==6)note-=12;

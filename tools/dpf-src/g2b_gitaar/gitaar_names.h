@@ -1,0 +1,2 @@
+static const char* kInstrNamesUI[]={"SPAANSGTR","EGTRCLEAN","EGTRJAZZ","EGTRDIST","EBASS","UKELELE","STAPGIT1","STAPGIT2","STAPGIT3","STAPGIT4","ZOUKGIT","ZOUKBAS","SCHUIVGIT"};
+static const int kInstrNamesUI_N=13;

@@ -166,6 +166,9 @@ protected:
         int on=(int)prm[kOn]; float mix=prm[kKracht]/100.f;
         int key=(int)prm[kKey], sc=(int)prm[kScale], pg=(int)prm[kProg], vo=(int)prm[kVoicing];
         float bpm=prm[kRate]; int dims=(int)prm[kDimensie]; int typ=(int)prm[kVoice];
+        const TimePosition& tp=getTimePosition(); // host-transport: bpm + speelt/stopt
+        const bool hostHasTransport=tp.bbt.valid;
+        if(hostHasTransport&&tp.bbt.beatsPerMinute>1.0)bpm=(float)tp.bbt.beatsPerMinute;
         // MIDI-keyboard: elke noot die je speelt triggert een akkoord op die grondtoon
         for (uint32_t m=0;m<nmev;m++){
             const MidiEvent&e=mev[m];
@@ -182,8 +185,9 @@ protected:
             }
         }
         double beatsPerSec=bpm/60.0;
+        const bool playNow=prm[kMode]>0.5f&&(!hostHasTransport||tp.playing); // host-gate: stopt zodra de host stopt; losse exe speelt door
         for (uint32_t i=0;i<frames;i++){
-            if (prm[kMode]>0.5f) ph += beatsPerSec/sr;
+            if (playNow) ph += beatsPerSec/sr;
             if (ph>=1.0){ ph-=1.0; chordIdx=(chordIdx+1)%4; strumN=0; strumAt=i; }
             if (retrig){ retrig=false; strumN=0; strumAt=i; } // knop-draai = direct hoorbaar
             // strum: elke ~22ms volgende noot aan

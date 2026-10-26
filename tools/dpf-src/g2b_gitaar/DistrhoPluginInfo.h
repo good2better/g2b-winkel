@@ -1,0 +1,18 @@
+#define DISTRHO_PLUGIN_BRAND "Good2Better"
+#define DISTRHO_PLUGIN_NAME  "G2B Gitaar VOL6"
+#define DISTRHO_PLUGIN_URI   "https://good2better.com/plugins/g2b-gitaar-vol6"
+#define DISTRHO_PLUGIN_LV2_CATEGORY "lv2:InstrumentPlugin"
+#define DISTRHO_PLUGIN_VST3_CATEGORIES "Instrument|Synth|Stereo"
+#define DISTRHO_PLUGIN_CLAP_FEATURES "instrument", "synthesizer", "stereo"
+#define DISTRHO_PLUGIN_HAS_UI 1
+#define DISTRHO_UI_USE_NANOVG 1
+#define DISTRHO_UI_DEFAULT_WIDTH 780
+#define DISTRHO_UI_DEFAULT_HEIGHT 300
+#define DISTRHO_PLUGIN_IS_SYNTH 1
+#define DISTRHO_PLUGIN_NUM_INPUTS 0
+#define DISTRHO_PLUGIN_NUM_OUTPUTS 2
+#define DISTRHO_PLUGIN_WANT_MIDI_INPUT 1
+#define DISTRHO_PLUGIN_WANT_STATE 1
+#define DISTRHO_PLUGIN_WANT_FULL_STATE 1
+#define DISTRHO_UI_USER_RESIZABLE 1
+#define DISTRHO_PLUGIN_CLAP_ID "com.good2better.g2b-gitaar-vol6"

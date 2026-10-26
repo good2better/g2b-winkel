@@ -1,0 +1,4 @@
+#pragma once
+
+static const char* kInstrNamesUI[]={"STEELDRUM","SLAGGITAAR","NYLON","STEELGTR","BRASS","KWINAFLUIT","HAMMOND","MALLET","MARIMBA2","LEADSAW","FILTLEAD","BELLGLAS","KARPLUSGIT","KARPLUSBAS"};
+static const int kInstrNamesUI_N=14;
