@@ -1,0 +1,34 @@
+{
+  "name": "g2b-beatmaker-pro",
+  "productName": "G2B Beat Maker PRO",
+  "version": "1.0.0",
+  "description": "G2B Beat Maker PRO - offline beat app (Electron, MIT)",
+  "main": "main.js",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "ai.good2better.beatmakerpro",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "app/**"
+    ],
+    "win": {
+      "target": "nsis",
+      "artifactName": "G2B-BeatMaker-PRO-setup-${version}.${ext}",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "shortcutName": "G2B Beat Maker PRO"
+    }
+  },
+  "author": "G2B - Good2Better"
+}
