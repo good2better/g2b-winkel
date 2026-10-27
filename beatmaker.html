@@ -125,7 +125,9 @@ for(const g of Object.keys(GENRES)){
 }
 
 function laad(g){
- cur=g;laadSmp(g);const G=GENRES[g];
+ cur=g;laadSmp(g);
+ if(timer&&MX){const t=ac.currentTime;MX.gain.cancelScheduledValues(t);MX.gain.setValueAtTime(MX.gain.value,t);MX.gain.linearRampToValueAtTime(0.0001,t+0.05);MX.gain.linearRampToValueAtTime(1,t+0.1)}
+ const G=GENRES[g];
  if(!gridFromLoop){
   document.getElementById('bpm').value=G.bpm;document.getElementById('bpmv').textContent=G.bpm;
   for(const r of RIJEN){state[r]=new Set(G.pat[r]||[])}
@@ -142,7 +144,7 @@ document.getElementById('random').onclick=()=>{
  gridFromLoop=false;nBars=1;nSub=16;renderGrid();
  for(const r of RIJEN){state[r].clear();for(let s=0;s<16;s++)if(Math.random()<(r=='hat'?.6:r=='perc'?.2:.3))state[r].add(s)}
  document.querySelectorAll('.cel').forEach(c=>c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s)))};
-let ac=null,step=0,timer=null,volgende=0;
+let ac=null,step=0,timer=null,volgende=0,MX=null; // MX = master-gain (50ms fade bij soundbank-wissel)
 function noiseBuf(a){const b=a.createBuffer(1,a.sampleRate*0.5,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b}
 let NB=null,VEL={};
 // échte G2B one-shots per genre (drumsnd/<genre>-<rij>.wav) — synth blijft fallback
@@ -160,12 +162,13 @@ async function laadSmp(g){
 function speel(r,t,v){
  const a=ac,g0=v==null?0.9:(0.4+0.65*v); // velocity uit de loop: zacht/hard meespelen
  const buf=SMPL[cur]&&SMPL[cur][r];
- if(buf){const s=a.createBufferSource();s.buffer=buf;const g=a.createGain();g.gain.value=g0;s.connect(g).connect(a.destination);s.start(t);return}
+ const dst=(MX&&MX.context===a)?MX:a.destination;
+ if(buf){const s=a.createBufferSource();s.buffer=buf;const g=a.createGain();g.gain.value=g0;s.connect(g).connect(dst);s.start(t);return}
  const TM=GENRES[cur].tim||{kf:150,ke:45,kd:.3,sd:.18,hc:7000,hd:.05,pf:520,pd:.12};
- if(r=='kick'){const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(TM.kf,t);o.frequency.exponentialRampToValueAtTime(TM.ke,t+0.12);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.kd);o.connect(g).connect(a.destination);o.start(t);o.stop(t+TM.kd+0.02)}
- if(r=='snare'){const s=a.createBufferSource();s.buffer=NB;const g=a.createGain();g.gain.setValueAtTime(0.7,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.sd);s.connect(g).connect(a.destination);s.start(t);s.stop(t+TM.sd+0.02)}
- if(r=='hat'){const s=a.createBufferSource();s.buffer=NB;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=TM.hc;const g=a.createGain();g.gain.setValueAtTime(0.3,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.hd);s.connect(f).connect(g).connect(a.destination);s.start(t);s.stop(t+TM.hd+0.02)}
- if(r=='perc'){const o=a.createOscillator(),g=a.createGain();o.frequency.value=TM.pf;o.type='triangle';g.gain.setValueAtTime(0.5,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.pd);o.connect(g).connect(a.destination);o.start(t);o.stop(t+TM.pd+0.01)}
+ if(r=='kick'){const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(TM.kf,t);o.frequency.exponentialRampToValueAtTime(TM.ke,t+0.12);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.kd);o.connect(g).connect(dst);o.start(t);o.stop(t+TM.kd+0.02)}
+ if(r=='snare'){const s=a.createBufferSource();s.buffer=NB;const g=a.createGain();g.gain.setValueAtTime(0.7,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.sd);s.connect(g).connect(dst);s.start(t);s.stop(t+TM.sd+0.02)}
+ if(r=='hat'){const s=a.createBufferSource();s.buffer=NB;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=TM.hc;const g=a.createGain();g.gain.setValueAtTime(0.3,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.hd);s.connect(f).connect(g).connect(dst);s.start(t);s.stop(t+TM.hd+0.02)}
+ if(r=='perc'){const o=a.createOscillator(),g=a.createGain();o.frequency.value=TM.pf;o.type='triangle';g.gain.setValueAtTime(0.5,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.pd);o.connect(g).connect(dst);o.start(t);o.stop(t+TM.pd+0.01)}
 }
 function tik(){
  const a=ac,bpm=+document.getElementById('bpm').value,stap=240/bpm/nSub;
@@ -184,7 +187,7 @@ function tik(){
 }
 document.getElementById('play').onclick=function(){
  if(timer){clearInterval(timer);timer=null;this.textContent='▶ SPEL';document.querySelectorAll('.cel.speel').forEach(c=>c.classList.remove('speel'));return}
- if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();NB=noiseBuf(ac)}
+ if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();NB=noiseBuf(ac);MX=ac.createGain();MX.connect(ac.destination)}
  ac.resume();laadSmp(cur);step=0;volgende=ac.currentTime+0.06;
  timer=setInterval(tik,25);this.textContent='⏹ STOP';
 };
