@@ -86,7 +86,19 @@ const GENRES={
  bubbling:{bpm:152,tim:{kf:160,ke:60,kd:.22,sd:.14,hc:8000,hd:.04,pf:620,pd:.10},pat:{kick:[0,4,8,12],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[6,14]}},
  soca:{bpm:128,tim:{kf:140,ke:50,kd:.28,sd:.16,hc:7500,hd:.05,pf:580,pd:.12},pat:{kick:[0,4,8,12],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[6,7,14,15]}},
  schuivel:{bpm:82,tim:{kf:130,ke:40,kd:.35,sd:.20,hc:6500,hd:.06,pf:480,pd:.14},pat:{kick:[0,8],snare:[4,12],hat:[2,6,10,14],perc:[0,8]}},
- kawina:{bpm:142,tim:{kf:170,ke:55,kd:.25,sd:.15,hc:7800,hd:.05,pf:320,pd:.18},pat:{kick:[0,7,8],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[2,5,10,13,15]}}
+ kawina:{bpm:142,tim:{kf:170,ke:55,kd:.25,sd:.15,hc:7800,hd:.05,pf:320,pd:.18},pat:{kick:[0,7,8],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[2,5,10,13,15]}},
+ afro:{bpm:112,tim:{kf:120,ke:40,kd:.35,sd:.2,hc:6000,hd:.08,pf:300,pd:.3},pat:{kick:[0,7,10],snare:[4,12],hat:[2,6,10,14],perc:[2,6,11,14]}},
+ afrobeat:{bpm:104,tim:{kf:110,ke:38,kd:.4,sd:.2,hc:6000,hd:.08,pf:280,pd:.3},pat:{kick:[0,5,10],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[3,7,11,14]}},
+ boombap:{bpm:88,tim:{kf:110,ke:40,kd:.3,sd:.22,hc:5500,hd:.07,pf:400,pd:.12},pat:{kick:[0,7,10],snare:[4,12],hat:[0,2,4,6,8,10,12,14],perc:[3,11]}},
+ dancehall:{bpm:100,tim:{kf:140,ke:45,kd:.3,sd:.18,hc:7000,hd:.06,pf:450,pd:.15},pat:{kick:[0,8],snare:[4,7,12,15],hat:[2,6,10,14],perc:[3,11]}},
+ dembow:{bpm:95,tim:{kf:135,ke:42,kd:.3,sd:.18,hc:7000,hd:.06,pf:440,pd:.14},pat:{kick:[0,4,8,12],snare:[3,7,11,15],hat:[0,2,4,6,8,10,12,14],perc:[6,14]}},
+ drill:{bpm:142,tim:{kf:110,ke:32,kd:.5,sd:.2,hc:6500,hd:.06,pf:400,pd:.15},pat:{kick:[0,7,10],snare:[8],hat:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],perc:[8]}},
+ funk:{bpm:98,tim:{kf:125,ke:42,kd:.25,sd:.18,hc:6500,hd:.05,pf:480,pd:.12},pat:{kick:[0,6,8,14],snare:[4,12],hat:[0,2,4,6,8,10,12,14],perc:[2,10]}},
+ lofi:{bpm:75,tim:{kf:100,ke:38,kd:.35,sd:.25,hc:4500,hd:.09,pf:380,pd:.15},pat:{kick:[0,10],snare:[4,12],hat:[2,6,10,14],perc:[7,14]}},
+ phonk:{bpm:132,tim:{kf:115,ke:34,kd:.45,sd:.2,hc:7000,hd:.06,pf:420,pd:.15},pat:{kick:[0,7,8],snare:[8],hat:[0,2,4,6,8,10,12,14],perc:[4,12]}},
+ zouk:{bpm:100,tim:{kf:115,ke:42,kd:.35,sd:.2,hc:6800,hd:.07,pf:350,pd:.2},pat:{kick:[0,8],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[2,6,10,14]}},
+ surinaams:{bpm:138,tim:{kf:150,ke:50,kd:.28,sd:.16,hc:7500,hd:.05,pf:330,pd:.18},pat:{kick:[0,6,8],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[2,5,10,13,15]}},
+ rock:{bpm:120,tim:{kf:130,ke:45,kd:.3,sd:.2,hc:7500,hd:.06,pf:500,pd:.12},pat:{kick:[0,8,10],snare:[4,12],hat:[0,2,4,6,8,10,12,14],perc:[2,6,14]}}
 };
 const RIJEN=["kick","snare","hat","perc"];const NAMEN={kick:"🥁 KICK",snare:"👏 SNARE",hat:"🎩 HAT",perc:"🪘 PERC"};
 const grid=document.getElementById('grid'),state={};let cur='house';
@@ -113,7 +125,7 @@ for(const g of Object.keys(GENRES)){
 }
 
 function laad(g){
- cur=g;const G=GENRES[g];
+ cur=g;laadSmp(g);const G=GENRES[g];
  if(!gridFromLoop){
   document.getElementById('bpm').value=G.bpm;document.getElementById('bpmv').textContent=G.bpm;
   for(const r of RIJEN){state[r]=new Set(G.pat[r]||[])}
@@ -131,8 +143,23 @@ document.getElementById('random').onclick=()=>{
 let ac=null,step=0,timer=null,volgende=0;
 function noiseBuf(a){const b=a.createBuffer(1,a.sampleRate*0.5,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b}
 let NB=null;
+// échte G2B one-shots per genre (drumsnd/<genre>-<rij>.wav) — synth blijft fallback
+const SMPL={};
+async function laadSmp(g){
+ if(!ac||SMPL[g])return;SMPL[g]={};
+ for(const r of RIJEN){
+  try{
+   const res=await fetch(`drumsnd/${g}-${r}.wav`);
+   if(!res.ok)continue;
+   SMPL[g][r]=await ac.decodeAudioData(await res.arrayBuffer());
+  }catch(e){}
+ }
+}
 function speel(r,t){
- const a=ac,TM=GENRES[cur].tim||{kf:150,ke:45,kd:.3,sd:.18,hc:7000,hd:.05,pf:520,pd:.12};
+ const a=ac;
+ const buf=SMPL[cur]&&SMPL[cur][r];
+ if(buf){const s=a.createBufferSource();s.buffer=buf;const g=a.createGain();g.gain.value=.9;s.connect(g).connect(a.destination);s.start(t);return}
+ const TM=GENRES[cur].tim||{kf:150,ke:45,kd:.3,sd:.18,hc:7000,hd:.05,pf:520,pd:.12};
  if(r=='kick'){const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(TM.kf,t);o.frequency.exponentialRampToValueAtTime(TM.ke,t+0.12);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.kd);o.connect(g).connect(a.destination);o.start(t);o.stop(t+TM.kd+0.02)}
  if(r=='snare'){const s=a.createBufferSource();s.buffer=NB;const g=a.createGain();g.gain.setValueAtTime(0.7,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.sd);s.connect(g).connect(a.destination);s.start(t);s.stop(t+TM.sd+0.02)}
  if(r=='hat'){const s=a.createBufferSource();s.buffer=NB;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=TM.hc;const g=a.createGain();g.gain.setValueAtTime(0.3,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.hd);s.connect(f).connect(g).connect(a.destination);s.start(t);s.stop(t+TM.hd+0.02)}
@@ -145,14 +172,18 @@ function tik(){
   for(const r of RIJEN)if(state[r].has(s))speel(r,t);
   document.querySelectorAll('.cel.speel').forEach(c=>c.classList.remove('speel'));
   const ij=s;
-  setTimeout(()=>{if(!timer)return;document.querySelectorAll(`.cel[data-s="${ij}"]`).forEach(c=>{if(c.classList.contains('aan'))c.classList.add('speel')})},Math.max(0,(volgende-a.currentTime)*1000));
+  setTimeout(()=>{if(!timer)return;
+   document.querySelectorAll(`.cel[data-s="${ij}"]`).forEach(c=>{if(c.classList.contains('aan'))c.classList.add('speel')});
+   // meescrollen met de speel-kop (lange loops)
+   document.querySelectorAll('.cells').forEach(cs=>{const el=cs.children[ij];if(!el)return;const celW=el.offsetWidth+4;cs.scrollLeft=Math.max(0,ij*celW-cs.clientWidth/2)});
+  },Math.max(0,(volgende-a.currentTime)*1000));
   volgende+=stap;step++;
  }
 }
 document.getElementById('play').onclick=function(){
  if(timer){clearInterval(timer);timer=null;this.textContent='▶ SPEL';document.querySelectorAll('.cel.speel').forEach(c=>c.classList.remove('speel'));return}
  if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();NB=noiseBuf(ac)}
- ac.resume();step=0;volgende=ac.currentTime+0.06;
+ ac.resume();laadSmp(cur);step=0;volgende=ac.currentTime+0.06;
  timer=setInterval(tik,25);this.textContent='⏹ STOP';
 };
 // ---- LOOP-REBUILD: drop een audio drum-loop → slagen eruit → rebuild met G2B-sounds
@@ -245,12 +276,15 @@ async function analyseer(file){
   const fourFloor=k1.length>=3&&k1.filter(s=>s%(nSub/4)==0).length>=k1.length-1;
   let g;
   if(bpm>=135&&nSub==32)g='trap';         // snel + hat-rolls = trap
-  else if(bpm>=140)g='bubbling';          // snel zonder rolls = bubbling
-  else if(p1.length>=4)g='kawina';        // veel percussie = surinaams
+  else if(bpm>=148)g='bubbling';          // heel snel = bubbling
+  else if(bpm>=138)g='drill';             // snel, donker = drill
+  else if(p1.length>=4)g='kawina';        // veel percussie = surinaams/kawina
   else if(fourFloor&&bpm>=115)g='house';  // 4-op-de-vloer = house
-  else if(bpm<95)g='schuivel';            // traag = schuivel/lofi-klank
   else if(bpm>=120)g='soca';              // middel-tempo = soca
-  else g='house';
+  else if(bpm>=104&&p1.length>=2)g='afrobeat'; // trager met perc = afrobeat
+  else if(bpm>=95)g='dancehall';          // middel-traag = dancehall
+  else if(bpm>=86)g='boombap';            // traag swing = boombap
+  else g='schuivel';                      // heel traag = schuivel
   laad(g);
   document.querySelectorAll('.cel').forEach(c=>c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s)));
   dmsg.textContent=`✅ ${totOn} slagen gehoord → ${bars} bar${bars>1?'s':''} rebuild · ~${bpm} BPM`+(nSub==32?' · 32e-noten grid':'')+(swing>0.02?` · swing ${Math.round(swing*100)}%`:'')+` · geluid: ${g.toUpperCase()} (klik een genre voor andere sounds)`;
