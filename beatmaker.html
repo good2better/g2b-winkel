@@ -103,11 +103,11 @@ const GENRES={
  surinaams:{bpm:138,tim:{kf:150,ke:50,kd:.28,sd:.16,hc:7500,hd:.05,pf:330,pd:.18},pat:{kick:[0,6,8],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[2,5,10,13,15]}},
  rock:{bpm:120,tim:{kf:130,ke:45,kd:.3,sd:.2,hc:7500,hd:.06,pf:500,pd:.12},pat:{kick:[0,8,10],snare:[4,12],hat:[0,2,4,6,8,10,12,14],perc:[2,6,14]}}
 };
-const RIJEN=["kick","snare","hat","perc"];const NAMEN={kick:"🥁 KICK",snare:"👏 SNARE",hat:"🎩 HAT",perc:"🪘 PERC"};
+let RIJEN=["kick","snare","hat","perc"];const NAMEN={kick:"🥁 KICK",snare:"👏 SNARE",hat:"🎩 HAT",perc:"🪘 PERC",shkr:"🪇 SHAKER"};
 const MUTED=new Set(); // klik op rij-naam = mute (voor stems-export)
 const grid=document.getElementById('grid'),state={};let cur='house';
 let swing=0,gridFromLoop=false,nBars=1,nSub=16;
-for(const r of RIJEN)state[r]=new Set();
+for(const r of RIJEN)state[r]=state[r]||new Set();
 function renderGrid(){
  grid.innerHTML='';
  for(const r of RIJEN){
@@ -166,15 +166,37 @@ async function laadSmp(g){
   }catch(e){}
  }
 }
+
+// klank-vingerafdrukken van alle samples: [cen<300, cen300-5k, cen>5k, cen150-1k, subFrac]
+const SMPF={"afro-hat":[96,2452,9626,498,0.063],"afro-kick":[90,687,13463,197,0.899],"afro-perc":[156,1877,13156,229,0.122],"afro-snare":[147,1332,12960,392,0.011],"afrobeat-hat":[90,2036,9754,566,0.127],"afrobeat-kick":[73,1840,13521,229,0.9],"afrobeat-perc":[156,1877,13156,229,0.122],"afrobeat-snare":[147,1332,12960,392,0.011],"boombap-hat":[190,2288,11567,409,0.021],"boombap-kick":[100,1454,12955,288,0.521],"boombap-perc":[130,1681,12447,637,0.031],"boombap-snare":[203,909,11555,312,0.051],"bubbling-hat":[96,2452,9626,498,0.063],"bubbling-kick":[100,1454,12955,288,0.521],"bubbling-perc":[130,1681,12447,637,0.031],"bubbling-snare":[203,909,11555,312,0.051],"dancehall-hat":[130,1681,12447,637,0.031],"dancehall-kick":[100,1454,12955,288,0.521],"dancehall-perc":[147,1332,12960,392,0.011],"dancehall-snare":[203,909,11555,312,0.051],"dembow-hat":[130,1681,12447,637,0.031],"dembow-kick":[128,924,13037,289,0.286],"dembow-perc":[156,1877,13156,229,0.122],"dembow-snare":[210,990,10102,331,0.026],"drill-hat":[190,2288,11567,409,0.021],"drill-kick":[128,924,13037,289,0.286],"drill-perc":[154,2130,11271,717,0.003],"drill-snare":[210,990,10102,331,0.026],"funk-hat":[190,2288,11567,409,0.021],"funk-kick":[100,1454,12955,288,0.521],"funk-perc":[161,2278,10664,702,0.003],"funk-snare":[210,990,10102,331,0.026],"house-hat":[190,2288,11567,409,0.021],"house-kick":[128,924,13037,289,0.286],"house-perc":[154,2130,11271,717,0.003],"house-snare":[203,909,11555,312,0.051],"kawina-hat":[167,2335,9938,673,0.005],"kawina-kick":[118,1650,9844,504,0.122],"kawina-perc":[105,1892,9828,503,0.205],"kawina-snare":[154,2130,11271,717,0.003],"lofi-hat":[190,2288,11567,409,0.021],"lofi-kick":[128,924,13037,289,0.286],"lofi-perc":[130,1681,12447,637,0.031],"lofi-snare":[203,909,11555,312,0.051],"phonk-hat":[190,2288,11567,409,0.021],"phonk-kick":[100,1454,12955,288,0.521],"phonk-perc":[154,2130,11271,717,0.003],"phonk-snare":[210,990,10102,331,0.026],"rock-hat":[93,3370,8265,528,0.016],"rock-kick":[105,2210,10749,288,0.394],"rock-perc":[182,1504,8521,462,0.034],"rock-snare":[141,1762,9377,410,0.125],"schuivel-hat":[190,2288,11567,409,0.021],"schuivel-kick":[100,1454,12955,288,0.521],"schuivel-perc":[154,2130,11271,717,0.003],"schuivel-snare":[210,990,10102,331,0.026],"soca-hat":[147,1332,12960,392,0.011],"soca-kick":[128,924,13037,289,0.286],"soca-perc":[156,1877,13156,229,0.122],"soca-snare":[210,990,10102,331,0.026],"surinaams-hat":[116,2283,9869,590,0.064],"surinaams-kick":[118,1650,9844,504,0.122],"surinaams-perc":[94,2780,9767,572,0.018],"surinaams-snare":[154,2130,11271,717,0.003],"trap-hat":[190,2288,11567,409,0.021],"trap-kick":[100,1454,12955,288,0.521],"trap-perc":[154,2130,11271,717,0.003],"trap-snare":[203,909,11555,312,0.051],"zouk-hat":[109,2874,9731,592,0.012],"zouk-kick":[100,1454,12955,288,0.521],"zouk-perc":[156,1877,13156,229,0.122],"zouk-snare":[100,1454,12955,288,0.521],"x-agogo":[96,2452,9626,498,0.063],"x-agogo_lo":[90,2036,9754,566,0.127],"x-bangi":[118,1650,9844,504,0.122],"x-clap":[161,2278,10664,702,0.003],"x-conga":[156,1877,13156,229,0.122],"x-klap":[154,2130,11271,717,0.003],"x-koti":[105,1892,9828,503,0.205],"x-logdrum":[73,1840,13521,229,0.9],"x-rim":[130,1681,12447,637,0.031],"x-seki":[109,2874,9731,592,0.012],"x-skratjie":[167,2335,9938,673,0.005],"x-stab":[122,2551,13291,193,0.585],"x-sub808":[75,2671,13540,342,0.847],"x-surdo":[147,1332,12960,392,0.011],"x-timbal":[147,1332,12960,392,0.011]};
+const ROWCAND={kick:null,snare:null,hat:null,perc:null,shkr:['x-seki','x-skratjie']};
+const XPERC=['x-agogo','x-agogo_lo','x-bangi','x-conga','x-koti','x-timbal','x-stab','x-rim','x-klap','x-clap','x-logdrum'];
+function matchRow(row,cen,sub){
+ const band={kick:0,snare:1,hat:2,perc:3,shkr:2}[row];let best=null,bd=1e9;
+ for(const n in SMPF){
+  const isX=n[0]=='x'&&n[1]=='-';
+  const ok=isX?(row=='perc'?XPERC.includes(n):ROWCAND[row]&&ROWCAND[row].includes(n)):n.endsWith('-'+row);
+  if(!ok)continue;const f=SMPF[n];if(f[band]<10)continue;
+  let d=Math.abs(Math.log2(cen/f[band]));if(row=='kick')d+=Math.abs(sub-f[4])*2;
+  if(d<bd){bd=d;best=n}}
+ return best||'house-'+row;
+}
+async function laadEigen(picks){
+ SMPL['eigen']={};
+ for(const r in picks){
+  try{const res=await fetch(picks[r].startsWith('x-')?`drumsnd/x/${picks[r]}.wav`:`drumsnd/${picks[r]}.wav`);
+   if(!res.ok)continue;SMPL['eigen'][r]=await ac.decodeAudioData(await res.arrayBuffer())}catch(e){}
+ }
+}
 function speel(r,t,v){
  const a=ac,g0=v==null?0.9:(0.4+0.65*v); // velocity uit de loop: zacht/hard meespelen
  const buf=SMPL[cur]&&SMPL[cur][r];
  const dst=(MX&&MX.context===a)?MX:a.destination;
  if(buf){const s=a.createBufferSource();s.buffer=buf;const g=a.createGain();g.gain.value=g0;s.connect(g).connect(dst);s.start(t);return}
- const TM=GENRES[cur].tim||{kf:150,ke:45,kd:.3,sd:.18,hc:7000,hd:.05,pf:520,pd:.12};
+ const TM=(GENRES[cur]&&GENRES[cur].tim)||{kf:150,ke:45,kd:.3,sd:.18,hc:7000,hd:.05,pf:520,pd:.12};
  if(r=='kick'){const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(TM.kf,t);o.frequency.exponentialRampToValueAtTime(TM.ke,t+0.12);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.kd);o.connect(g).connect(dst);o.start(t);o.stop(t+TM.kd+0.02)}
  if(r=='snare'){const s=a.createBufferSource();s.buffer=NB;const g=a.createGain();g.gain.setValueAtTime(0.7,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.sd);s.connect(g).connect(dst);s.start(t);s.stop(t+TM.sd+0.02)}
- if(r=='hat'){const s=a.createBufferSource();s.buffer=NB;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=TM.hc;const g=a.createGain();g.gain.setValueAtTime(0.3,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.hd);s.connect(f).connect(g).connect(dst);s.start(t);s.stop(t+TM.hd+0.02)}
+ if(r=='hat'||r=='shkr'){const s=a.createBufferSource();s.buffer=NB;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=TM.hc;const g=a.createGain();g.gain.setValueAtTime(0.3,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.hd);s.connect(f).connect(g).connect(dst);s.start(t);s.stop(t+TM.hd+0.02)}
  if(r=='perc'){const o=a.createOscillator(),g=a.createGain();o.frequency.value=TM.pf;o.type='triangle';g.gain.setValueAtTime(0.5,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.pd);o.connect(g).connect(dst);o.start(t);o.stop(t+TM.pd+0.01)}
 }
 function tik(){
@@ -254,22 +276,25 @@ async function analyseer(file){
   const re=new Float64Array(FL),im=new Float64Array(FL),win=new Float64Array(FL);
   for(let i=0;i<FL;i++)win[i]=0.5-0.5*Math.cos(2*Math.PI*i/FL);
   const binHz=sr/FL,iKick=Math.max(2,Math.floor(150/binHz)),iTom=Math.floor(1000/binHz),iHat=Math.floor(5000/binHz);
-  const prev=new Float64Array(FL/2),flux=[],fluxK=[],fluxT=[],fluxM=[],fluxH=[],times=[];
+  const prev=new Float64Array(FL/2),flux=[],fluxK=[],fluxT=[],fluxM=[],fluxH=[],times=[],cenK=[],cenT=[],cenS=[],cenH=[],hiArr=[],subArr=[];
   let subE=0,totE=0,hiE=0;
   for(let f=0;f<NF;f++){
    const off=f*HOP;
    for(let i=0;i<FL;i++){re[i]=d[off+i]*win[i];im[i]=0}
    fft(re,im);
-   let fl=0,bk=0,bt=0,bm=0,bh=0,eSub=0,eTot=0,eHi=0;
+   let fl=0,bk=0,bt=0,bm=0,bh=0,eSub=0,eTot=0,eHi=0,mK=0,mS=0,mH=0,mT=0,cK=0,cS=0,cH=0,cT=0;
    const iSub=Math.floor(80/binHz);
    for(let i=1;i<FL/2;i++){
-    const m=Math.hypot(re[i],im[i]),df=m-prev[i];
+    const m=Math.hypot(re[i],im[i]),df=m-prev[i],fr=i*binHz;
     eTot+=m;if(i<=iSub)eSub+=m;else if(i>=iHat)eHi+=m;
+    if(fr<300){mK+=m;cK+=m*fr}else if(fr<1000){mT+=m;cT+=m*fr}else if(fr<5000){mS+=m;cS+=m*fr}else{mH+=m;cH+=m*fr}
     if(df>0){fl+=df;if(i<=iKick)bk+=df;else if(i<iTom)bt+=df;else if(i<iHat)bm+=df;else bh+=df}
     prev[i]=m;
    }
    flux.push(fl);fluxK.push(bk);fluxT.push(bt);fluxM.push(bm);fluxH.push(bh);times.push(off/sr);
    subE+=eSub;totE+=eTot;hiE+=eHi;
+   cenK.push(mK?cK/mK:0);cenT.push(mT?cT/mT:0);cenS.push(mS?cS/mS:0);cenH.push(mH?cH/mH:0);
+   hiArr.push(mH);subArr.push(eTot?eSub/eTot:0);
   }
   // per-band flux (verandering per band) → daarop onset-detectie; energie-niveau werkt niet op drukke loops
   const dur=buf.duration;
@@ -333,8 +358,29 @@ async function analyseer(file){
   else if(bpm>=95)g='dancehall';          // middel-traag = dancehall
   else if(bpm>=86)g=swing>0.05?'boombap':'funk'; // traag: swing = boombap, strak = funk
   else g=hiFrac<0.06?'lofi':'schuivel';   // heel traag: dof = lofi, helder = schuivel
-  laad(g);
-  dmsg.textContent=`✅ ${totOn} slagen gehoord → ${bars} bar${bars>1?'s':''} rebuild · ~${bpm} BPM`+(nSub==32?' · 32e-noten grid':'')+(swing>0.02?` · swing ${Math.round(swing*100)}%`:'')+` · geluid: ${g.toUpperCase()} (klik een genre voor andere sounds)`;
+  // shaker: doorlopende hoog-ruis zonder slag = shaker aanwezig → eigen rij vullen
+  const hi95=[...hiArr].sort((a,b)=>b-a)[Math.floor(hiArr.length*0.05)]||1;
+  const hotFrac=hiArr.filter(v=>v>0.35*hi95).length/hiArr.length;
+  const shaker=hotFrac>0.55;
+  // eigen keuze: per rij de sample die het meest op de loop klinkt
+  const fOf=o=>Math.max(0,Math.min(NF-1,Math.round(o.t/(HOP/sr))));
+  const tgt=r=>{const f=hits[r].map(fOf);if(!f.length)return 0;
+   const arr=r=='kick'?cenK:r=='perc'?cenT:r=='snare'?cenS:cenH;return median(f.map(i=>arr[i]))};
+  const kicks=f=>{const ff=hits.kick.map(fOf);return ff.length?median(ff.map(i=>subArr[i])):0.3};
+  const picks={kick:matchRow('kick',tgt('kick')||120,kicks()),snare:matchRow('snare',tgt('snare')||1200),
+   hat:matchRow('hat',tgt('hat')||8000),perc:matchRow('perc',tgt('perc')||500)};
+  if(shaker){picks.shkr=matchRow('shkr',tgt('hat')||8000);
+   if(!RIJEN.includes('shkr'))RIJEN.push('shkr');state.shkr=state.shkr||new Set();
+   for(let st=0;st<nSteps;st++){const f=Math.max(0,Math.min(NF-1,Math.round(st*stepDur/(HOP/sr))));
+    const v=hiArr[f]/hi95;if(v>0.35&&(st%2==0||v>0.6)){state.shkr.add(st);VEL['shkr:'+st]=Math.min(1,v)}}}
+  else if(RIJEN.includes('shkr')){RIJEN=RIJEN.filter(r=>r!='shkr');delete state.shkr}
+  renderGrid();laad('eigen');cur='eigen';await laadEigen(picks);
+  document.querySelectorAll('.cel').forEach(c=>{const v=VEL[c.dataset.r+':'+c.dataset.s];
+   c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s));c.style.opacity=v!=null?0.4+0.6*v:1});
+  document.querySelectorAll('#genres button').forEach(b=>b.style.borderColor='#ffffff22');
+  const nm=x=>x.startsWith('x-')?x.slice(2).toUpperCase():x.split('-')[0].toUpperCase();
+  dmsg.textContent=`✅ ${totOn} slagen gehoord → ${bars} bar${bars>1?'s':''} rebuild · ~${bpm} BPM`+(nSub==32?' · 32e-noten grid':'')+(swing>0.02?` · swing ${Math.round(swing*100)}%`:'')
+   +` · eigen set: K=${nm(picks.kick)} S=${nm(picks.snare)} H=${nm(picks.hat)} P=${nm(picks.perc)}`+(shaker?` +SHAKER=${nm(picks.shkr)}`:'')+` (klik een genre voor andere sounds)`;
   if(!timer)document.getElementById('play').click(); // direct afspelen: drop → hoor je loop met G2B-sounds
  }catch(err){dmsg.textContent='⚠️ Kon dit bestand niet lezen — probeer wav/mp3/ogg.'}
 }
