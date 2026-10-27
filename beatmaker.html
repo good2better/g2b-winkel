@@ -14,7 +14,9 @@ h1{color:var(--groen);font-size:1.6rem;margin-bottom:4px}
 select,button{font:inherit;border-radius:10px;border:1px solid #ffffff22;background:#221a3a;color:var(--tekst);padding:8px 14px;cursor:pointer}
 button.hoofd{background:var(--groen);color:var(--donker);font-weight:700;border:none;padding:10px 22px}
 button.hoofd:hover{filter:brightness(1.1)}
-.grid{display:grid;grid-template-columns:70px repeat(16,1fr);gap:4px;margin-bottom:14px}
+.grid{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.gline{display:grid;grid-template-columns:70px 1fr;gap:4px}
+.cells{display:grid;grid-template-columns:repeat(16,1fr);gap:4px}
 .grid .lbl{font-size:.75rem;color:var(--dim);display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
 .cel{aspect-ratio:1;border-radius:5px;background:#221a3a;border:1px solid #ffffff11;cursor:pointer;transition:transform .05s}
 .cel.aan{background:var(--groen)}
@@ -41,7 +43,7 @@ button.hoofd:hover{filter:brightness(1.1)}
 .dropzone small{display:block;color:var(--dim);margin-top:4px}
 .dropmsg{margin-top:8px;font-size:.8rem;color:var(--groen);min-height:1em;text-align:center}
 .footer{margin-top:18px;font-size:.75rem;color:var(--dim);text-align:center}
-@media(max-width:560px){.grid{grid-template-columns:54px repeat(16,1fr);gap:2px}.grid .lbl{font-size:.6rem}}
+@media(max-width:560px){.gline{grid-template-columns:54px 1fr}.cells{gap:2px}.grid .lbl{font-size:.6rem}}
 </style>
 </head>
 <body>
@@ -49,7 +51,7 @@ button.hoofd:hover{filter:brightness(1.1)}
 <p class="sub">Maak je eigen beat — met sounds uit de G2B-engine. Geen account nodig.</p>
 <div class="card">
   <div class="rijen" id="genres"></div>
-  <div class="bpm-balk"><span>BPM</span><input type="range" id="bpm" min="70" max="160" value="95"><b id="bpmv">95</b></div>
+  <div class="bpm-balk"><span>BPM</span><input type="range" id="bpm" min="60" max="180" value="95"><b id="bpmv">95</b></div>
   <div class="grid" id="grid"></div>
   <div class="rijen">
     <button class="hoofd" id="play">▶ SPEL</button>
@@ -83,24 +85,33 @@ const GENRES={
  trap:{bpm:145,tim:{kf:120,ke:35,kd:.45,sd:.22,hc:6000,hd:.07,pf:440,pd:.15},pat:{kick:[0,7,10],snare:[8],hat:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],perc:[8]}},
  bubbling:{bpm:152,tim:{kf:160,ke:60,kd:.22,sd:.14,hc:8000,hd:.04,pf:620,pd:.10},pat:{kick:[0,4,8,12],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[6,14]}},
  soca:{bpm:128,tim:{kf:140,ke:50,kd:.28,sd:.16,hc:7500,hd:.05,pf:580,pd:.12},pat:{kick:[0,4,8,12],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[6,7,14,15]}},
- schuivel:{bpm:82,tim:{kf:130,ke:40,kd:.35,sd:.20,hc:6500,hd:.06,pf:480,pd:.14},pat:{kick:[0,8],snare:[4,12],hat:[2,6,10,14],perc:[0,8]}}
+ schuivel:{bpm:82,tim:{kf:130,ke:40,kd:.35,sd:.20,hc:6500,hd:.06,pf:480,pd:.14},pat:{kick:[0,8],snare:[4,12],hat:[2,6,10,14],perc:[0,8]}},
+ kawina:{bpm:142,tim:{kf:170,ke:55,kd:.25,sd:.15,hc:7800,hd:.05,pf:320,pd:.18},pat:{kick:[0,7,8],snare:[4,12],hat:[1,3,5,7,9,11,13,15],perc:[2,5,10,13,15]}}
 };
 const RIJEN=["kick","snare","hat","perc"];const NAMEN={kick:"🥁 KICK",snare:"👏 SNARE",hat:"🎩 HAT",perc:"🪘 PERC"};
 const grid=document.getElementById('grid'),state={};let cur='house';
-let swing=0,gridFromLoop=false;
+let swing=0,gridFromLoop=false,nBars=1,nSub=16;
 for(const r of RIJEN)state[r]=new Set();
+function renderGrid(){
+ grid.innerHTML='';
+ for(const r of RIJEN){
+  const line=document.createElement('div');line.className='gline';
+  const l=document.createElement('div');l.className='lbl';l.textContent=NAMEN[r];line.appendChild(l);
+  const cs=document.createElement('div');cs.className='cells';
+  for(let s=0;s<nBars*nSub;s++){
+   const c=document.createElement('div');c.className='cel'+(s%(nSub/4)==0?' hoofd-tel':'');c.dataset.r=r;c.dataset.s=s;
+   c.onclick=()=>{state[r].has(s)?state[r].delete(s):state[r].add(s);c.classList.toggle('aan')};cs.appendChild(c);
+  }
+  line.appendChild(cs);grid.appendChild(line);
+ }
+}
+renderGrid();
 const gr=document.getElementById('genres');
 for(const g of Object.keys(GENRES)){
  const b=document.createElement('button');b.textContent=g.toUpperCase();b.dataset.g=g;
  b.onclick=()=>laad(g);gr.appendChild(b);
 }
-for(const r of RIJEN){
- const l=document.createElement('div');l.className='lbl';l.textContent=NAMEN[r];grid.appendChild(l);
- for(let s=0;s<16;s++){
-  const c=document.createElement('div');c.className='cel'+(s%4==0?' hoofd-tel':'');c.dataset.r=r;c.dataset.s=s;
-  c.onclick=()=>{state[r].has(s)?state[r].delete(s):state[r].add(s);c.classList.toggle('aan')};grid.appendChild(c);
- }
-}
+
 function laad(g){
  cur=g;const G=GENRES[g];
  if(!gridFromLoop){
@@ -112,9 +123,9 @@ function laad(g){
  document.querySelectorAll('#genres button').forEach(b=>b.style.borderColor=b.dataset.g===g?'var(--groen)':'#ffffff22');
 }
 document.getElementById('bpm').oninput=e=>document.getElementById('bpmv').textContent=e.target.value;
-document.getElementById('wis').onclick=()=>{for(const r of RIJEN)state[r].clear();gridFromLoop=false;swing=0;document.querySelectorAll('.cel').forEach(c=>c.classList.remove('aan'))};
+document.getElementById('wis').onclick=()=>{for(const r of RIJEN)state[r].clear();gridFromLoop=false;swing=0;nBars=1;nSub=16;renderGrid()};
 document.getElementById('random').onclick=()=>{
- gridFromLoop=false;
+ gridFromLoop=false;nBars=1;nSub=16;renderGrid();
  for(const r of RIJEN){state[r].clear();for(let s=0;s<16;s++)if(Math.random()<(r=='hat'?.6:r=='perc'?.2:.3))state[r].add(s)}
  document.querySelectorAll('.cel').forEach(c=>c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s)))};
 let ac=null,step=0,timer=null,volgende=0;
@@ -128,9 +139,9 @@ function speel(r,t){
  if(r=='perc'){const o=a.createOscillator(),g=a.createGain();o.frequency.value=TM.pf;o.type='triangle';g.gain.setValueAtTime(0.5,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.pd);o.connect(g).connect(a.destination);o.start(t);o.stop(t+TM.pd+0.01)}
 }
 function tik(){
- const a=ac,bpm=+document.getElementById('bpm').value,stap=60/bpm/4;
+ const a=ac,bpm=+document.getElementById('bpm').value,stap=240/bpm/nSub;
  while(volgende<a.currentTime+0.1){
-  const s=step%16,t=s%2==1?volgende+swing*stap:volgende;
+  const s=step%(nBars*nSub),t=s%2==1?volgende+swing*stap:volgende;
   for(const r of RIJEN)if(state[r].has(s))speel(r,t);
   document.querySelectorAll('.cel.speel').forEach(c=>c.classList.remove('speel'));
   const ij=s;
@@ -174,65 +185,63 @@ async function analyseer(file){
   if(NF<8){dmsg.textContent='⚠️ Dit fragment is te kort — probeer een echte drum-loop.';return}
   const re=new Float64Array(FL),im=new Float64Array(FL),win=new Float64Array(FL);
   for(let i=0;i<FL;i++)win[i]=0.5-0.5*Math.cos(2*Math.PI*i/FL);
-  const binHz=sr/FL,iKick=Math.max(2,Math.floor(150/binHz)),iHat=Math.floor(5000/binHz);
-  const prev=new Float64Array(FL/2),flux=[],bandK=[],bandM=[],bandH=[],times=[];
+  const binHz=sr/FL,iKick=Math.max(2,Math.floor(150/binHz)),iTom=Math.floor(1000/binHz),iHat=Math.floor(5000/binHz);
+  const prev=new Float64Array(FL/2),flux=[],fluxK=[],fluxT=[],fluxM=[],fluxH=[],times=[];
   for(let f=0;f<NF;f++){
    const off=f*HOP;
    for(let i=0;i<FL;i++){re[i]=d[off+i]*win[i];im[i]=0}
    fft(re,im);
-   let fl=0,bk=0,bm=0,bh=0;
+   let fl=0,bk=0,bt=0,bm=0,bh=0;
    for(let i=1;i<FL/2;i++){
     const m=Math.hypot(re[i],im[i]),df=m-prev[i];
-    if(df>0)fl+=df;prev[i]=m;
-    if(i<=iKick)bk+=m*m;else if(i>=iHat)bh+=m*m;else bm+=m*m;
+    if(df>0){fl+=df;if(i<=iKick)bk+=df;else if(i<iTom)bt+=df;else if(i<iHat)bm+=df;else bh+=df}
+    prev[i]=m;
    }
-   flux.push(fl);bandK.push(bk);bandM.push(bm);bandH.push(bh);times.push(off/sr);
+   flux.push(fl);fluxK.push(bk);fluxT.push(bt);fluxM.push(bm);fluxH.push(bh);times.push(off/sr);
   }
-  // per-band onset-detectie: laag=kick, midden=snare, hoog=hat (combo-slagen werken automatisch)
-  const dur=buf.duration,stepHz=16/dur;
-  function bandOnsets(bx,gapSteps){
-   const med=median(bx),mad=median(bx.map(v=>Math.abs(v-med))),thr=med+5*mad,mx=Math.max(...bx);
-   const minSep=Math.max(1,Math.round(0.06/(HOP/sr))),on=[];
+  // per-band flux (verandering per band) → daarop onset-detectie; energie-niveau werkt niet op drukke loops
+  const dur=buf.duration;
+  function bandOnsets(bx){
+   const med=median(bx),mad=median(bx.map(v=>Math.abs(v-med))),thr=med+6*mad,mx=Math.max(...bx);
+   const minSep=Math.max(1,Math.round(0.06/(HOP/sr))),on=[];let last=-1e9;
    for(let f=1;f<NF-1;f++)
-    if(bx[f]>thr&&bx[f]>0.1*mx&&bx[f]>=bx[f-1]&&bx[f]>bx[f+1]&&(!on.length||f-on[on.length-1].i>=minSep))on.push({i:f,t:times[f],fl:bx[f]});
-   // keten-suppressie: onsets die dichter dan gapSteps op de vorige zitten zijn blob-fragmenten → weg
-   const acc=[];let prev=-99;
-   for(const o of on.sort((a,b)=>a.t-b.t)){
-    const s=o.t*stepHz;
-    if(s-prev>=gapSteps)acc.push(s);
-    prev=s;
-   }
-   return acc.map(s=>s/stepHz);
+    if(bx[f]>thr&&bx[f]>0.12*mx&&bx[f]>=bx[f-1]&&bx[f]>bx[f+1]&&f-last>=minSep){on.push(times[f]);last=f}
+   return on;
   }
-  const hits={kick:bandOnsets(bandK,0.95),snare:bandOnsets(bandM,0.95),hat:bandOnsets(bandH,0.9)};
-  const totOn=hits.kick.length+hits.snare.length+hits.hat.length;
+  const hits={kick:bandOnsets(fluxK),perc:bandOnsets(fluxT),snare:bandOnsets(fluxM),hat:bandOnsets(fluxH)};
+  const totOn=hits.kick.length+hits.perc.length+hits.snare.length+hits.hat.length;
   if(totOn<3){dmsg.textContent='⚠️ Geen duidelijke slagen gevonden — probeer een duidelijkere drum-loop.';return}
-  // quantize: de gedropte loop = 1 patroon-cyclus van 16 stappen
-  for(const r of RIJEN)state[r].clear();
-  for(const r of['kick','snare','hat'])for(const t of hits[r])state[r].add(Math.min(15,Math.round(t*stepHz)));
-  // BPM uit inter-onset-intervallen (kleinste gemeenschappelijke stap = 16e noot)
-  const ts=[...hits.kick,...hits.snare,...hits.hat].sort((a,b)=>a-b),iois=[];
-  for(let i=1;i<ts.length;i++)iois.push(ts[i]-ts[i-1]);
-  let bpm=null,best=null;
-  for(const c of iois){
-   if(c<0.04||c>0.6)continue;let err=0;
-   for(const x of iois){const k=Math.max(1,Math.round(x/c));err+=Math.abs(x-k*c)}
-   if(!best||err<best.err)best={c,err};
+  // bars+bpm samen bepalen: voor elk aantal maten {1,2,4,8,16} volgt bpm=240*bars/dur;
+  // de combinatie waar de meeste slagen op het 16e-raster vallen wint (getest op echte loops)
+  const ts=[...hits.kick,...hits.perc,...hits.snare,...hits.hat];
+  let bars=1,bpm=240/dur,bs=-1;
+  for(const b of[1,2,4,8,16]){
+   const c=240*b/dur;if(c<60||c>170)continue;
+   const step=dur/(b*16);let hit=0,tot=0;
+   for(const t of ts){tot++;if(Math.abs(t-Math.round(t/step)*step)/step<0.25)hit++}
+   const sc=(tot?hit/tot:0)+0.02*(1-Math.abs(c-110)/110);
+   if(sc>bs){bs=sc;bars=b;bpm=c}
   }
-  const bpmDur=240/dur; // basis: gedropte loop = 1 maat
-  bpm=bpmDur;
-  if(best){const bi=60/(best.c*4);
-   if(Math.abs(bi-bpmDur)/bpmDur<0.2||Math.abs(bi-2*bpmDur)/bpmDur<0.4)bpm=bi} // IOI corrigeert bij 1- én 2-mats loops
-  while(bpm<70)bpm*=2;while(bpm>160)bpm/=2;
+  bpm=Math.min(180,Math.max(60,bpm));
+  const barDur=dur/bars;
+  // subdivisie: dichte hat-rolls (trap 32e noten) → 32 stappen per maat, anders 16
+  const hatPerBar=hits.hat.filter(t=>t<barDur).length;
+  nSub=hatPerBar>12?32:16;
+  nBars=bars;renderGrid();
+  // quantize: elke slag op zijn plek in het hele raster (variatie blijft bewaard)
+  const nSteps=nBars*nSub,stepDur=dur/nSteps;
+  for(const r of RIJEN)state[r].clear();
+  for(const r of['kick','perc','snare','hat'])for(const t of hits[r]){const s=Math.round(t/stepDur);if(s>=0&&s<nSteps)state[r].add(s)}
+  for(const s of state.snare)state.perc.delete(s); // snare-slag wint van tom op dezelfde stap
   bpm=Math.round(bpm);
   document.getElementById('bpm').value=bpm;document.getElementById('bpmv').textContent=bpm;
-  // swing: hoeveel lopen de onsets op oneven stappen gemiddeld achter?
+  // swing: hoeveel lopen de onsets op oneven 16e-stappen gemiddeld achter?
   const res=[];
-  for(const r of['kick','snare','hat'])for(const t of hits[r]){const s=t*stepHz;if(Math.round(s)%2==1)res.push(s-Math.round(s))}
+  for(const r of['kick','perc','snare','hat'])for(const t of hits[r]){const s=(t%barDur)/barDur*nSub;if(Math.round(s)%2==1)res.push(s-Math.round(s))}
   swing=res.length?Math.max(0,Math.min(0.4,median(res))):0;
   gridFromLoop=true;
   document.querySelectorAll('.cel').forEach(c=>c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s)));
-  dmsg.textContent=`✅ ${totOn} slagen gehoord → rebuild klaar · ~${bpm} BPM`+(swing>0.02?` · swing ${Math.round(swing*100)}%`:'')+` · klik een genre voor andere sounds`;
+  dmsg.textContent=`✅ ${totOn} slagen gehoord → ${bars} bar${bars>1?'s':''} rebuild · ~${bpm} BPM`+(nSub==32?' · 32e-noten grid':'')+(swing>0.02?` · swing ${Math.round(swing*100)}%`:'')+` · klik een genre voor andere sounds`;
   if(!timer)document.getElementById('play').click(); // direct afspelen: drop → hoor je loop met G2B-sounds
  }catch(err){dmsg.textContent='⚠️ Kon dit bestand niet lezen — probeer wav/mp3/ogg.'}
 }
