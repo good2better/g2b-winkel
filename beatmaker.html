@@ -218,17 +218,21 @@ async function analyseer(file){
   for(let i=0;i<FL;i++)win[i]=0.5-0.5*Math.cos(2*Math.PI*i/FL);
   const binHz=sr/FL,iKick=Math.max(2,Math.floor(150/binHz)),iTom=Math.floor(1000/binHz),iHat=Math.floor(5000/binHz);
   const prev=new Float64Array(FL/2),flux=[],fluxK=[],fluxT=[],fluxM=[],fluxH=[],times=[];
+  let subE=0,totE=0,hiE=0;
   for(let f=0;f<NF;f++){
    const off=f*HOP;
    for(let i=0;i<FL;i++){re[i]=d[off+i]*win[i];im[i]=0}
    fft(re,im);
-   let fl=0,bk=0,bt=0,bm=0,bh=0;
+   let fl=0,bk=0,bt=0,bm=0,bh=0,eSub=0,eTot=0,eHi=0;
+   const iSub=Math.floor(80/binHz);
    for(let i=1;i<FL/2;i++){
     const m=Math.hypot(re[i],im[i]),df=m-prev[i];
+    eTot+=m;if(i<=iSub)eSub+=m;else if(i>=iHat)eHi+=m;
     if(df>0){fl+=df;if(i<=iKick)bk+=df;else if(i<iTom)bt+=df;else if(i<iHat)bm+=df;else bh+=df}
     prev[i]=m;
    }
    flux.push(fl);fluxK.push(bk);fluxT.push(bt);fluxM.push(bm);fluxH.push(bh);times.push(off/sr);
+   subE+=eSub;totE+=eTot;hiE+=eHi;
   }
   // per-band flux (verandering per band) → daarop onset-detectie; energie-niveau werkt niet op drukke loops
   const dur=buf.duration;
@@ -274,17 +278,23 @@ async function analyseer(file){
   // kies zelf het genre dat bij de loop past: BPM + patroon-kenmerken bepalen de klank
   const k1=[...state.kick].filter(s=>s<nSub).map(s=>s%nSub),p1=[...state.perc].filter(s=>s<nSub);
   const fourFloor=k1.length>=3&&k1.filter(s=>s%(nSub/4)==0).length>=k1.length-1;
+  // klank-kenmerken: 808-sub-aandeel (<80Hz) en helderheid (>5kHz)
+  const subFrac=totE?subE/totE:0,hiFrac=totE?hiE/totE:0,subHeav=subFrac>0.14;
+  // dembow-handtekening: tresillo — snare net vóór de tel (16-staps vakjes {3,6,7,11})
+  const s1=[...state.snare].filter(s=>s<nSub).map(s=>Math.round(s*(16/nSub))%16);
+  const dem=s1.length>=3&&s1.filter(s=>[3,6,7,11].includes(s)).length>=s1.length*0.7;
   let g;
-  if(bpm>=135&&nSub==32)g='trap';         // snel + hat-rolls = trap
+  if(bpm>=135&&nSub==32)g=subHeav?'drill':'trap'; // snel + hat-rolls; veel 808-sub = drill
   else if(bpm>=148)g='bubbling';          // heel snel = bubbling
-  else if(bpm>=138)g='drill';             // snel, donker = drill
-  else if(p1.length>=4)g='kawina';        // veel percussie = surinaams/kawina
+  else if(bpm>=138)g=subHeav?'drill':'phonk'; // snel + donker; 808 = drill, anders phonk
+  else if(dem)g='dembow';                 // dembow-ritme herkend
+  else if(p1.length>=4)g=bpm>=125?'surinaams':'kawina'; // veel percussie = surinaams/kawina
   else if(fourFloor&&bpm>=115)g='house';  // 4-op-de-vloer = house
   else if(bpm>=120)g='soca';              // middel-tempo = soca
   else if(bpm>=104&&p1.length>=2)g='afrobeat'; // trager met perc = afrobeat
   else if(bpm>=95)g='dancehall';          // middel-traag = dancehall
-  else if(bpm>=86)g='boombap';            // traag swing = boombap
-  else g='schuivel';                      // heel traag = schuivel
+  else if(bpm>=86)g=swing>0.05?'boombap':'funk'; // traag: swing = boombap, strak = funk
+  else g=hiFrac<0.06?'lofi':'schuivel';   // heel traag: dof = lofi, helder = schuivel
   laad(g);
   document.querySelectorAll('.cel').forEach(c=>c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s)));
   dmsg.textContent=`✅ ${totOn} slagen gehoord → ${bars} bar${bars>1?'s':''} rebuild · ~${bpm} BPM`+(nSub==32?' · 32e-noten grid':'')+(swing>0.02?` · swing ${Math.round(swing*100)}%`:'')+` · geluid: ${g.toUpperCase()} (klik een genre voor andere sounds)`;
