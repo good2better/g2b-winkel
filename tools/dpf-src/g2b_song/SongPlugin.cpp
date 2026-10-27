@@ -179,8 +179,8 @@ struct Galaxy {
 class SongPlugin : public Plugin
 {
 public:
-    SongPlugin() : Plugin(28, 0, 13) { for(int r=0;r<10;r++)celMute_[r]=true; extraSnd_[0]=extraSnd_[1]=0; gSongRackView=&rackView_;
-        for(int a=0;a<3;a++)for(int b=0;b<17;b++)mut_[a][b]=kPat[0][a][b]; for(int b=0;b<8;b++)mutBas_[b]=kBasPat[0][b]; for(int s=0;s<16;s++){melDegU_[s]=-1;melVel_[s]=96;melLen_[s]=1;} seedMask_(); }
+    SongPlugin() : Plugin(29, 0, 13) { for(int r=0;r<10;r++)celMute_[r]=true; extraSnd_[0]=extraSnd_[1]=0; gSongRackView=&rackView_;
+        for(int a=0;a<3;a++)for(int b=0;b<17;b++)mut_[a][b]=kPat[0][a][b]; for(int b=0;b<8;b++)mutBas_[b]=kBasPat[0][b]; for(int s=0;s<16;s++)melDegU_[s]=-1; seedMask_(); }
 
 protected:
     const char* getLabel() const override { return "G2B SONG"; }
@@ -199,7 +199,7 @@ protected:
     void setState(const char*, const char*) override {}
 
     enum { kStijl, kKey, kScale, kDrums, kBas, kChord, kMel,
-           kGlide, kDrop, kSub,kGalaxy, kDice, kAuto, kLight, kPreset, kMidi, kExport, kDens, kSwing, kHuman, kFill, kGeluid, kRoom, kTouch, kEen, kSugg, kCell, kRun };
+           kGlide, kDrop, kSub,kGalaxy, kDice, kAuto, kLight, kPreset, kMidi, kExport, kDens, kSwing, kHuman, kFill, kGeluid, kRoom, kTouch, kEen, kSugg, kCell, kRun, kRec };
 
     void initParameter(uint32_t i, Parameter& p) override {
         p.hints = kParameterIsAutomable;
@@ -222,7 +222,7 @@ protected:
         case kMidi:  p.name="MIDI OUT";p.symbol="midiout";p.ranges.min=0;p.ranges.max=1;p.ranges.def=1;p.hints|=kParameterIsBoolean; break;
         case kEen:   p.name="1-TOETS"; p.symbol="eentoets";p.ranges.min=0;p.ranges.max=5;p.ranges.def=0;p.hints|=kParameterIsInteger; break;
         case kSugg:  p.name="SUGG";    p.symbol="sugg";   p.ranges.min=0;p.ranges.max=7;p.ranges.def=0;p.hints|=kParameterIsOutput; break;
-        case kCell:  p.name="CELL";    p.symbol="cell";   p.ranges.min=0;p.ranges.max=999;p.ranges.def=0;p.hints|=kParameterIsInteger; break;
+        case kCell:  p.name="CELL";    p.symbol="cell";   p.ranges.min=0;p.ranges.max=413;p.ranges.def=0;p.hints|=kParameterIsInteger; break;
         case kExport:p.name="EXPORT .MID";p.symbol="exportmid";p.ranges.min=0;p.ranges.max=1;p.hints|=kParameterIsTrigger; break;
         case kDens:  p.name="DENS";p.symbol="dens";p.ranges.min=0;p.ranges.max=1;p.ranges.def=0.7f; break;
         case kSwing: p.name="SWING";p.symbol="swing";p.ranges.min=0;p.ranges.max=2;p.ranges.def=1.f; break;
@@ -232,6 +232,7 @@ protected:
         case kRoom:  p.name="ROOM";  p.symbol="room";  p.ranges.min=0;p.ranges.max=1;p.ranges.def=.25f; break;
         case kTouch: p.name="TOUCH"; p.symbol="touch"; p.ranges.min=0;p.ranges.max=1;p.ranges.def=.5f; break;
         case kRun:   p.name="SPEEL"; p.symbol="speel"; p.hints|=kParameterIsBoolean; p.ranges.min=0;p.ranges.max=1;p.ranges.def=1; break;
+        case kRec:   p.name="REC";   p.symbol="rec";   p.hints|=kParameterIsBoolean; p.ranges.min=0;p.ranges.max=1;p.ranges.def=0; break;
         }
     }
 
@@ -240,7 +241,7 @@ protected:
                   case kDrums:return fDrums;case kBas:return fBas;case kChord:return fChord;
                   case kMel:return fMel;case kGlide:return fGlide;case kDrop:return fDrop;
                   case kSub:return fSub;case kGalaxy:return fGalaxy;case kDice:return fDice;case kAuto:return fAuto;
-                  case kLight:return fLight;case kPreset:return fPreset;case kMidi:return fMidi;case kExport:return 0.f;case kDens:return fDens;case kSwing:return fSwing;case kHuman:return fHuman;case kFill:return fFill;case kGeluid:return fGeluid;case kRoom:return fRoom;case kTouch:return fTouch;case kEen:return fEen;case kSugg:return fSugg;case kCell:return 0.f;case kRun:return fRun;}return 0.f;
+                  case kLight:return fLight;case kPreset:return fPreset;case kMidi:return fMidi;case kExport:return 0.f;case kDens:return fDens;case kSwing:return fSwing;case kHuman:return fHuman;case kFill:return fFill;case kGeluid:return fGeluid;case kRoom:return fRoom;case kTouch:return fTouch;case kEen:return fEen;case kSugg:return fSugg;case kCell:return 0.f;case kRun:return fRun;case kRec:return fRec;}return 0.f;
     }
 
     void setParameterValue(uint32_t i, float v) override {
@@ -251,34 +252,20 @@ protected:
         case kSub:fSub=v;break; case kGalaxy:fGalaxy=v;galaxy.setPos((int)v);break;
         case kDice:if(v>0.5f)rollDice();fDice=0;break;
         case kAuto:fAuto=v;break; case kLight:fLight=v;break; case kMidi:fMidi=v;break; case kEen:fEen=v;break; case kRun:fRun=v;break;
+        case kRec:if(v>0.5f&&fRec<0.5f)recOpen_();else if(v<0.5f&&fRec>0.5f)recClose_();fRec=v;break;
         case kExport:if(v>0.5f)writeMid_();break;
         case kPreset:if(v!=fPreset)applyPreset((int)v);fPreset=v;break;
         case kDens:fDens=v;break; case kSwing:fSwing=v;break; case kHuman:fHuman=v;break;
         case kFill:fFill=v;break;
         case kGeluid:fGeluid=v;break;case kRoom:fRoom=v;break;case kTouch:fTouch=v;break;
         case kCell:{ // 10-rij rack: 0..159 = vakje rij*16+stap; 170..179 = laag-dice; 180..189 = laag-mute; 190/191 = +X1/+X2 geluid wisselen; 200..209 = laag terug naar stijl-origineel (SHIFT+dice)
-            int c=(int)(v+0.5f); if(c<0||c>999)break;
-            if(c>=960){int s=c-960; // 960+stap = noot oppakken (verplaatsen)
-                if(s<16&&melDegU_[s]>=0)grabStep_=s; else grabStep_=-1; break;}
-            if(c>=700){int i2=c-700,len=i2/16+1,s=i2%16; // 700+(len-1)*16+stap = noot-lengte
-                if(len>16-s)len=16-s; melLen_[s]=len; pushPats();break;}
-            if(c>=430){int i2=c-430,v2=i2/16,s=i2%16; // 430+v*16+stap = velocity (v=0..15)
-                melVel_[s]=v2*8+7; pushPats();break;}
+            int c=(int)(v+0.5f); if(c<0||c>413)break;
             if(c>=350){int i2=c-350,p=i2/8,c2=i2%8; // 808-roll: 350+p*8+cel — toontrap 0..7 zelf zetten
                 if(p<8){ if(mutBas_[c2]==p){mutBas_[c2]=-1;celMask_[7][c2*2]=0;}
                     else {mutBas_[c2]=p;celMask_[7][c2*2]=1;bass(deg2midi(p+root_),0.8f);} pushPats();break;}}
             if(c>=210){int i2=c-210,p=i2/16,s=i2%16; // MEL-roll: 210+p*16+stap — jouw noot op jouw stap
-                if(p<8){
-                    if(grabStep_>=0){ // verplaats-modus: oppakken (960) + neerleggen (210)
-                        int gs=grabStep_;grabStep_=-1;
-                        if(melDegU_[gs]>=0&&(s==gs||!melCovered_(s))){
-                            int gL=melLen_[gs];if(s+gL>16)gL=16-s;if(gL<1)gL=1;
-                            melDegU_[s]=p;melVel_[s]=melVel_[gs];melLen_[s]=gL;celMask_[9][s]=1;
-                            if(s!=gs){melDegU_[gs]=-1;celMask_[9][gs]=0;melLen_[gs]=1;melVel_[gs]=96;}
-                            int nm=deg2midi(p+root_)+12;mv_.f=m2f(nm);mv_.on=true;mv_.t=0;mvPick_(nm);mvHold_=(gL-1)*(float)fStepLen/getSampleRate();lastMel_=nm;}
-                        pushPats();break;}
-                    if(melDegU_[s]==p){melDegU_[s]=-1;celMask_[9][s]=0;melLen_[s]=1;melVel_[s]=96;}
-                    else if(!melCovered_(s)){melDegU_[s]=p;celMask_[9][s]=1;int nm=deg2midi(p+root_)+12;mv_.f=m2f(nm);mv_.on=true;mv_.t=0;mvPick_(nm);mvHold_=(melLen_[s]-1)*(float)fStepLen/getSampleRate();lastMel_=nm;hookM_[((int)(fStep/16))%4][s/4]=nm;} pushPats();break;}}
+                if(p<8){ if(melDegU_[s]==p){melDegU_[s]=-1;celMask_[9][s]=0;}
+                    else {melDegU_[s]=p;celMask_[9][s]=1;int nm=deg2midi(p+root_)+12;mv_.f=m2f(nm);mv_.on=true;mv_.t=0;mvPick_(nm);lastMel_=nm;hookM_[((int)(fStep/16))%4][s/4]=nm;} pushPats();break;}}
             if(c>=200){laneRestore(c-200);break;}
             if(c==190||c==191){extraSnd_[c-190]=(extraSnd_[c-190]+1)%6;pushLanes();break;}
             if(c>=180){int r=c-180; if(r<0||r>9)break; celMute_[r]=!celMute_[r]; pushLanes(); break;}
@@ -475,7 +462,7 @@ protected:
                 if(s%4==2&&bar>4&&!intro&&frand(fRs)<.28f&&frand(fRsD)<fDens){melody();midiHit(lastMel_,3,45,i,stepLen*sr*.8f);} // v36 call-response
                 if(celMask_[9][s]&&celMute_[9]&&bar!=3){ // v47 hook: per 4 bars herhaalt de melodie zich — gebruiker tekent de stappen
                     int hb=bar%4;
-                    if(melDegU_[s]>=0&&!melCovered_(s)){int nm=deg2midi(melDegU_[s]+root_)+12;const float vg=melVel_[s]*(1.f/96.f);mv_.f=m2f(lastMel_=nm);mv_.on=true;mv_.t=0;mvPick_(nm,jv*vg);mvHold_=(melLen_[s]-1)*stepLen;midiHit(nm,3,(int)(80*vg),i,stepLen*sr*(melLen_[s]+0.5f));} // jouw getekende noot (lengte+velocity volgen de roll)
+                    if(melDegU_[s]>=0){int nm=deg2midi(melDegU_[s]+root_)+12;mv_.f=m2f(lastMel_=nm);mv_.on=true;mv_.t=0;mvPick_(nm,jv);midiHit(nm,3,80,i,stepLen*sr*1.5f);} // jouw getekende noot
                     else if(bar<4&&!intro){melody();hookM_[hb][s/4]=lastMel_;}
                     else if(hookM_[hb][s/4]>0&&frand(fRs)<.8f){int hn=hookM_[hb][s/4];
                     if(frand(fRs)<.15f){const char* hs=fScale<0.5f?kModes[(int)kStijlMode[(int)fStijl]]:(fScale<1.5f?kScaleM:kScaleJ);int anch=hookM_[hb][0]>0?hookM_[hb][0]:hn;int inv=2*anch-hn;int bn=hn,bd=99;for(int o=-1;o<=1;o++)for(int k=0;k<7;k++){int c=(int)fKey+lift_+hs[k]+o*12;if(std::abs(c-inv)<bd){bd=std::abs(c-inv);bn=c;}}hn=bn;} // motief-inversie
@@ -506,19 +493,36 @@ protected:
             out[0][i]=L; out[1][i]=R;
         }
         fAbsFrames+=frames;
+        if(fRec>0.5f&&fRecF){ // REC → stereo wav naast de exe (stems via laag-mutes)
+            int16_t b[4096];
+            const uint32_t n=frames<2048?frames:2048;
+            for(uint32_t i=0;i<n;i++){float x=out[0][i];if(x>1)x=1;if(x<-1)x=-1;b[i*2]=(int16_t)(x*32767.f);x=out[1][i];if(x>1)x=1;if(x<-1)x=-1;b[i*2+1]=(int16_t)(x*32767.f);}
+            fwrite(b,2,n*2,fRecF);fRecN+=n;
+        }
     }
 
 private:
+    void recOpen_(){
+        if(fRecF)return;
+        fRecF=fopen("G2B-SONG.wav","wb");if(fRecF){char h[44]={0};fwrite(h,1,44,fRecF);fRecN=0;}
+    }
+    void recClose_(){
+        if(!fRecF)return;const uint32_t sr=(uint32_t)getSampleRate(),dn=fRecN*4;
+        auto W8=[&](long o,const char*s){fseek(fRecF,o,SEEK_SET);fwrite(s,1,4,fRecF);};
+        auto W32=[&](long o,uint32_t v){fseek(fRecF,o,SEEK_SET);fwrite(&v,4,1,fRecF);};
+        auto W16=[&](long o,uint16_t v){fseek(fRecF,o,SEEK_SET);fwrite(&v,2,1,fRecF);};
+        W8(0,"RIFF");W32(4,36+dn);W8(8,"WAVE");W8(12,"fmt ");W32(16,16);W16(20,1);W16(22,2);W32(24,sr);W32(28,sr*4);W16(32,4);W16(34,16);W8(36,"data");W32(40,dn);
+        fclose(fRecF);fRecF=nullptr;fRecN=0;
+    }
+    FILE* fRecF=nullptr; uint32_t fRecN=0; float fRec=0.f;
     // MIDI-uitsturing: gegenereerde hits als MIDI naar de DAW (sleep/routeerbaar)
     struct PendingOff{uint8_t note,ch;uint32_t at;};
     PendingOff offq_[64]; int offw_=0,offr_=0;
-    char mut_[3][17]; int mutBas_[8]; char celMask_[10][16]; char celMute_[10]; int extraSnd_[2]; int melDegU_[16];
-    int melVel_[16]; int melLen_[16]; int grabStep_=-1; float mvHold_=0; // MEL-roll: velocity, lengte (Reason-stijl) en versleep-status
-    bool melCovered_(int s)const{for(int s2=1;s2<=15&&s-s2>=0;s2++){if(melDegU_[s-s2]>=0&&melLen_[s-s2]>s2)return true;}return false;} SongRackView rackView_{}; struct PendHit{int t,v;float f0,f1,dec,amp;uint32_t at;} ph_[24]; int phn_=0; int mtLane_[3]={0,0,0}; int pendSt_=-1; int root_=0; int lastBD_=-1; int respN_=-1; uint32_t respAt_=0xFFFFFFFFu;
+    char mut_[3][17]; int mutBas_[8]; char celMask_[10][16]; char celMute_[10]; int extraSnd_[2]; int melDegU_[16]; SongRackView rackView_{}; struct PendHit{int t,v;float f0,f1,dec,amp;uint32_t at;} ph_[24]; int phn_=0; int mtLane_[3]={0,0,0}; int pendSt_=-1; int root_=0; int lastBD_=-1; int respN_=-1; uint32_t respAt_=0xFFFFFFFFu;
     void seedMask_(){ // raster = engine-patroon als startpunt; gebruiker klikt cellen aan/uit
         for(int s=0;s<16;s++){celMask_[0][s]=mut_[0][s]!='.'?1:0;celMask_[1][s]=mut_[1][s]!='.'?1:0;celMask_[2][s]=mut_[2][s]!='.'?1:0;
             celMask_[3][s]=(s%8==4)?1:0;celMask_[4][s]=(s==6||s==14)?1:0;celMask_[5][s]=0;celMask_[6][s]=0; // CLAP backbeat, PERC 6&14, +X1/+X2 leeg
-            celMask_[7][s]=mutBas_[s/2]>=0?1:0;celMask_[8][s]=(s==0||s==8)?1:0; celMask_[9][s]=(s%4==0)?1:0;melDegU_[s]=-1;melLen_[s]=1;melVel_[s]=96;} pushPats();pushLanes();}
+            celMask_[7][s]=mutBas_[s/2]>=0?1:0;celMask_[8][s]=(s==0||s==8)?1:0; celMask_[9][s]=(s%4==0)?1:0;melDegU_[s]=-1;} pushPats();pushLanes();}
     void laneDice(int r){ // dobbel één laag opnieuw — toonsoort/grondtoon blijft, dus past altijd
         if(r<0||r>9)return;
         if(r<3){for(int b=0;b<16;b++)mut_[r][b]=(frand(fRs)<(r==0?0.30f:(r==1?0.20f:0.45f))||(r==0&&(b==0||b==8)))?'x':'.';}
@@ -527,13 +531,13 @@ private:
         else if(r==5||r==6){for(int s=0;s<16;s++)celMask_[r][s]=(frand(fRs)<0.30f)?1:0;if(extraSnd_[r-5]==0)extraSnd_[r-5]=1;pushLanes();}
         else if(r==7){for(int b=0;b<8;b++)mutBas_[b]=(frand(fRs)<0.45f)?(int)(frand(fRs)*6.99f):-1;if(mutBas_[0]<0)mutBas_[0]=0;}
         else if(r==8){for(int s=0;s<16;s++)celMask_[8][s]=(frand(fRs)<0.20f||(s==0))?1:0;}
-        else {for(int s=0;s<16;s++){celMask_[9][s]=(frand(fRs)<0.30f||(s%4==0&&frand(fRs)<0.7f))?1:0;melDegU_[s]=-1;melLen_[s]=1;melVel_[s]=96;}}
+        else {for(int s=0;s<16;s++){celMask_[9][s]=(frand(fRs)<0.30f||(s%4==0&&frand(fRs)<0.7f))?1:0;melDegU_[s]=-1;}}
         if(r<3||r==7)seedMask_(); // her-sync rijen die uit engine-patronen komen
         else pushPats();}
     void syncRack_(){ // spiegel rack-status voor de UI (standalone levert geen state terug)
         for(int r=0;r<10;r++){for(int s=0;s<16;s++)rackView_.mask[r][s]=celMask_[r][s];rackView_.mute[r]=celMute_[r];}
         rackView_.extra[0]=extraSnd_[0];rackView_.extra[1]=extraSnd_[1];
-        for(int s=0;s<16;s++){rackView_.melDeg[s]=(signed char)melDegU_[s];rackView_.melVel[s]=(signed char)melVel_[s];rackView_.melLen[s]=(signed char)melLen_[s];}
+        for(int s=0;s<16;s++)rackView_.melDeg[s]=(signed char)melDegU_[s];
         for(int b=0;b<8;b++)rackView_.basDeg[b]=(signed char)mutBas_[b];
         for(int i=0;i<27;i++)rackView_.prm[i]=getParameterValue(i);}
     void laneRestore(int r){ // SHIFT+dice: laag terug naar stijl-origineel
@@ -544,7 +548,7 @@ private:
         else if(r==5||r==6){for(int s=0;s<16;s++)celMask_[r][s]=0;}
         else if(r==7){for(int s=0;s<16;s++)celMask_[7][s]=mutBas_[s/2]>=0?1:0;}
         else if(r==8){for(int s=0;s<16;s++)celMask_[8][s]=(s==0||s==8)?1:0;}
-        else {for(int s=0;s<16;s++){celMask_[9][s]=(s%4==0)?1:0;melDegU_[s]=-1;melLen_[s]=1;melVel_[s]=96;}}
+        else {for(int s=0;s<16;s++){celMask_[9][s]=(s%4==0)?1:0;melDegU_[s]=-1;}}
         pushPats();}
     void pushPats(){ // raster → UI
         syncRack_();
@@ -820,7 +824,6 @@ private:
         mv_.on=true;mv_.t=0;mvPick_(lastMel_);
     }
     void mvPick_(int note,float vel=1.0f){
-        mvHold_=0; // nieuwe trigger = geen gate-hold meer
         if(fGeluid<0.5f){mv_.smp=nullptr;return;}
         const MarSmp* ps;pickMar(ps,note);const float tv=vel*(0.55f+fTouch*0.9f);const int lv=tv<0.55f?0:(tv<0.82f?1:2);
         mv_.smp=lv==0?ps->d:(lv==1?ps->d2:ps->d3);mv_.slen=lv==0?ps->len:(lv==1?ps->len2:ps->len3);
@@ -834,7 +837,7 @@ private:
         fDrift+=1.f/sr*.13f; float dr=1.f+0.0023f*sinf(2*M_PI*fDrift);
         if(!mv_.on)return 0;
         mv_.t+=1.f/sr;
-        float e=(mv_.t<mvHold_)?1.f:expf(-(mv_.t-mvHold_)*kMelDec[(int)fStijl]); // gate-hold voor lange noten (Reason-lengte)
+        float e=expf(-mv_.t*kMelDec[(int)fStijl]);
         float s;
         if(fGeluid>=0.5f&&mv_.smp){s=smpAt(mv_.smp,mv_.slen,mv_.spos,mv_.sstep)*0.9f;
             if(fGeluid>=1.5f&&mv2_.smp&&mv2_.on)s+=smpAt(mv2_.smp,mv2_.slen,mv2_.spos,mv2_.sstep)*0.5f;} // STACK: psaltery-oct erop
