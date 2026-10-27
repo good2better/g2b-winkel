@@ -57,6 +57,7 @@ button.hoofd:hover{filter:brightness(1.1)}
     <button class="hoofd" id="play">▶ SPEL</button>
     <button id="wis">WIS</button>
     <button id="random">🎲 WILLEKEURIG</button>
+    <button id="exp">⬇ EXPORT</button>
   </div>
   <div class="dropzone" id="dropzone">
     <b>🔁 LOOP-REBUILD — drop hier een drumloop</b>
@@ -187,6 +188,31 @@ document.getElementById('play').onclick=function(){
  if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();NB=noiseBuf(ac)}
  ac.resume();laadSmp(cur);step=0;volgende=ac.currentTime+0.06;
  timer=setInterval(tik,25);this.textContent='⏹ STOP';
+}
+// EXPORT: render het patroon (echte sounds + velocity + swing + BPM) naar wav en download
+function wavBlob(buf){
+ const n=buf.length,d=buf.getChannelData(0),ab=new ArrayBuffer(44+n*2),v=new DataView(ab);
+ const W=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+ W(0,'RIFF');v.setUint32(4,36+n*2,true);W(8,'WAVE');W(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,buf.sampleRate,true);v.setUint32(28,buf.sampleRate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);W(36,'data');v.setUint32(40,n*2,true);
+ let pk=0;for(let i=0;i<n;i++){const a=Math.abs(d[i]);if(a>pk)pk=a}const sc=pk>0.85?0.85/pk:1; // limiter: nooit te hard
+ for(let i=0;i<n;i++){const x=Math.max(-1,Math.min(1,d[i]*sc));v.setInt16(44+i*2,x<0?x*0x8000:x*0x7FFF,true)}
+ return new Blob([ab],{type:'audio/wav'})
+}
+document.getElementById('exp').onclick=async function(){
+ this.disabled=true;this.textContent='⏳ renderen...';
+ try{
+  if(!ac)ac=new (window.AudioContext||window.webkitAudioContext)();
+  if(!NB)NB=noiseBuf(ac);
+  await laadSmp(cur);
+  const bpm=+document.getElementById('bpm').value,stap=240/bpm/nSub,tot=nBars*nSub;
+  const oc=new OfflineAudioContext(1,Math.ceil((tot*stap+0.8)*44100),44100);
+  const savAc=ac,savNB=NB;ac=oc;NB=noiseBuf(oc);
+  for(let s=0;s<tot;s++){const t=s*stap+(s%2==1?swing*stap:0);for(const r of RIJEN)if(state[r].has(s))speel(r,t,VEL[r+':'+s])}
+  const rendered=await oc.startRendering();ac=savAc;NB=savNB;
+  const url=URL.createObjectURL(wavBlob(rendered)),a=document.createElement('a');
+  a.href=url;a.download=`G2B-${cur}-${bpm}bpm-${nBars}bar.wav`;a.click();setTimeout(()=>URL.revokeObjectURL(url),5000)
+ }catch(e){console.error(e)}
+ this.disabled=false;this.textContent='⬇ EXPORT';
 };
 // ---- LOOP-REBUILD: drop een audio drum-loop → slagen eruit → rebuild met G2B-sounds
 const dz=document.getElementById('dropzone'),lf=document.getElementById('loopfile'),dmsg=document.getElementById('dropmsg');
