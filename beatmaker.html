@@ -192,18 +192,26 @@ function speel(r,t,v){
  const a=ac,g0=v==null?0.9:(0.4+0.65*v); // velocity uit de loop: zacht/hard meespelen
  const buf=SMPL[cur]&&SMPL[cur][r];
  const dst=(MX&&MX.context===a)?MX:a.destination;
- if(buf){const s=a.createBufferSource();s.buffer=buf;const g=a.createGain();g.gain.value=g0;s.connect(g).connect(dst);s.start(t);return}
+ if(buf){const s=a.createBufferSource();s.buffer=buf;const g=a.createGain();
+  if(r=='shkr'&&a.createStereoPanner){const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=450;const p=a.createStereoPanner();p.pan.value=0.6;s.connect(f).connect(g).connect(p).connect(dst);
+   // Decay Tail Trap: staart klemt op 85% van het vakje (BPM-gekoppeld)
+   const bpm=+document.getElementById('bpm').value||120,stp=240/bpm/nSub,cl=Math.min(buf.duration,stp*0.85);
+   g.gain.setValueAtTime(g0,t);g.gain.setValueAtTime(g0,t+Math.max(0,cl-0.03));g.gain.exponentialRampToValueAtTime(0.001,t+cl);
+   s.start(t);s.stop(t+cl+0.01);return}
+  g.gain.value=g0;s.connect(g).connect(dst);s.start(t);return}
  const TM=(GENRES[cur]&&GENRES[cur].tim)||{kf:150,ke:45,kd:.3,sd:.18,hc:7000,hd:.05,pf:520,pd:.12};
  if(r=='kick'){const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(TM.kf,t);o.frequency.exponentialRampToValueAtTime(TM.ke,t+0.12);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.kd);o.connect(g).connect(dst);o.start(t);o.stop(t+TM.kd+0.02)}
  if(r=='snare'){const s=a.createBufferSource();s.buffer=NB;const g=a.createGain();g.gain.setValueAtTime(0.7,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.sd);s.connect(g).connect(dst);s.start(t);s.stop(t+TM.sd+0.02)}
- if(r=='hat'||r=='shkr'){const s=a.createBufferSource();s.buffer=NB;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=TM.hc;const g=a.createGain();g.gain.setValueAtTime(0.3,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.hd);s.connect(f).connect(g).connect(dst);s.start(t);s.stop(t+TM.hd+0.02)}
+ if(r=='hat'||r=='shkr'){const s=a.createBufferSource();s.buffer=NB;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=r=='shkr'?450:TM.hc;const g=a.createGain();g.gain.setValueAtTime(0.3,t);g.gain.exponentialRampToValueAtTime(0.001,t+(r=='shkr'?0.08:TM.hd));let tail=g;
+  if(r=='shkr'&&a.createStereoPanner){const p=a.createStereoPanner();p.pan.value=0.6;tail=p}
+  s.connect(f).connect(g).connect(tail).connect(dst);s.start(t);s.stop(t+(r=='shkr'?0.08:TM.hd)+0.02)}
  if(r=='perc'){const o=a.createOscillator(),g=a.createGain();o.frequency.value=TM.pf;o.type='triangle';g.gain.setValueAtTime(0.5,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.pd);o.connect(g).connect(dst);o.start(t);o.stop(t+TM.pd+0.01)}
 }
 function tik(){
  const a=ac,bpm=+document.getElementById('bpm').value,stap=240/bpm/nSub;
  while(volgende<a.currentTime+0.1){
   const s=step%(nBars*nSub),t=s%2==1?volgende+swing*stap:volgende;
-  for(const r of RIJEN)if(!MUTED.has(r)&&state[r].has(s))speel(r,t,VEL[r+':'+s]);
+  for(const r of RIJEN)if(!MUTED.has(r)&&state[r].has(s))speel(r,r=='shkr'&&s%2==1?t+stap*0.10:t,VEL[r+':'+s]);
   document.querySelectorAll('.cel.speel').forEach(c=>c.classList.remove('speel'));
   const ij=s;
   setTimeout(()=>{if(!timer)return;
@@ -238,7 +246,7 @@ document.getElementById('exp').onclick=async function(){
   const bpm=+document.getElementById('bpm').value,stap=240/bpm/nSub,tot=nBars*nSub;
   const oc=new OfflineAudioContext(1,Math.ceil((tot*stap+0.8)*44100),44100);
   const savAc=ac,savNB=NB;ac=oc;NB=noiseBuf(oc);
-  for(let s=0;s<tot;s++){const t=s*stap+(s%2==1?swing*stap:0);for(const r of RIJEN)if(!MUTED.has(r)&&state[r].has(s))speel(r,t,VEL[r+':'+s])}
+  for(let s=0;s<tot;s++){const t=s*stap+(s%2==1?swing*stap:0);for(const r of RIJEN)if(!MUTED.has(r)&&state[r].has(s))speel(r,r=='shkr'&&s%2==1?t+stap*0.10:t,VEL[r+':'+s])}
   const rendered=await oc.startRendering();ac=savAc;NB=savNB;
   const url=URL.createObjectURL(wavBlob(rendered)),a=document.createElement('a');
   a.href=url;a.download=`G2B-${cur}-${bpm}bpm-${nBars}bar.wav`;a.click();setTimeout(()=>URL.revokeObjectURL(url),5000)
@@ -372,7 +380,7 @@ async function analyseer(file){
   if(shaker){picks.shkr=matchRow('shkr',tgt('hat')||8000);
    if(!RIJEN.includes('shkr'))RIJEN.push('shkr');state.shkr=state.shkr||new Set();
    for(let st=0;st<nSteps;st++){const f=Math.max(0,Math.min(NF-1,Math.round(st*stepDur/(HOP/sr))));
-    const v=hiArr[f]/hi95;if(v>0.35&&(st%2==0||v>0.6)){state.shkr.add(st);VEL['shkr:'+st]=Math.min(1,v)}}}
+    const v=hiArr[f]/hi95;if(v>0.35&&(st%2==0||v>0.6)){state.shkr.add(st);VEL['shkr:'+st]=Math.min(1,v)*(st%2==1?0.55:1)}}}
   else if(RIJEN.includes('shkr')){RIJEN=RIJEN.filter(r=>r!='shkr');delete state.shkr}
   renderGrid();laad('eigen');cur='eigen';await laadEigen(picks);
   document.querySelectorAll('.cel').forEach(c=>{const v=VEL[c.dataset.r+':'+c.dataset.s];
