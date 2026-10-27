@@ -17,7 +17,9 @@ button.hoofd:hover{filter:brightness(1.1)}
 .grid{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
 .gline{display:grid;grid-template-columns:70px 1fr;gap:4px}
 .cells{display:grid;grid-auto-flow:column;grid-auto-columns:20px;gap:4px;overflow-x:auto;padding-bottom:4px}
-.grid .lbl{font-size:.75rem;color:var(--dim);display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
+.grid .lbl{font-size:.75rem;color:var(--dim);display:flex;align-items:center;justify-content:flex-end;padding-right:6px;cursor:pointer;user-select:none}
+.grid .lbl.mute{color:#ff5566;text-decoration:line-through}
+.grid .gline.mute .cells{opacity:.25}
 .cel{width:20px;height:20px;border-radius:5px;background:#221a3a;border:1px solid #ffffff11;cursor:pointer;transition:transform .05s;flex:none}
 .cel.aan{background:var(--groen)}
 .cel.hoofd-tel{background:#2a2246;border-color:#ffffff22}
@@ -102,6 +104,7 @@ const GENRES={
  rock:{bpm:120,tim:{kf:130,ke:45,kd:.3,sd:.2,hc:7500,hd:.06,pf:500,pd:.12},pat:{kick:[0,8,10],snare:[4,12],hat:[0,2,4,6,8,10,12,14],perc:[2,6,14]}}
 };
 const RIJEN=["kick","snare","hat","perc"];const NAMEN={kick:"🥁 KICK",snare:"👏 SNARE",hat:"🎩 HAT",perc:"🪘 PERC"};
+const MUTED=new Set(); // klik op rij-naam = mute (voor stems-export)
 const grid=document.getElementById('grid'),state={};let cur='house';
 let swing=0,gridFromLoop=false,nBars=1,nSub=16;
 for(const r of RIJEN)state[r]=new Set();
@@ -109,7 +112,10 @@ function renderGrid(){
  grid.innerHTML='';
  for(const r of RIJEN){
   const line=document.createElement('div');line.className='gline';
-  const l=document.createElement('div');l.className='lbl';l.textContent=NAMEN[r];line.appendChild(l);
+  const l=document.createElement('div');l.className='lbl'+(MUTED.has(r)?' mute':'');l.textContent=NAMEN[r];
+  l.title='klik = mute/unmute (stems exporteren: mute wat je niet wilt)';
+  l.onclick=()=>{if(MUTED.has(r))MUTED.delete(r);else MUTED.add(r);l.classList.toggle('mute',MUTED.has(r));line.classList.toggle('mute',MUTED.has(r))};
+  line.appendChild(l);
   const cs=document.createElement('div');cs.className='cells';
   for(let s=0;s<nBars*nSub;s++){
    const c=document.createElement('div');c.className='cel'+(s%(nSub/4)==0?' hoofd-tel':'');c.dataset.r=r;c.dataset.s=s;
@@ -175,7 +181,7 @@ function tik(){
  const a=ac,bpm=+document.getElementById('bpm').value,stap=240/bpm/nSub;
  while(volgende<a.currentTime+0.1){
   const s=step%(nBars*nSub),t=s%2==1?volgende+swing*stap:volgende;
-  for(const r of RIJEN)if(state[r].has(s))speel(r,t,VEL[r+':'+s]);
+  for(const r of RIJEN)if(!MUTED.has(r)&&state[r].has(s))speel(r,t,VEL[r+':'+s]);
   document.querySelectorAll('.cel.speel').forEach(c=>c.classList.remove('speel'));
   const ij=s;
   setTimeout(()=>{if(!timer)return;
@@ -210,7 +216,7 @@ document.getElementById('exp').onclick=async function(){
   const bpm=+document.getElementById('bpm').value,stap=240/bpm/nSub,tot=nBars*nSub;
   const oc=new OfflineAudioContext(1,Math.ceil((tot*stap+0.8)*44100),44100);
   const savAc=ac,savNB=NB;ac=oc;NB=noiseBuf(oc);
-  for(let s=0;s<tot;s++){const t=s*stap+(s%2==1?swing*stap:0);for(const r of RIJEN)if(state[r].has(s))speel(r,t,VEL[r+':'+s])}
+  for(let s=0;s<tot;s++){const t=s*stap+(s%2==1?swing*stap:0);for(const r of RIJEN)if(!MUTED.has(r)&&state[r].has(s))speel(r,t,VEL[r+':'+s])}
   const rendered=await oc.startRendering();ac=savAc;NB=savNB;
   const url=URL.createObjectURL(wavBlob(rendered)),a=document.createElement('a');
   a.href=url;a.download=`G2B-${cur}-${bpm}bpm-${nBars}bar.wav`;a.click();setTimeout(()=>URL.revokeObjectURL(url),5000)
