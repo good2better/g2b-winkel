@@ -1,0 +1,34 @@
+{
+  "name": "g2b-beatmaker-gio",
+  "productName": "G2B Beat Maker GIO",
+  "version": "1.0.0",
+  "description": "Giorgio's prive beat-studio - DNA sounds + SYNC export",
+  "main": "main.js",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "ai.good2better.beatmakergio",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "app/**"
+    ],
+    "win": {
+      "target": "nsis",
+      "artifactName": "G2B-BeatMaker-GIO-${version}.${ext}",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "shortcutName": "G2B Beat Maker PRO"
+    }
+  },
+  "author": "G2B - Good2Better"
+}
