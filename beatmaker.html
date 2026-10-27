@@ -14,11 +14,11 @@ h1{color:var(--groen);font-size:1.6rem;margin-bottom:4px}
 select,button{font:inherit;border-radius:10px;border:1px solid #ffffff22;background:#221a3a;color:var(--tekst);padding:8px 14px;cursor:pointer}
 button.hoofd{background:var(--groen);color:var(--donker);font-weight:700;border:none;padding:10px 22px}
 button.hoofd:hover{filter:brightness(1.1)}
-.grid{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;max-height:62vh;overflow-y:auto;padding-right:4px}
+.grid{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
 .gline{display:grid;grid-template-columns:70px 1fr;gap:4px}
-.cells{display:grid;grid-template-columns:repeat(16,1fr);gap:4px}
+.cells{display:grid;grid-auto-flow:column;grid-auto-columns:20px;gap:4px;overflow-x:auto;padding-bottom:4px}
 .grid .lbl{font-size:.75rem;color:var(--dim);display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
-.cel{aspect-ratio:1;border-radius:5px;background:#221a3a;border:1px solid #ffffff11;cursor:pointer;transition:transform .05s}
+.cel{width:20px;height:20px;border-radius:5px;background:#221a3a;border:1px solid #ffffff11;cursor:pointer;transition:transform .05s;flex:none}
 .cel.aan{background:var(--groen)}
 .cel.hoofd-tel{background:#2a2246;border-color:#ffffff22}
 .cel.aan.hoofd-tel{background:#57f0b5}
@@ -43,7 +43,7 @@ button.hoofd:hover{filter:brightness(1.1)}
 .dropzone small{display:block;color:var(--dim);margin-top:4px}
 .dropmsg{margin-top:8px;font-size:.8rem;color:var(--groen);min-height:1em;text-align:center}
 .footer{margin-top:18px;font-size:.75rem;color:var(--dim);text-align:center}
-@media(max-width:560px){.gline{grid-template-columns:54px 1fr}.cells{gap:2px}.grid .lbl{font-size:.6rem}}
+@media(max-width:560px){.gline{grid-template-columns:54px 1fr}.cells{gap:2px;grid-auto-columns:14px}.cel{width:14px;height:14px}.grid .lbl{font-size:.6rem}}
 </style>
 </head>
 <body>
@@ -240,8 +240,20 @@ async function analyseer(file){
   for(const r of['kick','perc','snare','hat'])for(const t of hits[r]){const s=(t%barDur)/barDur*nSub;if(Math.round(s)%2==1)res.push(s-Math.round(s))}
   swing=res.length?Math.max(0,Math.min(0.4,median(res))):0;
   gridFromLoop=true;
+  // kies zelf het genre dat bij de loop past: BPM + patroon-kenmerken bepalen de klank
+  const k1=[...state.kick].filter(s=>s<nSub).map(s=>s%nSub),p1=[...state.perc].filter(s=>s<nSub);
+  const fourFloor=k1.length>=3&&k1.filter(s=>s%(nSub/4)==0).length>=k1.length-1;
+  let g;
+  if(bpm>=135&&nSub==32)g='trap';         // snel + hat-rolls = trap
+  else if(bpm>=140)g='bubbling';          // snel zonder rolls = bubbling
+  else if(p1.length>=4)g='kawina';        // veel percussie = surinaams
+  else if(fourFloor&&bpm>=115)g='house';  // 4-op-de-vloer = house
+  else if(bpm<95)g='schuivel';            // traag = schuivel/lofi-klank
+  else if(bpm>=120)g='soca';              // middel-tempo = soca
+  else g='house';
+  laad(g);
   document.querySelectorAll('.cel').forEach(c=>c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s)));
-  dmsg.textContent=`✅ ${totOn} slagen gehoord → ${bars} bar${bars>1?'s':''} rebuild · ~${bpm} BPM`+(nSub==32?' · 32e-noten grid':'')+(swing>0.02?` · swing ${Math.round(swing*100)}%`:'')+` · klik een genre voor andere sounds`;
+  dmsg.textContent=`✅ ${totOn} slagen gehoord → ${bars} bar${bars>1?'s':''} rebuild · ~${bpm} BPM`+(nSub==32?' · 32e-noten grid':'')+(swing>0.02?` · swing ${Math.round(swing*100)}%`:'')+` · geluid: ${g.toUpperCase()} (klik een genre voor andere sounds)`;
   if(!timer)document.getElementById('play').click(); // direct afspelen: drop → hoor je loop met G2B-sounds
  }catch(err){dmsg.textContent='⚠️ Kon dit bestand niet lezen — probeer wav/mp3/ogg.'}
 }
