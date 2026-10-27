@@ -44,6 +44,11 @@ button.hoofd:hover{filter:brightness(1.1)}
 .dropzone b{color:var(--groen)}
 .dropzone small{display:block;color:var(--dim);margin-top:4px}
 .dropmsg{margin-top:8px;font-size:.8rem;color:var(--groen);min-height:1em;text-align:center}
+.melzone{margin-top:12px;display:none}
+.melzone .rijen{margin-bottom:8px}
+.melnotes{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;max-height:110px;overflow-y:auto;padding:4px}
+.mnoot{background:#2a2246;border:1px solid var(--groen);color:var(--groen);border-radius:5px;font-size:.62rem;padding:3px 5px;white-space:nowrap}
+.mnoot.donker{opacity:.45}
 .footer{margin-top:18px;font-size:.75rem;color:var(--dim);text-align:center}
 @media(max-width:560px){.gline{grid-template-columns:54px 1fr}.cells{gap:2px;grid-auto-columns:14px}.cel{width:14px;height:14px}.grid .lbl{font-size:.6rem}}
 </style>
@@ -67,6 +72,10 @@ button.hoofd:hover{filter:brightness(1.1)}
     <input type="file" id="loopfile" accept="audio/*,.wav,.mp3,.ogg,.m4a,.flac" style="display:none">
   </div>
   <div class="dropmsg" id="dropmsg"></div>
+  <div class="melzone" id="melzone">
+   <div class="rijen" id="melinst"></div>
+   <div class="melnotes" id="melnotes"></div>
+  </div>
   <p class="koop">Vind je dit leuk? Deze sounds (en 770+ meer) zitten in de
     <a href="index.html" target="_top">G2B sound-packs →</a><br>
     <a href="gratis.html" style="color:var(--groen);font-weight:700">🎁 Of pak eerst de GRATIS Starter-Pack (12 sounds)</a></p>
@@ -225,6 +234,7 @@ function tik(){
   const s=step%(nBars*nSub),t=s%2==1?volgende+swing*stap:volgende;
   if(!MUTED.has('kick')&&state.kick.has(s))pump(a,t);
   for(const r of RIJEN)if(!MUTED.has(r)&&state[r].has(s))speel(r,r=='shkr'&&s%2==1?t+stap*0.10:t,VEL[r+':'+s]);
+  if(MEL.length)for(const n of(MSTEP.get(s)||[]))speelNoot(n,t+n.dt);
   document.querySelectorAll('.cel.speel').forEach(c=>c.classList.remove('speel'));
   const ij=s;
   setTimeout(()=>{if(!timer)return;
@@ -235,6 +245,79 @@ function tik(){
   volgende+=stap;step++;
  }
 }
+// ---- MELODIE-REBUILD: drop melodie → noten eruit → rebuild met eigen instrumenten
+const MINST={kalimba:[49,53,58,61,65,70,73],piano:[36,48,52,58,60,64,72,81,84],marimba:[29,43,47,53,60,71,84],flute:[53,58,60,62,64,68,72],glock:[67,72,79,84,92]};
+const MELN={kalimba:'🎋 KALIMBA',piano:'🎹 PIANO',marimba:'🪵 MARIMBA',flute:'🪈 FLUIT',glock:'🔔 GLOCK'};
+let MEL=[],melInst='kalimba';const MELB={};
+const TNn=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+function nNaam(m){return TNn[m%12]+Math.floor(m/12-1)}
+function melNoten(melArr,frameT){ // pitch-curve → noten {midi,t0,dur,v}
+ const ampMx=Math.max(...melArr.map(f=>f.a),1e-9),ampThr=ampMx*0.06,noten=[];
+ let cur=null;
+ const push=c=>{if(c.len>=4)noten.push({midi:Math.round(median(c.mids)),t0:c.t0,dur:c.len*frameT,v:Math.min(1,c.ampSum/c.len/ampMx*1.6)})};
+ for(let f=0;f<melArr.length;f++){
+  const fr=melArr[f];if(fr.f<=0||fr.a<ampThr){if(cur){push(cur);cur=null}continue}
+  const mi=69+12*Math.log2(fr.f/440);
+  if(cur&&Math.abs(mi-median(cur.mids))<0.9){cur.mids.push(mi);cur.ampSum+=fr.a;cur.len++}
+  else{if(cur)push(cur);cur={t0:f*frameT,mids:[mi],ampSum:fr.a,len:1}}
+ }
+ if(cur)push(cur);
+ // merge aangrenzende zelfde noot (gaps < 2 frames)
+ const out=[];for(const n of noten){const l=out[out.length-1];
+  if(l&&n.midi==l.midi&&n.t0-(l.t0+l.dur)<frameT*3)l.dur=n.t0+n.dur-l.t0;else out.push(n)}
+ return out;
+}
+async function laadMelBuf(inst){
+ if(MELB[inst])return;MELB[inst]={};
+ for(const sn of MINST[inst]){
+  try{const res=await fetch(`melsnd/${inst}_${sn}.wav`);if(!res.ok)continue;
+   MELB[inst][sn]=await ac.decodeAudioData(await res.arrayBuffer())}catch(e){}
+ }
+}
+async function speelNoot(n,t,dst){
+ const inst=melInst,bs=MELB[inst];if(!bs)return;
+ let bestS=null,bd=99;for(const sn in bs){const d=Math.abs(n.midi-+sn);if(d<bd){bd=d;bestS=+sn}}
+ if(bestS==null)return;
+ const buf=bs[bestS],rate=Math.pow(2,(n.midi-bestS)/12);
+ const s=ac.createBufferSource();s.buffer=buf;s.playbackRate.value=rate;
+ const g=ac.createGain(),cl=Math.min(buf.duration/rate,Math.max(n.dur,0.12));
+ g.gain.setValueAtTime(0.8*n.v,t);g.gain.setValueAtTime(0.8*n.v,t+Math.max(0,cl-0.04));g.gain.exponentialRampToValueAtTime(0.001,t+cl);
+ s.connect(g).connect(dst||masterOf(ac));s.start(t);s.stop(t+cl+0.01);
+}
+function melUI(){
+ const mz=document.getElementById('melzone');if(!MEL.length){mz.style.display='none';return}
+ mz.style.display='block';
+ const mi=document.getElementById('melinst');mi.innerHTML='';
+ for(const k in MINST){const b=document.createElement('button');b.textContent=MELN[k];
+  b.style.borderColor=k==melInst?'var(--groen)':'#ffffff22';
+  b.onclick=async()=>{melInst=k;await laadMelBuf(k);melUI()};mi.appendChild(b)}
+ const mn=document.getElementById('melnotes');mn.innerHTML='';
+ for(const n of MEL){const c=document.createElement('span');c.className='mnoot';
+  c.textContent=nNaam(n.midi);if(n.v<0.35)c.classList.add('donker');mn.appendChild(c)}
+ const mb=document.createElement('button');mb.id='melmidi';mb.textContent='⬇ MIDI';mb.onclick=melDownload;mi.appendChild(mb)
+}
+const MSTEP=new Map(); // stap-index → noten die op die stap starten
+let stepDurAbs=0,melLoopS=0; // stepDurAbs/melLoopS: echte seconden per stap / loop-lengte
+function melGrid(){MSTEP.clear();
+ for(const n of MEL){const s=Math.round(n.t0/stepDurAbs);n.st=Math.max(0,Math.min(nBars*nSub-1,s));n.dt=Math.max(0,n.t0-n.st*stepDurAbs);
+  if(!MSTEP.has(n.st))MSTEP.set(n.st,[]);MSTEP.get(n.st).push(n)}}
+// MIDI-export: noten → standaard .mid (format 0, 480 ticks/kwartsnoot, tempo uit BPM)
+function midiBlob(){
+ const VLQ=n=>{const b=[n&127];while(n>>=7)b.unshift((n&127)|128);return b};
+ const bpm=+document.getElementById('bpm').value||120,tps=480,secPerTick=60/bpm/tps;
+ const ev=[];let last=0;
+ for(const n of MEL){const on=Math.round(n.t0/secPerTick),off=Math.round((n.t0+n.dur)/secPerTick);
+  ev.push({t:on,d:on-last,d2:0,b:[0x90,n.midi,Math.round(30+n.v*90)]});last=on;
+  ev.push({t:off,d:0,b:[0x80,n.midi,64]})}
+ ev.sort((a,b)=>a.t-b.t);let prev=0;const trk=[];
+ for(const e of ev){trk.push(...VLQ(e.t-prev),...e.b);prev=e.t}
+ trk.push(0,0xFF,0x2F,0);const L=trk.length;
+ const hdr=[0x4D,0x54,0x68,0x64,0,0,0,6,0,0,0,1,0,1,0x01,0xE0,0x4D,0x54,0x72,0x6B,(L>>24)&255,(L>>16)&255,(L>>8)&255,L&255];
+ return new Blob([new Uint8Array([...hdr,...trk])],{type:'audio/midi'})
+}
+function melDownload(){
+ const url=URL.createObjectURL(midiBlob()),a=document.createElement('a');
+ a.href=url;a.download=`G2B-melodie-${document.getElementById('bpm').value}bpm.mid`;a.click();setTimeout(()=>URL.revokeObjectURL(url),5000)}
 document.getElementById('play').onclick=function(){
  if(timer){clearInterval(timer);timer=null;this.textContent='▶ SPEL';document.querySelectorAll('.cel.speel').forEach(c=>c.classList.remove('speel'));return}
  if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();NB=noiseBuf(ac);MX=masterOf(ac)}
@@ -259,7 +342,7 @@ document.getElementById('exp').onclick=async function(){
   const bpm=+document.getElementById('bpm').value,stap=240/bpm/nSub,tot=nBars*nSub;
   const oc=new OfflineAudioContext(1,Math.ceil((tot*stap+0.8)*44100),44100);
   const savAc=ac,savNB=NB;ac=oc;NB=noiseBuf(oc);
-  for(let s=0;s<tot;s++){const t=s*stap+(s%2==1?swing*stap:0);if(!MUTED.has('kick')&&state.kick.has(s))pump(oc,t);for(const r of RIJEN)if(!MUTED.has(r)&&state[r].has(s))speel(r,r=='shkr'&&s%2==1?t+stap*0.10:t,VEL[r+':'+s])}
+  for(let s=0;s<tot;s++){const t=s*stap+(s%2==1?swing*stap:0);if(!MUTED.has('kick')&&state.kick.has(s))pump(oc,t);for(const r of RIJEN)if(!MUTED.has(r)&&state[r].has(s))speel(r,r=='shkr'&&s%2==1?t+stap*0.10:t,VEL[r+':'+s]);if(MEL.length)for(const n of(MSTEP.get(s)||[]))speelNoot(n,t+n.dt,masterOf(oc))}
   const rendered=await oc.startRendering();ac=savAc;NB=savNB;
   const url=URL.createObjectURL(wavBlob(rendered)),a=document.createElement('a');
   a.href=url;a.download=`G2B-${cur}-${bpm}bpm-${nBars}bar.wav`;a.click();setTimeout(()=>URL.revokeObjectURL(url),5000)
@@ -297,28 +380,30 @@ async function analyseer(file){
   const re=new Float64Array(FL),im=new Float64Array(FL),win=new Float64Array(FL);
   for(let i=0;i<FL;i++)win[i]=0.5-0.5*Math.cos(2*Math.PI*i/FL);
   const binHz=sr/FL,iKick=Math.max(2,Math.floor(150/binHz)),iTom=Math.floor(1000/binHz),iHat=Math.floor(5000/binHz);
-  const prev=new Float64Array(FL/2),flux=[],fluxK=[],fluxT=[],fluxM=[],fluxH=[],times=[],cenK=[],cenT=[],cenS=[],cenH=[],hiArr=[],subArr=[];
-  const chroma=new Float64Array(12),pcOf=new Int8Array(FL/2); // chromagram: toonsoort-detectie
+  const prev=new Float64Array(FL/2),flux=[],fluxK=[],fluxT=[],fluxM=[],fluxH=[],times=[],cenK=[],cenT=[],cenS=[],cenH=[],hiArr=[],subArr=[],melArr=[];
+  const chroma=new Float64Array(12),pcOf=new Int8Array(FL/2),chrF=new Float64Array(NF*12); // chromagram: toonsoort-detectie
   for(let i=1;i<FL/2;i++){const fr=i*binHz;if(fr>55&&fr<2000)pcOf[i]=((Math.round(12*Math.log2(fr/440)+69))%12+12)%12;else pcOf[i]=-1}
   let subE=0,totE=0,hiE=0;
   for(let f=0;f<NF;f++){
    const off=f*HOP;
    for(let i=0;i<FL;i++){re[i]=d[off+i]*win[i];im[i]=0}
    fft(re,im);
-   let fl=0,bk=0,bt=0,bm=0,bh=0,eSub=0,eTot=0,eHi=0,mK=0,mS=0,mH=0,mT=0,cK=0,cS=0,cH=0,cT=0;
+   let fl=0,bk=0,bt=0,bm=0,bh=0,eSub=0,eTot=0,eHi=0,mK=0,mS=0,mH=0,mT=0,cK=0,cS=0,cH=0,cT=0,bI=0,bM=0;
    const iSub=Math.floor(80/binHz);
    for(let i=1;i<FL/2;i++){
     const m=Math.hypot(re[i],im[i]),df=m-prev[i],fr=i*binHz;
     eTot+=m;if(i<=iSub)eSub+=m;else if(i>=iHat)eHi+=m;
+    if(m>bM&&fr>65&&fr<1600){bM=m;bI=i}
     if(fr<300){mK+=m;cK+=m*fr}else if(fr<1000){mT+=m;cT+=m*fr}else if(fr<5000){mS+=m;cS+=m*fr}else{mH+=m;cH+=m*fr}
-    if(pcOf[i]>=0)chroma[pcOf[i]]+=m;
+    if(pcOf[i]>=0)chrF[f*12+pcOf[i]]+=m;
     if(df>0){fl+=df;if(i<=iKick)bk+=df;else if(i<iTom)bt+=df;else if(i<iHat)bm+=df;else bh+=df}
     prev[i]=m;
    }
    flux.push(fl);fluxK.push(bk);fluxT.push(bt);fluxM.push(bm);fluxH.push(bh);times.push(off/sr);
    subE+=eSub;totE+=eTot;hiE+=eHi;
    cenK.push(mK?cK/mK:0);cenT.push(mT?cT/mT:0);cenS.push(mS?cS/mS:0);cenH.push(mH?cH/mH:0);
-   hiArr.push(mH);subArr.push(eTot?eSub/eTot:0);
+   hiArr.push(mH);subArr.push(eTot?eSub/eTot:0);melArr.push({f:bI?bI*binHz:0,a:bM,e:eTot});
+  window._melArr=melArr;
   }
   // per-band flux (verandering per band) → daarop onset-detectie; energie-niveau werkt niet op drukke loops
   const dur=buf.duration;
@@ -330,8 +415,45 @@ async function analyseer(file){
    return on;
   }
   const hits={kick:bandOnsets(fluxK),perc:bandOnsets(fluxT),snare:bandOnsets(fluxM),hat:bandOnsets(fluxH)};
+  // blanking-window: bij elke kick/snare-slag pauzeert de toonhoogte-meting 25ms,
+  // zodat drum-breedband de toonsoort/noten niet vervuilt (luistert alleen in de gaten)
+  {const blk=new Set(),fw=Math.ceil(0.025/(HOP/sr));
+   for(const o of[...hits.kick,...hits.snare]){const f0=Math.round(o.t/(HOP/sr));for(let f=f0;f<=f0+fw;f++)blk.add(f)}
+   melArr.forEach((fr,f)=>{if(blk.has(f))fr.f=0});
+   chroma.fill(0);for(let f=0;f<NF;f++)if(!blk.has(f))for(let p=0;p<12;p++)chroma[p]+=chrF[f*12+p]}
   const totOn=hits.kick.length+hits.perc.length+hits.snare.length+hits.hat.length;
-  if(totOn<3){dmsg.textContent='⚠️ Geen duidelijke slagen gevonden — probeer een duidelijkere drum-loop.';return}
+  window._totOn=totOn;
+  // toonsoort: chroma → beste majeur/mineur-template (Krumhansl)
+  const KMAJ=[6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88],KMIN=[6.33,2.68,3.52,5.38,2.60,3.53,2.54,4.75,3.98,2.69,3.34,3.17];
+  const TN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  const cTot=chroma.reduce((a,b)=>a+b,0);let keyTxt='',bestC=0;
+  if(cTot>0){const cn=chroma.map(v=>v/cTot),cm=cn.reduce((a,b)=>a+b,0)/12;
+   let bestK=-1,bestM='';
+   for(let r=0;r<12;r++)for(const[prof,nm]of[[KMAJ,''],[KMIN,' min']]){
+    const pm=prof.reduce((a,b)=>a+b,0)/12;let num=0,va=0,vb=0;
+    for(let i=0;i<12;i++){const x=cn[(r+i)%12]-cm,y=prof[i]-pm;num+=x*y;va+=x*x;vb+=y*y}
+    const corr=va>0&&vb>0?num/Math.sqrt(va*vb):0;if(corr>bestC){bestC=corr;bestK=r;bestM=nm}}
+   if(bestC>0.55)keyTxt=` · toonsoort ≈ ${TN[bestK]}${bestM}`}
+  const noten=melNoten(melArr,HOP/sr);
+  const maxDur=noten.length?Math.max(...noten.map(n=>n.dur)):0;
+  const isMel=noten.length>=5&&bestC>0.5; // echte noten + heldere toonsoort
+  const drumLicht=totOn<=noten.length*2;  // melodie-stem: ~1 aanval per noot; drums slaan vaker
+  if(totOn<3||(isMel&&drumLicht)){        // melodie-stem: noten winnen van de ritme-lezer
+   if(noten.length>=3){
+    MEL=noten;
+    let bars=1,bpm=240/dur,bs=-1;const nts=noten.map(n=>n.t0);
+    for(const b of[1,2,4,8,16]){const c=240*b/dur;if(c<60||c>170)continue;
+     const step=dur/(b*16);let hit=0;
+     for(const t of nts){if(Math.abs(t-Math.round(t/step)*step)/step<0.3)hit++}
+     const sc=hit/nts.length+0.02*(1-Math.abs(c-110)/110);if(sc>bs){bs=sc;bars=b;bpm=c}}
+    bpm=Math.round(Math.min(180,Math.max(60,bpm)));
+    document.getElementById('bpm').value=bpm;document.getElementById('bpmv').textContent=bpm;
+    nBars=bars;nSub=16;stepDurAbs=dur/(nBars*nSub);renderGrid();melGrid();
+    gridFromLoop=false;for(const r of RIJEN)state[r].clear();
+    await laadMelBuf(melInst);melUI();
+    dmsg.textContent=`🎹 ${noten.length} noten gehoord → melodie-rebuild · ~${bpm} BPM`+keyTxt+` · speelt met ${MELN[melInst]} (wissel hieronder)`;
+    if(!timer)document.getElementById('play').click();return}
+   dmsg.textContent='⚠️ Geen duidelijke slagen of noten gevonden — probeer een duidelijkere loop.';return}
   // bars+bpm samen bepalen: voor elk aantal maten {1,2,4,8,16} volgt bpm=240*bars/dur;
   // de combinatie waar de meeste slagen op het 16e-raster vallen wint (getest op echte loops)
   const ts=[...hits.kick,...hits.perc,...hits.snare,...hits.hat].map(o=>o.t);
@@ -351,6 +473,7 @@ async function analyseer(file){
   nBars=bars;renderGrid();
   // quantize: elke slag op zijn plek in het hele raster (variatie blijft bewaard)
   const nSteps=nBars*nSub,stepDur=dur/nSteps;
+  stepDurAbs=stepDur;if(MEL.length)melGrid(); // melodie blijft meespelen op het nieuwe raster
   for(const r of RIJEN)state[r].clear();
   VEL={};
   for(const r of['kick','perc','snare','hat'])for(const o of hits[r]){const s=Math.round(o.t/stepDur);if(s>=0&&s<nSteps){state[r].add(s);VEL[r+':'+s]=o.v}}
@@ -403,18 +526,11 @@ async function analyseer(file){
    c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s));c.style.opacity=v!=null?0.4+0.6*v:1});
   document.querySelectorAll('#genres button').forEach(b=>b.style.borderColor='#ffffff22');
   const nm=x=>x.startsWith('x-')?x.slice(2).toUpperCase():x.split('-')[0].toUpperCase();
-  // toonsoort: chroma → beste majeur/mineur-template (Krumhansl)
-  const KMAJ=[6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88],KMIN=[6.33,2.68,3.52,5.38,2.60,3.53,2.54,4.75,3.98,2.69,3.34,3.17];
-  const TN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-  const cTot=chroma.reduce((a,b)=>a+b,0);let keyTxt='';
-  if(cTot>0){const cn=chroma.map(v=>v/cTot),cm=cn.reduce((a,b)=>a+b,0)/12;
-   let bestK=-1,bestM='',bestC=0;
-   for(let r=0;r<12;r++)for(const[prof,nm]of[[KMAJ,''],[KMIN,' min']]){
-    const pm=prof.reduce((a,b)=>a+b,0)/12;let num=0,va=0,vb=0;
-    for(let i=0;i<12;i++){const x=cn[(r+i)%12]-cm,y=prof[i]-pm;num+=x*y;va+=x*x;vb+=y*y}
-    const corr=va>0&&vb>0?num/Math.sqrt(va*vb):0;if(corr>bestC){bestC=corr;bestK=r;bestM=nm}}
-   if(bestC>0.55)keyTxt=` · toonsoort ≈ ${TN[bestK]}${bestM}`}
-  dmsg.textContent=`✅ ${totOn} slagen gehoord → ${bars} bar${bars>1?'s':''} rebuild · ~${bpm} BPM`+(nSub==32?' · 32e-noten grid':'')+(swing>0.02?` · swing ${Math.round(swing*100)}%`:'')+keyTxt
+  let melTxt='';
+  if(isMel&&maxDur>1){ // gemixte loop (drums+melodie): melodie-laag speelt mee
+   MEL=noten;melGrid();await laadMelBuf(melInst);melUI();
+   melTxt=` +🎹${noten.length} noten`}
+  dmsg.textContent=`✅ ${totOn} slagen gehoord → ${bars} bar${bars>1?'s':''} rebuild · ~${bpm} BPM`+(nSub==32?' · 32e-noten grid':'')+(swing>0.02?` · swing ${Math.round(swing*100)}%`:'')+keyTxt+melTxt
    +` · eigen set: K=${nm(picks.kick)} S=${nm(picks.snare)} H=${nm(picks.hat)} P=${nm(picks.perc)}`+(shaker?` +SHAKER=${nm(picks.shkr)}`:'')+` (klik een genre voor andere sounds)`;
   if(!timer)document.getElementById('play').click(); // direct afspelen: drop → hoor je loop met G2B-sounds
  }catch(err){dmsg.textContent='⚠️ Kon dit bestand niet lezen — probeer wav/mp3/ogg.'}
