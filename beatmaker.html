@@ -174,7 +174,7 @@ const DKS=new Map(); // sidechain-duck per context (perc/shaker pompen onder de 
 function duckOf(a){if(DKS.has(a))return DKS.get(a);const g=a.createGain();g.connect(masterOf(a));DKS.set(a,g);return g}
 function pump(a,t){const d=duckOf(a);d.gain.cancelScheduledValues(t);d.gain.setValueAtTime(1,t);d.gain.linearRampToValueAtTime(0.4,t+0.02);d.gain.linearRampToValueAtTime(1,t+0.16)}
 function noiseBuf(a){const b=a.createBuffer(1,a.sampleRate*0.5,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b}
-let NB=null,VEL={};
+let NB=null,VEL={},OH=[]; // OH = spelende open-hat gain-nodes (choke-groep: dichte hat kapt open-hat af)
 // échte G2B one-shots per genre (drumsnd/<genre>-<rij>.wav) — synth blijft fallback
 const SMPL={};
 async function laadSmp(g){
@@ -215,21 +215,25 @@ function speel(r,t,v){
  const buf=SMPL[cur]&&SMPL[cur][r];
  const dst=(r=='perc'||r=='perc2'||r=='shkr')?duckOf(a):masterOf(a);
  if(buf){const s=a.createBufferSource();s.buffer=buf;const g=a.createGain();
-  // stereo-rol: shaker ver rechts, perc links, hat licht links, open-hat rechts (kick/snare midden)
-  const pan=r=='shkr'?0.6:r=='perc'?-0.4:r=='perc2'?-0.5:r=='hat'?-0.3:r=='hat2'?0.3:0;let out=dst;
+  // stereo-rol: shaker ver rechts, perc licht links, PERC 2 rechts, dichte hat links, open-hat ver rechts
+  const pan=r=='shkr'?0.6:r=='perc'?-0.2:r=='perc2'?0.4:r=='hat'?-0.35:r=='hat2'?0.65:0;let out=dst;
   if(pan&&a.createStereoPanner){const p=a.createStereoPanner();p.pan.value=pan;p.connect(dst);out=p}
   if(r=='shkr'){const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=450;s.connect(f).connect(g).connect(out);
    // Decay Tail Trap: staart klemt op 85% van het vakje (BPM-gekoppeld)
    const bpm=+document.getElementById('bpm').value||120,stp=240/bpm/nSub,cl=Math.min(buf.duration,stp*0.85);
    g.gain.setValueAtTime(g0,t);g.gain.setValueAtTime(g0,t+Math.max(0,cl-0.03));g.gain.exponentialRampToValueAtTime(0.001,t+cl);
    s.start(t);s.stop(t+cl+0.01);return}
-  g.gain.value=g0;s.connect(g).connect(out);s.start(t);return}
+  // choke-groep: dichte hat kapt de staart van een lopende open-hat af (5ms, geen klik)
+  if(r=='hat'){const t0=a.currentTime;OH=OH.filter(e=>e.t>t0-4);for(const e of OH){e.g.gain.cancelScheduledValues(t);e.g.gain.setTargetAtTime(0,t,0.005)}}
+  g.gain.value=g0;s.connect(g).connect(out);s.start(t);
+  if(r=='hat2')OH.push({g,t:t+buf.duration});
+  return}
  const TM=(GENRES[cur]&&GENRES[cur].tim)||{kf:150,ke:45,kd:.3,sd:.18,hc:7000,hd:.05,pf:520,pd:.12};
  if(r=='kick'){const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(TM.kf,t);o.frequency.exponentialRampToValueAtTime(TM.ke,t+0.12);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.kd);o.connect(g).connect(dst);o.start(t);o.stop(t+TM.kd+0.02)}
  if(r=='snare'){const s=a.createBufferSource();s.buffer=NB;const g=a.createGain();g.gain.setValueAtTime(0.7,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.sd);s.connect(g).connect(dst);s.start(t);s.stop(t+TM.sd+0.02)}
  if(r=='hat'||r=='hat2'||r=='shkr'){const s=a.createBufferSource();s.buffer=NB;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=r=='shkr'?450:TM.hc;const g=a.createGain();g.gain.setValueAtTime(0.3,t);g.gain.exponentialRampToValueAtTime(0.001,t+(r=='shkr'?0.08:r=='hat2'?TM.hd*4:TM.hd));let tail=g;
   if(r=='shkr'&&a.createStereoPanner){const p=a.createStereoPanner();p.pan.value=0.6;tail=p}
-  if(r=='hat2'&&a.createStereoPanner){const p=a.createStereoPanner();p.pan.value=0.3;tail=p}
+  if(r=='hat2'&&a.createStereoPanner){const p=a.createStereoPanner();p.pan.value=0.65;tail=p}
   s.connect(f).connect(g).connect(tail).connect(dst);s.start(t);s.stop(t+(r=='shkr'?0.08:r=='hat2'?TM.hd*4:TM.hd)+0.02)}
  if(r=='perc'||r=='perc2'){const o=a.createOscillator(),g=a.createGain();o.frequency.value=TM.pf*(r=='perc2'?1.5:1);o.type='triangle';g.gain.setValueAtTime(0.5,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.pd);o.connect(g).connect(dst);o.start(t);o.stop(t+TM.pd+0.01)}
 }
