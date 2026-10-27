@@ -142,7 +142,7 @@ document.getElementById('random').onclick=()=>{
  document.querySelectorAll('.cel').forEach(c=>c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s)))};
 let ac=null,step=0,timer=null,volgende=0;
 function noiseBuf(a){const b=a.createBuffer(1,a.sampleRate*0.5,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b}
-let NB=null;
+let NB=null,VEL={};
 // échte G2B one-shots per genre (drumsnd/<genre>-<rij>.wav) — synth blijft fallback
 const SMPL={};
 async function laadSmp(g){
@@ -155,10 +155,10 @@ async function laadSmp(g){
   }catch(e){}
  }
 }
-function speel(r,t){
- const a=ac;
+function speel(r,t,v){
+ const a=ac,g0=v==null?0.9:(0.4+0.65*v); // velocity uit de loop: zacht/hard meespelen
  const buf=SMPL[cur]&&SMPL[cur][r];
- if(buf){const s=a.createBufferSource();s.buffer=buf;const g=a.createGain();g.gain.value=.9;s.connect(g).connect(a.destination);s.start(t);return}
+ if(buf){const s=a.createBufferSource();s.buffer=buf;const g=a.createGain();g.gain.value=g0;s.connect(g).connect(a.destination);s.start(t);return}
  const TM=GENRES[cur].tim||{kf:150,ke:45,kd:.3,sd:.18,hc:7000,hd:.05,pf:520,pd:.12};
  if(r=='kick'){const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(TM.kf,t);o.frequency.exponentialRampToValueAtTime(TM.ke,t+0.12);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.kd);o.connect(g).connect(a.destination);o.start(t);o.stop(t+TM.kd+0.02)}
  if(r=='snare'){const s=a.createBufferSource();s.buffer=NB;const g=a.createGain();g.gain.setValueAtTime(0.7,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.sd);s.connect(g).connect(a.destination);s.start(t);s.stop(t+TM.sd+0.02)}
@@ -169,7 +169,7 @@ function tik(){
  const a=ac,bpm=+document.getElementById('bpm').value,stap=240/bpm/nSub;
  while(volgende<a.currentTime+0.1){
   const s=step%(nBars*nSub),t=s%2==1?volgende+swing*stap:volgende;
-  for(const r of RIJEN)if(state[r].has(s))speel(r,t);
+  for(const r of RIJEN)if(state[r].has(s))speel(r,t,VEL[r+':'+s]);
   document.querySelectorAll('.cel.speel').forEach(c=>c.classList.remove('speel'));
   const ij=s;
   setTimeout(()=>{if(!timer)return;
@@ -240,7 +240,7 @@ async function analyseer(file){
    const med=median(bx),mad=median(bx.map(v=>Math.abs(v-med))),thr=med+6*mad,mx=Math.max(...bx);
    const minSep=Math.max(1,Math.round(0.06/(HOP/sr))),on=[];let last=-1e9;
    for(let f=1;f<NF-1;f++)
-    if(bx[f]>thr&&bx[f]>0.12*mx&&bx[f]>=bx[f-1]&&bx[f]>bx[f+1]&&f-last>=minSep){on.push(times[f]);last=f}
+    if(bx[f]>thr&&bx[f]>0.12*mx&&bx[f]>=bx[f-1]&&bx[f]>bx[f+1]&&f-last>=minSep){on.push({t:times[f],v:bx[f]/mx});last=f}
    return on;
   }
   const hits={kick:bandOnsets(fluxK),perc:bandOnsets(fluxT),snare:bandOnsets(fluxM),hat:bandOnsets(fluxH)};
@@ -248,7 +248,7 @@ async function analyseer(file){
   if(totOn<3){dmsg.textContent='⚠️ Geen duidelijke slagen gevonden — probeer een duidelijkere drum-loop.';return}
   // bars+bpm samen bepalen: voor elk aantal maten {1,2,4,8,16} volgt bpm=240*bars/dur;
   // de combinatie waar de meeste slagen op het 16e-raster vallen wint (getest op echte loops)
-  const ts=[...hits.kick,...hits.perc,...hits.snare,...hits.hat];
+  const ts=[...hits.kick,...hits.perc,...hits.snare,...hits.hat].map(o=>o.t);
   let bars=1,bpm=240/dur,bs=-1;
   for(const b of[1,2,4,8,16]){
    const c=240*b/dur;if(c<60||c>170)continue;
@@ -260,19 +260,20 @@ async function analyseer(file){
   bpm=Math.min(180,Math.max(60,bpm));
   const barDur=dur/bars;
   // subdivisie: dichte hat-rolls (trap 32e noten) → 32 stappen per maat, anders 16
-  const hatPerBar=hits.hat.filter(t=>t<barDur).length;
+  const hatPerBar=hits.hat.filter(o=>o.t<barDur).length;
   nSub=hatPerBar>12?32:16;
   nBars=bars;renderGrid();
   // quantize: elke slag op zijn plek in het hele raster (variatie blijft bewaard)
   const nSteps=nBars*nSub,stepDur=dur/nSteps;
   for(const r of RIJEN)state[r].clear();
-  for(const r of['kick','perc','snare','hat'])for(const t of hits[r]){const s=Math.round(t/stepDur);if(s>=0&&s<nSteps)state[r].add(s)}
+  VEL={};
+  for(const r of['kick','perc','snare','hat'])for(const o of hits[r]){const s=Math.round(o.t/stepDur);if(s>=0&&s<nSteps){state[r].add(s);VEL[r+':'+s]=o.v}}
   for(const s of state.snare)state.perc.delete(s); // snare-slag wint van tom op dezelfde stap
   bpm=Math.round(bpm);
   document.getElementById('bpm').value=bpm;document.getElementById('bpmv').textContent=bpm;
   // swing: hoeveel lopen de onsets op oneven 16e-stappen gemiddeld achter?
   const res=[];
-  for(const r of['kick','perc','snare','hat'])for(const t of hits[r]){const s=(t%barDur)/barDur*nSub;if(Math.round(s)%2==1)res.push(s-Math.round(s))}
+  for(const r of['kick','perc','snare','hat'])for(const o of hits[r]){const s=(o.t%barDur)/barDur*nSub;if(Math.round(s)%2==1)res.push(s-Math.round(s))}
   swing=res.length?Math.max(0,Math.min(0.4,median(res))):0;
   gridFromLoop=true;
   // kies zelf het genre dat bij de loop past: BPM + patroon-kenmerken bepalen de klank
