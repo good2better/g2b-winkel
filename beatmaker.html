@@ -112,7 +112,7 @@ function renderGrid(){
   const cs=document.createElement('div');cs.className='cells';
   for(let s=0;s<nBars*nSub;s++){
    const c=document.createElement('div');c.className='cel'+(s%(nSub/4)==0?' hoofd-tel':'');c.dataset.r=r;c.dataset.s=s;
-   c.onclick=()=>{state[r].has(s)?state[r].delete(s):state[r].add(s);c.classList.toggle('aan')};cs.appendChild(c);
+   c.onclick=()=>{if(state[r].has(s)){state[r].delete(s);delete VEL[r+':'+s]}else{state[r].add(s);delete VEL[r+':'+s];c.style.opacity=1}c.classList.toggle('aan')};cs.appendChild(c);
   }
   line.appendChild(cs);grid.appendChild(line);
  }
@@ -131,7 +131,9 @@ function laad(g){
   for(const r of RIJEN){state[r]=new Set(G.pat[r]||[])}
  }
  document.querySelectorAll('.cel').forEach(c=>{
-  c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s))});
+  const v=VEL[c.dataset.r+':'+c.dataset.s];
+  c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s));
+  c.style.opacity=v!=null?0.4+0.6*v:1}); // zachte slag = dimmer vakje
  document.querySelectorAll('#genres button').forEach(b=>b.style.borderColor=b.dataset.g===g?'var(--groen)':'#ffffff22');
 }
 document.getElementById('bpm').oninput=e=>document.getElementById('bpmv').textContent=e.target.value;
@@ -297,7 +299,6 @@ async function analyseer(file){
   else if(bpm>=86)g=swing>0.05?'boombap':'funk'; // traag: swing = boombap, strak = funk
   else g=hiFrac<0.06?'lofi':'schuivel';   // heel traag: dof = lofi, helder = schuivel
   laad(g);
-  document.querySelectorAll('.cel').forEach(c=>c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s)));
   dmsg.textContent=`✅ ${totOn} slagen gehoord → ${bars} bar${bars>1?'s':''} rebuild · ~${bpm} BPM`+(nSub==32?' · 32e-noten grid':'')+(swing>0.02?` · swing ${Math.round(swing*100)}%`:'')+` · geluid: ${g.toUpperCase()} (klik een genre voor andere sounds)`;
   if(!timer)document.getElementById('play').click(); // direct afspelen: drop → hoor je loop met G2B-sounds
  }catch(err){dmsg.textContent='⚠️ Kon dit bestand niet lezen — probeer wav/mp3/ogg.'}
