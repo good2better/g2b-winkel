@@ -158,6 +158,9 @@ function masterOf(a){if(MXS.has(a))return MXS.get(a);
  if(a.createDynamicsCompressor){const l=a.createDynamicsCompressor();l.threshold.value=-0.5;l.knee.value=0;l.ratio.value=20;l.attack.value=0.001;l.release.value=0.1;g.connect(l).connect(a.destination)}
  else g.connect(a.destination);
  MXS.set(a,g);return g}
+const DKS=new Map(); // sidechain-duck per context (perc/shaker pompen onder de kick)
+function duckOf(a){if(DKS.has(a))return DKS.get(a);const g=a.createGain();g.connect(masterOf(a));DKS.set(a,g);return g}
+function pump(a,t){const d=duckOf(a);d.gain.cancelScheduledValues(t);d.gain.setValueAtTime(1,t);d.gain.linearRampToValueAtTime(0.4,t+0.02);d.gain.linearRampToValueAtTime(1,t+0.16)}
 function noiseBuf(a){const b=a.createBuffer(1,a.sampleRate*0.5,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b}
 let NB=null,VEL={};
 // échte G2B one-shots per genre (drumsnd/<genre>-<rij>.wav) — synth blijft fallback
@@ -197,14 +200,17 @@ async function laadEigen(picks){
 function speel(r,t,v){
  const a=ac,g0=v==null?0.9:(0.4+0.65*v); // velocity uit de loop: zacht/hard meespelen
  const buf=SMPL[cur]&&SMPL[cur][r];
- const dst=masterOf(a);
+ const dst=(r=='perc'||r=='shkr')?duckOf(a):masterOf(a);
  if(buf){const s=a.createBufferSource();s.buffer=buf;const g=a.createGain();
-  if(r=='shkr'&&a.createStereoPanner){const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=450;const p=a.createStereoPanner();p.pan.value=0.6;s.connect(f).connect(g).connect(p).connect(dst);
+  // stereo-rol: shaker ver rechts, perc links, hat licht links (kick/snare midden)
+  const pan=r=='shkr'?0.6:r=='perc'?-0.4:r=='hat'?-0.3:0;let out=dst;
+  if(pan&&a.createStereoPanner){const p=a.createStereoPanner();p.pan.value=pan;p.connect(dst);out=p}
+  if(r=='shkr'){const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=450;s.connect(f).connect(g).connect(out);
    // Decay Tail Trap: staart klemt op 85% van het vakje (BPM-gekoppeld)
    const bpm=+document.getElementById('bpm').value||120,stp=240/bpm/nSub,cl=Math.min(buf.duration,stp*0.85);
    g.gain.setValueAtTime(g0,t);g.gain.setValueAtTime(g0,t+Math.max(0,cl-0.03));g.gain.exponentialRampToValueAtTime(0.001,t+cl);
    s.start(t);s.stop(t+cl+0.01);return}
-  g.gain.value=g0;s.connect(g).connect(dst);s.start(t);return}
+  g.gain.value=g0;s.connect(g).connect(out);s.start(t);return}
  const TM=(GENRES[cur]&&GENRES[cur].tim)||{kf:150,ke:45,kd:.3,sd:.18,hc:7000,hd:.05,pf:520,pd:.12};
  if(r=='kick'){const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(TM.kf,t);o.frequency.exponentialRampToValueAtTime(TM.ke,t+0.12);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.kd);o.connect(g).connect(dst);o.start(t);o.stop(t+TM.kd+0.02)}
  if(r=='snare'){const s=a.createBufferSource();s.buffer=NB;const g=a.createGain();g.gain.setValueAtTime(0.7,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.sd);s.connect(g).connect(dst);s.start(t);s.stop(t+TM.sd+0.02)}
@@ -217,6 +223,7 @@ function tik(){
  const a=ac,bpm=+document.getElementById('bpm').value,stap=240/bpm/nSub;
  while(volgende<a.currentTime+0.1){
   const s=step%(nBars*nSub),t=s%2==1?volgende+swing*stap:volgende;
+  if(!MUTED.has('kick')&&state.kick.has(s))pump(a,t);
   for(const r of RIJEN)if(!MUTED.has(r)&&state[r].has(s))speel(r,r=='shkr'&&s%2==1?t+stap*0.10:t,VEL[r+':'+s]);
   document.querySelectorAll('.cel.speel').forEach(c=>c.classList.remove('speel'));
   const ij=s;
@@ -252,7 +259,7 @@ document.getElementById('exp').onclick=async function(){
   const bpm=+document.getElementById('bpm').value,stap=240/bpm/nSub,tot=nBars*nSub;
   const oc=new OfflineAudioContext(1,Math.ceil((tot*stap+0.8)*44100),44100);
   const savAc=ac,savNB=NB;ac=oc;NB=noiseBuf(oc);
-  for(let s=0;s<tot;s++){const t=s*stap+(s%2==1?swing*stap:0);for(const r of RIJEN)if(!MUTED.has(r)&&state[r].has(s))speel(r,r=='shkr'&&s%2==1?t+stap*0.10:t,VEL[r+':'+s])}
+  for(let s=0;s<tot;s++){const t=s*stap+(s%2==1?swing*stap:0);if(!MUTED.has('kick')&&state.kick.has(s))pump(oc,t);for(const r of RIJEN)if(!MUTED.has(r)&&state[r].has(s))speel(r,r=='shkr'&&s%2==1?t+stap*0.10:t,VEL[r+':'+s])}
   const rendered=await oc.startRendering();ac=savAc;NB=savNB;
   const url=URL.createObjectURL(wavBlob(rendered)),a=document.createElement('a');
   a.href=url;a.download=`G2B-${cur}-${bpm}bpm-${nBars}bar.wav`;a.click();setTimeout(()=>URL.revokeObjectURL(url),5000)
@@ -291,6 +298,8 @@ async function analyseer(file){
   for(let i=0;i<FL;i++)win[i]=0.5-0.5*Math.cos(2*Math.PI*i/FL);
   const binHz=sr/FL,iKick=Math.max(2,Math.floor(150/binHz)),iTom=Math.floor(1000/binHz),iHat=Math.floor(5000/binHz);
   const prev=new Float64Array(FL/2),flux=[],fluxK=[],fluxT=[],fluxM=[],fluxH=[],times=[],cenK=[],cenT=[],cenS=[],cenH=[],hiArr=[],subArr=[];
+  const chroma=new Float64Array(12),pcOf=new Int8Array(FL/2); // chromagram: toonsoort-detectie
+  for(let i=1;i<FL/2;i++){const fr=i*binHz;if(fr>55&&fr<2000)pcOf[i]=((Math.round(12*Math.log2(fr/440)+69))%12+12)%12;else pcOf[i]=-1}
   let subE=0,totE=0,hiE=0;
   for(let f=0;f<NF;f++){
    const off=f*HOP;
@@ -302,6 +311,7 @@ async function analyseer(file){
     const m=Math.hypot(re[i],im[i]),df=m-prev[i],fr=i*binHz;
     eTot+=m;if(i<=iSub)eSub+=m;else if(i>=iHat)eHi+=m;
     if(fr<300){mK+=m;cK+=m*fr}else if(fr<1000){mT+=m;cT+=m*fr}else if(fr<5000){mS+=m;cS+=m*fr}else{mH+=m;cH+=m*fr}
+    if(pcOf[i]>=0)chroma[pcOf[i]]+=m;
     if(df>0){fl+=df;if(i<=iKick)bk+=df;else if(i<iTom)bt+=df;else if(i<iHat)bm+=df;else bh+=df}
     prev[i]=m;
    }
@@ -393,7 +403,18 @@ async function analyseer(file){
    c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s));c.style.opacity=v!=null?0.4+0.6*v:1});
   document.querySelectorAll('#genres button').forEach(b=>b.style.borderColor='#ffffff22');
   const nm=x=>x.startsWith('x-')?x.slice(2).toUpperCase():x.split('-')[0].toUpperCase();
-  dmsg.textContent=`✅ ${totOn} slagen gehoord → ${bars} bar${bars>1?'s':''} rebuild · ~${bpm} BPM`+(nSub==32?' · 32e-noten grid':'')+(swing>0.02?` · swing ${Math.round(swing*100)}%`:'')
+  // toonsoort: chroma → beste majeur/mineur-template (Krumhansl)
+  const KMAJ=[6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88],KMIN=[6.33,2.68,3.52,5.38,2.60,3.53,2.54,4.75,3.98,2.69,3.34,3.17];
+  const TN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  const cTot=chroma.reduce((a,b)=>a+b,0);let keyTxt='';
+  if(cTot>0){const cn=chroma.map(v=>v/cTot),cm=cn.reduce((a,b)=>a+b,0)/12;
+   let bestK=-1,bestM='',bestC=0;
+   for(let r=0;r<12;r++)for(const[prof,nm]of[[KMAJ,''],[KMIN,' min']]){
+    const pm=prof.reduce((a,b)=>a+b,0)/12;let num=0,va=0,vb=0;
+    for(let i=0;i<12;i++){const x=cn[(r+i)%12]-cm,y=prof[i]-pm;num+=x*y;va+=x*x;vb+=y*y}
+    const corr=va>0&&vb>0?num/Math.sqrt(va*vb):0;if(corr>bestC){bestC=corr;bestK=r;bestM=nm}}
+   if(bestC>0.55)keyTxt=` · toonsoort ≈ ${TN[bestK]}${bestM}`}
+  dmsg.textContent=`✅ ${totOn} slagen gehoord → ${bars} bar${bars>1?'s':''} rebuild · ~${bpm} BPM`+(nSub==32?' · 32e-noten grid':'')+(swing>0.02?` · swing ${Math.round(swing*100)}%`:'')+keyTxt
    +` · eigen set: K=${nm(picks.kick)} S=${nm(picks.snare)} H=${nm(picks.hat)} P=${nm(picks.perc)}`+(shaker?` +SHAKER=${nm(picks.shkr)}`:'')+` (klik een genre voor andere sounds)`;
   if(!timer)document.getElementById('play').click(); // direct afspelen: drop → hoor je loop met G2B-sounds
  }catch(err){dmsg.textContent='⚠️ Kon dit bestand niet lezen — probeer wav/mp3/ogg.'}
