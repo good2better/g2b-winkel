@@ -4,7 +4,7 @@
       "id": "g2bsuite1",
       "titel": "G2B SUITE — alle marketeer-tools",
       "soort": "app",
-      "beschrijving": "ALLES in één pakket (8 tools): Lead + Lijst + Sheet + Mail + Sequentie + CRM + Watcher + Flow. Los €302, samen €99. 100% lokaal, éénmalig, geen abonnement.",
+      "beschrijving": "ALLES-IN-EEN: alle 9 G2B Fabrieken in één ZIP — Lead, Lijst, Sheet, Mail, Sequentie, CRM, Flow, Watcher én SEO-Fabriek. Eén pakket, negen licentiecodes erbij. Los bij elkaar EUR341 — als suite EUR99. Windows, 100% lokaal, eenmalig.",
       "prijs": 99,
       "links": {
         "koop": "bestel.html?p=g2bsuite1",
@@ -13,6 +13,13 @@
       "groep": "apps",
       "badge": "ALLES-IN-1",
       "download_dir": "d/g2bsuite1"
+    },
+    {
+      "id": "seofabriek1",
+      "titel": "G2B SEO-Fabriek",
+      "prijs": 49,
+      "beschrijving": "Volledige SEO-site-audit in één klik. Crawlt ALLE pagina's: titels, meta descriptions, H1-structuur, alt-teksten, laadtijd, kapotte links, canonicals, og-tags, structured data, sitemap, robots. Score 0-100 + printbaar audit-rapport om zelf aan klanten te verkopen. Zelfde checks als tools van EUR30+/maand — bij jou eenmalig, onbeperkt, 100% lokaal. Windows.",
+      "download": "d/seofabriek1/"
     },
     {
       "id": "agency1",
