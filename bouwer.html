@@ -29,6 +29,7 @@ a.terug{color:var(--accent);font-size:13px}
 
 <script>
 const TOOLS=[
+ {id:'seofabriek1',naam:'SEO-Fabriek',wat:'volledige site-audit + rapport',prijs:49},
  {id:'leadfabriek1',naam:'Lead-Fabriek',wat:'lokale bedrijven + e-mails vinden',prijs:49},
  {id:'lijstfabriek1',naam:'Lijst-Fabriek',wat:'e-maillijst schoonmaken',prijs:39},
  {id:'sheetfabriek1',naam:'Sheet-Fabriek',wat:'CSV bewerken zonder Excel',prijs:29},
@@ -36,6 +37,7 @@ const TOOLS=[
  {id:'sequentiefabriek1',naam:'Sequentie-Fabriek',wat:'automatische follow-up mails',prijs:39},
  {id:'crmfabriek1',naam:'CRM-Fabriek',wat:'deals Kanban-bord',prijs:39},
  {id:'flowfabriek1',naam:'Flow-Fabriek',wat:'lokale automator (eigen Zapier)',prijs:39},
+ {id:'watcherfabriek1',naam:'Watcher-Fabriek',wat:'site/prijs-wijziging alarm',prijs:29},
 ];
 const el=document.getElementById('lijst');
 TOOLS.forEach(t=>{
@@ -53,7 +55,7 @@ function reken(){
  let korting=n>=3?0.20:(n===2?0.10:0);
  let deal=som*(1-korting);
  let html=`<b>${n} tool${n>1?'s':''} gekozen</b> — los €${som}`+(korting?` → <span class="prijs">€${Math.round(deal)}</span> met −${korting*100}%`:` → €${som}`);
- if(n>=4){html+=`<div class="tip">💡 Slimmer: de <b>G2B Suite (€99)</b> bevat ALLE 7 tools — goedkoper dan je selectie.</div>
+ if(n>=4){html+=`<div class="tip">💡 Slimmer: de <b>G2B Suite (€99)</b> bevat ALLE 9 tools — goedkoper dan je selectie.</div>
  <a class="koop" href="bestel.html?p=g2bsuite1">NEEM DE SUITE — €99</a>`}
  else if(n===2&&aan.some(t=>t.id==='lijstfabriek1')&&aan.some(t=>t.id==='leadfabriek1')){
   html+=`<div class="tip">💡 Die twee zitten samen in de <b>Marketer-Bundel (€69)</b>.</div>
