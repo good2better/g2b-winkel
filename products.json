@@ -71,6 +71,20 @@
       "download_dir": "d/sequentiefabriek1"
     },
     {
+      "id": "crmfabriek1",
+      "titel": "G2B CRM-FABRIEK",
+      "soort": "app",
+      "beschrijving": "Je leads op een Kanban-bord: CSV erin → kaartjes slepen van Nieuw → Gecontacteerd → Verkocht. Notities per lead, export naar CSV. 100% lokaal.",
+      "prijs": 39,
+      "links": {
+        "koop": "bestel.html?p=crmfabriek1",
+        "download": "bedankt.html?k=crmfabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/crmfabriek1"
+    },
+    {
       "id": "flowfabriek1",
       "titel": "G2B FLOW-FABRIEK",
       "soort": "app",
