@@ -1,6 +1,20 @@
 {
   "producten": [
     {
+      "id": "marketerbundel1",
+      "titel": "G2B MARKETER-BUNDEL",
+      "soort": "bundle",
+      "beschrijving": "De complete marketeer-set: Lijst-Fabriek (maak je e-maillijst schoon) + Lead-Fabriek (vind bedrijven + e-mails). Los samen €88 — in de bundel voor €69. 100% lokaal, onbeperkt, éénmalige koop.",
+      "prijs": 69,
+      "links": {
+        "koop": "bestel.html?p=marketerbundel1",
+        "download": "bedankt.html?k=marketerbundel1"
+      },
+      "groep": "apps",
+      "badge": "BUNDEL",
+      "download_dir": "d/marketerbundel1"
+    },
+    {
       "id": "kanaalfabriek1",
       "titel": "G2B KANAAL-FABRIEK — complete video-studio",
       "soort": "app",
