@@ -15,6 +15,20 @@
       "download_dir": "d/marketerbundel1"
     },
     {
+      "id": "mailfabriek1",
+      "titel": "G2B MAIL-FABRIEK",
+      "soort": "app",
+      "beschrijving": "Mail al je leads persoonlijk: CSV erin, {naam}/{bedrijf} wordt automatisch ingevuld per mail. Eigen SMTP (Gmail/business), wachttijd tussen mails, verzend-rapport + opvolglijst. Geen credits, geen abonnement.",
+      "prijs": 39,
+      "links": {
+        "koop": "bestel.html?p=mailfabriek1",
+        "download": "bedankt.html?k=mailfabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/mailfabriek1"
+    },
+    {
       "id": "flowfabriek1",
       "titel": "G2B FLOW-FABRIEK",
       "soort": "app",
