@@ -15,6 +15,20 @@
       "download_dir": "d/marketerbundel1"
     },
     {
+      "id": "flowfabriek1",
+      "titel": "G2B FLOW-FABRIEK",
+      "soort": "app",
+      "beschrijving": "Jouw eigen Zapier, 100% lokaal: triggers (nieuw bestand, schema, webhook, handmatig) + acties (zip-backup, kopiëren, CSV-log, mail via eigen smtp, melding). Geen cloud, geen abonnement — Zapier kost €240+/jaar, dit is éénmalig.",
+      "prijs": 39,
+      "links": {
+        "koop": "bestel.html?p=flowfabriek1",
+        "download": "bedankt.html?k=flowfabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/flowfabriek1"
+    },
+    {
       "id": "kanaalfabriek1",
       "titel": "G2B KANAAL-FABRIEK — complete video-studio",
       "soort": "app",
