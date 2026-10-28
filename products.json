@@ -18,6 +18,20 @@
       "video": "media/kanaalfabriek-demo.mp4"
     },
     {
+      "id": "leadfabriek1",
+      "titel": "G2B LEAD-FABRIEK",
+      "soort": "app",
+      "beschrijving": "Vind lokale bedrijven + hun e-mailadressen: vul plaats + categorie in (bijv. Rotterdam + kapper) en de app haalt naam, adres, website, telefoon én werkende e-mails eruit via gratis OpenStreetMap. 100% lokaal, onbeperkt — geen credits, geen abonnement. leads.csv eruit.",
+      "prijs": 49,
+      "links": {
+        "koop": "bestel.html?p=leadfabriek1",
+        "download": "bedankt.html?k=leadfabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/leadfabriek1"
+    },
+    {
       "id": "lijstfabriek1",
       "titel": "G2B LIJST-FABRIEK",
       "soort": "app",
