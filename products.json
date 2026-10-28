@@ -57,6 +57,20 @@
       "download_dir": "d/sheetfabriek1"
     },
     {
+      "id": "sequentiefabriek1",
+      "titel": "G2B SEQUENTIE-FABRIEK",
+      "soort": "app",
+      "beschrijving": "Automatische follow-up: mail 1 → wacht X dagen → mail 2 → mail 3. De fabriek onthoudt per lead waar hij was en mailt door zolang hij draait. Eigen SMTP, geen abonnement.",
+      "prijs": 39,
+      "links": {
+        "koop": "bestel.html?p=sequentiefabriek1",
+        "download": "bedankt.html?k=sequentiefabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/sequentiefabriek1"
+    },
+    {
       "id": "flowfabriek1",
       "titel": "G2B FLOW-FABRIEK",
       "soort": "app",
