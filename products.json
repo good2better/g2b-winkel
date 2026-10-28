@@ -29,6 +29,20 @@
       "download_dir": "d/mailfabriek1"
     },
     {
+      "id": "sheetfabriek1",
+      "titel": "G2B SHEET-FABRIEK",
+      "soort": "app",
+      "beschrijving": "CSV bewerken zonder Excel: filteren, deduperen, sorteren, cellen schoonmaken, kolommen splitsen, bestanden samenvoegen — met live preview. Onbeperkt, 100% lokaal.",
+      "prijs": 29,
+      "links": {
+        "koop": "bestel.html?p=sheetfabriek1",
+        "download": "bedankt.html?k=sheetfabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/sheetfabriek1"
+    },
+    {
       "id": "flowfabriek1",
       "titel": "G2B FLOW-FABRIEK",
       "soort": "app",
