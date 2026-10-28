@@ -61,6 +61,7 @@ const GOED = {
   audio:/\b(audio|music|sound|song|beat|vocal|voice|tts|asr|whisper|speech|stem.?separat|midi|melod|mastering|mixing|lyric|transcri|karaoke|acapella|demucs|pitch|synth(esiz)?er|drum|808)\b/i,
   video:/\b(video|anim|clip|render|caption|subtitle|faceless|shorts|tiktok|motion|lipsync|image.?to.?video|text.?to.?video|wan2|ltx|hunyuan.?video|cosmos)\b/i,
   boeken:/\b(ocr|document|pdf|scan|book|ebook|audiobook|read|narrat|voice.?clon|piper|text.?extract|typeset|layout|translate|verta)\b/i,
+  games:/\b(game|godot|unity|unreal|pixel|sprite|platformer|puzzle|rpg|arcade|playable|browser.?game|kid.?game|educational.?game|pygame|kaboom|phaser)\b/i,
   licentie:/\b(mit|apache|bsd|cc0|open.?source|open.?weights|permissive|free)\b/i,
   licht:/\b(cpu|onnx|gguf|quantiz|small|tiny|mini|lite|edge|local|offline|laptop|realtime|real.?time|wasm|int8)\b/i,
 };
@@ -71,14 +72,14 @@ function score(t){
   const hits = Object.entries(GOED).filter(([k,re])=>re.test(hay)).map(([k])=>k);
   const bad = SLECHT.test(hay);
   // licentie + domein nodig voor 🟢; bekende open licenties in titel/tekst tellen mee
-  const domein = hits.some(h=>h==='audio'||h==='video'||h==='boeken');
+  const domein = hits.some(h=>h==='audio'||h==='video'||h==='boeken'||h==='games');
   if(bad) return {tier:'maybe', hits, why:'mogelijk licentie/kosten-risico — zelf even checken'};
   if(domein && (hits.includes('licentie')||hits.includes('licht')))
     return {tier:'go', hits, why:'open/gratis-signaal + G2B-domein'};
   if(domein) return {tier:'maybe', hits, why:'past in G2B-domein — licentie onduidelijk uit titel'};
   return {tier:'rest', hits, why:''};
 }
-const TAGNL={audio:'🎵 audio/muziek',video:'🎬 video',boeken:'📖 boeken/tekst',licentie:'📜 open-licentie',licht:'💻 licht/CPU'};
+const TAGNL={audio:'🎵 audio/muziek',video:'🎬 video',boeken:'📖 boeken/audioboeken',games:'🎮 games',licentie:'📜 open-licentie',licht:'💻 licht/CPU'};
 
 async function fetchHN(){
   const qs=['AI audio','AI music','AI video','open source audio','whisper speech','text to video'];
