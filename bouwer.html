@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B Fabriek-Bouwer — stel je pakket samen</title>
+<style>
+:root{--bg:#0D0F0E;--panel:#161C18;--line:#26332A;--txt:#E8F2EA;--dim:#9DB5A4;--accent:#2FBF71}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:system-ui,sans-serif;max-width:860px;margin:0 auto;padding:20px}
+h1{color:var(--accent);font-size:26px;margin:6px 0}
+.sub{color:var(--dim);font-size:13px;margin-bottom:18px}
+.tool{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:8px}
+.tool.aan{border-color:var(--accent)}
+.tool input{width:20px;height:20px}
+.tool b{flex:1}
+.prijs{color:var(--accent);font-weight:700;white-space:nowrap}
+.totaal{background:var(--panel);border:1px solid var(--accent);border-radius:10px;padding:16px;margin-top:16px;font-size:16px}
+.tip{color:var(--dim);font-size:12px;margin-top:6px}
+a.koop{display:inline-block;background:var(--accent);color:#04120a;font-weight:800;padding:12px 24px;border-radius:10px;text-decoration:none;margin-top:10px}
+a.terug{color:var(--accent);font-size:13px}
+</style>
+</head>
+<body>
+<a class="terug" href="index.html">← terug naar winkel</a>
+<h1>🧰 FABRIEK-BOUWER</h1>
+<div class="sub">Kies welke marketeer-tools jij nodig hebt — wij rekenen meteen de beste deal uit. 2 tools = −10%, 3 of meer = −20%.</div>
+<div id="lijst"></div>
+<div class="totaal" id="totaal" style="display:none"></div>
+
+<script>
+const TOOLS=[
+ {id:'leadfabriek1',naam:'Lead-Fabriek',wat:'lokale bedrijven + e-mails vinden',prijs:49},
+ {id:'lijstfabriek1',naam:'Lijst-Fabriek',wat:'e-maillijst schoonmaken',prijs:39},
+ {id:'sheetfabriek1',naam:'Sheet-Fabriek',wat:'CSV bewerken zonder Excel',prijs:29},
+ {id:'mailfabriek1',naam:'Mail-Fabriek',wat:'leads mailen via eigen SMTP',prijs:39},
+ {id:'sequentiefabriek1',naam:'Sequentie-Fabriek',wat:'automatische follow-up mails',prijs:39},
+ {id:'crmfabriek1',naam:'CRM-Fabriek',wat:'deals Kanban-bord',prijs:39},
+ {id:'flowfabriek1',naam:'Flow-Fabriek',wat:'lokale automator (eigen Zapier)',prijs:39},
+];
+const el=document.getElementById('lijst');
+TOOLS.forEach(t=>{
+ const d=document.createElement('label');d.className='tool';d.dataset.id=t.id;
+ d.innerHTML=`<input type="checkbox" onchange="reken()"><b>${t.naam}<br><span style="font-weight:400;color:var(--dim);font-size:12px">${t.wat}</span></b><span class="prijs">€${t.prijs}</span>`;
+ d.querySelector('input').onchange=()=>{d.classList.toggle('aan',d.querySelector('input').checked);reken()};
+ el.appendChild(d);
+});
+function reken(){
+ const aan=TOOLS.filter(t=>document.querySelector(`.tool[data-id="${t.id}"] input`).checked);
+ const n=aan.length, som=aan.reduce((s,t)=>s+t.prijs,0);
+ const T=document.getElementById('totaal');
+ if(!n){T.style.display='none';return}
+ T.style.display='block';
+ let korting=n>=3?0.20:(n===2?0.10:0);
+ let deal=som*(1-korting);
+ let html=`<b>${n} tool${n>1?'s':''} gekozen</b> — los €${som}`+(korting?` → <span class="prijs">€${Math.round(deal)}</span> met −${korting*100}%`:` → €${som}`);
+ if(n>=4){html+=`<div class="tip">💡 Slimmer: de <b>G2B Suite (€99)</b> bevat ALLE 7 tools — goedkoper dan je selectie.</div>
+ <a class="koop" href="bestel.html?p=g2bsuite1">NEEM DE SUITE — €99</a>`}
+ else if(n===2&&aan.some(t=>t.id==='lijstfabriek1')&&aan.some(t=>t.id==='leadfabriek1')){
+  html+=`<div class="tip">💡 Die twee zitten samen in de <b>Marketer-Bundel (€69)</b>.</div>
+  <a class="koop" href="bestel.html?p=marketerbundel1">NEEM DE BUNDEL — €69</a>`}
+ else if(n===1){
+  html+=`<a class="koop" href="bestel.html?p=${aan[0].id}">BESTEL ${aan[0].naam.toUpperCase()} — €${aan[0].prijs}</a>`}
+ else{html+=`<a class="koop" href="mailto:g.sandvliet88@gmail.com?subject=G2B%20bundel%20${aan.map(t=>t.naam).join('%20%2B%20')}&body=Ik%20wil%20deze%20tools:%0A${aan.map(t=>'- '+t.naam).join('%0A')}%0ABundelprijs:%20€${Math.round(deal)}">BESTEL DIT PAKKET — €${Math.round(deal)}</a>
+ <div class="tip">Je mailt je keuze — je krijgt direct je download + codes.</div>`}
+ T.innerHTML=html;
+}
+</script>
+</body></html>

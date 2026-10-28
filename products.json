@@ -15,6 +15,20 @@
       "download_dir": "d/g2bsuite1"
     },
     {
+      "id": "agency1",
+      "titel": "G2B AGENCY-LICENTIE",
+      "soort": "licentie",
+      "beschrijving": "Voor bureaus: gebruik de hele G2B Suite (7 tools) voor max. 10 eigen klanten, 1 jaar. Inclusief alle Suite-downloads + codes per klant. €299/jaar.",
+      "prijs": 299,
+      "links": {
+        "koop": "bestel.html?p=agency1",
+        "download": "bedankt.html?k=agency1"
+      },
+      "groep": "apps",
+      "badge": "AGENCY",
+      "download_dir": "d/agency1"
+    },
+    {
       "id": "marketerbundel1",
       "titel": "G2B MARKETER-BUNDEL",
       "soort": "bundle",
