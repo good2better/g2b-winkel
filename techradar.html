@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G2B Tech-Radar — bruikbare AI-nieuws-tools</title>
+<meta name="description" content="G2B Tech-Radar: filtert AI-nieuws automatisch op tools die bruikbaar zijn voor de G2B-studio — audio, video en boeken. Gratis + commercieel + lokaal.">
+<style>
+:root{--bg:#0d0f0e;--panel:#171a19;--line:#2a2f2d;--txt:#e8ecea;--dim:#8fa098;--accent:#2fbf71;--warn:#f0a030;--bad:#e05050}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font:15px/1.65 'Segoe UI',system-ui,sans-serif;max-width:860px;margin:0 auto;padding:24px 18px 60px}
+h1{color:var(--accent);font-size:26px;margin-bottom:4px}
+.sub{color:var(--dim);font-size:14px;margin-bottom:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:10px 0}
+.card.go{border-left:3px solid var(--accent)}
+.card.maybe{border-left:3px solid var(--warn)}
+.card .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;margin-right:6px;border:1px solid var(--line)}
+.tag.g{background:#1a3328;border-color:var(--accent);color:var(--accent)}
+.tag.y{background:#332c1a;border-color:var(--warn);color:var(--warn)}
+.tag.d{color:var(--dim)}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.why{color:var(--dim);font-size:13.5px;margin-top:4px}
+h2{color:var(--accent);font-size:17px;margin:26px 0 8px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button{background:var(--accent);color:#04140b;border:0;border-radius:8px;padding:8px 14px;font-weight:bold;cursor:pointer;font-size:14px}
+button.sec{background:var(--panel);color:var(--txt);border:1px solid var(--line)}
+#status{color:var(--dim);font-size:13px;margin:8px 0}
+details summary{cursor:pointer;color:var(--dim);margin:16px 0 4px}
+footer{margin-top:36px;padding-top:14px;border-top:1px solid var(--line);color:var(--dim);font-size:12.5px}
+</style>
+</head>
+<body>
+<h1>📡 G2B Tech-Radar</h1>
+<p class="sub">AI-nieuws gefilterd voor jóuw studio — alleen wat bruikbaar is voor muziek, video (boeken-clips) en tekst. Gratis + commercieel + lokaal draaibaar = 🟢. De rest verdwijnt onderin.</p>
+
+<div class="card">
+<div class="row">
+  <button onclick="scan()">🔍 SCAN NIEUWS NU</button>
+  <button class="sec" onclick="window.open('https://alphasignal.ai/','_blank')">AlphaSignal volledige lijst ↗</button>
+  <button class="sec" onclick="window.open('https://huggingface.co/models?pipeline_tag=audio&sort=likes7d','_blank')">HuggingFace audio top ↗</button>
+</div>
+<div id="status"></div>
+</div>
+
+<h2>🟢 Bruikbaar voor G2B</h2>
+<div id="go"><div class="card" style="color:var(--dim)">Druk op SCAN — haalt live nieuws op van HackerNews, HuggingFace en GitHub en sorteert het voor je uit.</div></div>
+
+<h2>🟡 Misschien / check licentie zelf</h2>
+<div id="maybe"></div>
+
+<details><summary>⚪ Alle overige items (geen directe match) — <span id="restN"></span></summary>
+<div id="rest"></div>
+</details>
+
+<footer>G2B Tech-Radar — scan draait volledig in je browser, geen accounts, geen kosten. Filter-regel = G2B-regel 1: gratis + 100% commercieel + lokaal/CPU.</footer>
+
+<script>
+// ---- score-regels: wat is bruikbaar voor Giorgio? -------------------------
+const GOED = {
+  audio:/\b(audio|music|sound|song|beat|vocal|voice|tts|asr|whisper|speech|stem.?separat|midi|melod|mastering|mixing|lyric|transcri|karaoke|acapella|demucs|pitch|synth(esiz)?er|drum|808)\b/i,
+  video:/\b(video|anim|clip|render|caption|subtitle|faceless|shorts|tiktok|motion|lipsync|image.?to.?video|text.?to.?video|wan2|ltx|hunyuan.?video|cosmos)\b/i,
+  boeken:/\b(ocr|document|pdf|scan|book|ebook|audiobook|read|narrat|voice.?clon|piper|text.?extract|typeset|layout|translate|verta)\b/i,
+  licentie:/\b(mit|apache|bsd|cc0|open.?source|open.?weights|permissive|free)\b/i,
+  licht:/\b(cpu|onnx|gguf|quantiz|small|tiny|mini|lite|edge|local|offline|laptop|realtime|real.?time|wasm|int8)\b/i,
+};
+const SLECHT = /\b(non.?commercial|research.?only|nc\b|agpl|gpl|busl|sspl|paid|subscription|metered|api.?only|elevenlabs|suno|openai.?api|enterprise)\b/i;
+
+function score(t){
+  const hay = (t.title+' '+(t.text||'')+' '+(t.desc||'')).toLowerCase();
+  const hits = Object.entries(GOED).filter(([k,re])=>re.test(hay)).map(([k])=>k);
+  const bad = SLECHT.test(hay);
+  // licentie + domein nodig voor 🟢; bekende open licenties in titel/tekst tellen mee
+  const domein = hits.some(h=>h==='audio'||h==='video'||h==='boeken');
+  if(bad) return {tier:'maybe', hits, why:'mogelijk licentie/kosten-risico — zelf even checken'};
+  if(domein && (hits.includes('licentie')||hits.includes('licht')))
+    return {tier:'go', hits, why:'open/gratis-signaal + G2B-domein'};
+  if(domein) return {tier:'maybe', hits, why:'past in G2B-domein — licentie onduidelijk uit titel'};
+  return {tier:'rest', hits, why:''};
+}
+const TAGNL={audio:'🎵 audio/muziek',video:'🎬 video',boeken:'📖 boeken/tekst',licentie:'📜 open-licentie',licht:'💻 licht/CPU'};
+
+async function fetchHN(){
+  const qs=['AI audio','AI music','AI video','open source audio','whisper speech','text to video'];
+  const out=[];
+  for(const q of qs){
+    try{
+      const r=await fetch('https://hn.algolia.com/api/v1/search?query='+encodeURIComponent(q)+'&tags=story&hitsPerPage=8').then(x=>x.json());
+      out.push(...r.hits.map(h=>({title:h.title,url:h.url,src:'HN'})));
+    }catch(e){}
+  }
+  return out;
+}
+async function fetchHF(){
+  const out=[];
+  for(const tag of ['audio','video','automatic-speech-recognition','text-to-video']){
+    try{
+      const r=await fetch('https://huggingface.co/api/models?pipeline_tag='+tag+'&sort=createdAt&limit=15&full=false').then(x=>x.json());
+      if(Array.isArray(r)) out.push(...r.map(m=>({title:m.id,url:'https://huggingface.co/'+m.id,src:'HF',desc:(m.pipeline_tag||'')})));
+    }catch(e){}
+  }
+  return out;
+}
+async function fetchGH(){
+  const d=new Date(Date.now()-30*864e5).toISOString().slice(0,10);
+  const out=[];
+  for(const q of ['audio+ai','video+generation','speech+recognition','music+generation']){
+    try{
+      const r=await fetch(`https://api.github.com/search/repositories?q=${q}+created:>${d}&sort=stars&per_page=8`,
+        {headers:{Accept:'application/vnd.github+json'}}).then(x=>x.json());
+      if(r.items) out.push(...r.items.map(i=>({title:i.full_name,url:i.html_url,src:'GitHub',desc:(i.description||'')+' '+(i.license&&i.license.spdx_id||'')})));
+    }catch(e){}
+  }
+  return out;
+}
+
+async function scan(){
+  const S=document.getElementById('status');
+  S.textContent='bronnen ophalen… (HN → HuggingFace → GitHub)';
+  let items=[];
+  const parts=await Promise.all([fetchHN(),fetchHF(),fetchGH()]);
+  items=parts.flat();
+  // dedup op titel
+  const seen=new Set();items=items.filter(i=>{const k=i.title.toLowerCase().slice(0,60);if(seen.has(k))return false;seen.add(k);return true});
+  const scored=items.map(i=>({...i,...score(i)}));
+  const go=scored.filter(i=>i.tier==='go');
+  const maybe=scored.filter(i=>i.tier==='maybe');
+  const rest=scored.filter(i=>i.tier==='rest');
+  S.textContent=`klaar — ${items.length} items gescand · 🟢 ${go.length} bruikbaar · 🟡 ${maybe.length} checken · ⚪ ${rest.length} rest`;
+  const card=(i,cls)=>`<div class="card ${cls}">
+    ${i.hits.filter(h=>TAGNL[h]).map(h=>`<span class="tag ${h==='licentie'||h==='licht'?'g':''}">${TAGNL[h]}</span>`).join('')}
+    <span class="tag d">${i.src}</span>
+    <div><a href="${i.url}" target="_blank" rel="noopener">${i.title}</a></div>
+    ${i.desc?`<div class="why">${i.desc.slice(0,160)}</div>`:''}
+    <div class="why">→ ${i.why}</div></div>`;
+  document.getElementById('go').innerHTML=go.length?go.map(i=>card(i,'go')).join(''):'<div class="card" style="color:var(--dim)">Niks nieuws bruikbaar deze ronde — probeer later opnieuw (bronnen updaten dagelijks).</div>';
+  document.getElementById('maybe').innerHTML=maybe.map(i=>card(i,'maybe')).join('')||'<div class="card" style="color:var(--dim)">—</div>';
+  document.getElementById('rest').innerHTML=rest.map(i=>card(i,'')).join('')||'—';
+  document.getElementById('restN').textContent=rest.length+' items';
+}
+</script>
+</body>
+</html>
