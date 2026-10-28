@@ -4,7 +4,7 @@
       "id": "g2bsuite1",
       "titel": "G2B SUITE — alle marketeer-tools",
       "soort": "app",
-      "beschrijving": "ALLES in één pakket (7 tools): Lead (vind leads) + Lijst (schonen) + Sheet (CSV) + Mail (mailen) + Sequentie (follow-up) + CRM (deals-bord) + Flow (automator). Los €273, samen €99. 100% lokaal, éénmalig.",
+      "beschrijving": "ALLES in één pakket (8 tools): Lead + Lijst + Sheet + Mail + Sequentie + CRM + Watcher + Flow. Los €302, samen €99. 100% lokaal, éénmalig, geen abonnement.",
       "prijs": 99,
       "links": {
         "koop": "bestel.html?p=g2bsuite1",
@@ -97,6 +97,20 @@
       "groep": "apps",
       "badge": "NIEUW",
       "download_dir": "d/crmfabriek1"
+    },
+    {
+      "id": "watcherfabriek1",
+      "titel": "G2B WATCHER-FABRIEK",
+      "soort": "app",
+      "beschrijving": "Site- en prijs-alarm: volg elke URL (of alleen een prijs/tekst) en zie meteen wanneer iets verandert. Melding in de app + optioneel per mail. 100% lokaal.",
+      "prijs": 29,
+      "links": {
+        "koop": "bestel.html?p=watcherfabriek1",
+        "download": "bedankt.html?k=watcherfabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/watcherfabriek1"
     },
     {
       "id": "flowfabriek1",
