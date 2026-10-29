@@ -22,7 +22,9 @@
       "download": "d/seofabriek1/",
       "groep": "apps",
       "badge": "NIEUW",
-      "video": "media/seofabriek-demo.mp4"
+      "video": "media/seofabriek-demo.mp4",
+      "video_en": "media/seofabriek-demo-en.mp4",
+      "video_es": "media/seofabriek-demo-es.mp4"
     },
     {
       "id": "agency1",
@@ -65,7 +67,9 @@
       "groep": "apps",
       "badge": "NIEUW",
       "download_dir": "d/mailfabriek1",
-      "video": "media/mailfabriek-demo.mp4"
+      "video": "media/mailfabriek-demo.mp4",
+      "video_en": "media/mailfabriek-demo-en.mp4",
+      "video_es": "media/mailfabriek-demo-es.mp4"
     },
     {
       "id": "sheetfabriek1",
@@ -80,7 +84,9 @@
       "groep": "apps",
       "badge": "NIEUW",
       "download_dir": "d/sheetfabriek1",
-      "video": "media/sheetfabriek-demo.mp4"
+      "video": "media/sheetfabriek-demo.mp4",
+      "video_en": "media/sheetfabriek-demo-en.mp4",
+      "video_es": "media/sheetfabriek-demo-es.mp4"
     },
     {
       "id": "sequentiefabriek1",
@@ -95,7 +101,9 @@
       "groep": "apps",
       "badge": "NIEUW",
       "download_dir": "d/sequentiefabriek1",
-      "video": "media/sequentiefabriek-demo.mp4"
+      "video": "media/sequentiefabriek-demo.mp4",
+      "video_en": "media/sequentiefabriek-demo-en.mp4",
+      "video_es": "media/sequentiefabriek-demo-es.mp4"
     },
     {
       "id": "crmfabriek1",
@@ -110,7 +118,9 @@
       "groep": "apps",
       "badge": "NIEUW",
       "download_dir": "d/crmfabriek1",
-      "video": "media/crmfabriek-demo.mp4"
+      "video": "media/crmfabriek-demo.mp4",
+      "video_en": "media/crmfabriek-demo-en.mp4",
+      "video_es": "media/crmfabriek-demo-es.mp4"
     },
     {
       "id": "watcherfabriek1",
@@ -125,7 +135,9 @@
       "groep": "apps",
       "badge": "NIEUW",
       "download_dir": "d/watcherfabriek1",
-      "video": "media/watcherfabriek-demo.mp4"
+      "video": "media/watcherfabriek-demo.mp4",
+      "video_en": "media/watcherfabriek-demo-en.mp4",
+      "video_es": "media/watcherfabriek-demo-es.mp4"
     },
     {
       "id": "flowfabriek1",
@@ -140,7 +152,9 @@
       "groep": "apps",
       "badge": "NIEUW",
       "download_dir": "d/flowfabriek1",
-      "video": "media/flowfabriek-demo.mp4"
+      "video": "media/flowfabriek-demo.mp4",
+      "video_en": "media/flowfabriek-demo-en.mp4",
+      "video_es": "media/flowfabriek-demo-es.mp4"
     },
     {
       "id": "kanaalfabriek1",
@@ -172,7 +186,9 @@
       "groep": "apps",
       "badge": "NIEUW",
       "download_dir": "d/leadfabriek1",
-      "video": "media/leadfabriek-demo.mp4"
+      "video": "media/leadfabriek-demo.mp4",
+      "video_en": "media/leadfabriek-demo-en.mp4",
+      "video_es": "media/leadfabriek-demo-es.mp4"
     },
     {
       "id": "lijstfabriek1",
@@ -187,7 +203,9 @@
       "groep": "apps",
       "badge": "NIEUW",
       "download_dir": "d/lijstfabriek1",
-      "video": "media/lijstfabriek-demo.mp4"
+      "video": "media/lijstfabriek-demo.mp4",
+      "video_en": "media/lijstfabriek-demo-en.mp4",
+      "video_es": "media/lijstfabriek-demo-es.mp4"
     },
     {
       "id": "g2bsong1",
