@@ -793,7 +793,7 @@
       "titel": "G2B Sleutel-Helper",
       "prijs": "€ 19,95",
       "cover": "media/g2b-sleutel-cover.png",
-      "beschrijving": "Theory-assist VST — speelt mee met je MIDI en zegt welke toonsoort je zit in. Pianorol kleurt veilige noten groen, FOCUS-pills (ALLES · BAS-808 · AKKOORDEN · MELODIE) richten de hints, en hij wijst welke G2B-packs passen. v1.1: toont je live-akkoord (WAT SPEEL IK NU), hint bij foute noten (BEDOEL JE DIT?) en SPEEL-knop stuurt de suggestie als MIDI terug. MIDI-thru: je noten gaan gewoon door. VST3 + CLAP voor FL Studio.",
+      "beschrijving": "Speelt live mee met je MIDI en vertaalt wat je doet: speel noten → de pianorol kleurt meteen groen op de noten die passen in de toonsoort die hij herkent. Speel je een valse noot → hij laat zien welke noot wel klopt (BEDOEL JE DIT?). Bovenin staat welk akkoord je nu speelt (WAT SPEEL IK NU). Met de SPEEL-knop stuurt hij zijn suggestie als MIDI terug, zodat je hem direct kunt opnemen. FOCUS-knoppen (ALLES · BAS-808 · AKKOORDEN · MELODIE) richten de hints op waar je aan werkt, en hij wijst welke G2B-packs bij jouw toonsoort passen. Je eigen noten gaan gewoon door naar je instrument (MIDI-thru). VST3 + CLAP voor FL Studio.",
       "type": "plugin",
       "genre": "tool",
       "tags": [
