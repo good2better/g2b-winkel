@@ -181,7 +181,8 @@ function lic(t,buy){
 function row(n,t,file,cls,tag,buy){return `<div class="track ${cls||''}"><div class="num">${n}</div><div class="info"><div class="t">${t}</div><div class="k">${tag||'GOOD2BETTER · 100% owned'}</div></div><audio controls preload="none" src="${file}"></audio>${lic(t,buy)}</div>`;}
 document.getElementById('voc').innerHTML=LATIN.map(([n,t])=>row(n,t,`media/latin/${n} - ${encodeURIComponent(t)}.mp3`)).join('');
 document.getElementById('ins').innerHTML=INSTR.map(([n,t,f])=>row(n,t,`media/latin/${encodeURIComponent(f)}.mp3`,'instr')).join('');
-document.getElementById('cat').innerHTML=CAT.map((t,i)=>row(String(i+1).padStart(2,'0'),t,`media/english/${encodeURIComponent(t)}.mp3`,'','GOOD2BETTER · LICENSE-READY')).join('');
+const BUYOUT=new Set(['G2B-MidnightZouk']);
+document.getElementById('cat').innerHTML=CAT.map((t,i)=>row(String(i+1).padStart(2,'0'),t,`media/english/${encodeURIComponent(t)}.mp3`,'','GOOD2BETTER · LICENSE-READY',BUYOUT.has(t))).join('');
 document.getElementById('isrc').innerHTML=LATIN.map(([n,t])=>`${ISRC[t]} — ${t}`).join('<br>')+'<br>'+ISRC_XTRA.map(([c,t])=>`${c} — ${t}`).join('<br>');
 </script>
 </body>
