@@ -19,13 +19,15 @@
    "titel": "G2B SEO-Fabriek",
    "prijs": 49,
    "beschrijving": "Volledige SEO-site-audit in één klik. Crawlt ALLE pagina's: titels, meta descriptions, H1-structuur, alt-teksten, laadtijd, kapotte links, canonicals, og-tags, structured data, sitemap, robots. Score 0-100 + printbaar audit-rapport om zelf aan klanten te verkopen. Zelfde checks als tools van EUR30+/maand — bij jou eenmalig, onbeperkt, 100% lokaal. Windows.",
-   "download": "d/seofabriek1/"
+   "download": "d/seofabriek1/",
+   "groep": "apps",
+   "badge": "NIEUW"
   },
   {
    "id": "agency1",
    "titel": "G2B AGENCY-LICENTIE",
    "soort": "licentie",
-   "beschrijving": "Voor bureaus: gebruik de hele G2B Suite (7 tools) voor max. 10 eigen klanten, 1 jaar. Inclusief alle Suite-downloads + codes per klant. €299/jaar.",
+   "beschrijving": "Voor bureaus: gebruik de hele G2B Suite (alle 9 tools) voor max. 10 eigen klanten, 1 jaar. Inclusief alle Suite-downloads + codes per klant. €299/jaar.",
    "prijs": 299,
    "links": {
     "koop": "bestel.html?p=agency1",
@@ -292,7 +294,7 @@
    "titel": "G2B Workstation",
    "soort": "digitaal",
    "groep": "apps",
-   "beschrijving": "Jouw eigen AI-muziekstudio op je eigen pc — songs maken, stemmen klonen, beats bouwen, mixen, masteren en je winkel beheren. Twee uiterlijken: op een gewone pc werkt hij in CPU MODE (alles werkt behalve zware AI-generatie — knoppen grijs); met een videokaart (NVIDIA) of een RunPod-pod schakelt hij naar GPU MODE en lichten álle knoppen op. Geen abonnement — alleen je eigen hardware of prepaid RunPod-centen. Incl. installatie-PDF en workflow-video.",
+   "beschrijving": "Jouw eigen AI-muziekstudio — 100% lokaal op je eigen pc: beats en loops maken (MAAK + DICE), AI-BEAT / AI-REMIX / AI-VERLENG via de ingebakken AI-motor, sporen splitsen in drums/bas/gitaar/piano/vocal, masteren met polish + limiter, lyrics eruit (whisper), gespeelde noten als .mid eruit, voicetags, slice naar pack en verkoop-ZIPs. Geen abonnement, geen credits, geen cloud — werkt op een gewone pc; een GPU of RunPod-pod is alleen een versneller, nooit verplicht. Incl. installatie-PDF en workflow-video.",
    "prijs": "€ 49,95",
    "prijzen": {},
    "links": {
@@ -302,7 +304,7 @@
    "video": "media/workstation-demo.mp4",
    "video_en": "media/workstation-demo-en.mp4",
    "video_es": "media/workstation-demo-es.mp4",
-   "badge": "2 modi: CPU + GPU",
+   "badge": "100% LOKAAL — ook AI",
    "eerst": true
   },
   {
