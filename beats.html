@@ -85,37 +85,48 @@
     .cta{padding:0 16px}
     .cta a{display:block;text-align:center}
   }
+
+.langset{position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:50}
+.langb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#9aa;
+ border-radius:14px;padding:4px 11px;font-size:11px;font-weight:800;letter-spacing:.5px;
+ cursor:pointer;font-family:inherit}
+.langb:hover{border-color:currentColor;color:#fff}
+.langb.aan{border-color:#2fbf71;color:#04120a;background:#2fbf71}
 </style>
 </head>
 <body>
+<div class="langset"><button class="langb" data-lang="nl">NL</button><button class="langb" data-lang="en">EN</button><button class="langb" data-lang="es">ES</button></div>
 <header class="kop">
   <div class="logo" id="merk">G2B <b>BEATS</b></div>
-  <div class="tag" id="tag">Originele beats — direct van de maker. Luister, kies je licentie, download meteen.</div>
+  <div class="tag" id="tag" data-i18n="bts_tag">Originele beats — direct van de maker. Luister, kies je licentie, download meteen.</div>
   <div class="badges">
-    <span class="badge"><i>🔒</i>veilig betalen</span>
-    <span class="badge"><i>⬇</i>direct downloaden</span>
-    <span class="badge"><i>🤝</i>100% van de maker</span>
+    <span class="badge" data-i18n="bts_b1" data-i18n-html><i>🔒</i>veilig betalen</span>
+    <span class="badge" data-i18n="bts_b2" data-i18n-html><i>⬇</i>direct downloaden</span>
+    <span class="badge" data-i18n="bts_b3" data-i18n-html><i>🤝</i>100% van de maker</span>
   </div>
 </header>
 <div class="sectie-kop">
-  <h2><b>◆</b> Beats</h2>
+  <h2><b>◆</b> <span data-i18n="bts_beats">Beats</span></h2>
   <div class="nav">
     <button id="prev" aria-label="terug">‹</button>
     <button id="next" aria-label="verder">›</button>
   </div>
 </div>
-<div class="swipe" id="swipe"><div class="leeg">Beats laden…</div></div>
+<div class="swipe" id="swipe"><div class="leeg" data-i18n="bts_laden">Beats laden…</div></div>
 <div class="dots" id="dots"></div>
 <div class="cta">
-  <a id="alleLink" href="index.html">ALLE BEATS &amp; LICENTIES →</a>
-  <p>MP3-lease · WAV-licentie · Exclusief — betaling via Stripe (iDEAL, kaart, PayPal).</p>
+  <a id="alleLink" href="index.html" data-i18n="bts_alle">ALLE BEATS &amp; LICENTIES →</a>
+  <p data-i18n="bts_lic">MP3-lease · WAV-licentie · Exclusief — betaling via Stripe (iDEAL, kaart, PayPal).</p>
 </div>
-<footer>Gebouwd door <b id="maker">Good2Better</b> — eigen winkel, geen commissie.</footer>
+<footer data-i18n="bts_foot" data-i18n-html>Gebouwd door <b id="maker">Good2Better</b> — eigen winkel, geen commissie.</footer>
+<script src="lang.js"></script>
 <script type="module">
+window.g2bRerender=()=>location.reload();
 const $ = id => document.getElementById(id);
 const esc = s => String(s || "").replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+const T=(typeof g2bT==="function")?g2bT:k=>k;
 const LIC = {mp3: "MP3-lease", wav: "WAV", exclusief: "Exclusief"};
 
 let huidige = null;        // het audio-element dat nu speelt
@@ -138,12 +149,12 @@ if (data.titel) {
   $("merk").innerHTML = `${esc(kop)} ${laatste ? `<b>${esc(laatste)}</b>` : ""}`;
   document.title = data.titel;
 }
-if (data.ondertitel) $("tag").textContent = data.ondertitel;
+if (data.ondertitel && (typeof g2bLang!=="function" || g2bLang()==="nl")) $("tag").textContent = data.ondertitel;
 
 const prods = (data.producten || []).filter(p => p.soort === "audio" && p.preview);
 const swipe = $("swipe");
 if (!prods.length)
-  swipe.innerHTML = '<div class="leeg">Binnenkort — de eerste beats komen eraan.</div>';
+  swipe.innerHTML = `<div class="leeg">${T('bts_leeg')}</div>`;
 
 swipe.innerHTML = prods.map((p, n) => {
   const licenties = Object.keys(LIC).filter(k => p.links?.[k]);
@@ -158,10 +169,10 @@ swipe.innerHTML = prods.map((p, n) => {
     </div>
     <div class="info">
       <div class="titel">${esc(p.titel)}</div>
-      <div class="meta">${esc(p.groep || "beat")} · ${fmt(p.duur || 0)} preview</div>
+      <div class="meta">${esc(p.groep || "beat")} · ${fmt(p.duur || 0)} ${T("bts_prev")}</div>
       <div class="prijs-rij">
         <div class="prijs">v.a. <b>${esc((p.prijs || "").replace(/^v\.?a\.?\s*/i, ""))}</b></div>
-        ${koop ? `<a class="koop" href="${esc(koop)}" target="_blank" rel="noopener">KOOP</a>` : ""}
+        ${koop ? `<a class="koop" href="${esc(koop)}" target="_blank" rel="noopener">${T("bts_koop")}</a>` : ""}
       </div>
     </div>
   </div>`;

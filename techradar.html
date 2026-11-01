@@ -28,34 +28,44 @@ button.sec{background:var(--panel);color:var(--txt);border:1px solid var(--line)
 #status{color:var(--dim);font-size:13px;margin:8px 0}
 details summary{cursor:pointer;color:var(--dim);margin:16px 0 4px}
 footer{margin-top:36px;padding-top:14px;border-top:1px solid var(--line);color:var(--dim);font-size:12.5px}
+
+.langset{position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:50}
+.langb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#9aa;
+ border-radius:14px;padding:4px 11px;font-size:11px;font-weight:800;letter-spacing:.5px;
+ cursor:pointer;font-family:inherit}
+.langb:hover{border-color:currentColor;color:#fff}
+.langb.aan{border-color:#2fbf71;color:#04120a;background:#2fbf71}
 </style>
 </head>
 <body>
-<h1>📡 G2B Tech-Radar</h1>
-<p class="sub">AI-nieuws gefilterd voor jóuw studio — alleen wat bruikbaar is voor muziek, video (boeken-clips) en tekst. Gratis + commercieel + lokaal draaibaar = 🟢. De rest verdwijnt onderin.</p>
+<div class="langset"><button class="langb" data-lang="nl">NL</button><button class="langb" data-lang="en">EN</button><button class="langb" data-lang="es">ES</button></div>
+<h1 data-i18n="tr_h1">📡 G2B Tech-Radar</h1>
+<p class="sub" data-i18n="tr_sub">AI-nieuws gefilterd voor jóuw studio — alleen wat bruikbaar is voor muziek, video (boeken-clips) en tekst. Gratis + commercieel + lokaal draaibaar = 🟢. De rest verdwijnt onderin.</p>
 
 <div class="card">
 <div class="row">
-  <button onclick="scan()">🔍 SCAN NIEUWS NU</button>
+  <button onclick="scan()" data-i18n="tr_scan">🔍 SCAN NIEUWS NU</button>
   <button class="sec" onclick="window.open('https://alphasignal.ai/','_blank')">AlphaSignal volledige lijst ↗</button>
   <button class="sec" onclick="window.open('https://huggingface.co/models?pipeline_tag=audio&sort=likes7d','_blank')">HuggingFace audio top ↗</button>
 </div>
 <div id="status"></div>
 </div>
 
-<h2>🟢 Bruikbaar voor G2B</h2>
-<div id="go"><div class="card" style="color:var(--dim)">Druk op SCAN — haalt live nieuws op van HackerNews, HuggingFace en GitHub en sorteert het voor je uit.</div></div>
+<h2 data-i18n="tr_go">🟢 Bruikbaar voor G2B</h2>
+<div id="go"><div class="card" style="color:var(--dim)" data-i18n="tr_druk">Druk op SCAN — haalt live nieuws op van HackerNews, HuggingFace en GitHub en sorteert het voor je uit.</div></div>
 
-<h2>🟡 Misschien / check licentie zelf</h2>
+<h2 data-i18n="tr_maybe">🟡 Misschien / check licentie zelf</h2>
 <div id="maybe"></div>
 
-<details><summary>⚪ Alle overige items (geen directe match) — <span id="restN"></span></summary>
+<details><summary><span data-i18n="tr_rest">⚪ Alle overige items (geen directe match)</span> — <span id="restN"></span></summary>
 <div id="rest"></div>
 </details>
 
-<footer>G2B Tech-Radar — scan draait volledig in je browser, geen accounts, geen kosten. Filter-regel = G2B-regel 1: gratis + 100% commercieel + lokaal/CPU.</footer>
+<footer data-i18n="tr_foot">G2B Tech-Radar — scan draait volledig in je browser, geen accounts, geen kosten. Filter-regel = G2B-regel 1: gratis + 100% commercieel + lokaal/CPU.</footer>
 
+<script src="lang.js"></script>
 <script>
+window.g2bRerender=()=>{};
 // ---- score-regels: wat is bruikbaar voor Giorgio? -------------------------
 const GOED = {
   audio:/\b(audio|music|sound|song|beat|vocal|voice|tts|asr|whisper|speech|stem.?separat|midi|melod|mastering|mixing|lyric|transcri|karaoke|acapella|demucs|pitch|synth(esiz)?er|drum|808)\b/i,

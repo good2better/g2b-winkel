@@ -73,39 +73,49 @@ audio{display:none}
 footer{border-top:1px solid var(--line);color:var(--dim);
   text-align:center;padding:20px;font-size:13px}
 footer a{color:var(--accent)}
+
+.langset{position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:50}
+.langb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#9aa;
+ border-radius:14px;padding:4px 11px;font-size:11px;font-weight:800;letter-spacing:.5px;
+ cursor:pointer;font-family:inherit}
+.langb:hover{border-color:currentColor;color:#fff}
+.langb.aan{border-color:#2fbf71;color:#04120a;background:#2fbf71}
 </style>
 </head>
 <body>
+<div class="langset"><button class="langb" data-lang="nl">NL</button><button class="langb" data-lang="en">EN</button><button class="langb" data-lang="es">ES</button></div>
 <header>
   <div class="logo">G2B <b>BEATS & PACKS</b></div>
-  <div class="sub">Beat-licenties, beat-packs & sample-packs — koop direct uit</div>
-  <div class="hero">Alle packs en eigen-sound tracks 100% eigen gemaakt door
+  <div class="sub" data-i18n="lib_sub">Beat-licenties, beat-packs & sample-packs — koop direct uit</div>
+  <div class="hero" data-i18n="lib_hero">Alle packs en eigen-sound tracks 100% eigen gemaakt door
   Good2Better — geen AI, geen claims. Lease een beat of koop 'm exclusief,
   of pak een hele beat-/sample-pack. Luister de preview en vraag direct
   een licentie aan bij de maker zelf.</div>
-  <a class="briefing" href="briefing.html">📋 STEL JE BRIEFING — track op maat</a>
+  <a class="briefing" href="briefing.html" data-i18n="lib_brief">📋 STEL JE BRIEFING — track op maat</a>
 </header>
 <main>
   <input class="zoek" id="zoek" type="search"
-    placeholder="🔍 Zoek op titel, genre of mood…" aria-label="Zoek in de library">
+    placeholder="🔍 Zoek op titel, genre of mood…" data-i18n-ph="lib_zoek" aria-label="Zoek in de library">
   <div class="moods" id="moods"></div>
-  <div id="lijst"><div class="leeg">Library laden…</div></div>
+  <div id="lijst"><div class="leeg" data-i18n="lib_laden">Library laden…</div></div>
   <section class="licenties">
-    <h3>LICENTIES — simpel & snel</h3>
+    <h3 data-i18n="lib_lic_h">LICENTIES — simpel & snel</h3>
     <div class="tiers">
-      <div class="tier"><b>MP3 / WAV-lease</b><span>Beat gebruiken voor je track, video of project. Niet-exclusief.</span></div>
-      <div class="tier"><b>EXCLUSIEF</b><span>Beat gaat uit de verkoop — alleen jij gebruikt hem nog. Licentie, eigendom blijft G2B.</span></div>
-      <div class="tier"><b>PACKS & BUNDELS</b><span>Hele beat-packs en sample-packs — direct download.</span></div>
+      <div class="tier"><b>MP3 / WAV-lease</b><span data-i18n="lib_lic1">Beat gebruiken voor je track, video of project. Niet-exclusief.</span></div>
+      <div class="tier"><b>EXCLUSIEF</b><span data-i18n="lib_lic2">Beat gaat uit de verkoop — alleen jij gebruikt hem nog. Licentie, eigendom blijft G2B.</span></div>
+      <div class="tier"><b>PACKS & BUNDELS</b><span data-i18n="lib_lic3">Hele beat-packs en sample-packs — direct download.</span></div>
     </div>
-    <p class="onestop">✅ <b>Eerlijke licenties:</b> packs en tracks zijn 100% van Good2Better — one-stop clearance, geen derden. Beats koop je als gebruikslicentie; eigendom blijft altijd bij G2B.</p>
+    <p class="onestop" data-i18n="lib_onestop" data-i18n-html>✅ <b>Eerlijke licenties:</b> packs en tracks zijn 100% van Good2Better — one-stop clearance, geen derden. Beats koop je als gebruikslicentie; eigendom blijft altijd bij G2B.</p>
   </section>
 </main>
-<footer>
+<footer data-i18n="lib_foot" data-i18n-html>
   Beat-licentie op maat, exclusive rechten of een beat laten aanpassen?
   <br><a href="mailto:g.sandvliet88@gmail.com?subject=Beat-licentie%20G2B">g.sandvliet88@gmail.com</a>
   · <b>Good2Better</b> · KVK 95199926
 </footer>
+<script src="lang.js"></script>
 <script>
+const T=(typeof g2bT==='function')?g2bT:k=>k;
 const esc = s => String(s ?? "").replace(/[&<>"]/g,
   c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let prods = [], mood = "", curAudio = null, curBtn = null;
@@ -133,7 +143,7 @@ fetch("products.json").then(r => r.json()).then(d => {
 function bouwMoods() {
   const gs = [...new Set(prods.map(p => p.groep).filter(Boolean))].sort();
   const el = document.getElementById("moods");
-  el.innerHTML = `<button class="mood on" data-m="">🎵 alles</button>` +
+  el.innerHTML = `<button class="mood on" data-m="">🎵 ${T("lib_alles")}</button>` +
     gs.map(g => `<button class="mood" data-m="${esc(g)}">${esc(g)}</button>`).join("");
   el.addEventListener("click", e => {
     const b = e.target.closest(".mood"); if (!b) return;
@@ -152,12 +162,12 @@ function render() {
     const t = ((p.titel || "") + " " + (p.groep || "") + " " + (p.bpm || "") + " " + ((p.moods || []).join(" "))).toLowerCase();
     return (!mood || p.groep === mood) && (!q || t.includes(q));
   });
-  if (!items.length) { lijst.innerHTML = `<div class="leeg">Niets gevonden.</div>`; return; }
+  if (!items.length) { lijst.innerHTML = `<div class="leeg">${T("lib_niets")}</div>`; return; }
   lijst.innerHTML = items.map(p => {
     const prijzen = Object.entries(p.prijzen || {})
       .map(([k, v]) => `${esc(k)} ${esc(v)}`).join(" · ");
     const mail = "mailto:g.sandvliet88@gmail.com?subject=" +
-      encodeURIComponent(`Beat-licentie: ${p.titel} (${p.id})`) +
+      encodeURIComponent(T("lib_subj").replace("{t}",p.titel).replace("{i}",p.id)) +
       "&body=" + encodeURIComponent(
         `Hoi Giorgio,\n\nIk wil graag een licentie voor "${p.titel}" ` +
         `voor mijn project.\n\nProject: \nGebruik (track/video/game/other): \n\nGroet`);
@@ -167,13 +177,15 @@ function render() {
         aria-label="Speel ${esc(p.titel)}">▶</button>` : `<span class="play" style="visibility:hidden">▶</span>`}
       <div class="info">
         <div class="titel">${esc(p.titel)}</div>
-        <div class="meta">${esc(p.groep || "")}${p.bpm ? " · " + p.bpm + " BPM" : ""}${duur ? " · " + duur : ""} · 100% eigenaar${p.stems ? ' · <span class="stems">STEMS ✓</span>' : ""}${(p.moods && p.moods.length) ? ' · <span class="moods">' + esc(p.moods.join(" · ")) + '</span>' : ""}</div>
-        <div class="prijzen">${prijzen || "prijs op aanvraag"}</div>
+        <div class="meta">${esc(p.groep || "")}${p.bpm ? " · " + p.bpm + " BPM" : ""}${duur ? " · " + duur : ""} · ${T("lib_eigen")}${p.stems ? ' · <span class="stems">STEMS ✓</span>' : ""}${(p.moods && p.moods.length) ? ' · <span class="moods">' + esc(p.moods.join(" · ")) + '</span>' : ""}</div>
+        <div class="prijzen">${prijzen || T("lib_aanvraag")}</div>
       </div>
-      <a class="aanvraag" href="${mail}">LICENTIE ➜</a>
+      <a class="aanvraag" href="${mail}">${T("lib_knop")}</a>
     </div>`;
   }).join("");
 }
+
+window.g2bRerender=()=>{try{bouwMoods();render();}catch(e){}};
 
 document.getElementById("lijst").addEventListener("click", e => {
   const b = e.target.closest(".play"); if (!b) return;

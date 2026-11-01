@@ -51,24 +51,32 @@ button.hoofd:hover{filter:brightness(1.1)}
 .mnoot.donker{opacity:.45}
 .footer{margin-top:18px;font-size:.75rem;color:var(--dim);text-align:center}
 @media(max-width:560px){.gline{grid-template-columns:54px 1fr}.cells{gap:2px;grid-auto-columns:14px}.cel{width:14px;height:14px}.grid .lbl{font-size:.6rem}}
+
+.langset{position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:50}
+.langb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#9aa;
+ border-radius:14px;padding:4px 11px;font-size:11px;font-weight:800;letter-spacing:.5px;
+ cursor:pointer;font-family:inherit}
+.langb:hover{border-color:currentColor;color:#fff}
+.langb.aan{border-color:#2fbf71;color:#04120a;background:#2fbf71}
 </style>
 </head>
 <body>
+<div class="langset"><button class="langb" data-lang="nl">NL</button><button class="langb" data-lang="en">EN</button><button class="langb" data-lang="es">ES</button></div>
 <h1>🎛 G2B Beat Maker</h1>
-<p class="sub">Maak je eigen beat — met sounds uit de G2B-engine. Geen account nodig.</p>
+<p class="sub" data-i18n="bm_sub">Maak je eigen beat — met sounds uit de G2B-engine. Geen account nodig.</p>
 <div class="card">
   <div class="rijen" id="genres"></div>
   <div class="bpm-balk"><span>BPM</span><input type="range" id="bpm" min="60" max="180" value="95"><b id="bpmv">95</b></div>
   <div class="grid" id="grid"></div>
   <div class="rijen">
-    <button class="hoofd" id="play">▶ SPEL</button>
-    <button id="wis">WIS</button>
-    <button id="random">🎲 WILLEKEURIG</button>
-    <button id="exp">⬇ EXPORT</button>
+    <button class="hoofd" id="play" data-i18n="bm_play">▶ SPEL</button>
+    <button id="wis" data-i18n="bm_wis">WIS</button>
+    <button id="random" data-i18n="bm_rand">🎲 WILLEKEURIG</button>
+    <button id="exp" data-i18n="bm_exp">⬇ EXPORT</button>
   </div>
   <div class="dropzone" id="dropzone">
-    <b>🔁 LOOP-REBUILD — drop hier een drumloop</b>
-    <small>wav / mp3 / ogg — wij luisteren de slagen eruit en bouwen de loop na met G2B-sounds</small>
+    <b data-i18n="bm_dz1">🔁 LOOP-REBUILD — drop hier een drumloop</b>
+    <small data-i18n="bm_dz2">wav / mp3 / ogg — wij luisteren de slagen eruit en bouwen de loop na met G2B-sounds</small>
     <input type="file" id="loopfile" accept="audio/*,.wav,.mp3,.ogg,.m4a,.flac" style="display:none">
   </div>
   <div class="dropmsg" id="dropmsg"></div>
@@ -76,22 +84,25 @@ button.hoofd:hover{filter:brightness(1.1)}
    <div class="rijen" id="melinst"></div>
    <div class="melnotes" id="melnotes"></div>
   </div>
-  <p class="koop">Vind je dit leuk? Deze sounds (en 770+ meer) zitten in de
+  <p class="koop" data-i18n="bm_koop" data-i18n-html>Vind je dit leuk? Deze sounds (en 770+ meer) zitten in de
     <a href="index.html" target="_top">G2B sound-packs →</a><br>
     <a href="gratis.html" style="color:var(--groen);font-weight:700">🎁 Of pak eerst de GRATIS Starter-Pack (12 sounds)</a></p>
   <div class="vanger">
-    <b style="color:var(--groen)">Elke maand een nieuwe pack?</b><br>
+    <b style="color:var(--groen)" data-i18n="bm_vang">Elke maand een nieuwe pack?</b><br>
     
     <form class="ev-form" id="emailvanger">
-      <input type="email" id="ev-email" placeholder="jouw e-mailadres" required>
-      <button type="submit">✉ INSCHRIJVEN</button>
+      <input type="email" id="ev-email" placeholder="jouw e-mailadres" data-i18n-ph="gra_ph" required>
+      <button type="submit" data-i18n="bm_inschr">✉ INSCHRIJVEN</button>
     </form>
     <div class="ev-msg" id="ev-msg"></div>
-    <a class="mailknop" id="mailknop" href="#" style="display:none">✉ HOUD ME OP DE HOOGTE</a>
+    <a class="mailknop" id="mailknop" href="#" style="display:none" data-i18n="bm_houd">✉ HOUD ME OP DE HOOGTE</a>
   </div>
 </div>
-<p class="footer">100% eigen G2B-engine sounds · g2b-winkel</p>
+<p class="footer" data-i18n="bm_foot">100% eigen G2B-engine sounds · g2b-winkel</p>
+<script src="lang.js"></script>
 <script>
+const T=(typeof g2bT==='function')?g2bT:k=>k;
+window.g2bRerender=()=>{};
 const GENRES={
  house:{bpm:124,tim:{kf:150,ke:45,kd:.3,sd:.18,hc:7000,hd:.05,pf:520,pd:.12},pat:{kick:[0,4,8,12],snare:[4,12],hat:[2,6,10,14],perc:[]}},
  trap:{bpm:145,tim:{kf:120,ke:35,kd:.45,sd:.22,hc:6000,hd:.07,pf:440,pd:.15},pat:{kick:[0,7,10],snare:[8],hat:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],perc:[8]}},
@@ -378,14 +389,14 @@ function fft(re,im){ // radix-2, in-place
  }
 }
 async function analyseer(file){
- dmsg.textContent='⏳ Loop wordt beluisterd…';
+ dmsg.textContent=T('bm_busy');
  try{
   if(!ac)ac=new (window.AudioContext||window.webkitAudioContext)();
   const buf=await ac.decodeAudioData(await file.arrayBuffer());
   const n=buf.length,d=buf.getChannelData(0).slice();
   for(let ch=1;ch<buf.numberOfChannels;ch++){const c=buf.getChannelData(ch);for(let i=0;i<n;i++)d[i]=(d[i]+c[i])*0.5}
   const sr=buf.sampleRate,FL=1024,HOP=256,NF=Math.max(0,Math.floor((n-FL)/HOP)+1);
-  if(NF<8){dmsg.textContent='⚠️ Dit fragment is te kort — probeer een echte drum-loop.';return}
+  if(NF<8){dmsg.textContent=T('bm_kort');return}
   const re=new Float64Array(FL),im=new Float64Array(FL),win=new Float64Array(FL);
   for(let i=0;i<FL;i++)win[i]=0.5-0.5*Math.cos(2*Math.PI*i/FL);
   const binHz=sr/FL,iKick=Math.max(2,Math.floor(150/binHz)),iTom=Math.floor(1000/binHz),iHat=Math.floor(5000/binHz);
@@ -486,9 +497,9 @@ async function analyseer(file){
     nBars=bars;nSub=16;stepDurAbs=dur/(nBars*nSub);renderGrid();melGrid();
     gridFromLoop=false;for(const r of RIJEN)state[r].clear();
     await laadMelBuf(melInst);melUI();
-    dmsg.textContent=`${isBas?'🔊':'🎹'} ${use.length} noten gehoord → ${isBas?'bas':'melodie'}-rebuild · ~${bpm} BPM`+keyTxt+` · speelt met ${MELN[melInst]} (wissel hieronder)`;
+    dmsg.textContent=T('bm_msg_noten').replace('{i}',isBas?'🔊':'🎹').replace('{n}',use.length).replace('{t}',isBas?T('bm_bas'):T('bm_mel')).replace('{b}',bpm)+keyTxt+T('bm_msg_inst').replace('{m}',MELN[melInst]);
     if(!timer)document.getElementById('play').click();return}
-   dmsg.textContent='⚠️ Geen duidelijke slagen of noten gevonden — probeer een duidelijkere loop.';return}
+   dmsg.textContent=T('bm_niks');return}
   // bars+bpm samen bepalen: voor elk aantal maten {1,2,4,8,16} volgt bpm=240*bars/dur;
   // de combinatie waar de meeste slagen op het 16e-raster vallen wint (getest op echte loops)
   const ts=[...hits.kick,...hits.perc,...hits.perc2,...hits.snare,...hits.hat,...hits.hat2].map(o=>o.t);
@@ -569,7 +580,7 @@ async function analyseer(file){
   if(isMel&&maxDur>1){ // gemixte loop (drums+melodie): melodie/bas-laag speelt mee
    MEL=use;melGrid();await laadMelBuf(melInst);melUI();
    melTxt=` +${isBas?'🔊':'🎹'}${use.length} noten`}
-  dmsg.textContent=`✅ ${totOn} slagen gehoord → ${bars} bar${bars>1?'s':''} rebuild · ~${bpm} BPM`+(nSub==32?' · 32e-noten grid':'')+(swing>0.02?` · swing ${Math.round(swing*100)}%`:'')+keyTxt+melTxt
+  dmsg.textContent=T('bm_msg_slagen').replace('{n}',totOn).replace('{bars}',bars>1?T('bm_bars'):T('bm_bar')).replace('{b}',bpm)+(nSub==32?' · '+T('bm_32'):'')+(swing>0.02?' · '+T('bm_swing').replace('{p}',Math.round(swing*100)):'')+keyTxt+melTxt
    +` · eigen set: K=${nm(picks.kick)} S=${nm(picks.snare)} H=${nm(picks.hat)}`+(picks.hat2?`+${nm(picks.hat2)}`:'')+` P=${nm(picks.perc)}`+(picks.perc2?`+${nm(picks.perc2)}`:'')+(shaker?` +SHAKER=${nm(picks.shkr)}`:'')+` (klik een genre voor andere sounds)`;
   if(!timer)document.getElementById('play').click(); // direct afspelen: drop → hoor je loop met G2B-sounds
  }catch(err){dmsg.textContent='⚠️ Kon dit bestand niet lezen — probeer wav/mp3/ogg.'}
