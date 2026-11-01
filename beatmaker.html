@@ -17,7 +17,13 @@ button.hoofd:hover{filter:brightness(1.1)}
 .grid{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
 .gline{display:grid;grid-template-columns:70px 1fr;gap:4px}
 .cells{display:grid;grid-auto-flow:column;grid-auto-columns:20px;gap:4px;overflow-x:auto;padding-bottom:4px}
-.grid .lbl{font-size:.75rem;color:var(--dim);display:flex;align-items:center;justify-content:flex-end;padding-right:6px;cursor:pointer;user-select:none}
+.grid .lbl{font-size:.75rem;color:var(--dim);display:flex;align-items:center;justify-content:flex-end;gap:4px;padding-right:6px;cursor:pointer;user-select:none}
+.grid .lbl .rlock,.grid .lbl .rfx{font-size:.65rem;opacity:.7;cursor:pointer}
+.grid .lbl .rlock:hover,.grid .lbl .rfx:hover{opacity:1}
+.grid .rstrip{display:flex;grid-column:1/-1;gap:14px;padding:4px 10px;background:#ffffff08;border-radius:6px;margin:2px 0}
+.grid .rstrip .rlab{display:flex;align-items:center;gap:6px;font-size:.62rem;color:var(--dim)}
+.grid .rstrip input[type=range]{width:90px}
+.grid .rstrip .rval{color:var(--groen);font-size:.62rem;min-width:34px}
 .grid .lbl.mute{color:#ff5566;text-decoration:line-through}
 .grid .gline.mute .cells{opacity:.25}
 .cel{width:20px;height:20px;border-radius:5px;background:#221a3a;border:1px solid #ffffff11;cursor:pointer;transition:transform .05s;flex:none}
@@ -84,6 +90,7 @@ button.hoofd:hover{filter:brightness(1.1)}
     <button class="hoofd" id="play" data-i18n="bm_play">▶ SPEL</button>
     <button id="wis" data-i18n="bm_wis">WIS</button>
     <button id="random" data-i18n="bm_rand">🎲 WILLEKEURIG</button>
+    <button id="song" data-i18n="bm_song" title="maakt meteen een 8-bar song: rustige intro → couplet → fill → outro">🎬 SONG</button>
     <button id="exp" data-i18n="bm_exp">⬇ EXPORT</button>
   </div>
   <div class="dropzone" id="dropzone">
@@ -146,6 +153,8 @@ let RIJEN=["kick","snare","hat","perc"];const NAMEN={kick:"🥁 KICK",snare:"�
 const BASERIJ=["kick","snare","hat","perc"];
 function naarBasisRijen(){RIJEN=BASERIJ.slice();for(const ex of['shkr','hat2','perc2'])delete state[ex]}
 const MUTED=new Set(); // klik op rij-naam = mute (voor stems-export)
+const LOCKED=new Set(); // 🔒 op rij-naam = deze rij verandert NIET mee bij 🎲 willekeurig
+const ROWFX={}; // per rij: {pitch:1.., decay:1..} — ⚙ opent mini strip onder de rij
 const grid=document.getElementById('grid'),state={};let cur='house';
 let swing=0,gridFromLoop=false,nBars=1,nSub=16;
 for(const r of RIJEN)state[r]=state[r]||new Set();
@@ -153,10 +162,28 @@ function renderGrid(){
  grid.innerHTML='';
  for(const r of RIJEN){
   const line=document.createElement('div');line.className='gline';
-  const l=document.createElement('div');l.className='lbl'+(MUTED.has(r)?' mute':'');l.textContent=NAMEN[r];
-  l.title='klik = mute/unmute (stems exporteren: mute wat je niet wilt)';
+  const l=document.createElement('div');l.className='lbl'+(MUTED.has(r)?' mute':'');
+  const nm=document.createElement('span');nm.textContent=NAMEN[r];l.appendChild(nm);
+  const lk=document.createElement('span');lk.className='rlock';lk.textContent=LOCKED.has(r)?'🔒':'🔓';
+  lk.title=LOCKED.has(r)?'rijslot AAN — willekeurig laat deze rij met rust':'rijslot uit — 🔒 houdt dit patroon vast bij 🎲';
+  lk.onclick=e=>{e.stopPropagation();if(LOCKED.has(r))LOCKED.delete(r);else LOCKED.add(r);lk.textContent=LOCKED.has(r)?'🔒':'🔓';lk.title=LOCKED.has(r)?'rijslot AAN — willekeurig laat deze rij met rust':'rijslot uit — 🔒 houdt dit patroon vast bij 🎲'};
+  l.appendChild(lk);
+  const fx=document.createElement('span');fx.className='rfx';fx.textContent='⚙';fx.title='geluid van deze rij: toonhoogte + lengte';
+  fx.onclick=e=>{e.stopPropagation();const p=line.querySelector('.rstrip');if(p)p.style.display=p.style.display=='none'?'flex':'none'};
+  l.appendChild(fx);
+  l.title='klik op naam = mute/unmute · 🔒 = rijslot · ⚙ = toon/lengte';
   l.onclick=()=>{if(MUTED.has(r))MUTED.delete(r);else MUTED.add(r);l.classList.toggle('mute',MUTED.has(r));line.classList.toggle('mute',MUTED.has(r))};
   line.appendChild(l);
+  // mini strip: pitch + decay per rij
+  const strip=document.createElement('div');strip.className='rstrip';strip.style.display='none';
+  ROWFX[r]=ROWFX[r]||{pitch:1,decay:1};
+  const mk=(lab,key,mn,mx,st)=>{const w=document.createElement('label');w.className='rlab';w.textContent=lab;
+   const i=document.createElement('input');i.type='range';i.min=mn;i.max=mx;i.step=st;i.value=ROWFX[r][key];
+   const v=document.createElement('span');v.className='rval';v.textContent=ROWFX[r][key].toFixed(2)+'x';
+   i.oninput=()=>{ROWFX[r][key]=+i.value;v.textContent=(+i.value).toFixed(2)+'x'};
+   w.appendChild(i);w.appendChild(v);strip.appendChild(w)};
+  mk('TOON','pitch',0.5,2,0.01);mk('LENGTE','decay',0.2,2.5,0.01);
+  line.appendChild(strip);
   const cs=document.createElement('div');cs.className='cells';
   for(let s=0;s<nBars*nSub;s++){
    const c=document.createElement('div');c.className='cel'+(s%(nSub/4)==0?' hoofd-tel':'');c.dataset.r=r;c.dataset.s=s;
@@ -193,9 +220,31 @@ document.getElementById('wis').onclick=()=>{naarBasisRijen();for(const r of RIJE
  for(const a of ALAY){if(a.src){try{a.src.stop()}catch(e){}}}ALAY.length=0;
  laagUI();document.getElementById('droplist').innerHTML='';document.getElementById('dropmsg').textContent='';renderGrid()};
 document.getElementById('random').onclick=()=>{
- gridFromLoop=false;naarBasisRijen();nBars=1;nSub=16;renderGrid();
+ gridFromLoop=false;const keep={};for(const r of RIJEN)if(LOCKED.has(r))keep[r]=new Set(state[r]);
+ naarBasisRijen();nBars=1;nSub=16;renderGrid();
  for(const r of RIJEN){state[r].clear();for(let s=0;s<16;s++)if(Math.random()<(r=='hat'?.6:r=='perc'?.2:.3))state[r].add(s)}
+ for(const r in keep){state[r]=keep[r];if(!RIJEN.includes(r))RIJEN.push(r)}
+ if(Object.keys(keep).length)renderGrid();
  document.querySelectorAll('.cel').forEach(c=>c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s)))};
+// AUTO-ARRANGEMENT: 1 knop → 8 bars song (intro rustig → couplet vol → fill → outro)
+document.getElementById('song').onclick=()=>{
+ gridFromLoop=false;naarBasisRijen();nBars=8;nSub=16;
+ const G=GENRES[cur],pat=G.pat;
+ for(const r of RIJEN){
+  const was=LOCKED.has(r)?new Set(state[r]):null;
+  state[r].clear();
+  if(was){for(let b=0;b<8;b++)for(const s of was)state[r].add(b*16+(s%16));continue} // 🔒 rij: eigen patroon herhaalt door de hele song
+  const p=pat[r]||[];
+  for(let b=1;b<7;b++)for(const s of p)state[r].add(b*16+s); // couplet: patroon 6 bars
+  if(r=='hat'){for(const s of p)if(s%4==0)state[r].add(s)} // intro: alleen hoofdtellende hats
+  if(r=='kick')state[r].add(0); // intro-kick op de 1
+ }
+ // outro-bar 8: strip → kick op 1, snare-fill op het eind (🔒 rijen blijven onaangeroerd)
+ if(!LOCKED.has('kick'))state.kick.add(7*16);
+ if(!LOCKED.has('snare')){state.snare.add(7*16);for(const s of[7*16+8,7*16+10,7*16+12,7*16+13,7*16+14,7*16+15])state.snare.add(s)}
+ renderGrid();
+ document.querySelectorAll('.cel').forEach(c=>{const v=VEL[c.dataset.r+':'+c.dataset.s];c.classList.toggle('aan',state[c.dataset.r].has(+c.dataset.s));c.style.opacity=v!=null?0.4+0.6*v:1});
+};
 let ac=null,step=0,timer=null,volgende=0,MX=null; // MX = master-gain (50ms fade bij soundbank-wissel)
 const MXS=new Map(); // per context: master-gain → limiter → destination (true-peak plafond -0.5dB)
 function masterOf(a){if(MXS.has(a))return MXS.get(a);
@@ -246,22 +295,26 @@ async function laadEigen(picks){
 function speel(r,t,v){
  const a=ac,g0=v==null?0.9:(0.4+0.65*v); // velocity uit de loop: zacht/hard meespelen
  const buf=OWN[r]||(SMPL[cur]&&SMPL[cur][r]); // eigen one-shots winnen van genre-sounds
+ const fx=ROWFX[r]||{pitch:1,decay:1}; // ⚙ per-rij toon/lengte
  const dst=(r=='perc'||r=='perc2'||r=='shkr')?duckOf(a):masterOf(a);
- if(buf){const s=a.createBufferSource();s.buffer=buf;const g=a.createGain();
+ if(buf){const s=a.createBufferSource();s.buffer=buf;s.playbackRate.value=fx.pitch;const g=a.createGain();
+  const dur=buf.duration/fx.pitch,dec=Math.max(0.01,Math.min(1,fx.decay));
   // stereo-rol: shaker ver rechts, perc licht links, PERC 2 rechts, dichte hat links, open-hat ver rechts
   const pan=r=='shkr'?0.6:r=='perc'?-0.2:r=='perc2'?0.4:r=='hat'?-0.35:r=='hat2'?0.65:0;let out=dst;
   if(pan&&a.createStereoPanner){const p=a.createStereoPanner();p.pan.value=pan;p.connect(dst);out=p}
   if(r=='shkr'){const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=450;s.connect(f).connect(g).connect(out);
    // Decay Tail Trap: staart klemt op 85% van het vakje (BPM-gekoppeld)
-   const bpm=+document.getElementById('bpm').value||120,stp=240/bpm/nSub,cl=Math.min(buf.duration,stp*0.85);
+   const bpm=+document.getElementById('bpm').value||120,stp=240/bpm/nSub,cl=Math.min(dur,stp*0.85)*dec;
    g.gain.setValueAtTime(g0,t);g.gain.setValueAtTime(g0,t+Math.max(0,cl-0.03));g.gain.exponentialRampToValueAtTime(0.001,t+cl);
    s.start(t);s.stop(t+cl+0.01);return}
   // choke-groep: dichte hat kapt de staart van een lopende open-hat af (5ms, geen klik)
   if(r=='hat'){const t0=a.currentTime;OH=OH.filter(e=>e.t>t0-4);for(const e of OH){e.g.gain.cancelScheduledValues(t);e.g.gain.setTargetAtTime(0,t,0.005)}}
   g.gain.value=g0;s.connect(g).connect(out);s.start(t);
-  if(r=='hat2')OH.push({g,t:t+buf.duration});
+  if(fx.decay<1){g.gain.setValueAtTime(g0,t+dur*dec*0.6);g.gain.exponentialRampToValueAtTime(0.001,t+dur*dec);s.stop(t+dur*dec+0.02)}
+  if(r=='hat2')OH.push({g,t:t+dur});
   return}
- const TM=(GENRES[cur]&&GENRES[cur].tim)||{kf:150,ke:45,kd:.3,sd:.18,hc:7000,hd:.05,pf:520,pd:.12};
+ const TMr=(GENRES[cur]&&GENRES[cur].tim)||{kf:150,ke:45,kd:.3,sd:.18,hc:7000,hd:.05,pf:520,pd:.12};
+ const TM={...TMr,kf:TMr.kf*fx.pitch,ke:TMr.ke*Math.min(fx.pitch,1.5),kd:TMr.kd*fx.decay,sd:TMr.sd*fx.decay,hd:TMr.hd*fx.decay,pf:TMr.pf*fx.pitch,pd:TMr.pd*fx.decay};
  if(r=='kick'){const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(TM.kf,t);o.frequency.exponentialRampToValueAtTime(TM.ke,t+0.12);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.kd);o.connect(g).connect(dst);o.start(t);o.stop(t+TM.kd+0.02)}
  if(r=='snare'){const s=a.createBufferSource();s.buffer=NB;const g=a.createGain();g.gain.setValueAtTime(0.7,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.sd);s.connect(g).connect(dst);s.start(t);s.stop(t+TM.sd+0.02)}
  if(r=='hat'||r=='hat2'||r=='shkr'){const s=a.createBufferSource();s.buffer=NB;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=r=='shkr'?450:TM.hc;const g=a.createGain();g.gain.setValueAtTime(0.3,t);g.gain.exponentialRampToValueAtTime(0.001,t+(r=='shkr'?0.08:r=='hat2'?TM.hd*4:TM.hd));let tail=g;
