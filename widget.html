@@ -58,11 +58,19 @@
   .koop:hover{background:#3dd485}
   .voet{padding:8px 16px 12px;font-size:10.5px;color:var(--dim);text-align:center}
   .voet a{color:var(--dim)}
+
+.langset{position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:50}
+.langb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#9aa;
+ border-radius:14px;padding:4px 11px;font-size:11px;font-weight:800;letter-spacing:.5px;
+ cursor:pointer;font-family:inherit}
+.langb:hover{border-color:currentColor;color:#fff}
+.langb.aan{border-color:#2fbf71;color:#04120a;background:#2fbf71}
 </style>
 </head>
 <body>
+<div class="langset"><button class="langb" data-lang="nl">NL</button><button class="langb" data-lang="en">EN</button><button class="langb" data-lang="es">ES</button></div>
 <div class="kaart">
-  <div class="kop"><span class="dot"></span> G2B BEATS · UIT DE WINKEL</div>
+  <div class="kop"><span class="dot"></span> <span data-i18n="wdg_kop">G2B BEATS · UIT DE WINKEL</span></div>
   <div class="midden">
     <img class="hoes" src="https://good2better.github.io/g2b-winkel/media/c5444536-cover.png" alt="Midnight Dembow — G2B hoes">
     <button class="play" id="play" aria-label="Speel preview af">
@@ -73,15 +81,16 @@
   </div>
   <div class="info">
     <div class="titel">Midnight Dembow</div>
-    <div class="sub">Dembow · 45-sec preview · MP3/WAV/Exclusief</div>
+    <div class="sub" data-i18n="wdg_sub">Dembow · 45-sec preview · MP3/WAV/Exclusief</div>
     <div class="prijs-rij">
       <div class="prijs">v.a. <b>€ 19,95</b></div>
-      <a class="koop" href="https://www.good2better.com/exclusive-store" target="_blank">KOOP →</a>
+      <a class="koop" href="https://www.good2better.com/exclusive-store" target="_blank" data-i18n="wdg_koop">KOOP →</a>
     </div>
   </div>
-  <div class="voet">Meer beats op <a href="https://www.good2better.com/exclusive-store" target="_blank">good2better.com</a></div>
+  <div class="voet" data-i18n="wdg_foot" data-i18n-html>Meer beats op <a href="https://www.good2better.com/exclusive-store" target="_blank">good2better.com</a></div>
 </div>
 <audio id="audio" src="https://good2better.github.io/g2b-winkel/media/c5444536-preview.mp3" preload="none"></audio>
+<script src="lang.js"></script>
 <script>
 const a=document.getElementById('audio'),b=document.getElementById('play'),i=document.getElementById('icoon');
 const P='<path d="M8 5v14l11-7z"/>',S='<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>';

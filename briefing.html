@@ -21,64 +21,75 @@
   button.send{width:100%;margin-top:22px;background:var(--g);color:#08110c;border:0;border-radius:10px;padding:14px;font-size:1rem;font-weight:800;letter-spacing:1px;cursor:pointer}
   .back{display:inline-block;margin-top:14px;color:var(--mut);font-size:.8rem;text-decoration:none}
   .note{font-size:.72rem;color:#5c665f;margin-top:12px;line-height:1.5}
+
+.langset{position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:50}
+.langb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#9aa;
+ border-radius:14px;padding:4px 11px;font-size:11px;font-weight:800;letter-spacing:.5px;
+ cursor:pointer;font-family:inherit}
+.langb:hover{border-color:currentColor;color:#fff}
+.langb.aan{border-color:#2fbf71;color:#04120a;background:#2fbf71}
 </style>
 </head>
 <body>
+<div class="langset"><button class="langb" data-lang="nl">NL</button><button class="langb" data-lang="en">EN</button><button class="langb" data-lang="es">ES</button></div>
 <div class="wrap">
-  <h1>STEL JE BRIEFING</h1>
-  <p class="sub">Vertel wat je zoekt — je krijgt een track op maat of een passende licentie binnen 48 uur.</p>
+  <h1 data-i18n="br_h1">STEL JE BRIEFING</h1>
+  <p class="sub" data-i18n="br_sub">Vertel wat je zoekt — je krijgt een track op maat of een passende licentie binnen 48 uur.</p>
 
-  <label>WAT VOOR PROJECT?</label>
+  <label data-i18n="br_ptype">WAT VOOR PROJECT?</label>
   <select id="ptype">
-    <option>Film / documentaire</option><option>Reclame / commercial</option><option>Game / app</option>
-    <option>YouTube / social content</option><option>TV / serie</option><option>Podcast / radio</option>
-    <option>Song / artist-track</option><option>Anders</option>
+    <option data-i18n="br_o_film">Film / documentaire</option><option data-i18n="br_o_reclame">Reclame / commercial</option><option data-i18n="br_o_game">Game / app</option>
+    <option data-i18n="br_o_yt">YouTube / social content</option><option data-i18n="br_o_tv">TV / serie</option><option data-i18n="br_o_pod">Podcast / radio</option>
+    <option data-i18n="br_o_song">Song / artist-track</option><option data-i18n="br_o_anders">Anders</option>
   </select>
 
-  <label>STEMMING / MOOD (meerdere mogelijk)</label>
+  <label data-i18n="br_mood">STEMMING / MOOD (meerdere mogelijk)</label>
   <div class="pills" id="moods"></div>
 
   <div class="row">
-    <div><label>GENRE</label>
-      <select id="genre"><option>kies…</option><option>soca</option><option>bubbling</option><option>kaseko</option><option>winti</option><option>kawina</option><option>afro</option><option>dancehall</option><option>dembow</option><option>drill</option><option>trap</option><option>house</option><option>boombap</option><option>rnb</option><option>lofi</option><option>cinematic</option><option>epic / trailer</option><option>uplifting</option><option>anders</option></select></div>
-    <div><label>TEMPO (BPM)</label><input id="bpm" type="number" min="60" max="180" placeholder="bijv. 100"></div>
+    <div><label data-i18n="br_genre">GENRE</label>
+      <select id="genre"><option data-i18n="br_o_kies">kies…</option><option>soca</option><option>bubbling</option><option>kaseko</option><option>winti</option><option>kawina</option><option>afro</option><option>dancehall</option><option>dembow</option><option>drill</option><option>trap</option><option>house</option><option>boombap</option><option>rnb</option><option>lofi</option><option>cinematic</option><option>epic / trailer</option><option>uplifting</option><option data-i18n="br_o_anders">anders</option></select></div>
+    <div><label data-i18n="br_bpm">TEMPO (BPM)</label><input id="bpm" type="number" min="60" max="180" placeholder="bijv. 100"></div>
   </div>
 
   <div class="row">
-    <div><label>LENGTE</label>
-      <select id="dur"><option>0:15 (spot)</option><option>0:30 (spot)</option><option>0:60 (spot)</option><option>volledige track</option><option>loop</option></select></div>
-    <div><label>DEADLINE</label><input id="deadline" type="date"></div>
+    <div><label data-i18n="br_len">LENGTE</label>
+      <select id="dur"><option data-i18n="br_o_15">0:15 (spot)</option><option data-i18n="br_o_30">0:30 (spot)</option><option data-i18n="br_o_60">0:60 (spot)</option><option data-i18n="br_o_vol">volledige track</option><option data-i18n="br_o_loop">loop</option></select></div>
+    <div><label data-i18n="br_dead">DEADLINE</label><input id="deadline" type="date"></div>
   </div>
 
-  <label>VOCAL OF INSTRUMENTAAL</label>
-  <select id="vocal"><option>Instrumentaal</option><option>Met vocals</option><option>Weet ik nog niet</option></select>
+  <label data-i18n="br_vocal">VOCAL OF INSTRUMENTAAL</label>
+  <select id="vocal"><option data-i18n="br_o_instr">Instrumentaal</option><option data-i18n="br_o_vocals">Met vocals</option><option data-i18n="br_o_weet">Weet ik nog niet</option></select>
 
-  <label>LICENTIE-TYPE</label>
-  <select id="lic"><option>Buy-out / exclusief (jouw advies)</option><option>Niet-exclusieve licentie</option><option>Sync op maat (opdracht)</option><option>Lease (mp3/wav)</option></select>
+  <label data-i18n="br_lic">LICENTIE-TYPE</label>
+  <select id="lic"><option data-i18n="br_o_buyout">Buy-out / exclusief (jouw advies)</option><option data-i18n="br_o_nonex">Niet-exclusieve licentie</option><option data-i18n="br_o_maatsync">Sync op maat (opdracht)</option><option data-i18n="br_o_lease">Lease (mp3/wav)</option></select>
 
-  <label>JE BRIEFING — referenties, scene-beschrijving, wensen</label>
-  <textarea id="brief" rows="5" placeholder="Bijv: 30-sec reclame voor sportmerk, energiek maar niet te hard, drop op 0:20..."></textarea>
+  <label data-i18n="br_brief">JE BRIEFING — referenties, scene-beschrijving, wensen</label>
+  <textarea id="brief" rows="5" placeholder="Bijv: 30-sec reclame voor sportmerk, energiek maar niet te hard, drop op 0:20..." data-i18n-ph="br_brief_ph"></textarea>
 
-  <label>JE E-MAIL / CONTACT</label>
-  <input id="contact" type="email" placeholder="naam@studio.nl">
+  <label data-i18n="br_contact">JE E-MAIL / CONTACT</label>
+  <input id="contact" type="email" placeholder="naam@studio.nl" data-i18n-ph="br_contact_ph">
 
-  <button class="send" onclick="verstuur()">VERSTUUR BRIEFING ✉</button>
-  <a class="back" href="library.html">← terug naar beats & packs</a>
-  <p class="note">100% eigenaar — geen samples, geen AI, geen derden. One-stop clearance: één handtekening en je bent klaar.</p>
+  <button class="send" onclick="verstuur()" data-i18n="br_send">VERSTUUR BRIEFING ✉</button>
+  <a class="back" href="library.html" data-i18n="br_back">← terug naar beats & packs</a>
+  <p class="note" data-i18n="br_note">100% eigenaar — geen samples, geen AI, geen derden. One-stop clearance: één handtekening en je bent klaar.</p>
 </div>
+<script src="lang.js"></script>
 <script>
 const EV_SCRIPT_URL='https://script.google.com/macros/s/AKfycbzKWU72wn2xxXiNy040qfP4NOqz-CzmOYHrRXMK_DH-LzBEqLjwtiwTyKJAyx7MTf0/exec'; // <- plak hier je Apps Script /exec URL (zelfde als index.html)
+const T=(typeof g2bT==='function')?g2bT:k=>k;
 const MOODS=["donker","vrolijk","energisch","chill","episch","spannend","liefde","feest","triest","hoopvol","agressief","dromerig","mysterieus","trots","horror","kinder","zakelijk","sport"];
 const el=document.getElementById('moods');
-MOODS.forEach(m=>{const b=document.createElement('button');b.className='pill';b.textContent=m;b.onclick=()=>b.classList.toggle('on');el.appendChild(b);});
+window.g2bRerender=()=>{document.querySelectorAll('.pill').forEach(b=>{if(b.dataset.k)b.textContent=T('mo_'+b.dataset.k)})};
+MOODS.forEach(m=>{const b=document.createElement('button');b.className='pill';b.dataset.k=m;b.textContent=T('mo_'+m);b.onclick=()=>b.classList.toggle('on');el.appendChild(b);});
 async function verstuur(){
   const g=id=>document.getElementById(id).value;
-  const sel=[...document.querySelectorAll('.pill.on')].map(b=>b.textContent).join(', ')||'—';
+  const sel=[...document.querySelectorAll('.pill.on')].map(b=>b.dataset.k?T('mo_'+b.dataset.k):b.textContent).join(', ')||'—';
   const data={ptype:g('ptype'),moods:sel,genre:g('genre'),bpm:g('bpm')||'—',dur:g('dur'),deadline:g('deadline')||'—',vocal:g('vocal'),licentie:g('lic'),brief:g('brief')||'—',contact:g('contact')||'—'};
   if(EV_SCRIPT_URL){
     try{
       await fetch(EV_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({email:data.contact,bron:'sync-briefing',tijd:new Date().toISOString(),extra:data})});
-      document.querySelector('.send').textContent='✅ BRIEFING VERSTUURD — binnen 48u reactie';
+      document.querySelector('.send').textContent=T('br_done');
       document.querySelector('.send').disabled=true;
       return;
     }catch(_){/* val terug op mailto */}

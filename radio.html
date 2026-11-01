@@ -39,18 +39,26 @@ canvas#vu{width:100%;height:90px;background:var(--paars2);border-radius:10px;mar
 .tt.actief .t{color:var(--groen);font-weight:700}
 .footer{margin-top:20px;font-size:.72rem;color:var(--dim);text-align:center}
 .footer a{color:var(--groen);text-decoration:none}
+
+.langset{position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:50}
+.langb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#9aa;
+ border-radius:14px;padding:4px 11px;font-size:11px;font-weight:800;letter-spacing:.5px;
+ cursor:pointer;font-family:inherit}
+.langb:hover{border-color:currentColor;color:#fff}
+.langb.aan{border-color:#2fbf71;color:#04120a;background:#2fbf71}
 </style>
 </head>
 <body>
+<div class="langset"><button class="langb" data-lang="nl">NL</button><button class="langb" data-lang="en">EN</button><button class="langb" data-lang="es">ES</button></div>
 <h1>G2B <b>RADIO</b></h1>
-<div class="live">LIVE — EIGEN BEATS 24/7</div>
+<div class="live" data-i18n="rad_live">LIVE — EIGEN BEATS 24/7</div>
 <div class="kast">
   <div class="nuspelen">
     <img class="cover" id="cover" alt="cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='110'%3E%3Crect fill='%23221a3a' width='110' height='110'/%3E%3C/svg%3E">
     <div class="nuinfo">
-      <div class="nulabel">NU SPEELT</div>
+      <div class="nulabel" data-i18n="rad_nu">NU SPEELT</div>
       <div class="nutitel" id="nutitel">—</div>
-      <a class="koop" id="koop" href="#" target="_top">KOOP DEZE BEAT</a>
+      <a class="koop" id="koop" href="#" target="_top" data-i18n="rad_koop">KOOP DEZE BEAT</a>
     </div>
   </div>
   <canvas id="vu" width="640" height="90"></canvas>
@@ -58,11 +66,12 @@ canvas#vu{width:100%;height:90px;background:var(--paars2);border-radius:10px;mar
     <button id="speel" aria-label="Radio aan/uit">▶</button>
     <div class="vol">🔈<input type="range" id="vol" min="0" max="100" value="80">🔊</div>
   </div>
-  <div class="vaart" id="vaart">Druk op ▶ om G2B Radio te starten — alle beats 100% eigen G2B-productie</div>
-  <div class="lijst"><h2>AANKOMENDE TRACKS</h2><div id="lijst"></div></div>
+  <div class="vaart" id="vaart" data-i18n="rad_start">Druk op ▶ om G2B Radio te starten — alle beats 100% eigen G2B-productie</div>
+  <div class="lijst"><h2 data-i18n="rad_tracks">AANKOMENDE TRACKS</h2><div id="lijst"></div></div>
 </div>
-<p class="footer">Elke beat die je hoort is te koop in de <a href="index.html">G2B-winkel</a> · g2b radio</p>
+<p class="footer" data-i18n="rad_foot" data-i18n-html>Elke beat die je hoort is te koop in de <a href="index.html">G2B-winkel</a> · g2b radio</p>
 <audio id="audio" preload="auto"></audio>
+<script src="lang.js"></script>
 <script>
 const TRACKS=[
 {id:"2878e291",titel:"Cjfjff Houce",src:"media/2878e291-preview.mp3",cover:"media/2878e291-cover.png",koop:"bestel.html?p=2878e291"},
@@ -79,6 +88,8 @@ const TRACKS=[
 {id:"ritmosbundel",titel:"Ritmos Del Corazón",src:"media/ritmosalbum-preview.mp3",cover:"media/ritmosbundle-cover.png",koop:"bestel.html?p=ritmosbundel"},
  {id:"0b5647bf",titel:"Coolbreez",src:"media/0b5647bf-preview.mp3",cover:"media/0b5647bf-cover.png",koop:"bestel.html?p=0b5647bf"},
 ];
+const T=(typeof g2bT==='function')?g2bT:k=>k;
+window.g2bRerender=()=>{try{toon()}catch(e){}};
 const audio=document.getElementById('audio'),speel=document.getElementById('speel'),
       cover=document.getElementById('cover'),nutitel=document.getElementById('nutitel'),
       koop=document.getElementById('koop'),lijst=document.getElementById('lijst'),
@@ -90,7 +101,7 @@ function toon(){
  const t=huidige();
  nutitel.textContent=t.titel;cover.src=t.cover;koop.href=t.koop;
  [...lijst.children].forEach((el,i)=>el.classList.toggle('actief',i===idx%volgorde.length));
- vaart.textContent='Track '+(idx%volgorde.length+1)+' van '+volgorde.length+' — eigen beats, non-stop';
+ vaart.textContent=T('rad_trackf').replace('{a}',idx%volgorde.length+1).replace('{b}',volgorde.length);
 }
 function bouwLijst(){
  lijst.innerHTML='';
