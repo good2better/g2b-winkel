@@ -725,7 +725,9 @@ function analyseerBuf(buf){
 // ---- DRUM-REBUILD: drop een drumloop → slagen eruit → eigen/G2B drums op het grid
 function drumRebuild(buf,an){
  const hits=an.hits,dur=buf.duration;
- const bars=Math.max(1,Math.min(8,an.bars||2)),barDur=dur/bars;
+ // half-time-miss: analyzer die op 60 ipv 120 zit → verdubbel, bars uit duur herberekend
+ let bpmUse=an.bpm;if(bpmUse&&bpmUse<75)bpmUse*=2;
+ const bars=Math.max(1,Math.min(8,(bpmUse?Math.round(dur*bpmUse/240):0)||an.bars||2)),barDur=dur/bars;
  nBars=bars;
  const hatPerBar=(hits.hat.length+hits.hat2.length)/bars;
  nSub=hatPerBar>12?32:16; // dichte hat-rolls (trap/drill 32e noten) → 32 stappen
@@ -741,7 +743,8 @@ function drumRebuild(buf,an){
   const s=(o.t%barDur)/barDur*nSub;if(Math.round(s)%2==1)res.push(s-Math.round(s))}
  swing=res.length?Math.max(0,Math.min(0.4,median(res))):0;
  gridFromLoop=true;renderGrid();
- if(!gezetBpm&&an.bpm){zetBpm(an.bpm);gezetBpm=true}
+ document.querySelectorAll('.cel').forEach(c=>{const r=c.dataset.r,s=+c.dataset.s;c.classList.toggle('aan',state[r]&&state[r].has(s))});
+ if(!gezetBpm&&bpmUse){zetBpm(bpmUse);gezetBpm=true}
 }
 // ---- de batch: pack-meta uit namen, dan per bestand routeren
 let gezetBpm=false;
