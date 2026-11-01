@@ -91,6 +91,7 @@ button.hoofd:hover{filter:brightness(1.1)}
     <button id="wis" data-i18n="bm_wis">WIS</button>
     <button id="random" data-i18n="bm_rand">🎲 WILLEKEURIG</button>
     <button id="song" data-i18n="bm_song" title="maakt meteen een 8-bar song: rustige intro → couplet → fill → outro">🎬 SONG</button>
+    <button id="mic" data-i18n="bm_mic" title="neem beatbox of neuriën op → automatisch naar drum-grid of melodie-noten">🎤 MIC</button>
     <button id="exp" data-i18n="bm_exp">⬇ EXPORT</button>
   </div>
   <div class="dropzone" id="dropzone">
@@ -587,6 +588,30 @@ dz.ondragover=e=>{e.preventDefault();dz.classList.add('over')};
 dz.ondragleave=()=>dz.classList.remove('over');
 dz.ondrop=e=>{e.preventDefault();dz.classList.remove('over');if(e.dataTransfer.files.length)verzamel(e.dataTransfer.files)};
 lf.onchange=()=>{if(lf.files.length)verzamel(lf.files);lf.value=''};
+// ---- 🎤 MIC: neem beatbox/neuriën op → zelfde analyse als een gedropt bestand
+// Beatbox (slagen) → DRUMLOOP → grid-rebuild; neuriën/melodie → stem-detect → noten-laag
+let micRec=null,micStream=null,micChunks=[];
+const micBtn=document.getElementById('mic');
+async function micToggle(){
+ if(micRec&&micRec.state!='inactive'){micRec.stop();return}
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){dmsg.textContent='⚠️ mic opnemen werkt niet in deze browser';return}
+ try{
+  micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false}});
+  micChunks=[];
+  micRec=new MediaRecorder(micStream);
+  micRec.ondataavailable=e=>{if(e.data.size)micChunks.push(e.data)};
+  micRec.onstop=async()=>{
+   if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null}
+   micBtn.textContent='🎤 MIC';
+   const type=micRec.mimeType||'audio/webm',ext=type.includes('ogg')?'ogg':type.includes('mp4')?'m4a':'webm';
+   verzamel([new File([new Blob(micChunks,{type})],'mic-opname.'+ext,{type})]);
+  };
+  micRec.start();micBtn.textContent='⏹ STOP';
+  dmsg.textContent='🎤 opnemen… beatbox of neurie — klik ⏹ STOP als je klaar bent';
+  setTimeout(()=>{if(micRec&&micRec.state!='inactive')micRec.stop()},30000);
+ }catch(e){dmsg.textContent='⚠️ geen toegang tot de mic — sta hem toe in de browser en probeer opnieuw'}
+}
+micBtn.onclick=micToggle;
 function median(a){if(!a.length)return 0;const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2}
 function fft(re,im){ // radix-2, in-place
  const n=re.length;
