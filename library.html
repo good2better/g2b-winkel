@@ -177,7 +177,7 @@ function render() {
         aria-label="Speel ${esc(p.titel)}">▶</button>` : `<span class="play" style="visibility:hidden">▶</span>`}
       <div class="info">
         <div class="titel">${esc(p.titel)}</div>
-        <div class="meta">${esc(p.groep || "")}${p.bpm ? " · " + p.bpm + " BPM" : ""}${duur ? " · " + duur : ""} · ${T("lib_eigen")}${p.stems ? ' · <span class="stems">STEMS ✓</span>' : ""}${(p.moods && p.moods.length) ? ' · <span class="moods">' + esc(p.moods.join(" · ")) + '</span>' : ""}</div>
+        <div class="meta">${esc(p.groep || "")}${p.bpm ? " · " + p.bpm + " BPM" : ""}${duur ? " · " + duur : ""} · ${T("lib_eigen")}${p.stems ? ' · <span class="stems">STEMS ✓</span>' : ""}${(p.moods && p.moods.length) ? ' · <span class="moods">' + esc(p.moods.map(m=>{const t=T("mo_"+m);return t==="mo_"+m?m:t;}).join(" · ")) + '</span>' : ""}</div>
         <div class="prijzen">${prijzen || T("lib_aanvraag")}</div>
       </div>
       <a class="aanvraag" href="${mail}">${T("lib_knop")}</a>

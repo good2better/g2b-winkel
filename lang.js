@@ -1035,3 +1035,8 @@ Object.assign(G2B_I18N.es, {
 "sync_sbi":"SBI: 5920 (producción musical y publishing) · 9003 (artes creativas) · 1820 (reproducción de medios) · 5811 (edición de libros) · 47919 (venta online)",
 "sync_isrc_t":"ISRC — másters (registro Sena)"
 });
+
+// === moods uit products.json (library.html) ===
+Object.assign(G2B_I18N.nl,{"mo_afgerond":"afgerond","mo_caribisch":"caribisch","mo_club":"club","mo_dans":"dans","mo_eigen":"eigen","mo_energie":"energie","mo_hard":"hard","mo_luchtig":"luchtig","mo_party":"party","mo_ritmisch":"ritmisch","mo_sensueel":"sensueel","mo_signature":"signature","mo_spanning":"spanning","mo_tool":"tool","mo_zacht":"zacht","mo_zomer":"zomer"});
+Object.assign(G2B_I18N.en,{"mo_afgerond":"smooth","mo_caribisch":"caribbean","mo_club":"club","mo_dans":"dance","mo_eigen":"own","mo_energie":"energy","mo_hard":"hard","mo_luchtig":"airy","mo_party":"party","mo_ritmisch":"rhythmic","mo_sensueel":"sensual","mo_signature":"signature","mo_spanning":"tense","mo_tool":"tool","mo_zacht":"soft","mo_zomer":"summer"});
+Object.assign(G2B_I18N.es,{"mo_afgerond":"suave","mo_caribisch":"caribeño","mo_club":"club","mo_dans":"bailable","mo_eigen":"propio","mo_energie":"energía","mo_hard":"duro","mo_luchtig":"etéreo","mo_party":"fiesta","mo_ritmisch":"rítmico","mo_sensueel":"sensual","mo_signature":"signature","mo_spanning":"tenso","mo_tool":"herramienta","mo_zacht":"suave","mo_zomer":"verano"});
