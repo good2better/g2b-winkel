@@ -60,20 +60,26 @@ header{position:relative;padding:0;overflow:hidden}
 .mailbtn{display:inline-block;margin-top:14px;background:var(--green);color:#06220f;font-weight:700;padding:13px 26px;border-radius:10px;text-decoration:none;font-size:14px;letter-spacing:.5px}
 .mailbtn:hover{filter:brightness(1.1)}
 .isrclist{font-family:ui-monospace,monospace;font-size:12.5px;color:var(--gray);line-height:1.8}
+.langset{position:fixed;top:12px;right:12px;display:flex;gap:6px;z-index:60}
+.langb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);color:#9aa;padding:6px 12px;border-radius:14px;font:700 12px/1 sans-serif;cursor:pointer;font-family:inherit}
+.langb:hover{border-color:currentColor;color:#fff}
+.langb.aan{border-color:var(--green);color:#06220f;background:var(--green)}
 @media(max-width:560px){.track{flex-wrap:wrap}.track audio{width:100%}.hero{height:210px}.hero-txt h1{font-size:22px}}
 </style>
 </head>
 <body>
 
+<div class="langset"><button class="langb" data-lang="nl">NL</button><button class="langb" data-lang="en">EN</button><button class="langb" data-lang="es">ES</button></div>
+
 <div id="gate">
   <div class="gate-box">
     <img src="media/gate.jpg" alt="GOOD2BETTER — Music for Sync Licensing">
     <h1>G2B SYNC LIBRARY</h1>
-    <p>Private catalog — enter your access code</p>
-    <input id="code" type="password" placeholder="ACCESS CODE" autocomplete="off">
-    <button onclick="unlock()">ENTER</button>
-    <div class="err" id="err">Wrong code — ask Good2Better for access</div>
-    <p style="margin-top:18px;font-size:12.5px">Latin + beats catalog — one-stop licensing.<br>No code? <a href="mailto:g.sandvliet88@gmail.com?subject=G2B%20Sync%20Library%20access" style="color:var(--green)">g.sandvliet88@gmail.com</a></p>
+    <p data-i18n="sync_gate_sub">Private catalog — enter your access code</p>
+    <input id="code" type="password" placeholder="ACCESS CODE" data-i18n-ph="sync_gate_ph" autocomplete="off">
+    <button onclick="unlock()" data-i18n="sync_gate_btn">ENTER</button>
+    <div class="err" id="err" data-i18n="sync_gate_err">Wrong code — ask Good2Better for access</div>
+    <p style="margin-top:18px;font-size:12.5px"><span data-i18n="sync_gate_foot">Latin + beats catalog — one-stop licensing.</span><br><span data-i18n="sync_gate_nocode">No code?</span> <a href="mailto:g.sandvliet88@gmail.com?subject=G2B%20Sync%20Library%20access" style="color:var(--green)">g.sandvliet88@gmail.com</a></p>
   </div>
 </div>
 
@@ -82,77 +88,79 @@ header{position:relative;padding:0;overflow:hidden}
   <div class="hero"><div class="hero-txt">
     <div class="brand">GOOD2BETTER H.Q.M.</div>
     <h1>SYNC LIBRARY</h1>
-    <div class="sub">One-stop sync catalog — 100% owned masters &amp; publishing</div>
+    <div class="sub" data-i18n="sync_hero_sub">One-stop sync catalog — 100% owned masters &amp; publishing</div>
   </div></div>
   <div class="tabs">
     <button class="tab on" onclick="tab(0,this)">LATIN</button>
     <button class="tab" onclick="tab(1,this)">CATALOG</button>
-    <button class="tab" onclick="tab(2,this)">REQUEST</button>
+    <button class="tab" onclick="tab(2,this)" data-i18n="sync_tab_request">REQUEST</button>
   </div>
 </header>
 
 <div class="wrap">
 <div class="pane on" id="p0">
-  <div class="intro">Latin catalog by <b style="color:#fff">GOOD2BETTER</b> — vocal masters + instrumentals. Every track is 100% written, produced, performed and owned by G.T.J. Sandvliet / Good2Better High Quality Media. Full WAV + stems packages on request.</div>
-  <div class="sec">Vocal masters</div>
+  <div class="intro" data-i18n="sync_latin_intro" data-i18n-html>Latin catalog by <b style="color:#fff">GOOD2BETTER</b> — vocal masters + instrumentals. Every track is 100% written, produced, performed and owned by G.T.J. Sandvliet / Good2Better High Quality Media. Full WAV + stems packages on request.</div>
+  <div class="sec" data-i18n="sync_vocal">Vocal masters</div>
   <div id="voc"></div>
-  <div class="sec">Instrumentals</div>
+  <div class="sec" data-i18n="sync_instr">Instrumentals</div>
   <div id="ins"></div>
 </div>
 
 <div class="pane" id="p1">
-  <div class="intro">Song &amp; beat <b style="color:#fff">catalog by Giorgio</b> — zijn eigen tracks. License-ready: non-exclusive &amp; exclusive sync. Alle catalog-tracks zijn gebruikslicenties — eigendom blijft altijd bij G2B. Volledige buy-out? Alleen voor custom tracks op aanvraag. Stems en WAV-packages op aanvraag.</div>
+  <div class="intro" data-i18n="sync_cat_intro" data-i18n-html>Song &amp; beat <b style="color:#fff">catalog by Giorgio</b> — zijn eigen tracks. License-ready: non-exclusive &amp; exclusive sync. Alle catalog-tracks zijn gebruikslicenties — eigendom blijft altijd bij G2B. Volledige buy-out? Alleen voor custom tracks op aanvraag. Stems en WAV-packages op aanvraag.</div>
   <div id="cat"></div>
 </div>
 
 <div class="pane" id="p3">
   <div class="card">
-    <h3>One-Stop — 1 e-mail, everything arranged</h3>
-    <p>I own <b>100% of the master AND the publishing</b> on every track in this library — writer, producer, performer and master owner. No third parties, no label approvals, no co-writer clearance. <b>One e-mail → stems, MIDI, WAV packages and a signed license, typically within 24 hours.</b> Fast answers, safe to license.</p>
-    <a class="mailbtn" href="mailto:g.sandvliet88@gmail.com?subject=Sync%20request%20—%20G2B%20Library">g.sandvliet88@gmail.com — REQUEST LICENSE</a>
+    <h3 data-i18n="sync_req_one_t">One-Stop — 1 e-mail, everything arranged</h3>
+    <p data-i18n="sync_req_one_p" data-i18n-html>I own <b>100% of the master AND the publishing</b> on every track in this library — writer, producer, performer and master owner. No third parties, no label approvals, no co-writer clearance. <b>One e-mail → stems, MIDI, WAV packages and a signed license, typically within 24 hours.</b> Fast answers, safe to license.</p>
+    <a class="mailbtn" href="mailto:g.sandvliet88@gmail.com?subject=Sync%20request%20—%20G2B%20Library" data-i18n="sync_req_one_btn">g.sandvliet88@gmail.com — REQUEST LICENSE</a>
   </div>
 
   <div class="card">
-    <h3>Custom commissions — open for new work</h3>
-    <p>I'm <b>open for custom-made assignments</b>: a track, beat or score built to your briefing — style, tempo, stems and mix tailored to your production. Advertising, film &amp; TV, games, social campaigns or a full album.</p>
-    <div class="tier"><b>Briefing → custom demo within days</b><p>Send your briefing (reference, mood, length, deadline) — you get a custom preview before any deal.</p></div>
-    <div class="tier"><b>Custom buy-out available</b><p>A track made exclusively for you — full ownership possible, price on request.</p></div>
-    <a class="mailbtn" href="mailto:g.sandvliet88@gmail.com?subject=Custom%20music%20briefing%20—%20G2B">g.sandvliet88@gmail.com — SEND YOUR BRIEFING</a>
+    <h3 data-i18n="sync_req_custom_t">Custom commissions — open for new work</h3>
+    <p data-i18n="sync_req_custom_p" data-i18n-html>I'm <b>open for custom-made assignments</b>: a track, beat or score built to your briefing — style, tempo, stems and mix tailored to your production. Advertising, film &amp; TV, games, social campaigns or a full album.</p>
+    <div class="tier"><b data-i18n="sync_req_t1b">Briefing → custom demo within days</b><p data-i18n="sync_req_t1p">Send your briefing (reference, mood, length, deadline) — you get a custom preview before any deal.</p></div>
+    <div class="tier"><b data-i18n="sync_req_t2b">Custom buy-out available</b><p data-i18n="sync_req_t2p">A track made exclusively for you — full ownership possible, price on request.</p></div>
+    <a class="mailbtn" href="mailto:g.sandvliet88@gmail.com?subject=Custom%20music%20briefing%20—%20G2B" data-i18n="sync_req_custom_btn">g.sandvliet88@gmail.com — SEND YOUR BRIEFING</a>
   </div>
 
   <div class="card">
-    <h3>License options</h3>
-    <div class="tier"><b>Non-exclusive sync license</b><p>Standard — track stays in the catalog, per-use fee. Delivered with WAV + stems.</p></div>
-    <div class="tier"><b>Exclusive sync license</b><p>Track reserved for your production/campaign, removed from licensing to others.</p></div>
-    <div class="tier"><b>Buy-out</b><p>One-off full purchase for major film/brand deals — complete transfer, price on request. <i>Applies to custom commissions only.</i></p></div>
-    <p style="margin-top:10px;color:var(--gray)">Every deal is personally approved — you always deal with the owner directly.</p>
+    <h3 data-i18n="sync_licopt_t">License options</h3>
+    <div class="tier"><b data-i18n="sync_lic_nexb">Non-exclusive sync license</b><p data-i18n="sync_lic_nexp">Standard — track stays in the catalog, per-use fee. Delivered with WAV + stems.</p></div>
+    <div class="tier"><b data-i18n="sync_lic_exb">Exclusive sync license</b><p data-i18n="sync_lic_exp">Track reserved for your production/campaign, removed from licensing to others.</p></div>
+    <div class="tier"><b data-i18n="sync_lic_bob">Buy-out</b><p data-i18n="sync_lic_bop" data-i18n-html>One-off full purchase for major film/brand deals — complete transfer, price on request. <i>Applies to custom commissions only.</i></p></div>
+    <p style="margin-top:10px;color:var(--gray)" data-i18n="sync_lic_note">Every deal is personally approved — you always deal with the owner directly.</p>
   </div>
 
   <div class="card">
-    <h3>Rights &amp; registration — fully verifiable</h3>
+    <h3 data-i18n="sync_rights_t">Rights &amp; registration — fully verifiable</h3>
     <dl class="kv">
-      <dt>Artist</dt><dd>GOOD2BETTER</dd>
-      <dt>Company</dt><dd>Good2Better High Quality Media (G2B H.Q.M.) — G.T.J. Sandvliet</dd>
-      <dt>KVK</dt><dd>95199926 — eenmanszaak, registered 15-10-2024</dd>
-      <dt>BTW</dt><dd>NL005139345B30</dd>
-      <dt>IPI (Buma/Stemra)</dt><dd>01273893907 — songwriter Giorgio T.J.S.</dd>
-      <dt>Sena</dt><dd>1104985 (performing artist) · 2065125 (producer)</dd>
-      <dt>ISRC owner code</dt><dd>NL-5R7 — masters NL-5R7-25-00001 … 00013 · 00034–00036 · NL-5R7-26-00001–00002 (Sena-geregistreerd)</dd>
-      <dt>Distribution</dt><dd>Ditto Music — released + unreleased catalog available for sync</dd>
-      <dt>Contact</dt><dd>g.sandvliet88@gmail.com · +31 6 45288465</dd>
+      <dt data-i18n="sync_kv_artist">Artist</dt><dd>GOOD2BETTER</dd>
+      <dt data-i18n="sync_kv_company">Company</dt><dd>Good2Better High Quality Media (G2B H.Q.M.) — G.T.J. Sandvliet</dd>
+      <dt>KVK</dt><dd data-i18n="sync_kv_kvk_v">95199926 — eenmanszaak, registered 15-10-2024</dd>
+      <dt data-i18n="sync_kv_vat">BTW</dt><dd>NL005139345B30</dd>
+      <dt>IPI (Buma/Stemra)</dt><dd data-i18n="sync_kv_ipi_v">01273893907 — songwriter Giorgio T.J.S.</dd>
+      <dt>Sena</dt><dd data-i18n="sync_kv_sena_v">1104985 (performing artist) · 2065125 (producer)</dd>
+      <dt data-i18n="sync_kv_isrc">ISRC owner code</dt><dd data-i18n="sync_kv_isrc_v">NL-5R7 — masters NL-5R7-25-00001 … 00013 · 00034–00036 · NL-5R7-26-00001–00002 (Sena-geregistreerd)</dd>
+      <dt data-i18n="sync_kv_dist">Distribution</dt><dd data-i18n="sync_kv_dist_v">Ditto Music — released + unreleased catalog available for sync</dd>
+      <dt data-i18n="sync_kv_contact">Contact</dt><dd>g.sandvliet88@gmail.com · +31 6 45288465</dd>
       <dt>YouTube</dt><dd><a href="https://www.youtube.com/@beatsbygood2better" style="color:var(--green)">@beatsbygood2better</a></dd>
     </dl>
-    <p style="margin-top:12px;color:var(--gray);font-size:12.5px">SBI: 5920 (music production &amp; publishing) · 9003 (creative arts) · 1820 (media reproduction) · 5811 (book publishing) · 47919 (online retail)</p>
+    <p style="margin-top:12px;color:var(--gray);font-size:12.5px" data-i18n="sync_sbi">SBI: 5920 (music production &amp; publishing) · 9003 (creative arts) · 1820 (media reproduction) · 5811 (book publishing) · 47919 (online retail)</p>
   </div>
 
   <div class="card">
-    <h3>ISRC — masters (Sena-register)</h3>
+    <h3 data-i18n="sync_isrc_t">ISRC — masters (Sena-register)</h3>
     <div class="isrclist" id="isrc"></div>
   </div>
 </div>
 </div>
 </div>
 
+<script>window.G2B_LANG_DEFAULT='en';</script>
+<script src="../lang.js"></script>
 <script>
 const HASH='5ce2341720b4ea3b7de86d9e0de7a60eccb28028d85c47f1388f5eb16d3582b8';
 async function unlock(){
@@ -175,7 +183,7 @@ const ISRC={'A Dónde Están':'NL-5R7-25-00001','Imposible Borrarte':'NL-5R7-25-
 const ISRC_XTRA=[['NL-5R7-25-00034','Coolbreez'],['NL-5R7-25-00035','Love'],['NL-5R7-25-00036','Love Hurts'],['NL-5R7-26-00001','Ik Ben Onderweg'],['NL-5R7-26-00002','Meisje Luister'],['NL-5R7-26-00014','Cjfjff Houce 2026'],['NL-5R7-26-00015','Exotic Riddim'],['NL-5R7-26-00016','Houce Trap'],['NL-5R7-26-00017','Us Both'],['NL-5R7-26-00018','Khvckhvclv'],['NL-5R7-26-00019','Lala Dance'],['NL-5R7-26-00020','Midnight Dembow II'],['NL-5R7-26-00021','Midnight Dembow III'],['NL-5R7-26-00022','Soldaat'],['NL-5R7-26-00023','Under']];
 
 function lic(t,buy){
-  const m=(kind)=>`mailto:g.sandvliet88@gmail.com?subject=${encodeURIComponent(kind+': '+t)}&body=${encodeURIComponent('Hoi Giorgio,\n\n'+kind+' voor "'+t+'" graag.\nProject: \nGebruik (film/TV/reclame/game/social): \nTerritorium + looptijd: \n\nGroet')}`;
+  const m=(kind)=>`mailto:g.sandvliet88@gmail.com?subject=${encodeURIComponent(kind+': '+t)}&body=${encodeURIComponent('Hi Giorgio,\n\nI would like a '+kind.toLowerCase()+' for "'+t+'".\nProject: \nUsage (film/TV/ads/game/social): \nTerritory + term: \n\nBest,')}`;
   return `<div class="lic"><a href="${m('Sync license')}">LICENSE</a>${buy?`<a class="buy" href="${m('Buy-out')}">BUY-OUT</a>`:''}</div>`;
 }
 function row(n,t,file,cls,tag,buy){return `<div class="track ${cls||''}"><div class="num">${n}</div><div class="info"><div class="t">${t}</div><div class="k">${tag||'GOOD2BETTER · 100% owned'}</div></div><audio controls preload="none" src="${file}"></audio>${lic(t,buy)}</div>`;}
