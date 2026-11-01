@@ -1,0 +1,186 @@
+{
+"_site": {
+  "en": {"titel": "G2B WINKEL", "ondertitel": "Own beats, plugins & sound packs — straight from the maker"},
+  "es": {"titel": "G2B WINKEL", "ondertitel": "Beats, plugins y sound packs propios — directo del creador"}
+},
+"g2bsuite1": {
+  "en": {"titel": "G2B SUITE — all marketer tools", "badge": "ALL-IN-1", "beschrijving": "ALL-IN-ONE: all 9 G2B Factories in one ZIP — Lead, Lijst, Sheet, Mail, Sequentie, CRM, Flow, Watcher and SEO-Fabriek. One package, nine license codes included. Bought separately EUR341 — as a suite EUR99. Windows, 100% local, one-time."},
+  "es": {"titel": "G2B SUITE — todas las herramientas de marketing", "badge": "TODO-EN-1", "beschrijving": "TODO EN UNO: las 9 Fábricas G2B en un ZIP — Lead, Lijst, Sheet, Mail, Sequentie, CRM, Flow, Watcher y SEO-Fabriek. Un paquete, nueve códigos de licencia incluidos. Por separado EUR341 — en suite EUR99. Windows, 100% local, pago único."}
+},
+"seofabriek1": {
+  "en": {"titel": "G2B SEO-Fabriek", "badge": "NEW", "beschrijving": "Full SEO site audit in one click. Crawls ALL pages: titles, meta descriptions, H1 structure, alt texts, load time, broken links, canonicals, og-tags, structured data, sitemap, robots. Score 0-100 + printable audit report to resell to clients yourself. Same checks as EUR30+/month tools — here one-time, unlimited, 100% local. Windows."},
+  "es": {"titel": "G2B SEO-Fabriek", "badge": "NUEVO", "beschrijving": "Auditoría SEO completa de tu web en un clic. Rastrea TODAS las páginas: títulos, meta descriptions, estructura H1, textos alt, tiempo de carga, enlaces rotos, canonicals, og-tags, structured data, sitemap, robots. Puntuación 0-100 + informe imprimible para revender a clientes. Las mismas comprobaciones que herramientas de EUR30+/mes — aquí pago único, ilimitado, 100% local. Windows."}
+},
+"agency1": {
+  "en": {"titel": "G2B AGENCY LICENSE", "badge": "AGENCY", "beschrijving": "For agencies: use the whole G2B Suite (all 9 tools) for up to 10 own clients, 1 year. Includes all Suite downloads + codes per client. €299/year."},
+  "es": {"titel": "LICENCIA G2B AGENCY", "badge": "AGENCY", "beschrijving": "Para agencias: usa toda la G2B Suite (las 9 herramientas) para máx. 10 clientes propios, 1 año. Incluye todas las descargas de la Suite + códigos por cliente. €299/año."}
+},
+"marketerbundel1": {
+  "en": {"titel": "G2B MARKETER BUNDLE", "badge": "BUNDLE", "beschrijving": "The complete marketer set: Lijst-Fabriek (clean your e-mail list) + Lead-Fabriek (find businesses + e-mails). Separately €88 — in the bundle for €69. 100% local, unlimited, one-time buy."},
+  "es": {"titel": "PAQUETE G2B MARKETER", "badge": "PAQUETE", "beschrijving": "El set completo de marketing: Lijst-Fabriek (limpia tu lista de e-mails) + Lead-Fabriek (encuentra empresas + e-mails). Por separado €88 — en el paquete por €69. 100% local, ilimitado, pago único."}
+},
+"mailfabriek1": {
+  "en": {"titel": "G2B MAIL-FABRIEK", "badge": "NEW", "beschrijving": "Mail all your leads personally: drop in a CSV, {naam}/{bedrijf} is filled in automatically per mail. Your own SMTP (Gmail/business), delay between mails, send report + follow-up list. No credits, no subscription."},
+  "es": {"titel": "G2B MAIL-FABRIEK", "badge": "NUEVO", "beschrijving": "Escribe a todos tus leads personalmente: mete un CSV, {naam}/{bedrijf} se rellena solo por mail. Tu propio SMTP (Gmail/business), espera entre mails, informe de envío + lista de seguimiento. Sin créditos, sin suscripción."}
+},
+"sheetfabriek1": {
+  "en": {"titel": "G2B SHEET-FABRIEK", "badge": "NEW", "beschrijving": "Edit CSVs without Excel: filter, dedupe, sort, clean cells, split columns, merge files — with live preview. Unlimited, 100% local."},
+  "es": {"titel": "G2B SHEET-FABRIEK", "badge": "NUEVO", "beschrijving": "Edita CSV sin Excel: filtrar, quitar duplicados, ordenar, limpiar celdas, partir columnas, unir archivos — con vista previa en vivo. Ilimitado, 100% local."}
+},
+"sequentiefabriek1": {
+  "en": {"titel": "G2B SEQUENTIE-FABRIEK", "badge": "NEW", "beschrijving": "Automatic follow-up: mail 1 → wait X days → mail 2 → mail 3. The factory remembers per lead where it was and keeps mailing while it runs. Your own SMTP, no subscription."},
+  "es": {"titel": "G2B SEQUENTIE-FABRIEK", "badge": "NUEVO", "beschrijving": "Seguimiento automático: mail 1 → espera X días → mail 2 → mail 3. La fábrica recuerda por lead dónde iba y sigue enviando mientras corre. Tu propio SMTP, sin suscripción."}
+},
+"crmfabriek1": {
+  "en": {"titel": "G2B CRM-FABRIEK", "badge": "NEW", "beschrijving": "Your leads on a Kanban board: drop in a CSV → drag cards from New → Contacted → Sold. Notes per lead, export to CSV. 100% local."},
+  "es": {"titel": "G2B CRM-FABRIEK", "badge": "NUEVO", "beschrijving": "Tus leads en un tablero Kanban: mete un CSV → arrastra tarjetas de Nuevo → Contactado → Vendido. Notas por lead, exportar a CSV. 100% local."}
+},
+"watcherfabriek1": {
+  "en": {"titel": "G2B WATCHER-FABRIEK", "badge": "NEW", "beschrijving": "Site & price alarm: watch any URL (or only a price/text) and see instantly when something changes. Notification in the app + optional e-mail. 100% local."},
+  "es": {"titel": "G2B WATCHER-FABRIEK", "badge": "NUEVO", "beschrijving": "Alarma de web y precios: vigila cualquier URL (o solo un precio/texto) y ve al instante cuándo algo cambia. Aviso en la app + opcional por mail. 100% local."}
+},
+"flowfabriek1": {
+  "en": {"titel": "G2B FLOW-FABRIEK", "badge": "NEW", "beschrijving": "Your own Zapier, 100% local: triggers (new file, schedule, webhook, manual) + actions (zip-backup, copy, CSV log, mail via your own smtp, notification). No cloud, no subscription — Zapier costs €240+/year, this is one-time."},
+  "es": {"titel": "G2B FLOW-FABRIEK", "badge": "NUEVO", "beschrijving": "Tu propio Zapier, 100% local: disparadores (archivo nuevo, horario, webhook, manual) + acciones (zip-backup, copiar, log CSV, mail por tu smtp, aviso). Sin nube, sin suscripción — Zapier cuesta €240+/año, esto es pago único."}
+},
+"kanaalfabriek1": {
+  "en": {"titel": "G2B KANAAL-FABRIEK — complete video studio", "badge": "NEW", "beschrijving": "Build complete YouTube/TikTok channels without a camera: script in → episode out with AI voice in 14 languages (NL/EN/ES/DE/FR/IT/PT/PL/RU/ZH/TR/AR/SV + Sranan). SEIZOEN-FABRIEK makes a whole series in 1 click, TAAL-FABRIEK translates each episode automatically, narrator mode makes read-aloud videos, auto-shorts 9:16 for Shorts/Reels/TikTok, greenscreen, character pops, live webcam studio, intro factory. 100% LOCAL on your pc — no subscription, no credits, no cloud. 1-click installer + manual + license code per buyer."},
+  "es": {"titel": "G2B KANAAL-FABRIEK — estudio de vídeo completo", "badge": "NUEVO", "beschrijving": "Crea canales completos de YouTube/TikTok sin cámara: mete el guion → sale el episodio con voz IA en 14 idiomas (NL/EN/ES/DE/FR/IT/PT/PL/RU/ZH/TR/AR/SV + Sranan). SEIZOEN-FABRIEK hace una serie entera en 1 clic, TAAL-FABRIEK traduce cada episodio automáticamente, modo narrador para vídeos de lectura, shorts 9:16 para Shorts/Reels/TikTok, greenscreen, personajes, estudio de webcam en vivo, fábrica de intros. 100% LOCAL en tu pc — sin suscripción, sin créditos, sin nube. Instalador de 1 clic + manual + código de licencia por comprador."}
+},
+"leadfabriek1": {
+  "en": {"titel": "G2B LEAD-FABRIEK", "badge": "NEW", "beschrijving": "Find local businesses + their e-mail addresses: enter a place + category (e.g. Miami + barber) and the app pulls out name, address, website, phone AND e-mail addresses via free OpenStreetMap. 100% local, unlimited — no credits, no subscription. leads.csv out."},
+  "es": {"titel": "G2B LEAD-FABRIEK", "badge": "NUEVO", "beschrijving": "Encuentra negocios locales + sus e-mails: escribe ciudad + categoría (p. ej. Miami + barbería) y la app saca nombre, dirección, web, teléfono Y e-mails vía OpenStreetMap gratis. 100% local, ilimitado — sin créditos, sin suscripción. Sale leads.csv."}
+},
+"lijstfabriek1": {
+  "en": {"titel": "G2B LIJST-FABRIEK", "badge": "NEW", "beschrijving": "Clean e-mail lists in seconds: checks syntax, mail server (MX), disposable addresses, role accounts and duplicates. 100% local on your pc — unlimited, no credits, your list never leaves your computer. CSV in → clean list + report out."},
+  "es": {"titel": "G2B LIJST-FABRIEK", "badge": "NUEVO", "beschrijving": "Listas de e-mail limpias en segundos: revisa sintaxis, servidor de correo (MX), direcciones desechables, cuentas de rol y duplicados. 100% local en tu pc — ilimitado, sin créditos, tu lista nunca sale de tu ordenador. CSV dentro → lista limpia + informe fuera."}
+},
+"g2bsong1": {
+  "en": {"titel": "G2B SONG — all-in-one song machine", "badge": "NEW", "beschrijving": "V2: THE SUCCESSOR OF DONDER GLIDER — a complete song machine as an instrument with a real 10-ROW DRUM GRID (KICK·SNARE·HAT·CLAP·PERC·+X1·+X2·808·CHORD·MEL): click every cell, draw your own pattern, a dice per row for new variants, row name = layer on/off, +X rows pick their own sound (tambourine/cowbell/rimshot/shaker/bell), SHIFT+dice = back to style. Plus real 808-GLIDE, 27 styles, DICE, AUTO mutation, ↓MID export to your piano roll, live MIDI keyboard (k1=808 legato-glide, k2=chords, k3=melody, k4=drums), 1-KEY modes. VST3 + CLAP + standalone EXE + manual PDF."},
+  "es": {"titel": "G2B SONG — máquina de temas todo-en-uno", "badge": "NUEVO", "beschrijving": "V2: EL SUCESOR DE DONDER GLIDER — máquina de temas completa como instrumento con un REJILLA DE DRUMS DE 10 FILAS real (KICK·SNARE·HAT·CLAP·PERC·+X1·+X2·808·CHORD·MEL): cada casilla clicable, dibuja tu propio patrón, un dado por fila para variantes, nombre de fila = capa on/off, las filas +X eligen su sonido (pandereta/cowbell/rimshot/shaker/campana), SHIFT+dado = volver al estilo. Además 808-GLIDE real, 27 estilos, DICE, mutación AUTO, exportar ↓MID a tu piano roll, teclado MIDI en vivo (k1=808 legato-glide, k2=acordes, k3=melodía, k4=drums), modos de 1 TECLA. VST3 + CLAP + EXE standalone + manual PDF."}
+},
+"g2bvibe1": {
+  "en": {"titel": "G2B VIBE — pump + tape in one", "badge": "NEW", "beschrijving": "TWO CHARACTERS IN ONE PLUGIN: POMP ducks your track on the beat automatically (sidechain without routing — POMP depth, 16 CURVE shapes from tight house to long swell, RATE 1/4–1/16 synced to your DAW tempo) plus a TAPE section for vintage tape character (WOW wobble, TAPE warmth, STOF crackle, ping-pong ECHO, DARK top filter, AGE: 0 = brand new to 100 = tape from 1978). 16 presets: G2B CASSETTE VINYL BOOMBAP DUB JAREN-70 LOFI WALKMAN NACHT RADIO SOUL TRAP DRILL BOOM NEON WARM. VST3 + CLAP + standalone EXE + manual PDF."},
+  "es": {"titel": "G2B VIBE — pumpeo + cinta en uno", "badge": "NUEVO", "beschrijving": "DOS CARACTERES EN UN PLUGIN: POMP baja tu tema al ritmo automáticamente (sidechain sin routing — profundidad POMP, 16 formas CURVE de house cerrado a swell largo, RATE 1/4–1/16 al tempo de tu DAW) más una sección TAPE de carácter vintage (WOW vaivén, calidez de CINTA, crujidos STOF, ECHO ping-pong, filtro DARK, AGE: 0 = nuevo hasta 100 = cinta de 1978). 16 presets: G2B CASSETTE VINYL BOOMBAP DUB JAREN-70 LOFI WALKMAN NACHT RADIO SOUL TRAP DRILL BOOM NEON WARM. VST3 + CLAP + EXE standalone + manual PDF."}
+},
+"g2bbestof": {
+  "en": {"titel": "G2B Best Of", "badge": "TOP PICK", "beschrijving": "THE BEST OF EVERYTHING IN ONE PLUGIN: 21 top instruments from the whole G2B collection — grand piano, DonderPiano, marimba, vibes, string ensemble, horn, timpani, hammond, steeldrum, kawina flute, nylon + Spanish + electric guitar, e-bass, slide-zouk bass & guitar, mbira, dan tranh, darbuka + 2 pad banks (SCHUIVEL & ZOUK). Plus 63 separate ONE-SHOT wav samples. All real studio recordings, 3 velocity layers, built-in limiter — never too loud. 100% CC0 sources, royalty-free commercial use. VST3 + CLAP + standalone EXE."},
+  "es": {"titel": "G2B Best Of", "badge": "TOP", "beschrijving": "LO MEJOR DE TODO EN UN PLUGIN: 21 instrumentos top de toda la colección G2B — piano de cola, DonderPiano, marimba, vibes, ensamble de cuerdas, trompa, timbales, hammond, steeldrum, flauta kawina, guitarra nylon + española + eléctrica, bajo eléctrico, bajo y guitarra slide-zouk, mbira, dan tranh, darbuka + 2 bancos de pads (SCHUIVEL & ZOUK). Además 63 samples wav ONE-SHOT sueltos. Todas grabaciones de estudio reales, 3 capas de velocidad, limiter integrado — nunca demasiado fuerte. Fuentes 100% CC0, uso comercial libre de royalties. VST3 + CLAP + EXE standalone."}
+},
+"g2b-oneshots": {
+  "en": {"titel": "G2B ONE-SHOTS VOL1", "badge": "NEW", "beschrijving": "All G2B one-shots in one pack: 200+ WAVs in three folders — DRUMS (kicks/snares/hats in 3 strengths), MELODIE (stab/pluck/bass/sub808/logdrum/donderpiano in 4 pitches) and GRUIS-FX (155 raw FX + SFZ kit). Clean rendered, royalty-free, 100% own."},
+  "es": {"titel": "G2B ONE-SHOTS VOL1", "badge": "NUEVO", "beschrijving": "Todos los one-shots G2B en un pack: 200+ WAV en tres carpetas — DRUMS (kicks/snares/hats en 3 fuerzas), MELODIE (stab/pluck/bass/sub808/logdrum/donderpiano en 4 tonos) y GRUIS-FX (155 FX crudos + kit SFZ). Render limpio, libre de royalties, 100% propio."}
+},
+"g2b-juridisch": {
+  "en": {"titel": "G2B Juridisch", "beschrijving": "Your own Dutch law book on your pc: type your problem in plain words → steps + real law articles + help agencies + evidence pack as PDF. Import and search court rulings. Works offline, 100% local. Incl. manual PDF and workflow video. (Dutch only)"},
+  "es": {"titel": "G2B Juridisch", "beschrijving": "Tu propio código legal neerlandés en el pc: escribe tu problema en palabras normales → pasos + artículos de ley reales + organismos de ayuda + paquete de pruebas en PDF. Importa y busca sentencias. Funciona offline, 100% local. Incl. manual PDF y vídeo. (Solo en neerlandés)"}
+},
+"g2b-psychologie": {
+  "en": {"titel": "G2B Psychologie", "beschrijving": "Understand what is going on and quickly find the right help: type your situation → explanation + steps + 29 real NL agencies with address, phone and QR to Maps. Emergency detection with 112/113 first, plain-word explanations and ready-made letters as PDF. Incl. manual PDF and workflow video. (Dutch only)"},
+  "es": {"titel": "G2B Psychologie", "beschrijving": "Entiende qué pasa y encuentra rápido la ayuda correcta: escribe tu situación → explicación + pasos + 29 organismos reales NL con dirección, teléfono y QR a Maps. Detección de urgencias con 112/113 primero, explicaciones en palabras simples y cartas listas en PDF. Incl. manual PDF y vídeo. (Solo en neerlandés)"}
+},
+"g2b-workstation": {
+  "en": {"titel": "G2B Workstation", "badge": "100% LOCAL — incl. AI", "beschrijving": "Your own AI music studio — 100% local on your own pc: make beats and loops (MAAK + DICE), AI-BEAT / AI-REMIX / AI-EXTEND via the built-in AI engine, split tracks into drums/bass/guitar/piano/vocal, master with polish + limiter, lyrics out (whisper), played notes out as .mid, voice tags, slice to pack and sale ZIPs. No subscription, no credits, no cloud — works on a normal pc; a GPU or RunPod pod is only a speed-up, never required. Incl. install PDF and workflow video."},
+  "es": {"titel": "G2B Workstation", "badge": "100% LOCAL — con IA", "beschrijving": "Tu propio estudio de música con IA — 100% local en tu pc: crea beats y loops (MAAK + DICE), AI-BEAT / AI-REMIX / AI-EXTEND por el motor IA integrado, separa pistas en drums/bajo/guitarra/piano/voz, masteriza con polish + limiter, saca letras (whisper), notas tocadas a .mid, voice tags, slice a pack y ZIPs de venta. Sin suscripción, sin créditos, sin nube — funciona en un pc normal; GPU o pod de RunPod solo acelera, nunca obligatorio. Incl. PDF de instalación y vídeo."}
+},
+"g2b-bedrijfsmiddelen": {
+  "en": {"titel": "G2B Bedrijfsmiddelen", "beschrijving": "Your complete business toolbox: beat contracts, freelance invoices with VAT and own numbering, terms & conditions, brand assets, colouring books, video books, royalty reports and shop packages. Everything as PDF/PNG/ZIP, set your details once. Incl. manual PDF and workflow video."},
+  "es": {"titel": "G2B Bedrijfsmiddelen", "beschrijving": "Tu caja de herramientas de negocio completa: contratos de beats, facturas freelance con IVA y numeración propia, condiciones generales, assets de marca, libros de colorear, videolibros, informes de royalties y paquetes de tienda. Todo en PDF/PNG/ZIP, configuras tus datos una vez. Incl. manual PDF y vídeo."}
+},
+"2878e291": {
+  "en": {"beschrijving": "House beat. Own G2B production"},
+  "es": {"beschrijving": "Beat de house. Producción propia G2B"}
+},
+"d9d479ab": {
+  "en": {"beschrijving": "Drill beat — 152 BPM in G#m. Own G2B production"},
+  "es": {"beschrijving": "Beat de drill — 152 BPM en Sol#m. Producción propia G2B"}
+},
+"7fe03e5c": {
+  "en": {"beschrijving": "Dembow beat — 133 BPM in C#m. Own G2B production"},
+  "es": {"beschrijving": "Beat de dembow — 133 BPM en Do#m. Producción propia G2B"}
+},
+"0ef9a078": {
+  "en": {"beschrijving": "R&B beat — 133 BPM in Fm. Own G2B production"},
+  "es": {"beschrijving": "Beat de R&B — 133 BPM en Fam. Producción propia G2B"}
+},
+"8171e455": {
+  "en": {"beschrijving": "G2B beat — 136 BPM in Cm. Own G2B production — WAV & Exclusive incl. stems (WAV)"},
+  "es": {"beschrijving": "Beat G2B — 136 BPM en Dom. Producción propia G2B — WAV y Exclusiva con stems (WAV)"}
+},
+"266054dc": {
+  "en": {"beschrijving": "Trap beat — 126 BPM in Gm. Own G2B production — WAV & Exclusive incl. stems (WAV)"},
+  "es": {"beschrijving": "Beat de trap — 126 BPM en Solm. Producción propia G2B — WAV y Exclusiva con stems (WAV)"}
+},
+"53c9dc1f": {
+  "en": {"beschrijving": "House beat — 136 BPM in Gm. Own G2B production — WAV & Exclusive incl. stems (WAV)"},
+  "es": {"beschrijving": "Beat de house — 136 BPM en Solm. Producción propia G2B — WAV y Exclusiva con stems (WAV)"}
+},
+"054630ff": {
+  "en": {"beschrijving": "Dancehall beat — 92 BPM in Fm. Own G2B production — WAV & Exclusive incl. stems (WAV)"},
+  "es": {"beschrijving": "Beat de dancehall — 92 BPM en Fam. Producción propia G2B — WAV y Exclusiva con stems (WAV)"}
+},
+"3083f3d3": {
+  "en": {"beschrijving": "Drill beat — 112 BPM in Am. Own G2B production — WAV & Exclusive incl. stems (WAV)"},
+  "es": {"beschrijving": "Beat de drill — 112 BPM en Lam. Producción propia G2B — WAV y Exclusiva con stems (WAV)"}
+},
+"600fb829": {
+  "en": {"beschrijving": "Dembow beat — 123 BPM in Fm. Own G2B production — WAV & Exclusive incl. stems (WAV)"},
+  "es": {"beschrijving": "Beat de dembow — 123 BPM en Fam. Producción propia G2B — WAV y Exclusiva con stems (WAV)"}
+},
+"f92b4951": {
+  "en": {"beschrijving": "Dembow beat — 123 BPM in Fm. Own G2B production"},
+  "es": {"beschrijving": "Beat de dembow — 123 BPM en Fam. Producción propia G2B"}
+},
+"0b5647bf": {
+  "en": {"beschrijving": "Finished track · 152 BPM, phrygian mood. mp3 + wav + chords + song card + license. 100% own G2B production."},
+  "es": {"beschrijving": "Tema terminado · 152 BPM, ambiente frigio. mp3 + wav + acordes + ficha + licencia. Producción G2B 100% propia."}
+},
+"ritmosbundel": {
+  "en": {"titel": "Ritmos Del Corazón + Beat Tape", "beschrijving": "His Spanish album (12 tracks, remastered to streaming level) + FREE G2B Beat Tape Vol. 1 (33 min continuous tape with 13 beats). Two downloads, one price."},
+  "es": {"titel": "Ritmos Del Corazón + Beat Tape", "beschrijving": "Su álbum en español (12 temas, remasterizados a nivel streaming) + GRATIS G2B Beat Tape Vol. 1 (33 min de tape continuo con 13 beats). Dos descargas, un precio."}
+},
+"g2bfx1": {
+  "en": {"titel": "G2B FX", "badge": "NEW", "beschrijving": "THE MIXER + ALL EFFECTS in one: 3-band EQ (lo/mid/hi), SUB, POETS (fat), KNIP, GLANS (air), RUIMTE, OUTPUT + GALAXY 27 settings + LUFS meter + listens by itself and sets itself. Everything to finish your track. VST3 + CLAP + standalone."},
+  "es": {"titel": "G2B FX", "badge": "NUEVO", "beschrijving": "LA MESCLADORA + TODOS LOS EFECTOS en uno: EQ de 3 bandas (lo/mid/hi), SUB, POETS (grasa), KNIP, GLANS (aire), RUIMTE, OUTPUT + GALAXY 27 posiciones + medidor LUFS + se escucha y se ajusta solo. Todo para terminar tu tema. VST3 + CLAP + standalone."}
+},
+"ocho01": {
+  "en": {"titel": "G2B Ocho — Surinamese one-shot machine", "badge": "NEW", "beschrijving": "SURINAMESE ONE-SHOT MACHINE — simple and really good: 16 built-in flavours (DONDER/kawina-sub, TRAP, DRILL, AFRO, DEMBOW, bangi, seki, surdo, timbal, klap), < > browse the set, dice for surprise, 808! button = perfect 808 bass in 1 click, SKIN with 8 looks (SRANANG standard), scope with Surinamese flag. Own .wav in Documents\\G2B-SMAAK-SETS = your own sets too. Setup.exe installs VST3 + CLAP + standalone with clean uninstall — manual PDF and demo video included. Windows, ready for Reason/FL/Ableton."},
+  "es": {"titel": "G2B Ocho — máquina one-shot surinamesa", "badge": "NUEVO", "beschrijving": "MÁQUINA ONE-SHOT SURINAMESA — simple y de verdad buena: 16 sabores integrados (DONDER/kawina-sub, TRAP, DRILL, AFRO, DEMBOW, bangi, seki, surdo, timbal, klap), < > para recorrer el set, dado para sorpresa, botón 808! = bajo 808 perfecto en 1 clic, SKIN con 8 apariencias (estándar SRANANG), scope con bandera surinamesa. Tu .wav en Documents\\G2B-SMAAK-SETS = tus propios sets. Setup.exe instala VST3 + CLAP + standalone con desinstalación limpia — manual PDF y demo incluidos. Windows, listo para Reason/FL/Ableton."}
+},
+"sl3ut3": {
+  "en": {"titel": "G2B Sleutel-Helper", "beschrijving": "Listens live to your MIDI and translates what you do: play notes → the piano roll instantly colours green on the notes that fit the key it detects. Play a wrong note → it shows which note fits (DID YOU MEAN THIS?). The top shows which chord you're playing (WHAT AM I PLAYING). With the PLAY button it sends its suggestion back as MIDI, so you can record it right away. FOCUS buttons (ALL · BASS-808 · CHORDS · MELODY) aim the hints at what you're working on, and it points out which G2B packs fit your key. Your own notes pass straight through to your instrument (MIDI-thru). VST3 + CLAP for FL Studio."},
+  "es": {"titel": "G2B Sleutel-Helper", "beschrijving": "Escucha tu MIDI en vivo y traduce lo que haces: toca notas → el piano roll marca en verde al instante las notas que encajan en la tonalidad que detecta. ¿Nota equivocada? → muestra cuál encaja (¿QUERÍAS ESTA?). Arriba ves qué acorde tocas (QUÉ ESTOY TOCANDO). Con el botón PLAY envía su sugerencia como MIDI para grabarla al momento. Botones FOCUS (TODO · BAJO-808 · ACORDES · MELODÍA) dirigen las pistas a tu trabajo, y señala qué packs G2B encajan en tu tonalidad. Tus notas pasan directo al instrumento (MIDI-thru). VST3 + CLAP para FL Studio."}
+},
+"g2b-brein": {
+  "en": {"titel": "G2B Brein", "badge": "NEW", "beschrijving": "Pattern brain as a plugin: 219 LEARNED kits → real MIDI notes to your instruments. Pick a genre (808/KAWINA/KEYS/MISC/TRAP), browse kits with ◀ ▶, GENERATE for new variations, DICE for surprise. Drums on channel 10, melody on channel 1 — route to your own drum/keys plugins or export directly as .mid. BARS 1-16, SEED, POWER (velocity), SWING, DRUMS/MEL/MIDI-OUT switches, playhead grid, 8 skins. Windows VST3 + CLAP."},
+  "es": {"titel": "G2B Brein", "badge": "NUEVO", "beschrijving": "Cerebro de patrones como plugin: 219 kits APRENDIDOS → notas MIDI reales a tus instrumentos. Elige un género (808/KAWINA/KEYS/MISC/TRAP), recorre kits con ◀ ▶, GENERAR para nuevas variaciones, DICE para sorpresa. Drums en canal 10, melodía en canal 1 — rutea a tus propios plugins de drums/keys o exporta directo como .mid. BARS 1-16, SEED, FUERZA (velocity), SWING, interruptores DRUMS/MEL/MIDI-OUT, rejilla con playhead, 8 skins. Windows VST3 + CLAP."}
+},
+"prod01": {
+  "en": {"titel": "G2B Producer", "badge": "NEW", "beschrijving": "THE TUNE MACHINE: 16 chord progressions × 16 sounds in 6 types — TYPE→SOUND picker like real VSTs (KEYS/STRINGS/PLUCK/GUITAR/BASS/BELLS: E-Piano, Rhodes, Marimba, Nylon, Steel, Sub Bass, Bell...). AUTO plays by itself, ZELF = only your keyboard. 🎲 GOOI = new combo. 12 keys, ladders, voicings, 27 DIMENSIONS, 8 skins, XY pad. VST3 + CLAP + standalone."},
+  "es": {"titel": "G2B Producer", "badge": "NUEVO", "beschrijving": "LA MÁQUINA DE MELODÍAS: 16 progresiones de acordes × 16 sonidos en 6 tipos — selector TIPO→SONIDO como VSTs reales (KEYS/STRINGS/PLUCK/GUITARRA/BAJO/BELLS: E-Piano, Rhodes, Marimba, Nylon, Steel, Sub Bass, Bell...). AUTO toca solo, ZELF = solo tu teclado. 🎲 GOOI = nueva combinación. 12 tonalidades, escalas, voicings, 27 DIMENSIONES, 8 skins, pad XY. VST3 + CLAP + standalone."}
+},
+"sp00ky": {
+  "en": {"titel": "G2B Spooky-SFX", "badge": "HALLOWEEN", "beschrijving": "14 horror/Halloween sound effects: creaking doors, ghosts, witches, heartbeat, church bell, creepy music box. 100% own engine, royalty-free. Perfect for horror beats, videos and games."},
+  "es": {"titel": "G2B Spooky-SFX", "badge": "HALLOWEEN", "beschrijving": "14 efectos de horror/Halloween: puertas chirriantes, fantasmas, brujas, latido, campana de iglesia, caja de música tétrica. Motor 100% propio, libre de royalties. Perfecto para beats de horror, vídeos y juegos."}
+},
+"school1": {
+  "en": {"titel": "G2B Schoolspelen — FREE (soon €29)", "badge": "FREE", "beschrijving": "Complete NL learning app for kids 4-12: adaptive ladder grade 1 to genius, Dutch voice reads everything aloud, Heroes Quiz with real diploma, reward clips. Works in every browser — FREE during launch, then €29. Download/play NOW! (Dutch only)"},
+  "es": {"titel": "G2B Schoolspelen — GRATIS (pronto €29)", "badge": "GRATIS", "beschrijving": "App de aprendizaje NL completa para niños 4-12: escalera adaptativa de grupo 1 a genio, voz neerlandesa lo lee todo en voz alta, Quiz de Héroes con diploma real, clips de recompensa. Funciona en cualquier navegador — GRATIS durante el lanzamiento, luego €29. ¡Descarga/juega YA! (Solo en neerlandés)"}
+},
+"g2bbd1": {
+  "en": {"titel": "G2B Bassdrum", "badge": "NEW", "beschrijving": "Your own kick machine: 661 REAL G2B kicks, spread over 15 genre banks × 16 pads (BOOMBAP, TRAP, DRILL, RNB, AFROBEAT, PHONK, LOFI, FUNK, EPIC, DROOM, POP, ROCKABILLY, SOUTHERN, CORPORATE, REGGAETON). Play them live on pads or MIDI notes 36-51. TUNE/DECAY/LO/HI per hit, DIMENTIES space, 8 skins. These kicks are unique to G2B — nobody else has them. VST3 + CLAP + standalone."},
+  "es": {"titel": "G2B Bassdrum", "badge": "NUEVO", "beschrijving": "Tu propia máquina de kicks: 661 kicks REALES G2B, repartidos en 15 bancos de género × 16 pads (BOOMBAP, TRAP, DRILL, RNB, AFROBEAT, PHONK, LOFI, FUNK, EPIC, DROOM, POP, ROCKABILLY, SOUTHERN, CORPORATE, REGGAETON). Tócalos en vivo en pads o notas MIDI 36-51. TUNE/DECAY/LO/HI por golpe, espacio DIMENTIES, 8 skins. Estos kicks son únicos de G2B — nadie más los tiene. VST3 + CLAP + standalone."}
+},
+"steun-3": {
+  "en": {"titel": "SUPPORT G2B — € 3,-", "beschrijving": "Buy the maker a coffee — support G2B with a contribution. No product download; we thank you with an e-mail."},
+  "es": {"titel": "APOYA A G2B — € 3,-", "beschrijving": "Invita al creador a un café — apoya a G2B con un aporte. Sin descarga de producto; te lo agradecemos por e-mail."}
+},
+"steun-5": {
+  "en": {"titel": "SUPPORT G2B — € 5,-", "beschrijving": "Buy the maker a coffee — support G2B with a contribution. No product download; we thank you with an e-mail."},
+  "es": {"titel": "APOYA A G2B — € 5,-", "beschrijving": "Invita al creador a un café — apoya a G2B con un aporte. Sin descarga de producto; te lo agradecemos por e-mail."}
+},
+"steun-10": {
+  "en": {"titel": "SUPPORT G2B — € 10,-", "beschrijving": "Buy the maker a coffee — support G2B with a contribution. No product download; we thank you with an e-mail."},
+  "es": {"titel": "APOYA A G2B — € 10,-", "beschrijving": "Invita al creador a un café — apoya a G2B con un aporte. Sin descarga de producto; te lo agradecemos por e-mail."}
+}
+}

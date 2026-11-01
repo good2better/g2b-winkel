@@ -51,6 +51,12 @@ h1{font-size:22px;margin-bottom:6px;text-align:center}
 .terug{display:inline-block;margin-top:16px;color:var(--dim);
   font-size:13px;text-decoration:none}
 .terug:hover{color:var(--accent)}
+.langset{position:absolute;top:16px;right:16px;display:flex;gap:6px;z-index:5}
+.langb{background:var(--panel2);border:1px solid var(--line);color:var(--dim);
+  border-radius:14px;padding:4px 11px;font-size:11px;font-weight:800;
+  letter-spacing:.5px;cursor:pointer;font-family:inherit}
+.langb:hover{border-color:var(--accent);color:var(--accent)}
+.langb.aan{border-color:var(--accent);color:#04120a;background:var(--accent)}
 .fout .vinkje{background:#bf5b2f;color:#fff}
 .vinkje{width:64px;height:64px;border-radius:50%;background:var(--accent);
   color:#04120a;font-size:32px;font-weight:800;display:flex;
@@ -65,25 +71,36 @@ footer b{color:var(--accent)}
 <main>
   <div class="card" id="kaart">
     <div class="vinkje">…</div>
-    <h1>Even laden</h1>
-    <div class="sub">Je bestelling wordt klaargezet…</div>
+    <h1 data-i18n="laden_order">Even laden</h1>
+    <div class="sub" data-i18n="laden_order_sub">Je bestelling wordt klaargezet…</div>
   </div>
 </main>
-<footer>Gebouwd door <b>Good2Better</b> — eigen winkel, geen commissie.</footer>
+<div class="langset">
+  <button class="langb" data-lang="nl">NL</button>
+  <button class="langb" data-lang="en">EN</button>
+  <button class="langb" data-lang="es">ES</button>
+</div>
+<footer><span data-i18n="foot" data-i18n-html>Gebouwd door <b>Good2Better</b> — eigen winkel, geen commissie.</span></footer>
+<script src="lang.js" defer></script>
 <script type="module">
+// taal-wissel: herlaad in de gekozen taal (localStorage onthoudt de keuze)
+window.g2bRerender = () => location.reload();
+const T = (typeof g2bT === "function") ? g2bT : k => k;
+document.title = T("bestel_doc_titel");
 const kaart = document.getElementById("kaart");
 const esc = s => String(s || "").replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const EMAIL = "g.sandvliet88@gmail.com";
-const LIC_NAMEN = { mp3:"MP3-lease", wav:"WAV-lease", exclusief:"EXCLUSIEVE LICENTIE" };
+const LIC_NAMEN = { mp3:T("lic_mp3"), wav:T("lic_wav"), exclusief:T("lic_exclusief_tier") };
+const i18n = await g2bProdI18n();
 
 function fout(msg) {
   kaart.classList.add("fout");
   kaart.innerHTML = `
     <div class="vinkje">!</div>
-    <h1>Product niet gevonden</h1>
-    <div class="sub">${esc(msg || "Deze bestel-link is niet geldig.")}</div>
-    <a class="terug" href="index.html">← terug naar de winkel</a>`;
+    <h1>${T("fout_t")}</h1>
+    <div class="sub">${esc(msg || T("fout_x"))}</div>
+    <a class="terug" href="index.html">${T("terug")}</a>`;
 }
 
 const params = new URLSearchParams(location.search);
@@ -99,7 +116,7 @@ try {
     document.documentElement.style.setProperty("--accent", cat.accent);
   if (cat.accent2)
     document.documentElement.style.setProperty("--accent2", cat.accent2);
-} catch { fout("De winkel kon niet geladen worden."); throw 0; }
+} catch { fout(T("fout_winkel")); throw 0; }
 
 const p = (cat.producten || []).find(x => x.id === pid);
 if (!p) { fout(); throw 0; }
@@ -107,51 +124,51 @@ if (!p) { fout(); throw 0; }
 const tierNaam = tier && LIC_NAMEN[tier] ? LIC_NAMEN[tier] : "";
 const prijs = tier && p.prijzen && p.prijzen[tier] ? p.prijzen[tier]
   : (typeof p.prijs === "number" ? "€ " + p.prijs.toFixed(2).replace(".", ",") : p.prijs);
-const titelLang = p.titel + (tierNaam ? " — " + tierNaam : "");
+const pTitel = (typeof g2bProdField === "function")
+  ? g2bProdField(i18n, p.id, "titel", p.titel) : p.titel;
+const titelLang = pTitel + (tierNaam ? " — " + tierNaam : "");
 const isSteun = p.soort === "steun";
-const stap3 = isSteun
-  ? "Na betaling sturen wij je een <b>persoonlijk bedankje</b> — jij helpt nieuwe plugins en packs maken."
-  : "Na betaling ontvang je <b>binnen 24 uur je download-link</b> — meestal veel sneller.";
+const stap3 = isSteun ? T("stap3_steun") : T("stap3_prod");
 
 const orderTekst =
-`${isSteun ? "Steun" : "Bestelling"} bij G2B Winkel
+`${isSteun ? T("ord_steun") : T("ord_bestelling")} ${T("ord_bij")}
 
-Product: ${titelLang}
-Prijs: ${prijs}
+${T("ord_product")} ${titelLang}
+${T("ord_prijs")} ${prijs}
 
-Mijn naam:
-Mijn e-mailadres:
+${T("ord_naam")}
+${T("ord_email")}
 
-(G2B stuurt daarna een Tikkie-betaallink. ${isSteun ? "Na betaling volgt een persoonlijk bedankje." : "Na betaling komt de download-link binnen 24 uur."})`;
+${T("ord_tikkie")} ${isSteun ? T("ord_tikkie_steun") : T("ord_tikkie_prod")}`;
 
-const mailto = `mailto:${EMAIL}?subject=${encodeURIComponent((isSteun ? "Steun voor G2B: " : "Bestelling: ") + titelLang)}&body=${encodeURIComponent(orderTekst)}`;
+const mailto = `mailto:${EMAIL}?subject=${encodeURIComponent((isSteun ? T("ord_subj_steun") : T("ord_subj_bestel")) + titelLang)}&body=${encodeURIComponent(orderTekst)}`;
 
 kaart.innerHTML = `
-  <h1>${isSteun ? "Steun afronden" : "Bestelling afronden"}</h1>
-  <div class="sub">Zo werkt het — simpel en veilig via Tikkie</div>
+  <h1>${isSteun ? T("steun_afronden") : T("bestel_afronden")}</h1>
+  <div class="sub">${T("sub_how")}</div>
   <div class="prod">
     ${p.cover ? `<img src="${esc(p.cover)}" alt="">` : ""}
     <div>
-      <div class="t">${esc(p.titel)}</div>
+      <div class="t">${esc(pTitel)}</div>
       ${tierNaam ? `<div class="l">${esc(tierNaam)}</div>` : ""}
     </div>
     <div class="pr">${esc(prijs)}</div>
   </div>
   <div class="stappen">
-    <div class="stap"><div class="n">1</div><div>Klik op <b>STUUR BESTELLING</b> — je mailtje naar de winkel wordt automatisch klaargezet. Verstuur hem.</div></div>
-    <div class="stap"><div class="n">2</div><div>Je krijgt snel antwoord met een <b>Tikkie-betaallink</b> (betaling via je eigen bank-app, veilig).</div></div>
+    <div class="stap"><div class="n">1</div><div>${T("stap1")}</div></div>
+    <div class="stap"><div class="n">2</div><div>${T("stap2")}</div></div>
     <div class="stap"><div class="n">3</div><div>${stap3}</div></div>
   </div>
-  <a class="knop" href="${mailto}">✉ STUUR BESTELLING</a>
-  <button class="knop ander" id="kopie">📋 OF KOPIEER DE BESTELTEKST</button>
-  <div class="klein">Liever direct mailen? Stuur je bestelling naar
-    <a href="mailto:${EMAIL}">${EMAIL}</a> met de productnaam erbij.</div>
-  <a class="terug" href="index.html">← terug naar de winkel</a>`;
+  <a class="knop" href="${mailto}">${T("knop_stuur")}</a>
+  <button class="knop ander" id="kopie">${T("knop_kopieer")}</button>
+  <div class="klein">${T("klein_mail_pre")}
+    <a href="mailto:${EMAIL}">${EMAIL}</a> ${T("klein_mail_post")}</div>
+  <a class="terug" href="index.html">${T("terug")}</a>`;
 
 document.getElementById("kopie").addEventListener("click", async e => {
   try {
-    await navigator.clipboard.writeText(orderTekst + "\n\nMail naar: " + EMAIL);
-    e.target.textContent = "✓ GEKOPIEERD — plak in je mail/WhatsApp";
+    await navigator.clipboard.writeText(orderTekst + "\n\nMail: " + EMAIL);
+    e.target.textContent = T("kopie_ok");
   } catch {
     e.target.textContent = orderTekst;
   }

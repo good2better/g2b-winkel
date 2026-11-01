@@ -5,9 +5,14 @@ import WaveSurfer from "./vendor/wavesurfer.esm.js";
 const lijst = document.getElementById("lijst");
 document.getElementById("jaar").textContent = " · " + new Date().getFullYear();
 
-const LICENTIE_NAMEN = {
-  mp3: "MP3-lease", wav: "WAV-licentie", exclusief: "Exclusief",
-};
+const T = (typeof g2bT === "function") ? g2bT : k => k;
+const LICENTIE_NAMEN = () => ({
+  mp3: T("lic_mp3"), wav: T("lic_wav"), exclusief: T("lic_exclusief"),
+});
+let prodI18n = {};
+try { prodI18n = await g2bProdI18n(); } catch { prodI18n = {}; }
+const pf = (id, veld, fb) =>
+  (typeof g2bProdField === "function" ? g2bProdField(prodI18n, id, veld, fb) : fb);
 
 let huidige = null;                 // de speler die nu speelt
 const spelers = new Map();          // id -> WaveSurfer
@@ -49,8 +54,7 @@ async function laden() {
     data = await fetch("products.json", { cache: "no-store" })
       .then(r => r.json());
   } catch {
-    lijst.innerHTML = `<div class="leeg">De winkel is nog niet
-      gevuld — kom later terug.</div>`;
+    lijst.innerHTML = `<div class="leeg">${T("leeg")}</div>`;
     return;
   }
   if (data.titel)
@@ -88,32 +92,41 @@ async function laden() {
     : p.groep === "gratis" ? (p.soort === "digitaal" ? "apps" : "sounds")
     : "sounds";
   const CAT_NAAM = {
-    apps: "🛠️ Apps",
-    instrumenten: "🎹 Instrumenten", studiotools: "🎚️ Studio-tools",
-    bundels: "📦 Bundels", sounds: "🔊 Sound packs",
-    muziek: "🎤 Muziek", beats: "🎵 Beats",
+    apps: T("cat_apps"),
+    instrumenten: T("cat_instrumenten"), studiotools: T("cat_studiotools"),
+    bundels: T("cat_bundels"), sounds: T("cat_sounds"),
+    muziek: T("cat_muziek"), beats: T("cat_beats"),
   };
   const CAT_UITLEG = {
-    instrumenten: "Plugins die muziek MAKEN — echte instrumenten, één knop = één geluid",
-    studiotools: "Mix & master tools — maak je track af: luider, strakker, breder",
-    bundels: "Meerdere plugins samen — voordeliger dan los",
-    sounds: "Losse klanken, loops & drums om in te laden",
-    beats: "Beats van Giorgio zelf — kies je licentie",
-    muziek: "Uitgebrachte muziek & tapes",
-    apps: "Complete programma's voor je pc",
+    instrumenten: T("u_instrumenten"),
+    studiotools: T("u_studiotools"),
+    bundels: T("u_bundels"),
+    sounds: T("u_sounds"),
+    beats: T("u_beats"),
+    muziek: T("u_muziek"),
+    apps: T("u_apps"),
   };
   const CAT_VOLGORDE = ["instrumenten", "studiotools", "bundels", "sounds",
     "beats", "muziek", "apps"];
 
-  const prods = [...(data.producten || [])].filter(p => !p.verborgen)
+  // taal-overlay: vertaalde titel/beschrijving/badge bovenop de NL-tekst
+  const rawProds = [...(data.producten || [])];
+  const site = prodI18n._site && prodI18n._site[g2bLang()];
+  if (site && site.ondertitel)
+    document.getElementById("ondertitel").textContent = site.ondertitel;
+  rawProds.forEach(p => {
+    p._titel = pf(p.id, "titel", p.titel);
+    p._beschr = pf(p.id, "beschrijving", p.beschrijving);
+    p._badge = pf(p.id, "badge", p.badge);
+  });
+  const prods = rawProds.filter(p => !p.verborgen)
     .sort((a, b) =>
     (CAT_VOLGORDE.indexOf(CAT(a)) - CAT_VOLGORDE.indexOf(CAT(b))) ||
     ((a.eerst ? 0 : 1) - (b.eerst ? 0 : 1)) ||
     (a.titel || "").localeCompare(b.titel || ""));
   window._prods = prods;
   if (!prods.length) {
-    lijst.innerHTML = `<div class="leeg">Binnenkort open —
-      de winkel wordt gevuld.</div>`;
+    lijst.innerHTML = `<div class="leeg">${T("binnenkort_leeg")}</div>`;
     return;
   }
 
@@ -130,7 +143,7 @@ async function laden() {
       ).join("") +
       (audio.length > 1
         ? `<button class="groepbtn alles" data-groep="">
-             ▶ SPEEL ALLES</button>` : "");
+             ${T("speel_alles")}</button>` : "");
   }
 
   // categorie-filterknoppen (alleen categorieën die voorkomen)
@@ -139,7 +152,7 @@ async function laden() {
   const catsEl = document.getElementById("cats");
   if (aanwezig.length > 1) {
     catsEl.innerHTML =
-      `<button class="groepbtn alles" data-cat="">✨ Alles (${prods.length})</button>` +
+      `<button class="groepbtn alles" data-cat="">${T("alles")} (${prods.length})</button>` +
       aanwezig.map(c =>
         `<button class="groepbtn" data-cat="${c}">${CAT_NAAM[c]} ` +
         `(${prods.filter(p => CAT(p) === c).length})</button>`).join("");
@@ -164,17 +177,17 @@ async function laden() {
           ? `<img class="cover" src="${esc(p.cover)}" alt="">`
           : ""}
         <div class="info">
-          <div class="titel">${esc(p.titel)}
-            ${p.badge ? ` <span style="display:inline-block;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#111;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px;vertical-align:middle">${esc(p.badge)}</span>` : ""}</div>
+          <div class="titel">${esc(p._titel)}
+            ${p._badge ? ` <span style="display:inline-block;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#111;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px;vertical-align:middle">${esc(p._badge)}</span>` : ""}</div>
           ${p.prijs ? `<div class="prijs">${esc(p.prijs)}</div>` : ""}
-          ${p.beschrijving
-            ? `<div class="beschr">${esc(p.beschrijving)}</div>` : ""}
+          ${p._beschr
+            ? `<div class="beschr">${esc(p._beschr)}</div>` : ""}
         </div>
       </div>
       ${(p.soort === "audio" || p.preview) ? `
       <div class="player">
         <button class="playbtn" data-play="${esc(p.id)}"
-          aria-label="Speel preview van ${esc(p.titel)}">▶</button>
+          aria-label="Speel preview van ${esc(p._titel)}">▶</button>
         <div class="wave" data-wave="${esc(p.id)}"></div>
         <span class="duur">${fmtDuur(p.duur)}</span>
       </div>` : ""}
@@ -192,12 +205,12 @@ async function laden() {
         ${licenties.map((k, i) =>
           `<button class="licentie${i === 0 ? " on" : ""}"
              data-lic="${k}" data-id="${esc(p.id)}">
-             ${LICENTIE_NAMEN[k]}${p.prijzen?.[k]
+             ${LICENTIE_NAMEN()[k]}${p.prijzen?.[k]
                ? ` · ${esc(p.prijzen[k])}` : ""}</button>`).join("")}
         ${koopHref
           ? `<a class="koop" data-buy="${esc(p.id)}" target="_blank"
-               rel="noopener" href="${esc(koopHref)}">${p.prijs === "GRATIS" ? "DOWNLOAD" : "KOOP NU"}</a>`
-          : `<span class="koop uit">binnenkort</span>`}
+               rel="noopener" href="${esc(koopHref)}">${p.prijs === "GRATIS" ? T("download") : T("koop")}</a>`
+          : `<span class="koop uit">${T("binnenkort")}</span>`}
       </div>
     </div>`;
   }).join("");
@@ -240,7 +253,8 @@ function pasFilterToe() {
     .trim().toLowerCase();
   document.querySelectorAll("#lijst .card").forEach(el => {
     const p = productenById(el.dataset.id);
-    const tekst = ((p?.titel || "") + " " + (p?.beschrijving || "") +
+    const tekst = ((p?.titel || "") + " " + (p?._titel || "") + " " +
+      (p?.beschrijving || "") + " " + (p?._beschr || "") +
       " " + (p?.groep || "") + " " + (p?.bpm || "") + " " +
       ((p?.moods || []).join(" "))).toLowerCase();
     const catOk = !actieveCat || el.dataset.cat === actieveCat;
@@ -347,5 +361,15 @@ function knop(id, teken) {
   const b = document.querySelector(`[data-play="${id}"]`);
   if (b) b.textContent = teken;
 }
+
+// taal-wisselaar: herbouw de hele lijst in de nieuwe taal
+window.g2bRerender = () => {
+  spelers.forEach(ws => { try { ws.destroy(); } catch {} });
+  spelers.clear();
+  huidige = null; afspeellijst = null;
+  vorigeCat = "";
+  laden();
+};
+let vorigeCat = "";
 
 laden();
