@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>G2B Tech-Radar — bruikbare AI-nieuws-tools</title>
-<meta name="description" content="G2B Tech-Radar: filtert AI-nieuws automatisch op tools die bruikbaar zijn voor de G2B-studio — audio, video en boeken. Gratis + commercieel + lokaal.">
+<meta name="description" content="G2B Tech-Radar: filtert AI-nieuws automatisch op tools die bruikbaar zijn voor de G2B-studio — audio, video, boeken en games. Gratis + commercieel + lokaal.">
 <style>
 :root{--bg:#0d0f0e;--panel:#171a19;--line:#2a2f2d;--txt:#e8ecea;--dim:#8fa098;--accent:#2fbf71;--warn:#f0a030;--bad:#e05050}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -92,7 +92,7 @@ function score(t){
 const TAGNL={audio:'🎵 audio/muziek',video:'🎬 video',boeken:'📖 boeken/audioboeken',games:'🎮 games',licentie:'📜 open-licentie',licht:'💻 licht/CPU'};
 
 async function fetchHN(){
-  const qs=['AI audio','AI music','AI video','open source audio','whisper speech','text to video'];
+  const qs=['AI audio','AI music','AI video','open source audio','whisper speech','text to video','AI game','game engine','godot','AI game generator'];
   const out=[];
   for(const q of qs){
     try{
@@ -115,7 +115,7 @@ async function fetchHF(){
 async function fetchGH(){
   const d=new Date(Date.now()-30*864e5).toISOString().slice(0,10);
   const out=[];
-  for(const q of ['audio+ai','video+generation','speech+recognition','music+generation']){
+  for(const q of ['audio+ai','video+generation','speech+recognition','music+generation','game+ai','godot','game+engine']){
     try{
       const r=await fetch(`https://api.github.com/search/repositories?q=${q}+created:>${d}&sort=stars&per_page=8`,
         {headers:{Accept:'application/vnd.github+json'}}).then(x=>x.json());
