@@ -91,6 +91,13 @@ button.hoofd:hover{filter:brightness(1.1)}
     <small data-i18n="bm_dz2">wav / mp3 / ogg / .mid — bass → bas · piano/keys → melodie · vocal → audio-laag · .mid → pianorol · volle loop → referentie · je drums blijven altijd onaangeroerd</small>
     <input type="file" id="loopfile" accept="audio/*,.wav,.mp3,.ogg,.m4a,.flac,.mid,.midi,audio/midi" multiple style="display:none">
   </div>
+  <div class="dropzone" id="owndz" style="margin-top:8px">
+    <b data-i18n="bm_odz1">🥁 EIGEN DRUMS — drop hier je eigen one-shots (meerdere tegelijk)</b>
+    <small data-i18n="bm_odz2">kick / snare / hat / perc in de bestandsnaam — anders luistert hij zelf welke rij · je eigen sounds winnen altijd van de G2B-sounds</small>
+    <input type="file" id="ownfile" accept="audio/*,.wav,.mp3,.ogg,.m4a,.flac" multiple style="display:none">
+  </div>
+  <div class="dropmsg" id="ownmsg" style="display:none"><a href="#" id="ownclear" style="color:var(--groen)" data-i18n="bm_ownclr">✕ eigen kit wissen (terug naar G2B-sounds)</a></div>
+  <div class="droplist" id="ownlist"></div>
   <div class="dropmsg" id="dropmsg"></div>
   <div class="droplist" id="droplist"></div>
   <div class="melzone" id="melzone">
@@ -238,7 +245,7 @@ async function laadEigen(picks){
 }
 function speel(r,t,v){
  const a=ac,g0=v==null?0.9:(0.4+0.65*v); // velocity uit de loop: zacht/hard meespelen
- const buf=SMPL[cur]&&SMPL[cur][r];
+ const buf=OWN[r]||(SMPL[cur]&&SMPL[cur][r]); // eigen one-shots winnen van genre-sounds
  const dst=(r=='perc'||r=='perc2'||r=='shkr')?duckOf(a):masterOf(a);
  if(buf){const s=a.createBufferSource();s.buffer=buf;const g=a.createGain();
   // stereo-rol: shaker ver rechts, perc licht links, PERC 2 rechts, dichte hat links, open-hat ver rechts
@@ -475,6 +482,48 @@ document.getElementById('exp').onclick=async function(){
  }catch(e){console.error(e)}
  this.disabled=false;this.textContent='⬇ EXPORT';
 };
+// ---- EIGEN ONE-SHOTS: drop eigen kick/snare/hat/perc → spelen in elke rij (winnen van genre-sounds)
+const OWN={}; // rij → AudioBuffer
+function eigenRij(name,buf){
+ const tok=name.toLowerCase();
+ if(/kick|kik|bd\b|bassdr|808/.test(tok))return'kick';
+ if(/snare|snr|sd\b|clap|klap|rim/.test(tok))return'snare';
+ if(/hat|hh|chh|ohh|cym|ride|crash/.test(tok))return'hat';
+ if(/perc|tom|conga|bongo|shaker|tamb|timbal|agogo|cowbell|clave|guiro|wood/.test(tok))return'perc';
+ // geen hint in de naam → luister naar band-energie
+ const d=buf.getChannelData(0),FL=2048,re=new Float64Array(FL),im=new Float64Array(FL);
+ const N=Math.min(d.length,FL);
+ for(let i=0;i<N;i++)re[i]=d[i]*(0.5-0.5*Math.cos(2*Math.PI*i/FL));
+ fft(re,im);const b=buf.sampleRate/FL;let lo=0,mid=0,hi=0;
+ for(let i=1;i<FL/2;i++){const m=Math.hypot(re[i],im[i]),f=i*b;if(f<300)lo+=m;else if(f<3000)mid+=m;else hi+=m}
+ const tot=lo+mid+hi||1;
+ if(hi/tot>0.45)return'hat';
+ if(lo/tot>0.5)return'kick';
+ return mid>lo*1.5?'snare':'perc';
+}
+function normBuf(buf){ // level-match zoals pro-plugins: elke one-shot op ~-1dBFS
+ const d=buf.getChannelData(0);let mx=0;for(let i=0;i<d.length;i++)mx=Math.max(mx,Math.abs(d[i]));
+ if(mx>0){const g=0.9/mx;for(let i=0;i<d.length;i++)d[i]*=g}
+}
+const odz=document.getElementById('owndz'),of_=document.getElementById('ownfile'),omsg=document.getElementById('ownmsg'),olist=document.getElementById('ownlist');
+odz.onclick=()=>of_.click();
+odz.ondragover=e=>{e.preventDefault();odz.classList.add('over')};
+odz.ondragleave=()=>odz.classList.remove('over');
+odz.ondrop=e=>{e.preventDefault();odz.classList.remove('over');if(e.dataTransfer.files.length)ownShots(e.dataTransfer.files)};
+of_.onchange=()=>{if(of_.files.length)ownShots(of_.files);of_.value=''};
+document.getElementById('ownclear').onclick=e=>{e.preventDefault();for(const k in OWN)delete OWN[k];omsg.style.display='none';olist.innerHTML=''};
+async function ownShots(files){
+ if(!ac)ac=new (window.AudioContext||window.webkitAudioContext)();if(ac.resume)ac.resume();
+ let regels=[];
+ for(const f of[...files]){try{
+  const buf=await ac.decodeAudioData(await f.arrayBuffer());
+  if(buf.duration>2.5){regels.push(`<div class="dregel err">⚠️ ${f.name} → te lang voor one-shot (max 2,5s)</div>`);continue}
+  const r=eigenRij(f.name,buf);normBuf(buf);OWN[r]=buf;
+  regels.push(`<div class="dregel ok">✅ ${f.name} → ${NAMEN[r]}</div>`)
+ }catch(e){regels.push(`<div class="dregel err">⚠️ ${f.name} → kon niet lezen</div>`)}}
+ olist.innerHTML=regels.join('');
+ if(Object.keys(OWN).length)omsg.style.display='block';
+}
 // ---- STEM-PACK IMPORT: drop 1 of meer bestanden → per bestand herkennen + naar eigen laag
 // Routing op bestandsnaam: 'bass'→BAS-laag · 'piano/keys'→MELODIE-laag · 'vocal/vox'→VOCAL-audio ·
 // '.mid'→noten in de pianorol-laag · overige audio → analyseren: losse stem → noten-laag, anders VOLLE LOOP
@@ -645,6 +694,7 @@ function analyseerBuf(buf){
   for(const o of[...hits.kick,...hits.snare]){const f0=Math.round(o.t/(HOP/sr));for(let f=f0;f<=f0+fw;f++)blk.add(f)}
   for(let f=0;f<NF;f++)if(!blk.has(f))for(let p=0;p<12;p++)chroma[p]+=chrF[f*12+p]}
  out.totOn=hits.kick.length+hits.perc.length+hits.perc2.length+hits.snare.length+hits.hat.length+hits.hat2.length;
+ out.hits=hits; // drum-onsets per rij — drumloop → grid-rebuild gebruikt deze
  // toonsoort: chroma → beste majeur/mineur-template (Krumhansl)
  const KMAJ=[6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88],KMIN=[6.33,2.68,3.52,5.38,2.60,3.53,2.54,4.75,3.98,2.69,3.34,3.17];
  const cTot=chroma.reduce((a,b)=>a+b,0);let bestC=0,bestK=-1,bestM='';
@@ -671,6 +721,27 @@ function analyseerBuf(buf){
  const nts=(poly.noten.length?poly.noten:noten).map(n=>n.t0);
  const g=bpmUit(buf.duration,ts.length>=6?ts:nts);out.bpm=g.bpm;out.bars=g.bars;
  return out;
+}
+// ---- DRUM-REBUILD: drop een drumloop → slagen eruit → eigen/G2B drums op het grid
+function drumRebuild(buf,an){
+ const hits=an.hits,dur=buf.duration;
+ const bars=Math.max(1,Math.min(8,an.bars||2)),barDur=dur/bars;
+ nBars=bars;
+ const hatPerBar=(hits.hat.length+hits.hat2.length)/bars;
+ nSub=hatPerBar>12?32:16; // dichte hat-rolls (trap/drill 32e noten) → 32 stappen
+ const nSteps=nBars*nSub,stepDur=dur/nSteps;
+ for(const r of RIJEN)state[r].clear();VEL={};
+ for(const r of['kick','perc','perc2','snare','hat','hat2'])for(const o of hits[r]){
+  const s=Math.round(o.t/stepDur);if(s>=0&&s<nSteps){state[r]=state[r]||new Set();state[r].add(s);VEL[r+':'+s]=o.v}}
+ for(const s of state.snare){state.perc.delete(s);if(state.perc2)state.perc2.delete(s)} // snare wint van tom op zelfde stap
+ for(const ex of['hat2','perc2'])if(state[ex]&&state[ex].size){if(!RIJEN.includes(ex))RIJEN.push(ex)}else{RIJEN=RIJEN.filter(r=>r!=ex);delete state[ex]}
+ // swing: hoe ver lopen onsets op oneven stappen gemiddeld achter het raster?
+ const res=[];
+ for(const r of['kick','perc','perc2','snare','hat','hat2'])for(const o of hits[r]){
+  const s=(o.t%barDur)/barDur*nSub;if(Math.round(s)%2==1)res.push(s-Math.round(s))}
+ swing=res.length?Math.max(0,Math.min(0.4,median(res))):0;
+ gridFromLoop=true;renderGrid();
+ if(!gezetBpm&&an.bpm){zetBpm(an.bpm);gezetBpm=true}
 }
 // ---- de batch: pack-meta uit namen, dan per bestand routeren
 let gezetBpm=false;
@@ -730,6 +801,9 @@ async function verwerk(f,meta){
    const K=med<52?'bas':'mel',noten=K=='bas'&&an.basNoten.length>=3?an.basNoten:an.poly;
    if(noten.length>=3){zetLaag(K,noten);await laadMelBuf(NLAY[K].inst);laagUI();
     ok(`${f.name} → ${K=='bas'?'BAS':'MELODIE'}-STEM → ${NLAY[K].nm}-laag (${noten.length} noten)`);return}}
+  // drumloop met duidelijke slagen → rebuild op het grid (zijn/G2B drums op de goede plek)
+  if(an.totOn>=8){drumRebuild(buf,an);
+   ok(f.name+` → DRUMLOOP → grid-rebuild (${an.totOn} slagen op ${an.bars||'?'} bars${Object.keys(OWN).length?' · eigen kit':''})`);return}
   addALaag('loop','🔁 VOLLE LOOP',buf);laagUI();
   ok(f.name+' → VOLLE LOOP → 🔁 referentie-laag (speelt origineel mee)');
  }catch(e){console.warn(e);err(f.name+' → kon dit bestand niet lezen')}
