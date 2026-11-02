@@ -5,7 +5,7 @@ h1{font-size:1.1rem;margin:10px}canvas{background:#0e2a1a;border-radius:12px;tou
 #over h2{font-size:2rem}button{background:#4ade80;border:0;color:#042;padding:12px 28px;border-radius:10px;font-size:1.1rem;font-weight:700;cursor:pointer;margin-top:12px}
 .tip{opacity:.7;font-size:.8rem;margin:6px}
 button,#fok,#fos{transition:transform .08s}button:active,#fok:active,#fos:active{transform:scale(1.08,.86)}</style></head><body>
-<h1>Dieren Slang</h1><div id="hud"><span id="score">⭐ 0</span><span id="lvs">❤️</span><span id="klok"></span><span id="hs"></span></div>
+<h1>Dieren Slang</h1><div id="hud"><span id="score">⭐ 0</span><span id="lvs">❤️</span><span id="lv"></span><span id="klok"></span><span id="hs"></span></div>
 <div style="position:relative"><canvas id="c" width="420" height="560"></canvas><canvas id="fx" width="420" height="560" style="position:absolute;left:0;top:0;pointer-events:none"></canvas>
 <button id="fok" title="Eigen foto als karakter" style="position:absolute;right:8px;top:8px;background:#ffffff22;border:1px solid #fff4;color:#fff;border-radius:8px;padding:4px 9px;cursor:pointer;font-size:1rem">📷</button>
 <button id="fos" title="Selfie als karakter" style="position:absolute;right:8px;top:44px;background:#ffffff22;border:1px solid #fff4;color:#fff;border-radius:8px;padding:4px 9px;cursor:pointer;font-size:1rem">🤳</button>
@@ -27,7 +27,10 @@ const A=new(window.AudioContext||window.webkitAudioContext)();
 const blip=(f,d=.08,type,v=.15)=>{type=type||(D.kid?'sine':'square');const o=A.createOscillator(),g=A.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,A.currentTime);g.gain.exponentialRampToValueAtTime(.001,A.currentTime+d);o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
 /* stijgende belonings-pling voor kids */
 const pling=()=>{blip(660,.07,'sine',.12);setTimeout(()=>blip(880,.09,'sine',.12),75)};
-const punt=(n,x,y)=>{score+=n;document.getElementById('score').textContent='⭐ '+score;if(score>hs){hs=score;localStorage.setItem(HSK,hs);document.getElementById('hs').textContent='🏆 '+hs}if(x!=null)pop(x,y,'+'+n);if(D.kid){pling();if(navigator.vibrate)navigator.vibrate(12)}};
+let _lastLv=1;
+const punt=(n,x,y)=>{score+=n;document.getElementById('score').textContent='⭐ '+score;if(score>hs){hs=score;localStorage.setItem(HSK,hs);document.getElementById('hs').textContent='🏆 '+hs}if(x!=null)pop(x,y,'+'+n);if(D.kid){pling();if(navigator.vibrate)navigator.vibrate(12)}
+ /* levels: elke 50/100 punten omhoog — sneller + feestje */
+ const lv=1+Math.floor(score/(D.kid?50:100));if(lv>_lastLv){_lastLv=lv;document.getElementById('lv').textContent='LV '+lv;pop(W/2,Hh/3,'🚀 LEVEL '+lv+'!','#ffd700');confetti();try{spd*=1.12}catch(e){}}};
 /* kids: ruimere raak-zones (HB) en kleinere obstakel-zones (SB) — voelt alsof ze perfect raken */
 const HB=D.kid?1.3:1,SB=D.kid?.8:1;
 /* effect-laag: zwevende score-pops + confetti bovenop het spel */
