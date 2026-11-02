@@ -48,9 +48,15 @@ canvas{width:100%;border-radius:10px;margin-top:12px;background:#000;display:non
     <div><label>Lengte</label>
       <select id="len"><option value="15">15 sec</option><option value="30" selected>30 sec</option><option value="60">60 sec</option><option value="0">Hele track</option></select></div>
   </div>
+  <label>Achtergrond (optioneel): foto of video — animeert mee op de beat</label>
+  <div class="drop" id="dropbg" style="padding:14px"><b id="bglbl">Sleep hier je foto/clip</b><br>jpg · png · mp4 · webm<input type="file" id="filebg" accept="image/*,video/*" hidden></div>
   <div class="rij">
     <div><label>Look</label>
-      <select id="look"><option value="spec">SPECTRUM (balken)</option><option value="pulse">PULSE (ringen)</option></select></div>
+      <select id="look"><option value="spec">SPECTRUM (balken)</option><option value="pulse">PULSE (ringen)</option><option value="game">GAME (neon-tunnel + explosies)</option></select></div>
+    <div><label>Achtergrond-stijl</label>
+      <select id="bgmode"><option value="vol">VOL (beeld + dim)</option><option value="blur">DONKER (vervaagd)</option><option value="mask">MASKER (portaal op de beat)</option></select></div>
+  </div>
+  <div class="rij">
     <div><label>Kleur</label>
       <select id="klr"><option value="g">G2B groen</option><option value="o">Oranje</option><option value="p">Paars</option><option value="w">Wit-goud</option></select></div>
   </div>
@@ -65,7 +71,47 @@ canvas{width:100%;border-radius:10px;margin-top:12px;background:#000;display:non
 <script>
 const $=id=>document.getElementById(id);
 let buf=null;
+let bgEl=null,bgType=null; // achtergrond: Image of video-element
 const drop=$('drop'),file=$('file');
+drop.onclick=()=>file.click();
+const dropbg=$('dropbg'),filebg=$('filebg');
+dropbg.onclick=()=>filebg.click();
+dropbg.ondragover=e=>{e.preventDefault();dropbg.classList.add('over')};
+dropbg.ondragleave=()=>dropbg.classList.remove('over');
+dropbg.ondrop=e=>{e.preventDefault();dropbg.classList.remove('over');if(e.dataTransfer.files[0])laadBg(e.dataTransfer.files[0])};
+filebg.onchange=()=>{if(filebg.files[0])laadBg(filebg.files[0])};
+function laadBg(f){
+  const url=URL.createObjectURL(f);
+  if(f.type.startsWith('video')){
+    const v=document.createElement('video');v.muted=true;v.loop=true;v.playsInline=true;
+    v.src=url;v.play().catch(()=>{});bgEl=v;bgType='video';
+  }else{
+    const im=new Image();im.src=url;bgEl=im;bgType='img';
+  }
+  $('bglbl').textContent='✓ '+f.name;
+  if(buf)tekenPrev();
+}
+function tekenBg(ctx,W,H,t,e,mode){
+  if(!bgEl||!bgEl.videoWidth&&!bgEl.naturalWidth&&!bgEl.width)return;
+  const vw=bgEl.videoWidth||bgEl.naturalWidth||bgEl.width,vh=bgEl.videoHeight||bgEl.naturalHeight||bgEl.height;
+  const sc=Math.max(W/vw,H/vh)*(1+e*0.08);
+  const dw=vw*sc,dh=vh*sc,dx=(W-dw)/2,dy=(H-dh)/2;
+  if(mode==='mask'){
+    // portaal: beeld alleen zichtbaar in cirkel die op de beat opent
+    const r=W*0.16+e*W*0.22;
+    ctx.save();ctx.beginPath();ctx.arc(W/2,H*0.42,r,0,7);ctx.clip();
+    ctx.drawImage(bgEl,dx,dy,dw,dh);ctx.restore();
+    ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(W/2,H*0.42,r,0,7);ctx.stroke();
+  }else if(mode==='blur'){
+    ctx.save();ctx.filter='blur(14px) brightness(.5)';
+    ctx.drawImage(bgEl,dx-20,dy-20,dw+40,dh+40);ctx.restore();
+    ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(0,0,W,H);
+  }else{
+    ctx.drawImage(bgEl,dx,dy,dw,dh);
+    ctx.fillStyle='rgba(4,14,9,'+(0.62-e*0.25)+')';ctx.fillRect(0,0,W,H);
+  }
+}
 drop.onclick=()=>file.click();
 drop.ondragover=e=>{e.preventDefault();drop.classList.add('over')};
 drop.ondragleave=()=>drop.classList.remove('over');
@@ -110,13 +156,63 @@ function spectrum(t){ // magnitude per log-band op tijd t
 function rms(t){const sr=buf.sampleRate,L=buf.getChannelData(0),n=2048,st=Math.floor(t*sr);
   let s=0;for(let i=0;i<n&&st+i<L.length;i++)s+=L[st+i]*L[st+i];return Math.sqrt(s/n);}
 
+// game-state: partikels + sterren + beat-detect (persisteert tussen frames)
+const GS={parts:[],stars:null,loPrev:0,shake:0,z:0};
+function gameReset(){GS.parts=[];GS.stars=null;GS.loPrev=0;GS.shake=0;GS.z=0;}
+function tekenGame(ctx,W,H,t,c1,c2,e){
+  const bands=spectrum(t);
+  let lo=0,mid=0;
+  for(let i=0;i<8;i++)lo+=bands[i];for(let i=8;i<30;i++)mid+=bands[i];
+  lo=Math.min(1,lo/3.2);mid=Math.min(1,mid/12);
+  const beat=lo-GS.loPrev>0.10;GS.loPrev=GS.loPrev*0.6+lo*0.4;
+  if(!GS.stars){GS.stars=[];for(let i=0;i<120;i++)GS.stars.push({x:Math.random(),y:Math.random(),s:Math.random()});}
+  GS.z+=0.015+e*0.05+mid*0.01;
+  const cx=W/2,cy=H*0.42;
+  if(beat){GS.shake=1;
+    for(let i=0;i<14;i++){const a=Math.random()*7,v=2+Math.random()*5;
+      GS.parts.push({x:cx,y:cy,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:1,c:Math.random()<.5?c1:c2});}}
+  GS.shake*=0.85;
+  const shX=(Math.random()-.5)*GS.shake*14,shY=(Math.random()-.5)*GS.shake*14;
+  // sterren
+  ctx.fillStyle='#fff';for(const s of GS.stars){ctx.globalAlpha=.2+s.s*.5;
+    const sy=(s.y+GS.z*s.s*0.1)%1;ctx.fillRect(s.x*W+shX,sy*H+shY,1.5,1.5);}
+  ctx.globalAlpha=1;
+  // neon-tunnel: concentrische hexagonen die naar je toe komen
+  ctx.save();ctx.translate(cx+shX,cy+shY);
+  for(let i=0;i<10;i++){
+    const ph=(GS.z*1.4+i/10)%1,r=Math.pow(ph,2.2)*W*0.9;
+    ctx.strokeStyle=i%2?c1:c2;ctx.lineWidth=1+ph*4;ctx.globalAlpha=ph;
+    ctx.beginPath();
+    for(let k=0;k<=6;k++){const a=k/6*Math.PI*2+t*0.3;
+      const rr=r*(1+mid*0.15*Math.sin(a*3+t*2));
+      ctx.lineTo(Math.cos(a)*rr,Math.sin(a)*rr*0.72);}
+    ctx.closePath();ctx.stroke();}
+  ctx.globalAlpha=1;
+  // kern
+  const kr=(30+lo*W*0.12)*(1+e*0.3);
+  const gr=ctx.createRadialGradient(0,0,0,0,0,kr*2);
+  gr.addColorStop(0,'#fff');gr.addColorStop(.25,c1);gr.addColorStop(1,'transparent');
+  ctx.fillStyle=gr;ctx.beginPath();ctx.arc(0,0,kr*2,0,7);ctx.fill();
+  // horizon-grid onder
+  ctx.strokeStyle=c1+'55';ctx.lineWidth=1;
+  for(let i=1;i<8;i++){const y=H*0.55+i*i*3+((GS.z*400)%(i*3));ctx.globalAlpha=.5;
+    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  ctx.globalAlpha=1;ctx.restore();
+  // partikels
+  for(const p of GS.parts){p.x+=p.vx+shX*0.3;p.y+=p.vy;p.vy+=0.06;p.l-=0.025;
+    if(p.l>0){ctx.globalAlpha=p.l;ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,3,3);}}
+  GS.parts=GS.parts.filter(p=>p.l>0);ctx.globalAlpha=1;
+}
+
 function teken(ctx,W,H,t,look,kleur,titel,sub){
   const [c1,c2]=kleur;
   const g=ctx.createLinearGradient(0,0,0,H);
   g.addColorStop(0,'#07100b');g.addColorStop(1,'#0d1f14');
   ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
   const e=Math.min(1,rms(t)*8),pulse=1+e*0.25;
-  if(look==='spec'){
+  tekenBg(ctx,W,H,t,e,$('bgmode').value);
+  if(look==='game'){tekenGame(ctx,W,H,t,c1,c2,e);}
+  else if(look==='spec'){
     const bands=spectrum(t),n=bands.length,bw=W/n;
     for(let b=0;b<n;b++){const v=Math.min(1,bands[b]*2.2),bh=v*H*0.45*pulse;
       const x=b*bw;
@@ -155,6 +251,7 @@ function tekenPrev(){ // still-preview op klein canvas
 
 $('go').onclick=async()=>{
   if(!buf)return;
+  gameReset();
   $('go').disabled=true;$('voortgang').style.display='block';$('dl').style.display='none';
   const st=$('status');
   try{
@@ -197,6 +294,7 @@ $('go').onclick=async()=>{
     const nF=Math.floor(dur*fps);
     for(let f=0;f<nF;f++){
       const t=f/fps;
+      if(bgType==='video'&&bgEl){const vt=(t%(bgEl.duration||1));if(Math.abs(bgEl.currentTime-vt)>0.4)bgEl.currentTime=vt;}
       teken(cx,W,H,t,$('look').value,klr,$('titel').value,$('sub').value);
       ve.encode(new VideoFrame(cv,{timestamp:Math.round(t*1e6),duration:Math.round(1e6/fps)}),{keyFrame:f%60===0});
       if(ve.encodeQueueSize>8)await new Promise(r=>setTimeout(r,20));
