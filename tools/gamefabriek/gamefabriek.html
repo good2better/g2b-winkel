@@ -62,8 +62,8 @@ label{font-size:.8rem;color:var(--zacht)}
 </div>
 
 <div class="kaart">
-<h2>5. Eigen beat (alleen voor 🎧 Beat-Spel)</h2>
-<label>🎵 Jouw track (mp3/wav) — de noten volgen jouw echte drum-pieken</label>
+<h2>5. Eigen beat / muziek</h2>
+<label>🎵 Jouw track (mp3/wav) — verplicht bij 🎧 Beat-Spel, bij andere spellen = achtergrondmuziek</label>
 <input type="file" id="beatfile" accept="audio/*" style="margin-top:6px"><div id="beatprev" style="margin-top:6px;font-size:.75rem;color:var(--zacht)"></div>
 </div>
 
@@ -193,6 +193,10 @@ const bg=()=>{_bgt.t++;
 let px=W/2,keys={};addEventListener('keydown',e=>{keys[e.key]=true;if(A.state=='suspended')A.resume()});addEventListener('keyup',e=>keys[e.key]=false);
 /* MIDI-keyboard: noteOn -> midiNote(noot) als het spel die heeft */
 if(navigator.requestMIDIAccess)navigator.requestMIDIAccess().then(m=>{const f=i=>{i.onmidimessage=e=>{const n=e.data[0]&240,v=e.data[2];if(n==144&&v>0&&typeof midiNote=='function')midiNote(e.data[1])}};m.inputs.forEach(f);m.onstatechange=()=>m.inputs.forEach(f)}).catch(()=>{});
+/* eigen muziek als achtergrond (niet in muziekspellen — die gebruiken 'm zelf) */
+const _bgm=${JSON.stringify('MUZIEK')};
+if(_bgm&&typeof __spelmetmuziek!=='function'){let _bgOn=false;const _bgPlay=()=>{if(_bgOn)return;_bgOn=true;const au=new Audio(_bgm);au.loop=true;au.volume=.5;au.play().catch(()=>{})};
+ addEventListener('pointerdown',_bgPlay);addEventListener('keydown',_bgPlay)}
 let tx=null;C.addEventListener('pointermove',e=>{tx=e.offsetX*W/C.clientWidth});C.addEventListener('pointerdown',e=>{tx=e.offsetX*W/C.clientWidth;if(A.state=='suspended')A.resume();tik(e.offsetX*W/C.clientWidth,e.offsetY*Hh/C.clientHeight)});
 /* gamepad: joystick/dpad sturen, A/B = actie */
 const PAD=(pi=0)=>{try{const g=navigator.getGamepads&&navigator.getGamepads()[pi];if(!g)return{l:0,r:0,u:0,d:0,a:0};
@@ -451,6 +455,7 @@ let chk=60;
 
 /* RITME: noten vallen in 4 banen op de beat — raak ze op tijd (Guitar Hero-stijl) */
 ritme:(naam,t,d)=>H(naam,t)+`
+function __spelmetmuziek(){}
 const BPM=100+30*(D.snel-0.7),SPB=60/BPM,N=4,LY=Hh-110,LW=W/N;
 const TOETS=['D','F','J','K'],KL=['#f472b6','#22d3ee','#a3e635','#fbbf24'];
 /* eigen beat: kick op beat, hat offbeat, snare op 2&4 (WebAudio) */
@@ -512,6 +517,7 @@ startKnop.onclick=()=>{startKnop.remove();gestart=true;t0=A.currentTime+.5;
 
 /* BEATGAME: producer-ritme op een ECHTE geuploade beat — onsets → noten */
 beatgame:(naam,t,d)=>H(naam,t)+`
+function __spelmetmuziek(){}
 const MUZIEK=${JSON.stringify('MUZIEK')},N=4,LY=Hh-110,LW=W/N;
 const TOETS=['D','F','J','K'],KL=['#f472b6','#22d3ee','#a3e635','#fbbf24'];
 let gestart=false,t0=0,combo=0,maxC=0,hit='',hitT=0,miss=0,noten=[],SPB=.5,dur=0,bron=null;
