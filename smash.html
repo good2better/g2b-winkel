@@ -60,6 +60,9 @@ canvas{width:100%;border-radius:10px;margin-top:12px;background:#000;display:non
     <div><label>Kleur</label>
       <select id="klr"><option value="g">G2B groen</option><option value="o">Oranje</option><option value="p">Paars</option><option value="w">Wit-goud</option></select></div>
   </div>
+  <label>SMASH-prompt (optioneel) — typ een vibe, bijv. "vuur", "ruimte", "gold", "club"</label>
+  <input type="text" id="prompt" placeholder="...of laat leeg: SMASH kiest zelf de beste look" maxlength="80">
+  <button id="auto" style="background:#143626;color:var(--groen);border:1px solid var(--groen);margin-top:10px">✨ AUTO — SMASH KIEST DE BESTE LOOK</button>
   <button id="go" disabled>RENDER DE CLIP</button>
   <div id="voortgang"><div id="balk"></div></div>
   <div id="status"></div>
@@ -117,6 +120,43 @@ drop.ondragover=e=>{e.preventDefault();drop.classList.add('over')};
 drop.ondragleave=()=>drop.classList.remove('over');
 drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');if(e.dataTransfer.files[0])laad(e.dataTransfer.files[0])};
 file.onchange=()=>{if(file.files[0])laad(file.files[0])};
+
+// --- prompt → stijl + AUTO-analyse ---
+const PROMPTMAP=[
+  [/vuur|fire|vlam|heat|hard|drill|agress/i,{look:'game',klr:'o'}],
+  [/ruimte|space|ster|star|cosmos|astro/i,{look:'game',klr:'p'}],
+  [/gold|goud|luxe|royal|diamant|soul/i,{look:'pulse',klr:'w'}],
+  [/club|party|dance|edm|rave|neon/i,{look:'game',klr:'g'}],
+  [/chill|calm|rustig|lofi|droom/i,{look:'pulse',klr:'p'}],
+  [/dark|donker|evil|night/i,{look:'spec',klr:'p'}],
+];
+function pasPrompt(){
+  const p=$('prompt').value.trim();
+  if(!p)return false;
+  for(const[re,s]of PROMPTMAP)if(re.test(p)){$('look').value=s.look;$('klr').value=s.klr;return true;}
+  return false;
+}
+$('prompt').oninput=()=>{if(buf&&pasPrompt())tekenPrev();};
+function analyseer(){ // energie + laag + helderheid → beste look/kleur
+  const sr=buf.sampleRate,L=buf.getChannelData(0);
+  let e=0,n=0,lo=0,hi=0;
+  for(let t=0.5;t<Math.min(buf.duration,20);t+=0.5){
+    e+=rms(t);n++;
+    const b=spectrum(t);
+    for(let i=0;i<8;i++)lo+=b[i];
+    for(let i=32;i<48;i++)hi+=b[i];
+  }
+  e/=n;const ratio=hi/(lo+0.001);
+  if(e>0.12&&lo>2){$('look').value='game';$('klr').value='o';} // agressief/hard
+  else if(ratio>0.35){$('look').value='spec';$('klr').value='g';} // helder
+  else if(e<0.05){$('look').value='pulse';$('klr').value='w';} // rustig/chic
+  else{$('look').value='game';$('klr').value='g';} // default: club
+}
+$('auto').onclick=()=>{
+  if(!buf){$('status').textContent='Eerst een beat erin.';return;}
+  if(!pasPrompt())analyseer();
+  tekenPrev();$('status').textContent='✓ Look gekozen: '+$('look').value+' / '+$('klr').value;
+};
 
 async function laad(f){
   $('status').textContent='Beat inlezen…';
