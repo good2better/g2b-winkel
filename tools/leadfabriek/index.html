@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>G2B Lead-Fabriek</title>
+<style>
+:root{--bg:#0e1410;--card:#16211a;--rand:#2a4433;--tekst:#e8f0ea;--dim:#9fb8a6;--groen:#57c785;--accent:#2e7d4f}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui,sans-serif;padding:20px;max-width:900px;margin:0 auto}
+h1{color:var(--groen);font-size:26px;margin:8px 0}
+.sub{color:var(--dim);font-size:13px;margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--rand);border-radius:12px;padding:18px;margin-bottom:16px}
+input,textarea,select{width:100%;box-sizing:border-box;padding:10px;font-size:14px;border-radius:8px;border:1px solid var(--rand);background:var(--bg);color:var(--tekst);margin:4px 0}
+button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:12px 24px;font-size:15px;cursor:pointer;width:100%}
+label{font-size:12px;color:var(--dim)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+td,th{border:1px solid var(--rand);padding:4px 8px;text-align:left}
+th{color:var(--groen)}
+.ok{color:var(--groen)}
+a{color:var(--groen)}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:4px;font-size:12px;margin:8px 0}
+.cats label{display:flex;gap:4px;align-items:center;color:var(--tekst);cursor:pointer}
+.cats input{width:auto;margin:0}
+</style>
+</head>
+<body>
+<h1>🎯 G2B LEAD-FABRIEK</h1>
+<div class="sub">Zoek bedrijven in een plaats via OpenStreetMap — met site, telefoon en e-mail uit de kaart-data.<br>
+<b>Browser-versie:</b> site-scan voor extra mails kan niet (browsers mogen geen vreemde sites lezen) — daarvoor de lokale app.</div>
+
+<div class="card">
+<b>1. Zoeken</b>
+<label>Plaats</label><input id="plaats" placeholder="bijv. Rotterdam">
+<label>Categorieën (leeg = alles)</label>
+<div class="cats" id="cats"></div>
+<label>Max. leads</label><input id="aantal" type="number" value="50" min="5" max="150">
+<button onclick="zoek()">ZOEK LEADS</button>
+<div id="status" style="margin-top:8px"></div>
+</div>
+
+<div class="card" id="uit" style="display:none">
+<b>2. Resultaat</b> <span id="telling"></span><br><br>
+<button onclick="dl(false)">⬇ leads.csv</button>
+<button onclick="dl(true)" style="margin-top:6px">⬇ leads_schoon.csv (alleen met mail)</button>
+</div>
+
+<div class="card" id="lijst" style="display:none">
+<table><thead><tr><th>Naam</th><th>Cat.</th><th>E-mail</th><th>Tel.</th><th>Site</th></tr></thead>
+<tbody id="rows"></tbody></table>
+</div>
+
+<script>
+const CAT={"restaurant":"restaurant","cafe":"cafe|bar|pub","hotel":"hotel|guest_house",
+"kapper":"hairdresser","bloemist":"florist","bakker":"bakery|pastry","tandarts":"dentist",
+"dokter":"doctors","fysio":"physiotherapist","sportschool":"fitness_centre|gym","yoga":"yoga",
+"garage":"car_repair|garage","taxi":"taxi","rijles":"driving_school","fotograaf":"photo|photographer",
+"makelaar":"estate_agent","accountant":"accountant","advocaat":"lawyer","notaris":"notary",
+"loodgieter":"plumber|heating|hvac","elektricien":"electrician","schilder":"painter|decorator",
+"hovenier":"gardener|landscaping","verhuis":"moving|removal","schoonmaak":"cleaning",
+"dakdek":"roofing","fiets":"bicycle","schoen":"shoes|cobbler","jeweler":"jewelry|jeweller",
+"winkel":"shop","school":"school","kamp":"summer_camp","dier":"veterinary|pet",
+"computer":"computer|electronics"};
+const OSM_TYPE={N:"node",W:"way",R:"relation"};
+document.getElementById('cats').innerHTML=Object.keys(CAT).sort().map(c=>
+ '<label><input type="checkbox" value="'+c+'">'+c+'</label>').join('');
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let LEADS=[];
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function photon(woord,plaats){
+ const r=await fetch('https://photon.komoot.io/api/?q='+encodeURIComponent(woord+' '+plaats)+'&limit=40');
+ return (await r.json()).features||[];
+}
+async function osmTags(type,id){
+ const k=OSM_TYPE[type];if(!k)return{};
+ try{const r=await fetch('https://api.openstreetmap.org/api/0.6/'+k+'/'+id+'.json');
+  const d=await r.json();return d.elements[0].tags||{}}catch(e){return{}}
+}
+function tagsSite(t){for(const k of["contact:website","website","url","contact:url"]){
+ if(t[k]){let u=t[k].trim();if(u&&!u.startsWith("http"))u="https://"+u;return u}}return""}
+function tagsMail(t){return (t["contact:email"]||t["email"]||"").trim().toLowerCase()}
+async function mxOk(domein){
+ try{const r=await fetch('https://dns.google/resolve?name='+domein+'&type=MX');
+  const d=await r.json();return !!(d.Answer&&d.Answer.length)}catch(e){return true}
+}
+async function zoek(){
+ const plaats=document.getElementById('plaats').value.trim();
+ if(!plaats){document.getElementById('status').textContent='⚠ vul een plaats in';return}
+ const gekozen=[...document.querySelectorAll('#cats input:checked')].map(c=>c.value);
+ const cats=gekozen.length?gekozen:Object.keys(CAT);
+ const max=+document.getElementById('aantal').value||50;
+ const st=document.getElementById('status');
+ let kand=[],seen=new Set();
+ for(let i=0;i<cats.length;i++){
+  if(kand.length>=max*2)break;
+  st.textContent='🔎 zoeken '+(i+1)+'/'+cats.length+': '+cats[i];
+  try{
+   const feats=await photon(CAT[cats[i]].split('|')[0],plaats);
+   for(const f of feats){
+    const p=f.properties||{};const naam=p.name;const oid=p.osm_type+''+p.osm_id;
+    if(!naam||p.osm_id==null||seen.has(oid))continue;
+    seen.add(oid);
+    kand.push({naam,cat:cats[i],osm_type:p.osm_type,osm_id:p.osm_id,
+     adres:[p.street,p.housenumber].filter(Boolean).join(' ')});
+   }
+  }catch(e){}
+  await sleep(400);
+ }
+ LEADS=[];
+ for(let i=0;i<Math.min(kand.length,max*2);i++){
+  if(LEADS.length>=max)break;
+  st.textContent='📋 details '+(i+1)+'/'+Math.min(kand.length,max*2);
+  const k=kand[i];const t=await osmTags(k.osm_type,k.osm_id);
+  const site=tagsSite(t),mail=tagsMail(t);
+  const tel=t["contact:phone"]||t["phone"]||t["contact:mobile"]||"";
+  if(site||mail||tel)LEADS.push({naam:k.naam,cat:k.cat,website:site,email:mail,tel,adres:k.adres});
+  await sleep(250);
+ }
+ // dedupe + mail-check
+ const seenK=new Set();LEADS=LEADS.filter(l=>{
+  const k=(l.naam+'|'+(l.website||l.email)).toLowerCase();
+  if(seenK.has(k))return false;seenK.add(k);return true});
+ let n=0;
+ for(const l of LEADS){
+  if(l.email){n++;st.textContent='✉️ mail checken '+n;
+   l.mail_status=await mxOk(l.email.split('@')[1])?'ok':'domein'}
+  else l.mail_status='';
+ }
+ const schoon=LEADS.filter(l=>l.mail_status==='ok').length;
+ st.textContent='';
+ document.getElementById('telling').innerHTML=LEADS.length+' bedrijven — <span class="ok">'+schoon+' met werkend e-mailadres</span>';
+ document.getElementById('uit').style.display='block';
+ document.getElementById('rows').innerHTML=LEADS.slice(0,60).map(l=>
+  '<tr><td>'+esc(l.naam)+'</td><td>'+esc(l.cat)+'</td><td class="'+(l.mail_status==='ok'?'ok':'')+'">'+esc(l.email||'-')+'</td><td>'+esc(l.tel)+'</td><td>'+(l.website?'<a href="'+esc(l.website)+'" target="_blank">site</a>':'')+'</td></tr>').join('');
+ document.getElementById('lijst').style.display='block';
+}
+function csvEsc(s){s=String(s||'');return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
+function dl(schoon){
+ const rows=(schoon?LEADS.filter(l=>l.mail_status==='ok'):LEADS);
+ const txt='naam,cat,adres,website,email,tel,mail_status\n'+
+  rows.map(l=>[l.naam,l.cat,l.adres,l.website,l.email,l.tel,l.mail_status].map(csvEsc).join(',')).join('\n');
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv'}));
+ a.download=schoon?'leads_schoon.csv':'leads.csv';a.click();
+}
+</script>
+</body></html>
