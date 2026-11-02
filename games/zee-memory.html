@@ -3,10 +3,12 @@
 h1{margin:12px}#b{display:grid;grid-template-columns:repeat(4,72px);gap:10px;margin-top:14px}
 .k{width:72px;height:72px;background:#ffffff18;border:2px solid #22d3ee;border-radius:12px;font-size:2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none}
 .k.open{background:#22d3ee}#hud{margin:8px;font-size:1.1rem}#over{display:none;text-align:center;margin:20px;font-size:1.4rem}
-button{background:#22d3ee;border:0;color:#042;padding:10px 24px;border-radius:10px;font-weight:700;cursor:pointer}</style></head><body>
-<h1>Zee Memory</h1><div id="hud">⭐ <span id="s">0</span> — zetten: <span id="z">0</span></div><div id="b"></div><div id="over">🎉 Alles gevonden! <button onclick="location.reload()">Opnieuw</button></div>
+button{background:#22d3ee;border:0;color:#042;padding:10px 24px;border-radius:10px;font-weight:700;cursor:pointer}
+.bge{position:fixed;font-size:2rem;opacity:.10;pointer-events:none;animation:drift var(--d,6s) ease-in-out infinite alternate}@keyframes drift{from{transform:translateY(0) rotate(-8deg)}to{transform:translateY(-60px) rotate(8deg)}}</style></head><body>
+<div id="bgx"></div><h1>Zee Memory</h1><div id="hud">⭐ <span id="s">0</span> — zetten: <span id="z">0</span></div><div id="b"></div><div id="over">🎉 Alles gevonden! <button onclick="location.reload()">Opnieuw</button></div>
 <script>
-const T={"id":"zee","ic":"🐠","nm":"Zee","items":["🐟","🐠","🐡","🦀","🐙","🦑","🐬"],"vijand":"🦈","held":"🐠","achtergr":"#062a3a","acc":"#22d3ee"};let kaarten=T.items.slice(0,8);kaarten=kaarten.concat(kaarten).sort(()=>Math.random()-.5);
+const T={"id":"zee","ic":"🐠","nm":"Zee","items":["🐟","🐠","🐡","🦀","🐙","🦑","🐬"],"vijand":"🦈","held":"🐠","achtergr":"#062a3a","acc":"#22d3ee"};{const bgx=document.getElementById('bgx');for(let i=0;i<9;i++){const s=document.createElement('span');s.className='bge';s.textContent=T.items[i%T.items.length];s.style.left=(4+i*11)+'vw';s.style.top=(10+((i*37)%80))+'vh';s.style.setProperty('--d',(5+i*1.3).toFixed(1)+'s');s.style.fontSize=(1.4+(i%3)*.5)+'rem';bgx.appendChild(s)}}
+let kaarten=T.items.slice(0,8);kaarten=kaarten.concat(kaarten).sort(()=>Math.random()-.5);
 let open=[],klaar=0,zet=0,score=0,blok=false;
 const B=document.getElementById('b');
 const A=new(window.AudioContext||window.webkitAudioContext)();
