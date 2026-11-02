@@ -38,6 +38,14 @@ select,input[type=range]{accent-color:#35d07f}
     <div><label>Toonsoort (melodie)</label><select id="toon"><option value="0">A mineur penta</option><option value="1">C majeur</option><option value="2">F# mineur penta</option></select></div>
     <div><label>MIDI-uitgang</label><select id="midi"><option value="">— geen —</option></select></div>
   </div>
+  <div class="rij">
+    <div><label>Metronoom</label><select id="metr"><option value="uit">uit</option><option value="aan">aan</option></select></div>
+    <div><label>BPM</label><input type="range" id="bpm" min="60" max="180" value="120" style="width:90px"><span id="bpmv" style="font-size:12px;color:#35d07f">120</span></div>
+    <div><label>Opname-kwantisering</label><select id="quant"><option value="16">16e noten</option><option value="uit">uit</option></select></div>
+  </div>
+  <div class="tip">Klik op een pad hieronder om daar je eigen sound te laden:</div>
+  <div class="rij" id="padcfg"></div>
+  <input type="file" id="padf" accept="audio/*" hidden>
   <div class="rij" style="margin-top:14px">
     <button id="start">▶ START CAMERA</button>
     <button class="sec" id="cal">KALIBREER (2s stil)</button>
@@ -66,6 +74,7 @@ const PW4=.30,PH4=.34,PW8=.19,PH8=.30;
 const SCALES=[[45,48,50,52,55,57,60,62,64,67,69],[48,50,52,53,55,57,59,60,62,64,65,67],[42,45,47,49,52,54,57,59,61,64,66]];
 let ac=null,midiOut=null,prev=null,base=new Float32Array(8),cool=new Float64Array(8),run=false;
 let ownSamp=[]; // eigen one-shots per pad
+let padPick=-1, metrIv=null, beatN=0;
 let lastNote=-1,recT0=0,recLog=[],fxCool=0;
 const LW=160,LH=120;
 const off=document.createElement('canvas');off.width=LW;off.height=LH;
@@ -107,15 +116,18 @@ let recOn=false;
 $('rec').onclick=()=>{recOn=!recOn;$('rec').classList.toggle('on',recOn);
  if(recOn){recLog=[];recT0=performance.now();$('dl').style.display='none';}
  else if(recLog.length){const b=writeMid();$('dl').href=URL.createObjectURL(b);$('dl').download='G2B-AIRDRUMS.mid';$('dl').style.display='inline';}};
-function logNote(n,v){if(recOn)recLog.push([performance.now()-recT0,n,v]);}
+function logNote(n,v){if(recOn){
+  let ms=performance.now()-recT0;
+  if($('quant').value==='16'){const q=60000/(+$('bpm').value)/4;ms=Math.round(ms/q)*q;}
+  recLog.push([ms,n,v]);}}
 function vlq(a,v){do{let b=v&127;v>>=7;if(v)b|=128;a.push(b);}while(v);}
 function writeMid(){
-  const t=[];const tpq=480,mpq=500000;
+  const t=[];const tpq=480,mpq=Math.round(60000000/(+$('bpm').value||120));
   recLog.sort((a,b)=>a[0]-b[0]);
   let last=0;
   const evs=[];
   for(const[ms,n,v]of recLog){
-    const tk=Math.round(ms/1000*120/60*tpq);
+    const tk=Math.round(ms/1000*(+$('bpm').value||120)/60*tpq);
     evs.push([tk,0x90,n,v]);evs.push([tk+Math.round(tpq/4),0x80,n,0]);
   }
   evs.sort((a,b)=>a[0]-b[0]);
@@ -207,7 +219,7 @@ function buildMeters(){
   labels.forEach(n=>{const d=document.createElement('div');d.className='met';
     d.innerHTML='<div class="b"><div class="f" style="height:0%"></div></div>'+n;el.appendChild(d);});
 }
-$('mode').onchange=buildMeters;$('npads').onchange=buildMeters;buildMeters();
+$('mode').onchange=buildMeters;$('npads').onchange=()=>{buildMeters();buildPadCfg();};buildMeters();
 
 // --- hoofdloop ---
 async function start(){
@@ -225,6 +237,8 @@ function tick(){
         const v=E[z]-base[z];
         if(v>th&&now-cool[z]>140){
           cool[z]=now;
+          // choke: open hat doodt closed hat (echte drum-regel)
+          if(ps[z].note===46&&midiOut)midiOut.send([0x89,42,0]);
           const synth=ps.length===8?PAD8SYNTH[z]:PAD4SYNTH[z];
           if($('snd').value==='aan'){
             if(ownSamp[z]){const s=ac.createBufferSource();s.buffer=ownSamp[z];
@@ -262,6 +276,23 @@ function tick(){
   requestAnimationFrame(tick);
 }
 $('start').onclick=start;
+// per-pad sound config
+function buildPadCfg(){
+  const el=$('padcfg');el.innerHTML='';
+  pads().forEach((p,z)=>{
+    const d=document.createElement('button');d.className='sec';
+    d.style.cssText='padding:6px 10px;font-size:11px;border-color:'+p.col+'66;color:'+p.col;
+    d.textContent=p.n+(ownSamp[z]?' ●':'');
+    d.onclick=()=>{padPick=z;$('padf').click();};
+    el.appendChild(d);});
+}
+$('padf').onchange=async()=>{
+  const f=$('padf').files[0];if(!f||padPick<0)return;
+  ensureAC();
+  try{ownSamp[padPick]=await ac.decodeAudioData(await f.arrayBuffer());
+    $('ownlist').textContent='✓ '+pads()[padPick].n+' = '+f.name;buildPadCfg();}
+  catch(e){$('ownlist').textContent='Kon '+f.name+' niet lezen.';}
+};
 $('own').onclick=()=>$('ownf').click();
 $('ownf').onchange=async()=>{
   ensureAC();const fs=[...$('ownf').files];if(!fs.length)return;
@@ -270,7 +301,18 @@ $('ownf').onchange=async()=>{
     try{ownSamp.push(await ac.decodeAudioData(await f.arrayBuffer()));names.push(f.name);}
     catch(e){ownSamp.push(null);}
   }
-  $('ownlist').textContent='✓ Geladen: '+names.join(', ');
+  $('ownlist').textContent='✓ Geladen: '+names.join(', ');buildPadCfg();
+};
+buildPadCfg();
+// metronoom
+$('bpm').oninput=()=>{$('bpmv').textContent=$('bpm').value;};
+$('metr').onchange=()=>{
+  if(metrIv){clearInterval(metrIv);metrIv=null;}
+  if($('metr').value==='aan'){ensureAC();beatN=0;
+    const step=()=>{const t=ac.currentTime;
+      sn(t,beatN%4===0?1600:1000,0,.05,beatN%4===0?.5:.25);beatN++;
+      metrIv=setTimeout(step,60000/+$('bpm').value);};
+    step();}
 };
 $('cal').onclick=()=>{
   const ps=pads(),E=zoneEnergies(ps);
