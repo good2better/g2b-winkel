@@ -348,6 +348,9 @@ const MELN={kalimba:'🎋 KALIMBA',piano:'🎹 PIANO',marimba:'🪵 MARIMBA',flu
 const NLAY={bas:{nm:'🔊 BAS',inst:'contrabas',noten:[],len:0,mute:false},
             mel:{nm:'🎹 MELODIE',inst:'piano',noten:[],len:0,mute:false},
             mid:{nm:'🎼 MIDI',inst:'piano',noten:[],len:0,mute:false}};
+// elke melodie-stem krijgt zijn eigen laag (mel, mel2, mel3…) — niets overschrijft elkaar
+const melK=()=>{if(!NLAY.mel.noten.length)return 'mel';let i=2;while(NLAY['mel'+i]&&NLAY['mel'+i].noten.length)i++;
+ const k='mel'+i;NLAY[k]={nm:'🎹 MELODIE '+i,inst:'piano',noten:[],len:0,mute:false};return k};
 const ALAY=[]; // audio-lagen die origineel meespelen (vocal-stem / volle loop): {id,nm,buf,mute,src}
 let QUANT=true,curKey='',playT0=0;
 const MELB={};
@@ -440,7 +443,7 @@ function addALaag(id,nm,buf){
 // lagen-UI: noten-lagen (instrument-keuze + noten-chips) en audio-lagen (mute)
 function laagUI(){
  const mz=document.getElementById('melzone'),L=document.getElementById('lagen');
- const toon=NLAY.bas.noten.length+NLAY.mel.noten.length+NLAY.mid.noten.length+ALAY.length;
+ const toon=Object.values(NLAY).reduce((s,A)=>s+A.noten.length,0)+ALAY.length;
  mz.style.display=toon?'block':'none';L.innerHTML='';
  for(const k in NLAY){const A=NLAY[k];if(!A.noten.length)continue;
   const d=document.createElement('div');d.className='laag';
@@ -866,20 +869,21 @@ async function verwerk(f,meta){
   const bpmNow=+document.getElementById('bpm').value||120;
   const zetLaag=(K,noten)=>{const A=NLAY[K];
    A.noten=noten.map(n=>({midi:n.midi,t0:n.t0,dur:n.dur,v:n.v,r0:n.t0,rd:n.dur}));
-   A.len=Math.max(1,Math.round(an.dur*bpmNow/240))*240/bpmNow;qZet(A,bpmNow)};
+   A.len=Math.max(1,Math.round(an.dur*bpmNow/240))*240/bpmNow;qZet(A,bpmNow);
+   if(K=='bas')pasDrumAan()};
   const stemNaarLaag=async(K,noten)=>{
    if(noten.length<3){addALaag(K=='bas'?'bas':'stem',(K=='bas'?'🔊 BAS':'🎹 STEM')+' (audio)',buf);laagUI();
     ok(`${f.name} → ${K=='bas'?'BAS':'PIANO'}-STEM → audio-laag (geen heldere noten gehoord)`);return}
    zetLaag(K,noten);await laadMelBuf(NLAY[K].inst);laagUI();
    ok(`${f.name} → ${K=='bas'?'BAS':'PIANO'}-STEM → ${NLAY[K].nm}-laag (${noten.length} noten)`)};
   if(kind=='bas'){await stemNaarLaag('bas',an.basNoten.length>=3?an.basNoten:an.poly.filter(n=>n.midi<52));return}
-  if(kind=='mel'){await stemNaarLaag('mel',an.poly);return}
+  if(kind=='mel'){await stemNaarLaag(melK(),an.poly);pasDrumAan();return}
   if(kind=='voc'){addALaag('voc','🎤 VOCAL-STEM',buf);laagUI();
    ok(f.name+' → VOCAL-STEM → 🎤 vocal-laag (originele audio)');return}
   // geen stem-woord in de naam → auto-detect: losse stem of volle loop?
   if(an.isStem){
    const mids=an.poly.map(n=>n.midi).sort((a,b)=>a-b),med=mids.length?mids[mids.length>>1]:60;
-   const K=med<52?'bas':'mel',noten=K=='bas'&&an.basNoten.length>=3?an.basNoten:an.poly;
+   let K=med<52?'bas':melK();const noten=K=='bas'&&an.basNoten.length>=3?an.basNoten:an.poly;
    if(noten.length>=3){zetLaag(K,noten);await laadMelBuf(NLAY[K].inst);laagUI();
     ok(`${f.name} → ${K=='bas'?'BAS':'MELODIE'}-STEM → ${NLAY[K].nm}-laag (${noten.length} noten)`);return}}
   // drumloop met duidelijke slagen → rebuild op het grid (zijn/G2B drums op de goede plek)
@@ -888,6 +892,20 @@ async function verwerk(f,meta){
   addALaag('loop','🔁 VOLLE LOOP',buf);laagUI();
   ok(f.name+' → VOLLE LOOP → 🔁 referentie-laag (speelt origineel mee)');
  }catch(e){console.warn(e);err(f.name+' → kon dit bestand niet lezen')}
+}
+// drum past zich aan: kick-stappen volgen de bas/onderste noten van de gedropte laag (groove-lock)
+function pasDrumAan(){
+ if(LOCKED.has('kick')||gridFromLoop)return; // 🔒 kick of eigen loop-grid blijft staan
+ const A=NLAY.bas.noten.length?NLAY.bas:(NLAY.mid.noten.length?NLAY.mid:null);if(!A)return;
+ const bpm=+document.getElementById('bpm').value||120,stp=240/bpm/nSub,tot=nBars*nSub;
+ const hits={};for(const n of A.noten){if(A==NLAY.mid&&n.midi>=52)continue;const s=Math.round(n.t0/stp);if(s<0)continue;const ss=s%tot;if(!(ss in hits)||n.v>hits[ss])hits[ss]=n.v}
+ const steps=Object.keys(hits).map(Number);if(!steps.length)return;
+ state.kick=state.kick||new Set();state.kick.clear();
+ for(let b=0;b<nBars;b++){const bs=steps.filter(s=>s>=b*nSub&&s<(b+1)*nSub);
+  const top=bs.sort((x,y)=>hits[y]-hits[x]).slice(0,3); // sterkste 3 bas-onsents per bar
+  for(const s of top)state.kick.add(s)}
+ state.kick.add(0); // kick op de 1
+ document.querySelectorAll('.cel[data-r="kick"]').forEach(c=>c.classList.toggle('aan',state.kick.has(+c.dataset.s)));
 }
 // debug/test-hook (console): G2B.state=drumpatroon, G2B.NLAY=noten-lagen, G2B.ALAY=audio-lagen
 window.G2B={state,RIJEN:()=>RIJEN,NLAY,ALAY,verzamel,classBestand,naamMeta,parseMidi,analyseerBuf,get bpm(){return+document.getElementById('bpm').value},get key(){return curKey}};
