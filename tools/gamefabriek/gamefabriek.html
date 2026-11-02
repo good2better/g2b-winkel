@@ -74,6 +74,7 @@ const TYPES=[
  {id:'doolhof',ic:'🌽',nm:'Verzamelaar',info:'Alles oppakken, ontwijk vijanden'},
  {id:'platform',ic:'🏔️',nm:'Platformer',info:'Echte getekende wereld + levels'},
  {id:'ritme',ic:'🎹',nm:'Muziek-Ritme',info:'Raak de noten op de beat'},
+ {id:'race',ic:'🛺',nm:'Skelter-Race',info:'Skelter/driewieler racen, ontwijk & boost'},
 ];
 const THEMAS=[
  {id:'dieren',ic:'🦁',nm:'Dieren',items:['🐶','🐱','🐰','🦊','🐻','🐼','🦁','🐸','🐷','🐵'],vijand:'🐍',held:'🐶',achtergr:'#0e2a1a',acc:'#4ade80'},
@@ -444,6 +445,54 @@ startKnop.onclick=()=>{startKnop.remove();gestart=true;t0=A.currentTime+.5;
  /* einde na laatste noot */
  if(ci>=60&&noten.every(n=>n.hit||n.gemist)){af=true;document.getElementById('over').style.display='flex';
   document.getElementById('ot').textContent='🎵 Nummer klaar!';document.getElementById('os').textContent='Score: '+score+' — Beste combo: '+maxC+'x';return}
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+
+/* RACE: skelter/driewieler — bochtige weg, obstakels ontwijken, boosts pakken, finish */
+race:(naam,t,d)=>H(naam,t)+`
+const PY=Hh-90,RITM=Math.min(1.4,D.snel);
+let mx=W/2,t=0,spd=3*RITM,weg=0,crash=0,boost=0;
+const FOTO_AUTO=FHELD; /* jouw foto als rijder */
+/* voertuigen per thema: kids = skelter/driewieler */
+const VOERT=['🛺','🚲','🛴','🛵','🏎️','🚗'];
+const mij = FOTO_AUTO?null:VOERT[Math.floor(rand(0,VOERT.length))];
+let obst=[],boosts=[],bomen=[];
+for(let i=0;i<10;i++)bomen.push({x:Math.random()<.5?rand(10,50):rand(W-50,W-10),y:i*80});
+const spawn=()=>{const r=Math.random();
+ if(r<.6)obst.push({x:rand(80,W-80),y:-30,v:spd*rand(.5,.9),ix:Math.floor(rand(0,20))});
+ else boosts.push({x:rand(80,W-80),y:-30,v:spd*rand(.5,.9)})};
+/* weg-tekening: bochtig midden */
+const wegM=x=>W/2+Math.sin((weg+x)*.008)*40;
+addEventListener('keydown',e=>{if(e.key==' ')boost=Math.min(boost+20,40)});
+function tik(x){mx=x}
+(function loop(){if(af)return;t++;weg+=spd;
+ /* sturen */
+ const pd=PAD();
+ if(keys['ArrowLeft']||pd.l)mx-=6*RITM;if(keys['ArrowRight']||pd.r)mx+=6*RITM;if(tx!=null)mx+=(tx-mx)*.25;
+ /* weg */
+ const m=wegM(0);
+ X.fillStyle='#1a3a1a';X.fillRect(0,0,W,Hh); /* gras */
+ bomen.forEach(b=>{b.y+=spd;if(b.y>Hh+40){b.y=-40;b.x=Math.random()<.5?rand(10,50):rand(W-50,W-10)}emoji('🌳',b.x,b.y,34)});
+ X.fillStyle='#333';for(let y=-60;y<Hh+60;y+=4){const mx=wegM(y-60);X.fillRect(mx-70,y,140,4)}
+ X.strokeStyle='#fff';X.lineWidth=3;X.setLineDash([24,20]);X.beginPath();X.moveTo(m,0);for(let y=0;y<Hh;y+=20)X.lineTo(wegM(y-60),y);X.stroke();X.setLineDash([]);
+ X.strokeStyle='#fbbf24';X.lineWidth=2;X.beginPath();X.moveTo(m-70,0);for(let y=0;y<Hh;y+=20)X.lineTo(wegM(y-60)-70,y);X.stroke();
+ X.beginPath();X.moveTo(m+70,0);for(let y=0;y<Hh;y+=20)X.lineTo(wegM(y-60)+70,y);X.stroke();
+ /* spawn + obstakels */
+ if(t>50/RITM){t=0;spawn()}
+ obst.forEach(o=>{o.y+=o.v+spd*.4;const om=wegM(o.y-60);
+  itemX(o.ix,om+o.x-W/2,o.y,30);
+  if(Math.abs(o.y-PY)<30&&Math.abs((om+o.x-W/2)-mx)<34){crash++ ;lev--;lvs();blip(90,.4,'sawtooth');o.y=-99;mx=W/2}});
+ obst=obst.filter(o=>o.y<Hh+40&&o.y>-50);
+ boosts.forEach(b=>{b.y+=b.v+spd*.4;const bm=wegM(b.y-60);
+  X.fillStyle='#fbbf24';X.beginPath();X.arc(bm+b.x-W/2,b.y,12,0,7);X.fill();X.fillStyle='#fff';X.font='14mx serif';X.fillText('⚡',bm+b.x-W/2,b.y);
+  if(Math.abs(b.y-PY)<30&&Math.abs((bm+b.x-W/2)-mx)<32){b.y=-99;punt(15);blip(900,.1,'triangle');spd+=.3}});
+ boosts=boosts.filter(b=>b.y<Hh+40&&b.y>-50);
+ /* mij: foto of voertuig-emoji */
+ const mx2=wegM(PY-60);
+ if(ok(FOTO_AUTO))_rond(FOTO_AUTO,mx,PY,46);else emoji(mij,mx,PY,42);
+ /* voortgang */
+ punt(0);document.getElementById('score').textContent='⭐ '+score+' — '+Math.floor(weg/50)+'m';
+ if(weg>8000){punt(200);af=true;document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🏁 Finish! '+Math.floor(weg/50)+'m';document.getElementById('os').textContent='Score: '+score+' — crashes: '+crash;return}
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
 </`+'script></body></html>',
 };
