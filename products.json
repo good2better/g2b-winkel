@@ -18,6 +18,23 @@
    "video": "media/g2bmaster-demo.mp4"
   },
   {
+   "id": "g2bantwoord",
+   "titel": "G2B ANTWOORD — jij speelt 4 tellen, hij antwoordt in jouw stijl",
+   "soort": "plugin",
+   "beschrijving": "DE UNIEKE CALL & RESPONSE PLUGIN: druk LUISTER, speel 4 tellen op je keyboard → hij antwoordt de volgende 4 tellen terug in jouw toonsoort, jouw genre en jouw speelgevoel. 10 GENRE-PILLS (TRAP·DRILL·BOOMBAP·RNB·HOUSE·DEMBOW·KAWINA·LOFI·SOUL·POP) — elk antwoordt in z'n eigen taal. KEY-DETECT met zekerheids-% (bijv. A min 90%). RITME-SLOT: neemt jouw velocity en swing mee in het antwoord. HEFTRIGHEID-knop: EXACT spiegel → VARIATIE → VRIJ improv. MENS-knop voor human timing, GEHEUGEN-knop voor terugkerende thema's. VRAAG-knop: hij stelt jóú een vraag om op te antwoorden. LOOP-gesprekmodus, ↓MID export van het antwoord, MIDI-UIT naar andere plugins, DICE, 8 skins, level-meter. 100% eigen DSP — geen cloud, geen AI-abonnement. VST3 + CLAP + standalone EXE + handleiding-PDF.",
+   "prijs": "€ 29,95",
+   "links": {
+    "koop": "bestel.html?p=g2bantwoord",
+    "download": "bedankt.html?k=g2bantwoord"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/g2bantwoord-cover.png",
+   "download_dir": "d/g2bantwoord",
+   "demo": "media/g2bantwoord-demo.mp4",
+   "video": "media/g2bantwoord-demo.mp4"
+  },
+  {
    "id": "g2bsuite1",
    "titel": "G2B SUITE — alle marketeer-tools",
    "soort": "app",
