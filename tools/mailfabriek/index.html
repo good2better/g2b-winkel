@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>G2B Mail-Fabriek</title>
+<style>
+:root{--bg:#0e1410;--card:#16211a;--rand:#2a4433;--tekst:#e8f0ea;--dim:#9fb8a6;--groen:#57c785;--accent:#2e7d4f}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui,sans-serif;padding:20px;max-width:860px;margin:0 auto}
+h1{color:var(--groen);font-size:26px;margin:8px 0}
+.sub{color:var(--dim);font-size:13px;margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--rand);border-radius:12px;padding:18px;margin-bottom:16px}
+input,textarea,select{width:100%;box-sizing:border-box;padding:10px;font-size:14px;border-radius:8px;border:1px solid var(--rand);background:var(--bg);color:var(--tekst);margin:4px 0}
+button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:12px 24px;font-size:15px;cursor:pointer;width:100%}
+button.klein{width:auto;padding:8px 14px;font-size:13px}
+label{font-size:12px;color:var(--dim)}
+.rij{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px;border:1px solid var(--rand);border-radius:8px;margin:5px 0;font-size:13px}
+a{color:var(--groen)}
+.send{background:var(--accent);color:#fff;padding:6px 12px;border-radius:7px;text-decoration:none;font-size:12px;white-space:nowrap}
+.send:hover{background:#37995f}
+.gedaan{opacity:.4}
+mark{background:#2e7d4f44;color:var(--groen);padding:0 3px;border-radius:3px}
+</style>
+</head>
+<body>
+<h1>✉️ G2B MAIL-FABRIEK</h1>
+<div class="sub">Mail al je leads persoonlijk — {velden} uit je csv worden automatisch ingevuld.<br>
+<b>Browser-versie:</b> vul je ProxiedMail-gegevens in voor echt versturen vanuit de browser, of gebruik per lead de VERSTUUR-knop (je eigen mail-app).</div>
+
+<div class="card">
+<b>1. Jouw mail-lijst</b>
+<label>CSV met adressen (kolom met e-mail)</label>
+<input type="file" id="csv" accept=".csv,.txt">
+<label>E-mail-kolom naam (laat leeg = automatisch)</label><input id="kolom" value="">
+</div>
+
+<div class="card">
+<b>2. Jouw mail</b>
+<label>Onderwerp (met {velden} uit de csv)</label><input id="ond" value="Idee voor {naam}">
+<label>Mailtekst</label>
+<textarea id="txt" rows="7">Hoi {naam},
+
+ik zag je bedrijf en denk dat ik iets voor je heb...
+
+Groet,
+G2B</textarea>
+</div>
+
+<div class="card">
+<b>3. Echt versturen via ProxiedMail (optioneel)</b>
+<label>Jouw proxy e-mailadres (bijv. jouw@proxiedmail.com)</label>
+<input id="pm_user" placeholder="proxy-adres">
+<label>Wachtwoord van dat proxy-adres</label>
+<input id="pm_ww" type="password" placeholder="wachtwoord">
+<label>Van-naam (optioneel)</label><input id="pm_naam" placeholder="G2B">
+<div style="font-size:11px;color:var(--dim);margin-top:6px">Deze gegevens blijven alleen in jouw browser opgeslagen — nooit op de site.</div>
+<button class="klein" style="margin-top:8px" onclick="bewaarPM()">OPSLAGEN</button>
+<span id="pm_status" style="font-size:12px;color:var(--groen);margin-left:8px"></span>
+</div>
+
+<div class="card">
+<button onclick="maak()">MAILS MAKEN</button>
+<div id="status" style="margin-top:8px"></div>
+</div>
+
+<div class="card" id="uit" style="display:none">
+<b>4. Versturen</b><br>
+<button class="klein" style="margin:10px 0" onclick="verstuurAlle()" id="pm_knop">📨 ALLES VERSTUREN VIA PROXIEDMAIL</button>
+<button class="klein" style="margin:10px 0" onclick="bcc()">📨 OF: iedereen in 1 BCC-mail</button>
+<div id="lijst"></div>
+</div>
+
+<script>
+let LEADS=[];
+const PM=JSON.parse(localStorage.getItem('g2b_pm')||'{}');
+if(PM.user){document.getElementById('pm_user').value=PM.user;
+ document.getElementById('pm_ww').value=PM.ww||'';
+ document.getElementById('pm_naam').value=PM.naam||'';}
+function bewaarPM(){
+ const o={user:v('pm_user').trim(),ww:v('pm_ww'),naam:v('pm_naam').trim()};
+ localStorage.setItem('g2b_pm',JSON.stringify(o));
+ Object.assign(PM,o);
+ document.getElementById('pm_status').textContent='✓ opgeslagen (alleen op jouw pc)';
+}
+async function verstuurAlle(){
+ if(!PM.user||!PM.ww){alert('Vul eerst je ProxiedMail-adres + wachtwoord in bij stap 3 en klik OPSLAGEN.');return}
+ if(!LEADS.length){alert('Maak eerst de mails (stap 2 → MAILS MAKEN).');return}
+ if(!confirm(LEADS.length+' mails echt versturen via '+PM.user+'?'))return;
+ const knop=document.getElementById('pm_knop');knop.disabled=true;
+ let ok=0,fout=0;
+ for(let i=0;i<LEADS.length;i++){
+  const l=LEADS[i];
+  try{
+   const r=await fetch('https://proxiedmail.com/gapi/send-mail',{method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+PM.ww},
+    body:JSON.stringify({auth:{host:'mx.proxiedmail.com',port:587,username:PM.user,password:PM.ww},
+     mail:{from:(PM.naam?PM.naam+' <'+PM.user+'>':PM.user),to:l._mail,
+           subject:tpl(v('ond'),l),body:tpl(v('txt'),l).replace(/\n/g,'<br>')}})});
+   if(r.ok){ok++;document.getElementById('r'+i).classList.add('gedaan')}
+   else{fout++;console.warn('mail fout',i,await r.text())}
+  }catch(e){fout++;console.warn(e)}
+  document.getElementById('status').textContent='📨 '+ok+' verstuurd'+(fout?', '+fout+' fout':'')+' ('+(i+1)+'/'+LEADS.length+')';
+  await new Promise(r=>setTimeout(r,800));
+ }
+ knop.disabled=false;
+ document.getElementById('status').textContent='✓ klaar: '+ok+' verstuurd'+(fout?', '+fout+' mislukt':'');
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const v=id=>document.getElementById(id).value;
+function parseCSVText(t){
+ const rows=[];let cur=[],veld='',inQ=false;t=t.replace(/\r/g,'');
+ for(let i=0;i<t.length;i++){const c=t[i];
+  if(inQ){if(c==='"'){if(t[i+1]==='"'){veld+='"';i++}else inQ=false}else veld+=c}
+  else if(c==='"'){inQ=true}
+  else if(c===','||c===';'||c==='\t'){cur.push(veld);veld=''}
+  else if(c==='\n'){cur.push(veld);veld='';rows.push(cur);cur=[]}
+  else veld+=c;
+ }
+ if(veld||cur.length){cur.push(veld);rows.push(cur)}
+ return rows.filter(r=>r.length&&r.join(''));
+}
+function tpl(s,rij){return s.replace(/\{(\w+)\}/g,(m,k)=>rij[k]??rij[k.toLowerCase()]??m)}
+async function maak(){
+ const f=document.getElementById('csv').files[0];
+ if(!f){document.getElementById('status').textContent='⚠ upload eerst een csv';return}
+ const rows=parseCSVText(await f.text());
+ if(rows.length<2){document.getElementById('status').textContent='⚠ geen rijen gevonden';return}
+ const head=rows[0].map(h=>h.trim());
+ let ki=v('kolom')?head.indexOf(v('kolom')):-1;
+ if(ki<0)ki=head.findIndex(h=>/mail|email|adres/i.test(h));
+ if(ki<0)ki=head.findIndex((h,i)=>rows[1][i]&&rows[1][i].includes('@'));
+ if(ki<0){document.getElementById('status').textContent='⚠ geen e-mailkolom gevonden — vul de kolomnaam in';return}
+ LEADS=rows.slice(1).map(r=>{const o={};head.forEach((h,i)=>o[h.toLowerCase()]=r[i]||'');o._mail=r[ki];return o}).filter(r=>r._mail&&r._mail.includes('@'));
+ document.getElementById('status').textContent='✓ '+LEADS.length+' leads geladen';
+ document.getElementById('lijst').innerHTML=LEADS.map((l,i)=>
+  '<div class="rij" id="r'+i+'"><span><b>'+esc(l._mail)+'</b> — '+esc(tpl(v('ond'),l))+'</span><a class="send" onclick="stuur('+i+')">VERSTUUR</a></div>').join('');
+ document.getElementById('uit').style.display='block';
+}
+function stuur(i){
+ const l=LEADS[i];
+ const url='mailto:'+l._mail+'?subject='+encodeURIComponent(tpl(v('ond'),l))+'&body='+encodeURIComponent(tpl(v('txt'),l));
+ location.href=url;
+ document.getElementById('r'+i).classList.add('gedaan');
+}
+function bcc(){
+ if(!LEADS.length)return;
+ const mails=LEADS.map(l=>l._mail).join(',');
+ location.href='mailto:?bcc='+encodeURIComponent(mails)+'&subject='+encodeURIComponent(v('ond'))+'&body='+encodeURIComponent(v('txt'));
+}
+</script>
+</body></html>

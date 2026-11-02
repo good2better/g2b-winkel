@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>G2B Lijst-Fabriek</title>
+<style>
+:root{--bg:#0e1410;--card:#16211a;--rand:#2a4433;--tekst:#e8f0ea;--dim:#9fb8a6;--groen:#57c785;--accent:#2e7d4f}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui,sans-serif;margin:0;padding:20px;max-width:860px;margin:0 auto}
+h1{color:var(--groen);font-size:26px;margin:8px 0}
+.sub{color:var(--dim);font-size:13px;margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--rand);border-radius:12px;padding:18px;margin-bottom:16px}
+button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:12px 24px;font-size:15px;cursor:pointer}
+button:hover{background:#37995f}
+#drop{border:2px dashed var(--rand);border-radius:12px;padding:34px;text-align:center;color:var(--dim);cursor:pointer}
+#drop.over{border-color:var(--groen);color:var(--groen)}
+#status{margin-top:12px;font-size:14px}
+.ok{color:var(--groen)}.fout{color:#ffb84d}
+a{color:var(--groen);cursor:pointer}
+label{font-size:12px;color:var(--dim);display:block;margin-top:8px}
+</style>
+</head>
+<body>
+<h1>📧 G2B LIJST-FABRIEK</h1>
+<div class="sub">Schone e-maillijsten, 100% in je browser — onbeperkt, geen credits, je lijst verlaat je computer nooit.<br>
+Mailserver-check gaat via dns.google (openbare DNS-lookup) — zet uit voor offline/snel.</div>
+
+<div class="card">
+<label><input type="checkbox" id="mx" checked style="width:auto"> Domein-check: bestaat de mailserver (MX)? — kost ~0,1s per uniek domein</label>
+<div id="drop">Sleep je <b>.csv</b> of <b>.txt</b> lijst hierheen<br>of klik om te kiezen
+<input type="file" id="fIn" accept=".csv,.txt" style="display:none"></div>
+<div id="status"></div>
+</div>
+
+<div class="card" id="uit" style="display:none">
+<b>Klaar!</b> <span id="telling"></span><br><br>
+<a onclick="dl('schoon')">⬇ schoon.csv</a> &nbsp;·&nbsp; <a onclick="dl('rapport')">⬇ rapport.csv</a>
+</div>
+
+<script>
+const drop=document.getElementById('drop'),fIn=document.getElementById('fIn'),statusEl=document.getElementById('status');
+drop.onclick=()=>fIn.click();
+drop.ondragover=e=>{e.preventDefault();drop.classList.add('over')};
+drop.ondragleave=()=>drop.classList.remove('over');
+drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');
+ if(e.dataTransfer.files[0])stuur(e.dataTransfer.files[0])};
+fIn.onchange=()=>{if(fIn.files[0])stuur(fIn.files[0])};
+
+const RE=/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+$/;
+const WEGWERP=new Set(['mailinator.com','tempmail.com','10minutemail.com','guerrillamail.com','yopmail.com','trashmail.com','sharklasers.com','getnada.com','temp-mail.org','dispostable.com','maildrop.cc','fakeinbox.com','mintemail.com','spamgourmet.com']);
+const ROL=new Set(['info','admin','support','contact','sales','office','help','noreply','no-reply','webmaster','postmaster','mail','team','hello','service','klantenservice']);
+let SCHOON=[],RAPPORT=[];
+
+async function mxCheck(domein){
+ try{
+  const r=await fetch('https://dns.google/resolve?name='+encodeURIComponent(domein)+'&type=MX');
+  const d=await r.json();
+  return d.Status===0&&(d.Answer||[]).some(a=>a.type===15);
+ }catch(e){return true} // netwerk-fout → niet als fout tellen
+}
+async function stuur(f){
+ statusEl.textContent='📖 Lezen: '+f.name+'…';
+ const t=await f.text();
+ const regels=t.replace(/\r/g,'').split('\n');
+ const mails=[];
+ for(const r of regels){
+  const m=r.match(/[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+  if(m)mails.push(m[0].toLowerCase().trim());
+ }
+ const doMx=document.getElementById('mx').checked;
+ const uniekDomeinen=[...new Set(mails.map(m=>m.split('@')[1]))];
+ const mxMap={};
+ if(doMx){
+  let i=0;
+  for(const d of uniekDomeinen){
+   i++;statusEl.textContent=`🔎 Domein-check ${i}/${uniekDomeinen.length}: ${d}`;
+   mxMap[d]=await mxCheck(d);
+  }
+ }
+ const gezien=new Set();
+ const tel={ok:0,syntax:0,domein:0,wegwerp:0,dubbel:0,rol:0};
+ for(const m of mails){
+  const [user,domein]=(m.split('@').concat(''));
+  let why='';
+  if(!RE.test(m))why='syntax';
+  else if(WEGWERP.has(domein))why='wegwerp';
+  else if(doMx&&mxMap[domein]===false)why='geen-mailserver';
+  else if(gezien.has(m))why='dubbel';
+  else if(ROL.has(user))why='rol-account';
+  gezien.add(m);
+  if(why){tel[why==='geen-mailserver'?'domein':why]++;RAPPORT.push([m,why])}
+  else{tel.ok++;SCHOON.push(m)}
+ }
+ statusEl.textContent='';
+ document.getElementById('telling').innerHTML=
+  'totaal '+mails.length+' — <span class="ok">'+tel.ok+' goed</span>, '+
+  '<span class="fout">'+tel.syntax+' syntax, '+tel.domein+' geen-mailserver, '+
+  tel.wegwerp+' wegwerp, '+tel.dubbel+' dubbel</span>, '+tel.rol+' rol-accounts';
+ document.getElementById('uit').style.display='block';
+}
+function dl(wat){
+ const csv=wat==='schoon'?('email\n'+SCHOON.join('\n')):('email,reden\n'+RAPPORT.map(r=>r.join(',')).join('\n'));
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+ a.download=wat+'.csv';a.click();URL.revokeObjectURL(a.href);
+}
+</script>
+</body></html>
