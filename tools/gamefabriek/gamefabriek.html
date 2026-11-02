@@ -73,6 +73,7 @@ const TYPES=[
  {id:'quiz',ic:'❓',nm:'Quiz',info:'Vragen met thema'},
  {id:'doolhof',ic:'🌽',nm:'Verzamelaar',info:'Alles oppakken, ontwijk vijanden'},
  {id:'platform',ic:'🏔️',nm:'Platformer',info:'Echte getekende wereld + levels'},
+ {id:'ritme',ic:'🎹',nm:'Muziek-Ritme',info:'Raak de noten op de beat'},
 ];
 const THEMAS=[
  {id:'dieren',ic:'🦁',nm:'Dieren',items:['🐶','🐱','🐰','🦊','🐻','🐼','🦁','🐸','🐷','🐵'],vijand:'🐍',held:'🐶',achtergr:'#0e2a1a',acc:'#4ade80'},
@@ -383,6 +384,66 @@ let chk=60;
  if(p.x>EINDE-30){punt(100);af=true;document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🏁 Level gehaald!';document.getElementById('os').textContent='Score: '+score;blip(880,.3,'triangle');return}
  /* held: foto of eigen figuurtje */
  if(ok(FHELD)){_rond(FHELD,p.x-cam,p.y-4,36)}else kereltje(p.x,p.y);
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+
+/* RITME: noten vallen in 4 banen op de beat — raak ze op tijd (Guitar Hero-stijl) */
+ritme:(naam,t,d)=>H(naam,t)+`
+const BPM=100+30*(D.snel-0.7),SPB=60/BPM,N=4,LY=Hh-110,LW=W/N;
+const TOETS=['D','F','J','K'],KL=['#f472b6','#22d3ee','#a3e635','#fbbf24'];
+/* eigen beat: kick op beat, hat offbeat, snare op 2&4 (WebAudio) */
+const kick=t=>{const o=A.createOscillator(),g=A.createGain();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(40,t+.1);g.gain.setValueAtTime(.5,t);g.gain.exponentialRampToValueAtTime(.001,t+.15);o.connect(g);g.connect(A.destination);o.start(t);o.stop(t+.16)};
+const hat=t=>{const b=A.createBuffer(1,800,A.sampleRate),s=A.createBufferSource(),g=A.createGain(),f=A.createBiquadFilter();const dd=b.getChannelData(0);for(let i=0;i<800;i++)dd[i]=(Math.random()*2-1)*Math.pow(1-i/800,2);s.buffer=b;f.type='highpass';f.frequency.value=8000;g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.001,t+.03);s.connect(f);f.connect(g);g.connect(A.destination);s.start(t)};
+const snare=t=>{const b=A.createBuffer(1,2200,A.sampleRate),s=A.createBufferSource(),g=A.createGain(),f=A.createBiquadFilter();const dd=b.getChannelData(0);for(let i=0;i<2200;i++)dd[i]=(Math.random()*2-1)*Math.pow(1-i/2200,2);s.buffer=b;f.type='bandpass';f.frequency.value=1800;g.gain.setValueAtTime(.3,t);g.gain.exponentialRampToValueAtTime(.001,t+.1);s.connect(f);f.connect(g);g.connect(A.destination);s.start(t)};
+/* noot-map: 4 banen × 48 beats, gegenereerd patroon */
+const noten=[];
+for(let b=0;b<48;b++){const r=Math.random();
+ if(b<4)noten.push({b,baan:b%4}); /* intro */
+ else if(r<.5)noten.push({b,baan:Math.floor(rand(0,4))});
+ else if(r<.7&&D.snel>1)noten.push({b,baan:Math.floor(rand(0,4))},{b:b+.5,baan:Math.floor(rand(0,4))})}
+let gestart=false,t0=0,combo=0,maxC=0,hit='',hitT=0,miss=0;
+const press=i=>{if(!gestart)return;const nu=(A.currentTime-t0)/SPB;
+ const n=noten.find(n=>!n.hit&&!n.gemist&&n.baan==i&&Math.abs(n.b-nu)<.28);
+ if(n){n.hit=true;const afw=Math.abs(n.b-nu);
+  if(afw<.12){hit='PERFECT!';punt(20);blip(880,.07,'triangle')}else{hit='GOED';punt(10);blip(660,.07,'triangle')}
+  combo++;if(combo>maxC)maxC=combo;hitT=A.currentTime}
+ else{combo=0;hit='';blip(200,.15,'sawtooth')}};
+TOETS.forEach((k,i)=>{addEventListener('keydown',e=>{if(e.key.toUpperCase()==k)press(i)})});
+function tik(x){press(Math.min(3,Math.floor(x/LW)))}
+let ci=0;
+const startKnop=document.createElement('button');startKnop.textContent='▶ START MUZIEK';startKnop.style.cssText='position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);z-index:5';
+document.body.appendChild(startKnop);
+startKnop.onclick=()=>{startKnop.remove();gestart=true;t0=A.currentTime+.5;
+ /* beat vooruit-scheduleren */
+ const sched=()=>{if(af)return;const nu=A.currentTime-t0;
+  while(ci<60&&ci*SPB<nu+1){const b=ci;kick(t0+b*SPB);if(b%2)hat(t0+b*SPB+SPB/2);if(b%4==1||b%4==3)snare(t0+b*SPB);ci++}
+  setTimeout(sched,60)};sched()};
+(function loop(){if(af)return;const nu=gestart?(A.currentTime-t0)/SPB:0;
+ /* tekening */
+ const gr=X.createLinearGradient(0,0,0,Hh);gr.addColorStop(0,'#12051f');gr.addColorStop(.6,T.achtergr);gr.addColorStop(1,'#050210');X.fillStyle=gr;X.fillRect(0,0,W,Hh);
+ /* banen */
+ for(let i=0;i<N;i++){X.fillStyle=i%2?'#ffffff08':'#ffffff05';X.fillRect(i*LW+2,60,LW-4,LY-60);
+  X.strokeStyle='#ffffff18';X.strokeRect(i*LW+2,60,LW-4,LY-60)}
+ /* hit-lijn */
+ X.fillStyle=T.acc;X.fillRect(0,LY,W,4);
+ for(let i=0;i<N;i++){X.fillStyle=KL[i];X.globalAlpha=.35;X.beginPath();X.arc(i*LW+LW/2,LY+2,22,0,7);X.fill();X.globalAlpha=1;
+  X.fillStyle='#fff';X.font='bold 16px system-ui';X.fillText(TOETS[i],i*LW+LW/2,LY+30)}
+ /* noten vallen */
+ const snel=(LY-60)/(SPB*3); /* 3 beats leidtijd */
+ noten.forEach(n=>{if(n.hit||n.gemist)return;const y=60+(nu-n.b+3)*snel/3;
+  if(y<60||y>LY+40)return;
+  if(y>LY+30){n.gemist=true;combo=0;miss++;lev--;lvs();hit='MISS';hitT=A.currentTime;return}
+  const g=X.createRadialGradient(n.baan*LW+LW/2,y,2,n.baan*LW+LW/2,y,18);g.addColorStop(0,'#fff');g.addColorStop(.4,KL[n.baan]);g.addColorStop(1,KL[n.baan]+'00');
+  X.fillStyle=g;X.beginPath();X.arc(n.baan*LW+LW/2,y,17,0,7);X.fill();
+  X.fillStyle='#fff';X.font='13px system-ui';X.fillText('♪',n.baan*LW+LW/2,y)});
+ /* held bovenop danst mee */
+ if(ok(FHELD))_rond(FHELD,W/2,32,44);else emoji(T.held,W/2,32,44);
+ /* combo + hit-tekst */
+ if(combo>1){X.fillStyle=T.acc;X.font='bold 20px system-ui';X.fillText(combo+'x combo',W/2,80)}
+ if(A.currentTime-hitT<.6&&hit){X.fillStyle=hit=='MISS'?'#f66':hit=='PERFECT!'?'#fde047':'#a3e635';X.font='bold 24px system-ui';X.fillText(hit,W/2,Hh/2)}
+ /* einde na laatste noot */
+ if(ci>=60&&noten.every(n=>n.hit||n.gemist)){af=true;document.getElementById('over').style.display='flex';
+  document.getElementById('ot').textContent='🎵 Nummer klaar!';document.getElementById('os').textContent='Score: '+score+' — Beste combo: '+maxC+'x';return}
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
 </`+'script></body></html>',
 };
