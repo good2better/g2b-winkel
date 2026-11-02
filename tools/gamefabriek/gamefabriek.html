@@ -48,6 +48,7 @@ label{font-size:.8rem;color:var(--zacht)}
 <div class="rij">
 <div><label>Spelnaam</label><input type="text" id="naam" value="Animal Heroes"></div>
 <div><label>Leeftijd</label><select id="moeilijk"><option value="peuter">🍼 2-4 jaar (peuter)</option><option value="kleuter">🧒 5-8 jaar (groep 1-4)</option><option value="kind" selected>🎮 9-12 jaar (groep 5-8)</option><option value="groot">🔥 13+ jaar</option></select></div>
+<div><label>⏱️ Speeltijd</label><select id="tijd"><option value="0">∞ oneindig</option><option value="60">60 sec</option><option value="90" selected>90 sec</option><option value="120">2 min</option></select></div>
 </div>
 </div>
 
@@ -116,8 +117,8 @@ h1{font-size:1.1rem;margin:10px}canvas{background:${t.achtergr};border-radius:12
 #hud{display:flex;gap:18px;font-size:1rem;margin:6px}#over{display:none;position:fixed;inset:0;background:#000c;align-items:center;justify-content:center;flex-direction:column;text-align:center}
 #over h2{font-size:2rem}button{background:${t.acc};border:0;color:#042;padding:12px 28px;border-radius:10px;font-size:1.1rem;font-weight:700;cursor:pointer;margin-top:12px}
 .tip{opacity:.7;font-size:.8rem;margin:6px}</style></head><body>
-<h1>${naam}</h1><div id="hud"><span id="score">⭐ 0</span><span id="lvs">❤️</span><span id="hs"></span></div>
-<canvas id="c" width="420" height="560"></canvas><div class="tip">⬅️ ➡️ of tik/sleep — Spatie = actie — 🎮 gamepad werkt ook</div>
+<h1>${naam}</h1><div id="hud"><span id="score">⭐ 0</span><span id="lvs">❤️</span><span id="klok"></span><span id="hs"></span></div>
+<div style="position:relative"><canvas id="c" width="420" height="560"></canvas><canvas id="fx" width="420" height="560" style="position:absolute;left:0;top:0;pointer-events:none"></canvas></div><div class="tip">⬅️ ➡️ of tik/sleep — Spatie = actie — 🎮 gamepad werkt ook</div>
 <div id="over"><h2 id="ot"></h2><p id="os"></p><button onclick="location.reload()">Opnieuw</button></div>
 <script>
 const C=document.getElementById('c'),X=C.getContext('2d'),W=C.width,Hh=C.height;
@@ -127,8 +128,17 @@ document.getElementById('hs').textContent=hs?'🏆 '+hs:'';
 const lvs=()=>document.getElementById('lvs').textContent='❤️'.repeat(lev);lvs();
 const A=new(window.AudioContext||window.webkitAudioContext)();
 const blip=(f,d=.08,type='square',v=.15)=>{const o=A.createOscillator(),g=A.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,A.currentTime);g.gain.exponentialRampToValueAtTime(.001,A.currentTime+d);o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
-const punt=n=>{score+=n;document.getElementById('score').textContent='⭐ '+score;if(score>hs){hs=score;localStorage.setItem(HSK,hs);document.getElementById('hs').textContent='🏆 '+hs}};
-const einde=()=>{af=true;document.getElementById('over').style.display='flex';document.getElementById('ot').textContent=score>0?'🎉 Goed gedaan!':'😅 Nog een keer?';document.getElementById('os').textContent='Score: '+score+(score>=hs&&score>0?' — NIEUW RECORD!':'');blip(180,.4,'sawtooth')};
+const punt=(n,x,y)=>{score+=n;document.getElementById('score').textContent='⭐ '+score;if(score>hs){hs=score;localStorage.setItem(HSK,hs);document.getElementById('hs').textContent='🏆 '+hs}if(x!=null)pop(x,y,'+'+n)};
+/* effect-laag: zwevende score-pops + confetti bovenop het spel */
+const FX=document.getElementById('fx'),FX2=FX.getContext('2d'),pops=[];
+const pop=(x,y,t,k='#ffe066')=>pops.push({x,y,t,k,l:1,v:-.9});
+const confetti=()=>{for(let i=0;i<50;i++)pops.push({x:rand(0,W),y:rand(-80,Hh*.4),t:['🎉','⭐','✨','🎊'][i%4],k:'#fff',l:1,v:rand(.5,2)})};
+(function fxloop(){FX2.clearRect(0,0,W,Hh);for(let i=pops.length-1;i>=0;i--){const p=pops[i];p.y+=p.v;p.l-=.012;if(p.l<=0){pops.splice(i,1);continue}FX2.globalAlpha=p.l;FX2.font='bold 18px system-ui';FX2.fillStyle=p.k;FX2.textAlign='center';FX2.fillText(p.t,p.x,p.y)}FX2.globalAlpha=1;requestAnimationFrame(fxloop)})();
+/* speeltijd: 0 = oneindig */
+let tijd=${JSON.stringify('TIJD')};
+if(tijd>0){const k=()=>document.getElementById('klok').textContent='⏰ '+tijd+'s';k();
+ setInterval(()=>{if(af)return;tijd--;k();if(tijd<=0){einde();document.getElementById('ot').textContent='⏰ TIJD OM!'}},1000)}
+const einde=()=>{af=true;confetti();document.getElementById('over').style.display='flex';document.getElementById('ot').textContent=score>0?'🎉 Goed gedaan!':'😅 Nog een keer?';document.getElementById('os').textContent='Score: '+score+(score>=hs&&score>0?' — NIEUW RECORD!':'');blip(180,.4,'sawtooth')};
 const emoji=(e,x,y,s)=>{X.font=s+'px serif';X.textAlign='center';X.textBaseline='middle';X.fillText(e,x,y)};
 /* eigen foto's als sprites: held + extra karakters */
 const FOTOS=${JSON.stringify('FOTOS')};
@@ -140,6 +150,16 @@ const ok=i=>i&&i.complete&&i.naturalWidth;
 const held=(x,y,s)=>{if(ok(FHELD))_rond(FHELD,x,y,s);else emoji(T.held,x,y,s)};
 const itemX=(i,x,y,s)=>{const im=FITEMS.length?FITEMS[i%FITEMS.length]:null;if(ok(im))_rond(im,x,y,s);else emoji(T.items[i%T.items.length],x,y,s)};
 const rand=(a,b)=>a+Math.random()*(b-a);
+/* getekende thema-achtergrond: gradiënt-lucht + bewegende elementen per thema */
+const _bgt={t:0,el:Array.from({length:12},(_,i)=>({x:Math.random()*W,y:Math.random()*Hh*.7,s:.4+Math.random(),v:.1+Math.random()*.4}))};
+const BGT={dieren:['☁️','🌿','🦋'],ruimte:['✦','✧','·'],zee:['🫧','🐚','~'],snoep:['✿','·','🍬'],sport:['·','✦','🏟️'],muziek:['♪','♫','✨']};
+const bg=()=>{_bgt.t++;
+ const g=X.createLinearGradient(0,0,0,Hh);g.addColorStop(0,T.acc+'33');g.addColorStop(.55,T.achtergr);g.addColorStop(1,'#050510');X.fillStyle=g;X.fillRect(0,0,W,Hh);
+ /* zachte grond-bolling onderin */
+ X.fillStyle=T.acc+'18';X.beginPath();X.ellipse(W/2,Hh+60,W*.9,130,0,0,7);X.fill();
+ const items=BGT[T.id]||['✦','·','✧'];
+ _bgt.el.forEach((e,i)=>{e.x-=e.v;if(e.x<-30){e.x=W+30;e.y=Math.random()*Hh*.7}
+  X.globalAlpha=.25+.15*Math.sin(_bgt.t*.02+i);emoji(items[i%items.length],e.x,e.y,14*e.s)});X.globalAlpha=1};
 let px=W/2,keys={};addEventListener('keydown',e=>{keys[e.key]=true;if(A.state=='suspended')A.resume()});addEventListener('keyup',e=>keys[e.key]=false);
 let tx=null;C.addEventListener('pointermove',e=>{tx=e.offsetX*W/C.clientWidth});C.addEventListener('pointerdown',e=>{tx=e.offsetX*W/C.clientWidth;if(A.state=='suspended')A.resume();tik(e.offsetX*W/C.clientWidth,e.offsetY*Hh/C.clientHeight)});
 /* gamepad: joystick/dpad sturen, A/B = actie */
@@ -156,13 +176,13 @@ vang:(naam,t,d)=>H(naam,t)+`
 let mand={x:W/2},items=[],t=0,spd=1.8*D.snel;
 function spawn(){items.push({x:rand(30,W-30),y:-20,v:spd*rand(.8,1.4),ix:Math.floor(rand(0,20)),e:Math.random()<.85?T.items[Math.floor(rand(0,T.items.length))]:T.vijand, kwaad:Math.random()<.15})}
 function tik(x){}
-(function loop(){if(af)return;X.clearRect(0,0,W,Hh);
+(function loop(){if(af)return;bg();
  const pd=PAD();if(keys['ArrowLeft']||pd.l)mand.x-=6;if(keys['ArrowRight']||pd.r)mand.x+=6;if(tx!=null)mand.x+=(tx-mand.x)*.2;
  mand.x=Math.max(30,Math.min(W-30,mand.x));
  if(++t>40/D.snel){t=0;spawn()}
  held(mand.x,Hh-56,44);X.fillStyle=T.acc;X.fillRect(mand.x-38,Hh-72,76,6);
  items.forEach(i=>{i.y+=i.v;if(i.kwaad)emoji(T.vijand,i.x,i.y,34);else itemX(i.ix,i.x,i.y,34);
-  if(i.y>Hh-78&&Math.abs(i.x-mand.x)<44){if(i.kwaad){lev--;lvs();blip(120,.3,'sawtooth')}else{punt(10);blip(600,.1,'triangle')}i.y=Hh+99}
+  if(i.y>Hh-78&&Math.abs(i.x-mand.x)<44){if(i.kwaad){lev--;lvs();blip(120,.3,'sawtooth')}else{punt(10,i.x,i.y);blip(600,.1,'triangle')}i.y=Hh+99}
   if(i.y>Hh-10&&!i.kwaad){i.y=Hh+99}});
  items=items.filter(i=>i.y<Hh+50);
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
@@ -174,8 +194,8 @@ let doel,t=0,levenT=0;
 function nieuw(){doel={x:rand(50,W-50),y:rand(80,Hh-120),ix:Math.floor(rand(0,20)),e:Math.random()<.7?T.items[Math.floor(rand(0,T.items.length))]:T.vijand,kwaad:Math.random()<.3,r:34,age:0}}
 nieuw();
 function tik(x,y){if(!doel)return;const dx=x-doel.x,dy=y-doel.y;
- if(dx*dx+dy*dy<doel.r*doel.r*2){if(doel.kwaad){lev--;lvs();blip(120,.3,'sawtooth')}else{punt(15);blip(700,.1,'triangle')}doel=null}}
-(function loop(){if(af)return;X.clearRect(0,0,W,Hh);
+ if(dx*dx+dy*dy<doel.r*doel.r*2){if(doel.kwaad){lev--;lvs();blip(120,.3,'sawtooth')}else{punt(15,doel.x,doel.y);blip(700,.1,'triangle')}doel=null}}
+(function loop(){if(af)return;bg();
  if(!doel){if(++t>30)nieuw()}else{doel.age++;if(doel.kwaad)emoji(T.vijand,doel.x,doel.y,46);else itemX(doel.ix,doel.x,doel.y,40);
   X.strokeStyle=doel.kwaad?'#f44':T.acc;X.lineWidth=3;X.beginPath();X.arc(doel.x,doel.y,doel.r+8-doel.age*.15,0,7);X.stroke();
   if(doel.age>90){if(!doel.kwaad){}doel=null;t=0}}
@@ -212,7 +232,7 @@ renner:(naam,t,d)=>H(naam,t)+`
 let y=Hh-90,vy=0,grond=Hh-90,obs=[],t=0,spd=4*D.snel,dist=0;
 addEventListener('keydown',e=>{if(e.key==' '&&y>=grond-1){vy=-11;blip(300,.15,'triangle')}});
 function tik(){if(y>=grond-1){vy=-11;blip(300,.15,'triangle')}}
-(function loop(){if(af)return;X.clearRect(0,0,W,Hh);
+(function loop(){if(af)return;bg();
  if(PAD().a&&y>=grond-1){vy=-11;blip(300,.15,'triangle')}
  X.strokeStyle=T.acc;X.beginPath();X.moveTo(0,grond+24);X.lineTo(W,grond+24);X.stroke();
  vy+=.55;y+=vy;if(y>grond){y=grond;vy=0}
@@ -229,7 +249,7 @@ schiet:(naam,t,d)=>H(naam,t)+`
 let ship={x:W/2},kogels=[],vij=[],t=0,spd=2*D.snel,pT=0;
 addEventListener('keydown',e=>{if(e.key==' '){kogels.push({x:ship.x,y:Hh-90});blip(900,.05)}});
 function tik(x){kogels.push({x:ship.x,y:Hh-90});blip(900,.05)}
-(function loop(){if(af)return;X.clearRect(0,0,W,Hh);
+(function loop(){if(af)return;bg();
  const pd=PAD();if(pd.a&&++pT>12){pT=0;kogels.push({x:ship.x,y:Hh-90});blip(900,.05)}
  if(keys['ArrowLeft']||pd.l)ship.x-=6;if(keys['ArrowRight']||pd.r)ship.x+=6;if(tx!=null)ship.x+=(tx-ship.x)*.25;
  ship.x=Math.max(26,Math.min(W-26,ship.x));
@@ -237,7 +257,7 @@ function tik(x){kogels.push({x:ship.x,y:Hh-90});blip(900,.05)}
  held(ship.x,Hh-60,42);
  kogels.forEach(k=>{k.y-=9;X.fillStyle=T.acc;X.fillRect(k.x-2,k.y,4,12)});
  vij.forEach(v=>{v.y+=v.v;emoji(v.kwaad===undefined?T.vijand:T.items[0],v.x,v.y,36);
-  kogels.forEach(k=>{if(Math.abs(k.x-v.x)<24&&Math.abs(k.y-v.y)<24){v.y=Hh+99;k.y=-99;punt(10);blip(500,.12,'square')}});
+  kogels.forEach(k=>{if(Math.abs(k.x-v.x)<24&&Math.abs(k.y-v.y)<24){v.y=Hh+99;k.y=-99;punt(10,v.x,v.y);blip(500,.12,'square')}});
   if(v.y>Hh-50){lev--;lvs();blip(120,.3,'sawtooth');v.y=Hh+99}});
  kogels=kogels.filter(k=>k.y>-20);vij=vij.filter(v=>v.y<Hh+40);
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
@@ -260,10 +280,10 @@ C.addEventListener('pointerup',e=>{if(!tch)return;const ax=e.offsetX-tch.x,ay=e.
  if(++t>=Math.max(4,10/D.snel)){t=0;dx=nx;dy=ny;const h={x:sl[0].x+dx,y:sl[0].y+dy};
   if(h.x<0||h.y<0||h.x>=G||h.y>=G*1.33||sl.some(s=>s.x==h.x&&s.y==h.y)){lev--;lvs();blip(120,.3,'sawtooth');sl=[{x:10,y:10}];dx=1;dy=0;nx=1;ny=0;if(lev<=0){einde();return}}
   else{sl.unshift(h);
-   if(h.x==eten.x&&h.y==eten.y){punt(10);blip(700,.1,'triangle');
+   if(h.x==eten.x&&h.y==eten.y){punt(10,h.x*S+S/2,h.y*S+S/2);blip(700,.1,'triangle');
     do{eten={x:Math.floor(rand(0,G)),y:Math.floor(rand(0,G*1.33))}}while(sl.some(s=>s.x==eten.x&&s.y==eten.y))}
    else sl.pop()}}
- X.clearRect(0,0,W,Hh);emoji(T.items[0],eten.x*S+S/2,eten.y*S+S/2,S-4);
+ bg();emoji(T.items[0],eten.x*S+S/2,eten.y*S+S/2,S-4);
  sl.forEach((s,i)=>{if(i==0){held(s.x*S+S/2,s.y*S+S/2,S-2)}else{X.fillStyle=T.acc+'88';X.beginPath();X.roundRect(s.x*S+1,s.y*S+1,S-2,S-2,6);X.fill()}});
  requestAnimationFrame(loop)})();
 </`+'script></body></html>',
@@ -306,13 +326,13 @@ const pad2=setInterval(()=>{const pd=PAD(),s=5;if(pd.u)p.y-=s;if(pd.d)p.y+=s;if(
 let t2=null;C.addEventListener('pointerdown',e=>t2={x:e.offsetX*W/C.clientWidth,y:e.offsetY*Hh/C.clientHeight});
 C.addEventListener('pointermove',e=>{if(!t2)return;const nx=e.offsetX*W/C.clientWidth,ny=e.offsetY*Hh/C.clientHeight;
  p.x+=(nx-t2.x)*.3;p.y+=(ny-t2.y)*.3;t2={x:nx,y:ny}});
-(function loop(){if(af)return;X.clearRect(0,0,W,Hh);
+(function loop(){if(af)return;bg();
  p.x=Math.max(20,Math.min(W-20,p.x));p.y=Math.max(50,Math.min(Hh-30,p.y));
  vij.forEach(v=>{v.x+=v.vx;v.y+=v.vy;if(v.x<30||v.x>W-30)v.vx*=-1;if(v.y<50||v.y>Hh-80)v.vy*=-1;
   emoji(T.vijand,v.x,v.y,36);
   if(Math.abs(v.x-p.x)<30&&Math.abs(v.y-p.y)<30){lev--;lvs();blip(120,.3,'sawtooth');p={x:W/2,y:Hh-60}}});
  dots.forEach((o,di)=>{itemX(di,o.x,o.y,28);
-  if(Math.abs(o.x-p.x)<28&&Math.abs(o.y-p.y)<28){o.y=-99;punt(10);blip(700,.08,'triangle')}});
+  if(Math.abs(o.x-p.x)<28&&Math.abs(o.y-p.y)<28){o.y=-99;punt(10,o.x,o.y);blip(700,.08,'triangle')}});
  dots=dots.filter(o=>o.y>0);held(p.x,p.y,40);
  if(!dots.length){punt(50);af=true;document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🎉 Alles gepakt!';document.getElementById('os').textContent='Score: '+score;return}
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
@@ -374,7 +394,7 @@ let chk=60;
  wolken.forEach(w=>{const wx2=((w.x-cam*.6)%(EINDE+400)+EINDE+400)%(EINDE+400)-200;if(wx2>W+100||wx2<-120)return;wolk(wx2,w.y,w.s)});
  plats.forEach(b=>{if(b.x-cam>-200&&b.x-cam<W+200)blok(b)});
  munten.forEach(m=>{if(!m.pak&&m.x-cam>-30&&m.x-cam<W+30)munt(m);
-  if(!m.pak&&Math.abs(m.x-p.x)<20&&Math.abs(m.y-p.y)<26){m.pak=true;punt(10);blip(760,.08,'triangle')}});
+  if(!m.pak&&Math.abs(m.x-p.x)<20&&Math.abs(m.y-p.y)<26){m.pak=true;punt(10,m.x,m.y);blip(760,.08,'triangle')}});
  spikes.forEach(s=>{if(s.x-cam>-30&&s.x-cam<W+30)spijker(s);
   if(Math.abs(s.x+7-p.x)<18&&Math.abs(s.y-p.y)<26){lev--;lvs();blip(120,.3,'sawtooth');p.vy=-8}});
  /* checkpoint: linkerrand van het platform waar je op staat, elke ~1200px — kan nooit in een gat landen */
@@ -406,7 +426,7 @@ let gestart=false,t0=0,combo=0,maxC=0,hit='',hitT=0,miss=0;
 const press=i=>{if(!gestart)return;const nu=(A.currentTime-t0)/SPB;
  const n=noten.find(n=>!n.hit&&!n.gemist&&n.baan==i&&Math.abs(n.b-nu)<.28);
  if(n){n.hit=true;const afw=Math.abs(n.b-nu);
-  if(afw<.12){hit='PERFECT!';punt(20);blip(880,.07,'triangle')}else{hit='GOED';punt(10);blip(660,.07,'triangle')}
+  if(afw<.12){hit='PERFECT!';punt(20,i*LW+LW/2,LY-40);blip(880,.07,'triangle')}else{hit='GOED';punt(10,i*LW+LW/2,LY-40);blip(660,.07,'triangle')}
   combo++;if(combo>maxC)maxC=combo;hitT=A.currentTime}
  else{combo=0;hit='';blip(200,.15,'sawtooth')}};
 TOETS.forEach((k,i)=>{addEventListener('keydown',e=>{if(e.key.toUpperCase()==k)press(i)})});
@@ -485,7 +505,7 @@ function tik(x){mx=x}
  obst=obst.filter(o=>o.y<Hh+40&&o.y>-50);
  boosts.forEach(b=>{b.y+=b.v+spd*.4;const bm=wegM(b.y-60);
   X.fillStyle='#fbbf24';X.beginPath();X.arc(bm+b.x-W/2,b.y,12,0,7);X.fill();X.fillStyle='#fff';X.font='14mx serif';X.fillText('⚡',bm+b.x-W/2,b.y);
-  if(Math.abs(b.y-PY)<30&&Math.abs((bm+b.x-W/2)-mx)<32){b.y=-99;punt(15);blip(900,.1,'triangle');spd+=.3}});
+  if(Math.abs(b.y-PY)<30&&Math.abs((bm+b.x-W/2)-mx)<32){b.y=-99;punt(15,bm+b.x,b.y);blip(900,.1,'triangle');spd+=.3}});
  boosts=boosts.filter(b=>b.y<Hh+40&&b.y>-50);
  /* mij: foto of voertuig-emoji */
  const mx2=wegM(PY-60);
@@ -503,7 +523,8 @@ T('maak').onclick=()=>{
  const gen=GEN[type];
  let code=gen(naam,th,MOEILIJK[T('moeilijk').value]);
  code=code.replace(JSON.stringify('THEMA'),JSON.stringify(th)).replace(JSON.stringify('MOEIL'),JSON.stringify(MOEILIJK[T('moeilijk').value]))
-  .replace(JSON.stringify('FOTOS'),JSON.stringify({held:heldImg,items:xImgs}));
+   .replace(JSON.stringify('FOTOS'),JSON.stringify({held:heldImg,items:xImgs}))
+  .replace(JSON.stringify('TIJD'),+T('tijd').value);
  if(type=='quiz')code=code.replace("'THEMA_ID'",JSON.stringify(thema));
  log('🔨 '+naam+' ('+type+'/'+thema+') gebouwd: '+(code.length/1024).toFixed(0)+' KB, één bestand, geen externe bestanden nodig');
  const blob=new Blob([code],{type:'text/html'});
