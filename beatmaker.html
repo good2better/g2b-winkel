@@ -457,6 +457,9 @@ function laagUI(){
    b.textContent=MELN[inst];b.style.borderColor=inst==A.inst?'var(--groen)':'#ffffff22';
    b.onclick=async()=>{A.inst=inst;await laadMelBuf(inst);laagUI()};ri.appendChild(b)}
   const dwn=document.createElement('button');dwn.className='minik';dwn.textContent='⬇ MIDI';
+  dwn.title='klik = download · SLEEP deze knop naar je desktop/DAW-map om de .mid daar neer te zetten (Chrome)';
+  dwn.draggable=true;
+  dwn.ondragstart=e=>midiDrag(e,k);
   dwn.onclick=()=>melDownload(k);ri.appendChild(dwn);d.appendChild(ri);
   const mn=document.createElement('div');mn.className='melnotes';
   const cap=A.noten.slice(0,140);
@@ -493,6 +496,14 @@ function melDownload(k){
  const A=NLAY[k];if(!A||!A.noten.length)return;
  const url=URL.createObjectURL(midiBlob(A.noten)),a=document.createElement('a');
  a.href=url;a.download=`G2B-${k}-${document.getElementById('bpm').value}bpm.mid`;a.click();setTimeout(()=>URL.revokeObjectURL(url),5000)}
+// Chrome DownloadURL-drag: sleep de ⬇-knop → OS-bestand-drag met de .mid
+function midiDrag(e,k){
+ const A=NLAY[k];if(!A||!A.noten.length){e.preventDefault();return}
+ const url=URL.createObjectURL(midiBlob(A.noten));
+ const nm=`G2B-${k}-${document.getElementById('bpm').value}bpm.mid`;
+ e.dataTransfer.setData('DownloadURL','application/octet-stream:'+nm+':'+url);
+ e.dataTransfer.effectAllowed='copy';
+ setTimeout(()=>URL.revokeObjectURL(url),30000)}
 document.getElementById('play').onclick=function(){
  if(timer){clearInterval(timer);timer=null;this.textContent='▶ SPEL';
   document.querySelectorAll('.cel.speel').forEach(c=>c.classList.remove('speel'));
@@ -514,6 +525,11 @@ function wavBlob(buf){
  for(let i=0;i<n;i++){const x=Math.max(-1,Math.min(1,d[i]*sc));v.setInt16(44+i*2,x<0?x*0x8000:x*0x7FFF,true)}
  return new Blob([ab],{type:'audio/wav'})
 }
+let lastWav=null; // {url,nm} van de laatste export — voor DownloadURL-drag
+document.getElementById('exp').ondragstart=e=>{
+ if(!lastWav){e.preventDefault();return}
+ e.dataTransfer.setData('DownloadURL','application/octet-stream:'+lastWav.nm+':'+lastWav.url);
+ e.dataTransfer.effectAllowed='copy'};
 document.getElementById('exp').onclick=async function(){
  this.disabled=true;this.textContent='⏳ renderen...';
  try{
@@ -536,7 +552,9 @@ document.getElementById('exp').onclick=async function(){
    const g=oc.createGain();g.gain.value=a.id=='loop'?0.75:0.85;s.connect(g).connect(masterOf(oc));s.start(0)}
   const rendered=await oc.startRendering();ac=savAc;NB=savNB;
   const url=URL.createObjectURL(wavBlob(rendered)),a=document.createElement('a');
-  a.href=url;a.download=`G2B-${cur}-${bpm}bpm-${nBars}bar.wav`;a.click();setTimeout(()=>URL.revokeObjectURL(url),5000)
+  a.href=url;a.download=`G2B-${cur}-${bpm}bpm-${nBars}bar.wav`;a.click();
+  lastWav={url,nm:a.download};this.draggable=true;
+  this.title='SLEEP deze knop naar je desktop/DAW-map om de .wav daar neer te zetten (Chrome)';
  }catch(e){console.error(e)}
  this.disabled=false;this.textContent='⬇ EXPORT';
 };
