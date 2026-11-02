@@ -76,6 +76,10 @@ protected:
         else if(index==17)fRun=value;
         else if(index==18)fMute=(int)(value+0.5f); // rij-mute bitmask K=1 S=2 H=4 P=8
         else if(index==19)fRec=(int)(value+0.5f);
+        else if(index==20)fLock=(int)(value+0.5f); // rij-slot bitmask K=1 S=2 H=4 P=8
+        else if(index==21)fSong=(int)(value+0.5f);
+        else if(index>=22&&index<=25)fToon[index-22]=value;
+        else if(index>=26&&index<=29)fLen[index-26]=value;
         repaint();
     }
     void stateChanged(const char* key, const char* value) override
@@ -217,6 +221,15 @@ protected:
                 fontSize(9.5f);fillColor(fRec>0?Color(255,240,240):Color(143,160,152));
                 text(bx2+15.0f,58.5f,"REC",nullptr);
             }
+            bx2+=34.0f;
+            { // SONG: 8-maten arrangement (intro rustig → vol → strip+fill)
+                beginPath();roundedRect(bx2,50.0f,42.0f,17.0f,4.0f);
+                if(fSong>0){fillColor(232,190,60);fill();}
+                else{fillColor(g2bsk(fLight,1));fill();}
+                strokeColor(42,47,45);strokeWidth(1.0f);stroke();
+                fontSize(9.5f);fillColor(fSong>0?Color(13,15,14):Color(143,160,152));
+                text(bx2+21.0f,58.5f,"SONG",nullptr);
+            }
         }
 
         // 16-staps LED-grid (4 rijen: K S H P)
@@ -234,13 +247,17 @@ protected:
                 fill();
             }
             // rij-letter = mute-knop (K/S/H/P → bitmask, B → BAS aan/uit)
+            // goud = rij-slot (🔒): dobbelen + SONG laten deze rij met rust
             {
                 const bool mut = r<4 ? (fMute&(1<<r))!=0 : fValue[4]<0.5f;
+                const bool lok = r<4 && (fLock&(1<<r))!=0;
                 beginPath();roundedRect(2.0f,gy+r*16.0f,14.0f,12.0f,3.0f);
-                if(mut){fillColor(120,40,40);fill();}else{fillColor(g2bsk(fLight,4));fill();}
-                strokeColor(42,47,45);strokeWidth(1.0f);stroke();
+                if(mut){fillColor(120,40,40);fill();}
+                else if(lok){fillColor(150,115,35);fill();}
+                else{fillColor(g2bsk(fLight,4));fill();}
+                strokeColor(lok?Color(232,190,60):Color(42,47,45));strokeWidth(lok?1.4f:1.0f);stroke();
                 fontSize(8.5f);textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
-                fillColor(mut?Color(255,200,200):g2bsk(fLight,3));
+                fillColor(mut?Color(255,200,200):(lok?Color(255,235,180):g2bsk(fLight,3)));
                 text(9.0f,gy+r*16.0f+7.0f,&rowN[r],nullptr);
             }
         }
@@ -260,6 +277,35 @@ protected:
             if(i==0)moveTo(x0,y0);else lineTo(x0,y0);lineTo(x1,y1);
         }
         strokeColor(47,191,113);strokeWidth(1.5f);stroke();
+
+        // per-rij TOON/LENGTE strip (klik op een rij) — ligt over de scope
+        if(fFxRow>=0){
+            static const char*RN[4]={"KICK","SNARE","HAT","PERC"};
+            beginPath();roundedRect(sx,sy,sw,sh,5.0f);fillColor(g2bsk(fLight,1));fill();
+            strokeColor(g2bsk(fLight,5));strokeWidth(1.0f);stroke();
+            fontSize(9.0f);textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
+            fillColor(g2bsk(fLight,2));
+            text(sx+8.0f,sy+15.0f,RN[fFxRow],nullptr);
+            fillColor(g2bsk(fLight,3));
+            text(sx+56.0f,sy+15.0f,"TOON",nullptr);
+            text(sx+290.0f,sy+15.0f,"LENGTE",nullptr);
+            // sliders: TOON 0.5-2x · LENGTE 0.2-2.5x
+            auto sli=[&](float x,float w,float v,float mn,float mx){
+                float n=(v-mn)/(mx-mn);if(n<0)n=0;if(n>1)n=1;
+                beginPath();roundedRect(x,sy+12.0f,w,6.0f,3.0f);fillColor(g2bsk(fLight,4));fill();
+                if(n>0){beginPath();roundedRect(x,sy+12.0f,w*n,6.0f,3.0f);fillColor(g2bsk(fLight,5));fill();}
+                beginPath();circle(x+w*n,sy+15.0f,5.0f);fillColor(232,236,234);fill();
+            };
+            sli(sx+92.0f,140.0f,fToon[fFxRow],0.5f,2.0f);
+            sli(sx+330.0f,140.0f,fLen[fFxRow],0.2f,2.5f);
+            char vb[24];
+            fontSize(9.5f);fillColor(232,236,234);
+            std::snprintf(vb,sizeof vb,"%.2fx",fToon[fFxRow]);text(sx+240.0f,sy+15.0f,vb,nullptr);
+            std::snprintf(vb,sizeof vb,"%.2fx",fLen[fFxRow]);text(sx+478.0f,sy+15.0f,vb,nullptr);
+            // sluit-kruisje
+            fontSize(11.0f);fillColor(g2bsk(fLight,3));
+            text(sx+sw-14.0f,sy+15.0f,"x",nullptr);
+        }
 
         // AAN/UIT pil rechtsboven
         {
@@ -322,14 +368,36 @@ protected:
             text(px+pw-6.0f,py+ph-4.0f,"KRACHT →",nullptr);
         }
         fontSize(10.5f);fillColor(90,100,94);textAlign(ALIGN_CENTER|ALIGN_BOTTOM);
-        text(W*0.5f,H-8.0f,"groen = stap die klinkt · wit = nu · speelt zodra je DAW loopt",nullptr);
+        text(W*0.5f,H-8.0f,"klik rij = toon/lengte · rechts op letter = slot · speelt zodra je DAW loopt",nullptr);
     }
 
     bool onMouse(const MouseEvent& ev) override
     {
+        if(ev.button==2){ // rechts-klik op rij-letter = rij-slot (🔒)
+            if(ev.press&&(float)(ev.pos.getX()/getScaleFactor())>=2.0f&&(float)(ev.pos.getX()/getScaleFactor())<=16.0f){
+                const float my=(float)(ev.pos.getY()/getScaleFactor())-74.0f;
+                if(my>=0){const int r=(int)(my/16.0f);if(r>=0&&r<4){fLock^=(1<<r);setParameterValue(20,(float)fLock);repaint();return true;}}
+            }
+            return false;
+        }
         if(ev.button!=1)return false;
         const float W=getWidth();
         if(ev.press){
+            // TOON/LENGTE strip: klik in een slider of op het kruisje
+            if(fFxRow>=0&&(float)(ev.pos.getY()/getScaleFactor())>=160.0f&&(float)(ev.pos.getY()/getScaleFactor())<=190.0f){
+                const float mx2=(float)(ev.pos.getX()/getScaleFactor());
+                if(mx2>=18.0f+92.0f-8.0f&&mx2<=18.0f+232.0f+8.0f){fFxDrag=1;fxSet(mx2);return true;}
+                if(mx2>=18.0f+330.0f-8.0f&&mx2<=18.0f+470.0f+8.0f){fFxDrag=2;fxSet(mx2);return true;}
+                if(mx2>=18.0f+W-36.0f-24.0f){fFxRow=-1;repaint();return true;}
+                return true; // klik in strip: niet doorlaten
+            }
+            // klik op een rij-cel = zijn TOON/LENGTE-strip openen/sluiten
+            if((float)(ev.pos.getX()/getScaleFactor())>=18.0f&&(float)(ev.pos.getX()/getScaleFactor())<=W-18.0f){
+                const float my=(float)(ev.pos.getY()/getScaleFactor())-74.0f;
+                if(my>=0){const int r=(int)(my/16.0f);
+                    if(r>=0&&r<4){fFxRow=(fFxRow==r)?-1:r;repaint();return true;}
+                }
+            }
             if((float)(ev.pos.getX()/getScaleFactor())>=W-40.0f&&(float)(ev.pos.getX()/getScaleFactor())<=W-14.0f&&(float)(ev.pos.getY()/getScaleFactor())>=34.0f&&(float)(ev.pos.getY()/getScaleFactor())<=51.0f){
                 fLight=(fLight+1)%8;repaint();return true;
             }
@@ -354,6 +422,10 @@ protected:
             // SPEEL/STOP pill
             if((float)(ev.pos.getX()/getScaleFactor())>=208.0f&&(float)(ev.pos.getX()/getScaleFactor())<=246.0f&&(float)(ev.pos.getY()/getScaleFactor())>=50.0f&&(float)(ev.pos.getY()/getScaleFactor())<=67.0f){
                 fRun=fRun>0.5f?0.f:1.f;setParameterValue(17,fRun);repaint();return true;
+            }
+            // SONG pill
+            if((float)(ev.pos.getX()/getScaleFactor())>=282.0f&&(float)(ev.pos.getX()/getScaleFactor())<=324.0f&&(float)(ev.pos.getY()/getScaleFactor())>=50.0f&&(float)(ev.pos.getY()/getScaleFactor())<=67.0f){
+                fSong=1-fSong;setParameterValue(21,(float)fSong);repaint();return true;
             }
             // REC pill
             if((float)(ev.pos.getX()/getScaleFactor())>=248.0f&&(float)(ev.pos.getX()/getScaleFactor())<=278.0f&&(float)(ev.pos.getY()/getScaleFactor())>=50.0f&&(float)(ev.pos.getY()/getScaleFactor())<=67.0f){
@@ -388,6 +460,7 @@ protected:
             }
         }
         else if(fXYdrag){fXYdrag=false;return true;}
+        else if(fFxDrag>0){fFxDrag=0;return true;}
         const float step=(W-40.0f)/11;
         if(ev.press){
             for(int i=0;i<11;++i){
@@ -410,9 +483,22 @@ protected:
         editParameter(9,true);setParameterValue(9,dm);editParameter(9,false);
         repaint();
     }
+    // TOON/LENGTE slider → param 22+rij / 26+rij
+    void fxSet(float mx){
+        if(fFxRow<0)return;
+        if(fFxDrag==1){
+            float n=(mx-(18.0f+92.0f))/140.0f;if(n<0)n=0;if(n>1)n=1;
+            const float v=0.5f+n*1.5f;fToon[fFxRow]=v;setParameterValue(22+fFxRow,v);
+        }else if(fFxDrag==2){
+            float n=(mx-(18.0f+330.0f))/140.0f;if(n<0)n=0;if(n>1)n=1;
+            const float v=0.2f+n*2.3f;fLen[fFxRow]=v;setParameterValue(26+fFxRow,v);
+        }
+        repaint();
+    }
     bool onMotion(const MotionEvent& ev) override
     {
         if(fXYdrag){xySet((float)(ev.pos.getX()/getScaleFactor()),(float)(ev.pos.getY()/getScaleFactor()));return true;}
+        if(fFxDrag>0){fxSet((float)(ev.pos.getX()/getScaleFactor()));return true;}
         if(fDrag<0)return false;
         const float dy=fLastY-(float)(ev.pos.getY()/getScaleFactor());fLastY=(float)(ev.pos.getY()/getScaleFactor());
         const float range=fMax[fDrag]-fMin[fDrag];
@@ -443,7 +529,9 @@ private:
     float fScope[kScopeSize];int fScopePos;
     int fDrag;float fLastY;int fProg;int fStep;float fAuto=0;int fLight=0;
     int fOn=1,fDrum=1,fHand=0; bool fXYdrag=false; float fRun=1.f;
-    int fMute=0,fRec=0; // rij-mute bitmask (K=1 S=2 H=4 P=8) + REC wav-opname
+    int fMute=0,fRec=0,fLock=0,fSong=0; // rij-mute/slot bitmasken (K=1 S=2 H=4 P=8) + REC + SONG
+    float fToon[4]={1.f,1.f,1.f,1.f},fLen[4]={1.f,1.f,1.f,1.f};
+    int fFxRow=-1,fFxDrag=0; // open TOON/LENGTE-strip (-1=dicht) + actieve slider
     float fXX=18.0f,fXY_=286.0f,fXW=524.0f,fXH=58.0f;
     char fPatGrid[5][16];
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DrumsUI)

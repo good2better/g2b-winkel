@@ -80,14 +80,14 @@ static const int kMajDeg[7] = {0,2,4,5,7,9,11};
 
 struct DrumVoice {
     bool active=false; int type=0; float t=0,amp=0,f0=0,f1=0,dec=0;
-    const int16_t* smp=nullptr; uint32_t slen=0; float spos=0,sstep=0;
+    const int16_t* smp=nullptr; uint32_t slen=0; float spos=0,sstep=0,pmul=1.f;
 };
 
 static float frand(unsigned& s){ s=s*1664525u+1013904223u; return (s>>8)*(1.f/16777216.f); }
 
 class DrumsPlugin : public Plugin {
 public:
-    enum Params { kStijl, kDrive, kSwing, kLevel, kDice, kAuto, kPreset, kOn, kKracht, kGalaxy, kSfeer, kBas, kBasType, kBasVol, kKey, kDrumOn, kHand, kRun, kMute, kRec, kNumParams };
+    enum Params { kStijl, kDrive, kSwing, kLevel, kDice, kAuto, kPreset, kOn, kKracht, kGalaxy, kSfeer, kBas, kBasType, kBasVol, kKey, kDrumOn, kHand, kRun, kMute, kRec, kLock, kSong, kToonK, kToonS, kToonH, kToonP, kLenK, kLenS, kLenH, kLenP, kNumParams };
     DrumsPlugin() : Plugin(kNumParams,0,3) {
         for(int i=0;i<kMaxV;i++)fV[i].active=false;
     }
@@ -122,10 +122,20 @@ protected:
         case kRun:      p.name="SPEEL";    p.symbol="speel"; p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;p.ranges.def=1;break;
         case kMute:    p.name="MUTE";     p.symbol="mute";  p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=15;p.ranges.def=0;break; // bitmask K=1 S=2 H=4 P=8
         case kRec:     p.name="REC";      p.symbol="rec";   p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;p.ranges.def=0;break;
+        case kLock:    p.name="LOCK";     p.symbol="lock";  p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=15;p.ranges.def=0;break; // rij-slot bitmask K=1 S=2 H=4 P=8
+        case kSong:    p.name="SONG";     p.symbol="song";  p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;p.ranges.def=0;break;
+        case kToonK:   p.name="TOON K";   p.symbol="toonk"; p.ranges.min=0.5f;p.ranges.max=2.f;p.ranges.def=1.f;break;
+        case kToonS:   p.name="TOON S";   p.symbol="toons"; p.ranges.min=0.5f;p.ranges.max=2.f;p.ranges.def=1.f;break;
+        case kToonH:   p.name="TOON H";   p.symbol="toonh"; p.ranges.min=0.5f;p.ranges.max=2.f;p.ranges.def=1.f;break;
+        case kToonP:   p.name="TOON P";   p.symbol="toonp"; p.ranges.min=0.5f;p.ranges.max=2.f;p.ranges.def=1.f;break;
+        case kLenK:    p.name="LENGTE K"; p.symbol="lenk";  p.ranges.min=0.2f;p.ranges.max=2.5f;p.ranges.def=1.f;break;
+        case kLenS:    p.name="LENGTE S"; p.symbol="lens";  p.ranges.min=0.2f;p.ranges.max=2.5f;p.ranges.def=1.f;break;
+        case kLenH:    p.name="LENGTE H"; p.symbol="lenh";  p.ranges.min=0.2f;p.ranges.max=2.5f;p.ranges.def=1.f;break;
+        case kLenP:    p.name="LENGTE P"; p.symbol="lenp";  p.ranges.min=0.2f;p.ranges.max=2.5f;p.ranges.def=1.f;break;
         }
     }
     float getParameterValue(uint32_t i) const override {
-        switch(i){case kStijl:return fStijl;case kDrive:return fDrive;case kSwing:return fSwing;case kLevel:return fLevel;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKracht;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;case kBas:return fBas;case kBasType:return fBasType;case kBasVol:return fBasVol;case kKey:return fKey;case kDrumOn:return fDrum;case kHand:return fHand;case kRun:return fRun;case kMute:return fMute;case kRec:return fRec;}return 0.f;
+        switch(i){case kStijl:return fStijl;case kDrive:return fDrive;case kSwing:return fSwing;case kLevel:return fLevel;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKracht;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;case kBas:return fBas;case kBasType:return fBasType;case kBasVol:return fBasVol;case kKey:return fKey;case kDrumOn:return fDrum;case kHand:return fHand;case kRun:return fRun;case kMute:return fMute;case kRec:return fRec;case kLock:return fLock;case kSong:return fSong;case kToonK:return fToon[0];case kToonS:return fToon[1];case kToonH:return fToon[2];case kToonP:return fToon[3];case kLenK:return fLen[0];case kLenS:return fLen[1];case kLenH:return fLen[2];case kLenP:return fLen[3];}return 0.f;
     }
     void setParameterValue(uint32_t i, float v) override {
         if(i==kPreset){applyPreset((int)(v+0.5f));return;}
@@ -135,7 +145,10 @@ protected:
         case kSfeer:fSfeerV=v;fSf.setMode((int)(v+0.5f));break;
         case kBas:fBas=v;break;case kBasType:fBasType=v;break;case kBasVol:fBasVol=v;break;case kKey:fKey=v;break;case kDrumOn:fDrum=v;break;case kHand:fHand=v;break;case kRun:fRun=v;break;
         case kMute:fMute=v;break;
-        case kRec:if(v>0.5f&&fRec<0.5f)recOpen_();else if(v<0.5f&&fRec>0.5f)recClose_();fRec=v;break;}
+        case kRec:if(v>0.5f&&fRec<0.5f)recOpen_();else if(v<0.5f&&fRec>0.5f)recClose_();fRec=v;break;
+        case kLock:fLock=v;break;case kSong:fSong=v;break;
+        case kToonK:fToon[0]=v;break;case kToonS:fToon[1]=v;break;case kToonH:fToon[2]=v;break;case kToonP:fToon[3]=v;break;
+        case kLenK:fLen[0]=v;break;case kLenS:fLen[1]=v;break;case kLenH:fLen[2]=v;break;case kLenP:fLen[3]=v;break;}
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
@@ -173,6 +186,8 @@ protected:
                 case 6:v.amp=0.8f;v.f0=200;v.f1=200;v.dec=1.2f;break;      // timpani-roll slag
                 }
                 if(type==6){ fRoll=fRoll*1664525u+1013904223u; v.sstep=(22050.f/getSampleRate())*(0.96f+((fRoll>>8)&63)/63.f*0.08f); }
+                const int rw=(type==0)?0:(type==1)?1:((type==2||type==3||type==5)?2:3); // rij: crash→H, roll→P
+                v.f0*=fToon[rw];v.f1*=fToon[rw];v.dec*=fLen[rw];v.pmul=fToon[rw];
                 v.amp*=ampMul;
                 return;
             }
@@ -218,10 +233,27 @@ protected:
                     const float ramp=(float)(g64-48)/15.f;
                     trigger(6,0.30f+0.85f*ramp,g64-48);
                 }
-                if(fPat[0][s]!='.'&&!(mu&1))trigger(0);
-                if(fPat[1][s]!='.'&&!(mu&2))trigger(1);
-                if(fPat[2][s]=='H'&&!(mu&4))trigger(2); else if(fPat[2][s]=='o'&&!(mu&4))trigger(3);
-                if(fPat[3][s]!='.'&&!(mu&8))trigger(4);
+                // SONG: 8-maten arrangement — maat 0 intro (rustig), 1-6 vol, 7 outro (strip+fill)
+                const int lk=(int)fLock; // 🔒 rijen doen niet mee aan het arrangement
+                bool okK=fPat[0][s]!='.',okS=fPat[1][s]!='.',okH=fPat[2][s]!='.',okP=fPat[3][s]!='.';
+                if(fSong>0.5f){
+                    const int bar=(int)((fStep>>4)&7);
+                    if(bar==0){ // intro: kick op de 1 + hats alleen op de tel
+                        if(!(lk&1))okK=(s==0);
+                        if(!(lk&2))okS=false;
+                        if(!(lk&4))okH=(okH&&s%4==0&&fPat[2][s]=='H');
+                        if(!(lk&8))okP=false;
+                    }else if(bar==7){ // outro: strip → kick op 1 + snare-fill op het eind
+                        if(!(lk&1))okK=(s==0);
+                        if(!(lk&2))okS=(s==0||s==8||s==10||s>=12);
+                        if(!(lk&4))okH=false;
+                        if(!(lk&8))okP=false;
+                    }
+                }
+                if(okK&&!(mu&1))trigger(0);
+                if(okS&&!(mu&2))trigger(1);
+                if(okH&&!(mu&4)){ if(fPat[2][s]=='o')trigger(3); else trigger(2); }
+                if(okP&&!(mu&8))trigger(4);
                 }
                 // bas-stap: cijfer in het patroon = laddergreep
                 if(fBas>0.5f&&fHand<0.5f){
@@ -249,7 +281,7 @@ protected:
                     if(i2>=v.slen-1){v.active=false;continue;}
                     float fr=v.spos-i2;
                     s=(v.smp[i2]+fr*(v.smp[i2+1]-v.smp[i2]))/32768.f;
-                    v.spos+=v.sstep;
+                    v.spos+=v.sstep*v.pmul;
                     s*=env; // decay-envelop uit de stijl blijft werken
                 }else{
                 switch(v.type){
@@ -328,6 +360,7 @@ private:
         for(int n=0;n<(mild?2:6);n++){
             fRnd=fRnd*1664525u+1013904223u;
             int r=(fRnd>>8)%4, c;
+            if((int)fLock&(1<<r))continue; // 🔒 rij: patroon blijft onaangeroerd
             fRnd=fRnd*1664525u+1013904223u; c=(fRnd>>8)%16;
             fRnd=fRnd*1664525u+1013904223u;
             bool on=((fRnd>>8)%100)<40;
@@ -361,7 +394,8 @@ private:
         fclose(fRecF);fRecF=nullptr;fRecN=0;
     }
     FILE* fRecF=nullptr; uint32_t fRecN=0;
-    float fMute=0.f,fRec=0.f;
+    float fMute=0.f,fRec=0.f,fLock=0.f,fSong=0.f;
+    float fToon[4]={1.f,1.f,1.f,1.f},fLen[4]={1.f,1.f,1.f,1.f};
     float fStijl=0,fDrive=0.5f,fSwing=0.10f,fLevel=0.85f,fDice=0,fAuto=0,fPreset=0;
     uint32_t fRr=0;
     char fPat[4][17];bool fPatInit=false;int fLastStijl=0;

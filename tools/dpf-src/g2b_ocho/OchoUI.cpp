@@ -56,6 +56,7 @@ protected:
         else if (index == 10) fProg = (int)(value + 0.5f);
         else if (index == 11) fOn = (int)(value + 0.5f);
         else if (index >= 12 && index <= 14) fValue[index - 3] = value; // 12=KRACHT→9,13=DIMENTIES→10,14=SFEER→11
+        else if (index == 15) fLock = (int)(value + 0.5f); // SLOT: smaak vast
         repaint();
     }
 
@@ -365,6 +366,14 @@ protected:
                 text(bx2 + 36.0f, 56.0f, "GEROLD", nullptr);
                 --fDiceTick;
             }
+            // SLOT: smaak vastzetten — dobbelen varieert dan alleen de knoppen
+            beginPath(); roundedRect(bx2, 70.0f, 30.0f, 16.0f, 4.0f);
+            if (fLock) { fillColor(232, 190, 60); fill(); }
+            else { fillColor(g2bsk(fLight,1)); fill(); }
+            strokeColor(fLock ? Color(232,190,60) : g2bsk(fLight,4)); strokeWidth(1.0f); stroke();
+            fontSize(8.0f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            fillColor(fLock ? Color(13,15,14) : g2bsk(fLight,3));
+            text(bx2 + 15.0f, 78.0f, "SLOT", nullptr);
             const float tx = W - 40.0f;
             beginPath(); roundedRect(tx, 34.0f, 26.0f, 17.0f, 4.0f);
             fillColor(g2bsk(fLight,1)); fill();
@@ -389,6 +398,10 @@ protected:
             if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 44.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 46.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 66.0f)
             { spv(9, 1.0f); fDiceTick = 18; repaint(); return true; }
+            // SLOT (onder de dobbelsteen)
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 44.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 68.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 88.0f)
+            { fLock = 1 - fLock; spv(15, (float)fLock); repaint(); return true; }
             // 🌙 skin (rechtsboven)
             if ((float)(ev.pos.getX()/getScaleFactor()) >= W - 40.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W - 14.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 34.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
@@ -499,6 +512,7 @@ private:
     float fLastY;
     int fProg = -1;
     int fDiceTick = 0;
+    int fLock = 0; // SLOT: smaak vast (param 15)
     int fFxTick = 0;
     std::vector<std::string> fUsrNames;
     std::vector<std::string> fUsrSets;
