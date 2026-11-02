@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>G2B Sequentie-Fabriek</title>
+<style>
+:root{--bg:#0e1410;--card:#16211a;--rand:#2a4433;--tekst:#e8f0ea;--dim:#9fb8a6;--groen:#57c785;--accent:#2e7d4f}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui,sans-serif;padding:20px;max-width:860px;margin:0 auto}
+h1{color:var(--groen);font-size:26px;margin:8px 0}
+.sub{color:var(--dim);font-size:13px;margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--rand);border-radius:12px;padding:18px;margin-bottom:16px}
+input,textarea,select{width:100%;box-sizing:border-box;padding:10px;font-size:14px;border-radius:8px;border:1px solid var(--rand);background:var(--bg);color:var(--tekst);margin:4px 0}
+button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:12px 24px;font-size:15px;cursor:pointer;width:100%}
+button.klein{width:auto;padding:8px 14px;font-size:13px}
+label{font-size:12px;color:var(--dim)}
+.stap{border:1px dashed var(--rand);border-radius:8px;padding:10px;margin:8px 0}
+.stap input,.stap textarea{margin:4px 0}
+.rij{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px;border:1px solid var(--rand);border-radius:8px;margin:5px 0;font-size:13px}
+.seq{border:1px solid var(--rand);border-radius:10px;padding:12px;margin:10px 0}
+.send{background:var(--accent);color:#fff;padding:6px 12px;border-radius:7px;text-decoration:none;font-size:12px;white-space:nowrap;cursor:pointer;border:0}
+.gedaan{opacity:.4}
+.badge{background:var(--accent);color:#fff;font-size:11px;padding:2px 8px;border-radius:10px}
+</style>
+</head>
+<body>
+<h1>🔁 G2B SEQUENTIE-FABRIEK</h1>
+<div class="sub">Follow-up reeks: mail 1 → X dagen → mail 2 → …<br>
+<b>Browser-versie:</b> bewaart je sequenties en toont welke mail vandaag aan de beurt is — jij klikt VERSTUUR (via ProxiedMail of je eigen mail-app). Automatisch mailen terwijl de pagina dicht is kan niet; open 'm dagelijks even.</div>
+
+<div class="card">
+<b>Mijn sequenties</b>
+<div id="seqs"><i style="color:var(--dim)">nog geen sequenties</i></div>
+</div>
+
+<div class="card">
+<b>Nieuwe sequentie</b>
+<label>Naam</label><input id="naam" value="mijn-sequentie">
+<label>CSV met leads</label><input type="file" id="csv" accept=".csv,.txt">
+<label>E-mail-kolom (leeg = automatisch)</label><input id="kolom" value="">
+<div id="stappen"></div>
+<button class="klein" onclick="addStap()">+ mail-stap toevoegen</button>
+<br><br><button onclick="maak()">SEQUENTIE MAKEN</button>
+<div id="status" style="margin-top:8px"></div>
+</div>
+
+<div class="card">
+<b>ProxiedMail (echt versturen — optioneel)</b>
+<label>Proxy e-mailadres</label><input id="pm_user" placeholder="jouw@proxiedmail.com">
+<label>Wachtwoord</label><input id="pm_ww" type="password">
+<label>Van-naam</label><input id="pm_naam" placeholder="G2B">
+<div style="font-size:11px;color:var(--dim);margin-top:6px">Blijft alleen in jouw browser — nooit op de site.</div>
+<button class="klein" style="margin-top:8px" onclick="bewaarPM()">OPSLAGEN</button>
+<span id="pm_status" style="font-size:12px;color:var(--groen);margin-left:8px"></span>
+</div>
+
+<script>
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const v=id=>document.getElementById(id).value;
+const vandaag=()=>Math.floor(Date.now()/864e5);
+function load(){try{return JSON.parse(localStorage.getItem('g2b_seq')||'[]')}catch(e){return[]}}
+function save(s){localStorage.setItem('g2b_seq',JSON.stringify(s))}
+const PM=JSON.parse(localStorage.getItem('g2b_pm')||'{}');
+if(PM.user){document.getElementById('pm_user').value=PM.user;
+ document.getElementById('pm_ww').value=PM.ww||'';document.getElementById('pm_naam').value=PM.naam||'';}
+function bewaarPM(){const o={user:v('pm_user').trim(),ww:v('pm_ww'),naam:v('pm_naam').trim()};
+ localStorage.setItem('g2b_pm',JSON.stringify(o));Object.assign(PM,o);
+ document.getElementById('pm_status').textContent='✓ opgeslagen'}
+let n=0;
+function addStap(){
+ n++;const d=document.createElement('div');d.className='stap';
+ d.innerHTML='<b>Mail '+n+'</b> — <label>'+(n>1?'dagen na vorige':'dagen na start')+'</label>'+
+ '<input class="wd" type="number" value="'+(n>1?3:0)+'" style="width:80px">'+
+ '<input class="so" placeholder="onderwerp — {velden} werken">'+
+ '<textarea class="tx" rows="4" placeholder="mailtekst met {velden}"></textarea>';
+ document.getElementById('stappen').appendChild(d);
+}
+addStap();
+function parseCSVText(t){
+ const rows=[];let cur=[],veld='',inQ=false;t=t.replace(/\r/g,'');
+ for(let i=0;i<t.length;i++){const c=t[i];
+  if(inQ){if(c==='"'){if(t[i+1]==='"'){veld+='"';i++}else inQ=false}else veld+=c}
+  else if(c==='"'){inQ=true}
+  else if(c===','||c===';'||c==='\t'){cur.push(veld);veld=''}
+  else if(c==='\n'){cur.push(veld);veld='';rows.push(cur);cur=[]}
+  else veld+=c;}
+ if(veld||cur.length){cur.push(veld);rows.push(cur)}
+ return rows.filter(r=>r.length&&r.join(''));
+}
+function tpl(s,rij){return (s||'').replace(/\{(\w+)\}/g,(m,k)=>rij[k]??rij[k.toLowerCase()]??m)}
+async function maak(){
+ const f=document.getElementById('csv').files[0];
+ if(!f){document.getElementById('status').textContent='⚠ upload eerst een csv';return}
+ const rows=parseCSVText(await f.text());
+ if(rows.length<2){document.getElementById('status').textContent='⚠ geen rijen';return}
+ const head=rows[0].map(h=>h.trim());
+ let ki=v('kolom')?head.indexOf(v('kolom')):-1;
+ if(ki<0)ki=head.findIndex(h=>/mail|email|adres/i.test(h));
+ if(ki<0)ki=head.findIndex((h,i)=>rows[1][i]&&rows[1][i].includes('@'));
+ if(ki<0){document.getElementById('status').textContent='⚠ geen e-mailkolom';return}
+ const leads=rows.slice(1).map(r=>{const o={};head.forEach((h,i)=>o[h.toLowerCase()]=r[i]||'');o._mail=r[ki];o._stap=0;o._dag=vandaag();return o}).filter(r=>r._mail&&r._mail.includes('@'));
+ const stappen=[...document.querySelectorAll('#stappen .stap')].map(s=>({dagen:+s.querySelector('.wd').value||0,ond:s.querySelector('.so').value,txt:s.querySelector('.tx').value}));
+ const seqs=load();
+ seqs.push({id:Date.now(),naam:v('naam')||'sequentie',stappen,leads,start:vandaag()});
+ save(seqs);
+ document.getElementById('status').textContent='✓ sequentie met '+leads.length+' leads gemaakt';
+ toon();
+}
+function schap(s){
+ return s.stappen.map((st,i)=>{
+  const wacht=(i===0?st.dagen:s.stappen.slice(0,i+1).reduce((a,x)=>a+x.dagen,0));
+  const due=s.leads.filter(l=>l._stap===i&&(vandaag()-l._dag)>=st.dagen).length;
+  const klaar=s.leads.filter(l=>l._stap>i).length;
+  return '<div style="font-size:13px;margin:4px 0">'+esc(st.ond||'mail '+(i+1))+
+   ' — <span class="badge">'+due+' nu</span> '+klaar+' klaar '+
+   (due?'<button class="send" onclick="stuur('+s.id+','+i+')">VERSTUUR '+due+'</button>':'')+'</div>';
+ }).join('');
+}
+function toon(){
+ const seqs=load();const el=document.getElementById('seqs');
+ el.innerHTML=seqs.length?seqs.map(s=>
+  '<div class="seq"><b>'+esc(s.naam)+'</b> ('+s.leads.length+' leads)'+
+  ' <button class="send" style="background:#7d2e2e" onclick="wisSeq('+s.id+')">wis</button>'+schap(s)+'</div>'
+ ).join(''):'<i style="color:var(--dim)">nog geen sequenties</i>';
+}
+async function stuur(sid,stap){
+ const seqs=load();const s=seqs.find(x=>x.id===sid);if(!s)return;
+ const wacht=st.dagen??0;
+ const due=s.leads.filter(l=>l._stap===stap&&(vandaag()-l._dag)>=(s.stappen[stap].dagen||0));
+ if(!due.length){toon();return}
+ const st=s.stappen[stap];
+ if(PM.user&&PM.ww){
+  if(!confirm(due.length+' mails echt versturen via '+PM.user+'?'))return;
+  let ok=0,fout=0;
+  for(const l of due){
+   try{
+    const r=await fetch('https://proxiedmail.com/gapi/send-mail',{method:'POST',
+     headers:{'Content-Type':'application/json','Authorization':'Bearer '+PM.ww},
+     body:JSON.stringify({auth:{host:'mx.proxiedmail.com',port:587,username:PM.user,password:PM.ww},
+      mail:{from:(PM.naam?PM.naam+' <'+PM.user+'>':PM.user),to:l._mail,
+            subject:tpl(st.ond,l),body:tpl(st.txt,l).replace(/\n/g,'<br>')}})});
+    if(r.ok)ok++;else fout++;
+   }catch(e){fout++}
+   l._stap=stap+1;l._dag=vandaag();
+   await new Promise(r=>setTimeout(r,800));
+  }
+  alert('✓ '+ok+' verstuurd'+(fout?', '+fout+' fout':''));
+ }else{
+  due.forEach(l=>{l._stap=stap+1;l._dag=vandaag()});
+  const lijst=due.slice(0,20);
+  lijst.forEach((l,i)=>setTimeout(()=>{location.href='mailto:'+l._mail+'?subject='+encodeURIComponent(tpl(st.ond,l))+'&body='+encodeURIComponent(tpl(st.txt,l))},i*400));
+  alert('Mail-app opent per lead (eerste '+lijst.length+' getoond). Alles is doorgeschoven naar de volgende stap.');
+ }
+ save(seqs);toon();
+}
+function wisSeq(id){if(!confirm('sequentie wissen?'))return;save(load().filter(s=>s.id!==id));toon()}
+toon();
+</script>
+</body></html>

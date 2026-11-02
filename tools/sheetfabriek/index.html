@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>G2B Sheet-Fabriek</title>
+<style>
+:root{--bg:#0e1410;--card:#16211a;--rand:#2a4433;--tekst:#e8f0ea;--dim:#9fb8a6;--groen:#57c785;--accent:#2e7d4f}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui,sans-serif;padding:20px;max-width:1000px;margin:0 auto}
+h1{color:var(--groen);font-size:26px;margin:8px 0}
+.sub{color:var(--dim);font-size:13px;margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--rand);border-radius:12px;padding:18px;margin-bottom:16px}
+input,select{width:100%;box-sizing:border-box;padding:10px;font-size:14px;border-radius:8px;border:1px solid var(--rand);background:var(--bg);color:var(--tekst);margin:4px 0}
+button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:12px 24px;font-size:15px;cursor:pointer;width:100%}
+button.klein{width:auto;padding:8px 14px;font-size:13px}
+label{font-size:12px;color:var(--dim)}
+table{border-collapse:collapse;width:100%;font-size:12px;margin-top:10px}
+td,th{border:1px solid var(--rand);padding:5px 8px;text-align:left;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+th{color:var(--groen)}
+.stap{display:flex;gap:8px;align-items:center;margin:6px 0}
+.stap select,.stap input{margin:0}
+#telling{font-size:14px;margin-top:8px}
+a{color:var(--groen);cursor:pointer}
+datalist{}
+</style>
+</head>
+<body>
+<h1>📊 G2B SHEET-FABRIEK</h1>
+<div class="sub">CSV bewerken zonder Excel: filteren, deduperen, sorteren, schoonmaken, splitsen, samenvoegen — 100% in je browser.</div>
+
+<div class="card">
+<b>1. Upload CSV('s)</b>
+<input type="file" id="csv" accept=".csv,.txt" multiple>
+<div style="font-size:11px;color:var(--dim)">Meerdere bestanden met dezelfde koppen? Ze worden samengevoegd.</div>
+</div>
+
+<div class="card">
+<b>2. Bewerk-stappen</b>
+<div id="stappen"></div>
+<datalist id="kols"></datalist>
+<button class="klein" onclick="addStap()">+ stap toevoegen</button>
+</div>
+
+<div class="card">
+<button onclick="draai()">DRAAI</button>
+<div id="telling"></div>
+</div>
+
+<div class="card" id="uit" style="display:none">
+<b>Resultaat</b> — <span id="tel"></span><br>
+<table id="tbl"></table>
+<a onclick="dl()">⬇ Download sheet_schoon.csv</a>
+</div>
+
+<script>
+const OPS=[["filter_bevat","alleen rijen die bevatten…"],["filter_niet","verwijder rijen die bevatten…"],["filter_exact","alleen exact deze waarde"],["filter_leeg","verwijder lege in kolom"],["dedupe","deduperen (dubbele eruit)"],["sorteren","sorteren A→Z"],["schoon","cellen schoonmaken (spaties)"],["kolom_weg","kolom verwijderen"],["hoofdletters","→ HOOFDLETTERS"],["kleineletters","→ kleine letters"],["split_komma","kolom splitsen op komma"]];
+let UIT={head:[],body:[]};
+function addStap(){
+ const d=document.createElement('div');d.className='stap';
+ d.innerHTML='<select class="op">'+OPS.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join('')+'</select>'
+ +'<input class="kol" placeholder="kolom" list="kols" style="width:180px"><input class="wr" placeholder="waarde (bij filter)" style="width:200px"><button class="klein" onclick="this.parentNode.remove()">✕</button>';
+ document.getElementById('stappen').appendChild(d);
+}
+addStap();
+
+function parseCSVText(t){
+ const rows=[];let cur=[],veld='',inQ=false;
+ t=t.replace(/\r/g,'');
+ for(let i=0;i<t.length;i++){
+  const c=t[i];
+  if(inQ){
+   if(c==='"'){if(t[i+1]==='"'){veld+='"';i++}else inQ=false}
+   else veld+=c;
+  }else if(c==='"'){inQ=true}
+  else if(c===','){cur.push(veld);veld=''}
+  else if(c==='\n'){cur.push(veld);veld='';rows.push(cur);cur=[]}
+  else veld+=c;
+ }
+ if(veld||cur.length){cur.push(veld);rows.push(cur)}
+ return rows.filter(r=>r.length);
+}
+function csvUit(rows){
+ return rows.map(r=>r.map(c=>/[",\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c).join(',')).join('\n');
+}
+function op(head,body,o,kol,waarde){
+ let i=0;
+ if(kol){
+  i=head.indexOf(kol);
+  if(i<0)i=/^\d+$/.test(kol)&&+kol<head.length?+kol:0;
+ }
+ const w=(waarde||'').trim();
+ if(o==='filter_bevat')return[head,body.filter(r=>r[i].toLowerCase().includes(w.toLowerCase()))];
+ if(o==='filter_niet')return[head,body.filter(r=>!r[i].toLowerCase().includes(w.toLowerCase()))];
+ if(o==='filter_exact')return[head,body.filter(r=>r[i].trim()===w)];
+ if(o==='filter_leeg')return[head,body.filter(r=>r[i].trim())];
+ if(o==='dedupe'){const s=new Set;return[head,body.filter(r=>{const k=r[i].trim().toLowerCase();if(s.has(k))return false;s.add(k);return true})]}
+ if(o==='sorteren')return[head,[...body].sort((a,b)=>a[i].toLowerCase().localeCompare(b[i].toLowerCase()))];
+ if(o==='schoon')return[head,body.map(r=>r.map(c=>c.replace(/\s+/g,' ').trim()))];
+ if(o==='kolom_weg')return[head.filter((_,j)=>j!==i),body.map(r=>r.filter((_,j)=>j!==i))];
+ if(o==='hoofdletters')return[head,body.map(r=>r.map((c,j)=>j===i?c.toUpperCase():c))];
+ if(o==='kleineletters')return[head,body.map(r=>r.map((c,j)=>j===i?c.toLowerCase():c))];
+ if(o==='split_komma'){
+  const extra=Math.max(1,...body.map(r=>r[i].split(',').length));
+  const nh=[...head.slice(0,i),...Array.from({length:extra},(_,k)=>head[i]+'_'+(k+1)),...head.slice(i+1)];
+  const nb=body.map(r=>{const p=r[i].split(',').map(x=>x.trim());while(p.length<extra)p.push('');return[...r.slice(0,i),...p.slice(0,extra),...r.slice(i+1)]});
+  return[nh,nb];
+ }
+ return[head,body];
+}
+async function draai(){
+ const files=[...document.getElementById('csv').files];
+ if(!files.length){document.getElementById('telling').textContent='⚠ upload eerst een csv';return}
+ document.getElementById('telling').textContent='⏳ bezig…';
+ let head=null,body=[];
+ for(const f of files){
+  const rows=parseCSVText(await f.text());
+  if(!rows.length)continue;
+  const h=rows[0],b=rows.slice(1);
+  if(!head){head=h;body=b}
+  else if(h.join('|')===head.join('|'))body=body.concat(b);
+  else{document.getElementById('telling').textContent='⚠ '+f.name+' heeft andere koppen — overgeslagen'}
+ }
+ if(!head){document.getElementById('telling').textContent='⚠ geen rijen gevonden';return}
+ document.getElementById('kols').innerHTML=head.map(k=>`<option value="${k}">`).join('');
+ const voor=body.length;
+ const stappen=[...document.querySelectorAll('.stap')].map(d=>({op:d.querySelector('.op').value,kolom:d.querySelector('.kol').value,waarde:d.querySelector('.wr').value}));
+ for(const s of stappen){const r=op(head,body,s.op,s.kolom,s.waarde);head=r[0];body=r[1]}
+ UIT={head,body};
+ document.getElementById('tel').innerHTML=voor+' rijen → <b>'+body.length+' rijen</b>';
+ document.getElementById('tbl').innerHTML='<tr>'+head.map(k=>'<th>'+esc(k)+'</th>').join('')+'</tr>'
+  +body.slice(0,20).map(r=>'<tr>'+r.map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')
+  +(body.length>20?'<tr><td colspan="'+head.length+'" style="color:var(--dim)">… '+(body.length-20)+' meer (in download)</td></tr>':'');
+ document.getElementById('uit').style.display='block';
+ document.getElementById('telling').textContent='';
+}
+function dl(){
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([csvUit([UIT.head,...UIT.body])],{type:'text/csv'}));
+ a.download='sheet_schoon.csv';a.click();URL.revokeObjectURL(a.href);
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+</script>
+</body></html>
