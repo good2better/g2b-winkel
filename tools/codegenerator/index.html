@@ -63,7 +63,7 @@ async function hmacDeel(geheim,seed){
  const d=await crypto.subtle.sign("HMAC",k,new TextEncoder().encode(seed));
  return b32(d).slice(0,8);
 }
-function rnd(n){let s="";for(let i=0;i<n;i++)s+=ALF[crypto.getRandomValues(new Uint8Array(1))[0]%32];return s}
+function rnd(n){let s="";for(let i=0;i<n;i++)s+=ALF[crypto.getRandomValues(new Uint8Array(1))[0]%ALF.length];return s}
 async function gen(){
  const [pfx,geheim]=document.getElementById('app').value.split('|');
  const n=Math.min(+document.getElementById('n').value||10,500);

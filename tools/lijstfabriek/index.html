@@ -89,7 +89,7 @@ async function stuur(f){
   else if(gezien.has(m))why='dubbel';
   else if(ROL.has(user))why='rol-account';
   gezien.add(m);
-  if(why){tel[why==='geen-mailserver'?'domein':why]++;RAPPORT.push([m,why])}
+  if(why){tel[why==='geen-mailserver'?'domein':why==='rol-account'?'rol':why]++;RAPPORT.push([m,why])}
   else{tel.ok++;SCHOON.push(m)}
  }
  statusEl.textContent='';
