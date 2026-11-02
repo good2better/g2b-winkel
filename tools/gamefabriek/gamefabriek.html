@@ -47,7 +47,7 @@ label{font-size:.8rem;color:var(--zacht)}
 <h2>3. Naam en instellingen</h2>
 <div class="rij">
 <div><label>Spelnaam</label><input type="text" id="naam" value="Animal Heroes"></div>
-<div><label>Moeilijkheid</label><select id="moeilijk"><option value="makkelijk">Makkelijk (kids)</option><option value="normaal" selected>Normaal</option><option value="moeilijk">Moeilijk</option></select></div>
+<div><label>Leeftijd</label><select id="moeilijk"><option value="peuter">🍼 2-4 jaar (peuter)</option><option value="kleuter">🧒 5-8 jaar (groep 1-4)</option><option value="kind" selected>🎮 9-12 jaar (groep 5-8)</option><option value="groot">🔥 13+ jaar</option></select></div>
 </div>
 </div>
 
@@ -83,7 +83,7 @@ const THEMAS=[
  {id:'sport',ic:'⚽',nm:'Sport',items:['⚽','🏀','🏈','⚾','🎾','🏐','🥎'],vijand:'🃏',held:'⚽',achtergr:'#12300f',acc:'#a3e635'},
  {id:'muziek',ic:'🎵',nm:'Muziek',items:['🎵','🎶','🎸','🎹','🥁','🎤','🎺'],vijand:'🔇',held:'🎵',achtergr:'#1e1033',acc:'#c084fc'},
 ];
-const MOEILIJK={makkelijk:{snel:.7,leven:5,fout:5},normaal:{snel:1,leven:3,fout:3},moeilijk:{snel:1.5,leven:2,fout:2}};
+const MOEILIJK={peuter:{snel:.45,leven:99,fout:99},kleuter:{snel:.7,leven:5,fout:5},kind:{snel:1,leven:3,fout:3},groot:{snel:1.5,leven:2,fout:2}};
 let type='vang',thema='dieren';
 const T=id=>document.getElementById(id);
 function bouwKies(el,lijst,kies){
