@@ -84,6 +84,9 @@ const TYPES=[
  {id:'ritme',ic:'🎹',nm:'Muziek-Ritme',info:'Raak de noten op de beat'},
  {id:'beatgame',ic:'🎧',nm:'Beat-Spel',info:'Ritme op JOUW beat — upload mp3/wav'},
  {id:'race',ic:'🛺',nm:'Skelter-Race',info:'Skelter/driewieler racen, ontwijk & boost'},
+ {id:'zweef',ic:'🛸',nm:'Zweef-Speeltje',info:'Laag zweven — obstakels omzeilen, sterren pakken'},
+ {id:'bowling',ic:'🎳',nm:'Bowling',info:'Richten + kracht = kegels omgooien'},
+ {id:'golf',ic:'⛳',nm:'Mini-Golf',info:'Richten + kracht — bal in het gat'},
 ];
 const THEMAS=[
  {id:'dieren',ic:'🦁',nm:'Dieren',items:['🐶','🐱','🐰','🦊','🐻','🐼','🦁','🐸','🐷','🐵'],vijand:'🐍',held:'🐶',achtergr:'#0e2a1a',acc:'#4ade80'},
@@ -615,6 +618,89 @@ function tik(x){mx=x}
    document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🏁 Finish! '+w;
    document.getElementById('os').textContent='crashes — P1: '+crash+' P2: '+crash2;return}
   document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🏁 Finish! '+Math.floor(weg/50)+'m';document.getElementById('os').textContent='Score: '+score+' — crashes: '+crash;return}
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+zweef:(naam,t,d)=>H(naam,t)+`
+let y=Hh*.5,vy=0,obst=[],items2=[],t=0,dist=0,thrust=false;
+function spawn(){const g=rand(140,220),gy=rand(90,Hh-160);obst.push({x:W+40,gy,g,v:2.2*D.snel});
+ if(Math.random()<.7)items2.push({x:W+40,y:gy+rand(30,g-30),v:2.2*D.snel,ix:Math.floor(rand(0,20))})}
+function tik(){thrust=true}
+addEventListener('keyup',e=>{if(e.key==' ')thrust=false});
+addEventListener('keydown',e=>{if(e.key==' ')thrust=true});
+C.addEventListener('pointerup',()=>thrust=false);
+(function loop(){if(af)return;bg();
+ const pd=PAD(0);if(pd.a)thrust=true;
+ vy+=thrust?-.42:.3;vy=Math.max(-5,Math.min(5,vy));y+=vy;
+ if(y<20){y=20;vy=0}if(y>Hh-40){y=Hh-40;vy=0}
+ if(++t>110/D.snel){t=0;spawn()}
+ obst.forEach(o=>{o.x-=o.v;X.fillStyle=T.acc+'55';X.fillRect(o.x-14,0,28,o.gy);X.fillRect(o.x-14,o.gy+o.g,28,Hh);
+  X.fillStyle=T.acc;X.fillRect(o.x-16,o.gy-8,32,8);X.fillRect(o.x-16,o.gy+o.g,32,8);
+  if(o.x>40&&o.x<90&&(y<o.gy||y>o.gy+o.g)){lev--;lvs();blip(90,.4,'sawtooth');o.x=-99;y=Hh*.5;vy=0}});
+ obst=obst.filter(o=>o.x>-50);
+ items2.forEach(i=>{i.x-=i.v;itemX(i.ix,i.x,i.y=0?0:i.y,26);
+  if(Math.abs(i.x-65)<28&&Math.abs(i.y-y)<28){i.x=-99;punt(10,i.x,i.y);blip(700,.1,'triangle')}});
+ items2=items2.filter(i=>i.x>-50);
+ dist++;if(dist%30==0)punt(1);
+ if(ok(FHELD))_rond(FHELD,65,y,40);else emoji('🛸',65,y,38);
+ X.fillStyle='#fff9';X.font='12px sans-serif';X.textAlign='left';X.fillText('hoogte',8,20);
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+bowling:(naam,t,d)=>H(naam,t)+`
+let fase=0,ang=0,angDir=1,pow=0,powDir=1,ball=null,pins=[],worpen=0,gooiT=0;
+const reset=()=>{pins=[];for(let r=0;r<3;r++)for(let i=0;i<=r;i++)pins.push({x:W/2+(i-r/2)*36,y:60+r*34,om:true});worpen=0};
+reset();
+function tik(){slag()}
+addEventListener('keydown',e=>{if(e.key==' ')slag()});
+function slag(){if(ball)return;
+ if(fase==0){fase=1;blip(500,.05)}else if(fase==1){fase=2;
+  ball={x:W/2,y:Hh-60,a:(ang-90)*Math.PI/180,v:4+pow*.12};blip(300,.2);fase=0}}
+(function loop(){if(af)return;bg();
+ if(!ball){if(fase==0){ang+=angDir*2.4*D.snel;if(ang>60||ang<-60)angDir*=-1}
+  else{pow+=powDir*3.5*D.snel;if(pow>100||pow<0)powDir*=-1}
+  /* richt-pijl + krachtbalk */
+  X.strokeStyle='#fff';X.lineWidth=3;X.beginPath();X.moveTo(W/2,Hh-60);
+  X.lineTo(W/2+Math.sin(ang*Math.PI/180)*60,Hh-60-Math.cos(ang*Math.PI/180)*60);X.stroke();
+  X.fillStyle='#f472b6';X.fillRect(20,Hh-40,380*Math.max(0,pow)/100,14);X.strokeStyle='#fff6';X.strokeRect(20,Hh-40,380,14);
+  X.fillStyle='#fff';X.font='13px sans-serif';X.textAlign='center';X.fillText(fase==0?'TIK = richting vastzetten':'TIK = gooien! ('+Math.round(pow)+'%)',W/2,Hh-16)}
+ pins.forEach(p=>{if(p.om)emoji('🎳',p.x,p.y,26)});
+ if(ball){ball.x+=Math.sin(ball.a)*ball.v;ball.y-=Math.cos(ball.a)*ball.v;
+  emoji('⚫',ball.x,ball.y,20);
+  pins.forEach(p=>{if(p.om&&Math.hypot(p.x-ball.x,p.y-ball.y)<24){p.om=false;punt(10,p.x,p.y);blip(800,.1,'triangle')}});
+  if(ball.y<10||ball.x<0||ball.x>W){ball=null;worpen++;
+   if(!pins.some(p=>p.om)){punt(50,W/2,Hh/2);confetti();reset()}
+   else if(worpen>=3){const ov=pins.filter(p=>p.om).length;
+    if(lev>0){worpen=0;pins=[];for(let r=0;r<3;r++)for(let i=0;i<=r;i++)pins.push({x:W/2+(i-r/2)*36,y:60+r*34,om:true})}}}}
+ document.getElementById('score').textContent='⭐ '+score+' — worp '+(worpen+1)+'/3';
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+golf:(naam,t,d)=>H(naam,t)+`
+let hole={x:rand(60,W-60),y:rand(60,180)},ball={x:W/2,y:Hh-80},fase=0,ang=0,angDir=1,pow=0,powDir=1,vx=0,vy=0,slagen=0,holes=0;
+function tik(){slag()}
+addEventListener('keydown',e=>{if(e.key==' ')slag()});
+function slag(){if(Math.hypot(vx,vy)>.4)return;
+ if(fase==0){fase=1;blip(500,.05)}
+ else if(fase==1){fase=0;const r=(ang-90)*Math.PI/180,vv=3+pow*.14;vx=Math.cos(r+Math.PI/2)*vv;vy=Math.sin(r+Math.PI/2)*vv;slagen++;blip(300,.15)}}
+(function loop(){if(af)return;bg();
+ /* green + hole */
+ X.fillStyle='#3f621233';X.fillRect(0,0,W,Hh);
+ X.fillStyle='#111';X.beginPath();X.arc(hole.x,hole.y,12,0,7);X.fill();
+ X.fillStyle='#fbbf24';X.fillRect(hole.x,hole.y-34,2,34);emoji('🚩',hole.x+9,hole.y-28,18);
+ if(Math.hypot(vx,vy)>.4){ball.x+=vx;ball.y+=vy;vx*=.97;vy*=.97;
+  if(ball.x<10||ball.x>W-10)vx*=-.7;if(ball.y<10||ball.y>Hh-10)vy*=-.7;
+  ball.x=Math.max(10,Math.min(W-10,ball.x));ball.y=Math.max(10,Math.min(Hh-10,ball.y))}
+ else{fase==0?ang+=angDir*2.4*D.snel:0;if(ang>80||ang<-80)angDir*=-1;
+  if(fase==1){pow+=powDir*3.5*D.snel;if(pow>100||pow<0)powDir*=-1}
+  X.strokeStyle='#fff';X.lineWidth=3;X.beginPath();X.moveTo(ball.x,ball.y);
+  X.lineTo(ball.x+Math.sin(ang*Math.PI/180)*55,ball.y-Math.cos(ang*Math.PI/180)*55);X.stroke();
+  X.fillStyle='#f472b6';X.fillRect(20,Hh-40,380*Math.max(0,pow)/100,14);X.strokeStyle='#fff6';X.strokeRect(20,Hh-40,380,14);
+  X.fillStyle='#fff';X.font='13px sans-serif';X.textAlign='center';X.fillText(fase==0?'TIK = richting':'TIK = slaan! ('+Math.round(pow)+'%)',W/2,Hh-16)}
+ emoji('⚪',ball.x,ball.y,18);
+ if(Math.hypot(ball.x-hole.x,ball.y-hole.y)<14){holes++;const pts=Math.max(10,60-slagen*5);punt(pts,hole.x,hole.y);confetti();blip(900,.2,'triangle');
+  hole={x:rand(60,W-60),y:rand(60,180)};ball={x:W/2,y:Hh-80};vx=vy=0;
+  if(holes>=6){af=true;document.getElementById('over').style.display='flex';
+   document.getElementById('ot').textContent='⛳ '+holes+' holes in '+slagen+' slagen!';
+   document.getElementById('os').textContent='Score: '+score;return}}
+ document.getElementById('score').textContent='⭐ '+score+' — hole '+(holes+1)+'/6';
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
 </`+'script></body></html>',
 };
