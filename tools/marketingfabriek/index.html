@@ -53,6 +53,8 @@ tr:hover td{background:#ffffff08}
 <div class="rij"><input id="c-tags" placeholder="Tags (komma: fan, koper, artiest)"><input id="c-notitie" placeholder="Notitie"></div>
 <button class="go" onclick="addContact()">+ Toevoegen</button>
 <button class="sec" onclick="importeerDialoog()">⬆ Importeer e-mails</button>
+<button class="sec" onclick="document.getElementById('csvFile').click()">📄 Importeer CSV</button>
+<input type="file" id="csvFile" accept=".csv,.txt" style="display:none" onchange="importeerCSV(this)">
 <button class="sec" onclick="checkDomeinen()">🔍 Check e-mails</button>
 <button class="sec" onclick="exportCSV()">⬇ Exporteer CSV</button>
 </div>
@@ -134,6 +136,31 @@ function importeerDialoog(){
  const mails=blok.split(/[\s,;]+/).map(s=>s.trim().toLowerCase()).filter(mailOk);
  let nieuw=0;mails.forEach(m=>{if(!DB.contacten.find(c=>c.mail==m)){DB.contacten.push({naam:m.split('@')[0],mail:m,tags:['import'],notitie:''});nieuw++}});
  zeg('Import: '+nieuw+' nieuw van '+mails.length+' geldige e-mails');save();teken()}
+
+/* echte CSV: zoekt zelf de kolommen naam/e-mail/tags/notitie — werkt ook met simpele regels */
+function importeerCSV(inp){
+ const f=inp.files[0];if(!f)return;const r=new FileReader();
+ r.onload=e=>{
+  const regels=e.target.result.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);if(!regels.length)return;
+  const parseRij=r=>{const out=[];let cur='',q=false;for(let i=0;i<r.length;i++){const ch=r[i];
+   if(q){if(ch=='"'){if(r[i+1]=='"'){cur+='"';i++}else q=false}else cur+=ch}
+   else{if(ch=='"')q=true;else if(ch==','||ch==';'||ch=='\t'){out.push(cur);cur=''}else cur+=ch}}out.push(cur);return out.map(s=>s.trim())};
+  let kop=null,start=0;
+  const eerste=parseRij(regels[0]).map(s=>s.toLowerCase());
+  const vind=re=>eerste.findIndex(h=>re.test(h));
+  const iN=vind(/naam|name|voornaam/),iM=vind(/e-?mail|mail/);
+  if(iM>=0){kop=true;start=1}
+  const iT=vind(/tag|label|groep/),iNo=vind(/notitie|note|opmerking/);
+  let nieuw=0,al=0;
+  for(let i=start;i<regels.length;i++){const c=parseRij(regels[i]);
+   const mail=(iM>=0?c[iM]:c.find(x=>mailOk(x.toLowerCase()))||'').toLowerCase();
+   if(!mailOk(mail))continue;
+   if(DB.contacten.find(x=>x.mail==mail)){al++;continue}
+   DB.contacten.push({naam:(iN>=0&&c[iN])||mail.split('@')[0],mail,tags:iT>=0&&c[iT]?c[iT].split(/[|,]/).map(t=>t.trim()).filter(Boolean):['import'],notitie:iNo>=0?c[iNo]||'':''});
+   nieuw++}
+  zeg('CSV import: '+nieuw+' nieuw'+(al?', '+al+' stonden er al':'')+(kop?'':' (geen koprij gevonden — e-mails zelf gezocht)'));
+  save();teken();inp.value=''};
+ r.readAsText(f)}
 
 function maakLijst(){
  const naam=document.getElementById('l-naam').value.trim()||('lijst-'+(DB.lijsten.length+1));
