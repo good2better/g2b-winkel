@@ -97,7 +97,9 @@ const THEMAS=[
  {id:'sport',ic:'⚽',nm:'Sport',items:['⚽','🏀','🏈','⚾','🎾','🏐','🥎'],vijand:'🃏',held:'⚽',achtergr:'#12300f',acc:'#a3e635'},
  {id:'muziek',ic:'🎵',nm:'Muziek',items:['🎵','🎶','🎸','🎹','🥁','🎤','🎺'],vijand:'🔇',held:'🎵',achtergr:'#1e1033',acc:'#c084fc'},
 ];
-const MOEILIJK={peuter:{snel:.45,leven:99,fout:99},kleuter:{snel:.7,leven:5,fout:5},kind:{snel:1,leven:3,fout:3},groot:{snel:1.5,leven:2,fout:2}};
+const MOEILIJK={peuter:{snel:.45,leven:99,fout:99},kleuter:{snel:.7,leven:8,fout:5},kind:{snel:1,leven:3,fout:3},groot:{snel:1.5,leven:2,fout:2}};
+/* kleur mixer voor peuter-pastel: mix(hex,doel,fractie) */
+const mix=(a,b,f)=>{const h=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16));const[x1,y1,z1]=h(a),[x2,y2,z2]=h(b);return '#'+[x1,y1,z1].map((v,i)=>Math.round(v*(1-f)+[x2,y2,z2][i]*f).toString(16).padStart(2,'0')).join('')};
 let type='vang',thema='dieren';
 const T=id=>document.getElementById(id);
 function bouwKies(el,lijst,kies){
@@ -153,8 +155,11 @@ let beurtNr=_bv?2:1;
 document.getElementById('hs').textContent=SPELERS=='beurt'?'👤 P'+beurtNr+(_bv!=null?' — P1: '+_bv:''):(hs?'🏆 '+hs:'');
 const lvs=()=>document.getElementById('lvs').textContent='❤️'.repeat(lev);lvs();
 const A=new(window.AudioContext||window.webkitAudioContext)();
-const blip=(f,d=.08,type='square',v=.15)=>{const o=A.createOscillator(),g=A.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,A.currentTime);g.gain.exponentialRampToValueAtTime(.001,A.currentTime+d);o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
-const punt=(n,x,y)=>{score+=n;document.getElementById('score').textContent='⭐ '+score;if(score>hs){hs=score;localStorage.setItem(HSK,hs);document.getElementById('hs').textContent='🏆 '+hs}if(x!=null)pop(x,y,'+'+n)};
+/* kids: zachte marimba-achtige tonen (sine), grotere kids: arcade-square */
+const blip=(f,d=.08,type,v=.15)=>{type=type||(D.kid?'sine':'square');const o=A.createOscillator(),g=A.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,A.currentTime);g.gain.exponentialRampToValueAtTime(.001,A.currentTime+d);o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
+/* stijgende belonings-pling voor kids */
+const pling=()=>{blip(660,.07,'sine',.12);setTimeout(()=>blip(880,.09,'sine',.12),75)};
+const punt=(n,x,y)=>{score+=n;document.getElementById('score').textContent='⭐ '+score;if(score>hs){hs=score;localStorage.setItem(HSK,hs);document.getElementById('hs').textContent='🏆 '+hs}if(x!=null)pop(x,y,'+'+n);if(D.kid)pling()};
 /* effect-laag: zwevende score-pops + confetti bovenop het spel */
 const FX=document.getElementById('fx'),FX2=FX.getContext('2d'),pops=[];
 const pop=(x,y,t,k='#ffe066')=>pops.push({x,y,t,k,l:1,v:-.9});
@@ -352,6 +357,7 @@ quiz:(naam,t,d)=>`<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><me
 h1{margin-bottom:6px}#v{font-size:1.3rem;margin:18px;text-align:center;min-height:60px}
 .a{width:280px;background:#ffffff14;border:2px solid ${t.acc};border-radius:12px;padding:14px;margin:6px;font-size:1.1rem;cursor:pointer;text-align:center}
 .a:hover{background:#ffffff28}.a.goed{background:#16a34a}.a.fout{background:#dc2626}
+.a.hint{animation:hp .7s infinite alternate}@keyframes hp{from{box-shadow:0 0 0 0 #fff0}to{box-shadow:0 0 16px 5px ${t.acc}}}
 #hud{font-size:1.1rem}</style></head><body>
 <h1>${naam}</h1><div id="hud">⭐ <span id="s">0</span> / vraag <span id="vn">1</span>/10</div>
 <div id="v"></div><div id="ant"></div>
@@ -366,10 +372,10 @@ muziek:[['Wat heeft snaren?','🎸 Gitaar',['Drum','Fluit','Trompet']],['Wat hee
 const vr=VR['THEMA_ID'].sort(()=>Math.random()-.5).slice(0,10);
 let n=0,score=0;const A=new(window.AudioContext||window.webkitAudioContext)();
 const blip=(f,d=.1)=>{const o=A.createOscillator(),g=A.createGain();o.frequency.value=f;g.gain.value=.15;o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
-function vraag(){const[q,goed,fout]=vr[n];document.getElementById('v').textContent=q;document.getElementById('vn').textContent=n+1;
+function vraag(){const[q,goed,fout]=vr[n];document.getElementById('v').textContent=q;document.getElementById('vn').textContent=n+1;let foutN=0;
  const ant=[goed,...fout].sort(()=>Math.random()-.5);const A2=document.getElementById('ant');A2.innerHTML='';
- ant.forEach(a=>{const d=document.createElement('div');d.className='a';d.textContent=a;
-  d.onclick=()=>{if(a==goed){d.classList.add('goed');score+=10;document.getElementById('s').textContent=score;blip(700)}else{d.classList.add('fout');blip(200,.3)};
+ ant.forEach(a=>{const d=document.createElement('div');d.className='a';d.textContent=a;if(a==goed)d.dataset.g='1';
+  d.onclick=()=>{if(a==goed){d.classList.add('goed');score+=10;document.getElementById('s').textContent=score;blip(700)}else{d.classList.add('fout');blip(300,.25,'sine');foutN++;if(foutN>=3)A2.querySelector('[data-g]').classList.add('hint')};
    setTimeout(()=>{if(++n<10){vraag()}else{document.getElementById('v').innerHTML='🎉 Klaar! Score: '+score+'<br><button onclick="location.reload()" style="margin-top:12px;padding:10px 24px;border-radius:10px;border:0;background:${t.acc};font-weight:700">Opnieuw</button>';document.getElementById('ant').innerHTML=''}},700)};
   A2.appendChild(d)})}
 vraag();
@@ -731,13 +737,17 @@ function slag(){if(Math.hypot(vx,vy)>.4)return;
 
 T('maak').onclick=()=>{
  const naam=T('naam').value.trim()||'Mijn Spel';
- const th=THEMAS.find(t=>t.id===thema);
+ const lv=T('moeilijk').value;
+ const mo={...MOEILIJK[lv],kid:lv=='peuter'||lv=='kleuter'};
+ const th0=THEMAS.find(t=>t.id===thema);
+ /* peuter: zachte pastel-wereld — lichte achtergrond + zachtere accentkleur */
+ const th=lv=='peuter'?{...th0,achtergr:mix(th0.achtergr,'#f4f9ff',.72),acc:mix(th0.acc,'#ffffff',.3)}:th0;
  if(type=='beatgame'&&!beatData){log('⚠️ Beat-Spel heeft een beat nodig — upload eerst je mp3/wav bij stap 5');return}
  let sp=T('spelers').value;
  if(sp=='duo'&&!['vang','race'].includes(type)){log('ℹ️ 2-tegelijk kan bij Vang-Spel en Skelter-Race — omstebeurt gebruikt');sp='beurt'}
  const gen=GEN[type];
- let code=gen(naam,th,MOEILIJK[T('moeilijk').value]);
- code=code.replace(JSON.stringify('THEMA'),JSON.stringify(th)).replace(JSON.stringify('MOEIL'),JSON.stringify(MOEILIJK[T('moeilijk').value]))
+ let code=gen(naam,th,mo);
+ code=code.replace(JSON.stringify('THEMA'),JSON.stringify(th)).replace(JSON.stringify('MOEIL'),JSON.stringify(mo))
    .replace(JSON.stringify('FOTOS'),JSON.stringify({held:heldImg,items:xImgs}))
   .replace(JSON.stringify('TIJD'),+T('tijd').value)
   .replace(JSON.stringify('MUZIEK'),JSON.stringify(beatData))
