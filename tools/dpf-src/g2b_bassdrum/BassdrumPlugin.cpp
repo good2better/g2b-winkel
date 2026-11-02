@@ -13,7 +13,7 @@
 
 START_NAMESPACE_DISTRHO
 
-struct PVoice { bool on=false; int note=0; float vel=0.f; const int16_t* smp=nullptr; uint32_t slen=0; float spos=0.f,sstep=0.f,rel=0.f; float lp=0.f; };
+struct PVoice { bool on=false; int note=0; float vel=0.f; const int16_t* smp=nullptr; uint32_t slen=0; float spos=0.f,sstep=0.f,rel=0.f; float lp=0.f,ptune=1.f,dlen=0.f,pdec=1.f; };
 
 class BassdrumPlugin : public Plugin {
 public:
@@ -24,7 +24,7 @@ protected:
     const char* getLicense() const override { return "G2B"; }
     uint32_t getVersion() const override { return d_version(1,0,0); }
     int64_t getUniqueId() const override { return d_cconst('G','2','P','d'); }
-    enum { kBank=0,kTune,kDecay,kLo,kHi,kLevel,kOn,kGalaxy,kSfeer,kDice,kNumParams };
+    enum { kBank=0,kTune,kDecay,kLo,kHi,kLevel,kOn,kGalaxy,kSfeer,kDice,kPadSel,kPadTune,kPadDec,kPadTrig,kNumParams };
     void initParameter(uint32_t i, Parameter& p) override {
         p.ranges.def=0.f; p.hints=kParameterIsAutomatable;
         switch(i){
@@ -38,10 +38,14 @@ protected:
         case kGalaxy:p.name="DIMENTIES";p.symbol="dim";p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=26;p.ranges.def=9;break;
         case kSfeer: p.name="Sfeer";  p.symbol="sfeer";p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=2;p.ranges.def=1;break;
         case kDice:  p.name="DICE";   p.symbol="dice"; p.hints|=kParameterIsInteger|kParameterIsTrigger;p.ranges.min=0;p.ranges.max=1;break;
+        case kPadSel: p.name="PAD";      p.symbol="padsel";p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=15;p.ranges.def=0;break;
+        case kPadTune:p.name="PAD TOON"; p.symbol="padtune";p.ranges.min=-12;p.ranges.max=12;p.ranges.def=0;p.unit="st";break;
+        case kPadDec: p.name="PAD LENGTE";p.symbol="paddec";p.ranges.min=0.2f;p.ranges.max=2.5f;p.ranges.def=1.f;p.unit="x";break;
+        case kPadTrig:p.name="PAD SLAG"; p.symbol="padtrig";p.hints|=kParameterIsInteger|kParameterIsTrigger;p.ranges.min=0;p.ranges.max=1;break;
         }
     }
     float getParameterValue(uint32_t i) const override {
-        switch(i){case kBank:return fBank;case kTune:return fTune;case kDecay:return fDecay;case kLo:return fLo;case kHi:return fHi;case kLevel:return fLevel;case kOn:return fOn;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;case kDice:return fDice;}return 0.f;
+        switch(i){case kBank:return fBank;case kTune:return fTune;case kDecay:return fDecay;case kLo:return fLo;case kHi:return fHi;case kLevel:return fLevel;case kOn:return fOn;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;case kDice:return fDice;case kPadSel:return fPadSel;case kPadTune:return fPadT[(int)fPadSel];case kPadDec:return fPadD[(int)fPadSel];case kPadTrig:return 0;}return 0.f;
     }
     void setParameterValue(uint32_t i, float v) override {
         switch(i){
@@ -50,6 +54,10 @@ protected:
         case kGalaxy:fGalaxyV=v;fGal.setPos((int)(v+0.5f));break;
         case kSfeer:fSfeerV=v;fSf.setMode((int)(v+0.5f));break;
         case kDice:fDice=v;if(v>0.5f){fRnd=fRnd*1664525u+1013904223u;fBank=(float)((fRnd>>9)%kNBanks);}fDice=0.f;break;
+        case kPadSel:fPadSel=v;break;
+        case kPadTune:fPadT[(int)fPadSel]=v;break;
+        case kPadDec:fPadD[(int)fPadSel]=v;break;
+        case kPadTrig:if(v>0.5f)hitPad((int)fPadSel);break;
         }
     }
     void initState(uint32_t index, String& name, String& def) override {
@@ -81,10 +89,14 @@ protected:
                         if(i>=v.slen-1){v.on=false;continue;}
                         float fr=v.spos-i;
                         w=(v.smp[i]+fr*(v.smp[i+1]-v.smp[i]))/32768.f;
-                        v.spos+=v.sstep*tune;
+                        v.spos+=v.sstep*tune*v.ptune;
+                        if(v.dlen>0.f){ // LENGTE: sample eerder uitfaden + stoppen
+                            if(v.spos>=v.dlen){v.on=false;continue;}
+                            if(v.spos>v.dlen*0.7f)w*=(v.dlen-v.spos)/(v.dlen*0.3f);
+                        }
                     }
                     float env=1.f;
-                    if(v.rel>0.f){env=v.rel; v.rel-=1.f/(sr*relT); if(v.rel<=0.f){v.on=false;continue;}}
+                    if(v.rel>0.f){env=v.rel; v.rel-=1.f/(sr*relT*v.pdec); if(v.rel<=0.f){v.on=false;continue;}}
                     w*=env*v.vel;
                     /* simple tilt EQ: lp-state for LO, hp approx for HI */
                     v.lp+=0.15f*(w-v.lp);
@@ -102,18 +114,7 @@ protected:
                 if(m.size>=3&&(m.data[0]&0xF0)==0x90&&m.data[2]>0){
                     int pad=m.data[1]-36;
                     if(pad>=0&&pad<16){
-                        const PadBank& B=kPadBanks[(int)fBank];
-                        /* retrigger: kill same-note voice */
-                        for(auto& v:fV) if(v.on&&v.note==m.data[1]){v.on=false;}
-                        for(auto& v:fV) if(!v.on){
-                            v.on=true; v.note=m.data[1]; v.rel=0.f;
-                            v.vel=(m.data[2]/127.f);
-                            v.smp=B.p[pad].d; v.slen=B.p[pad].n; v.spos=0.f;
-                            v.sstep=22050.f/sr; v.lp=0.f;
-                            /* pad hit flash */
-                            fPadHit[pad]=1.f;
-                            break;
-                        }
+                        hitPad(pad,m.data[2]/127.f);
                     }
                 } else if(m.size>=3&&((m.data[0]&0xF0)==0x80||((m.data[0]&0xF0)==0x90&&m.data[2]==0))){
                     for(auto& v:fV) if(v.on&&v.note==m.data[1]&&v.rel==0.f) v.rel=1.f;
@@ -130,8 +131,22 @@ protected:
         g2b_post(nullptr,out,frames,sr,fOn,100.f,fGal,&fSf,false);
     }
 private:
+    void hitPad(int pad,float vel=1.f){ // pad 0-15 → noot 36+pad; per-pad toon/lengte meegenomen
+        const PadBank& B=kPadBanks[(int)fBank];
+        for(auto& v:fV) if(v.on&&v.note==36+pad){v.on=false;} // retrigger: kill zelfde pad
+        for(auto& v:fV) if(!v.on){
+            v.on=true; v.note=36+pad; v.rel=0.f; v.vel=vel;
+            v.smp=B.p[pad].d; v.slen=B.p[pad].n; v.spos=0.f;
+            v.sstep=22050.f/getSampleRate(); v.lp=0.f;
+            v.ptune=powf(2.f,fPadT[pad]/12.f);
+            const float d=fPadD[pad];v.dlen=(d<0.999f)?(v.slen*d):0.f;v.pdec=d;
+            fPadHit[pad]=1.f;
+            break;
+        }
+    }
     PVoice fV[16]={};
     float fBank=0.f,fTune=0.f,fDecay=1.f,fLo=0.f,fHi=0.f,fLevel=0.f,fOn=1.f,fGalaxyV=9.f,fSfeerV=1.f,fDice=0.f;
+    float fPadSel=0.f,fPadT[16]={},fPadD[16]={1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f};
     unsigned fRnd=31337;
     Galaxy fGal; Sfeer fSf;
     float fScope[40];uint32_t fScopeN=0;int fDecim=0;

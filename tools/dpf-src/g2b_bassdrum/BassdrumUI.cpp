@@ -41,6 +41,9 @@ protected:
         else if(i==6) fOn=(int)(v+0.5f);
         else if(i==7) fValue[5]=v;
         else if(i==8) fSfeer=(int)(v+0.5f);
+        else if(i==10) fPadSel=(int)(v+0.5f); // geselecteerde pad
+        else if(i==11) fPadT[fPadSel]=v;      // TOON per pad (-12..+12 st)
+        else if(i==12) fPadD[fPadSel]=v;      // LENGTE per pad (0.2..2.5x)
         repaint();
     }
     void stateChanged(const char* key, const char* value) override {
@@ -97,7 +100,8 @@ protected:
             bool hit=fHit[idx]>0.05f;
             beginPath(); roundedRect(x0,y0,cw-4.f,ch-4.f,4.f);
             fillColor(hit?g2bsk(skin,5):g2bsk(skin,1)); fill();
-            strokeColor(g2bsk(skin,4)); strokeWidth(1.f); stroke();
+            const bool sel=fPadOpen&&idx==fPadSel;
+            strokeColor(sel?g2bsk(skin,5):g2bsk(skin,4)); strokeWidth(sel?2.f:1.f); stroke();
             fontSize(8.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
             fillColor(hit?g2bsk(skin,0):g2bsk(skin,3));
             if(padNames) text(x0+(cw-4.f)/2,y0+(ch-4.f)/2,padNames[idx],nullptr);
@@ -109,13 +113,38 @@ protected:
         float sx=gx+gw+8.f, sy=gy, sw=W-18.f-sx, sh=gh;
         beginPath(); rect(sx,sy,sw,sh); fillColor(g2bsk(skin,1)); fill();
         strokeColor(g2bsk(skin,4)); strokeWidth(1.f); stroke();
-        beginPath();
-        for(int i=0;i<kScopeSize;i++){
-            int idx=(fScopePos+i)%kScopeSize;
-            float x=sx+sw*i/(float)kScopeSize, y=sy+sh/2 - fScope[idx]*sh*0.45f;
-            if(i==0)moveTo(x,y);else lineTo(x,y);
+        if(!fPadOpen){
+            beginPath();
+            for(int i=0;i<kScopeSize;i++){
+                int idx=(fScopePos+i)%kScopeSize;
+                float x=sx+sw*i/(float)kScopeSize, y=sy+sh/2 - fScope[idx]*sh*0.45f;
+                if(i==0)moveTo(x,y);else lineTo(x,y);
+            }
+            strokeColor(g2bsk(skin,5)); strokeWidth(1.2f); stroke();
+        }else{
+            // PAD-paneel: naam + TOON/LENGTE sliders (klik pad = openen)
+            const char** pn=(fBank>=0&&fBank<kBankNamesUI_N)?kPadNamesAll[fBank]:nullptr;
+            fontSize(8.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            fillColor(g2bsk(skin,5));
+            text(sx+sw/2,sy+14.f,pn?pn[fPadSel]:"PAD",nullptr);
+            fontSize(7.5f); fillColor(g2bsk(skin,3));
+            text(sx+sw/2,sy+40.f,"TOON",nullptr);
+            text(sx+sw/2,sy+76.f,"LENGTE",nullptr);
+            auto sli=[&](float cy,float v,float mn,float mx){
+                float n=(v-mn)/(mx-mn);if(n<0)n=0;if(n>1)n=1;
+                const float tx=sx+8.f,tw=sw-16.f;
+                beginPath();roundedRect(tx,cy-3.f,tw,6.f,3.f);fillColor(g2bsk(skin,4));fill();
+                if(n>0){beginPath();roundedRect(tx,cy-3.f,tw*n,6.f,3.f);fillColor(g2bsk(skin,5));fill();}
+                beginPath();circle(tx+tw*n,cy,4.5f);fillColor(g2bsk(skin,2));fill();
+            };
+            sli(sy+52.f,fPadT[fPadSel],-12.f,12.f);
+            sli(sy+88.f,fPadD[fPadSel],0.2f,2.5f);
+            char vb[16];
+            fontSize(7.f); fillColor(g2bsk(skin,2));
+            snprintf(vb,sizeof vb,"%+.0fst",fPadT[fPadSel]); text(sx+sw/2,sy+62.f,vb,nullptr);
+            snprintf(vb,sizeof vb,"%.2fx",fPadD[fPadSel]);   text(sx+sw/2,sy+98.f,vb,nullptr);
+            fontSize(9.f); fillColor(g2bsk(skin,3)); text(sx+sw-8.f,sy+10.f,"x",nullptr);
         }
-        strokeColor(g2bsk(skin,5)); strokeWidth(1.2f); stroke();
         // 6 knoppen
         const int nk=6; float step=(W-40)/nk;
         for(int i=0;i<nk;i++){
@@ -150,13 +179,33 @@ protected:
                 if(y>=79&&y<=99){setParameterValue(8,(float)((fSfeer+1)%3));return true;}
                 if(y>=104&&y<=124){setParameterValue(6,fOn?0.f:1.f);return true;}
             }
+            // PAD-paneel: sliders + sluiten (ligt over de scope)
+            const float sx=18.f+(W-36.f-80.f)+8.f, sw=W-18.f-sx;
+            if(fPadOpen&&x>=sx&&x<=W-18.f&&y>=110.f&&y<=220.f){
+                if(x>=sx+sw-20.f&&y<=130.f){fPadOpen=false;repaint();return true;}
+                if(y>=152.f&&y<=168.f){fFxDrag=1;fxSet(x);return true;}
+                if(y>=188.f&&y<=204.f){fFxDrag=2;fxSet(x);return true;}
+                return true;
+            }
+            // pad-klik: selecteer + speel af (paneel gaat open)
+            {
+                const float gx=18.f,gy=110.f,gw=W-36.f-80.f,gh=110.f;
+                if(x>=gx&&x<=gx+gw&&y>=gy&&y<=gy+gh){
+                    const int c=(int)((x-gx)/(gw/4.f)), r=(int)((y-gy)/(gh/4.f)), idx=r*4+c;
+                    fPadSel=idx;fPadOpen=true;
+                    setParameterValue(10,(float)idx);   // PAD select
+                    setParameterValue(13,1.f);          // PAD SLAG: speel af
+                    repaint();return true;
+                }
+            }
             const int nk=6;float step=(W-40)/nk;
             for(int i=0;i<nk;i++){float cx=20+step*(i+0.5f),cy=246.f;
                 if(std::fabs(x-cx)<24&&std::fabs(y-cy)<24){fDrag=i;fLastY=y;return true;}}
-        } else fDrag=-1;
+        } else { fDrag=-1; if(fFxDrag>0){fFxDrag=0;return true;} }
         return false;
     }
     bool onMotion(const MotionEvent& ev) override {
+        if(fFxDrag>0){fxSet(ev.pos.getX());return true;}
         if(fDrag>=0){
             float dy=fLastY-ev.pos.getY(); fLastY=ev.pos.getY();
             int p=paramOf(fDrag);
@@ -167,6 +216,15 @@ protected:
         return fDrag>=0;
     }
 private:
+    // PAD TOON/LENGTE slider → param 11/12 voor de geselecteerde pad
+    void fxSet(float mx){
+        const float W=getWidth();
+        const float sx=18.f+(W-36.f-80.f)+8.f, sw=W-18.f-sx;
+        float n=(mx-(sx+8.f))/(sw-16.f);if(n<0)n=0;if(n>1)n=1;
+        if(fFxDrag==1){const float v=-12.f+n*24.f;fPadT[fPadSel]=v;setParameterValue(11,v);}
+        else if(fFxDrag==2){const float v=0.2f+n*2.3f;fPadD[fPadSel]=v;setParameterValue(12,v);}
+        repaint();
+    }
     void drawKnob(float cx,float cy,float r,float mn,float mx,float v,int skin){
         beginPath(); circle(cx,cy,r); fillColor(g2bsk(skin,1)); fill();
         strokeColor(g2bsk(skin,4)); strokeWidth(1.f); stroke();
@@ -181,6 +239,8 @@ private:
     float fMin[6],fMax[6],fValue[6]; const char* fLabel[6];
     int fBank=0,fOn=1,fSkin=0,fDrag=-1,fSfeer=1; float fLastY=0;
     float fHit[16]={};
+    int fPadSel=0,fFxDrag=0; bool fPadOpen=false; // PAD-paneel + actieve slider
+    float fPadT[16]={},fPadD[16]={1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f,1.f};
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BassdrumUI)
 };
 

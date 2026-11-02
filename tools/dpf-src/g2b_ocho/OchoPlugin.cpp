@@ -172,6 +172,7 @@ public:
         kKracht,      // output-level 0-100%
         kGalaxy,      // DIMENTIES 0-26
         kSfeer,       // dark/neutraal/licht
+        kLock,        // SLOT: smaak vastzetten (dice dobbelt alleen knoppen)
         kParameterCount
     };
 
@@ -282,6 +283,11 @@ protected:
             parameter.hints |= kParameterIsInteger;
             parameter.ranges = {0.0f, 2.0f, 1.0f};
             break;
+        case kLock:
+            parameter.name = "Slot"; parameter.symbol = "slot";
+            parameter.hints |= kParameterIsBoolean;
+            parameter.ranges = {0.0f, 1.0f, 0.0f};
+            break;
         }
     }
 
@@ -310,6 +316,7 @@ protected:
         case kKracht: return fKracht;
         case kGalaxy: return fGalaxyV;
         case kSfeer:  return fSfeerV;
+        case kLock:   return fLock;
         }
         return 0.0f;
     }
@@ -333,6 +340,7 @@ protected:
         case kKracht: fKracht = value; break;
         case kGalaxy: fGalaxyV = value; fGal.setPos((int)(value + 0.5f)); break;
         case kSfeer:  fSfeerV = value; fSf.setMode((int)(value + 0.5f)); break;
+        case kLock:   fLock = value; break;
         }
         recalc();
     }
@@ -432,7 +440,7 @@ protected:
 private:
     void rollDice(){
         // nuttige dobbel: nieuwe SMAAK + passende klank-settings
-        fRnd=fRnd*1664525u+1013904223u; setParameterValue(kPreset,(float)((fRnd>>8)%(kNumPresets+(int)fUsr.size())));
+        fRnd=fRnd*1664525u+1013904223u; if (fLock<0.5f) setParameterValue(kPreset,(float)((fRnd>>8)%(kNumPresets+(int)fUsr.size()))); // SLOT: smaak blijft
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kDecay,25.f+(fRnd>>8)%66);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kGlide,(fRnd>>8)%70);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kSub,15.f+(fRnd>>8)%71);
@@ -594,7 +602,7 @@ private:
     }
 
     float fPreset = 0.0f;
-    float fOn = 1.0f, fKracht = 100.0f, fGalaxyV = 9.0f, fSfeerV = 1.0f;
+    float fOn = 1.0f, fKracht = 100.0f, fGalaxyV = 9.0f, fSfeerV = 1.0f, fLock = 0.f;
     Galaxy fGal; Sfeer fSf;
     std::vector<UsrSmp> fUsr;
     bool fNamesSent = false;
