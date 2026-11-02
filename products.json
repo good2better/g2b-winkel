@@ -1,6 +1,23 @@
 {
  "producten": [
   {
+   "id": "g2bmaster",
+   "titel": "G2B MASTER — mastering in 4 knoppen + AUTO",
+   "soort": "plugin",
+   "beschrijving": "DE PAREL VOOR JE MIX-EINDE: zet hem op je master-track en je beat klinkt meteen luider, strakker en voller — zonder mix-kennis. 10 GENRE-PILLS (TRAP·DRILL·BOOMBAP·RNB·HOUSE·DEMBOW·KAWINA·LOFI·SOUL·POP) zetten de hele keten goed in 1 klik. AUTO-KNOP: druk → hij luistert 5 sec naar je beat → zet TILT/GLUE/WARMTE/LUID zelf af. 4 grote knoppen (TILT donker-helder · GLUE samenplakken · WARMTE analoge dikte · LUID hard), live LUFS-meter met -6 LUFS doelstreep, KRACHT dry/wet-slider, DICE, AAN/UIT-bypass, 8 skins. Ingebouwde -1dB limiter: clipt NOOIT. VST3 + CLAP + standalone EXE + handleiding-PDF.",
+   "prijs": "€ 29,95",
+   "links": {
+    "koop": "bestel.html?p=g2bmaster",
+    "download": "bedankt.html?k=g2bmaster"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/g2bmaster-cover.png",
+   "download_dir": "d/g2bmaster",
+   "demo": "media/g2bmaster-demo.mp4",
+   "video": "media/g2bmaster-demo.mp4"
+  },
+  {
    "id": "g2bsuite1",
    "titel": "G2B SUITE — alle marketeer-tools",
    "soort": "app",
