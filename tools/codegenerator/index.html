@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>G2B Code-Generator</title>
+<style>
+:root{--bg:#0e1410;--card:#16211a;--rand:#2a4433;--tekst:#e8f0ea;--dim:#9fb8a6;--groen:#57c785;--accent:#2e7d4f}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui,sans-serif;padding:20px;max-width:700px;margin:0 auto}
+h1{color:var(--groen);font-size:26px;margin:8px 0}
+.sub{color:var(--dim);font-size:13px;margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--rand);border-radius:12px;padding:18px;margin-bottom:16px}
+input,select{width:100%;box-sizing:border-box;padding:10px;font-size:14px;border-radius:8px;border:1px solid var(--rand);background:var(--bg);color:var(--tekst);margin:4px 0}
+button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:12px 24px;font-size:15px;cursor:pointer;width:100%}
+label{font-size:12px;color:var(--dim)}
+textarea{width:100%;box-sizing:border-box;min-height:180px;background:var(--bg);color:var(--groen);border:1px solid var(--rand);border-radius:8px;padding:10px;font-family:monospace;font-size:13px}
+</style>
+</head>
+<body>
+<h1>🔑 G2B CODE-GENERATOR</h1>
+<div class="sub">Maak licentie-codes voor je verkoop-apps — zelfde systeem als de apps zelf checken. Werkt 100% offline in je browser.</div>
+
+<div class="card">
+<label>App</label>
+<select id="app">
+<option value="CR|G2B-CR-2026-t4qf9l">CRM-Fabriek (CR)</option>
+<option value="FL|G2B-FL-2026-m4zj7p">Flow-Fabriek (FL)</option>
+<option value="LD|G2B-LD-2026-w8tf2k">Lead-Fabriek (LD)</option>
+<option value="LF|G2B-LF-2026-q3vx8n">Lijst-Fabriek (LF)</option>
+<option value="MF|G2B-MF-2026-p9xw4r">Mail-Fabriek (MF)</option>
+<option value="SO|G2B-SO-2026-x5rj8w">SEO-Fabriek (SO)</option>
+<option value="SQ|G2B-SQ-2026-v2hb8d">Sequentie-Fabriek (SQ)</option>
+<option value="SF|G2B-SF-2026-k6mt3v">Sheet-Fabriek (SF)</option>
+<option value="KF|G2B-KF-2026-x7qk9m">Show-Studio (KF)</option>
+<option value="WF|G2B-WF-2026-n7yd5c">Watcher-Fabriek (WF)</option>
+</select>
+<label>Aantal codes</label><input id="n" type="number" value="10" min="1" max="500">
+<button onclick="gen()" style="margin-top:10px">MAAK CODES</button>
+</div>
+
+<div class="card" id="uit" style="display:none">
+<b>Jouw codes</b> — kopieer of download als csv (te plakken in je shop als download):
+<textarea id="codes" readonly></textarea>
+<button onclick="dl()">⬇ DOWNLOAD CSV</button>
+<button onclick="check()" style="margin-top:6px;background:#555">✓ CHECK EEN CODE</button>
+<input id="chk" placeholder="plak code om te controleren" style="margin-top:6px">
+<div id="chkres" style="font-size:14px;margin-top:6px"></div>
+</div>
+
+<script>
+const ALF="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+const B32="ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+function b32(buf){
+ const b=new Uint8Array(buf);let bits=0,val=0,out="";
+ for(const x of b){val=(val<<8)|x;bits+=8;
+  while(bits>=5){out+=B32[(val>>>(bits-5))&31];bits-=5}}
+ if(bits)out+=B32[(val<<(5-bits))&31];
+ return out;
+}
+async function hmacDeel(geheim,seed){
+ const k=await crypto.subtle.importKey("raw",new TextEncoder().encode(geheim),
+  {name:"HMAC",hash:"SHA-256"},false,["sign"]);
+ const d=await crypto.subtle.sign("HMAC",k,new TextEncoder().encode(seed));
+ return b32(d).slice(0,8);
+}
+function rnd(n){let s="";for(let i=0;i<n;i++)s+=ALF[crypto.getRandomValues(new Uint8Array(1))[0]%32];return s}
+async function gen(){
+ const [pfx,geheim]=document.getElementById('app').value.split('|');
+ const n=Math.min(+document.getElementById('n').value||10,500);
+ const set=new Set();let out=[];
+ while(out.length<n){
+  const seed=rnd(4);if(set.has(seed))continue;set.add(seed);
+  const chk=await hmacDeel(geheim,seed);
+  out.push(pfx+"-"+seed+"-"+chk.slice(0,4)+"-"+chk.slice(4));
+ }
+ out.sort();
+ document.getElementById('codes').value=out.join("\n");
+ document.getElementById('uit').style.display='block';
+}
+function dl(){
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob(["code\n"+document.getElementById('codes').value],{type:'text/csv'}));
+ a.download="codes.csv";a.click();
+}
+async function check(){
+ const code=document.getElementById('chk').value.trim().toUpperCase().replace(/ /g,'');
+ const [pfx,geheim]=document.getElementById('app').value.split('|');
+ const d=code.split('-');
+ let ok=d.length===4&&d[0]===pfx&&d[1].length===4&&[...d[1]].every(c=>ALF.includes(c));
+ if(ok)ok=(await hmacDeel(geheim,d[1]))===d[2]+d[3];
+ document.getElementById('chkres').innerHTML=ok?'<span style="color:var(--groen)">✓ geldige code</span>':'<span style="color:#e06c6c">✗ ongeldig</span>';
+}
+</script>
+</body></html>
