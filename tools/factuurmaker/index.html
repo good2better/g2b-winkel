@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>G2B Factuur-Maker</title>
+<style>
+:root{--bg:#0e1410;--card:#16211a;--rand:#2a4433;--tekst:#e8f0ea;--dim:#9fb8a6;--groen:#57c785;--accent:#2e7d4f}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui,sans-serif;padding:20px;max-width:780px;margin:0 auto}
+h1{color:var(--groen);font-size:26px;margin:8px 0}
+.sub{color:var(--dim);font-size:13px;margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--rand);border-radius:12px;padding:18px;margin-bottom:16px}
+input,textarea,select{width:100%;box-sizing:border-box;padding:10px;font-size:14px;border-radius:8px;border:1px solid var(--rand);background:var(--bg);color:var(--tekst);margin:4px 0}
+button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:12px 24px;font-size:15px;cursor:pointer;width:100%}
+button.klein{width:auto;padding:8px 14px;font-size:13px}
+label{font-size:12px;color:var(--dim)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lijn{display:grid;grid-template-columns:5fr 2fr 1fr 30px;gap:6px;margin:4px 0}
+.lijn input{margin:0}
+#prev{background:#fff;color:#111;border-radius:12px;padding:30px;max-width:780px}
+#prev h2{color:#2e7d4f;margin:0}
+#prev table{width:100%;border-collapse:collapse;margin:15px 0}
+#prev td,#prev th{padding:6px 4px;border-bottom:1px solid #ddd;text-align:left;font-size:13px}
+#prev .tot{font-weight:bold;font-size:16px}
+@media print{body>*:not(#prevwrap){display:none}#prev{border-radius:0;padding:0}}
+</style>
+</head>
+<body>
+<h1>🧾 G2B FACTUUR-MAKER</h1>
+<div class="sub">Maak een nette factuur als PDF — vul in, klik MAAK, download of print. Je bedrijfsgegevens worden onthouden.</div>
+
+<div class="card">
+<b>Jouw bedrijf</b> (1x invullen, blijft bewaard)
+<div class="row2">
+<input id="b_naam" placeholder="Bedrijfsnaam (bijv. G2B / Good2Better)">
+<input id="b_mail" placeholder="E-mail">
+<input id="b_adres" placeholder="Adres">
+<input id="b_kvk" placeholder="KvK-nummer">
+<input id="b_btw" placeholder="BTW-nummer">
+<input id="b_iban" placeholder="IBAN">
+</div>
+<button class="klein" onclick="bewaar()">ONTHOUD BEDRIJF</button>
+</div>
+
+<div class="card">
+<b>Factuur</b>
+<div class="row2">
+<input id="klant" placeholder="Klantnaam / bedrijf">
+<input id="klantadres" placeholder="Adres klant">
+<input id="datum" type="date">
+<input id="nummer" placeholder="Factuurnummer (bijv. 2026-001)">
+</div>
+<label>Regels</label>
+<div class="lijn" style="color:var(--dim);font-size:11px"><span>Omschrijving</span><span>Bedrag €</span><span>Aantal</span><span></span></div>
+<div id="lijnen"></div>
+<button class="klein" onclick="lijn()">+ regel</button>
+<label style="margin-top:8px;display:block">BTW % (0 = vrijgesteld/klein ondernemer)</label>
+<input id="btw" type="number" value="21" style="width:100px">
+<button onclick="maak()" style="margin-top:12px">MAAK FACTUUR</button>
+</div>
+
+<div id="prevwrap" style="display:none">
+<div id="prev"></div>
+<div class="card">
+<button onclick="window.print()">🖨 PRINT / OPSLAAN ALS PDF</button>
+<button class="klein" onclick="dlHtml()" style="margin-top:8px">⬇ download als bestand</button>
+</div>
+</div>
+
+<script>
+const B=JSON.parse(localStorage.getItem('g2b_bedrijf')||'{}');
+['naam','mail','adres','kvk','btw','iban'].forEach(k=>{if(B[k])document.getElementById('b_'+k).value=B[k]});
+document.getElementById('datum').value=new Date().toISOString().slice(0,10);
+function bewaar(){const o={};['naam','mail','adres','kvk','btw','iban'].forEach(k=>o[k]=v('b_'+k));localStorage.setItem('g2b_bedrijf',JSON.stringify(o));alert('✓ opgeslagen')}
+const v=id=>document.getElementById(id).value;
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const eur=x=>'€ '+x.toFixed(2).replace('.',',');
+function lijn(o='',p='',a='1'){
+ const d=document.createElement('div');d.className='lijn';
+ d.innerHTML='<input class="lo" placeholder="bijv. Beat pack — licentie" value="'+esc(o)+'">'+
+ '<input class="lp" type="number" step="0.01" placeholder="0.00" value="'+p+'">'+
+ '<input class="la" type="number" value="'+a+'" min="1">'+
+ '<button class="klein" style="background:#7d2e2e;padding:6px" onclick="this.parentElement.remove()">×</button>';
+ document.getElementById('lijnen').appendChild(d);
+}
+lijn();
+function maak(){
+ const lijnen=[...document.querySelectorAll('#lijnen .lijn')].map(d=>({
+  o:d.querySelector('.lo').value,p:parseFloat(d.querySelector('.lp').value)||0,
+  a:parseFloat(d.querySelector('.la').value)||1})).filter(l=>l.o);
+ if(!lijnen.length){alert('vul minstens 1 regel in');return}
+ const btwp=parseFloat(v('btw'))||0;
+ const sub=lijnen.reduce((s,l)=>s+l.p*l.a,0),btwbed=sub*btwp/100,tot=sub+btwbed;
+ document.getElementById('prev').innerHTML=
+ '<h2>FACTUUR '+esc(v('nummer'))+'</h2>'+
+ '<div style="display:flex;justify-content:space-between;font-size:13px;margin-top:15px">'+
+ '<div><b>'+esc(B.naam||v('b_naam'))+'</b><br>'+esc(B.adres||v('b_adres'))+'<br>'+esc(B.mail||v('b_mail'))+
+ (B.kvk||v('b_kvk')?'<br>KvK: '+esc(B.kvk||v('b_kvk')):'')+
+ (B.btw||v('b_btw')?'<br>BTW: '+esc(B.btw||v('b_btw')):'')+'</div>'+
+ '<div style="text-align:right"><b>aan:</b><br>'+esc(v('klant'))+'<br>'+esc(v('klantadres'))+'<br><br>Datum: '+esc(v('datum'))+'</div></div>'+
+ '<table><tr><th>Omschrijving</th><th>Aantal</th><th>Bedrag</th><th>Totaal</th></tr>'+
+ lijnen.map(l=>'<tr><td>'+esc(l.o)+'</td><td>'+l.a+'</td><td>'+eur(l.p)+'</td><td>'+eur(l.p*l.a)+'</td></tr>').join('')+
+ '<tr><td colspan="3" style="text-align:right">Subtotaal</td><td>'+eur(sub)+'</td></tr>'+
+ '<tr><td colspan="3" style="text-align:right">BTW '+btwp+'%</td><td>'+eur(btwbed)+'</td></tr>'+
+ '<tr class="tot"><td colspan="3" style="text-align:right">TOTAAL</td><td>'+eur(tot)+'</td></tr></table>'+
+ '<div style="font-size:12px;color:#555;margin-top:20px">Graag betalen binnen 14 dagen op '+(B.iban||v('b_iban')||'…')+'<br>o.v.v. factuurnummer '+esc(v('nummer'))+'</div>';
+ document.getElementById('prevwrap').style.display='block';
+ document.getElementById('prevwrap').scrollIntoView();
+}
+function dlHtml(){
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob(['<!DOCTYPE html><html><body style="font-family:sans-serif">'+document.getElementById('prev').innerHTML+'</body></html>'],{type:'text/html'}));
+ a.download='factuur-'+(v('nummer')||'g2b')+'.html';a.click();
+}
+</script>
+</body></html>
