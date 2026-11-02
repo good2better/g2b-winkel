@@ -8,9 +8,12 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <cctype>
 #include <string>
 #include <vector>
 #include <fstream>
+#include <algorithm>
+#include <dirent.h>
 
 // G2B skins (8 thema's): bg,pn,tx,gy,ed,GR,DG
 static const float G2BSK[8][7][3]={
@@ -106,7 +109,7 @@ protected:
         }
     }
 
-    void uiFileBrowserSelected(const char* filename) override
+    void loadFile(const std::string& filename)
     {
         std::ifstream in(filename, std::ios::binary);
         if (!in) { fName = "kon bestand niet openen"; repaint(); return; }
@@ -117,11 +120,39 @@ protected:
         std::string b64;
         b64enc(buf, b64);
         setState("sample", b64.c_str());
-        const char* base = std::strrchr(filename, '/');
-        if (!base) base = std::strrchr(filename, '\\');
+        const char* base = std::strrchr(filename.c_str(), '/');
+        if (!base) base = std::strrchr(filename.c_str(), '\\');
         fName = base ? base + 1 : filename;
         if (fName.size() > 44) fName = fName.substr(0, 41) + "...";
         repaint();
+        sendNote(0,64,110); sendNote(0,64,0); // meteen beluisteren
+    }
+
+    void uiFileBrowserSelected(const char* filename) override
+    {
+        // scan de hele map mee → < > bladert door alle geluiden
+        std::string fn(filename);
+        const size_t sep = fn.find_last_of("/\\");
+        fDirPath = (sep == std::string::npos) ? "." : fn.substr(0, sep);
+        fDir.clear(); fDirIdx = -1;
+        DIR* d = opendir(fDirPath.c_str());
+        if (d) {
+            std::vector<std::string> names;
+            while (dirent* e = readdir(d)) {
+                std::string n = e->d_name;
+                const size_t dot = n.find_last_of('.');
+                if (dot == std::string::npos) continue;
+                std::string ext = n.substr(dot);
+                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                if (ext == ".wav" || ext == ".mp3" || ext == ".flac" || ext == ".aif" || ext == ".aiff" || ext == ".ogg")
+                    names.push_back(fDirPath + "/" + n);
+            }
+            closedir(d);
+            std::sort(names.begin(), names.end());
+            fDir = names;
+            for (size_t i = 0; i < fDir.size(); i++) if (fDir[i] == fn) { fDirIdx = (int)i; break; }
+        }
+        loadFile(fn);
     }
 
     void onNanoDisplay() override
@@ -133,7 +164,7 @@ protected:
         fillColor(47, 191, 113);
         text(18.0f, 22.0f, "G2B SAMPLEX", nullptr);
         fontSize(11.5f); fillColor(143, 160, 152);
-        text(18.0f, 41.0f, "jouw one-shot/loop → jouw eigen instrument", nullptr);
+        text(18.0f, 41.0f, "jouw one-shot/loop → jouw eigen instrument · toetsen A-; = afspelen", nullptr);
 
         // LAAD SAMPLE knop
         const bool hover = false;
@@ -147,6 +178,15 @@ protected:
         fontSize(10.0f); textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
         fillColor(143, 160, 152);
         text(178.0f, 68.0f, fName.c_str(), nullptr);
+        if (!fDir.empty())
+        {
+            fontSize(14.0f); fillColor(47, 191, 113);
+            text(178.0f, 88.0f, "<", nullptr);
+            text(W - 40.0f, 88.0f, ">", nullptr);
+            fontSize(10.0f); fillColor(143, 160, 152);
+            char nb[16]; std::snprintf(nb, sizeof(nb), "%d/%d", fDirIdx + 1, (int)fDir.size());
+            text(W - 22.0f, 88.0f, nb, nullptr);
+        }
 
         // preset-knoppen rechtsboven
         float bx = W - 14.0f;
@@ -322,16 +362,30 @@ protected:
                 openFileBrowser();
                 return true;
             }
+            // < > bladeren door de geladen map
+            if (!fDir.empty() && (float)(ev.pos.getY()/getScaleFactor()) >= 78.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 98.0f)
+            {
+                const float px = (float)(ev.pos.getX()/getScaleFactor());
+                int step = 0;
+                if (px >= 172.0f && px <= 196.0f) step = -1;
+                else if (px >= W-46.0f && px <= W-32.0f) step = 1;
+                if (step != 0)
+                {
+                    fDirIdx = (fDirIdx + step + (int)fDir.size()) % (int)fDir.size();
+                    loadFile(fDir[fDirIdx]);
+                    return true;
+                }
+            }
             // LANDR-pills
             {
                 const float pw=86.f,ph=20.f,py=getHeight()-46.f;
                 for(int i=0;i<4;i++){
                     const float px=18.f+i*(pw+8.f);
                     if((float)(ev.pos.getX()/getScaleFactor())>=px&&(float)(ev.pos.getX()/getScaleFactor())<=px+pw&&(float)(ev.pos.getY()/getScaleFactor())>=py&&(float)(ev.pos.getY()/getScaleFactor())<=py+ph){
-                        if(i==0)spv(12,1.f);
-                        else if(i==1)spv(15,1.f);
-                        else if(i==2){fSnapOn=fSnapOn>0.5f?0.f:1.f;spv(14,fSnapOn);}
-                        else {fChopN=(fChopN+4)%20;if(fChopN>16)fChopN=0;spv(13,(float)fChopN);}
+                        if(i==0){spv(12,1.f);fName="AUTO-FIT → tempo+toon gefit";}
+                        else if(i==1){spv(15,1.f);fName="EXPORT → Music/G2B/G2B-SampleX.wav";}
+                        else if(i==2){fSnapOn=fSnapOn>0.5f?0.f:1.f;spv(14,fSnapOn);fName=fSnapOn>0.5f?"SNAP aan — start op zero-crossing":"SNAP uit";}
+                        else {fChopN=(fChopN+4)%20;if(fChopN>16)fChopN=0;spv(13,(float)fChopN);char mb[40];std::snprintf(mb,sizeof(mb),"CHOP = %d slices over het keyboard",fChopN);fName=mb;}
                         repaint(); return true;
                     }
                 }
@@ -346,7 +400,8 @@ protected:
                     if ((float)(ev.pos.getX()/getScaleFactor()) >= hbx && (float)(ev.pos.getX()/getScaleFactor()) <= hbx + bw &&
                         (float)(ev.pos.getY()/getScaleFactor()) >= 12.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 12.0f + bh)
                     {
-                        spv(8, (float)i);
+                        if(i==fProg) spv(7,1.f); // zelfde pil = nieuwe variant
+                        else spv(8, (float)i);
                         fProg = i;
                         repaint();
                         return true;
@@ -404,6 +459,15 @@ protected:
         repaint();
     }
 
+    bool onKeyboard(const KeyboardEvent& ev) override
+    {
+        if(!ev.press)return true;
+        // toetsenbord = sample afspelen op toonhoogte (A=C3 .. ;=C5)
+        static const char kKeys[]="awsedftgyhujkolp;";
+        const char* hit=std::strchr(kKeys,(char)std::tolower((int)ev.key));
+        if(hit){sendNote(0,(uint8_t)(48+(int)(hit-kKeys)),100);repaint();return true;}
+        return false;
+    }
     bool onMotion(const MotionEvent& ev) override
     {
         if (fXYdrag) { xySet((float)(ev.pos.getX()/getScaleFactor()), (float)(ev.pos.getY()/getScaleFactor())); return true; }
@@ -462,6 +526,9 @@ private:
     int fOn = 1; bool fXYdrag = false;
     float fXX = 18.0f, fXY_ = 258.0f, fXW = 524.0f, fXH = 46.0f;
     std::string fName;
+    std::vector<std::string> fDir;
+    int fDirIdx = -1;
+    std::string fDirPath;
 
     void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SampleXUI)

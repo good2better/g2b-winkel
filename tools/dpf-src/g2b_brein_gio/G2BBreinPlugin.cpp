@@ -21,7 +21,7 @@ START_NAMESPACE_DISTRHO
 class BreinPlugin : public Plugin
 {
 public:
-    BreinPlugin() : Plugin(18, 0, 0) { regen_(); }
+    BreinPlugin() : Plugin(23, 0, 0) { regen_(); }
 
 protected:
     const char* getLabel() const override { return "G2B Brein GIORGIO"; }
@@ -40,7 +40,7 @@ protected:
 
     enum { kGenre, kKit, kBars, kSeed, kKracht, kSwing,
            kDrums, kMel, kMidi, kPlay, kGen, kDice, kExport, kLight,
-           kOn, kDim, kLeerMode, kGenN };
+           kOn, kDim, kLeerMode, kGenN, kQuant, kFill, kHum, kVar, kAll };
 
     void initParameter(uint32_t i, Parameter& p) override {
         p.hints = kParameterIsAutomatable;
@@ -62,7 +62,12 @@ protected:
         case kOn:     p.name="AAN/UIT";p.symbol="aan";   p.ranges.min=0; p.ranges.max=1;   p.ranges.def=1;    p.hints|=kParameterIsBoolean; break;
         case kDim:    p.name="DIMENTIES";p.symbol="dim"; p.ranges.min=0; p.ranges.max=26;  p.ranges.def=8;    p.hints|=kParameterIsInteger; break;
         case kLeerMode:p.name="MIJN-MODE";p.symbol="leer";p.ranges.min=0; p.ranges.max=1;   p.ranges.def=0;    p.hints|=kParameterIsBoolean; break;
-        case kGenN:   p.name="GEN 8x → MAP";p.symbol="genn";p.ranges.min=0;p.ranges.max=1;  p.hints|=kParameterIsTrigger; break;
+        case kGenN:   p.name="GEN 8x PREVIEW";p.symbol="genn";p.ranges.min=0;p.ranges.max=1;  p.hints|=kParameterIsTrigger; break;
+        case kQuant:  p.name="QUANTIZE";p.symbol="quant";p.ranges.min=0; p.ranges.max=1;   p.ranges.def=1;    p.hints|=kParameterIsBoolean; break;
+        case kFill:   p.name="FILL";    p.symbol="fill"; p.ranges.min=0; p.ranges.max=1;   p.ranges.def=1;    p.hints|=kParameterIsBoolean; break;
+        case kHum:    p.name="HUMAN";   p.symbol="human";p.ranges.min=0; p.ranges.max=1;   p.ranges.def=.5f; break;
+        case kVar:    p.name="VARIANT"; p.symbol="var";  p.ranges.min=0; p.ranges.max=7;   p.ranges.def=0;    p.hints|=kParameterIsInteger; break;
+        case kAll:    p.name="ALL 8 → MAP";p.symbol="all";p.ranges.min=0;p.ranges.max=1;   p.hints|=kParameterIsTrigger; break;
         }
     }
 
@@ -73,7 +78,8 @@ protected:
                   case kPlay:return fPlay;case kGen:return 0;case kDice:return 0;
                   case kExport:return 0;case kLight:return fLight;
                   case kOn:return fOn;case kDim:return fDim;case kLeerMode:return fLeer;
-                  case kGenN:return 0;}return 0.f;
+                  case kGenN:return 0;case kQuant:return fQuant;case kFill:return fFill;
+                  case kHum:return fHum;case kVar:return (float)fVarSel;case kAll:return 0;}return 0.f;
     }
 
     void setParameterValue(uint32_t i, float v) override {
@@ -95,7 +101,12 @@ protected:
         case kOn:    fOn=v; break;
         case kDim:   fDim=v; break;
         case kLeerMode: fLeer=v; regen_(); break;
-        case kGenN:  if(v>0.5f)writeBatch_(); break;
+        case kGenN:  if(v>0.5f)genBatch_(); break;
+        case kQuant: fQuant=v; regen_(); break;
+        case kFill:  fFill=v;  regen_(); break;
+        case kHum:   fHum=v;   regen_(); break;
+        case kVar:   pickVar_((int)v); break;
+        case kAll:   if(v>0.5f)writeBatch_(); break;
         }
     }
 
@@ -118,6 +129,8 @@ protected:
         wasPlaying_=playNow;
         fpt_=sr*60.0/(bpm*480.0);                      // frames per tick (480 tpq)
         const double stepLen=60.0/bpm/4.0;             // sec per 16e
+        // genre-swing: 808/TRAP strak (~55%), KAWINA ruim (~64%), KEYS subtiel, MISC medium
+        static const double kGenreSwing[5]={0.10,0.28,0.06,0.15,0.10};
         const int totalSteps=clampi(fBars,1,16)*16;
         for(uint32_t i=0;i<frames;i++){
             const uint64_t abs=fAbs+i;
@@ -125,14 +138,15 @@ protected:
                 emitMidi_(0x80|o.ch,o.note,0,i);offr_=(offr_+1)%128;}
             if(playNow){
                 fPhase+=1.0/sr;
-                const double curLen=stepLen*((fStep&1)?(1.0-0.335*fSwing):(1.0+0.335*fSwing));
+                const double sw=kGenreSwing[clampi(fGenre,0,4)]*fSwing;
+                const double curLen=stepLen*((fStep&1)?(1.0-sw):(1.0+sw));
                 if(fPhase>=curLen){
                     fPhase-=curLen; fStep++;
                     if(fStep>=totalSteps){fStep=0;ni_=0;}
                     const int st=fStep;
-                    while(ni_<(int)gen_.size()&&gen_[ni_].t<=st*120){
+                    while(ni_<(int)gen_.size()&&gen_[ni_].t<=(st+1)*120-1){
                         const BNote&n=gen_[ni_++];
-                        if(n.t!=st*120)continue;
+                        if(n.t<st*120)continue;
                         if((n.ch==9&&fDrums>0.5f)||(n.ch==0&&fMel>0.5f))
                             hit_(n.note,n.ch,(int)(n.vel*fKracht),i,n.dur*fpt_);
                     }
@@ -201,7 +215,8 @@ private:
     void regen_(){
         if(fLeer>0.5f && fLearnN>0){ regenLeer_(); return; }
         const int idx=kitAbs_();
-        gen_=BreinGen((uint32_t)(clampi(fSeed,0,255)*7919+genN_*104729+1)).gen(idx,clampi(fBars,1,16));
+        const bool melJit=(clampi(fGenre,0,4)==2||clampi(fGenre,0,4)==3);
+        gen_=BreinGen((uint32_t)(clampi(fSeed,0,255)*7919+genN_*104729+1)).gen(idx,clampi(fBars,1,16),fFill>0.5f,fHum,melJit);
         ni_=0; if(fStep<0)fStep=-1;
         char nb[56];std::snprintf(nb,sizeof(nb),"%s · %d noten",kNames[kKits[idx].name],(int)gen_.size());
         updateStateValue("kit",nb);
@@ -278,7 +293,9 @@ private:
         while(t<bars*div*4-60){
             int dur= fLearnDur.empty()?240:fLearnDur[(int)(g.frand()*fLearnDur.size())];
             if(dur<60)dur=60;if(dur>div*2)dur=div*2;
-            gen_.push_back({t,dur,0,(uint8_t)prev,(uint8_t)(60+g.frand()*55)});
+            int tt=t;
+            if(fQuant>0.5f) tt=((tt+60)/120)*120;   // quantize aan → op 16e-grid
+            gen_.push_back({tt,dur,0,(uint8_t)prev,(uint8_t)(60+g.frand()*55)});
             t+=dur;
             if(!fLearnRest.empty()&&g.frand()<0.3f) t+=fLearnRest[(int)(g.frand()*fLearnRest.size())];
             const std::vector<int>& ivs=fLearnIv[prev%12];
@@ -301,8 +318,29 @@ private:
         char nb[56];std::snprintf(nb,sizeof(nb),"MIJN-STIJL · %d noten",(int)gen_.size());
         updateStateValue("kit",nb);
     }
-    // ---- GEN 8x: acht variaties als .mid in eigen map ----
+    // ---- GEN 8x PREVIEW: acht variaties in geheugen — geen bestanden ----
+    // Blader met V1-V8 (VARIANT), SPEEL om te horen; ↓MID schrijft alleen de gekozen
+    // variant, ALL schrijft alle 8 naar de map.
+    void genBatch_(){
+        for(int v=0;v<8;v++){ genN_++; regen_(); fVars_[v]=gen_; }
+        fVarSel=0; gen_=fVars_[0]; ni_=0; fStep=-1; fPhase=0;
+        fSelMask=0; updateStateValue("selmask","0");
+        char nb[64];std::snprintf(nb,sizeof(nb),"8 VARIANTEN klaar · V1 actief · %d noten",(int)gen_.size());
+        updateStateValue("kit",nb);
+        updateStateValue("midifile","preview — klik V = luister+vink; ↓MID bewaart aangevinkte, ALL bewaart alle 8");
+    }
+    void pickVar_(int v){
+        if(v<0)v=0; if(v>7)v=7;
+        if(fVars_[v].empty())return;
+        fVarSel=v; gen_=fVars_[v]; ni_=0; fStep=-1; fPhase=0;
+        fSelMask^=(1<<v);   // klik = beluister + markeer/ont-markeer
+        char sm[8];std::snprintf(sm,sizeof(sm),"%d",fSelMask);updateStateValue("selmask",sm);
+        char nb[64];std::snprintf(nb,sizeof(nb),"VARIANT V%d%s · %d noten",v+1,(fSelMask>>v)&1?" ✓":"",(int)gen_.size());
+        updateStateValue("kit",nb);
+    }
+    // ---- ALL: alle 8 preview-varianten als .mid in eigen map ----
     void writeBatch_(){
+        if(fVars_[0].empty())genBatch_();
         const char* home=std::getenv("USERPROFILE");
         if(!home||!*home)home=std::getenv("HOME");
         char dir[520],dir2[560];
@@ -317,10 +355,9 @@ private:
 #endif
         int ok=0;
         for(int v=0;v<8;v++){
-            genN_++; regen_();
             smf::MidiFile mf; mf.setTicksPerQuarterNote(480);
             int seq=0;
-            for(const BNote&n:gen_){
+            for(const BNote&n:fVars_[v]){
                 int vv=(int)(n.vel*fKracht); vv=vv<20?20:(vv>127?127:vv);
                 smf::MidiEvent on(0x90|n.ch,n.note,vv); on.tick=n.t; on.seq=seq++;
                 smf::MidiEvent off(0x80|n.ch,n.note,0); off.tick=n.t+n.dur; off.seq=seq++;
@@ -330,13 +367,52 @@ private:
             char path[600];std::snprintf(path,sizeof(path),"%s/brein_%02d.mid",dir,v+1);
             if(mf.write(path))ok++;
         }
-        genN_--; regen_();
         char m[80];std::snprintf(m,sizeof(m),"%d .mid in Music/G2B/midigen",ok);
         updateStateValue("midifile",m);
+#ifdef _WIN32
+        char cmd[700]; std::snprintf(cmd,sizeof(cmd),"explorer \"%s\"",dir);
+        std::system(cmd);
+#endif
     }
 
-    // ---- EXPORT .MID: huidige patroon (met kracht + laag-schakelaars) wegschrijven ----
+    // ---- EXPORT .MID: aangevinkte varianten (of huidige) wegschrijven ----
     void writeMid_(){
+        if(fSelMask){
+            const char* home=std::getenv("USERPROFILE");
+            if(!home||!*home)home=std::getenv("HOME");
+            char dir[520],dir2[560];
+            if(home&&*home){
+                std::snprintf(dir2,sizeof(dir2),"%s/Music/G2B",home);
+                std::snprintf(dir,sizeof(dir),"%s/Music/G2B/midigen",home);
+            }else{ std::snprintf(dir,sizeof(dir),".");std::snprintf(dir2,sizeof(dir2),"."); }
+#ifdef _WIN32
+            _mkdir(dir2); _mkdir(dir);
+#else
+            mkdir(dir2,0755); mkdir(dir,0755);
+#endif
+            int ok=0,nSel=0;
+            for(int v=0;v<8;v++){
+                if(!((fSelMask>>v)&1)||fVars_[v].empty())continue;
+                nSel++;
+                smf::MidiFile mf; mf.setTicksPerQuarterNote(480);
+                int seq=0;
+                for(const BNote&n:fVars_[v]){
+                    int vv=(int)(n.vel*fKracht); vv=vv<20?20:(vv>127?127:vv);
+                    smf::MidiEvent on(0x90|n.ch,n.note,vv); on.tick=n.t; on.seq=seq++;
+                    smf::MidiEvent off(0x80|n.ch,n.note,0); off.tick=n.t+n.dur; off.seq=seq++;
+                    mf[0].push_back(on); mf[0].push_back(off);
+                }
+                mf.sortTracks();
+                char path[600];std::snprintf(path,sizeof(path),"%s/brein_%02d.mid",dir,v+1);
+                if(mf.write(path))ok++;
+            }
+            char m[96];std::snprintf(m,sizeof(m),"%d .mid opgeslagen in Music/G2B/midigen",ok);
+            updateStateValue("midifile",m);
+#ifdef _WIN32
+            if(ok){char cmd[700];std::snprintf(cmd,sizeof(cmd),"explorer \"%s\"",dir);std::system(cmd);}
+#endif
+            return;
+        }
         smf::MidiFile mf; mf.setTicksPerQuarterNote(480);
         int seq=0;
         for(const BNote&n:gen_){
@@ -359,7 +435,13 @@ private:
         mkdir(dir,0755);
 #endif
         std::snprintf(path,sizeof(path),"%s\\G2B-Brein.mid",dir);
-        if(mf.write(path))updateStateValue("midifile",".mid opgeslagen: Music\\G2B\\G2B-Brein.mid");
+        if(mf.write(path)){
+            updateStateValue("midifile",".mid opgeslagen: Music\\G2B\\G2B-Brein.mid");
+#ifdef _WIN32
+            char cmd[700]; std::snprintf(cmd,sizeof(cmd),"explorer \"%s\"",dir);
+            std::system(cmd);
+#endif
+        }
         else updateStateValue("midifile",".mid NIET gelukt — map niet schrijfbaar");
     }
 
@@ -367,7 +449,8 @@ private:
 
     float fGenre=0,fKit=0,fBars=4,fSeed=7,fKracht=.85f,fSwing=1.f;
     float fDrums=1,fMel=1,fMidi=1,fPlay=1,fLight=0;
-    float fOn=1,fDim=8,fLeer=0;
+    float fOn=1,fDim=8,fLeer=0,fQuant=1,fFill=1,fHum=.5f;
+    std::vector<BNote> fVars_[8]; int fVarSel=0,fSelMask=0;
     // GIORGIO leer-model
     int fLearnN=0,fLearnRoot=60;
     std::vector<int> fLearnIv[12]; std::vector<int> fLearnDur,fLearnRest;

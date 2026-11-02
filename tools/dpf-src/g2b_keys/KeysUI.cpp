@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <cctype>
 
 // G2B skins (8 thema's): bg,pn,tx,gy,ed,GR,DG
 static const float G2BSK[8][7][3]={
@@ -24,7 +25,7 @@ static inline Color g2bsk(int sk,int r){if(sk<0)sk=0;if(sk>7)sk=7;const float*c=
 
 START_NAMESPACE_DISTRHO
 
-static const int kNumPrograms = 17;
+static const int kNumPrograms = 25;
 static const char* kProgramNames[kNumPrograms] = {
     "G2B","DEMBOW","DRILL","RNB","HOUSE","AFRO","TRAP","BOOM","UKG","JERSEY","BOUNCE","SOUL","LOFI","FUNK","REGGAE","DANCE","KAW"
 };
@@ -51,6 +52,14 @@ public:
     }
 
 protected:
+    bool onKeyboard(const KeyboardEvent& ev) override {
+        if(!ev.press)return true;
+        static const char kKeys[]="awsedftgyhujkolp;";
+        const char* hit=std::strchr(kKeys,(char)std::tolower((int)ev.key));
+        if(hit){sendNote(0,(uint8_t)(48+(int)(hit-kKeys)),100);repaint();return true;}
+        return false;
+    }
+
     static int paramOf(int slot)
     {
         // knop-slots: 0 TIMBRE,1 BELLS,2 DECAY,3 TREM,4 KEY(5),5 SCALE(6),6 OUTPUT(4),7 DIMENTIES(10),8 SFEER(11)
@@ -277,7 +286,8 @@ protected:
                 if ((float)(ev.pos.getX()/getScaleFactor()) >= px && (float)(ev.pos.getX()/getScaleFactor()) <= px + bw &&
                     (float)(ev.pos.getY()/getScaleFactor()) >= py && (float)(ev.pos.getY()/getScaleFactor()) <= py + bh)
                 {
-                    spv(8, (float)i);
+                    if(i==fProg) spv(7,1.f); // zelfde pil = nieuwe variant
+                    else spv(8, (float)i);
                     fProg = i;
                     repaint();
                     return true;

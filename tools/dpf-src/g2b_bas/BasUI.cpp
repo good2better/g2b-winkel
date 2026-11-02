@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <cctype>
 
 // G2B skins (8 thema's): bg,pn,tx,gy,ed,GR,DG
 static const float G2BSK[8][7][3]={
@@ -24,9 +25,9 @@ static inline Color g2bsk(int sk,int r){if(sk<0)sk=0;if(sk>7)sk=7;const float*c=
 
 START_NAMESPACE_DISTRHO
 
-static const int kNumPrograms = 17;
+static const int kNumPrograms = 40;
 static const char* kProgramNames[kNumPrograms] = {
-    "G2B","DEMBOW","DRILL","RNB","HOUSE","AFRO","TRAP","BOOM","UKG","JERSEY","BOUNCE","SOUL","LOFI","FUNK","REGGAE","DANCE","KAW"
+    "G2B","DEMBOW","DRILL","RNB","HOUSE","AFRO","TRAP","BOOM","UKG","JERSEY","BOUNCE","SOUL","LOFI","FUNK","REGGAE","DANCE","KAW","808L","808S","SUBT","REESE","GROWL","WAVE","PLUCKB","MBASS","808X","808P","808D","808G","SUBD","FATTY","ROUND","HARD","SOFT","ROLL","STK1","STK2","STK3","STK4","DUO"
 };
 
 class BasUI : public UI
@@ -51,6 +52,14 @@ public:
     }
 
 protected:
+    bool onKeyboard(const KeyboardEvent& ev) override {
+        if(!ev.press)return true;
+        static const char kKeys[]="awsedftgyhujkolp;";
+        const char* hit=std::strchr(kKeys,(char)std::tolower((int)ev.key));
+        if(hit){sendNote(0,(uint8_t)(48+(int)(hit-kKeys)),100);repaint();return true;}
+        return false;
+    }
+
     // knop-slots: 0 TYPE,1 DRIVE,2 FILTER,3 DECAY,4 KEY(5),5 SCALE(6),6 OUTPUT(4),7 KRACHT(10),8 DIMENTIES(11),9 SFEER(12)
     static int paramOf(int slot)
     { return slot < 4 ? slot : (slot == 4 ? 5 : (slot == 5 ? 6 : (slot == 6 ? 4 : slot + 3))); }
@@ -92,14 +101,14 @@ protected:
         fillColor(47, 191, 113);
         text(18.0f, 22.0f, "G2B BAS", nullptr);
         fontSize(11.5f); fillColor(143, 160, 152);
-        text(18.0f, 41.0f, "808/sub die toon houdt — glijdt mee met je akkoord", nullptr);
+        text(18.0f, 41.0f, "808/sub-bas", nullptr);
 
         // preset-knoppen (rechtsboven, rijen van 8)
         for (int i = 0; i < kNumPrograms; ++i)
         {
             const float bw = 44.0f, bh = 17.0f;
             const int prow = i / 8, pcol = i % 8;
-            const float px = W - 48.0f - ((prow < 2 ? 8 : 1) - pcol) * (bw + 4.0f), py = 12.0f + prow * 18.0f;
+            const float px = W - 48.0f - (8 - pcol) * (bw + 4.0f), py = 12.0f + prow * 18.0f;
             const bool on = (i == fProg);
             beginPath(); roundedRect(px, py, bw, bh, 4.0f);
             if (on) { fillColor(29, 122, 72); fill(); }
@@ -110,7 +119,7 @@ protected:
         }
 
         // scope (onder presets)
-        const float sx = 18.0f, sy = 58.0f, sw = W - 36.0f, sh = 44.0f;
+        const float sx = 18.0f, sy = 104.0f, sw = W - 36.0f, sh = 40.0f;
         beginPath(); rect(sx, sy, sw, sh);
         fillColor(8, 10, 9); fill();
         strokeColor(42, 47, 45); strokeWidth(1.0f); stroke();
@@ -271,11 +280,12 @@ protected:
             {
                 const float bw = 44.0f, bh = 17.0f;
                 const int prow = i / 8, pcol = i % 8;
-                const float px = W - 48.0f - ((prow < 2 ? 8 : 1) - pcol) * (bw + 4.0f), py = 12.0f + prow * 18.0f;
+                const float px = W - 48.0f - (8 - pcol) * (bw + 4.0f), py = 12.0f + prow * 18.0f;
                 if ((float)(ev.pos.getX()/getScaleFactor()) >= px && (float)(ev.pos.getX()/getScaleFactor()) <= px + bw &&
                     (float)(ev.pos.getY()/getScaleFactor()) >= py && (float)(ev.pos.getY()/getScaleFactor()) <= py + bh)
                 {
-                    spv(8, (float)i);
+                    if(i==fProg) spv(7,1.f); // zelfde pil = nieuwe variant in die categorie
+                    else spv(8, (float)i);
                     fProg = i;
                     repaint();
                     return true;

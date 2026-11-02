@@ -89,7 +89,7 @@ protected:
                  text(px+26.f,py+10.f,k==0?"DICE":(fSfeer==0?"DARK":(fSfeer==2?"LICHT":"NEUTR")),nullptr);}
         }
         // pad-grid 4x4
-        float gx=18.f, gy=110.f, gw=iw, gh=110.f;
+        float gx=18.f, gy=110.f, gw=W-36.f, gh=104.f;
         float cw=gw/4.f, ch=gh/4.f;
         const char** padNames=(fBank>=0&&fBank<kBankNamesUI_N)?kPadNamesAll[fBank]:nullptr;
         for(int r=0;r<4;r++)for(int c=0;c<4;c++){
@@ -107,7 +107,7 @@ protected:
             text(x0+(cw-4.f)/2,y0+ch-8.f,nn,nullptr);
         }
         // scope mini rechts van grid
-        float sx=gx+gw+8.f, sy=gy, sw=W-18.f-sx, sh=gh;
+        float sx=gx, sy=gy+gh+4.f, sw=gw, sh=12.f;
         beginPath(); rect(sx,sy,sw,sh); fillColor(g2bsk(skin,1)); fill();
         strokeColor(g2bsk(skin,4)); strokeWidth(1.f); stroke();
         beginPath();
@@ -150,6 +150,13 @@ protected:
                 if(y>=54&&y<=74){fBank=(int)(rand()/(RAND_MAX+1.0)*kBankNamesUI_N);setParameterValue(0,(float)fBank);repaint();return true;}
                 if(y>=79&&y<=99){fSfeer=(fSfeer+1)%3;setParameterValue(8,(float)fSfeer);repaint();return true;}
                 if(y>=104&&y<=124){fOn=fOn?0:1;setParameterValue(6,(float)fOn);repaint();return true;}
+            }
+            // pad-grid klik = speel de one-shot (notes 36-51)
+            float gx=18.f,gy=110.f,gw=W-36.f,gh=104.f;
+            if(x>=gx&&x<=gx+gw&&y>=gy&&y<=gy+gh){
+                const int c=(int)((x-gx)/(gw/4.f)),r=(int)((y-gy)/(gh/4.f));
+                const int idx=r*4+c;
+                if(idx>=0&&idx<16){sendNote(0,(uint8_t)(36+idx),100);fHit[idx]=1.f;repaint();return true;}
             }
             const int nk=6;float step=(W-40)/nk;
             for(int i=0;i<nk;i++){float cx=20+step*(i+0.5f),cy=246.f;

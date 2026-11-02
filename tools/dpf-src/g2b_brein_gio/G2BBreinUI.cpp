@@ -19,15 +19,15 @@ public:
     BreinUI() : UI(DISTRHO_UI_DEFAULT_WIDTH, DISTRHO_UI_DEFAULT_HEIGHT)
     {
         loadSharedResources();
-        static const float mins[5] ={1,0,0,0,0};
-        static const float maxs[5] ={16,255,1,2,26};
-        static const float defs[5] ={4,7,.85f,1,8};
-        static const char* lbl[5]  ={"BARS","SEED","KRACHT","SWING","DIM"};
+        static const float mins[6] ={1,0,0,0,0,0};
+        static const float maxs[6] ={16,255,1,2,26,1};
+        static const float defs[6] ={4,7,.85f,1,8,.5f};
+        static const char* lbl[6]  ={"BARS","SEED","KRACHT","SWING","DIM","HUMAN"};
         std::memcpy(fMin, mins, sizeof(mins));
         std::memcpy(fMax, maxs, sizeof(maxs));
         std::memcpy(fValue, defs, sizeof(defs));
         std::memcpy(fLabel, lbl, sizeof(lbl));
-        static const int pids[5]={2,3,4,5,15};
+        static const int pids[6]={2,3,4,5,15,20};
         std::memcpy(fParamId, pids, sizeof(pids));
         fDrag=-1; fLastY=0; fStep=-1; fPlay=1;
     }
@@ -35,7 +35,7 @@ public:
 protected:
     void parameterChanged(uint32_t index, float value) override
     {
-        for(int i=0;i<5;i++) if(index==fParamId[i]){fValue[i]=value;repaint();return;}
+        for(int i=0;i<6;i++) if(index==fParamId[i]){fValue[i]=value;repaint();return;}
         if(index==0){fGenre=(int)value;fKit=0;}
         else if(index==1) fKit=(int)value;
         else if(index==6) fDrums=value;
@@ -43,6 +43,8 @@ protected:
         else if(index==8) fMidi=value;
         else if(index==9) fPlay=value;
         else if(index==13)fLight=value; else if(index==16)fLeer=value;
+        else if(index==18)fQuant=value; else if(index==19)fFill=value;
+        else if(index==21)fVar=(int)value;
         repaint();
     }
     void stateChanged(const char* key, const char* value) override
@@ -51,6 +53,7 @@ protected:
         else if(std::strcmp(key,"kit")==0){ std::snprintf(fKitMsg,sizeof(fKitMsg),"%s",value); }
         else if(std::strcmp(key,"midifile")==0){ std::snprintf(fMidMsg,sizeof(fMidMsg),"%s",value); fMidT=400; }
         else if(std::strcmp(key,"leer")==0){ std::snprintf(fMidMsg,sizeof(fMidMsg),"%s",value); fMidT=400; }
+        else if(std::strcmp(key,"selmask")==0) fSelMask=std::atoi(value);
         repaint();
     }
     void uiIdle() override { repaint(); }
@@ -127,6 +130,22 @@ protected:
         strokeColor(ed[0],ed[1],ed[2]); strokeWidth(1.f); stroke();
         fontSize(8.0f); fillColor(tx[0],tx[1],tx[2]);
         text(264,92.5f,"GEN8",nullptr);
+        // V1-V8 variant-kiezers + ALL → map (preview-rij onder knoppen)
+        for(int i=0;i<8;i++){
+            float px=14.f+i*34.f;
+            beginPath(); roundedRect(px,104,30,11,3);
+            if(fVar==i) fillColor(DG[0],DG[1],DG[2]); else fillColor(pn[0],pn[1],pn[2]);
+            fill();
+            if((fSelMask>>i)&1){ strokeColor(GR[0],GR[1],GR[2]); strokeWidth(2.f); }
+            else { strokeColor(ed[0],ed[1],ed[2]); strokeWidth(1.f); }
+            stroke();
+            fontSize(7.f); fillColor((fVar==i||((fSelMask>>i)&1))?tx[0]:gy[0],(fVar==i||((fSelMask>>i)&1))?tx[1]:gy[1],(fVar==i||((fSelMask>>i)&1))?tx[2]:gy[2]);
+            char vb[4]; std::snprintf(vb,4,"V%d",i+1);
+            text(px+15,109.5f,vb,nullptr);
+        }
+        beginPath(); roundedRect(292,104,44,11,3); fillColor(pn[0],pn[1],pn[2]); fill();
+        strokeColor(ed[0],ed[1],ed[2]); strokeWidth(1.f); stroke();
+        fontSize(7.f); fillColor(tx[0],tx[1],tx[2]); text(314,109.5f,"ALL→MAP",nullptr);
         float tlx=W-40.f;
         beginPath(); roundedRect(tlx,84,26,17,4); fillColor(pn[0],pn[1],pn[2]); fill();
         strokeColor(ed[0],ed[1],ed[2]); strokeWidth(1.f); stroke();
@@ -180,9 +199,9 @@ protected:
         textAlign(ALIGN_LEFT|ALIGN_TOP); fillColor(gy[0],gy[1],gy[2]);
         if(fKitMsg[0]) text(18,py1+4,fKitMsg,nullptr);
 
-        // ---- 5 knobs: BARS SEED KRACHT SWING DIM ----
-        for(int i=0;i<5;i++){
-            float cx=40+(W-80)/5.f*(i+0.5f), cy=258.f, R=24;
+        // ---- 6 knobs: BARS SEED KRACHT SWING DIM HUMAN ----
+        for(int i=0;i<6;i++){
+            float cx=40+(W-80)/6.f*(i+0.5f), cy=258.f, R=24;
             float norm=(fValue[i]-fMin[i])/(fMax[i]-fMin[i]); if(norm<0)norm=0; if(norm>1)norm=1;
             float ang=-2.4f+norm*4.8f;
             beginPath(); arc(cx,cy,R,0,6.2832f,CW); fillColor(pn[0],pn[1],pn[2]); fill();
@@ -195,16 +214,17 @@ protected:
             fillColor(gy[0],gy[1],gy[2]); text(cx,cy+R+8,fLabel[i],nullptr);
             char buf[24];
             if(i==4) std::snprintf(buf,16,"%d",(int)fValue[4]+1);
-            else if(i==3) std::snprintf(buf,16,"%d%%",(int)(fValue[3]*50.f));
+            else if(i==3) std::snprintf(buf,16,"%.1fx",fValue[3]);
+            else if(i==5) std::snprintf(buf,16,"%.0f%%",fValue[5]*100.f);
             else if(i==2) std::snprintf(buf,16,"%.0f%%",fValue[2]*100.f);
             else std::snprintf(buf,16,"%.0f",fValue[i]);
             fillColor(tx[0],tx[1],tx[2]); text(cx,cy+R+21,buf,nullptr);
         }
 
-        // ---- laag-schakelaars DRUMS / MEL / MIDI OUT ----
-        static const char* tn[3]={"DRUMS","MEL","MIDI OUT"};
-        const float tv[3]={fDrums,fMel,fMidi};
-        for(int i=0;i<3;i++){
+        // ---- laag-schakelaars DRUMS / MEL / MIDI OUT / QUANT / FILL ----
+        static const char* tn[5]={"DRUMS","MEL","MID","QUANT","FILL"};
+        const float tv[5]={fDrums,fMel,fMidi,fQuant,fFill};
+        for(int i=0;i<5;i++){
             float px=14.f+i*100.f, py=342.f;
             beginPath(); roundedRect(px,py,92,22,4);
             if(tv[i]>0.5f) fillColor(DG[0],DG[1],DG[2]); else fillColor(pn[0],pn[1],pn[2]);
@@ -253,9 +273,18 @@ protected:
             // MIJN → leer-mode
             if((float)(ev.pos.getX()/getScaleFactor())>=188&&(float)(ev.pos.getX()/getScaleFactor())<=238&&(float)(ev.pos.getY()/getScaleFactor())>=84&&(float)(ev.pos.getY()/getScaleFactor())<=101){
                 fLeer=fLeer>0.5f?0.f:1.f;spv(16,fLeer);repaint();return true;}
-            // GEN8 → 8 variaties naar map
+            // GEN8 → 8 variaties als preview (geen bestanden)
             if((float)(ev.pos.getX()/getScaleFactor())>=242&&(float)(ev.pos.getX()/getScaleFactor())<=286&&(float)(ev.pos.getY()/getScaleFactor())>=84&&(float)(ev.pos.getY()/getScaleFactor())<=101){
                 spv(17,1.f);return true;}
+            // V1-V8 kiezer
+            if((float)(ev.pos.getY()/getScaleFactor())>=104&&(float)(ev.pos.getY()/getScaleFactor())<=115){
+                for(int i=0;i<8;i++){
+                    float px=14.f+i*34.f;
+                    if((float)(ev.pos.getX()/getScaleFactor())>=px&&(float)(ev.pos.getX()/getScaleFactor())<=px+30){
+                        fVar=i; spv(21,(float)i); repaint();return true;}}
+                if((float)(ev.pos.getX()/getScaleFactor())>=292&&(float)(ev.pos.getX()/getScaleFactor())<=336){
+                    spv(22,1.f);return true;}
+            }
             // SKIN
             if((float)(ev.pos.getX()/getScaleFactor())>=W-40&&(float)(ev.pos.getX()/getScaleFactor())<=W-14&&(float)(ev.pos.getY()/getScaleFactor())>=84&&(float)(ev.pos.getY()/getScaleFactor())<=101){
                 fLight=((int)fLight+1)%8;spv(13,fLight);repaint();return true;}
@@ -265,15 +294,16 @@ protected:
                   fKit=fKit-1; if(fKit<0)fKit=(int)g.n-1; spv(1,(float)fKit);repaint();return true;}
               if((float)(ev.pos.getX()/getScaleFactor())>=W-58&&(float)(ev.pos.getX()/getScaleFactor())<=W-32&&(float)(ev.pos.getY()/getScaleFactor())>=118&&(float)(ev.pos.getY()/getScaleFactor())<=140){
                   fKit=fKit+1; if(fKit>=(int)g.n)fKit=0; spv(1,(float)fKit);repaint();return true;} }
-            // laag-toggles
-            for(int i=0;i<3;i++){
+            // laag-toggles: 0-2 = laag (6,7,8) · 3 = QUANT (18) · 4 = FILL (19)
+            static const int tp[5]={6,7,8,18,19};
+            for(int i=0;i<5;i++){
                 float px=14.f+i*100.f;
                 if((float)(ev.pos.getX()/getScaleFactor())>=px&&(float)(ev.pos.getX()/getScaleFactor())<=px+92&&(float)(ev.pos.getY()/getScaleFactor())>=342&&(float)(ev.pos.getY()/getScaleFactor())<=364){
-                    float* tv=i==0?&fDrums:(i==1?&fMel:&fMidi);
-                    *tv=*tv>0.5f?0.f:1.f; spv(6+i,*tv); repaint();return true;}}
+                    float* tv=i==0?&fDrums:(i==1?&fMel:(i==2?&fMidi:(i==3?&fQuant:&fFill)));
+                    *tv=*tv>0.5f?0.f:1.f; spv(tp[i],*tv); repaint();return true;}}
             // knobs
-            for(int i=0;i<5;i++){
-                float cx=40+(W-80)/5.f*(i+0.5f),cy=258.f,R=24;
+            for(int i=0;i<6;i++){
+                float cx=40+(W-80)/6.f*(i+0.5f),cy=258.f,R=24;
                 float dx=(float)(ev.pos.getX()/getScaleFactor())-cx,dy=(float)(ev.pos.getY()/getScaleFactor())-cy;
                 if(dx*dx+dy*dy<(R+8)*(R+8)){fDrag=i;fLastY=(float)(ev.pos.getY()/getScaleFactor());return true;}
             }
@@ -312,10 +342,10 @@ protected:
 
 private:
     void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
-    float fValue[5],fMin[5],fMax[5];
-    const char* fLabel[5]; int fParamId[5];
+    float fValue[6],fMin[6],fMax[6];
+    const char* fLabel[6]; int fParamId[6];
     int fDrag; float fLastY;
-    int fGenre=0,fKit=0,fStep; float fDrums=1,fMel=1,fMidi=1,fPlay,fLight=0,fLeer=0;
+    int fGenre=0,fKit=0,fStep,fVar=0,fSelMask=0; float fDrums=1,fMel=1,fMidi=1,fPlay,fLight=0,fLeer=0,fQuant=1,fFill=1;
     char fMidMsg[96]={0}; int fMidT=0; char fKitMsg[96]={0};
 };
 

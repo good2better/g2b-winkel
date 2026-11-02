@@ -11,24 +11,25 @@ START_NAMESPACE_DISTRHO
 
 static const char* kPresetNames[17] = {"G2B","DEMBOW","DRILL","RNB","HOUSE","AFRO","TRAP","BOOM","UKG","JERSEY","BOUNCE","SOUL","LOFI","FUNK","REGGAE","DANCE","KAW"};
 // SUB,POETS,KNIP,GLANS,RUIMTE,OUT(dB) — 0..1 behalve OUT
-static const float kPresetParams[17][6] = {
-    {0.55f,0.35f,0.40f,0.30f,0.30f, 0.f},  // G2B
-    {0.60f,0.40f,0.45f,0.25f,0.22f, 0.f},  // DEMBOW
-    {0.65f,0.45f,0.55f,0.15f,0.18f, 0.f},  // DRILL
-    {0.45f,0.30f,0.30f,0.40f,0.35f, 0.f},  // RNB
-    {0.50f,0.38f,0.42f,0.35f,0.28f, 0.f},  // HOUSE
-    {0.55f,0.36f,0.40f,0.30f,0.26f, 0.f},  // AFRO
-    {0.62f,0.42f,0.50f,0.22f,0.20f, 0.f},  // TRAP
-    {0.50f,0.40f,0.35f,0.25f,0.28f, 0.f},  // BOOM
-    {0.52f,0.38f,0.44f,0.36f,0.30f, 0.f},  // UKG
-    {0.58f,0.40f,0.46f,0.28f,0.24f, 0.f},  // JERSEY
-    {0.55f,0.38f,0.42f,0.32f,0.27f, 0.f},  // BOUNCE
-    {0.42f,0.32f,0.28f,0.42f,0.36f, 0.f},  // SOUL
-    {0.48f,0.50f,0.30f,0.20f,0.26f, 0.f},  // LOFI
-    {0.50f,0.36f,0.44f,0.34f,0.28f, 0.f},  // FUNK
-    {0.56f,0.40f,0.36f,0.30f,0.30f, 0.f},  // REGGAE
-    {0.52f,0.36f,0.44f,0.38f,0.28f, 0.f},  // DANCE
-    {0.55f,0.37f,0.41f,0.31f,0.27f, 0.f},  // KAWINA
+// per preset: SUB POETS KNIP GLANS RUIMTE OUTPUT | GALAXY KRACHT LO MID HI
+static const float kPresetParams[17][11] = {
+    {0.55f,0.35f,0.40f,0.30f,0.30f, 0.f,  9,100, 0, 0, 0},  // G2B
+    {0.60f,0.40f,0.45f,0.25f,0.22f, 0.f,  9,100, 1, 0, 0},  // DEMBOW
+    {0.65f,0.45f,0.55f,0.15f,0.18f, 0.f,  9,100, 2,-1, 1},  // DRILL
+    {0.45f,0.30f,0.30f,0.40f,0.35f, 0.f,  9, 90, 1, 1, 0},  // RNB
+    {0.50f,0.38f,0.42f,0.35f,0.28f, 0.f,  9,100, 1, 0, 1},  // HOUSE
+    {0.55f,0.36f,0.40f,0.30f,0.26f, 0.f,  9, 95, 1, 1, 0},  // AFRO
+    {0.62f,0.42f,0.50f,0.22f,0.20f, 0.f,  9,100, 2, 0, 0},  // TRAP
+    {0.50f,0.40f,0.35f,0.25f,0.28f, 0.f,  9, 95, 1, 0,-1},  // BOOM
+    {0.52f,0.38f,0.44f,0.36f,0.30f, 0.f,  9,100, 0, 0, 1},  // UKG
+    {0.58f,0.40f,0.46f,0.28f,0.24f, 0.f,  9,100, 1, 0, 1},  // JERSEY
+    {0.55f,0.38f,0.42f,0.32f,0.27f, 0.f,  9,100, 1, 0, 1},  // BOUNCE
+    {0.42f,0.32f,0.28f,0.42f,0.36f, 0.f,  9, 85, 1, 2,-2},  // SOUL
+    {0.48f,0.50f,0.30f,0.20f,0.26f, 0.f,  9, 90, 0, 0,-4},  // LOFI
+    {0.50f,0.36f,0.44f,0.34f,0.28f, 0.f,  9, 95, 0, 1, 1},  // FUNK
+    {0.56f,0.40f,0.36f,0.30f,0.30f, 0.f,  9, 90, 1, 1,-1},  // REGGAE
+    {0.52f,0.36f,0.44f,0.38f,0.28f, 0.f,  9,100, 1, 0, 1},  // DANCE
+    {0.55f,0.37f,0.41f,0.31f,0.27f, 0.f,  9, 95, 1, 1, 0},  // KAWINA
 
 };
 
@@ -102,7 +103,7 @@ struct Galaxy { Galaxy(){reset();}
 class MasterRackPlugin : public Plugin {
 public:
     enum Params { kSub, kPoets, kKnip, kGlans, kRuimte, kOutput, kListen, kGalaxy, kDice, kPreset, kOn, kKracht, kLo, kMid, kHi, kNumParams };
-    MasterRackPlugin() : Plugin(kNumParams,0,4) {
+    MasterRackPlugin() : Plugin(kNumParams, 0, 2) {
         memset(fBufL,0,sizeof(fBufL)); memset(fBufR,0,sizeof(fBufR));
         memset(fPreL,0,sizeof(fPreL)); memset(fPreR,0,sizeof(fPreR));
     }
@@ -156,8 +157,6 @@ protected:
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
-        else if(index==2){name="lufs";def="";}
-        else if(index==3){name="knobs";def="";}
         else{name="presetnames";def="";for(int i=0;i<17;i++){def+=kPresetNames[i];if(i<16)def+=";";}}
     }
     void setState(const char* k, const char* v) override {(void)k;(void)v;}
@@ -170,6 +169,19 @@ protected:
             float L=outputs[0][i],R=outputs[1][i];
             galaxy.tick(L,R,getSampleRate());
             outputs[0][i]=L; outputs[1][i]=R;
+        }
+        // auto level-match: verwerkte mix even luid als input → "beter" hoor je, niet alleen "harder"
+        {
+            float inE=0.f,outE=0.f;
+            for(uint32_t i=0;i<frames;i++){inE+=inputs[0][i]*inputs[0][i]+inputs[1][i]*inputs[1][i];outE+=outputs[0][i]*outputs[0][i]+outputs[1][i]*outputs[1][i];}
+            inE/=(2.f*frames);outE/=(2.f*frames);
+            fLvlIn=fLvlIn*0.98f+inE*0.02f; fLvlOut=fLvlOut*0.98f+outE*0.02f;
+            if(fLvlIn>1e-7f&&fLvlOut>1e-7f){
+                float t=sqrtf(fLvlIn/fLvlOut);
+                if(t<0.55f)t=0.55f; if(t>1.8f)t=1.8f;
+                fMakeup+=0.08f*(t-fMakeup);
+            }
+            for(uint32_t i=0;i<frames;i++){outputs[0][i]*=fMakeup;outputs[1][i]*=fMakeup;}
         }
         const float k=fKr/100.f;
         if(k<0.999f){const float d=1.f-k;for(uint32_t i=0;i<frames;i++){outputs[0][i]=inputs[0][i]*d+outputs[0][i]*k;outputs[1][i]=inputs[1][i]*d+outputs[1][i]*k;}}
@@ -195,14 +207,14 @@ protected:
         // POETS: body-lift (laag-shelf ~200Hz), punch-volg-transient, sizzle-air ~10k
         const float bodyA=1.f-expf(-2.f*M_PI*200.f*srInv);
         const float airA =1.f-expf(-2.f*M_PI*9500.f*srInv);
-        // KNIP: drive + plafond −1dB
-        const float drive=1.f+fKnip*6.f, ceil=0.89f;
-        // GLANS: air-boost dB = glans*6, breedte-factor op hoog
-        const float airDb=fGlans*6.f, airGain=powf(10.f,airDb*0.05f);
-        const float wGain=fGlans*0.6f;             // breedte op hoog
+        // KNIP: zachte drive + plafond −1dB (was x7 → te rauw, mix werd slechter)
+        const float drive=1.f+fKnip*2.6f, ceil=0.89f;
+        // GLANS: air-boost dB = glans*3.5 (subtieler), breedte-factor op hoog
+        const float airDb=fGlans*3.5f, airGain=powf(10.f,airDb*0.05f);
+        const float wGain=fGlans*0.35f;            // breedte op hoog
         // RUIMTE: delay+reverb (zelfde als Ruimte-plugin, vaste smaak)
         const int delSamps=(int)(0.27f*sr); const int preS=(int)(0.012f*sr);
-        const float fb=fRuimte*0.72f, wet=fRuimte, wMix=0.35f;
+        const float fb=fRuimte*0.72f, wet=fRuimte, wMix=0.22f;
         const float dmpA=1.f-expf(-2.f*M_PI*6000.f*srInv);
         const float outG=powf(10.f,fOut*0.05f);
         // menger-EQ: 3 banden (laag <200Hz · mid · hoog >6kHz)
@@ -254,8 +266,8 @@ protected:
             float trL=envL-fEnvL, trR=envR-fEnvR;          // transient-verschil
             fBodyL+=bodyA*(L-fBodyL); fBodyR+=bodyA*(R-fBodyR);
             fAirL+=airA*(L-fAirL);   fAirR+=airA*(R-fAirR);
-            float pL=L + trL*fPoets*1.5f + fBodyL*fPoets*0.4f + (L-fAirL)*fPoets*0.25f;
-            float pR=R + trR*fPoets*1.5f + fBodyR*fPoets*0.4f + (R-fAirR)*fPoets*0.25f;
+            float pL=L + trL*fPoets*0.8f + fBodyL*fPoets*0.25f + (L-fAirL)*fPoets*0.20f;
+            float pR=R + trR*fPoets*0.8f + fBodyR*fPoets*0.25f + (R-fAirR)*fPoets*0.20f;
             L=pL; R=pR;
 
             // tussen-begrenzer: vangt pieken na elke stage (altijd goed)
@@ -372,17 +384,11 @@ private:
         if(fPeak>0.9f){ setParameterValue(kOutput,-3.f); setParameterValue(kListen,0.75f); }
         fPeak=0.f;
     }
-    void pushKnobs(){
-        char buf[160];
-        snprintf(buf,sizeof buf,"%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f;%.4f",fSub,fPoets,fKnip,fGlans,fRuimte,fOut,fGalaxy,fKr,fLo,fMid,fHi);
-        setState("knobs",buf);
-    }
     void rollDice(){
         for(int p=kSub;p<=kRuimte;p++){
             fRnd=fRnd*1664525u+1013904223u;
             setParameterValue(p,((fRnd>>8)%100)/100.f);
         }
-        pushKnobs();
     }
     float fListen=0.f,fDice=0.f;
     uint32_t fListenN=0; float fAccRms=0,fAccLow=0,fAccMid=0,fAccAir=0,fALpL=0,fALpR=0,fAHpL=0,fAHpR=0,fPeak=0;
@@ -401,9 +407,14 @@ private:
         setParameterValue(kGlans,kPresetParams[i][3]);
         setParameterValue(kRuimte,kPresetParams[i][4]);
         setParameterValue(kOutput,kPresetParams[i][5]);
-        pushKnobs();
+        setParameterValue(kGalaxy,kPresetParams[i][6]);
+        setParameterValue(kKracht,kPresetParams[i][7]);
+        setParameterValue(kLo,kPresetParams[i][8]);
+        setParameterValue(kMid,kPresetParams[i][9]);
+        setParameterValue(kHi,kPresetParams[i][10]);
     }
     float fSub=0.55f,fPoets=0.35f,fKnip=0.40f,fGlans=0.30f,fRuimte=0.30f,fOut=0.f,fPreset=0.f;
+    float fLvlIn=0.f,fLvlOut=0.f,fMakeup=1.f;
     float fLo=0.f,fMid=0.f,fHi=0.f;
     float fSubLpL=0,fSubLpR=0,fEnvL=0,fEnvR=0,fBodyL=0,fBodyR=0,fAirL=0,fAirR=0,fGairL=0,fGairR=0;
     static const int kMaxDel=96000*2, kMaxPre=4800;

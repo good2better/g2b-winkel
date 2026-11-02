@@ -243,6 +243,16 @@ protected:
                 fillColor(mut?Color(255,200,200):g2bsk(fLight,3));
                 text(9.0f,gy+r*16.0f+7.0f,&rowN[r],nullptr);
             }
+            // rij-dice: klein dobbelsteentje rechts van elke rij (nieuwe fill voor die rij)
+            {
+                beginPath();roundedRect(W-15.0f,gy+r*16.0f+1.5f,11.0f,9.0f,2.0f);
+                fillColor(g2bsk(fLight,1));fill();
+                strokeColor(42,47,45);strokeWidth(1.0f);stroke();
+                fillColor(47,191,113);
+                const float dx=W-9.5f,dy=gy+r*16.0f+6.0f;
+                beginPath();arc(dx-1.6f,dy-1.4f,0.9f,0.f,6.2832f,CW);fill();
+                beginPath();arc(dx+1.6f,dy+1.4f,0.9f,0.f,6.2832f,CW);fill();
+            }
         }
 
         // scope onder grid
@@ -322,7 +332,7 @@ protected:
             text(px+pw-6.0f,py+ph-4.0f,"KRACHT →",nullptr);
         }
         fontSize(10.5f);fillColor(90,100,94);textAlign(ALIGN_CENTER|ALIGN_BOTTOM);
-        text(W*0.5f,H-8.0f,"groen = stap die klinkt · wit = nu · speelt zodra je DAW loopt",nullptr);
+        text(W*0.5f,H-8.0f,"K=kick S=snare H=hat P=perc B=bas · letter=stil · dobbelsteen=nieuwe rij · AUTO=patroon groeit",nullptr);
     }
 
     bool onMouse(const MouseEvent& ev) override
@@ -358,6 +368,13 @@ protected:
             // REC pill
             if((float)(ev.pos.getX()/getScaleFactor())>=248.0f&&(float)(ev.pos.getX()/getScaleFactor())<=278.0f&&(float)(ev.pos.getY()/getScaleFactor())>=50.0f&&(float)(ev.pos.getY()/getScaleFactor())<=67.0f){
                 fRec=1-fRec;setParameterValue(19,(float)fRec);repaint();return true;
+            }
+            // rij-dice rechts (K/S/H/P/B)
+            if((float)(ev.pos.getX()/getScaleFactor())>=W-16.0f&&(float)(ev.pos.getX()/getScaleFactor())<=W-3.0f){
+                const float my=(float)(ev.pos.getY()/getScaleFactor())-74.0f;
+                if(my>=0){const int r=(int)(my/16.0f);
+                    if(r>=0&&r<5){setParameterValue(20,(float)(r+1));repaint();return true;}
+                }
             }
             // rij-mute letters (K/S/H/P + B=bas)
             if((float)(ev.pos.getX()/getScaleFactor())>=2.0f&&(float)(ev.pos.getX()/getScaleFactor())<=16.0f){

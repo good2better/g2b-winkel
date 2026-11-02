@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <cctype>
 
 // G2B skins (8 thema's): bg,pn,tx,gy,ed,GR,DG
 static const float G2BSK[8][7][3]={
@@ -101,7 +102,7 @@ protected:
         fillColor(47, 191, 113);
         text(18.0f, 22.0f, "G2B AKKOORD", nullptr);
         fontSize(11.5f); fillColor(143, 160, 152);
-        text(18.0f, 41.0f, "één toets = een heel akkoord in jouw stijl — speel met MIDI", nullptr);
+        text(18.0f, 41.0f, "één toets = een heel akkoord in jouw stijl — speel met MIDI of toetsen A-;", nullptr);
 
         // preset-knoppen (rechtsboven, rijen van 8)
         for (int i = 0; i < kNumPrograms; ++i)
@@ -353,6 +354,15 @@ protected:
         repaint();
     }
 
+    bool onKeyboard(const KeyboardEvent& ev) override
+    {
+        if(!ev.press)return true;
+        // toetsenbord = akkoord spelen (A=C3 .. ;=C5, chromatisch → voicing van de plugin)
+        static const char kKeys[]="awsedftgyhujkolp;";
+        const char* hit=std::strchr(kKeys,(char)std::tolower((int)ev.key));
+        if(hit){sendNote(0,(uint8_t)(48+(int)(hit-kKeys)),100);repaint();return true;}
+        return false;
+    }
     bool onMotion(const MotionEvent& ev) override
     {
         if (fXYdrag) { xySet((float)(ev.pos.getX()/getScaleFactor()), (float)(ev.pos.getY()/getScaleFactor())); return true; }
