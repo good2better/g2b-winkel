@@ -101,6 +101,21 @@
    "download_dir": "d/g2btrein"
   },
   {
+   "id": "g2bprodsuite",
+   "titel": "G2B PRODUCER SUITE",
+   "soort": "6 plugins in één set",
+   "beschrijving": "De complete G2B-plugin-set in één download: MASTER (polish), ANTWOORD (call→response), REFORS (auto/club/telefoon-test), LUISTER (geluid→MIDI), OPROEP (neuriën→melodie/instrument) en TREIN (loop→heel arrangement). Van idee naar af nummer — samen EUR180 los, als suite EUR79. Alle plugins VST3 + CLAP + standalone EXE, werkt offline, 100% eigen code.",
+   "prijs": 79.0,
+   "links": {
+    "koop": "bestel.html?p=g2bprodsuite",
+    "download": "d/g2bprodsuite/"
+   },
+   "groep": "plugins",
+   "badge": "DEAL",
+   "cover": "media/g2bprodsuite-cover.png",
+   "download_dir": "d/g2bprodsuite"
+  },
+  {
    "id": "g2bsuite1",
    "titel": "G2B SUITE — alle marketeer-tools",
    "soort": "app",
