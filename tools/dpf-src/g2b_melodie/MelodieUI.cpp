@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <cctype>
 
 // G2B skins (8 thema's): bg,pn,tx,gy,ed,GR,DG
 static const float G2BSK[8][7][3]={
@@ -288,7 +289,9 @@ protected:
             if((float)(ev.pos.getX()/getScaleFactor())>=44.0f&&(float)(ev.pos.getX()/getScaleFactor())<=82.0f&&(float)(ev.pos.getY()/getScaleFactor())>=48.0f&&(float)(ev.pos.getY()/getScaleFactor())<=65.0f){
                 fAuto=fAuto>0.5f?0.f:1.f;spv(8,fAuto);repaint();return true;}
             if((float)(ev.pos.getX()/getScaleFactor())>=14.0f&&(float)(ev.pos.getX()/getScaleFactor())<=40.0f&&(float)(ev.pos.getY()/getScaleFactor())>=48.0f&&(float)(ev.pos.getY()/getScaleFactor())<=65.0f){
-                spv(7,1.0f);repaint();return true;}
+                spv(7,1.0f);
+                for(int s=0;s<16;s++)fDeg[s]=((rand()%100)<35)?-1:(rand()%7); // dice = nieuwe hook ook zichtbaar
+                repaint();return true;}
             // LOOP/ZELF pil
             if((float)(ev.pos.getX()/getScaleFactor())>=W-96.0f&&(float)(ev.pos.getX()/getScaleFactor())<=W-52.0f&&(float)(ev.pos.getY()/getScaleFactor())>=12.0f&&(float)(ev.pos.getY()/getScaleFactor())<=29.0f){
                 fPlay=1-fPlay;spv(14,(float)fPlay);repaint();return true;}
@@ -321,6 +324,15 @@ protected:
         editParameter(11,true);spv(11,kr);editParameter(11,false);
         editParameter(12,true);spv(12,dm);editParameter(12,false);
         repaint();
+    }
+    bool onKeyboard(const KeyboardEvent& ev) override
+    {
+        if(!ev.press)return true;
+        // toetsenbord = zelf melodie spelen (A=C3 .. ;=C5, chromatisch)
+        static const char kKeys[]="awsedftgyhujkolp;";
+        const char* hit=std::strchr(kKeys,(char)std::tolower((int)ev.key));
+        if(hit){sendNote(0,(uint8_t)(48+(int)(hit-kKeys)),100);repaint();return true;}
+        return false;
     }
     bool onMotion(const MotionEvent& ev) override
     {

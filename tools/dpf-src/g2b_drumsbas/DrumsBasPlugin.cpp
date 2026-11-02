@@ -87,7 +87,7 @@ static float frand(unsigned& s){ s=s*1664525u+1013904223u; return (s>>8)*(1.f/16
 
 class DrumsPlugin : public Plugin {
 public:
-    enum Params { kStijl, kDrive, kSwing, kLevel, kDice, kAuto, kPreset, kOn, kKracht, kGalaxy, kSfeer, kBas, kBasType, kBasVol, kKey, kDrumOn, kHand, kRun, kMute, kRec, kLock, kSong, kToonK, kToonS, kToonH, kToonP, kLenK, kLenS, kLenH, kLenP, kNumParams };
+    enum Params { kStijl, kDrive, kSwing, kLevel, kDice, kAuto, kPreset, kOn, kKracht, kGalaxy, kSfeer, kBas, kBasType, kBasVol, kKey, kDrumOn, kHand, kRun, kMute, kRec, kLock, kSong, kToonK, kToonS, kToonH, kToonP, kLenK, kLenS, kLenH, kLenP, kRowDice, kNumParams };
     DrumsPlugin() : Plugin(kNumParams,0,3) {
         for(int i=0;i<kMaxV;i++)fV[i].active=false;
     }
@@ -132,10 +132,11 @@ protected:
         case kLenS:    p.name="LENGTE S"; p.symbol="lens";  p.ranges.min=0.2f;p.ranges.max=2.5f;p.ranges.def=1.f;break;
         case kLenH:    p.name="LENGTE H"; p.symbol="lenh";  p.ranges.min=0.2f;p.ranges.max=2.5f;p.ranges.def=1.f;break;
         case kLenP:    p.name="LENGTE P"; p.symbol="lenp";  p.ranges.min=0.2f;p.ranges.max=2.5f;p.ranges.def=1.f;break;
+        case kRowDice:p.name="ROWDICE";  p.symbol="rowdice";p.hints|=kParameterIsInteger|kParameterIsTrigger;p.ranges.min=0;p.ranges.max=5;p.ranges.def=0;break; // 1-4=drumrij,5=bas
         }
     }
     float getParameterValue(uint32_t i) const override {
-        switch(i){case kStijl:return fStijl;case kDrive:return fDrive;case kSwing:return fSwing;case kLevel:return fLevel;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKracht;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;case kBas:return fBas;case kBasType:return fBasType;case kBasVol:return fBasVol;case kKey:return fKey;case kDrumOn:return fDrum;case kHand:return fHand;case kRun:return fRun;case kMute:return fMute;case kRec:return fRec;case kLock:return fLock;case kSong:return fSong;case kToonK:return fToon[0];case kToonS:return fToon[1];case kToonH:return fToon[2];case kToonP:return fToon[3];case kLenK:return fLen[0];case kLenS:return fLen[1];case kLenH:return fLen[2];case kLenP:return fLen[3];}return 0.f;
+        switch(i){case kStijl:return fStijl;case kDrive:return fDrive;case kSwing:return fSwing;case kLevel:return fLevel;case kDice:return fDice;case kAuto:return fAuto;case kPreset:return fPreset;case kOn:return fOn;case kKracht:return fKracht;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;case kBas:return fBas;case kBasType:return fBasType;case kBasVol:return fBasVol;case kKey:return fKey;case kDrumOn:return fDrum;case kHand:return fHand;case kRun:return fRun;case kMute:return fMute;case kRec:return fRec;case kLock:return fLock;case kSong:return fSong;case kToonK:return fToon[0];case kToonS:return fToon[1];case kToonH:return fToon[2];case kToonP:return fToon[3];case kLenK:return fLen[0];case kLenS:return fLen[1];case kLenH:return fLen[2];case kLenP:return fLen[3];case kRowDice:return 0.f;}return 0.f;
     }
     void setParameterValue(uint32_t i, float v) override {
         if(i==kPreset){applyPreset((int)(v+0.5f));return;}
@@ -148,7 +149,8 @@ protected:
         case kRec:if(v>0.5f&&fRec<0.5f)recOpen_();else if(v<0.5f&&fRec>0.5f)recClose_();fRec=v;break;
         case kLock:fLock=v;break;case kSong:fSong=v;break;
         case kToonK:fToon[0]=v;break;case kToonS:fToon[1]=v;break;case kToonH:fToon[2]=v;break;case kToonP:fToon[3]=v;break;
-        case kLenK:fLen[0]=v;break;case kLenS:fLen[1]=v;break;case kLenH:fLen[2]=v;break;case kLenP:fLen[3]=v;break;}
+        case kLenK:fLen[0]=v;break;case kLenS:fLen[1]=v;break;case kLenH:fLen[2]=v;break;case kLenP:fLen[3]=v;break;
+        case kRowDice:if(v>0.5f){int r=(int)(v+0.5f)-1; if(r>=0&&r<4){ if(!((int)fLock&(1<<r))){mutateRow(r);sendPat();} } else if(r==4){fBasIdx=(fBasIdx+1+((fRnd>>8)%16))%17;sendPat();} } break;}
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
@@ -223,13 +225,13 @@ protected:
                 fPhase=0; fStep++;
                 int s=(int)fStep%16;
                 const char* pat;
-                if(fAuto>0.5f && s==0 && (fStep%64)==0){mutate(1);sendPat();}
+                if(fAuto>0.5f && s==0 && (fStep%64)==0){mutate(0);sendPat();} // AUTO: hoorbaar evoluerend patroon elke 4 maten
                 if(fDrum>0.5f&&fHand<0.5f){
                 const int mu=(int)fMute; // rij-mute bitmask: K=1 S=2 H=4 P=8 (crash→H, roll→P)
-                if(s==0 && (fStep%64)==0 && !(mu&4)) trigger(5); // echte crash-cymbal elke 4 maten op de 1
+                if(s==0 && (fStep%64)==0 && !(mu&4) && !rowEmpty(2)) trigger(5); // crash alleen als de hat-rij iets speelt
                 // timpani-roll: laatste maat van elke 4-maten cyclus, crescendo → landt op de crash (DRILL/TRAP/BOUNCE/DANCE)
                 const int g64=(int)(fStep%64);
-                if((st==2||st==6||st==10||st==15) && g64>=48 && !(mu&8)){
+                if((st==2||st==6||st==10||st==15) && g64>=48 && !(mu&8) && !rowEmpty(3)){
                     const float ramp=(float)(g64-48)/15.f;
                     trigger(6,0.30f+0.85f*ramp,g64-48);
                 }
@@ -257,7 +259,7 @@ protected:
                 }
                 // bas-stap: cijfer in het patroon = laddergreep
                 if(fBas>0.5f&&fHand<0.5f){
-                    char bc=kBassPat[st][s];
+                    char bc=kBassPat[fBasIdx>=0?fBasIdx:st][s];
                     if(bc>='0'&&bc<='6'){
                         int deg=bc-'0';
                         basTrigger(36+(int)fKey+kMajDeg[deg],0.9f);
@@ -351,9 +353,21 @@ private:
         fBV[0].on=true;fBV[0].note=note;fBV[0].vel=vel;fBV[0].t=0;fBV[0].lp=0;
     }
     void sendPat(){
-        char buf[70];int p=0;
+        char buf[90];int p=0;
         for(int r=0;r<4;r++){for(int c=0;c<16;c++)buf[p++]=fPat[r][c];buf[p++]=';';}
+        const int st=(int)fStijl<0?0:((int)fStijl>16?16:(int)fStijl);
+        const char* bp=kBassPat[fBasIdx>=0?fBasIdx:st];
+        for(int c=0;c<16;c++)buf[p++]=bp[c]=='.'?'.':'B';buf[p++]=';';
         buf[p]=0;setState("pat",buf);
+    }
+    bool rowEmpty(int r)const{for(int c=0;c<16;c++)if(fPat[r][c]!='.')return false;return true;}
+    void mutateRow(int r){ // dobbelsteen per rij: 3 cellen gooien
+        for(int n=0;n<3;n++){
+            fRnd=fRnd*1664525u+1013904223u; int c=(fRnd>>8)%16;
+            fRnd=fRnd*1664525u+1013904223u; bool on=((fRnd>>8)%100)<55;
+            if(r==2) fPat[r][c]=on?(((fRnd>>9)%5==0)?'o':'H'):'.';
+            else fPat[r][c]=on?(r==0?'K':(r==1?'S':'P')):'.';
+        }
     }
     void mutate(int mild){
         fRnd=fRnd*1664525u+1013904223u;
@@ -404,6 +418,7 @@ private:
     unsigned fRnd=24681357; unsigned fNfac=999; unsigned fRoll=0;
     float fOn=1.f,fKracht=100.f,fGalaxyV=9.f,fSfeerV=1.f,fHand=0.f,fRun=1.f;
     float fBas=1.f,fBasType=0.3f,fBasVol=0.7f,fKey=9.f,fDrum=1.f;
+    int fBasIdx=-1; // -1 = bas-patroon van de stijl; anders een andere stijl-baslijn (rij-dice)
     BVoice fBV[4];
     Galaxy fGal; Sfeer fSf;
     double fPhase=0; int64_t fStep=0;

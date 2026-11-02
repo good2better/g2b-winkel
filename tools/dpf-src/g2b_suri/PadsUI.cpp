@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <ctime>
 
 static const float G2BSK[9][7][3]={
     {{13,15,14},{23,26,25},{232,236,234},{100,110,103},{42,47,45},{47,191,113},{29,122,72}},
@@ -31,7 +32,7 @@ public:
         const char* lbl[6]={"TUNE","DECAY","LO","HI","OUTPUT","DIMENTIES"};
         std::memcpy(fMin,mins,sizeof(mins)); std::memcpy(fMax,maxs,sizeof(maxs));
         std::memcpy(fValue,defs,sizeof(defs)); std::memcpy(fLabel,lbl,sizeof(lbl));
-        fDrag=-1; fLastY=0.f;
+        fDrag=-1; fLastY=0.f; srand((unsigned)time(nullptr));
     }
 protected:
     // params: 0 BANK,1 TUNE,2 DECAY,3 LO,4 HI,5 LEVEL,6 AAN,7 GALAXY,8 SFEER,9 DICE
@@ -88,8 +89,8 @@ protected:
             else{fillColor(g2bsk(skin,1));fill();strokeColor(g2bsk(skin,4));strokeWidth(1.f);stroke();fillColor(g2bsk(skin,3));fontSize(9.f);
                  text(px+26.f,py+10.f,k==0?"DICE":(fSfeer==0?"DARK":(fSfeer==2?"LICHT":"NEUTR")),nullptr);}
         }
-        // pad-grid 4x4
-        float gx=18.f, gy=110.f, gw=iw, gh=110.f;
+        // pad-grid 4x4 (volle breedte — grote pads)
+        float gx=18.f, gy=110.f, gw=W-36.f, gh=104.f;
         float cw=gw/4.f, ch=gh/4.f;
         const char** padNames=(fBank>=0&&fBank<kBankNamesUI_N)?kPadNamesAll[fBank]:nullptr;
         for(int r=0;r<4;r++)for(int c=0;c<4;c++){
@@ -106,8 +107,8 @@ protected:
             char nn[8]; snprintf(nn,sizeof nn,"%d",36+idx);
             text(x0+(cw-4.f)/2,y0+ch-8.f,nn,nullptr);
         }
-        // scope mini rechts van grid
-        float sx=gx+gw+8.f, sy=gy, sw=W-18.f-sx, sh=gh;
+        // scope als dunne strip onder het grid
+        float sx=gx, sy=gy+gh+4.f, sw=gw, sh=12.f;
         beginPath(); rect(sx,sy,sw,sh); fillColor(g2bsk(skin,1)); fill();
         strokeColor(g2bsk(skin,4)); strokeWidth(1.f); stroke();
         beginPath();
@@ -142,14 +143,21 @@ protected:
             for(int i=0;i<9;i++){float dx=W-18.f-(8-i)*14.f;if(std::fabs(x-dx)<8&&std::fabs(y-18)<10){fSkin=i;repaint();return true;}}
             float ix=18.f,iy=54.f,iw=W-36.f-80.f,ih=46.f;
             if(y>=iy&&y<=iy+ih){
-                if(x<ix+48){setParameterValue(0,fBank<=0?kBankNamesUI_N-1:fBank-1);return true;}
-                if(x>ix+iw-48){setParameterValue(0,fBank>=kBankNamesUI_N-1?0:fBank+1);return true;}
+                if(x<ix+48){fBank=(fBank<=0?kBankNamesUI_N-1:fBank-1);setParameterValue(0,(float)fBank);repaint();return true;}
+                if(x>ix+iw-48){fBank=(fBank>=kBankNamesUI_N-1?0:fBank+1);setParameterValue(0,(float)fBank);repaint();return true;}
             }
             float px=W-66.f;
             if(x>=px&&x<=px+52){
-                if(y>=54&&y<=74){setParameterValue(9,1.f);return true;}
-                if(y>=79&&y<=99){setParameterValue(8,(float)((fSfeer+1)%3));return true;}
-                if(y>=104&&y<=124){setParameterValue(6,fOn?0.f:1.f);return true;}
+                if(y>=54&&y<=74){fBank=(int)(rand()/(RAND_MAX+1.0)*kBankNamesUI_N);setParameterValue(0,(float)fBank);setParameterValue(9,1.f);repaint();return true;}
+                if(y>=79&&y<=99){fSfeer=(fSfeer+1)%3;setParameterValue(8,(float)fSfeer);repaint();return true;}
+                if(y>=104&&y<=124){fOn=1-fOn;setParameterValue(6,fOn?1.f:0.f);repaint();return true;}
+            }
+            // pad-grid klik = speel de one-shot (notes 36-51)
+            float gx=18.f,gy=110.f,gw=W-36.f,gh=104.f;
+            if(x>=gx&&x<=gx+gw&&y>=gy&&y<=gy+gh){
+                const int c=(int)((x-gx)/(gw/4.f)),r=(int)((y-gy)/(gh/4.f));
+                const int idx=r*4+c;
+                if(idx>=0&&idx<16){sendNote(0,(uint8_t)(36+idx),100);fHit[idx]=1.f;repaint();return true;}
             }
             const int nk=6;float step=(W-40)/nk;
             for(int i=0;i<nk;i++){float cx=20+step*(i+0.5f),cy=246.f;
@@ -163,7 +171,7 @@ protected:
             int p=paramOf(fDrag);
             float nv=fValue[fDrag]+dy*(fMax[fDrag]-fMin[fDrag])/200.f;
             if(nv<fMin[fDrag])nv=fMin[fDrag]; if(nv>fMax[fDrag])nv=fMax[fDrag];
-            setParameterValue(p,nv);
+            fValue[fDrag]=nv;setParameterValue(p,nv);repaint();
         }
         return fDrag>=0;
     }

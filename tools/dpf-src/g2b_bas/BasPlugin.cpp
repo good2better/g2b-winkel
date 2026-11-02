@@ -7,9 +7,9 @@
 
 START_NAMESPACE_DISTRHO
 
-static const char* kPresetNames[17] = {"G2B","DEMBOW","DRILL","RNB","HOUSE","AFRO","TRAP","BOOM","UKG","JERSEY","BOUNCE","SOUL","LOFI","FUNK","REGGAE","DANCE","KAW"};
+static const char* kPresetNames[40] = {"G2B","DEMBOW","DRILL","RNB","HOUSE","AFRO","TRAP","BOOM","UKG","JERSEY","BOUNCE","SOUL","LOFI","FUNK","REGGAE","DANCE","KAW","808L","808S","SUBT","REESE","GROWL","WAVE","PLUCKB","MBASS","808X","808P","808D","808G","SUBD","FATTY","ROUND","HARD","SOFT","ROLL","STK1","STK2","STK3","STK4","DUO"};
 // TYPE, DRIVE, FILTER, DECAY, LEVEL
-static const float kPresetParams[17][5] = {
+static const float kPresetParams[40][5] = {
     {0.15f,0.25f,0.60f,0.80f,0.f},   // G2B — warme sub (synth)
     {0.20f,0.35f,0.55f,0.60f,0.f},   // DEMBOW — percussieve bas
     {0.90f,0.45f,0.40f,0.90f,-1.f},  // DRILL — STACK: echte contrabas+sub, donker lang
@@ -26,10 +26,33 @@ static const float kPresetParams[17][5] = {
     {0.65f,0.40f,0.60f,0.50f,0.f},   // FUNK — ECHT punchy pizz
     {0.65f,0.20f,0.65f,0.70f,0.f},   // REGGAE — ECHT dub
     {0.25f,0.35f,0.60f,0.55f,0.f},   // DANCE — pump
-    {0.65f,0.30f,0.55f,0.75f,0.f}    // KAWINA — ECHT rollend
+    {0.65f,0.30f,0.55f,0.75f,0.f},   // KAWINA — ECHT rollend
+    {0.90f,0.20f,0.30f,0.60f,-2.f},  // 808L — lange 808 sub
+    {0.90f,0.35f,0.45f,0.30f,0.f},   // 808S — korte 808
+    {0.05f,0.15f,0.80f,0.85f,0.f},   // SUBT — pure sub sine
+    {0.75f,0.55f,0.50f,0.75f,0.f},   // REESE — detuned
+    {0.80f,0.65f,0.55f,0.70f,-1.f},  // GROWL — agressief
+    {0.35f,0.25f,0.70f,0.65f,0.f},   // WAVE — zacht synth
+    {0.65f,0.45f,0.70f,0.35f,0.f},   // PLUCKB — pizz bas
+    {0.65f,0.25f,0.60f,0.80f,-1.f},  // MBASS — donker echt
+    {0.90f,0.25f,0.35f,0.98f,-2.f},  // 808X — 808 extra lange staart
+    {0.90f,0.40f,0.50f,0.40f,0.f},   // 808P — punchy 808
+    {0.90f,0.30f,0.25f,0.80f,-1.f},  // 808D — donkere 808
+    {0.90f,0.35f,0.40f,0.70f,-1.f},  // 808G — glide 808
+    {0.05f,0.10f,0.90f,0.90f,-1.f},  // SUBD — diepe sub sine
+    {0.30f,0.55f,0.55f,0.60f,0.f},   // FATTY — dikke synth-bas
+    {0.65f,0.20f,0.55f,0.70f,-1.f},  // ROUND — ronde warme contrabas
+    {0.65f,0.60f,0.65f,0.50f,0.f},   // HARD — harde contrabas
+    {0.65f,0.10f,0.45f,0.75f,-1.f},  // SOFT — zachte contrabas
+    {0.90f,0.45f,0.45f,0.55f,-1.f},  // ROLL — rollende 808
+    {0.85f,0.35f,0.45f,0.85f,-1.f},  // STK1 — 808 + echt gestapeld
+    {0.95f,0.50f,0.35f,0.90f,-2.f},  // STK2 — donder-stapel
+    {0.82f,0.20f,0.55f,0.80f,-1.f},  // STK3 — ronde stapel
+    {0.88f,0.45f,0.60f,0.65f,0.f},   // STK4 — brede laag
+    {0.86f,0.55f,0.50f,0.55f,-1.f},  // DUO — twee bassen tegelijk
 };
 
-struct BVoice { bool on; int note; float vel, t, ph, phD, lp; const int16_t* smp=nullptr; uint32_t slen=0; float spos=0,sstep=0; };
+struct BVoice { bool on; int note; int src; float vel, t, ph, phD, lp; float rT=-1.f; const int16_t* smp=nullptr; uint32_t slen=0; float spos=0,sstep=0; };
 
 class BasPlugin : public Plugin {
 public:
@@ -54,7 +77,7 @@ protected:
         case kKey:   p.name="KEY";    p.symbol="key";   p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=11;p.ranges.def=9;break;
         case kScale: p.name="SCALE";  p.symbol="scale"; p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=1;p.ranges.def=0;break;
         case kDice:  p.name="DICE";   p.symbol="dice";  p.hints|=kParameterIsInteger|kParameterIsTrigger;p.ranges.min=0;p.ranges.max=1;p.ranges.def=0;break;
-        case kPreset:p.name="PRESET"; p.symbol="preset";p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=16;p.ranges.def=0;break;
+        case kPreset:p.name="PRESET"; p.symbol="preset";p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=39;p.ranges.def=0;break;
         case kOn:    p.name="Aan";      p.symbol="aan";   p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;p.ranges.def=1;break;
         case kKracht:p.name="Kracht";   p.symbol="kracht";p.ranges.min=0;p.ranges.max=100;p.ranges.def=100;p.unit="%";break;
         case kGalaxy:p.name="DIMENTIES";p.symbol="dim";   p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=26;p.ranges.def=9;break;
@@ -77,7 +100,7 @@ protected:
     }
     void initState(uint32_t index, String& name, String& def) override {
         if(index==0){name="scope";def="";}
-        else{name="presetnames";def="";for(int i=0;i<17;i++){def+=kPresetNames[i];if(i<16)def+=";";}}
+        else{name="presetnames";def="";for(int i=0;i<40;i++){def+=kPresetNames[i];if(i<39)def+=";";}}
     }
     void setState(const char* k, const char* v) override {(void)k;(void)v;}
 
@@ -94,6 +117,8 @@ protected:
             while(pos<tt){
                 float s=0;
                 for(auto& v:fV) if(v.on){
+                    float relG=1.f;
+                    if(v.rT>=0.f){ v.rT+=1.f/sr; relG=expf(-v.rT*25.f); if(relG<0.001f){v.on=false;continue;} }
                     float f0=440.f*powf(2.f,(v.note-69)/12.f);
                     // TYPE-zones: <.50 synth | .50-.80 ECHT contrabas | >=.80 STACK (echt + sub-laag)
                     if(v.smp){ // echte contrabas-pizzicato
@@ -112,7 +137,7 @@ protected:
                             v.lp+=(w-v.lp)*(1.f-expf(-2.f*M_PI*fc2/sr));
                             w=v.lp;
                             float env2=expf(-v.t*(0.2f+(1.f-fDecay)*4.f));
-                            s+=w*env2*v.vel*4.0f;
+                            s+=w*env2*v.vel*relG*4.0f;
                             continue;
                         }
                     }
@@ -135,9 +160,11 @@ protected:
                     w=v.lp;
                     // decay-envelope
                     float env=expf(-v.t*(0.3f+(1.f-fDecay)*6.f));
-                    s+=w*env*v.vel;
-                    if(env<0.0001f)v.on=false;
+                    s+=w*env*v.vel*relG;
+                    if(env<0.0001f&&v.rT<0.f)v.on=false;
                 }
+                if(fDuck<1.f){ fDuck+=1.f/(0.003f*sr); if(fDuck>1.f)fDuck=1.f; } // 3ms choke-fade tegen kliks
+                s*=fDuck;
                 s*=outG*0.5f;
                 out[0][pos]=s;out[1][pos]=s;
                 if(++fDecim>=3){fDecim=0;if(fScopeN<40)fScope[fScopeN++]=s;}
@@ -145,11 +172,16 @@ protected:
             }
             if(e<evc){
                 const MidiEvent& m=ev[e];
-                if(m.size>=3&&(m.data[0]&0xF0)==0x90&&m.data[2]>0){
+                const uint8_t st=m.data[0]&0xF0;
+                if(m.size>=3&&(st==0x80||(st==0x90&&m.data[2]==0))){
+                    for(auto& v:fV) if(v.on&&v.src==m.data[1]&&v.rT<0.f) v.rT=0.f; // GATE: loslaten = korte release
+                }
+                if(m.size>=3&&st==0x90&&m.data[2]>0){
                     // mono-legato: steek de eerste vrije of oudste voice
                     BVoice* use=&fV[0];float oldT=-1;
                     for(auto& v:fV) if(!v.on){use=&v;break;} else if(v.t>oldT){oldT=v.t;use=&v;}
-                    use->on=true;use->note=snap(m.data[1]);use->vel=m.data[2]/127.f;use->t=0;use->lp=0;use->smp=nullptr;
+                    if(use->on&&use->t>0.01f) fDuck=0.f; // voice-steal: micro-fade i.p.v. klik
+                    use->on=true;use->note=snap(m.data[1]);use->src=m.data[1];use->vel=m.data[2]/127.f;use->t=0;use->lp=0;use->smp=nullptr;use->rT=-1.f;
                     if(fType>=0.50f){ // ECHT/STACK: echte contrabas-pizz
                         int bi=0,bd=99; for(int k=0;k<kCbCount;k++){int dd=std::abs(kCb[k].midi-use->note);if(dd<bd){bd=dd;bi=k;}}
                         const CbSmp&pb=kCb[bi];const bool hd=use->vel>=0.55f;const int rr=fRR++&1;
@@ -185,14 +217,14 @@ private:
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kDecay,0.3f+((fRnd>>8)%100)/100.f*0.7f);
     }
     void applyPreset(int i){
-        if(i<0)i=0;if(i>16)i=16;fPreset=(float)i;
+        if(i<0)i=0;if(i>39)i=39;fPreset=(float)i;
         setParameterValue(kType,kPresetParams[i][0]);
         setParameterValue(kDrive,kPresetParams[i][1]);
         setParameterValue(kFilter,kPresetParams[i][2]);
         setParameterValue(kDecay,kPresetParams[i][3]);
         setParameterValue(kLevel,kPresetParams[i][4]);
     }
-    BVoice fV[8]={}; int fRR=0;
+    BVoice fV[8]={}; int fRR=0; float fDuck=1.f;
     float fType=0.3f,fDrive=0.25f,fFilter=0.6f,fDecay=0.8f,fLevel=0.f;
     float fKey=9.f,fScale=0.f,fDice=0.f,fPreset=0.f;
     unsigned fRnd=1357913;

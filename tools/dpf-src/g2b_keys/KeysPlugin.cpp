@@ -8,9 +8,9 @@
 
 START_NAMESPACE_DISTRHO
 
-static const char* kPresetNames[17] = {"G2B","DEMBOW","DRILL","RNB","HOUSE","AFRO","TRAP","BOOM","UKG","JERSEY","BOUNCE","SOUL","LOFI","FUNK","REGGAE","DANCE","KAW"};
+static const char* kPresetNames[25] = {"G2B","DEMBOW","DRILL","RNB","HOUSE","AFRO","TRAP","BOOM","UKG","JERSEY","BOUNCE","SOUL","LOFI","FUNK","REGGAE","DANCE","KAW","RHOD2","WYURL","BELLK","PADK","CLAV","ORGAN","STEEL","DARKK"};
 // TIMBRE, BELLS, DECAY, TREM, LEVEL — Rhodes-style variaties
-static const float kPresetParams[17][5] = {
+static const float kPresetParams[25][5] = {
     {0.45f,0.35f,0.70f,0.00f,0.f},   // G2B — warme e-piano
     {0.55f,0.20f,0.55f,0.00f,0.f},   // DEMBOW — korter, strakker
     {0.30f,0.15f,0.75f,0.10f,-1.f},  // DRILL — donker + langzaam tremolo
@@ -27,7 +27,15 @@ static const float kPresetParams[17][5] = {
     {0.60f,0.20f,0.50f,0.15f,0.f},   // FUNK — clav-achtig
     {0.50f,0.30f,0.75f,0.00f,0.f},   // REGGAE — bubble organ
     {0.65f,0.45f,0.50f,0.00f,0.f},   // DANCE — stab lead
-    {0.48f,0.35f,0.70f,0.04f,0.f}    // KAWINA — log-drum keys
+    {0.48f,0.35f,0.70f,0.04f,0.f},   // KAWINA — log-drum keys
+    {0.50f,0.20f,0.60f,0.00f,0.f},   // RHOD2 — droge rhodes
+    {0.60f,0.15f,0.55f,0.25f,0.f},   // WYURL — wurli-achtig trem
+    {0.55f,0.60f,0.70f,0.00f,0.f},   // BELLK — bell-lead
+    {0.30f,0.70f,0.90f,0.00f,-1.f},  // PADK — pad-sfeer
+    {0.75f,0.25f,0.40f,0.00f,0.f},   // CLAV — funky clav
+    {0.45f,0.10f,0.85f,0.30f,0.f},   // ORGAN — orgel-sfeer
+    {0.65f,0.55f,0.50f,0.10f,0.f},   // STEEL — steel-drum-ish
+    {0.25f,0.30f,0.90f,0.15f,-1.f},  // DARKK — donker keys
 };
 
 struct KVoice { bool on; int note; float vel, t, ph1, ph2, ph3, ph4; const int16_t* smp=nullptr; uint32_t slen=0; float spos=0,sstep=0; };
@@ -55,7 +63,7 @@ protected:
         case kKey:   p.name="KEY";    p.symbol="key";   p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=11;p.ranges.def=9;break;
         case kScale: p.name="SCALE";  p.symbol="scale"; p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=1;p.ranges.def=0;break;
         case kDice:  p.name="DICE";   p.symbol="dice";  p.hints|=kParameterIsInteger|kParameterIsTrigger;p.ranges.min=0;p.ranges.max=1;p.ranges.def=0;break;
-        case kPreset:p.name="PRESET"; p.symbol="preset";p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=16;p.ranges.def=0;break;
+        case kPreset:p.name="PRESET"; p.symbol="preset";p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=24;p.ranges.def=0;break;
         case kOn:    p.name="Aan";      p.symbol="aan";   p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;p.ranges.def=1;break;
         case kGalaxy:p.name="DIMENTIES";p.symbol="dim";   p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=26;p.ranges.def=9;break;
         case kSfeer: p.name="Sfeer";    p.symbol="sfeer"; p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=2;p.ranges.def=1;break;

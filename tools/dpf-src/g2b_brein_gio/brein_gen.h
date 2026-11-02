@@ -19,9 +19,13 @@ struct BreinGen {
   }
 
   // kitIdx = index in kKits (kit binnen genre via kGenreKits[g].off+i)
-  std::vector<BNote> gen(int kitIdx, int bars) {
+  // hum: 0-1 humanize (±2-10 ticks timing-jitter; kick<=36 en anchors blijven exact)
+  // melJit: melodie-kanaal mee-jitten (voor keys/misc; 808/trap-bas NIET — anker)
+  // fill: breaker-fill in laatste bar
+  std::vector<BNote> gen(int kitIdx, int bars, bool fill=true, float hum=0.5f, bool melJit=false) {
     std::vector<BNote> out;
     const BKit& k = kKits[kitIdx];
+    const int jmax = 2 + (int)(hum * 8.f);
     for (int pi = 0; pi < k.n_parts; pi++) {
       const BPart& p = kParts[k.parts_off + pi];
       for (int ni = 0; ni < p.n_notes; ni++) {
@@ -36,9 +40,15 @@ struct BreinGen {
         for (int bar = 0; bar < bars; bar++)
           for (int s = 0; s < 16; s++) {
             int prob = kSteps[nd.steps_off + s];  // promille per bar
-            if (s == a1 || s == a2 || frand() < prob / 1000.f * .9f) {
-              int v = nd.vel + (int)(frand() * 10) - 5;
-              out.push_back({ (bar * 16 + s) * 120, 120, 9,
+            const bool anchor = (s == a1 || s == a2);
+            if (anchor || frand() < prob / 1000.f * .9f) {
+              int v = nd.vel + (int)(frand() * (6 + hum * 8.f)) - (3 + (int)(hum * 4.f));
+              int tt = (bar * 16 + s) * 120;
+              // humanize: hats/snares/perc jitten; kick (<=36) + anchors muurvast
+              if (!anchor && nd.note > 36)
+                tt += (int)(frand() * (2 * jmax + 1)) - jmax;
+              if (tt < 0) tt = 0;
+              out.push_back({ tt, 120, 9,
                               (uint8_t)nd.note,
                               (uint8_t)(v < 30 ? 30 : v > 127 ? 127 : v) });
             }
@@ -57,12 +67,34 @@ struct BreinGen {
               int pc = pickPc(kPcs, m.pc_off);
               int n = m.base - m.base % 12 + pc;
               if (n < 21) n += 12; if (n > 108) n -= 12;
-              int v = m.vel + (int)(frand() * 10) - 5;
-              out.push_back({ (bar * 16 + s) * 120, m.dur, 0,
+              int v = m.vel + (int)(frand() * (6 + hum * 8.f)) - (3 + (int)(hum * 4.f));
+              int tt = (bar * 16 + s) * 120;
+              if (melJit) tt += (int)(frand() * (jmax + 1)) - jmax / 2;
+              if (tt < 0) tt = 0;
+              out.push_back({ tt, m.dur, 0,
                               (uint8_t)n, (uint8_t)(v < 30 ? 30 : v > 127 ? 127 : v) });
             }
           }
         }
+    }
+    // breaker-fill: laatste bar → snare-hits 13/15 + 16e-roll op stap 16 + kick-accent
+    if (fill && bars >= 1) {
+      int snr = 38, kik = 36;
+      for (int pi = 0; pi < k.n_parts; pi++) {
+        const BPart& p = kParts[k.parts_off + pi];
+        for (int ni = 0; ni < p.n_notes; ni++) {
+          const BPNote& nd = kPNotes[p.notes_off + ni];
+          if (nd.note <= 36) kik = nd.note;
+          else if (nd.note == 38 || nd.note == 40) snr = nd.note;
+        }
+      }
+      const int lb = (bars - 1) * 16 * 120;
+      out.push_back({ lb + 12 * 120, 120, 9, (uint8_t)kik, 112 });
+      out.push_back({ lb + 13 * 120, 120, 9, (uint8_t)snr, 100 });
+      out.push_back({ lb + 14 * 120, 120, 9, (uint8_t)snr, 110 });
+      for (int j = 0; j < 4; j++)
+        out.push_back({ lb + 15 * 120 + j * 30, 30, 9, (uint8_t)snr,
+                        (uint8_t)(100 + j * 7) });
     }
     // sort op t (stabiel: insertion-friendly — kleine arrays)
     for (size_t i = 1; i < out.size(); i++) {

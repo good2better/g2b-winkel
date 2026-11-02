@@ -1,4 +1,4 @@
-#define DISTRHO_PLUGIN_BRAND "Good2Better"
+#define DISTRHO_PLUGIN_BRAND "G2B"
 #define DISTRHO_PLUGIN_NAME  "G2B Bassdrum"
 #define DISTRHO_PLUGIN_URI   "https://good2better.com/plugins/g2b-bassdrum"
 #define DISTRHO_PLUGIN_LV2_CATEGORY "lv2:InstrumentPlugin"
