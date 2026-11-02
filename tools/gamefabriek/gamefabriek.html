@@ -60,6 +60,12 @@ label{font-size:.8rem;color:var(--zacht)}
 </div>
 </div>
 
+<div class="kaart">
+<h2>5. Eigen beat (alleen voor 🎧 Beat-Spel)</h2>
+<label>🎵 Jouw track (mp3/wav) — de noten volgen jouw echte drum-pieken</label>
+<input type="file" id="beatfile" accept="audio/*" style="margin-top:6px"><div id="beatprev" style="margin-top:6px;font-size:.75rem;color:var(--zacht)"></div>
+</div>
+
 <button class="knop" id="maak">🎮 MAAK MIJN SPEL</button>
 <div class="log" id="log"></div>
 
@@ -75,6 +81,7 @@ const TYPES=[
  {id:'doolhof',ic:'🌽',nm:'Verzamelaar',info:'Alles oppakken, ontwijk vijanden'},
  {id:'platform',ic:'🏔️',nm:'Platformer',info:'Echte getekende wereld + levels'},
  {id:'ritme',ic:'🎹',nm:'Muziek-Ritme',info:'Raak de noten op de beat'},
+ {id:'beatgame',ic:'🎧',nm:'Beat-Spel',info:'Ritme op JOUW beat — upload mp3/wav'},
  {id:'race',ic:'🛺',nm:'Skelter-Race',info:'Skelter/driewieler racen, ontwijk & boost'},
 ];
 const THEMAS=[
@@ -109,6 +116,12 @@ T('heldfoto').onchange=async e=>{heldImg=await leesFoto(e.target.files[0]);
 T('xfotos').onchange=async e=>{xImgs=[];for(const f of e.target.files)xImgs.push(await leesFoto(f));
  T('xprev').textContent=xImgs.length+' karakter(s) klaar — die komen in het spel';
  log('👥 '+xImgs.length+' extra karakters geladen')};
+/* eigen beat voor het Beat-Spel (wordt als dataURL in de game gebakken) */
+let beatData=null;
+T('beatfile').onchange=e=>{const f=e.target.files[0];if(!f)return;const fr=new FileReader();
+ fr.onload=ev=>{beatData=ev.target.result;
+  T('beatprev').textContent='🎵 '+f.name+' ('+(f.size/1048576).toFixed(1)+' MB) — gaat het spel in';
+  log('🎵 beat klaar: '+f.name)};fr.readAsDataURL(f)};
 
 /* ===== SPEL-GENERATOREN — elke functie geeft complete game-JS terug ===== */
 const H=(naam,t)=>`<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -468,6 +481,64 @@ startKnop.onclick=()=>{startKnop.remove();gestart=true;t0=A.currentTime+.5;
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
 </`+'script></body></html>',
 
+/* BEATGAME: producer-ritme op een ECHTE geuploade beat — onsets → noten */
+beatgame:(naam,t,d)=>H(naam,t)+`
+const MUZIEK=${JSON.stringify('MUZIEK')},N=4,LY=Hh-110,LW=W/N;
+const TOETS=['D','F','J','K'],KL=['#f472b6','#22d3ee','#a3e635','#fbbf24'];
+let gestart=false,t0=0,combo=0,maxC=0,hit='',hitT=0,miss=0,noten=[],SPB=.5,dur=0,bron=null;
+/* beat-analyse: energie-envelope → BPM-autocorrelatie → onset-pieken → banen */
+const analyse=buf=>{const ch=buf.getChannelData(0),sr=buf.sampleRate,hop=512;
+ const n=Math.floor(ch.length/hop),env=new Float32Array(n),low=new Float32Array(n);
+ for(let i=0;i<n;i++){let e=0,lp=0;for(let j=0;j<hop;j+=8){const s=ch[i*hop+j];e+=s*s;lp+=(s-lp)*.15}
+  env[i]=Math.sqrt(e/(hop/8));low[i]=Math.abs(lp)}
+ const fps=sr/hop,med=[...env].sort((a,b2)=>a-b2)[n>>1]||0;
+ let best=0,bpm=120;for(let b=70;b<=180;b++){const lag=Math.round(fps*60/b);let s=0;
+  for(let i=0;i+lag<n;i++)s+=env[i]*env[i+lag];if(s>best){best=s;bpm=b}}
+ const ons=[];for(let i=1;i<n;i++)if(env[i]>env[i-1]*1.3&&env[i]>med*1.35&&(!ons.length||i-ons[ons.length-1]>fps*.14))ons.push(i);
+ const spb=60/bpm*fps,k=ons.filter(o=>o/spb>1).map((o,i2)=>{
+  const bas=low[o]/(env[o]+1e-9);return{b:o/spb,baan:bas>.55?(i2%2):(2+i2%2)}});
+ return{bpm,noten:k,dur:buf.duration}};
+const press=i=>{if(!gestart)return;const nu=(A.currentTime-t0)/SPB;
+ const nn=noten.find(q=>!q.hit&&!q.gemist&&q.baan==i&&Math.abs(q.b-nu)<.28);
+ if(nn){nn.hit=true;const afw=Math.abs(nn.b-nu);
+  if(afw<.12){hit='PERFECT!';punt(20,i*LW+LW/2,LY-40);blip(880,.07,'triangle')}else{hit='GOED';punt(10,i*LW+LW/2,LY-40);blip(660,.07,'triangle')}
+  combo++;if(combo>maxC)maxC=combo;hitT=A.currentTime}
+ else{combo=0;hit='';blip(200,.15,'sawtooth')}};
+TOETS.forEach((k,i)=>{addEventListener('keydown',e=>{if(e.key.toUpperCase()==k)press(i)})});
+function tik(x){press(Math.min(3,Math.floor(x/LW)))}
+const startKnop=document.createElement('button');startKnop.textContent='▶ LADEN & START';startKnop.style.cssText='position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);z-index:5';
+document.body.appendChild(startKnop);
+startKnop.onclick=async()=>{startKnop.textContent='⏳ beat analyseren...';
+ try{const res=await fetch(MUZIEK),ab=await res.arrayBuffer(),buf=await A.decodeAudioData(ab);
+  const an=analyse(buf);noten=an.noten;SPB=60/an.bpm;dur=an.dur;
+  startKnop.textContent='🎵 '+Math.round(an.bpm)+' BPM — START';setTimeout(()=>{startKnop.remove();
+   const s=A.createBufferSource();s.buffer=buf;s.connect(A.destination);s.start(A.currentTime+.5);
+   gestart=true;t0=A.currentTime+.5;bron=s},400)}
+ catch(e){startKnop.textContent='⚠️ beat laden mislukt'}};
+(function loop(){if(af)return;const nu=gestart?(A.currentTime-t0)/SPB:0;
+ const gr=X.createLinearGradient(0,0,0,Hh);gr.addColorStop(0,'#12051f');gr.addColorStop(.6,T.achtergr);gr.addColorStop(1,'#050210');X.fillStyle=gr;X.fillRect(0,0,W,Hh);
+ for(let i=0;i<N;i++){X.fillStyle=i%2?'#ffffff08':'#ffffff05';X.fillRect(i*LW+2,60,LW-4,LY-60);
+  X.strokeStyle='#ffffff18';X.strokeRect(i*LW+2,60,LW-4,LY-60)}
+ X.fillStyle=T.acc;X.fillRect(0,LY,W,4);
+ for(let i=0;i<N;i++){X.fillStyle=KL[i];X.globalAlpha=.35;X.beginPath();X.arc(i*LW+LW/2,LY+2,22,0,7);X.fill();X.globalAlpha=1;
+  X.fillStyle='#fff';X.font='bold 16px system-ui';X.fillText(TOETS[i],i*LW+LW/2,LY+30)}
+ const snel=(LY-60)/(SPB*3);
+ noten.forEach(nn=>{if(nn.hit||nn.gemist)return;const y=60+(nu-nn.b+3)*snel/3;
+  if(y<60||y>LY+40)return;
+  if(y>LY+30){nn.gemist=true;combo=0;miss++;hit='MISS';hitT=A.currentTime;return}
+  const g=X.createRadialGradient(nn.baan*LW+LW/2,y,2,nn.baan*LW+LW/2,y,18);g.addColorStop(0,'#fff');g.addColorStop(.4,KL[nn.baan]);g.addColorStop(1,KL[nn.baan]+'00');
+  X.fillStyle=g;X.beginPath();X.arc(nn.baan*LW+LW/2,y,17,0,7);X.fill();
+  X.fillStyle='#fff';X.font='13px system-ui';X.fillText('♪',nn.baan*LW+LW/2,y)});
+ if(ok(FHELD))_rond(FHELD,W/2,32,44);else emoji(T.held,W/2,32,44);
+ if(combo>1){X.fillStyle=T.acc;X.font='bold 20px system-ui';X.fillText(combo+'x combo',W/2,80)}
+ if(A.currentTime-hitT<.6&&hit){X.fillStyle=hit=='MISS'?'#f66':hit=='PERFECT!'?'#fde047':'#a3e635';X.font='bold 24px system-ui';X.fillText(hit,W/2,Hh/2)}
+ if(gestart&&A.currentTime-t0>dur+1){af=true;confetti();
+  const pct=noten.length?Math.round(100*(noten.filter(q=>q.hit).length)/noten.length):0;
+  document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🎵 Nummer klaar!';
+  document.getElementById('os').textContent='Score: '+score+' — '+pct+'% geraakt — max combo '+maxC+' — miss '+miss;return}
+ requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+
 /* RACE: skelter/driewieler — bochtige weg, obstakels ontwijken, boosts pakken, finish */
 race:(naam,t,d)=>H(naam,t)+`
 const PY=Hh-90,RITM=Math.min(1.4,D.snel);
@@ -520,11 +591,13 @@ function tik(x){mx=x}
 T('maak').onclick=()=>{
  const naam=T('naam').value.trim()||'Mijn Spel';
  const th=THEMAS.find(t=>t.id===thema);
+ if(type=='beatgame'&&!beatData){log('⚠️ Beat-Spel heeft een beat nodig — upload eerst je mp3/wav bij stap 5');return}
  const gen=GEN[type];
  let code=gen(naam,th,MOEILIJK[T('moeilijk').value]);
  code=code.replace(JSON.stringify('THEMA'),JSON.stringify(th)).replace(JSON.stringify('MOEIL'),JSON.stringify(MOEILIJK[T('moeilijk').value]))
    .replace(JSON.stringify('FOTOS'),JSON.stringify({held:heldImg,items:xImgs}))
-  .replace(JSON.stringify('TIJD'),+T('tijd').value);
+  .replace(JSON.stringify('TIJD'),+T('tijd').value)
+  .replace(JSON.stringify('MUZIEK'),JSON.stringify(beatData));
  if(type=='quiz')code=code.replace("'THEMA_ID'",JSON.stringify(thema));
  log('🔨 '+naam+' ('+type+'/'+thema+') gebouwd: '+(code.length/1024).toFixed(0)+' KB, één bestand, geen externe bestanden nodig');
  const blob=new Blob([code],{type:'text/html'});
