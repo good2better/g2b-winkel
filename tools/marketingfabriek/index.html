@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>📈 G2B Marketing-Fabriek</title>
+<style>
+:root{--groen:#16a34a;--donker:#0b1220;--kaart:#131c2e;--rand:#22314d;--tekst:#e8eef8;--zacht:#9fb0c9;--rood:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--donker);color:var(--tekst);font:15px/1.5 system-ui,sans-serif;max-width:860px;margin:0 auto;padding:18px}
+h1{font-size:1.35rem;margin-bottom:2px}
+.sub{color:var(--zacht);font-size:.82rem;margin-bottom:14px}
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tabs button{background:var(--kaart);border:1px solid var(--rand);color:var(--zacht);border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:700;font-size:.85rem}
+.tabs button.aan{background:var(--groen);color:#fff;border-color:var(--groen)}
+.paneel{display:none}
+.paneel.aan{display:block}
+.kaart{background:var(--kaart);border:1px solid var(--rand);border-radius:14px;padding:16px;margin-bottom:14px}
+h2{font-size:.95rem;margin-bottom:10px;color:var(--zacht);text-transform:uppercase;letter-spacing:.06em}
+input,textarea,select{background:#0d1526;border:1px solid var(--rand);color:var(--tekst);border-radius:9px;padding:9px 11px;font:inherit;font-size:.9rem;width:100%;margin-bottom:8px}
+textarea{min-height:110px;resize:vertical}
+button.go{background:var(--groen);border:none;color:#fff;border-radius:9px;padding:10px 18px;font-weight:700;cursor:pointer;font-size:.9rem}
+button.sec{background:#ffffff12;border:1px solid var(--rand);color:var(--tekst);border-radius:9px;padding:8px 14px;cursor:pointer;font-size:.82rem}
+button.slet{background:none;border:none;color:var(--rood);cursor:pointer;font-size:.8rem;padding:2px 6px}
+.rij{display:flex;gap:8px;flex-wrap:wrap}
+.rij>*{flex:1;min-width:120px}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--rand)}
+th{color:var(--zacht);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}
+tr:hover td{background:#ffffff08}
+.tag{display:inline-block;background:#16a34a22;color:#4ade80;border-radius:20px;padding:1px 9px;font-size:.72rem;margin:1px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.stat{background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:14px;text-align:center}
+.stat b{display:block;font-size:1.6rem;color:var(--groen)}
+.stat span{color:var(--zacht);font-size:.75rem}
+.log{white-space:pre-wrap;font:12px/1.6 ui-monospace,monospace;color:var(--zacht);background:#0d1526;border-radius:9px;padding:10px;max-height:200px;overflow:auto}
+.leeg{color:var(--zacht);font-size:.85rem;text-align:center;padding:16px}
+</style>
+</head>
+<body>
+<h1>📈 G2B Marketing-Fabriek</h1>
+<p class="sub">Contacten · lijsten · campagnes — alles blijft op jouw computer (browser-opslag), niks gaat naar buiten.</p>
+<div class="tabs">
+<button data-t="contacten" class="aan">👥 CONTACTEN</button>
+<button data-t="lijsten">📋 LIJSTEN</button>
+<button data-t="campagne">✉️ CAMPAGNE</button>
+<button data-t="stats">📊 STATS</button>
+</div>
+
+<div class="paneel aan" id="p-contacten">
+<div class="kaart"><h2>Contact toevoegen</h2>
+<div class="rij"><input id="c-naam" placeholder="Naam"><input id="c-mail" placeholder="E-mail"></div>
+<div class="rij"><input id="c-tags" placeholder="Tags (komma: fan, koper, artiest)"><input id="c-notitie" placeholder="Notitie"></div>
+<button class="go" onclick="addContact()">+ Toevoegen</button>
+<button class="sec" onclick="importeerDialoog()">⬆ Importeer e-mails</button>
+<button class="sec" onclick="exportCSV()">⬇ Exporteer CSV</button>
+</div>
+<div class="kaart"><h2>Alle contacten (<span id="c-aantal">0</span>)</h2>
+<div id="c-tabel"><div class="leeg">Nog geen contacten — voeg er een toe of importeer een lijst.</div></div>
+</div>
+</div>
+
+<div class="paneel" id="p-lijsten">
+<div class="kaart"><h2>Nieuwe lijst van e-mails</h2>
+<input id="l-naam" placeholder="Lijstnaam (bv. kopers-beatpack)">
+<textarea id="l-mails" placeholder="Plak hier e-mails — één per regel of met komma's. Dubbele en foutieve worden er automatisch uitgehaald."></textarea>
+<button class="go" onclick="maakLijst()">✨ Schoonmaken + lijst opslaan</button>
+</div>
+<div class="kaart"><h2>Jouw lijsten</h2><div id="l-tabel"><div class="leeg">Nog geen lijsten.</div></div></div>
+</div>
+
+<div class="paneel" id="p-campagne">
+<div class="kaart"><h2>Nieuwe campagne</h2>
+<select id="k-lijst"><option value="">— kies een lijst —</option></select>
+<input id="k-onderwerp" placeholder="Onderwerp van je e-mail">
+<textarea id="k-tekst" placeholder="Je bericht… {naam} wordt automatisch de naam van de ontvanger."></textarea>
+<button class="go" onclick="verstuurStap()">✉️ Open in jouw e-mailprogramma</button>
+<button class="sec" onclick="kopieerCampagne()">📋 Kopieer tekst</button>
+<div class="log" id="k-log">Kies een lijst en schrijf je mail — wij zetten alles klaar in je eigen mailprogramma (BCC = ontvangers zien elkaar niet).</div>
+</div>
+</div>
+
+<div class="paneel" id="p-stats">
+<div class="kaart"><h2>Overzicht</h2><div class="stats" id="s-grid"></div></div>
+<div class="kaart"><h2>Activiteit</h2><div class="log" id="s-log"></div></div>
+<div class="kaart"><button class="sec" onclick="wisAlles()" style="border-color:var(--rood);color:var(--rood)">🗑 Wis alles (na bevestiging)</button></div>
+</div>
+
+<script>
+const LS='g2b_marketing';
+let DB=JSON.parse(localStorage.getItem(LS)||'{"contacten":[],"lijsten":[],"log":[]}');
+const save=()=>localStorage.setItem(LS,JSON.stringify(DB));
+const zeg=(m)=>{DB.log.unshift(new Date().toLocaleString('nl-NL')+' — '+m);DB.log=DB.log.slice(0,80);save();teken()};
+const mailOk=(m)=>/^[^\s@,;]+@[^\s@,;]+\.[a-z]{2,}$/i.test(m);
+
+// tabs
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('aan',x==b));
+ document.querySelectorAll('.paneel').forEach(p=>p.classList.toggle('aan',p.id=='p-'+b.dataset.t));});
+
+function addContact(){
+ const n=document.getElementById('c-naam').value.trim(),m=document.getElementById('c-mail').value.trim().toLowerCase();
+ if(!mailOk(m)){alert('Geen geldig e-mailadres');return}
+ if(DB.contacten.find(c=>c.mail==m)){alert('Die staat er al in');return}
+ DB.contacten.push({naam:n||m.split('@')[0],mail:m,tags:document.getElementById('c-tags').value.split(',').map(t=>t.trim()).filter(Boolean),notitie:document.getElementById('c-notitie').value.trim()});
+ document.getElementById('c-naam').value=document.getElementById('c-mail').value=document.getElementById('c-tags').value=document.getElementById('c-notitie').value='';
+ zeg('Contact toegevoegd: '+m);save();teken()}
+
+function importeerDialoog(){
+ const blok=prompt('Plak e-mails (één per regel of met komma\'s):');if(!blok)return;
+ const mails=blok.split(/[\s,;]+/).map(s=>s.trim().toLowerCase()).filter(mailOk);
+ let nieuw=0;mails.forEach(m=>{if(!DB.contacten.find(c=>c.mail==m)){DB.contacten.push({naam:m.split('@')[0],mail:m,tags:['import'],notitie:''});nieuw++}});
+ zeg('Import: '+nieuw+' nieuw van '+mails.length+' geldige e-mails');save();teken()}
+
+function maakLijst(){
+ const naam=document.getElementById('l-naam').value.trim()||('lijst-'+(DB.lijsten.length+1));
+ const mails=[...new Set(document.getElementById('l-mails').value.split(/[\s,;]+/).map(s=>s.trim().toLowerCase()).filter(mailOk))];
+ if(!mails.length){alert('Geen geldige e-mails gevonden');return}
+ DB.lijsten=DB.lijsten.filter(l=>l.naam!==naam);
+ DB.lijsten.push({naam,mails});
+ mails.forEach(m=>{if(!DB.contacten.find(c=>c.mail==m))DB.contacten.push({naam:m.split('@')[0],mail:m,tags:[naam],notitie:''})});
+ document.getElementById('l-naam').value='';document.getElementById('l-mails').value='';
+ zeg('Lijst "'+naam+'": '+mails.length+' schone e-mails');save();teken()}
+
+function verstuurStap(){
+ const l=DB.lijsten.find(x=>x.naam==document.getElementById('k-lijst').value);
+ const o=document.getElementById('k-onderwerp').value.trim(),t=document.getElementById('k-tekst').value;
+ if(!l){document.getElementById('k-log').textContent='Kies eerst een lijst.';return}
+ if(!o||!t){document.getElementById('k-log').textContent='Onderwerp en tekst invullen.';return}
+ const bcc=l.mails.slice(0,50).join(',');
+ location.href='mailto:?bcc='+encodeURIComponent(bcc)+'&subject='+encodeURIComponent(o)+'&body='+encodeURIComponent(t.replace(/\{naam\}/g,'vriend'));
+ document.getElementById('k-log').textContent='Mailprogramma geopend met '+Math.min(50,l.mails.length)+' ontvangers in BCC.'+(l.mails.length>50?' Tip: mailtjes boven 50 beter in delen versturen.':'')+' {naam} werkt alleen bij handmatig aanpassen per mail.';
+ zeg('Campagne gestart naar lijst "'+l.naam+'" ('+l.mails.length+' ontvangers)')}
+
+function kopieerCampagne(){
+ const o=document.getElementById('k-onderwerp').value,t=document.getElementById('k-tekst').value;
+ navigator.clipboard.writeText('Onderwerp: '+o+'\n\n'+t).then(()=>zeg('Campagne-tekst gekopieerd'))}
+
+function exportCSV(){
+ const csv='naam,email,tags,notitie\n'+DB.contacten.map(c=>[c.naam,c.mail,c.tags.join('|'),c.notitie].map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='g2b-contacten.csv';a.click();
+ zeg('CSV geëxporteerd: '+DB.contacten.length+' contacten')}
+
+function wisAlles(){if(confirm('Echt ALLES wissen? Contacten, lijsten en log weg.')){DB={contacten:[],lijsten:[],log:[]};save();teken()}}
+
+function verwijder(i){DB.contacten.splice(i,1);zeg('Contact verwijderd');teken()}
+function verwijderLijst(i){DB.lijsten.splice(i,1);zeg('Lijst verwijderd');teken()}
+
+function teken(){
+ document.getElementById('c-aantal').textContent=DB.contacten.length;
+ document.getElementById('c-tabel').innerHTML=DB.contacten.length?
+  '<table><tr><th>Naam</th><th>E-mail</th><th>Tags</th><th></th></tr>'+DB.contacten.map((c,i)=>
+   '<tr><td>'+esc(c.naam)+'</td><td>'+esc(c.mail)+'</td><td>'+c.tags.map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'</td><td><button class="slet" onclick="verwijder('+i+')">✕</button></td></tr>').join('')+'</table>'
+  :'<div class="leeg">Nog geen contacten — voeg er een toe of importeer een lijst.</div>';
+ document.getElementById('l-tabel').innerHTML=DB.lijsten.length?
+  '<table><tr><th>Lijst</th><th>E-mails</th><th></th></tr>'+DB.lijsten.map((l,i)=>
+   '<tr><td>'+esc(l.naam)+'</td><td>'+l.mails.length+'</td><td><button class="slet" onclick="verwijderLijst('+i+')">✕</button></td></tr>').join('')+'</table>'
+  :'<div class="leeg">Nog geen lijsten.</div>';
+ document.getElementById('k-lijst').innerHTML='<option value="">— kies een lijst —</option>'+DB.lijsten.map(l=>'<option>'+esc(l.naam)+'</option>').join('');
+ const kopers=DB.contacten.filter(c=>c.tags.includes('koper')).length;
+ document.getElementById('s-grid').innerHTML=
+  '<div class="stat"><b>'+DB.contacten.length+'</b><span>contacten</span></div>'+
+  '<div class="stat"><b>'+DB.lijsten.length+'</b><span>lijsten</span></div>'+
+  '<div class="stat"><b>'+DB.lijsten.reduce((s,l)=>s+l.mails.length,0)+'</b><span>e-mails in lijsten</span></div>'+
+  '<div class="stat"><b>'+kopers+'</b><span>kopers (tag)</span></div>';
+ document.getElementById('s-log').textContent=DB.log.length?DB.log.join('\n'):'Nog geen activiteit.'}
+const esc=(s)=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+teken();
+</script>
+</body>
+</html>
