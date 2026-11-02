@@ -90,8 +90,8 @@ protected:
             else{fillColor(g2bsk(skin,1));fill();strokeColor(g2bsk(skin,4));strokeWidth(1.f);stroke();fillColor(g2bsk(skin,3));fontSize(9.f);
                  text(px+26.f,py+10.f,k==0?"DICE":(fSfeer==0?"DARK":(fSfeer==2?"LICHT":"NEUTR")),nullptr);}
         }
-        // pad-grid 4x4 (volle breedte — grote pads)
-        float gx=18.f, gy=110.f, gw=W-36.f, gh=104.f;
+        // pad-grid 4x4 — links, pad-paneel-zone (80px) rechts vrij
+        float gx=18.f, gy=110.f, gw=W-36.f-80.f, gh=104.f;
         float cw=gw/4.f, ch=gh/4.f;
         const char** padNames=(fBank>=0&&fBank<kBankNamesUI_N)?kPadNamesAll[fBank]:nullptr;
         for(int r=0;r<4;r++)for(int c=0;c<4;c++){
@@ -121,29 +121,37 @@ protected:
                 if(i==0)moveTo(x,y);else lineTo(x,y);
             }
             strokeColor(g2bsk(skin,5)); strokeWidth(1.2f); stroke();
-        }else{
-            // PAD-paneel: naam + TOON/LENGTE sliders (klik pad = openen)
+        }
+        // PAD-paneel rechts (klik pad = openen, x = sluiten)
+        const float pxs=18.f+(W-36.f-80.f)+8.f, pxw=W-18.f-pxs;
+        beginPath(); roundedRect(pxs,110.f,pxw,110.f,4.f);
+        fillColor(fPadOpen?g2bsk(skin,1):g2bsk(skin,0)); fill();
+        strokeColor(fPadOpen?g2bsk(skin,5):g2bsk(skin,4)); strokeWidth(1.f); stroke();
+        if(fPadOpen){
             const char** pn=(fBank>=0&&fBank<kBankNamesUI_N)?kPadNamesAll[fBank]:nullptr;
-            fontSize(8.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            fontSize(8.f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
             fillColor(g2bsk(skin,5));
-            text(sx+sw/2,sy+14.f,pn?pn[fPadSel]:"PAD",nullptr);
+            text(pxs+pxw/2,124.f,pn?pn[fPadSel]:"PAD",nullptr);
+            fontSize(9.f); fillColor(g2bsk(skin,3)); text(pxs+pxw-10.f,120.f,"x",nullptr);
             fontSize(7.5f); fillColor(g2bsk(skin,3));
-            text(sx+sw/2,sy+40.f,"TOON",nullptr);
-            text(sx+sw/2,sy+76.f,"LENGTE",nullptr);
+            text(pxs+pxw/2,146.f,"TOON",nullptr);
+            text(pxs+pxw/2,182.f,"LENGTE",nullptr);
             auto sli=[&](float cy,float v,float mn,float mx){
                 float n=(v-mn)/(mx-mn);if(n<0)n=0;if(n>1)n=1;
-                const float tx=sx+8.f,tw=sw-16.f;
+                const float tx=pxs+8.f,tw=pxw-16.f;
                 beginPath();roundedRect(tx,cy-3.f,tw,6.f,3.f);fillColor(g2bsk(skin,4));fill();
                 if(n>0){beginPath();roundedRect(tx,cy-3.f,tw*n,6.f,3.f);fillColor(g2bsk(skin,5));fill();}
                 beginPath();circle(tx+tw*n,cy,4.5f);fillColor(g2bsk(skin,2));fill();
             };
-            sli(sy+52.f,fPadT[fPadSel],-12.f,12.f);
-            sli(sy+88.f,fPadD[fPadSel],0.2f,2.5f);
+            sli(160.f,fPadT[fPadSel],-12.f,12.f);
+            sli(196.f,fPadD[fPadSel],0.2f,2.5f);
             char vb[16];
             fontSize(7.f); fillColor(g2bsk(skin,2));
-            snprintf(vb,sizeof vb,"%+.0fst",fPadT[fPadSel]); text(sx+sw/2,sy+62.f,vb,nullptr);
-            snprintf(vb,sizeof vb,"%.2fx",fPadD[fPadSel]);   text(sx+sw/2,sy+98.f,vb,nullptr);
-            fontSize(9.f); fillColor(g2bsk(skin,3)); text(sx+sw-8.f,sy+10.f,"x",nullptr);
+            snprintf(vb,sizeof vb,"%+.0fst",fPadT[fPadSel]); text(pxs+pxw/2,172.f,vb,nullptr);
+            snprintf(vb,sizeof vb,"%.2fx",fPadD[fPadSel]);   text(pxs+pxw/2,208.f,vb,nullptr);
+        }else{
+            fontSize(7.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE); fillColor(g2bsk(skin,4));
+            text(pxs+pxw/2,165.f,"klik pad",nullptr);
         }
         // 6 knoppen
         const int nk=6; float step=(W-40)/nk;
@@ -179,14 +187,7 @@ protected:
                 if(y>=79&&y<=99){fSfeer=(fSfeer+1)%3;setParameterValue(8,(float)fSfeer);repaint();return true;}
                 if(y>=104&&y<=124){fOn=1-fOn;setParameterValue(6,fOn?1.f:0.f);repaint();return true;}
             }
-            // pad-grid klik = speel de one-shot (notes 36-51)
-            float gx=18.f,gy=110.f,gw=W-36.f,gh=104.f;
-            if(x>=gx&&x<=gx+gw&&y>=gy&&y<=gy+gh){
-                const int c=(int)((x-gx)/(gw/4.f)),r=(int)((y-gy)/(gh/4.f));
-                const int idx=r*4+c;
-                if(idx>=0&&idx<16){sendNote(0,(uint8_t)(36+idx),100);fHit[idx]=1.f;repaint();return true;}
-            }
-            // PAD-paneel: sliders + sluiten (ligt over de scope)
+            // PAD-paneel: sliders + sluiten (rechts, 80px zone)
             const float sx=18.f+(W-36.f-80.f)+8.f, sw=W-18.f-sx;
             if(fPadOpen&&x>=sx&&x<=W-18.f&&y>=110.f&&y<=220.f){
                 if(x>=sx+sw-20.f&&y<=130.f){fPadOpen=false;repaint();return true;}
@@ -200,6 +201,7 @@ protected:
                 if(x>=gx&&x<=gx+gw&&y>=gy&&y<=gy+gh){
                     const int c=(int)((x-gx)/(gw/4.f)), r=(int)((y-gy)/(gh/4.f)), idx=r*4+c;
                     fPadSel=idx;fPadOpen=true;
+                    sendNote(0,(uint8_t)(36+idx),100);fHit[idx]=1.f;
                     setParameterValue(10,(float)idx);   // PAD select
                     setParameterValue(13,1.f);          // PAD SLAG: speel af
                     repaint();return true;
