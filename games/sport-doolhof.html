@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sport Doolhof</title><style>body{margin:0;background:#12300f;display:flex;flex-direction:column;align-items:center;font-family:system-ui;color:#fff;min-height:100vh}
+h1{font-size:1.1rem;margin:10px}canvas{background:#12300f;border-radius:12px;touch-action:none;max-width:96vw}#fx{background:transparent}
+#hud{display:flex;gap:18px;font-size:1rem;margin:6px}#over{display:none;position:fixed;inset:0;background:#000c;align-items:center;justify-content:center;flex-direction:column;text-align:center}
+#over h2{font-size:2rem}button{background:#a3e635;border:0;color:#042;padding:12px 28px;border-radius:10px;font-size:1.1rem;font-weight:700;cursor:pointer;margin-top:12px}
+.tip{opacity:.7;font-size:.8rem;margin:6px}
+button,#fok,#fos{transition:transform .08s}button:active,#fok:active,#fos:active{transform:scale(1.08,.86)}</style></head><body>
+<h1>Sport Doolhof</h1><div id="hud"><span id="score">⭐ 0</span><span id="lvs">❤️</span><span id="lv"></span><span id="klok"></span><span id="hs"></span></div>
+<div style="position:relative"><canvas id="c" width="420" height="560"></canvas><canvas id="fx" width="420" height="560" style="position:absolute;left:0;top:0;pointer-events:none"></canvas>
+<button id="fok" title="Eigen foto als karakter" style="position:absolute;right:8px;top:8px;background:#ffffff22;border:1px solid #fff4;color:#fff;border-radius:8px;padding:4px 9px;cursor:pointer;font-size:1rem">📷</button>
+<button id="fos" title="Selfie als karakter" style="position:absolute;right:8px;top:44px;background:#ffffff22;border:1px solid #fff4;color:#fff;border-radius:8px;padding:4px 9px;cursor:pointer;font-size:1rem">🤳</button>
+<input type="file" id="foi" accept="image/*" style="display:none">
+<input type="file" id="foi2" accept="image/*" capture="user" style="display:none"></div>
+<div class="tip">⬅️ ➡️ of tik/sleep — Spatie = actie — 🎮 gamepad werkt ook — 📷/🤳 eigen foto</div>
+<div id="over"><h2 id="ot"></h2><p id="os"></p><button onclick="location.reload()">Opnieuw</button></div>
+<script>
+const C=document.getElementById('c'),X=C.getContext('2d'),W=C.width,Hh=C.height;
+const T={"id":"sport","ic":"⚽","nm":"Sport","items":["⚽","🏀","🏈","⚾","🎾","🏐","🥎"],"vijand":"🃏","held":"⚽","achtergr":"#12300f","acc":"#a3e635"},D={"snel":0.7,"leven":8,"fout":5,"kid":true},SPELERS="1";
+let score=0,lev=D.leven,af=false,HSK='g2bhs_'+document.title,hs=+(localStorage.getItem(HSK)||0);
+/* omstebeurt: score van P1 bewaren, P2 speelt daarna */
+const _bk='g2b_beurt_'+document.title,_bv=SPELERS=='beurt'?JSON.parse(localStorage.getItem(_bk)||'null'):null;
+let beurtNr=_bv?2:1;
+document.getElementById('hs').textContent=SPELERS=='beurt'?'👤 P'+beurtNr+(_bv!=null?' — P1: '+_bv:''):(hs?'🏆 '+hs:'');
+const lvs=()=>document.getElementById('lvs').textContent='❤️'.repeat(lev);lvs();
+const A=new(window.AudioContext||window.webkitAudioContext)();
+/* kids: zachte marimba-achtige tonen (sine), grotere kids: arcade-square */
+const blip=(f,d=.08,type,v=.15)=>{type=type||(D.kid?'sine':'square');const o=A.createOscillator(),g=A.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,A.currentTime);g.gain.exponentialRampToValueAtTime(.001,A.currentTime+d);o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
+/* stijgende belonings-pling voor kids */
+const pling=()=>{blip(660,.07,'sine',.12);setTimeout(()=>blip(880,.09,'sine',.12),75)};
+let _lastLv=1;
+const punt=(n,x,y)=>{score+=n;document.getElementById('score').textContent='⭐ '+score;if(score>hs){hs=score;localStorage.setItem(HSK,hs);document.getElementById('hs').textContent='🏆 '+hs}if(x!=null)pop(x,y,'+'+n);if(D.kid){pling();if(navigator.vibrate)navigator.vibrate(12)}
+ /* levels: elke 50/100 punten omhoog — sneller + feestje */
+ const lv=1+Math.floor(score/(D.kid?50:100));if(lv>_lastLv){_lastLv=lv;document.getElementById('lv').textContent='LV '+lv;pop(W/2,Hh/3,'🚀 LEVEL '+lv+'!','#ffd700');confetti();try{spd*=1.12}catch(e){}}};
+/* kids: ruimere raak-zones (HB) en kleinere obstakel-zones (SB) — voelt alsof ze perfect raken */
+const HB=D.kid?1.3:1,SB=D.kid?.8:1;
+/* effect-laag: zwevende score-pops + confetti bovenop het spel */
+const FX=document.getElementById('fx'),FX2=FX.getContext('2d'),pops=[];
+const pop=(x,y,t,k='#ffe066')=>pops.push({x,y,t,k,l:1,v:-.9});
+const confetti=()=>{for(let i=0;i<50;i++)pops.push({x:rand(0,W),y:rand(-80,Hh*.4),t:['🎉','⭐','✨','🎊'][i%4],k:'#fff',l:1,v:rand(.5,2)})};
+(function fxloop(){FX2.clearRect(0,0,W,Hh);for(let i=pops.length-1;i>=0;i--){const p=pops[i];p.y+=p.v;p.l-=.012;if(p.l<=0){pops.splice(i,1);continue}FX2.globalAlpha=p.l;FX2.font='bold 18px system-ui';FX2.fillStyle=p.k;FX2.textAlign='center';FX2.fillText(p.t,p.x,p.y)}FX2.globalAlpha=1;requestAnimationFrame(fxloop)})();
+/* speeltijd: 0 = oneindig */
+let tijd=90;
+if(tijd>0){const T0=tijd,VK=['🌞','🌤️','⛅','🌥️','🌙'];
+ /* kids: zon gaat onder i.p.v. een enge tikkende klok */
+ const k=()=>{document.getElementById('klok').textContent=D.kid?VK[Math.min(4,Math.floor((1-tijd/T0)*5))]:'⏰ '+tijd+'s'};k();
+ setInterval(()=>{if(af)return;tijd--;k();if(tijd<=0){einde();document.getElementById('ot').textContent=D.kid?'🌙 Tijd om — goed gespeeld!':'⏰ TIJD OM!'}},1000)}
+const einde=()=>{af=true;confetti();
+ if(SPELERS=='beurt'){if(beurtNr==1){localStorage.setItem(_bk,score);
+   document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='👤 Speler 1: '+score+' punten';
+   document.getElementById('os').textContent='Nu is speler 2 — geef de pad of het toetsenbord door';
+   document.querySelector('#over button').textContent='▶ Beurt Speler 2'}
+  else{localStorage.removeItem(_bk);const w=score>_bv?'🏆 Speler 2 wint!':score<_bv?'🏆 Speler 1 wint!':'🤝 Gelijkspel!';
+   document.getElementById('over').style.display='flex';document.getElementById('ot').textContent=w;
+   document.getElementById('os').textContent='P1: '+_bv+' — P2: '+score}
+  blip(180,.4,'sawtooth');return}
+ document.getElementById('over').style.display='flex';document.getElementById('ot').textContent=score>0?'🎉 Goed gedaan!':'😅 Nog een keer?';document.getElementById('os').textContent='Score: '+score+(score>=hs&&score>0?' — NIEUW RECORD!':'');blip(180,.4,'sawtooth')};
+/* glow erachter = items altijd goed zichtbaar op donkere achtergrond */
+const emoji=(e,x,y,s,g)=>{X.save();X.font=s+'px serif';X.textAlign='center';X.textBaseline='middle';if(g){X.shadowColor=g;X.shadowBlur=14}X.fillText(e,x,y);X.restore()};
+/* eigen foto's als sprites: held + extra karakters */
+const FOTOS={};
+const _pi=u=>{const i=new Image();i.src=u;return i};
+let FHELD=FOTOS.held?_pi(FOTOS.held):null;
+const FITEMS=(FOTOS.items||[]).map(_pi);
+const _rond=(i,x,y,s)=>{X.save();X.beginPath();X.arc(x,y,s/2,0,7);X.clip();X.drawImage(i,x-s/2,y-s/2,s,s);X.restore();X.strokeStyle=T.acc;X.lineWidth=2;X.beginPath();X.arc(x,y,s/2,0,7);X.stroke()};
+const ok=i=>i&&i.complete&&i.naturalWidth;
+const held=(x,y,s)=>{if(ok(FHELD))_rond(FHELD,x,y,s);else emoji(T.held,x,y,s)};
+/* licht schijfje achter elk item — altijd duidelijk, óók als een emoji donker rendert */
+const itemX=(i,x,y,s)=>{const im=FITEMS.length?FITEMS[i%FITEMS.length]:null;if(ok(im))_rond(im,x,y,s);else{X.save();X.globalAlpha=.18;X.fillStyle='#fff';X.beginPath();X.arc(x,y,s*.62,0,7);X.fill();X.globalAlpha=1;emoji(T.items[i%T.items.length],x,y,s,'rgba(255,255,255,.75)');X.restore()}};
+/* 📷 eigen foto als karakter — wie het spel ook opent */
+const _fk='g2b_foto_'+document.title,_svF=localStorage.getItem(_fk);
+if(_svF)FHELD=_pi(_svF);
+document.getElementById('fok').onclick=e=>{e.stopPropagation();document.getElementById('foi').click()};
+document.getElementById('fos').onclick=e=>{e.stopPropagation();document.getElementById('foi2').click()};
+const _fot=(e)=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{try{localStorage.setItem(_fk,r.result)}catch(_){ }FHELD=_pi(r.result)};r.readAsDataURL(f)};
+document.getElementById('foi').onchange=_fot;document.getElementById('foi2').onchange=_fot;
+const rand=(a,b)=>a+Math.random()*(b-a);
+/* getekende thema-achtergrond: gradiënt-lucht + bewegende elementen per thema */
+const _bgt={t:0,el:Array.from({length:12},(_,i)=>({x:Math.random()*W,y:Math.random()*Hh*.7,s:.4+Math.random(),v:.1+Math.random()*.4}))};
+const BGT={dieren:['☁️','🌿','🦋'],ruimte:['✦','✧','·'],zee:['🫧','🐚','~'],snoep:['✿','·','🍬'],sport:['·','✦','🏟️'],muziek:['♪','♫','✨']};
+const bg=()=>{_bgt.t++;
+ const g=X.createLinearGradient(0,0,0,Hh);g.addColorStop(0,T.acc+'33');g.addColorStop(.55,T.achtergr);g.addColorStop(1,'#050510');X.fillStyle=g;X.fillRect(0,0,W,Hh);
+ /* zachte grond-bolling onderin */
+ X.fillStyle=T.acc+'18';X.beginPath();X.ellipse(W/2,Hh+60,W*.9,130,0,0,7);X.fill();
+ const items=BGT[T.id]||['✦','·','✧'];
+ _bgt.el.forEach((e,i)=>{e.x-=e.v;if(e.x<-30){e.x=W+30;e.y=Math.random()*Hh*.7}
+  X.globalAlpha=.25+.15*Math.sin(_bgt.t*.02+i);emoji(items[i%items.length],e.x,e.y,14*e.s)});X.globalAlpha=1};
+let px=W/2,keys={};addEventListener('keydown',e=>{keys[e.key]=true;if(A.state=='suspended')A.resume()});addEventListener('keyup',e=>keys[e.key]=false);
+/* MIDI-keyboard: noteOn -> midiNote(noot) als het spel die heeft */
+if(navigator.requestMIDIAccess)navigator.requestMIDIAccess().then(m=>{const f=i=>{i.onmidimessage=e=>{const n=e.data[0]&240,v=e.data[2];if(n==144&&v>0&&typeof midiNote=='function')midiNote(e.data[1])}};m.inputs.forEach(f);m.onstatechange=()=>m.inputs.forEach(f)}).catch(()=>{});
+/* eigen muziek als achtergrond (niet in muziekspellen — die gebruiken 'm zelf) */
+const _bgm=null;
+if(_bgm&&typeof __spelmetmuziek!=='function'){let _bgOn=false;const _bgPlay=()=>{if(_bgOn)return;_bgOn=true;const au=new Audio(_bgm);au.loop=true;au.volume=.5;au.play().catch(()=>{})};
+ addEventListener('pointerdown',_bgPlay);addEventListener('keydown',_bgPlay)}
+let tx=null;C.addEventListener('pointermove',e=>{tx=e.offsetX*W/C.clientWidth});C.addEventListener('pointerdown',e=>{tx=e.offsetX*W/C.clientWidth;if(A.state=='suspended')A.resume();tik(e.offsetX*W/C.clientWidth,e.offsetY*Hh/C.clientHeight)});
+/* gamepad: joystick/dpad sturen, A/B = actie */
+const PAD=(pi=0)=>{try{const g=navigator.getGamepads&&navigator.getGamepads()[pi];if(!g)return{l:0,r:0,u:0,d:0,a:0};
+ const ax=g.axes[0]||0,ay=g.axes[1]||0,B=i=>g.buttons[i]&&g.buttons[i].pressed;
+ return{l:ax<-.3||B(14),r:ax>.3||B(15),u:ay<-.3||B(12),d:ay>.3||B(13),a:B(0)||B(1)}}catch(e){return{l:0,r:0,u:0,d:0,a:0}}};
+addEventListener('gamepadconnected',()=>{if(A.state=='suspended')A.resume()});
+function tik(x,y){}
+
+let p={x:W/2,y:Hh-60},dots=[],vij=[{x:60,y:60,vx:2*D.snel,vy:1.5*D.snel},{x:W-60,y:80,vx:-2*D.snel,vy:2*D.snel}],t=0;
+for(let i=0;i<20;i++)dots.push({x:rand(30,W-30),y:rand(60,Hh-120),e:T.items[i%T.items.length]});
+addEventListener('keydown',e=>{const s=26;if(e.key=='ArrowUp')p.y-=s;if(e.key=='ArrowDown')p.y+=s;if(e.key=='ArrowLeft')p.x-=s;if(e.key=='ArrowRight')p.x+=s});
+const pad2=setInterval(()=>{const pd=PAD(),s=5;if(pd.u)p.y-=s;if(pd.d)p.y+=s;if(pd.l)p.x-=s;if(pd.r)p.x+=s},33);
+let t2=null;C.addEventListener('pointerdown',e=>t2={x:e.offsetX*W/C.clientWidth,y:e.offsetY*Hh/C.clientHeight});
+C.addEventListener('pointermove',e=>{if(!t2)return;const nx=e.offsetX*W/C.clientWidth,ny=e.offsetY*Hh/C.clientHeight;
+ p.x+=(nx-t2.x)*.3;p.y+=(ny-t2.y)*.3;t2={x:nx,y:ny}});
+(function loop(){if(af)return;bg();
+ p.x=Math.max(20,Math.min(W-20,p.x));p.y=Math.max(50,Math.min(Hh-30,p.y));
+ vij.forEach(v=>{v.x+=v.vx;v.y+=v.vy;if(v.x<30||v.x>W-30)v.vx*=-1;if(v.y<50||v.y>Hh-80)v.vy*=-1;
+  emoji(T.vijand,v.x,v.y,36,'rgba(255,90,90,.85)');
+  if(Math.abs(v.x-p.x)<30*SB&&Math.abs(v.y-p.y)<30*SB){lev--;lvs();blip(120,.3,'sawtooth');p={x:W/2,y:Hh-60}}});
+ dots.forEach((o,di)=>{itemX(di,o.x,o.y,28);
+  if(Math.abs(o.x-p.x)<28*HB&&Math.abs(o.y-p.y)<28*HB){o.y=-99;punt(10,o.x,o.y);blip(700,.08,'triangle')}});
+ dots=dots.filter(o=>o.y>0);held(p.x,p.y,40);
+ if(!dots.length){punt(50);if(SPELERS=='beurt'){einde();return}af=true;document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🎉 Alles gepakt!';document.getElementById('os').textContent='Score: '+score;return}
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</script></body></html>
