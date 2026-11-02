@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>G2B CRM-Fabriek</title>
+<style>
+:root{--bg:#0e1410;--card:#16211a;--rand:#2a4433;--tekst:#e8f0ea;--dim:#9fb8a6;--groen:#57c785;--accent:#2e7d4f}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui,sans-serif;padding:16px;margin:0}
+h1{color:var(--groen);font-size:24px;margin:6px 0}
+.sub{color:var(--dim);font-size:12px;margin-bottom:14px}
+.balk{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+input,textarea{padding:8px;font-size:13px;border-radius:8px;border:1px solid var(--rand);background:var(--bg);color:var(--tekst)}
+button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer}
+button.sec{background:#1d2b22;border:1px solid var(--rand)}
+.bord{display:flex;gap:10px;align-items:flex-start;overflow-x:auto}
+.kolom{background:var(--card);border:1px solid var(--rand);border-radius:10px;min-width:200px;flex:1;padding:8px}
+.kolom h3{font-size:13px;color:var(--groen);margin:4px 4px 10px;text-transform:uppercase}
+.kaart{background:#0f1710;border:1px solid var(--rand);border-radius:8px;padding:8px;margin-bottom:8px;font-size:13px;cursor:grab}
+.kaart b{display:block}
+.kaart .m{font-size:11px;color:var(--dim);word-break:break-all}
+.kaart button{font-size:11px;padding:4px 8px;margin-top:6px}
+.kolom.over{outline:2px dashed var(--groen)}
+a{color:var(--groen);text-decoration:none;font-size:13px;padding:8px 0;cursor:pointer}
+</style>
+</head>
+<body>
+<h1>📇 G2B CRM-FABRIEK</h1>
+<div class="sub">Je leads op een bord: sleep kaartjes van Nieuw → Verkocht. Alles blijft in je browser (localStorage).</div>
+
+<div class="balk">
+<input type="file" id="csv" accept=".csv,.txt" style="width:260px">
+<button class="sec" onclick="importeer()">⬆ CSV import</button>
+<button class="sec" onclick="nieuwe()">+ kaart</button>
+<a onclick="exporteer()">⬇ export csv</a>
+</div>
+<div class="bord" id="bord"></div>
+
+<script>
+const KEY='g2b_crm';
+const LBL={nieuw:'🆕 Nieuw',gecontacteerd:'✉️ Gecontacteerd',in_gesprek:'💬 In gesprek',verkocht:'💰 Verkocht',verloren:'❌ Verloren'};
+const STADIA=Object.keys(LBL);
+function _bord(){try{return JSON.parse(localStorage[KEY])||{kaarten:[]}}catch(e){return{kaarten:[]}}}
+function _save(b){localStorage[KEY]=JSON.stringify(b)}
+function uid(){return Math.random().toString(16).slice(2,12)}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function laad(){
+ const d=_bord();
+ const el=document.getElementById('bord');
+ el.innerHTML='';
+ for(const s of STADIA){
+  const k=document.createElement('div');k.className='kolom';k.dataset.s=s;
+  k.innerHTML='<h3>'+LBL[s]+' ('+d.kaarten.filter(x=>x.stadium===s).length+')</h3>';
+  for(const kt of d.kaarten.filter(x=>x.stadium===s)){
+   const c=document.createElement('div');c.className='kaart';c.draggable=true;c.dataset.id=kt.id;
+   c.innerHTML='<b>'+esc(kt.naam)+'</b>'
+    +(kt.email?'<span class="m">'+esc(kt.email)+'</span><br>':'')
+    +(kt.tel?'<span class="m">'+esc(kt.tel)+'</span><br>':'')
+    +(kt.notitie?'<i class="m">'+esc(kt.notitie)+'</i><br>':'')
+    +'<button class="sec" onclick="event.stopPropagation();notitie(\''+kt.id+'\')">notitie</button> '
+    +'<button class="sec" onclick="event.stopPropagation();wis(\''+kt.id+'\')">🗑</button>';
+   c.ondragstart=e=>e.dataTransfer.setData('id',kt.id);
+   k.appendChild(c);
+  }
+  k.ondragover=e=>{e.preventDefault();k.classList.add('over')};
+  k.ondragleave=()=>k.classList.remove('over');
+  k.ondrop=e=>{e.preventDefault();k.classList.remove('over');
+   const id=e.dataTransfer.getData('id');
+   const b=_bord();
+   for(const x of b.kaarten)if(x.id===id)x.stadium=s;
+   _save(b);laad()};
+  el.appendChild(k);
+ }
+}
+function parseCSV(t){
+ const regels=t.replace(/\r/g,'').split('\n').filter(r=>r.trim());
+ if(!regels.length)return[];
+ const kop=regels[0].split(/[;,\t]/).map(x=>x.trim().toLowerCase().replace(/^"|"$/g,''));
+ return regels.slice(1).map(r=>{
+  const v=r.split(/[;,\t]/).map(x=>x.trim().replace(/^"|"$/g,''));
+  const o={};kop.forEach((h,i)=>o[h]=v[i]||'');return o;
+ });
+}
+function importeer(){
+ const f=document.getElementById('csv').files[0];if(!f)return alert('kies csv');
+ const rd=new FileReader();
+ rd.onload=()=>{
+  const rows=parseCSV(rd.result);
+  const b=_bord();
+  const bestaand=new Set(b.kaarten.map(k=>(k.email||'').toLowerCase()));
+  let n=0;
+  for(const r of rows){
+   const mail=(r.email||r.mail||'').trim();
+   if(mail&&bestaand.has(mail.toLowerCase()))continue;
+   b.kaarten.push({id:uid(),naam:(r.naam||r.name||mail||'lead').trim(),email:mail,
+    tel:(r.telefoon||r.tel||r.phone||'').trim(),site:(r.website||r.site||'').trim(),
+    notitie:'',stadium:'nieuw',extra:r});
+   if(mail)bestaand.add(mail.toLowerCase());
+   n++;
+  }
+  _save(b);alert(n+' nieuwe kaarten');laad();
+ };
+ rd.readAsText(f);
+}
+function nieuwe(){
+ const naam=prompt('naam/bedrijf?');if(!naam)return;
+ const email=prompt('email?')||'';
+ const b=_bord();
+ b.kaarten.push({id:uid(),naam,email,tel:'',site:'',notitie:'',stadium:'nieuw',extra:{}});
+ _save(b);laad();
+}
+function notitie(id){
+ const t=prompt('notitie?');if(t===null)return;
+ const b=_bord();
+ for(const x of b.kaarten)if(x.id===id)x.notitie=t;
+ _save(b);laad();
+}
+function wis(id){if(confirm('kaart weg?')){const b=_bord();b.kaarten=b.kaarten.filter(x=>x.id!==id);_save(b);laad()}}
+function exporteer(){
+ const b=_bord();
+ const kop=['naam','email','tel','site','stadium','notitie'];
+ const regel=k=>kop.map(f=>'"'+String(k[f]||'').replace(/"/g,'""')+'"').join(',');
+ const csv=kop.join(',')+'\n'+b.kaarten.map(regel).join('\n');
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+ a.download='crm_export.csv';a.click();URL.revokeObjectURL(a.href);
+}
+laad();
+</script>
+</body></html>
