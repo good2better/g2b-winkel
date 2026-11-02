@@ -101,6 +101,21 @@
       "download_dir": "d/g2btrein"
     },
     {
+      "id": "g2bcopro",
+      "titel": "G2B CO-PRODUCER",
+      "soort": "VST3 + CLAP plugin",
+      "beschrijving": "Jouw AI co-producer. Druk LUIS en speel je halve beat — hij leert je toonsoort, groove, dynamiek en akkoorden. Druk GEN en hij schrijft de tweede helft: voice-led bass, melodie die voortbouwt op jouw intervallen, drums in je genre en een tension-build in de laatste maten. DURF-schuif bepaalt hoe gewaagd. ↓MID schrijft het vervolg als MIDI (drums ch10, bass 2, melodie 3, counter 4). 100% eigen code, werkt volledig offline.",
+      "prijs": 29.95,
+      "links": {
+        "koop": "bestel.html?p=g2bcopro",
+        "download": "d/g2bcopro/"
+      },
+      "groep": "plugins",
+      "badge": "NIEUW",
+      "cover": "media/g2bcopro-cover.png",
+      "download_dir": "d/g2bcopro/"
+    },
+    {
       "id": "g2bdjebu",
       "titel": "G2B DJEBU",
       "soort": "VST3 + CLAP plugin",
