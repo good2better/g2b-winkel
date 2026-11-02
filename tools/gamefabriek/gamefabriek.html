@@ -138,8 +138,10 @@ h1{font-size:1.1rem;margin:10px}canvas{background:${t.achtergr};border-radius:12
 <h1>${naam}</h1><div id="hud"><span id="score">⭐ 0</span><span id="lvs">❤️</span><span id="klok"></span><span id="hs"></span></div>
 <div style="position:relative"><canvas id="c" width="420" height="560"></canvas><canvas id="fx" width="420" height="560" style="position:absolute;left:0;top:0;pointer-events:none"></canvas>
 <button id="fok" title="Eigen foto als karakter" style="position:absolute;right:8px;top:8px;background:#ffffff22;border:1px solid #fff4;color:#fff;border-radius:8px;padding:4px 9px;cursor:pointer;font-size:1rem">📷</button>
-<input type="file" id="foi" accept="image/*" style="display:none"></div>
-<div class="tip">⬅️ ➡️ of tik/sleep — Spatie = actie — 🎮 gamepad werkt ook — 📷 eigen foto</div>
+<button id="fos" title="Selfie als karakter" style="position:absolute;right:8px;top:44px;background:#ffffff22;border:1px solid #fff4;color:#fff;border-radius:8px;padding:4px 9px;cursor:pointer;font-size:1rem">🤳</button>
+<input type="file" id="foi" accept="image/*" style="display:none">
+<input type="file" id="foi2" accept="image/*" capture="user" style="display:none"></div>
+<div class="tip">⬅️ ➡️ of tik/sleep — Spatie = actie — 🎮 gamepad werkt ook — 📷/🤳 eigen foto</div>
 <div id="over"><h2 id="ot"></h2><p id="os"></p><button onclick="location.reload()">Opnieuw</button></div>
 <script>
 const C=document.getElementById('c'),X=C.getContext('2d'),W=C.width,Hh=C.height;
@@ -186,8 +188,10 @@ const itemX=(i,x,y,s)=>{const im=FITEMS.length?FITEMS[i%FITEMS.length]:null;if(o
 const _fk='g2b_foto_'+document.title,_svF=localStorage.getItem(_fk);
 if(_svF)FHELD=_pi(_svF);
 document.getElementById('fok').onclick=e=>{e.stopPropagation();document.getElementById('foi').click()};
-document.getElementById('foi').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+document.getElementById('fos').onclick=e=>{e.stopPropagation();document.getElementById('foi2').click()};
+const _fot=(e)=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
  r.onload=()=>{try{localStorage.setItem(_fk,r.result)}catch(_){ }FHELD=_pi(r.result)};r.readAsDataURL(f)};
+document.getElementById('foi').onchange=_fot;document.getElementById('foi2').onchange=_fot;
 const rand=(a,b)=>a+Math.random()*(b-a);
 /* getekende thema-achtergrond: gradiënt-lucht + bewegende elementen per thema */
 const _bgt={t:0,el:Array.from({length:12},(_,i)=>({x:Math.random()*W,y:Math.random()*Hh*.7,s:.4+Math.random(),v:.1+Math.random()*.4}))};
