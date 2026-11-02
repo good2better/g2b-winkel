@@ -35,6 +35,23 @@
    "video": "media/g2bantwoord-demo.mp4"
   },
   {
+   "id": "g2brefors",
+   "titel": "G2B REFORS — hoor je beat zoals kopers hem horen",
+   "soort": "plugin",
+   "beschrijving": "DE AUTO-TEST IN 1 KLIK: zet hem op je master-track en klik een ruimte — hoor meteen hoe je beat klinkt op een TELEFOON, in de AUTO, in de CLUB, op een FESTIVAL, AIRPODS, TV of goedkope TIENTJE-oordopjes. STUDIO-pill = plat referentie-geluid om eerlijk te vergelijken. 4 knoppen: AFSTAND (verder weg luisteren), KAMER (galm-sterkte), MENIGTE (publiekssfeer — uniek!), VOLUME. KRACHT dry/wet-slider, DICE, AAN/UIT-bypass, 8 skins, level-meter + scope. Verpest geen enkele upload meer door een mix die alleen op je eigen speakers goed klinkt. 100% eigen DSP. VST3 + CLAP + standalone EXE + handleiding-PDF.",
+   "prijs": "€ 29,95",
+   "links": {
+    "koop": "bestel.html?p=g2brefors",
+    "download": "bedankt.html?k=g2brefors"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/g2brefors-cover.png",
+   "download_dir": "d/g2brefors",
+   "demo": "media/g2brefors-demo.mp4",
+   "video": "media/g2brefors-demo.mp4"
+  },
+  {
    "id": "g2bsuite1",
    "titel": "G2B SUITE — alle marketeer-tools",
    "soort": "app",
