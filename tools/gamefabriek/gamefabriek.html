@@ -49,6 +49,7 @@ label{font-size:.8rem;color:var(--zacht)}
 <div><label>Spelnaam</label><input type="text" id="naam" value="Animal Heroes"></div>
 <div><label>Leeftijd</label><select id="moeilijk"><option value="peuter">🍼 2-4 jaar (peuter)</option><option value="kleuter">🧒 5-8 jaar (groep 1-4)</option><option value="kind" selected>🎮 9-12 jaar (groep 5-8)</option><option value="groot">🔥 13+ jaar</option></select></div>
 <div><label>⏱️ Speeltijd</label><select id="tijd"><option value="0">∞ oneindig</option><option value="60">60 sec</option><option value="90" selected>90 sec</option><option value="120">2 min</option></select></div>
+<div><label>👥 Spelers</label><select id="spelers"><option value="1">1 speler</option><option value="beurt">2 spelers — omstebeurt (1 pad/1 toetsenbord)</option><option value="duo">2 spelers — tegelijk (auto: 2 pads of WASD+pijltjes)</option></select></div>
 </div>
 </div>
 
@@ -135,9 +136,12 @@ h1{font-size:1.1rem;margin:10px}canvas{background:${t.achtergr};border-radius:12
 <div id="over"><h2 id="ot"></h2><p id="os"></p><button onclick="location.reload()">Opnieuw</button></div>
 <script>
 const C=document.getElementById('c'),X=C.getContext('2d'),W=C.width,Hh=C.height;
-const T=${JSON.stringify('THEMA')},D=${JSON.stringify('MOEIL')};
+const T=${JSON.stringify('THEMA')},D=${JSON.stringify('MOEIL')},SPELERS=${JSON.stringify('SPELERS')};
 let score=0,lev=D.leven,af=false,HSK='g2bhs_'+document.title,hs=+(localStorage.getItem(HSK)||0);
-document.getElementById('hs').textContent=hs?'🏆 '+hs:'';
+/* omstebeurt: score van P1 bewaren, P2 speelt daarna */
+const _bk='g2b_beurt_'+document.title,_bv=SPELERS=='beurt'?JSON.parse(localStorage.getItem(_bk)||'null'):null;
+let beurtNr=_bv?2:1;
+document.getElementById('hs').textContent=SPELERS=='beurt'?'👤 P'+beurtNr+(_bv!=null?' — P1: '+_bv:''):(hs?'🏆 '+hs:'');
 const lvs=()=>document.getElementById('lvs').textContent='❤️'.repeat(lev);lvs();
 const A=new(window.AudioContext||window.webkitAudioContext)();
 const blip=(f,d=.08,type='square',v=.15)=>{const o=A.createOscillator(),g=A.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,A.currentTime);g.gain.exponentialRampToValueAtTime(.001,A.currentTime+d);o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
@@ -151,7 +155,16 @@ const confetti=()=>{for(let i=0;i<50;i++)pops.push({x:rand(0,W),y:rand(-80,Hh*.4
 let tijd=${JSON.stringify('TIJD')};
 if(tijd>0){const k=()=>document.getElementById('klok').textContent='⏰ '+tijd+'s';k();
  setInterval(()=>{if(af)return;tijd--;k();if(tijd<=0){einde();document.getElementById('ot').textContent='⏰ TIJD OM!'}},1000)}
-const einde=()=>{af=true;confetti();document.getElementById('over').style.display='flex';document.getElementById('ot').textContent=score>0?'🎉 Goed gedaan!':'😅 Nog een keer?';document.getElementById('os').textContent='Score: '+score+(score>=hs&&score>0?' — NIEUW RECORD!':'');blip(180,.4,'sawtooth')};
+const einde=()=>{af=true;confetti();
+ if(SPELERS=='beurt'){if(beurtNr==1){localStorage.setItem(_bk,score);
+   document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='👤 Speler 1: '+score+' punten';
+   document.getElementById('os').textContent='Nu is speler 2 — geef de pad of het toetsenbord door';
+   document.querySelector('#over button').textContent='▶ Beurt Speler 2'}
+  else{localStorage.removeItem(_bk);const w=score>_bv?'🏆 Speler 2 wint!':score<_bv?'🏆 Speler 1 wint!':'🤝 Gelijkspel!';
+   document.getElementById('over').style.display='flex';document.getElementById('ot').textContent=w;
+   document.getElementById('os').textContent='P1: '+_bv+' — P2: '+score}
+  blip(180,.4,'sawtooth');return}
+ document.getElementById('over').style.display='flex';document.getElementById('ot').textContent=score>0?'🎉 Goed gedaan!':'😅 Nog een keer?';document.getElementById('os').textContent='Score: '+score+(score>=hs&&score>0?' — NIEUW RECORD!':'');blip(180,.4,'sawtooth')};
 const emoji=(e,x,y,s)=>{X.font=s+'px serif';X.textAlign='center';X.textBaseline='middle';X.fillText(e,x,y)};
 /* eigen foto's als sprites: held + extra karakters */
 const FOTOS=${JSON.stringify('FOTOS')};
@@ -176,7 +189,7 @@ const bg=()=>{_bgt.t++;
 let px=W/2,keys={};addEventListener('keydown',e=>{keys[e.key]=true;if(A.state=='suspended')A.resume()});addEventListener('keyup',e=>keys[e.key]=false);
 let tx=null;C.addEventListener('pointermove',e=>{tx=e.offsetX*W/C.clientWidth});C.addEventListener('pointerdown',e=>{tx=e.offsetX*W/C.clientWidth;if(A.state=='suspended')A.resume();tik(e.offsetX*W/C.clientWidth,e.offsetY*Hh/C.clientHeight)});
 /* gamepad: joystick/dpad sturen, A/B = actie */
-const PAD=()=>{try{const g=navigator.getGamepads&&navigator.getGamepads()[0];if(!g)return{l:0,r:0,u:0,d:0,a:0};
+const PAD=(pi=0)=>{try{const g=navigator.getGamepads&&navigator.getGamepads()[pi];if(!g)return{l:0,r:0,u:0,d:0,a:0};
  const ax=g.axes[0]||0,ay=g.axes[1]||0,B=i=>g.buttons[i]&&g.buttons[i].pressed;
  return{l:ax<-.3||B(14),r:ax>.3||B(15),u:ay<-.3||B(12),d:ay>.3||B(13),a:B(0)||B(1)}}catch(e){return{l:0,r:0,u:0,d:0,a:0}}};
 addEventListener('gamepadconnected',()=>{if(A.state=='suspended')A.resume()});
@@ -186,19 +199,28 @@ function tik(x,y){}
 const GEN={
 /* VANG: vallende items opvangen met een mandje */
 vang:(naam,t,d)=>H(naam,t)+`
-let mand={x:W/2},items=[],t=0,spd=1.8*D.snel;
+let mand={x:W/2-60},mand2={x:W/2+60},items=[],t=0,spd=1.8*D.snel;
+const DUO=SPELERS=='duo';let s1=0,s2=0,l2=D.leven;
 function spawn(){items.push({x:rand(30,W-30),y:-20,v:spd*rand(.8,1.4),ix:Math.floor(rand(0,20)),e:Math.random()<.85?T.items[Math.floor(rand(0,T.items.length))]:T.vijand, kwaad:Math.random()<.15})}
 function tik(x){}
 (function loop(){if(af)return;bg();
- const pd=PAD();if(keys['ArrowLeft']||pd.l)mand.x-=6;if(keys['ArrowRight']||pd.r)mand.x+=6;if(tx!=null)mand.x+=(tx-mand.x)*.2;
- mand.x=Math.max(30,Math.min(W-30,mand.x));
+ const pd=PAD(0),pd2=DUO?PAD(1):{l:0,r:0};
+ if(keys['ArrowLeft']||pd.l)mand.x-=6;if(keys['ArrowRight']||pd.r)mand.x+=6;if(tx!=null)mand.x+=(tx-mand.x)*.2;
+ if(DUO){if(keys['a']||keys['A']||pd2.l)mand2.x-=6;if(keys['d']||keys['D']||pd2.r)mand2.x+=6}
+ mand.x=Math.max(30,Math.min(W-30,mand.x));mand2.x=Math.max(30,Math.min(W-30,mand2.x));
  if(++t>40/D.snel){t=0;spawn()}
  held(mand.x,Hh-56,44);X.fillStyle=T.acc;X.fillRect(mand.x-38,Hh-72,76,6);
+ if(DUO){const im2=FITEMS.length?FITEMS[0]:null;if(ok(im2))_rond(im2,mand2.x,Hh-56,44);else emoji(T.held=='🐶'?'🐱':T.held,mand2.x,Hh-56,44);
+  X.fillStyle='#f472b6';X.fillRect(mand2.x-38,Hh-72,76,6)}
  items.forEach(i=>{i.y+=i.v;if(i.kwaad)emoji(T.vijand,i.x,i.y,34);else itemX(i.ix,i.x,i.y,34);
-  if(i.y>Hh-78&&Math.abs(i.x-mand.x)<44){if(i.kwaad){lev--;lvs();blip(120,.3,'sawtooth')}else{punt(10,i.x,i.y);blip(600,.1,'triangle')}i.y=Hh+99}
+  if(i.y>Hh-78&&Math.abs(i.x-mand.x)<44){if(i.kwaad){lev--;lvs();blip(120,.3,'sawtooth')}else{punt(10,i.x,i.y);if(DUO){s1++;document.getElementById('score').textContent='P1 '+s1+' — P2 '+s2}blip(600,.1,'triangle')}i.y=Hh+99}
+  if(DUO&&i.y>Hh-78&&Math.abs(i.x-mand2.x)<44){if(i.kwaad){l2--;blip(120,.3,'sawtooth')}else{s2++;document.getElementById('score').textContent='P1 '+s1+' — P2 '+s2;blip(700,.1,'triangle')}i.y=Hh+99}
   if(i.y>Hh-10&&!i.kwaad){i.y=Hh+99}});
  items=items.filter(i=>i.y<Hh+50);
- if(lev<=0)einde();else requestAnimationFrame(loop)})();
+ if(lev<=0||(DUO&&l2<=0)){if(DUO){const w=s1>s2?'🏆 Speler 1 wint!':s2>s1?'🏆 Speler 2 wint!':'🤝 Gelijkspel!';
+   document.getElementById('over').style.display='flex';document.getElementById('ot').textContent=w;
+   document.getElementById('os').textContent='P1: '+s1+' — P2: '+s2;af=true;confetti();return}
+  einde()}else requestAnimationFrame(loop)})();
 </`+'script></body></html>',
 
 /* TAP: tik de goede voordat hij weg is */
@@ -347,7 +369,7 @@ C.addEventListener('pointermove',e=>{if(!t2)return;const nx=e.offsetX*W/C.client
  dots.forEach((o,di)=>{itemX(di,o.x,o.y,28);
   if(Math.abs(o.x-p.x)<28&&Math.abs(o.y-p.y)<28){o.y=-99;punt(10,o.x,o.y);blip(700,.08,'triangle')}});
  dots=dots.filter(o=>o.y>0);held(p.x,p.y,40);
- if(!dots.length){punt(50);af=true;document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🎉 Alles gepakt!';document.getElementById('os').textContent='Score: '+score;return}
+ if(!dots.length){punt(50);if(SPELERS=='beurt'){einde();return}af=true;document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🎉 Alles gepakt!';document.getElementById('os').textContent='Score: '+score;return}
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
 </`+'script></body></html>',
 
@@ -415,7 +437,7 @@ let chk=60;
  /* vlag */
  X.fillStyle='#e8eef8';X.fillRect(EINDE-cam,180,6,160);
  X.fillStyle=T.acc;X.beginPath();X.moveTo(EINDE-cam+6,180);X.lineTo(EINDE-cam+56,196);X.lineTo(EINDE-cam+6,212);X.fill();
- if(p.x>EINDE-30){punt(100);af=true;document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🏁 Level gehaald!';document.getElementById('os').textContent='Score: '+score;blip(880,.3,'triangle');return}
+ if(p.x>EINDE-30){punt(100);if(SPELERS=='beurt'){einde();return}af=true;document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🏁 Level gehaald!';document.getElementById('os').textContent='Score: '+score;blip(880,.3,'triangle');return}
  /* held: foto of eigen figuurtje */
  if(ok(FHELD)){_rond(FHELD,p.x-cam,p.y-4,36)}else kereltje(p.x,p.y);
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
@@ -542,7 +564,7 @@ startKnop.onclick=async()=>{startKnop.textContent='⏳ beat analyseren...';
 /* RACE: skelter/driewieler — bochtige weg, obstakels ontwijken, boosts pakken, finish */
 race:(naam,t,d)=>H(naam,t)+`
 const PY=Hh-90,RITM=Math.min(1.4,D.snel);
-let mx=W/2,t=0,spd=3*RITM,weg=0,crash=0,boost=0;
+let mx=W/2-45,mxb=W/2+45,t=0,spd=3*RITM,weg=0,crash=0,crash2=0,boost=0;
 const FOTO_AUTO=FHELD; /* jouw foto als rijder */
 /* voertuigen per thema: kids = skelter/driewieler */
 const VOERT=['🛺','🚲','🛴','🛵','🏎️','🚗'];
@@ -558,8 +580,10 @@ addEventListener('keydown',e=>{if(e.key==' ')boost=Math.min(boost+20,40)});
 function tik(x){mx=x}
 (function loop(){if(af)return;t++;weg+=spd;
  /* sturen */
- const pd=PAD();
+ const DUO=SPELERS=='duo',pd=PAD(0),pd2=DUO?PAD(1):{l:0,r:0};
  if(keys['ArrowLeft']||pd.l)mx-=6*RITM;if(keys['ArrowRight']||pd.r)mx+=6*RITM;if(tx!=null)mx+=(tx-mx)*.25;
+ if(DUO){if(keys['a']||keys['A']||pd2.l)mxb-=6*RITM;if(keys['d']||keys['D']||pd2.r)mxb+=6*RITM;
+  mxb=Math.max(wegM(PY-60)-62,Math.min(wegM(PY-60)+62,mxb))}
  mx=Math.max(wegM(PY-60)-62,Math.min(wegM(PY-60)+62,mx)); /* binnen de weg blijven */
  /* weg */
  const m=wegM(0);
@@ -573,7 +597,8 @@ function tik(x){mx=x}
  if(t>50/RITM){t=0;spawn()}
  obst.forEach(o=>{o.y+=o.v+spd*.4;const om=wegM(o.y-60);
   itemX(o.ix,om+o.x-W/2,o.y,30);
-  if(Math.abs(o.y-PY)<30&&Math.abs((om+o.x-W/2)-mx)<34){crash++ ;lev--;lvs();blip(90,.4,'sawtooth');o.y=-99;mx=W/2}});
+  if(Math.abs(o.y-PY)<30&&Math.abs((om+o.x-W/2)-mx)<34){crash++ ;lev--;lvs();blip(90,.4,'sawtooth');o.y=-99;mx=W/2}
+  if(DUO&&Math.abs(o.y-PY)<30&&Math.abs((om+o.x-W/2)-mxb)<34){crash2++;blip(90,.4,'sawtooth');o.y=-99;mxb=W/2}});
  obst=obst.filter(o=>o.y<Hh+40&&o.y>-50);
  boosts.forEach(b=>{b.y+=b.v+spd*.4;const bm=wegM(b.y-60);
   X.fillStyle='#fbbf24';X.beginPath();X.arc(bm+b.x-W/2,b.y,12,0,7);X.fill();X.fillStyle='#fff';X.font='14px serif';X.fillText('⚡',bm+b.x-W/2,b.y);
@@ -582,9 +607,14 @@ function tik(x){mx=x}
  /* mij: foto of voertuig-emoji */
  const mx2=wegM(PY-60);
  if(ok(FOTO_AUTO))_rond(FOTO_AUTO,mx,PY,46);else emoji(mij,mx,PY,42);
+ if(DUO)emoji('🚲',mxb,PY,42);
  /* voortgang */
  punt(0);document.getElementById('score').textContent='⭐ '+score+' — '+Math.floor(weg/50)+'m';
- if(weg>8000){punt(200);af=true;document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🏁 Finish! '+Math.floor(weg/50)+'m';document.getElementById('os').textContent='Score: '+score+' — crashes: '+crash;return}
+ if(weg>8000){punt(200);if(SPELERS=='beurt'){einde();return}af=true;confetti();
+  if(DUO){const w=crash<crash2?'🏆 Speler 1 wint!':crash>crash2?'🏆 Speler 2 wint!':'🤝 Gelijkspel!';
+   document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🏁 Finish! '+w;
+   document.getElementById('os').textContent='crashes — P1: '+crash+' P2: '+crash2;return}
+  document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🏁 Finish! '+Math.floor(weg/50)+'m';document.getElementById('os').textContent='Score: '+score+' — crashes: '+crash;return}
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
 </`+'script></body></html>',
 };
@@ -593,12 +623,15 @@ T('maak').onclick=()=>{
  const naam=T('naam').value.trim()||'Mijn Spel';
  const th=THEMAS.find(t=>t.id===thema);
  if(type=='beatgame'&&!beatData){log('⚠️ Beat-Spel heeft een beat nodig — upload eerst je mp3/wav bij stap 5');return}
+ let sp=T('spelers').value;
+ if(sp=='duo'&&!['vang','race'].includes(type)){log('ℹ️ 2-tegelijk kan bij Vang-Spel en Skelter-Race — omstebeurt gebruikt');sp='beurt'}
  const gen=GEN[type];
  let code=gen(naam,th,MOEILIJK[T('moeilijk').value]);
  code=code.replace(JSON.stringify('THEMA'),JSON.stringify(th)).replace(JSON.stringify('MOEIL'),JSON.stringify(MOEILIJK[T('moeilijk').value]))
    .replace(JSON.stringify('FOTOS'),JSON.stringify({held:heldImg,items:xImgs}))
   .replace(JSON.stringify('TIJD'),+T('tijd').value)
-  .replace(JSON.stringify('MUZIEK'),JSON.stringify(beatData));
+  .replace(JSON.stringify('MUZIEK'),JSON.stringify(beatData))
+  .replace(JSON.stringify('SPELERS'),JSON.stringify(sp));
  if(type=='quiz')code=code.replace("'THEMA_ID'",JSON.stringify(thema));
  log('🔨 '+naam+' ('+type+'/'+thema+') gebouwd: '+(code.length/1024).toFixed(0)+' KB, één bestand, geen externe bestanden nodig');
  const blob=new Blob([code],{type:'text/html'});
