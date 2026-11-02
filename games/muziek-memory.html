@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Muziek Memory</title>
+<style>body{margin:0;background:#1e1033;display:flex;flex-direction:column;align-items:center;font-family:system-ui;color:#fff;min-height:100vh}
+h1{margin:12px}#b{display:grid;grid-template-columns:repeat(4,72px);gap:10px;margin-top:14px}
+.k{width:72px;height:72px;background:#ffffff18;border:2px solid #c084fc;border-radius:12px;font-size:2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none}
+.k.open{background:#c084fc}#hud{margin:8px;font-size:1.1rem}#over{display:none;text-align:center;margin:20px;font-size:1.4rem}
+button{background:#c084fc;border:0;color:#042;padding:10px 24px;border-radius:10px;font-weight:700;cursor:pointer}</style></head><body>
+<h1>Muziek Memory</h1><div id="hud">⭐ <span id="s">0</span> — zetten: <span id="z">0</span></div><div id="b"></div><div id="over">🎉 Alles gevonden! <button onclick="location.reload()">Opnieuw</button></div>
+<script>
+const T={"id":"muziek","ic":"🎵","nm":"Muziek","items":["🎵","🎶","🎸","🎹","🥁","🎤","🎺"],"vijand":"🔇","held":"🎵","achtergr":"#1e1033","acc":"#c084fc"};let kaarten=T.items.slice(0,8);kaarten=kaarten.concat(kaarten).sort(()=>Math.random()-.5);
+let open=[],klaar=0,zet=0,score=0,blok=false;
+const B=document.getElementById('b');
+const A=new(window.AudioContext||window.webkitAudioContext)();
+const blip=f=>{const o=A.createOscillator(),g=A.createGain();o.frequency.value=f;g.gain.value=.15;o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+.1)};
+const FOTOS={};const FITEMS=(FOTOS.items||[]).map(u=>{const i=new Image();i.src=u;return i});
+kaarten.forEach((e,i)=>{const k=document.createElement('div');k.className='k';k.textContent='❓';
+ k.onclick=()=>{if(blok||k.classList.contains('open'))return;k.classList.add('open');
+  if(FITEMS.length){const im=FITEMS[i%FITEMS.length];k.innerHTML='';const m=document.createElement('img');m.src=im.src;m.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:10px';k.appendChild(m)}
+  else k.textContent=e;blip(500);open.push({k,e});
+  if(open.length==2){zet++;document.getElementById('z').textContent=zet;
+   if(open[0].e==open[1].e){score+=20;document.getElementById('s').textContent=score;blip(750);klaar+=2;open=[];if(klaar==16)document.getElementById('over').style.display='block'}
+   else{blok=true;setTimeout(()=>{open.forEach(o=>{o.k.classList.remove('open');o.k.textContent='❓'});open=[];blok=false},700)}}};
+ B.appendChild(k)});
+</script></body></html>
