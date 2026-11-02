@@ -131,6 +131,21 @@
    "download_dir": "d/g2bsmash"
   },
   {
+   "id": "g2bairdrums",
+   "titel": "G2B AIRDRUMS",
+   "soort": "Browser-tool (webcam-drummer)",
+   "beschrijving": "Drum in de lucht voor je webcam — 4 of 8 pads met eigen sounds, melodie- en effectmodus, metronoom, opname naar .mid voor je DAW. Werkt in Chrome/Edge, 100% lokaal.",
+   "prijs": 14.95,
+   "links": {
+    "koop": "bestel.html?p=g2bairdrums",
+    "download": "d/g2bairdrums/"
+   },
+   "groep": "studio-tools",
+   "badge": "NIEUW",
+   "cover": "media/g2bairdrums-cover.png",
+   "download_dir": "d/g2bairdrums/"
+  },
+  {
    "id": "g2bsuite1",
    "titel": "G2B SUITE — alle marketeer-tools",
    "soort": "app",
