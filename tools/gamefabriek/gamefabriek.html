@@ -190,6 +190,8 @@ const bg=()=>{_bgt.t++;
  _bgt.el.forEach((e,i)=>{e.x-=e.v;if(e.x<-30){e.x=W+30;e.y=Math.random()*Hh*.7}
   X.globalAlpha=.25+.15*Math.sin(_bgt.t*.02+i);emoji(items[i%items.length],e.x,e.y,14*e.s)});X.globalAlpha=1};
 let px=W/2,keys={};addEventListener('keydown',e=>{keys[e.key]=true;if(A.state=='suspended')A.resume()});addEventListener('keyup',e=>keys[e.key]=false);
+/* MIDI-keyboard: noteOn -> midiNote(noot) als het spel die heeft */
+if(navigator.requestMIDIAccess)navigator.requestMIDIAccess().then(m=>{const f=i=>{i.onmidimessage=e=>{const n=e.data[0]&240,v=e.data[2];if(n==144&&v>0&&typeof midiNote=='function')midiNote(e.data[1])}};m.inputs.forEach(f);m.onstatechange=()=>m.inputs.forEach(f)}).catch(()=>{});
 let tx=null;C.addEventListener('pointermove',e=>{tx=e.offsetX*W/C.clientWidth});C.addEventListener('pointerdown',e=>{tx=e.offsetX*W/C.clientWidth;if(A.state=='suspended')A.resume();tik(e.offsetX*W/C.clientWidth,e.offsetY*Hh/C.clientHeight)});
 /* gamepad: joystick/dpad sturen, A/B = actie */
 const PAD=(pi=0)=>{try{const g=navigator.getGamepads&&navigator.getGamepads()[pi];if(!g)return{l:0,r:0,u:0,d:0,a:0};
@@ -468,6 +470,7 @@ const press=i=>{if(!gestart)return;const nu=(A.currentTime-t0)/SPB;
   combo++;if(combo>maxC)maxC=combo;hitT=A.currentTime}
  else{combo=0;hit='';blip(200,.15,'sawtooth')}};
 TOETS.forEach((k,i)=>{addEventListener('keydown',e=>{if(e.key.toUpperCase()==k)press(i)})});
+midiNote=n=>press(n%4); /* midi-keyboard noot -> baan */
 function tik(x){press(Math.min(3,Math.floor(x/LW)))}
 let ci=0;
 const startKnop=document.createElement('button');startKnop.textContent='▶ START MUZIEK';startKnop.style.cssText='position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);z-index:5';
@@ -530,6 +533,7 @@ const press=i=>{if(!gestart)return;const nu=(A.currentTime-t0)/SPB;
   combo++;if(combo>maxC)maxC=combo;hitT=A.currentTime}
  else{combo=0;hit='';blip(200,.15,'sawtooth')}};
 TOETS.forEach((k,i)=>{addEventListener('keydown',e=>{if(e.key.toUpperCase()==k)press(i)})});
+midiNote=n=>press(n%4); /* midi-keyboard noot -> baan */
 function tik(x){press(Math.min(3,Math.floor(x/LW)))}
 const startKnop=document.createElement('button');startKnop.textContent='▶ LADEN & START';startKnop.style.cssText='position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);z-index:5';
 document.body.appendChild(startKnop);
