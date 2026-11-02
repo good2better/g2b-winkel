@@ -865,7 +865,7 @@ async function verwerk(f,meta){
   const buf=await ac.decodeAudioData(await f.arrayBuffer());
   const an=analyseerBuf(buf);(window.__lastAn=window.__lastAn||{})[f.name]=an;
   if(an.kort){err(f.name+' → te kort om te analyseren');return}
-  if(!meta.bpmNaam&&!gezetBpm&&an.bpm){zetBpm(an.bpm);gezetBpm=true}
+  if(!meta.bpmNaam&&!gezetBpm&&an.bpm){let b=an.bpm;if(b<75)b*=2;zetBpm(b);gezetBpm=true} // halve-tempo guard ook op stems
   if(!meta.keyNaam&&!curKey&&an.key)zetKey(an.key);
   const bpmNow=+document.getElementById('bpm').value||120;
   const zetLaag=(K,noten)=>{const A=NLAY[K];
