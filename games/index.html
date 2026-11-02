@@ -6,6 +6,7 @@
 <title>🎮 G2B Spellen — dieren-avonturen</title>
 <style>
 :root{--groen:#16a34a;--donker:#0b1220;--kaart:#131c2e;--rand:#22314d;--tekst:#e8eef8;--zacht:#9fb0c9}
+body.licht{--donker:#f4f7fb;--kaart:#ffffff;--rand:#d8e0ec;--tekst:#1c2733;--zacht:#5c6b80}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--donker);color:var(--tekst);font:15px/1.5 system-ui,sans-serif;padding:24px;max-width:720px;margin:0 auto;text-align:center}
 h1{font-size:1.6rem;margin-bottom:4px}
@@ -14,9 +15,11 @@ a.spel{display:block;background:var(--kaart);border:1px solid var(--rand);border
 a.spel:hover{border-color:var(--groen);transform:translateX(4px)}
 a.spel small{display:block;font-weight:400;color:var(--zacht);font-size:.8rem;margin-top:2px}
 .tip{color:var(--zacht);font-size:.78rem;margin-top:20px}
+#thema{position:fixed;top:14px;right:14px;background:var(--kaart);border:1px solid var(--rand);color:var(--tekst);border-radius:10px;padding:8px 12px;font-size:1rem;cursor:pointer}
 </style>
 </head>
 <body>
+<button id="thema" title="licht/donker">☀️</button>
 <h1>🎮 G2B Spellen</h1>
 <p class="sub">Dieren-avonturen — klik en speel meteen, niks downloaden. 📷/🤳 = jouw eigen foto als karakter!</p>
 <a class="spel" href="vang.html">🧺 Dieren Vangen<small>vang de dieren uit de lucht — ontwijk het gevaarlijke</small></a>
@@ -25,5 +28,11 @@ a.spel small{display:block;font-weight:400;color:var(--zacht);font-size:.8rem;ma
 <a class="spel" href="slang.html">🐍 Dieren Slang<small>groei zonder tegen jezelf te botsen</small></a>
 <a class="spel" href="memory.html">🧠 Dieren Memory<small>vind alle paren</small></a>
 <p class="tip">⬅️ ➡️ pijltjes of tikken — 🎮 gamepad werkt ook — 📷/🤳 eigen foto in het spel</p>
+<script>
+const _tb=document.getElementById('thema');
+const _zet=l=>{document.body.classList.toggle('licht',l);_tb.textContent=l?'🌙':'☀️'};
+_zet(localStorage.getItem('g2b_thema')=='licht');
+_tb.onclick=()=>{const l=!document.body.classList.contains('licht');localStorage.setItem('g2b_thema',l?'licht':'donker');_zet(l)};
+</script>
 </body>
 </html>
