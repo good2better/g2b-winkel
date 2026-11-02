@@ -290,7 +290,7 @@ function vraag(){const[q,goed,fout]=vr[n];document.getElementById('v').textConte
  const ant=[goed,...fout].sort(()=>Math.random()-.5);const A2=document.getElementById('ant');A2.innerHTML='';
  ant.forEach(a=>{const d=document.createElement('div');d.className='a';d.textContent=a;
   d.onclick=()=>{if(a==goed){d.classList.add('goed');score+=10;document.getElementById('s').textContent=score;blip(700)}else{d.classList.add('fout');blip(200,.3)};
-   setTimeout(()=>{if(++n<10)vraag();else document.getElementById('v').innerHTML='🎉 Klaar! Score: '+score+'<br><button onclick="location.reload()" style="margin-top:12px;padding:10px 24px;border-radius:10px;border:0;background:${t.acc};font-weight:700">Opnieuw</button>';document.getElementById('ant').innerHTML=''},700)};
+   setTimeout(()=>{if(++n<10){vraag()}else{document.getElementById('v').innerHTML='🎉 Klaar! Score: '+score+'<br><button onclick="location.reload()" style="margin-top:12px;padding:10px 24px;border-radius:10px;border:0;background:${t.acc};font-weight:700">Opnieuw</button>';document.getElementById('ant').innerHTML=''}},700)};
   A2.appendChild(d)})}
 vraag();
 </`+'script></body></html>',
@@ -324,7 +324,7 @@ let p={x:60,y:200,vx:0,vy:0,op:false,face:1},cam=0,t2=0,pJ=false;
 const plats=[],munten=[],spikes=[];
 let wx=0,wy=340;
 for(let i=0;i<26;i++){const w=rand(90,190);const g=i?rand(50,110*D.snel):0;wx+=g;
- wy=Math.max(140,Math.min(430,wy+rand(-70,70)));
+ wy=Math.max(140,Math.min(430,wy+rand(-45,45))); /* stijging < sprong-apex (~63px bij Makkelijk) */
  plats.push({x:wx,y:wy,w});
  for(let c=0;c<Math.floor(w/40);c++)if(Math.random()<.5)munten.push({x:wx+20+c*40,y:wy-38,pak:false});
  if(i>3&&Math.random()<.3)spikes.push({x:wx+rand(10,w-30),y:wy-14});
@@ -375,8 +375,8 @@ let chk=60;
   if(!m.pak&&Math.abs(m.x-p.x)<20&&Math.abs(m.y-p.y)<26){m.pak=true;punt(10);blip(760,.08,'triangle')}});
  spikes.forEach(s=>{if(s.x-cam>-30&&s.x-cam<W+30)spijker(s);
   if(Math.abs(s.x+7-p.x)<18&&Math.abs(s.y-p.y)<26){lev--;lvs();blip(120,.3,'sawtooth');p.vy=-8}});
- /* checkpoint bij elke 1200px */
- chk=Math.max(chk,p.x-(p.x%1200));
+ /* checkpoint: linkerrand van het platform waar je op staat, elke ~1200px — kan nooit in een gat landen */
+ if(p.op&&p.x>chk+1200){const cb=plats.find(q=>p.x>=q.x&&p.x<=q.x+q.w);if(cb)chk=cb.x}
  /* vlag */
  X.fillStyle='#e8eef8';X.fillRect(EINDE-cam,180,6,160);
  X.fillStyle=T.acc;X.beginPath();X.moveTo(EINDE-cam+6,180);X.lineTo(EINDE-cam+56,196);X.lineTo(EINDE-cam+6,212);X.fill();
