@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>G2B MIJN APPS — privé</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230D0F0E'/><text x='50' y='68' font-size='52' font-weight='bold' text-anchor='middle' fill='%232FBF71' font-family='sans-serif'>G2</text></svg>">
+<style>
+:root{--groen:#16a34a;--donker:#0b1220;--kaart:#131c2e;--rand:#22314d;--tekst:#e8eef8;--zacht:#9fb0c9}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--donker);color:var(--tekst);font:15px/1.5 system-ui,sans-serif}
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.gate-box{background:#111a2b;border:1px solid var(--rand);border-radius:18px;padding:38px;width:380px;max-width:100%;text-align:center}
+.gate-box h1{font-size:1.4rem;color:#4ade80;letter-spacing:1px}
+.gate-box p{color:var(--zacht);font-size:.85rem;margin:10px 0 18px}
+.gate-box input{width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid var(--rand);background:#0b1220;color:var(--tekst);font-size:15px;text-align:center;letter-spacing:2px}
+.gate-box button{width:100%;margin-top:12px;padding:13px;background:var(--groen);color:#04120a;font-weight:800;border:0;border-radius:10px;font-size:15px;cursor:pointer}
+.gate-box button:hover{background:#22c55e}
+.err{color:#f87171;font-size:.8rem;margin-top:10px;display:none}
+#page{display:none;max-width:1060px;margin:0 auto;padding:24px}
+h1{font-size:1.7rem}
+h1 b{color:#4ade80}
+.sub{color:var(--zacht);margin-bottom:22px}
+.groep{color:#7ee2a8;font-size:.95rem;font-weight:700;letter-spacing:.5px;margin:22px 0 10px;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+a.app{background:var(--kaart);border:1px solid var(--rand);border-radius:14px;padding:16px;text-decoration:none;color:var(--tekst);display:block;transition:.15s}
+a.app:hover{border-color:var(--groen);transform:translateY(-2px);box-shadow:0 8px 20px #0006}
+a.app .ic{font-size:1.9rem;display:block;margin-bottom:6px}
+a.app img{width:100%;aspect-ratio:8/5;object-fit:cover;object-position:top;border-radius:9px;margin-bottom:9px;border:1px solid var(--rand)}
+a.app .nm{font-weight:700;font-size:.95rem}
+a.app .in{color:var(--zacht);font-size:.78rem;margin-top:3px}
+a.app.lokaal{opacity:.75;border-style:dashed}
+.tag{float:right;font-size:.65rem;color:#7ee2a8;border:1px solid #7ee2a855;border-radius:6px;padding:1px 6px}
+.tag.prive{color:#fbbf24;border-color:#fbbf2455}
+.foot{color:var(--zacht);font-size:.75rem;margin-top:28px;text-align:center}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-box">
+    <h1>🔒 G2B MIJN APPS</h1>
+    <p>Privé-pagina — alleen voor Giorgio.<br>Vul je code in.</p>
+    <input id="code" type="password" placeholder="CODE" autocomplete="off">
+    <button onclick="unlock()">OPEN</button>
+    <div class="err" id="err">Verkeerde code</div>
+  </div>
+</div>
+
+<div id="page">
+<h1>🎛️ G2B <b>MIJN APPS</b></h1>
+<p class="sub">Alles op één plek — klik en werken in de browser, niks installeren. Zet deze pagina als favoriet (Ctrl+D).</p>
+
+<div class="groep">🎵 Muziek maken</div>
+<div class="grid">
+<a class="app" href="beatmaker.html"><img src="apps-img/beatmaker.jpg" alt="" loading="lazy"><span class="ic">🥁</span><span class="nm">Beat Maker</span><div class="in">Beats bouwen in je browser — grid, lagen, eigen sounds</div></a>
+<a class="app" href="tools/beatmaker-gio/app/index.html"><img src="apps-img/bm-gio.jpg" alt="" loading="lazy"><span class="ic">🔥</span><span class="nm">Beat Maker GIO <span class="tag prive">PRIVÉ</span></span><div class="in">Jouw privé-versie met alles erop en eraan</div></a>
+<a class="app" href="tools/beatmaker-pro/app/index.html"><img src="apps-img/bm-pro.jpg" alt="" loading="lazy"><span class="ic">🎚️</span><span class="nm">Beat Maker PRO</span><div class="in">De verkoop-versie voor kopers</div></a>
+<a class="app" href="radio.html"><img src="apps-img/radio.jpg" alt="" loading="lazy"><span class="ic">📻</span><span class="nm">G2B Radio</span><div class="in">Je eigen radio — 24/7 jouw muziek</div></a>
+<a class="app" href="library.html"><img src="apps-img/beats.jpg" alt="" loading="lazy"><span class="ic">🎹</span><span class="nm">Library</span><div class="in">Beats & packs beluisteren</div></a>
+<a class="app" href="sync-catalog.html"><img src="apps-img/sync.jpg" alt="" loading="lazy"><span class="ic">📋</span><span class="nm">Sync-catalog</span><div class="in">Je sync-tracks overzicht</div></a>
+</div>
+
+<div class="groep">🎮 Games & kids</div>
+<div class="grid">
+<a class="app" href="tools/gamefabriek/gamefabriek.html"><img src="apps-img/gamefabriek.jpg" alt="" loading="lazy"><span class="ic">🏭</span><span class="nm">GAME-FABRIEK <span class="tag prive">PRIVÉ</span></span><div class="in">Maak complete spellen — 15 types, foto's, multiplayer</div></a>
+<a class="app" href="schoolspelen/index.html"><img src="apps-img/schoolspelen.jpg" alt="" loading="lazy"><span class="ic">🎓</span><span class="nm">Schoolspelen</span><div class="in">Leer-ladder groep 1 → genius, NL-stem</div></a>
+<a class="app" href="games/index.html"><img src="apps-img/games.jpg" alt="" loading="lazy"><span class="ic">🦁</span><span class="nm">Alle spellen</span><div class="in">20 thema-spellen — met eigen foto als karakter</div></a>
+</div>
+
+<div class="groep">📚 Boeken & audio</div>
+<div class="grid">
+<a class="app" href="gsbooks/index.html"><img src="apps-img/gsbooks.jpg" alt="" loading="lazy"><span class="ic">📚</span><span class="nm">GS Books</span><div class="in">Kinderboeken + woordspellen</div></a>
+<a class="app" href="animalheroes/index.html"><img src="apps-img/animalheroes.jpg" alt="" loading="lazy"><span class="ic">🦁</span><span class="nm">Animal Heroes</span><div class="in">Helden-boeken en avonturen</div></a>
+<a class="app lokaal"><img src="apps-img/pageplay.jpg" alt="" loading="lazy"><span class="ic">📖</span><span class="nm">PagePlay <span class="tag">lokaal</span></span><div class="in">Boeken → spellen, audioboeken, KDP</div></a>
+</div>
+
+<div class="groep">🛒 Winkels & promo</div>
+<div class="grid">
+<a class="app" href="index.html"><img src="apps-img/winkel.jpg" alt="" loading="lazy"><span class="ic">🛍️</span><span class="nm">Muziekwinkel</span><div class="in">Beats, packs en plugins te koop</div></a>
+<a class="app" href="beats.html"><img src="apps-img/beats.jpg" alt="" loading="lazy"><span class="ic">🎹</span><span class="nm">Beats</span><div class="in">Losse beats beluisteren & kopen</div></a>
+<a class="app" href="gratis.html"><img src="apps-img/gratis.jpg" alt="" loading="lazy"><span class="ic">🎁</span><span class="nm">Gratis</span><div class="in">Gratis downloads</div></a>
+<a class="app" href="kleding.html"><img src="apps-img/kleding.jpg" alt="" loading="lazy"><span class="ic">👕</span><span class="nm">Kleding</span><div class="in">G2B merch & prints</div></a>
+<a class="app" href="sync/index.html"><img src="apps-img/sync.jpg" alt="" loading="lazy"><span class="ic">🎬</span><span class="nm">Sync-bibliotheek</span><div class="in">Muziek voor film/tv/games (wachtwoord)</div></a>
+<a class="app" href="live/index.html"><img src="apps-img/live.jpg" alt="" loading="lazy"><span class="ic">📺</span><span class="nm">Live</span><div class="in">Live-pagina</div></a>
+<a class="app" href="bouwer.html"><img src="apps-img/winkel.jpg" alt="" loading="lazy"><span class="ic">🧰</span><span class="nm">Bundel-bouwer</span><div class="in">Stel je eigen bundel samen</div></a>
+<a class="app" href="widget.html"><img src="apps-img/winkel.jpg" alt="" loading="lazy"><span class="ic">🧩</span><span class="nm">Widget</span><div class="in">Embed-player voor andere sites</div></a>
+</div>
+
+<div class="groep">📈 Zakelijk & marketing</div>
+<div class="grid">
+<a class="app" href="tools/marketingfabriek/index.html"><img src="apps-img/marketing.jpg" alt="" loading="lazy"><span class="ic">📈</span><span class="nm">Marketing-Fabriek <span class="tag prive">PRIVÉ</span></span><div class="in">Contacten, lijsten, e-mailcampagnes, stats</div></a>
+<a class="app" href="techradar.html"><img src="apps-img/techradar.jpg" alt="" loading="lazy"><span class="ic">📡</span><span class="nm">TechRadar</span><div class="in">Nieuwe tools in de gaten</div></a>
+<a class="app" href="briefing.html"><img src="apps-img/marketing.jpg" alt="" loading="lazy"><span class="ic">📝</span><span class="nm">Briefing</span><div class="in">Sync/custom briefing-formulier</div></a>
+<a class="app lokaal"><img src="apps-img/bedrijfsmiddelen.jpg" alt="" loading="lazy"><span class="ic">🏢</span><span class="nm">Bedrijfsmiddelen <span class="tag">lokaal :8010</span></span><div class="in">Contracten, facturen, merk-kit</div></a>
+</div>
+
+<div class="groep">🏭 Fabrieken & werk-apps (lokaal op je pc)</div>
+<div class="grid">
+<a class="app lokaal"><img src="apps-img/soundlab.jpg" alt="" loading="lazy"><span class="ic">🎧</span><span class="nm">Sound Lab <span class="tag">lokaal :8200</span></span><div class="in">Geluid bewerken & packs bouwen</div></a>
+<a class="app lokaal"><img src="apps-img/gaw.jpg" alt="" loading="lazy"><span class="ic">🎛️</span><span class="nm">GAW <span class="tag">lokaal :8600</span></span><div class="in">Jouw eigen DAW</div></a>
+<a class="app lokaal"><img src="apps-img/imagelab.jpg" alt="" loading="lazy"><span class="ic">🖼️</span><span class="nm">ImageLab <span class="tag">lokaal</span></span><div class="in">Beeld-werkstation: maken, upscalen, achtergrond weg</div></a>
+<a class="app lokaal"><img src="apps-img/psychologie.jpg" alt="" loading="lazy"><span class="ic">🧠</span><span class="nm">Psychologie <span class="tag">lokaal :8030</span></span><div class="in">NL hulp-instanties + brieven</div></a>
+<a class="app lokaal"><img src="apps-img/juridisch.jpg" alt="" loading="lazy"><span class="ic">⚖️</span><span class="nm">Juridisch <span class="tag">lokaal :8020</span></span><div class="in">NL wetboek opzoeken</div></a>
+<a class="app lokaal"><span class="ic">📇</span><span class="nm">CRM-Fabriek <span class="tag">lokaal</span></span><div class="in">Leads op een kanban-bord</div></a>
+<a class="app lokaal"><span class="ic">📧</span><span class="nm">Mail-Fabriek <span class="tag">lokaal</span></span><div class="in">Bulk e-mail versturen</div></a>
+<a class="app lokaal"><span class="ic">🔁</span><span class="nm">Sequentie-Fabriek <span class="tag">lokaal</span></span><div class="in">Automatische mail-sequenties</div></a>
+<a class="app lokaal"><span class="ic">🔍</span><span class="nm">SEO-Fabriek <span class="tag">lokaal</span></span><div class="in">Site-scans & rapporten</div></a>
+<a class="app lokaal"><span class="ic">📊</span><span class="nm">Sheet-Fabriek <span class="tag">lokaal</span></span><div class="in">Spreadsheets & data</div></a>
+<a class="app lokaal"><span class="ic">👁️</span><span class="nm">Watcher-Fabriek <span class="tag">lokaal</span></span><div class="in">Bronnen + tech-radar in de gaten</div></a>
+<a class="app lokaal"><span class="ic">🌊</span><span class="nm">Flow-Fabriek <span class="tag">lokaal</span></span><div class="in">Workflows automatiseren</div></a>
+<a class="app lokaal"><span class="ic">🎯</span><span class="nm">Lead-Fabriek <span class="tag">lokaal</span></span><div class="in">Leads vinden & beheren</div></a>
+<a class="app lokaal"><span class="ic">🧹</span><span class="nm">Lijst-Fabriek <span class="tag">lokaal</span></span><div class="in">Lijsten schoonmaken</div></a>
+<a class="app lokaal"><span class="ic">🎬</span><span class="nm">Show-Studio <span class="tag">lokaal</span></span><div class="in">Kanaal-Fabriek — video's met karakters</div></a>
+<a class="app lokaal"><span class="ic">🎬</span><span class="nm">Video-Fabriek <span class="tag">lokaal</span></span><div class="in">Faceless video's genereren</div></a>
+<a class="app lokaal"><span class="ic">🎤</span><span class="nm">Stemmen-Studio <span class="tag">lokaal</span></span><div class="in">NL tekst-naar-spraak</div></a>
+<a class="app lokaal"><span class="ic">🎧</span><span class="nm">Werkstation <span class="tag">lokaal</span></span><div class="in">Maken → mixen → stemmen → afmaken</div></a>
+<a class="app lokaal"><span class="ic">🥁</span><span class="nm">Loop-Machine <span class="tag">lokaal</span></span><div class="in">Loops & grooves bouwen</div></a>
+<a class="app lokaal"><span class="ic">🔁</span><span class="nm">Looper <span class="tag">lokaal</span></span><div class="in">Track → naadloze loop</div></a>
+<a class="app lokaal"><span class="ic">🎚️</span><span class="nm">Menger <span class="tag">lokaal</span></span><div class="in">Map met sounds → nette one-shots</div></a>
+<a class="app lokaal"><span class="ic">📦</span><span class="nm">Packmaker <span class="tag">lokaal</span></span><div class="in">Sample-map → verkoop-pack ZIP</div></a>
+<a class="app lokaal"><span class="ic">🧱</span><span class="nm">Shot-Stapelaar <span class="tag">lokaal</span></span><div class="in">One-shots stapelen tot nieuwe sounds</div></a>
+<a class="app lokaal"><span class="ic">🎯</span><span class="nm">Hitmaker <span class="tag">lokaal</span></span><div class="in">De complete hit-fabriek</div></a>
+<a class="app lokaal"><span class="ic">🤖</span><span class="nm">Auto-Beat <span class="tag">lokaal</span></span><div class="in">Stijl + aantal → batch beats</div></a>
+<a class="app lokaal"><span class="ic">🎼</span><span class="nm">AutoScore <span class="tag">lokaal</span></span><div class="in">Film/underscore engine</div></a>
+<a class="app lokaal"><span class="ic">📖</span><span class="nm">Kinderboek-Studio <span class="tag">lokaal</span></span><div class="in">Naam + foto → eigen boek</div></a>
+<a class="app lokaal"><span class="ic">📺</span><span class="nm">YT-Fabriek <span class="tag">lokaal</span></span><div class="in">1 klik = branded beat-video</div></a>
+<a class="app lokaal"><span class="ic">🎬</span><span class="nm">Sync-Fabriek <span class="tag">lokaal</span></span><div class="in">Brief → streambare catalog-track</div></a>
+</div>
+
+<p class="foot">💾 Niets installeren — alles hierboven opent in je browser. Favoriet zetten: Ctrl+D</p>
+</div>
+
+<script>
+const HASH='a6027a131916280eab4a9f091cf28b36eb1dc59285023ce8c2403a76f24ff982';
+async function unlock(){
+  const v=document.getElementById('code').value.trim().toLowerCase();
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));
+  const hex=[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  if(hex===HASH){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';sessionStorage.g2bmijn='1';}
+  else document.getElementById('err').style.display='block';
+}
+if(sessionStorage.g2bmijn==='1'){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';}
+document.getElementById('code').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
+</script>
+</body>
+</html>
