@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B SMASH — beat → promo-clip</title>
+<style>
+:root{--bg:#0a120e;--kaart:#101c15;--groen:#35d07f;--tekst:#e8f5ec;--dim:#8fb59c;--rand:#1e3a2a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tekst);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px}
+h1{color:var(--groen);font-size:2rem;letter-spacing:2px}
+.sub{color:var(--dim);margin:6px 0 20px}
+.kaart{background:var(--kaart);border:1px solid var(--rand);border-radius:14px;padding:20px;width:100%;max-width:560px;margin-bottom:16px}
+.drop{border:2px dashed var(--rand);border-radius:12px;padding:34px 16px;text-align:center;cursor:pointer;transition:.2s}
+.drop.over{border-color:var(--groen);background:#0e2016}
+.drop b{color:var(--groen)}
+label{display:block;color:var(--dim);font-size:.8rem;margin:14px 0 4px;text-transform:uppercase;letter-spacing:1px}
+input[type=text],select{width:100%;padding:10px 12px;background:#0c1811;border:1px solid var(--rand);border-radius:8px;color:var(--tekst);font-size:1rem}
+.rij{display:flex;gap:12px}.rij>div{flex:1}
+button{width:100%;padding:14px;background:var(--groen);color:#04120a;border:0;border-radius:10px;font-size:1.1rem;font-weight:700;cursor:pointer;margin-top:18px}
+button:disabled{background:#2a4a38;color:#7aa;cursor:wait}
+#voortgang{height:8px;background:#0c1811;border-radius:4px;margin-top:14px;overflow:hidden;display:none}
+#balk{height:100%;width:0;background:var(--groen);transition:width .2s}
+#status{color:var(--dim);font-size:.85rem;margin-top:8px;text-align:center}
+#dl{display:none;width:100%;text-align:center;padding:14px;background:#0e2016;border:1px solid var(--groen);border-radius:10px;color:var(--groen);font-weight:700;text-decoration:none;margin-top:12px}
+canvas{width:100%;border-radius:10px;margin-top:12px;background:#000;display:none}
+.tip{color:var(--dim);font-size:.8rem;margin-top:6px}
+</style>
+</head>
+<body>
+<h1>G2B SMASH</h1>
+<p class="sub">Sleep je beat erin → promo-videoclip eruit (.mp4 voor TikTok/Shorts)</p>
+
+<div class="kaart">
+  <div class="drop" id="drop"><b>Sleep hier je beat</b><br>wav · mp3 · ogg — of klik om te kiezen<input type="file" id="file" accept="audio/*" hidden></div>
+  <div id="gekozen" class="tip"></div>
+  <canvas id="prev" width="360" height="640"></canvas>
+</div>
+
+<div class="kaart">
+  <label>Titel op de clip</label>
+  <input type="text" id="titel" value="G2B BEAT" maxlength="40">
+  <label>Ondertitel (bijv. prijs / naam)</label>
+  <input type="text" id="sub" value="good2better" maxlength="60">
+  <div class="rij">
+    <div><label>Formaat</label>
+      <select id="forma"><option value="v">Verticaal 9:16 (TikTok/Shorts)</option><option value="k">Vierkant 1:1</option><option value="b">Breed 16:9</option></select></div>
+    <div><label>Lengte</label>
+      <select id="len"><option value="15">15 sec</option><option value="30" selected>30 sec</option><option value="60">60 sec</option><option value="0">Hele track</option></select></div>
+  </div>
+  <div class="rij">
+    <div><label>Look</label>
+      <select id="look"><option value="spec">SPECTRUM (balken)</option><option value="pulse">PULSE (ringen)</option></select></div>
+    <div><label>Kleur</label>
+      <select id="klr"><option value="g">G2B groen</option><option value="o">Oranje</option><option value="p">Paars</option><option value="w">Wit-goud</option></select></div>
+  </div>
+  <button id="go" disabled>RENDER DE CLIP</button>
+  <div id="voortgang"><div id="balk"></div></div>
+  <div id="status"></div>
+  <a id="dl" href="#">⬇ DOWNLOAD JE MP4</a>
+</div>
+<p class="tip">100% lokaal — je beat verlaat je pc niet. G2B eigen code.</p>
+
+<script src="lib/mp4-muxer.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let buf=null;
+const drop=$('drop'),file=$('file');
+drop.onclick=()=>file.click();
+drop.ondragover=e=>{e.preventDefault();drop.classList.add('over')};
+drop.ondragleave=()=>drop.classList.remove('over');
+drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');if(e.dataTransfer.files[0])laad(e.dataTransfer.files[0])};
+file.onchange=()=>{if(file.files[0])laad(file.files[0])};
+
+async function laad(f){
+  $('status').textContent='Beat inlezen…';
+  try{
+    const ac=new (window.AudioContext||window.webkitAudioContext)();
+    buf=await ac.decodeAudioData(await f.arrayBuffer());
+    $('gekozen').innerHTML='✓ <b>'+f.name+'</b> — '+buf.duration.toFixed(1)+' sec, '+buf.sampleRate+' Hz';
+    $('go').disabled=false;$('status').textContent='';
+    tekenPrev();
+  }catch(e){$('status').textContent='Kon dit bestand niet lezen — probeer wav/mp3.';}
+}
+
+const KLEUR={g:['#35d07f','#1e8f56'],o:['#ff9a3c','#c96a10'],p:['#b98cff','#7a4fd0'],w:['#f5e9c8','#c8a850']};
+const FORMAAT={v:[720,1280],k:[720,720],b:[1280,720]};
+
+// kleine FFT (radix-2) voor spectrum
+function fft(re,im){const n=re.length;
+  for(let i=1,j=0;i<n;i++){let bit=n>>1;for(;j&bit;bit>>=1)j^=bit;j^=bit;
+    if(i<j){[re[i],re[j]]=[re[j],re[i]];[im[i],im[j]]=[im[j],im[i]];}}
+  for(let s=2;s<=n;s*=2){const a=-2*Math.PI/s,wr=Math.cos(a),wi=Math.sin(a);
+    for(let i=0;i<n;i+=s){let cr=1,ci=0;
+      for(let j=0;j<s/2;j++){const k=i+j+s/2,tr=re[k]*cr-im[k]*ci,ti=re[k]*ci+im[k]*cr;
+        re[k]=re[i+j]-tr;im[k]=im[i+j]-ti;re[i+j]+=tr;im[i+j]+=ti;
+        const ncr=cr*wr-ci*wi;ci=cr*wi+ci*wr;cr=ncr;}}}}
+
+function spectrum(t){ // magnitude per log-band op tijd t
+  const N=1024,sr=buf.sampleRate,L=buf.getChannelData(0);
+  const start=Math.floor(t*sr),re=new Float64Array(N),im=new Float64Array(N);
+  for(let i=0;i<N;i++){const s=(start+i<L.length)?L[start+i]:0;re[i]=s*(0.5-0.5*Math.cos(2*Math.PI*i/N));}
+  fft(re,im);
+  const bands=new Float64Array(48);
+  for(let b=0;b<48;b++){const lo=Math.floor(Math.pow(2,b/6)),hi=Math.floor(Math.pow(2,(b+1)/6));
+    let m=0;for(let k=Math.max(1,lo);k<=Math.min(hi,N/2-1);k++)m=Math.max(m,Math.hypot(re[k],im[k]));
+    bands[b]=m;}
+  return bands;
+}
+function rms(t){const sr=buf.sampleRate,L=buf.getChannelData(0),n=2048,st=Math.floor(t*sr);
+  let s=0;for(let i=0;i<n&&st+i<L.length;i++)s+=L[st+i]*L[st+i];return Math.sqrt(s/n);}
+
+function teken(ctx,W,H,t,look,kleur,titel,sub){
+  const [c1,c2]=kleur;
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#07100b');g.addColorStop(1,'#0d1f14');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  const e=Math.min(1,rms(t)*8),pulse=1+e*0.25;
+  if(look==='spec'){
+    const bands=spectrum(t),n=bands.length,bw=W/n;
+    for(let b=0;b<n;b++){const v=Math.min(1,bands[b]*2.2),bh=v*H*0.45*pulse;
+      const x=b*bw;
+      ctx.fillStyle=b%7===0?c2:c1;
+      ctx.fillRect(x+1,H*0.62-bh,bw-2,bh);
+      ctx.fillRect(x+1,H*0.62,bw-2,Math.min(bh*0.28,H*0.1));
+    }
+    ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(0,H*0.62,W,2);
+  }else{
+    const bands=spectrum(t);let lo=0,mid=0;
+    for(let i=0;i<8;i++)lo+=bands[i];for(let i=8;i<28;i++)mid+=bands[i];
+    lo=Math.min(1,lo/4);mid=Math.min(1,mid/10);
+    const cx=W/2,cy=H*0.45;
+    ctx.strokeStyle=c1;ctx.lineWidth=4;
+    for(let r=0;r<5;r++){ctx.globalAlpha=0.9-r*0.17;
+      ctx.beginPath();ctx.arc(cx,cy,(30+lo*W*0.28)*pulse+r*W*0.055*(1+mid),0,7);ctx.stroke();}
+    ctx.globalAlpha=1;
+  }
+  // titel + sub + badge
+  ctx.textAlign='center';
+  ctx.fillStyle='#fff';ctx.font='800 '+Math.round(W*0.075)+'px Segoe UI,sans-serif';
+  ctx.shadowColor=c1;ctx.shadowBlur=18+e*22;
+  ctx.fillText(titel||'G2B',W/2,H*0.78);
+  ctx.shadowBlur=0;
+  ctx.fillStyle=c1;ctx.font='600 '+Math.round(W*0.038)+'px Segoe UI,sans-serif';
+  ctx.fillText(sub||'',W/2,H*0.78+W*0.06);
+  ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='700 '+Math.round(W*0.03)+'px Segoe UI';
+  ctx.fillText('GOOD2BETTER',W/2,H*0.06);
+}
+
+function tekenPrev(){ // still-preview op klein canvas
+  const c=$('prev');c.style.display='block';
+  teken(c.getContext('2d'),c.width,c.height,1,$('look').value,KLEUR[$('klr').value],$('titel').value,$('sub').value);
+}
+['look','klr','titel','sub','forma'].forEach(id=>$(id).oninput=()=>{if(buf)tekenPrev()});
+
+$('go').onclick=async()=>{
+  if(!buf)return;
+  $('go').disabled=true;$('voortgang').style.display='block';$('dl').style.display='none';
+  const st=$('status');
+  try{
+    const [W,H]=FORMAAT[$('forma').value],fps=30;
+    const maxLen=+$('len').value||buf.duration;
+    const dur=Math.min(maxLen||buf.duration,buf.duration);
+    // AAC eerst (kleinste files, breedste support); geen AAC → Opus (werkt ook in .mp4-container)
+    let acodec='aac',sr=44100;
+    if(!(await AudioEncoder.isConfigSupported({codec:'mp4a.40.2',sampleRate:44100,numberOfChannels:2,bitrate:160000})).supported){
+      acodec='opus';sr=48000;
+    }
+    // audio resamplen naar 44.1k stereo (simpel: lineair interp)
+    const nA=Math.floor(dur*sr),ratio=buf.sampleRate/sr;
+    const chs=Math.min(2,buf.numberOfChannels);
+    const pl=new Float32Array(nA),pr=new Float32Array(nA);
+    const L0=buf.getChannelData(0),R0=chs>1?buf.getChannelData(1):buf.getChannelData(0);
+    for(let i=0;i<nA;i++){const s=i*ratio,i0=s|0,f=s-i0,i1=Math.min(i0+1,L0.length-1);
+      pl[i]=L0[i0]+(L0[i1]-L0[i0])*f;pr[i]=R0[i0]+(R0[i1]-R0[i0])*f;}
+    const muxer=new Mp4Muxer.Muxer({target:new Mp4Muxer.ArrayBufferTarget(),
+      video:{codec:'avc',width:W,height:H},audio:{codec:acodec,sampleRate:sr,numberOfChannels:2},fastStart:'in-memory'});
+    let encErr=null;
+    const ve=new VideoEncoder({output:(c,m)=>muxer.addVideoChunk(c,m),error:e=>{encErr='video: '+e.message}});
+    ve.configure({codec:'avc1.640028',width:W,height:H,bitrate:W*H*fps*0.12,framerate:fps});
+    const ae=new AudioEncoder({output:(c,m)=>muxer.addAudioChunk(c,m),error:e=>{encErr='audio: '+e.message}});
+    ae.configure({codec:acodec==='aac'?'mp4a.40.2':'opus',sampleRate:sr,numberOfChannels:2,bitrate:160000});
+    // audio in 2048-frame chunks
+    st.textContent='Audio encoderen…';
+    const step=2048;
+    for(let o=0;o<nA;o+=step){
+      const n=Math.min(step,nA-o);
+      const d=new Float32Array(n*2);
+      d.set(pl.subarray(o,o+n),0);d.set(pr.subarray(o,o+n),n);
+      ae.encode(new AudioData({format:'f32-planar',sampleRate:sr,numberOfFrames:n,
+        numberOfChannels:2,timestamp:Math.round(o/sr*1e6),data:d.buffer}));
+      if(ae.encodeQueueSize>32)await new Promise(r=>setTimeout(r,20));
+    }
+    // video frames
+    const cv=document.createElement('canvas');cv.width=W;cv.height=H;
+    const cx=cv.getContext('2d'),klr=KLEUR[$('klr').value];
+    const nF=Math.floor(dur*fps);
+    for(let f=0;f<nF;f++){
+      const t=f/fps;
+      teken(cx,W,H,t,$('look').value,klr,$('titel').value,$('sub').value);
+      ve.encode(new VideoFrame(cv,{timestamp:Math.round(t*1e6),duration:Math.round(1e6/fps)}),{keyFrame:f%60===0});
+      if(ve.encodeQueueSize>8)await new Promise(r=>setTimeout(r,20));
+      if(f%10===0){$('balk').style.width=(f/nF*100)+'%';
+        st.textContent='Frame '+f+' / '+nF+'…';await new Promise(r=>setTimeout(r));}
+    }
+    st.textContent='Afronden…';
+    if(encErr)throw new Error(encErr);
+    await Promise.all([ve.flush(),ae.flush()]);
+    if(encErr)throw new Error(encErr);
+    muxer.finalize();
+    const blob=new Blob([muxer.target.buffer],{type:'video/mp4'});
+    const url=URL.createObjectURL(blob);
+    const a=$('dl');a.href=url;a.download='G2B-SMASH-'+($('titel').value||'clip').replace(/\W+/g,'-')+'.mp4';
+    a.style.display='block';st.textContent='✓ Klaar — '+(blob.size/1e6).toFixed(1)+' MB';
+  }catch(e){console.error(e);st.textContent='Render mislukt: '+e.message+' (probeer Chrome update)';}
+  $('go').disabled=false;
+};
+</script>
+</body>
+</html>
