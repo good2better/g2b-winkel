@@ -349,8 +349,9 @@ const NLAY={bas:{nm:'🔊 BAS',inst:'contrabas',noten:[],len:0,mute:false},
             mel:{nm:'🎹 MELODIE',inst:'piano',noten:[],len:0,mute:false},
             mid:{nm:'🎼 MIDI',inst:'piano',noten:[],len:0,mute:false}};
 // elke melodie-stem krijgt zijn eigen laag (mel, mel2, mel3…) — niets overschrijft elkaar
+const MELSTAP=['piano','marimba','flute','kalimba','glock']; // elke extra laag ander geluid → lagen vullen elkaar aan
 const melK=()=>{if(!NLAY.mel.noten.length)return 'mel';let i=2;while(NLAY['mel'+i]&&NLAY['mel'+i].noten.length)i++;
- const k='mel'+i;NLAY[k]={nm:'🎹 MELODIE '+i,inst:'piano',noten:[],len:0,mute:false};return k};
+ const k='mel'+i;NLAY[k]={nm:'🎹 MELODIE '+i,inst:MELSTAP[(i-1)%MELSTAP.length],noten:[],len:0,mute:false};return k};
 const ALAY=[]; // audio-lagen die origineel meespelen (vocal-stem / volle loop): {id,nm,buf,mute,src}
 let QUANT=true,curKey='',playT0=0;
 const MELB={};
