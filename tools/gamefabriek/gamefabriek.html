@@ -137,8 +137,9 @@ h1{font-size:1.1rem;margin:10px}canvas{background:${t.achtergr};border-radius:12
 #hud{display:flex;gap:18px;font-size:1rem;margin:6px}#over{display:none;position:fixed;inset:0;background:#000c;align-items:center;justify-content:center;flex-direction:column;text-align:center}
 #over h2{font-size:2rem}button{background:${t.acc};border:0;color:#042;padding:12px 28px;border-radius:10px;font-size:1.1rem;font-weight:700;cursor:pointer;margin-top:12px}
 .tip{opacity:.7;font-size:.8rem;margin:6px}
-button,#fok,#fos{transition:transform .08s}button:active,#fok:active,#fos:active{transform:scale(1.08,.86)}</style></head><body>
-<h1>${naam}</h1><div id="hud"><span id="score">⭐ 0</span><span id="lvs">❤️</span><span id="lv"></span><span id="klok"></span><span id="hs"></span></div>
+button,#fok,#fos{transition:transform .08s}button:active,#fok:active,#fos:active{transform:scale(1.08,.86)}
+.bge{position:fixed;font-size:2rem;opacity:.10;pointer-events:none;animation:drift var(--d,6s) ease-in-out infinite alternate}@keyframes drift{from{transform:translateY(0) rotate(-8deg)}to{transform:translateY(-60px) rotate(8deg)}}</style></head><body>
+<div id="bgx"></div><h1>${naam}</h1><div id="hud"><span id="score">⭐ 0</span><span id="lvs">❤️</span><span id="lv"></span><span id="klok"></span><span id="hs"></span></div>
 <div style="position:relative"><canvas id="c" width="420" height="560"></canvas><canvas id="fx" width="420" height="560" style="position:absolute;left:0;top:0;pointer-events:none"></canvas>
 <button id="fok" title="Eigen foto als karakter" style="position:absolute;right:8px;top:8px;background:#ffffff22;border:1px solid #fff4;color:#fff;border-radius:8px;padding:4px 9px;cursor:pointer;font-size:1rem">📷</button>
 <button id="fos" title="Selfie als karakter" style="position:absolute;right:8px;top:44px;background:#ffffff22;border:1px solid #fff4;color:#fff;border-radius:8px;padding:4px 9px;cursor:pointer;font-size:1rem">🤳</button>
@@ -149,6 +150,8 @@ button,#fok,#fos{transition:transform .08s}button:active,#fok:active,#fos:active
 <script>
 const C=document.getElementById('c'),X=C.getContext('2d'),W=C.width,Hh=C.height;
 const T=${JSON.stringify('THEMA')},D=${JSON.stringify('MOEIL')},SPELERS=${JSON.stringify('SPELERS')};
+/* zachte zwevende thema-figuren op de achtergrond — subtiel, kids-rustig */
+{const bgx=document.getElementById('bgx');for(let i=0;i<9;i++){const s=document.createElement('span');s.className='bge';s.textContent=T.items[i%T.items.length];s.style.left=(4+i*11)+'vw';s.style.top=(10+((i*37)%80))+'vh';s.style.setProperty('--d',(5+i*1.3).toFixed(1)+'s');s.style.fontSize=(1.4+(i%3)*.5)+'rem';bgx.appendChild(s)}}
 let score=0,lev=D.leven,af=false,HSK='g2bhs_'+document.title,hs=+(localStorage.getItem(HSK)||0);
 /* omstebeurt: score van P1 bewaren, P2 speelt daarna */
 const _bk='g2b_beurt_'+document.title,_bv=SPELERS=='beurt'?JSON.parse(localStorage.getItem(_bk)||'null'):null;
@@ -186,7 +189,9 @@ const einde=()=>{af=true;confetti();
    document.getElementById('over').style.display='flex';document.getElementById('ot').textContent=w;
    document.getElementById('os').textContent='P1: '+_bv+' — P2: '+score}
   blip(180,.4,'sawtooth');return}
- document.getElementById('over').style.display='flex';document.getElementById('ot').textContent=score>0?'🎉 Goed gedaan!':'😅 Nog een keer?';document.getElementById('os').textContent='Score: '+score+(score>=hs&&score>0?' — NIEUW RECORD!':'');blip(180,.4,'sawtooth')};
+ document.getElementById('over').style.display='flex';const st=score<=0?'☆☆☆':score<80?'⭐☆☆':score<200?'⭐⭐☆':'⭐⭐⭐';
+ document.getElementById('ot').textContent=(score>0?'🎉 Goed gedaan! ':'😅 Nog een keer? ')+st;
+ document.getElementById('os').textContent='Score: '+score+(score>=hs&&score>0?' — NIEUW RECORD!':'');blip(180,.4,'sawtooth')};
 /* glow erachter = items altijd goed zichtbaar op donkere achtergrond */
 const emoji=(e,x,y,s,g)=>{X.save();X.font=s+'px serif';X.textAlign='center';X.textBaseline='middle';if(g){X.shadowColor=g;X.shadowBlur=14}X.fillText(e,x,y);X.restore()};
 /* eigen foto's als sprites: held + extra karakters */
@@ -281,10 +286,12 @@ memory:(naam,t,d)=>`<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><
 h1{margin:12px}#b{display:grid;grid-template-columns:repeat(4,72px);gap:10px;margin-top:14px}
 .k{width:72px;height:72px;background:#ffffff18;border:2px solid ${t.acc};border-radius:12px;font-size:2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none}
 .k.open{background:${t.acc}}#hud{margin:8px;font-size:1.1rem}#over{display:none;text-align:center;margin:20px;font-size:1.4rem}
-button{background:${t.acc};border:0;color:#042;padding:10px 24px;border-radius:10px;font-weight:700;cursor:pointer}</style></head><body>
-<h1>${naam}</h1><div id="hud">⭐ <span id="s">0</span> — zetten: <span id="z">0</span></div><div id="b"></div><div id="over">🎉 Alles gevonden! <button onclick="location.reload()">Opnieuw</button></div>
+button{background:${t.acc};border:0;color:#042;padding:10px 24px;border-radius:10px;font-weight:700;cursor:pointer}
+.bge{position:fixed;font-size:2rem;opacity:.10;pointer-events:none;animation:drift var(--d,6s) ease-in-out infinite alternate}@keyframes drift{from{transform:translateY(0) rotate(-8deg)}to{transform:translateY(-60px) rotate(8deg)}}</style></head><body>
+<div id="bgx"></div><h1>${naam}</h1><div id="hud">⭐ <span id="s">0</span> — zetten: <span id="z">0</span></div><div id="b"></div><div id="over">🎉 Alles gevonden! <button onclick="location.reload()">Opnieuw</button></div>
 <script>
-const T=${JSON.stringify('THEMA')};let kaarten=T.items.slice(0,8);kaarten=kaarten.concat(kaarten).sort(()=>Math.random()-.5);
+const T=${JSON.stringify('THEMA')};{const bgx=document.getElementById('bgx');for(let i=0;i<9;i++){const s=document.createElement('span');s.className='bge';s.textContent=T.items[i%T.items.length];s.style.left=(4+i*11)+'vw';s.style.top=(10+((i*37)%80))+'vh';s.style.setProperty('--d',(5+i*1.3).toFixed(1)+'s');s.style.fontSize=(1.4+(i%3)*.5)+'rem';bgx.appendChild(s)}}
+let kaarten=T.items.slice(0,8);kaarten=kaarten.concat(kaarten).sort(()=>Math.random()-.5);
 let open=[],klaar=0,zet=0,score=0,blok=false;
 const B=document.getElementById('b');
 const A=new(window.AudioContext||window.webkitAudioContext)();
@@ -370,8 +377,9 @@ h1{margin-bottom:6px}#v{font-size:1.3rem;margin:18px;text-align:center;min-heigh
 ${d.kid?'.a{width:330px;padding:22px;font-size:1.3rem}':''}
 .a:hover{background:#ffffff28}.a.goed{background:#16a34a}.a.fout{background:#dc2626}
 .a.hint{animation:hp .7s infinite alternate}@keyframes hp{from{box-shadow:0 0 0 0 #fff0}to{box-shadow:0 0 16px 5px ${t.acc}}}
-#hud{font-size:1.1rem}</style></head><body>
-<h1>${naam}</h1><div id="hud">⭐ <span id="s">0</span> / vraag <span id="vn">1</span>/10</div>
+#hud{font-size:1.1rem}
+.bge{position:fixed;font-size:2rem;opacity:.10;pointer-events:none;animation:drift var(--d,6s) ease-in-out infinite alternate}@keyframes drift{from{transform:translateY(0) rotate(-8deg)}to{transform:translateY(-60px) rotate(8deg)}}</style></head><body>
+<div id="bgx"></div><h1>${naam}</h1><div id="hud">⭐ <span id="s">0</span> / vraag <span id="vn">1</span>/10</div>
 <div id="v"></div><div id="ant"></div>
 <script>
 const VR={
@@ -381,7 +389,9 @@ zee:[['Wat heeft 8 armen?','🐙 Octopus',['Krabbing','Vis','Zeester']],['Welke 
 snoep:[['Wat is bruin en zoet?','🍫 Chocolade',['Broccoli','Wortel','Spinazie']],['Wat draait rond op een stok?','🍭 Lolly',['Peer','Banaan','Appel']],['Wat heeft glazuur?','🍩 Donut',['Aardappel','Ui','Knoflook']],['Wat is een cupcake?','🧁 Gebak',['Groente','Fruit','Soep']],['Welk snoep is kleurrijk?','🍬 Snoep',['Rijst','Brood','Kaas']],['Wat wordt gemaakt van cacao?','🍫 Chocolade',['Thee','Sap','Melk']],['Welke vorm is een donut?','⭕ Rond',['Vierkant','Driehoek','Ster']],['Wat zit op een ijsje?','🍦 Bolletje',['Blad','Steen','Zand']],['Welk snoep is hard?','🍭 Lolly',['Pudding','Cake','Saus']],['Waar zit chocola in?','🍪 Koek',['Salade','Soep','Pasta']]],
 sport:[['Met welke bal trap je?','⚽ Voetbal',['Tennisbal','Bal','Knikker']],['In welke sport gooi je door een ring?','🏀 Basketbal',['Voetbal','Hockey','Tennis']],['Wat gebruik je in tennis?','🎾 Racket',['Stick','Club','Knuppel']],['Welke sport is op ijs?','⛸️ Schaatsen',['Zwemmen','Hardlopen','Voetbal']],['Hoeveel doelpunten is een touchdown?','🏈 6',['1','3','10']],['Wat doe je in een zwembad?','🏊 Zwemmen',['Fietsen','Skaten','Rennen']],['Welke bal is het kleinst?','🏓 Pingpongbal',['Voetbal','Basketbal','Volleybal']],['Wat win je bij de finish?','🏆 Prijs',['Brood','Water','Sokken']],['In welke sport gebruik je een handschoen?','⚾ Honkbal',['Voetbal','Judo','Roeien']],['Welke kleur heeft een tennisbal?','💛 Geel',['Blauw','Rood','Paars']]],
 muziek:[['Wat heeft snaren?','🎸 Gitaar',['Drum','Fluit','Trompet']],['Wat heeft toetsen?','🎹 Piano',['Gitaar','Drum','Hoorn']],['Wat sla je?','🥁 Drum',['Piano','Viool','Fluit']],['Waar zing je in?','🎤 Microfoon',['Telefoon','Radio','Klok']],['Wat blaas je?','🎺 Trompet',['Piano','Drum','Gitaar']],['Hoeveel snaren heeft een gitaar?','6',['2','10','20']],['Wat maakt ritme?','🥁 Drum',['Schilderij','Boek','Stoel']],['Welke noot komt na do?','re',['bo','zo','la']],['Wat is een band?','🎸 Groep muzikanten',['Schoen','Rijm','Pasta']],['Waar speel je een concert?','🎤 Podium',['Keuken','Badkamer','Kelder']]]};
-const vr=VR['THEMA_ID'].sort(()=>Math.random()-.5).slice(0,10);
+const _TI='THEMA_ID';const vr=VR[_TI].sort(()=>Math.random()-.5).slice(0,10);
+{const ITS={dieren:['🐶','🐱','🐰','🦁'],ruimte:['⭐','🪐','🚀','🌙'],zee:['🐟','🐠','🦀','🐬'],snoep:['🍬','🍭','🧁','🍩'],sport:['⚽','🏀','🎾','🏈'],muziek:['🎵','🎶','🎸','🥁']};const IT=ITS[_TI]||ITS.dieren;
+ const bgx=document.getElementById('bgx');for(let i=0;i<9;i++){const s=document.createElement('span');s.className='bge';s.textContent=IT[i%IT.length];s.style.left=(4+i*11)+'vw';s.style.top=(10+((i*37)%80))+'vh';s.style.setProperty('--d',(5+i*1.3).toFixed(1)+'s');s.style.fontSize=(1.4+(i%3)*.5)+'rem';bgx.appendChild(s)}}
 let n=0,score=0;const A=new(window.AudioContext||window.webkitAudioContext)();
 const blip=(f,d=.1)=>{const o=A.createOscillator(),g=A.createGain();o.frequency.value=f;g.gain.value=.15;o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
 function vraag(){const[q,goed,fout]=vr[n];document.getElementById('v').textContent=q;document.getElementById('vn').textContent=n+1;let foutN=0;
