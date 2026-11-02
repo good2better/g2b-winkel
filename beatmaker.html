@@ -18,7 +18,7 @@ button.hoofd:hover{filter:brightness(1.1)}
 .gline{display:grid;grid-template-columns:70px 1fr;gap:4px}
 .cells{display:grid;grid-auto-flow:column;grid-auto-columns:20px;gap:4px;overflow-x:auto;padding-bottom:4px}
 .grid .lbl{font-size:.75rem;color:var(--dim);display:flex;align-items:center;justify-content:flex-end;gap:4px;padding-right:6px;cursor:pointer;user-select:none}
-.grid .lbl .rlock,.grid .lbl .rfx{font-size:.65rem;opacity:.7;cursor:pointer}
+.grid .lbl .rlock,.grid .lbl .rfx{font-size:.75rem;opacity:.7;cursor:pointer;padding:4px 6px;margin:-4px 0}
 .grid .lbl .rlock:hover,.grid .lbl .rfx:hover{opacity:1}
 .grid .rstrip{display:flex;grid-column:1/-1;gap:14px;padding:4px 10px;background:#ffffff08;border-radius:6px;margin:2px 0}
 .grid .rstrip .rlab{display:flex;align-items:center;gap:6px;font-size:.62rem;color:var(--dim)}
@@ -237,7 +237,7 @@ document.getElementById('song').onclick=()=>{
   if(was){for(let b=0;b<8;b++)for(const s of was)state[r].add(b*16+(s%16));continue} // 🔒 rij: eigen patroon herhaalt door de hele song
   const p=pat[r]||[];
   for(let b=1;b<7;b++)for(const s of p)state[r].add(b*16+s); // couplet: patroon 6 bars
-  if(r=='hat'){for(const s of p)if(s%4==0)state[r].add(s)} // intro: alleen hoofdtellende hats
+  if(r=='hat'){for(const s of p.slice(0,2))state[r].add(s)} // intro: alleen de eerste 2 hat-posities van het genre (werkt ook bij off-beat hats)
   if(r=='kick')state[r].add(0); // intro-kick op de 1
  }
  // outro-bar 8: strip → kick op 1, snare-fill op het eind (🔒 rijen blijven onaangeroerd)
