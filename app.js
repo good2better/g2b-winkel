@@ -196,10 +196,13 @@ async function laden() {
         ${p.video_en || p.video_es ? `<button class="taal" data-taal="${esc(p.id)}"
            title="NL / EN / ES">NL</button>` : ""}
         <video class="promo" data-vid="${esc(p.id)}"
-               src="${esc(p.video)}" data-nl="${esc(p.video)}"
+               data-src="${esc(p.video)}" data-nl="${esc(p.video)}"
                data-en="${esc(p.video_en || "")}"
                data-es="${esc(p.video_es || "")}" controls playsinline
-               preload="metadata"></video>
+               ${p.cover ? `poster="${esc(p.cover)}"` : ""}
+               preload="none"></video>
+        <button class="vidplay" data-vidplay="${esc(p.id)}"
+           aria-label="Speel video van ${esc(p._titel)}">▶</button>
       </div>` : ""}
       <div class="koop-blok">
         ${licenties.map((k, i) =>
@@ -227,6 +230,15 @@ lijst.addEventListener("click", e => {
     const p = productenById(lic.dataset.id);
     const btn = card.querySelector("[data-buy]");
     if (btn && p) btn.href = p.links[lic.dataset.lic];
+    return;
+  }
+  const vp = e.target.closest("[data-vidplay]");
+  if (vp) {
+    const v = vp.closest(".vid-wrap").querySelector("video");
+    const l = (typeof g2bLang === "function") ? g2bLang() : "nl";
+    v.src = v.dataset[l] || v.dataset.nl;
+    v.load(); v.play().catch(() => {});
+    vp.remove();
     return;
   }
   const taal = e.target.closest("[data-taal]");
