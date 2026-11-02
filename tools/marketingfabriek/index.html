@@ -53,6 +53,7 @@ tr:hover td{background:#ffffff08}
 <div class="rij"><input id="c-tags" placeholder="Tags (komma: fan, koper, artiest)"><input id="c-notitie" placeholder="Notitie"></div>
 <button class="go" onclick="addContact()">+ Toevoegen</button>
 <button class="sec" onclick="importeerDialoog()">⬆ Importeer e-mails</button>
+<button class="sec" onclick="checkDomeinen()">🔍 Check e-mails</button>
 <button class="sec" onclick="exportCSV()">⬇ Exporteer CSV</button>
 </div>
 <div class="kaart"><h2>Alle contacten (<span id="c-aantal">0</span>)</h2>
@@ -88,10 +89,32 @@ tr:hover td{background:#ffffff08}
 
 <script>
 const LS='g2b_marketing';
-let DB=JSON.parse(localStorage.getItem(LS)||'{"contacten":[],"lijsten":[],"log":[]}');
+let DB=JSON.parse(localStorage.getItem(LS)||'{"contacten":[],"lijsten":[],"log":[],"mx":{}}');
+DB.mx=DB.mx||{};
 const save=()=>localStorage.setItem(LS,JSON.stringify(DB));
 const zeg=(m)=>{DB.log.unshift(new Date().toLocaleString('nl-NL')+' — '+m);DB.log=DB.log.slice(0,80);save();teken()};
 const mailOk=(m)=>/^[^\s@,;]+@[^\s@,;]+\.[a-z]{2,}$/i.test(m);
+const domein=(m)=>(m.split('@')[1]||'').toLowerCase();
+
+// domein-check: kan het domein echt mail ontvangen? (gratis DNS-check, geen kosten)
+async function checkDomein(d){
+ if(!d)return 'fout';
+ if(DB.mx[d])return DB.mx[d];
+ try{
+  const r=await(await fetch('https://dns.google/resolve?name='+encodeURIComponent(d)+'&type=MX')).json();
+  DB.mx[d]=(r.Answer&&r.Answer.length)?'ok':'fout';
+ }catch(e){DB.mx[d]='?'}
+ save();return DB.mx[d]}
+const statusVan=(m)=>DB.mx[domein(m)]||'';
+const statusIcoon=(s)=>s=='ok'?'<span title="domein kan mail ontvangen" style="color:var(--groen,#3f8)">✓</span>':s=='fout'?'<span title="domein bestaat niet of kan geen mail ontvangen" style="color:var(--rood,#f66)">⚠️</span>':'<span style="opacity:.4" title="nog niet gecheckt">?</span>';
+
+async function checkDomeinen(){
+ const ds=[...new Set(DB.contacten.map(c=>domein(c.mail)).filter(Boolean))];
+ if(!ds.length){alert('Geen contacten om te checken');return}
+ zeg('Check gestart: '+ds.length+' domeinen…');
+ let ok=0,fout=0;
+ for(const d of ds){const s=await checkDomein(d);s=='ok'?ok++:s=='fout'?fout++:0;teken()}
+ zeg('Check klaar: '+ok+' domeinen OK, '+fout+' verdacht (⚠️ = waarschijnlijk onbereikbaar)')}
 
 // tabs
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
@@ -104,7 +127,7 @@ function addContact(){
  if(DB.contacten.find(c=>c.mail==m)){alert('Die staat er al in');return}
  DB.contacten.push({naam:n||m.split('@')[0],mail:m,tags:document.getElementById('c-tags').value.split(',').map(t=>t.trim()).filter(Boolean),notitie:document.getElementById('c-notitie').value.trim()});
  document.getElementById('c-naam').value=document.getElementById('c-mail').value=document.getElementById('c-tags').value=document.getElementById('c-notitie').value='';
- zeg('Contact toegevoegd: '+m);save();teken()}
+ zeg('Contact toegevoegd: '+m);save();teken();checkDomein(domein(m)).then(teken)}
 
 function importeerDialoog(){
  const blok=prompt('Plak e-mails (één per regel of met komma\'s):');if(!blok)return;
@@ -150,7 +173,7 @@ function teken(){
  document.getElementById('c-aantal').textContent=DB.contacten.length;
  document.getElementById('c-tabel').innerHTML=DB.contacten.length?
   '<table><tr><th>Naam</th><th>E-mail</th><th>Tags</th><th></th></tr>'+DB.contacten.map((c,i)=>
-   '<tr><td>'+esc(c.naam)+'</td><td>'+esc(c.mail)+'</td><td>'+c.tags.map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'</td><td><button class="slet" onclick="verwijder('+i+')">✕</button></td></tr>').join('')+'</table>'
+   '<tr><td>'+esc(c.naam)+'</td><td>'+statusIcoon(statusVan(c.mail))+' '+esc(c.mail)+'</td><td>'+c.tags.map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'</td><td><button class="slet" onclick="verwijder('+i+')">✕</button></td></tr>').join('')+'</table>'
   :'<div class="leeg">Nog geen contacten — voeg er een toe of importeer een lijst.</div>';
  document.getElementById('l-tabel').innerHTML=DB.lijsten.length?
   '<table><tr><th>Lijst</th><th>E-mails</th><th></th></tr>'+DB.lijsten.map((l,i)=>
@@ -158,10 +181,12 @@ function teken(){
   :'<div class="leeg">Nog geen lijsten.</div>';
  document.getElementById('k-lijst').innerHTML='<option value="">— kies een lijst —</option>'+DB.lijsten.map(l=>'<option>'+esc(l.naam)+'</option>').join('');
  const kopers=DB.contacten.filter(c=>c.tags.includes('koper')).length;
+ const verdacht=DB.contacten.filter(c=>statusVan(c.mail)=='fout').length;
  document.getElementById('s-grid').innerHTML=
   '<div class="stat"><b>'+DB.contacten.length+'</b><span>contacten</span></div>'+
   '<div class="stat"><b>'+DB.lijsten.length+'</b><span>lijsten</span></div>'+
   '<div class="stat"><b>'+DB.lijsten.reduce((s,l)=>s+l.mails.length,0)+'</b><span>e-mails in lijsten</span></div>'+
+  '<div class="stat"><b>'+verdacht+'</b><span>⚠️ verdachte domeinen</span></div>'+
   '<div class="stat"><b>'+kopers+'</b><span>kopers (tag)</span></div>';
  document.getElementById('s-log').textContent=DB.log.length?DB.log.join('\n'):'Nog geen activiteit.'}
 const esc=(s)=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
