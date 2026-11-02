@@ -136,7 +136,8 @@ const H=(naam,t)=>`<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><m
 h1{font-size:1.1rem;margin:10px}canvas{background:${t.achtergr};border-radius:12px;touch-action:none;max-width:96vw}#fx{background:transparent}
 #hud{display:flex;gap:18px;font-size:1rem;margin:6px}#over{display:none;position:fixed;inset:0;background:#000c;align-items:center;justify-content:center;flex-direction:column;text-align:center}
 #over h2{font-size:2rem}button{background:${t.acc};border:0;color:#042;padding:12px 28px;border-radius:10px;font-size:1.1rem;font-weight:700;cursor:pointer;margin-top:12px}
-.tip{opacity:.7;font-size:.8rem;margin:6px}</style></head><body>
+.tip{opacity:.7;font-size:.8rem;margin:6px}
+button,#fok,#fos{transition:transform .08s}button:active,#fok:active,#fos:active{transform:scale(1.08,.86)}</style></head><body>
 <h1>${naam}</h1><div id="hud"><span id="score">⭐ 0</span><span id="lvs">❤️</span><span id="klok"></span><span id="hs"></span></div>
 <div style="position:relative"><canvas id="c" width="420" height="560"></canvas><canvas id="fx" width="420" height="560" style="position:absolute;left:0;top:0;pointer-events:none"></canvas>
 <button id="fok" title="Eigen foto als karakter" style="position:absolute;right:8px;top:8px;background:#ffffff22;border:1px solid #fff4;color:#fff;border-radius:8px;padding:4px 9px;cursor:pointer;font-size:1rem">📷</button>
@@ -159,7 +160,9 @@ const A=new(window.AudioContext||window.webkitAudioContext)();
 const blip=(f,d=.08,type,v=.15)=>{type=type||(D.kid?'sine':'square');const o=A.createOscillator(),g=A.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,A.currentTime);g.gain.exponentialRampToValueAtTime(.001,A.currentTime+d);o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
 /* stijgende belonings-pling voor kids */
 const pling=()=>{blip(660,.07,'sine',.12);setTimeout(()=>blip(880,.09,'sine',.12),75)};
-const punt=(n,x,y)=>{score+=n;document.getElementById('score').textContent='⭐ '+score;if(score>hs){hs=score;localStorage.setItem(HSK,hs);document.getElementById('hs').textContent='🏆 '+hs}if(x!=null)pop(x,y,'+'+n);if(D.kid)pling()};
+const punt=(n,x,y)=>{score+=n;document.getElementById('score').textContent='⭐ '+score;if(score>hs){hs=score;localStorage.setItem(HSK,hs);document.getElementById('hs').textContent='🏆 '+hs}if(x!=null)pop(x,y,'+'+n);if(D.kid){pling();if(navigator.vibrate)navigator.vibrate(12)}};
+/* kids: ruimere raak-zones (HB) en kleinere obstakel-zones (SB) — voelt alsof ze perfect raken */
+const HB=D.kid?1.3:1,SB=D.kid?.8:1;
 /* effect-laag: zwevende score-pops + confetti bovenop het spel */
 const FX=document.getElementById('fx'),FX2=FX.getContext('2d'),pops=[];
 const pop=(x,y,t,k='#ffe066')=>pops.push({x,y,t,k,l:1,v:-.9});
@@ -167,8 +170,10 @@ const confetti=()=>{for(let i=0;i<50;i++)pops.push({x:rand(0,W),y:rand(-80,Hh*.4
 (function fxloop(){FX2.clearRect(0,0,W,Hh);for(let i=pops.length-1;i>=0;i--){const p=pops[i];p.y+=p.v;p.l-=.012;if(p.l<=0){pops.splice(i,1);continue}FX2.globalAlpha=p.l;FX2.font='bold 18px system-ui';FX2.fillStyle=p.k;FX2.textAlign='center';FX2.fillText(p.t,p.x,p.y)}FX2.globalAlpha=1;requestAnimationFrame(fxloop)})();
 /* speeltijd: 0 = oneindig */
 let tijd=${JSON.stringify('TIJD')};
-if(tijd>0){const k=()=>document.getElementById('klok').textContent='⏰ '+tijd+'s';k();
- setInterval(()=>{if(af)return;tijd--;k();if(tijd<=0){einde();document.getElementById('ot').textContent='⏰ TIJD OM!'}},1000)}
+if(tijd>0){const T0=tijd,VK=['🌞','🌤️','⛅','🌥️','🌙'];
+ /* kids: zon gaat onder i.p.v. een enge tikkende klok */
+ const k=()=>{document.getElementById('klok').textContent=D.kid?VK[Math.min(4,Math.floor((1-tijd/T0)*5))]:'⏰ '+tijd+'s'};k();
+ setInterval(()=>{if(af)return;tijd--;k();if(tijd<=0){einde();document.getElementById('ot').textContent=D.kid?'🌙 Tijd om — goed gespeeld!':'⏰ TIJD OM!'}},1000)}
 const einde=()=>{af=true;confetti();
  if(SPELERS=='beurt'){if(beurtNr==1){localStorage.setItem(_bk,score);
    document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='👤 Speler 1: '+score+' punten';
@@ -241,8 +246,8 @@ function tik(x){}
  if(DUO){const im2=FITEMS.length?FITEMS[0]:null;if(ok(im2))_rond(im2,mand2.x,Hh-56,44);else emoji(T.held=='🐶'?'🐱':T.held,mand2.x,Hh-56,44);
   X.fillStyle='#f472b6';X.fillRect(mand2.x-38,Hh-72,76,6)}
  items.forEach(i=>{i.y+=i.v;if(i.kwaad)emoji(T.vijand,i.x,i.y,34);else itemX(i.ix,i.x,i.y,34);
-  if(i.y>Hh-78&&Math.abs(i.x-mand.x)<44){if(i.kwaad){lev--;lvs();blip(120,.3,'sawtooth')}else{punt(10,i.x,i.y);if(DUO){s1++;document.getElementById('score').textContent='P1 '+s1+' — P2 '+s2}blip(600,.1,'triangle')}i.y=Hh+99}
-  if(DUO&&i.y>Hh-78&&Math.abs(i.x-mand2.x)<44){if(i.kwaad){l2--;blip(120,.3,'sawtooth')}else{s2++;document.getElementById('score').textContent='P1 '+s1+' — P2 '+s2;blip(700,.1,'triangle')}i.y=Hh+99}
+  if(i.y>Hh-78&&Math.abs(i.x-mand.x)<44*HB){if(i.kwaad){lev--;lvs();blip(120,.3,'sawtooth')}else{punt(10,i.x,i.y);if(DUO){s1++;document.getElementById('score').textContent='P1 '+s1+' — P2 '+s2}blip(600,.1,'triangle')}i.y=Hh+99}
+  if(DUO&&i.y>Hh-78&&Math.abs(i.x-mand2.x)<44*HB){if(i.kwaad){l2--;blip(120,.3,'sawtooth')}else{s2++;document.getElementById('score').textContent='P1 '+s1+' — P2 '+s2;blip(700,.1,'triangle')}i.y=Hh+99}
   if(i.y>Hh-10&&!i.kwaad){i.y=Hh+99}});
  items=items.filter(i=>i.y<Hh+50);
  if(lev<=0||(DUO&&l2<=0)){if(DUO){const w=s1>s2?'🏆 Speler 1 wint!':s2>s1?'🏆 Speler 2 wint!':'🤝 Gelijkspel!';
@@ -302,7 +307,7 @@ function tik(){if(y>=grond-1){vy=-11;blip(300,.15,'triangle')}}
  if(++t>Math.max(35,80-dist*.005)){t=0;obs.push({x:W+30,kwaad:true})}
  held(70,y,44);
  obs.forEach(o=>{o.x-=spd+dist*.0004;emoji(T.vijand,o.x,grond,40);
-  if(Math.abs(o.x-70)<32&&y>grond-40){lev--;lvs();blip(120,.3,'sawtooth');o.x=-99}});
+  if(Math.abs(o.x-70)<32*SB&&y>grond-40){lev--;lvs();blip(120,.3,'sawtooth');o.x=-99}});
  obs=obs.filter(o=>o.x>-40);dist+=spd;if(dist%200<spd)punt(1);
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
 </`+'script></body></html>',
@@ -355,7 +360,9 @@ C.addEventListener('pointerup',e=>{if(!tch)return;const ax=e.offsetX-tch.x,ay=e.
 quiz:(naam,t,d)=>`<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${naam}</title>
 <style>body{margin:0;background:${t.achtergr};display:flex;flex-direction:column;align-items:center;font-family:system-ui;color:#fff;min-height:100vh;justify-content:center;padding:16px}
 h1{margin-bottom:6px}#v{font-size:1.3rem;margin:18px;text-align:center;min-height:60px}
-.a{width:280px;background:#ffffff14;border:2px solid ${t.acc};border-radius:12px;padding:14px;margin:6px;font-size:1.1rem;cursor:pointer;text-align:center}
+.a{width:280px;background:#ffffff14;border:2px solid ${t.acc};border-radius:12px;padding:14px;margin:6px;font-size:1.1rem;cursor:pointer;text-align:center;transition:transform .08s}
+.a:active{transform:scale(1.08,.86)}
+${d.kid?'.a{width:330px;padding:22px;font-size:1.3rem}':''}
 .a:hover{background:#ffffff28}.a.goed{background:#16a34a}.a.fout{background:#dc2626}
 .a.hint{animation:hp .7s infinite alternate}@keyframes hp{from{box-shadow:0 0 0 0 #fff0}to{box-shadow:0 0 16px 5px ${t.acc}}}
 #hud{font-size:1.1rem}</style></head><body>
@@ -394,9 +401,9 @@ C.addEventListener('pointermove',e=>{if(!t2)return;const nx=e.offsetX*W/C.client
  p.x=Math.max(20,Math.min(W-20,p.x));p.y=Math.max(50,Math.min(Hh-30,p.y));
  vij.forEach(v=>{v.x+=v.vx;v.y+=v.vy;if(v.x<30||v.x>W-30)v.vx*=-1;if(v.y<50||v.y>Hh-80)v.vy*=-1;
   emoji(T.vijand,v.x,v.y,36);
-  if(Math.abs(v.x-p.x)<30&&Math.abs(v.y-p.y)<30){lev--;lvs();blip(120,.3,'sawtooth');p={x:W/2,y:Hh-60}}});
+  if(Math.abs(v.x-p.x)<30*SB&&Math.abs(v.y-p.y)<30*SB){lev--;lvs();blip(120,.3,'sawtooth');p={x:W/2,y:Hh-60}}});
  dots.forEach((o,di)=>{itemX(di,o.x,o.y,28);
-  if(Math.abs(o.x-p.x)<28&&Math.abs(o.y-p.y)<28){o.y=-99;punt(10,o.x,o.y);blip(700,.08,'triangle')}});
+  if(Math.abs(o.x-p.x)<28*HB&&Math.abs(o.y-p.y)<28*HB){o.y=-99;punt(10,o.x,o.y);blip(700,.08,'triangle')}});
  dots=dots.filter(o=>o.y>0);held(p.x,p.y,40);
  if(!dots.length){punt(50);if(SPELERS=='beurt'){einde();return}af=true;document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🎉 Alles gepakt!';document.getElementById('os').textContent='Score: '+score;return}
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
