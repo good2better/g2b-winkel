@@ -560,6 +560,7 @@ function tik(x){mx=x}
  /* sturen */
  const pd=PAD();
  if(keys['ArrowLeft']||pd.l)mx-=6*RITM;if(keys['ArrowRight']||pd.r)mx+=6*RITM;if(tx!=null)mx+=(tx-mx)*.25;
+ mx=Math.max(wegM(PY-60)-62,Math.min(wegM(PY-60)+62,mx)); /* binnen de weg blijven */
  /* weg */
  const m=wegM(0);
  X.fillStyle='#1a3a1a';X.fillRect(0,0,W,Hh); /* gras */
@@ -575,7 +576,7 @@ function tik(x){mx=x}
   if(Math.abs(o.y-PY)<30&&Math.abs((om+o.x-W/2)-mx)<34){crash++ ;lev--;lvs();blip(90,.4,'sawtooth');o.y=-99;mx=W/2}});
  obst=obst.filter(o=>o.y<Hh+40&&o.y>-50);
  boosts.forEach(b=>{b.y+=b.v+spd*.4;const bm=wegM(b.y-60);
-  X.fillStyle='#fbbf24';X.beginPath();X.arc(bm+b.x-W/2,b.y,12,0,7);X.fill();X.fillStyle='#fff';X.font='14mx serif';X.fillText('⚡',bm+b.x-W/2,b.y);
+  X.fillStyle='#fbbf24';X.beginPath();X.arc(bm+b.x-W/2,b.y,12,0,7);X.fill();X.fillStyle='#fff';X.font='14px serif';X.fillText('⚡',bm+b.x-W/2,b.y);
   if(Math.abs(b.y-PY)<30&&Math.abs((bm+b.x-W/2)-mx)<32){b.y=-99;punt(15,bm+b.x,b.y);blip(900,.1,'triangle');spd+=.3}});
  boosts=boosts.filter(b=>b.y<Hh+40&&b.y>-50);
  /* mij: foto of voertuig-emoji */
