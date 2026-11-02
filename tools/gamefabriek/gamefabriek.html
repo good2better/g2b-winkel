@@ -184,7 +184,8 @@ const einde=()=>{af=true;confetti();
    document.getElementById('os').textContent='P1: '+_bv+' — P2: '+score}
   blip(180,.4,'sawtooth');return}
  document.getElementById('over').style.display='flex';document.getElementById('ot').textContent=score>0?'🎉 Goed gedaan!':'😅 Nog een keer?';document.getElementById('os').textContent='Score: '+score+(score>=hs&&score>0?' — NIEUW RECORD!':'');blip(180,.4,'sawtooth')};
-const emoji=(e,x,y,s)=>{X.font=s+'px serif';X.textAlign='center';X.textBaseline='middle';X.fillText(e,x,y)};
+/* glow erachter = items altijd goed zichtbaar op donkere achtergrond */
+const emoji=(e,x,y,s,g)=>{X.save();X.font=s+'px serif';X.textAlign='center';X.textBaseline='middle';if(g){X.shadowColor=g;X.shadowBlur=14}X.fillText(e,x,y);X.restore()};
 /* eigen foto's als sprites: held + extra karakters */
 const FOTOS=${JSON.stringify('FOTOS')};
 const _pi=u=>{const i=new Image();i.src=u;return i};
@@ -193,7 +194,8 @@ const FITEMS=(FOTOS.items||[]).map(_pi);
 const _rond=(i,x,y,s)=>{X.save();X.beginPath();X.arc(x,y,s/2,0,7);X.clip();X.drawImage(i,x-s/2,y-s/2,s,s);X.restore();X.strokeStyle=T.acc;X.lineWidth=2;X.beginPath();X.arc(x,y,s/2,0,7);X.stroke()};
 const ok=i=>i&&i.complete&&i.naturalWidth;
 const held=(x,y,s)=>{if(ok(FHELD))_rond(FHELD,x,y,s);else emoji(T.held,x,y,s)};
-const itemX=(i,x,y,s)=>{const im=FITEMS.length?FITEMS[i%FITEMS.length]:null;if(ok(im))_rond(im,x,y,s);else emoji(T.items[i%T.items.length],x,y,s)};
+/* licht schijfje achter elk item — altijd duidelijk, óók als een emoji donker rendert */
+const itemX=(i,x,y,s)=>{const im=FITEMS.length?FITEMS[i%FITEMS.length]:null;if(ok(im))_rond(im,x,y,s);else{X.save();X.globalAlpha=.18;X.fillStyle='#fff';X.beginPath();X.arc(x,y,s*.62,0,7);X.fill();X.globalAlpha=1;emoji(T.items[i%T.items.length],x,y,s,'rgba(255,255,255,.75)');X.restore()}};
 /* 📷 eigen foto als karakter — wie het spel ook opent */
 const _fk='g2b_foto_'+document.title,_svF=localStorage.getItem(_fk);
 if(_svF)FHELD=_pi(_svF);
@@ -245,7 +247,7 @@ function tik(x){}
  held(mand.x,Hh-56,44);X.fillStyle=T.acc;X.fillRect(mand.x-38,Hh-72,76,6);
  if(DUO){const im2=FITEMS.length?FITEMS[0]:null;if(ok(im2))_rond(im2,mand2.x,Hh-56,44);else emoji(T.held=='🐶'?'🐱':T.held,mand2.x,Hh-56,44);
   X.fillStyle='#f472b6';X.fillRect(mand2.x-38,Hh-72,76,6)}
- items.forEach(i=>{i.y+=i.v;if(i.kwaad)emoji(T.vijand,i.x,i.y,34);else itemX(i.ix,i.x,i.y,34);
+ items.forEach(i=>{i.y+=i.v;if(i.kwaad)emoji(T.vijand,i.x,i.y,34,'rgba(255,90,90,.85)');else itemX(i.ix,i.x,i.y,34);
   if(i.y>Hh-78&&Math.abs(i.x-mand.x)<44*HB){if(i.kwaad){lev--;lvs();blip(120,.3,'sawtooth')}else{punt(10,i.x,i.y);if(DUO){s1++;document.getElementById('score').textContent='P1 '+s1+' — P2 '+s2}blip(600,.1,'triangle')}i.y=Hh+99}
   if(DUO&&i.y>Hh-78&&Math.abs(i.x-mand2.x)<44*HB){if(i.kwaad){l2--;blip(120,.3,'sawtooth')}else{s2++;document.getElementById('score').textContent='P1 '+s1+' — P2 '+s2;blip(700,.1,'triangle')}i.y=Hh+99}
   if(i.y>Hh-10&&!i.kwaad){i.y=Hh+99}});
@@ -264,7 +266,7 @@ nieuw();
 function tik(x,y){if(!doel)return;const dx=x-doel.x,dy=y-doel.y;
  if(dx*dx+dy*dy<doel.r*doel.r*2){if(doel.kwaad){lev--;lvs();blip(120,.3,'sawtooth')}else{punt(15,doel.x,doel.y);blip(700,.1,'triangle')}doel=null}}
 (function loop(){if(af)return;bg();
- if(!doel){if(++t>30)nieuw()}else{doel.age++;if(doel.kwaad)emoji(T.vijand,doel.x,doel.y,46);else itemX(doel.ix,doel.x,doel.y,40);
+ if(!doel){if(++t>30)nieuw()}else{doel.age++;if(doel.kwaad)emoji(T.vijand,doel.x,doel.y,46,'rgba(255,90,90,.85)');else itemX(doel.ix,doel.x,doel.y,40);
   X.strokeStyle=doel.kwaad?'#f44':T.acc;X.lineWidth=3;X.beginPath();X.arc(doel.x,doel.y,doel.r+8-doel.age*.15,0,7);X.stroke();
   if(doel.age>90){if(!doel.kwaad){}doel=null;t=0}}
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
@@ -306,7 +308,7 @@ function tik(){if(y>=grond-1){vy=-11;blip(300,.15,'triangle')}}
  vy+=.55;y+=vy;if(y>grond){y=grond;vy=0}
  if(++t>Math.max(35,80-dist*.005)){t=0;obs.push({x:W+30,kwaad:true})}
  held(70,y,44);
- obs.forEach(o=>{o.x-=spd+dist*.0004;emoji(T.vijand,o.x,grond,40);
+ obs.forEach(o=>{o.x-=spd+dist*.0004;emoji(T.vijand,o.x,grond,40,'rgba(255,90,90,.85)');
   if(Math.abs(o.x-70)<32*SB&&y>grond-40){lev--;lvs();blip(120,.3,'sawtooth');o.x=-99}});
  obs=obs.filter(o=>o.x>-40);dist+=spd;if(dist%200<spd)punt(1);
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
@@ -351,7 +353,7 @@ C.addEventListener('pointerup',e=>{if(!tch)return;const ax=e.offsetX-tch.x,ay=e.
    if(h.x==eten.x&&h.y==eten.y){punt(10,h.x*S+S/2,h.y*S+S/2);blip(700,.1,'triangle');
     do{eten={x:Math.floor(rand(0,G)),y:Math.floor(rand(0,G*1.33))}}while(sl.some(s=>s.x==eten.x&&s.y==eten.y))}
    else sl.pop()}}
- bg();emoji(T.items[0],eten.x*S+S/2,eten.y*S+S/2,S-4);
+ bg();{const ex=eten.x*S+S/2,ey=eten.y*S+S/2;X.save();X.globalAlpha=.25;X.fillStyle='#fff';X.beginPath();X.arc(ex,ey,S*.8,0,7);X.fill();X.globalAlpha=1;emoji(T.items[0],ex,ey,S+2,'rgba(255,255,255,.8)');X.restore()}
  sl.forEach((s,i)=>{if(i==0){held(s.x*S+S/2,s.y*S+S/2,S-2)}else{X.fillStyle=T.acc+'88';X.beginPath();X.roundRect(s.x*S+1,s.y*S+1,S-2,S-2,6);X.fill()}});
  requestAnimationFrame(loop)})();
 </`+'script></body></html>',
@@ -400,7 +402,7 @@ C.addEventListener('pointermove',e=>{if(!t2)return;const nx=e.offsetX*W/C.client
 (function loop(){if(af)return;bg();
  p.x=Math.max(20,Math.min(W-20,p.x));p.y=Math.max(50,Math.min(Hh-30,p.y));
  vij.forEach(v=>{v.x+=v.vx;v.y+=v.vy;if(v.x<30||v.x>W-30)v.vx*=-1;if(v.y<50||v.y>Hh-80)v.vy*=-1;
-  emoji(T.vijand,v.x,v.y,36);
+  emoji(T.vijand,v.x,v.y,36,'rgba(255,90,90,.85)');
   if(Math.abs(v.x-p.x)<30*SB&&Math.abs(v.y-p.y)<30*SB){lev--;lvs();blip(120,.3,'sawtooth');p={x:W/2,y:Hh-60}}});
  dots.forEach((o,di)=>{itemX(di,o.x,o.y,28);
   if(Math.abs(o.x-p.x)<28*HB&&Math.abs(o.y-p.y)<28*HB){o.y=-99;punt(10,o.x,o.y);blip(700,.08,'triangle')}});
