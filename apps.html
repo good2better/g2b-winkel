@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🎛️ G2B APPS — al je tools op één plek</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230D0F0E'/><text x='50' y='68' font-size='52' font-weight='bold' text-anchor='middle' fill='%232FBF71' font-family='sans-serif'>G2</text></svg>">
+<style>
+:root{--groen:#16a34a;--donker:#0b1220;--kaart:#131c2e;--rand:#22314d;--tekst:#e8eef8;--zacht:#9fb0c9}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--donker);color:var(--tekst);font:15px/1.5 system-ui,sans-serif;padding:24px;max-width:980px;margin:0 auto}
+h1{font-size:1.7rem}
+h1 b{color:#4ade80}
+.sub{color:var(--zacht);margin-bottom:22px}
+.groep{color:#7ee2a8;font-size:.95rem;font-weight:700;letter-spacing:.5px;margin:22px 0 10px;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+a.app{background:var(--kaart);border:1px solid var(--rand);border-radius:14px;padding:16px;text-decoration:none;color:var(--tekst);display:block;transition:.15s}
+a.app:hover{border-color:var(--groen);transform:translateY(-2px);box-shadow:0 8px 20px #0006}
+a.app .ic{font-size:1.9rem;display:block;margin-bottom:6px}
+a.app .nm{font-weight:700;font-size:.95rem}
+a.app .in{color:var(--zacht);font-size:.78rem;margin-top:3px}
+a.app.lokaal{opacity:.75;border-style:dashed}
+.tag{float:right;font-size:.65rem;color:#7ee2a8;border:1px solid #7ee2a855;border-radius:6px;padding:1px 6px}
+.foot{color:var(--zacht);font-size:.75rem;margin-top:28px;text-align:center}
+</style>
+</head>
+<body>
+<h1>🎛️ G2B <b>APPS</b></h1>
+<p class="sub">Al je tools op één plek — klik en werken, niks installeren. Zet deze pagina als favoriet (Ctrl+D).</p>
+
+<div class="groep">🎵 Muziek maken</div>
+<div class="grid">
+<a class="app" href="beatmaker.html"><span class="ic">🥁</span><span class="nm">Beat Maker</span><div class="in">Beats bouwen in je browser — grid, lagen, eigen sounds</div></a>
+<a class="app" href="tools/beatmaker-gio/app/index.html"><span class="ic">🔥</span><span class="nm">Beat Maker GIO</span><div class="in">Jouw privé-versie met alles erop en eraan</div></a>
+<a class="app" href="tools/beatmaker-pro/app/index.html"><span class="ic">🎚️</span><span class="nm">Beat Maker PRO</span><div class="in">De verkoop-versie voor kopers</div></a>
+<a class="app" href="radio.html"><span class="ic">📻</span><span class="nm">G2B Radio</span><div class="in">Je eigen radio — 24/7 jouw muziek</div></a>
+</div>
+
+<div class="groep">🎮 Games & kids</div>
+<div class="grid">
+<a class="app" href="tools/gamefabriek/gamefabriek.html"><span class="ic">🏭</span><span class="nm">GAME-FABRIEK</span><div class="in">Maak complete spellen — 15 types, foto's, multiplayer</div></a>
+<a class="app" href="schoolspelen/index.html"><span class="ic">🎓</span><span class="nm">Schoolspelen</span><div class="in">Leer-ladder groep 1 → genius, NL-stem</div></a>
+<a class="app" href="gsbooks/index.html"><span class="ic">📚</span><span class="nm">GS Books</span><div class="in">Kinderboeken + woordspellen</div></a>
+<a class="app" href="animalheroes/index.html"><span class="ic">🦁</span><span class="nm">Animal Heroes</span><div class="in">Helden-boeken en avonturen</div></a>
+</div>
+
+<div class="groep">🛒 Winkels & promo</div>
+<div class="grid">
+<a class="app" href="index.html"><span class="ic">🛍️</span><span class="nm">Muziekwinkel</span><div class="in">Beats, packs en plugins te koop</div></a>
+<a class="app" href="beats.html"><span class="ic">🎹</span><span class="nm">Beats</span><div class="in">Losse beats beluisteren & kopen</div></a>
+<a class="app" href="gratis.html"><span class="ic">🎁</span><span class="nm">Gratis</span><div class="in">Gratis downloads</div></a>
+<a class="app" href="kleding.html"><span class="ic">👕</span><span class="nm">Kleding</span><div class="in">G2B merch & prints</div></a>
+<a class="app" href="techradar.html"><span class="ic">📡</span><span class="nm">TechRadar</span><div class="in">Nieuwe tools in de gaten</div></a>
+<a class="app" href="sync/index.html"><span class="ic">🎬</span><span class="nm">Sync-bibliotheek</span><div class="in">Muziek voor film/tv/games (wachtwoord)</div></a>
+<a class="app" href="live/index.html"><span class="ic">📺</span><span class="nm">Live</span><div class="in">Live-pagina</div></a>
+</div>
+
+<div class="groep">💻 Op je eigen pc (geen link — draait lokaal)</div>
+<div class="grid">
+<a class="app lokaal"><span class="ic">🎧</span><span class="nm">Sound Lab <span class="tag">lokaal :8200</span></span><div class="in">Geluid bewerken & packs bouwen</div></a>
+<a class="app lokaal"><span class="ic">🖼️</span><span class="nm">ImageLab <span class="tag">lokaal</span></span><div class="in">Beeld-werkstation: maken, upscalen, achtergrond weg</div></a>
+<a class="app lokaal"><span class="ic">🧠</span><span class="nm">Psychologie <span class="tag">lokaal :8030</span></span><div class="in">NL hulp-instanties + brieven</div></a>
+<a class="app lokaal"><span class="ic">⚖️</span><span class="nm">Juridisch <span class="tag">lokaal :8020</span></span><div class="in">NL wetboek opzoeken</div></a>
+<a class="app lokaal"><span class="ic">🏢</span><span class="nm">Bedrijfsmiddelen <span class="tag">lokaal :8010</span></span><div class="in">Contracten, facturen, merk-kit</div></a>
+<a class="app lokaal"><span class="ic">🎛️</span><span class="nm">GAW <span class="tag">lokaal :8600</span></span><div class="in">Jouw eigen DAW</div></a>
+<a class="app lokaal"><span class="ic">📖</span><span class="nm">PagePlay <span class="tag">lokaal</span></span><div class="in">Boeken → spellen, audioboeken, KDP</div></a>
+</div>
+
+<p class="foot">💾 Niets installeren — alles hierboven opent in je browser. Favoriet zetten: Ctrl+D</p>
+</body>
+</html>
