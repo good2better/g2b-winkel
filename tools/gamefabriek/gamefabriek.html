@@ -126,7 +126,7 @@ T('beatfile').onchange=e=>{const f=e.target.files[0];if(!f)return;const fr=new F
 /* ===== SPEL-GENERATOREN — elke functie geeft complete game-JS terug ===== */
 const H=(naam,t)=>`<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${naam}</title><style>body{margin:0;background:${t.achtergr};display:flex;flex-direction:column;align-items:center;font-family:system-ui;color:#fff;min-height:100vh}
-h1{font-size:1.1rem;margin:10px}canvas{background:${t.achtergr};border-radius:12px;touch-action:none;max-width:96vw}
+h1{font-size:1.1rem;margin:10px}canvas{background:${t.achtergr};border-radius:12px;touch-action:none;max-width:96vw}#fx{background:transparent}
 #hud{display:flex;gap:18px;font-size:1rem;margin:6px}#over{display:none;position:fixed;inset:0;background:#000c;align-items:center;justify-content:center;flex-direction:column;text-align:center}
 #over h2{font-size:2rem}button{background:${t.acc};border:0;color:#042;padding:12px 28px;border-radius:10px;font-size:1.1rem;font-weight:700;cursor:pointer;margin-top:12px}
 .tip{opacity:.7;font-size:.8rem;margin:6px}</style></head><body>
