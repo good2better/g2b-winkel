@@ -116,6 +116,21 @@
    "download_dir": "d/g2bprodsuite"
   },
   {
+   "id": "g2bsmash",
+   "titel": "G2B SMASH",
+   "soort": "browser-tool (ZIP)",
+   "beschrijving": "Sleep je beat erin → promo-videoclip eruit. Kies formaat (verticaal TikTok/Shorts, vierkant of breed), look (spectrum/pulse) en kleur, typ je titel en druk RENDER: een echte .mp4 met bewegend beeld + jouw audio rolt eruit. 100% lokaal in je browser — niks installeren, werkt offline, je beat verlaat je pc niet. Ook GRATIS bij de G2B Producer Suite.",
+   "prijs": 19.95,
+   "links": {
+    "koop": "bestel.html?p=g2bsmash",
+    "download": "d/g2bsmash/"
+   },
+   "groep": "studio-tools",
+   "badge": "NIEUW",
+   "cover": "media/g2bsmash-cover.png",
+   "download_dir": "d/g2bsmash"
+  },
+  {
    "id": "g2bsuite1",
    "titel": "G2B SUITE — alle marketeer-tools",
    "soort": "app",
