@@ -52,6 +52,23 @@
    "video": "media/g2brefors-demo.mp4"
   },
   {
+   "id": "g2bluister",
+   "titel": "G2B LUISTER — speel een geluid, hij schrijft de MIDI-loop",
+   "soort": "plugin",
+   "beschrijving": "NOOIT MEER GRIDS ZELF PROGRAMMEREN: zet LUISTER op een spoor, druk LUISTER en speel je geluid erdoor — een beat, one-shot of neuriën — en hij schrijft de passende MIDI-LOOPS erbij. Hij splitst wat hij hoort in KICK/SNARE/HAT/MELODIE en bouwt een strak patroon in jouw genre: 10 PILLS (TRAP·DRILL·BOOMBAP·RNB·HOUSE·DEMBOW·KAWINA·LOFI·SOUL·POP). Toonsoort-detect, BPM-detect, hit-teller in de scope. 4 knoppen: HEFT (patroon-dichtheid), MENS (humanize), LENGTE (2-16 bars), VAR (variatie). REFINE = volgende variatie op dezelfde analyse. ↓MID schrijft 2 APARTE .mid's — DRUMS + MELODIE — in je Music\\G2B map en opent die meteen om te slepen naar je tijdlijn. Loop speelt live mee als MIDI-output en volgt je transport (PLAY = speelt, STOP = stil). DICE, AAN/UIT, 8 skins, level-meter. 100% eigen DSP — geen AI, geen cloud, werkt offline. VST3 + CLAP + standalone EXE + handleiding-PDF.",
+   "prijs": "€ 29,95",
+   "links": {
+    "koop": "bestel.html?p=g2bluister",
+    "download": "bedankt.html?k=g2bluister"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/g2bluister-cover.png",
+   "download_dir": "d/g2bluister",
+   "demo": "media/g2bluister-demo.mp4",
+   "video": "media/g2bluister-demo.mp4"
+  },
+  {
    "id": "g2bsuite1",
    "titel": "G2B SUITE — alle marketeer-tools",
    "soort": "app",
