@@ -31,7 +31,7 @@ a.spel small{display:block;font-weight:400;color:var(--zacht);font-size:.8rem;ma
 <script>
 const _tb=document.getElementById('thema');
 const _zet=l=>{document.body.classList.toggle('licht',l);_tb.textContent=l?'🌙':'☀️'};
-_zet(localStorage.getItem('g2b_thema')=='licht');
+_zet(localStorage.getItem('g2b_thema')!='donker');
 _tb.onclick=()=>{const l=!document.body.classList.contains('licht');localStorage.setItem('g2b_thema',l?'licht':'donker');_zet(l)};
 </script>
 </body>
