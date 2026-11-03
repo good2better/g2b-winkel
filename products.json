@@ -113,7 +113,9 @@
       "groep": "plugins",
       "badge": "NIEUW",
       "cover": "media/g2bcopro-cover.png",
-      "download_dir": "d/g2bcopro/"
+      "download_dir": "d/g2bcopro/",
+      "demo": "media/g2bcopro-demo.mp4",
+      "video": "media/g2bcopro-demo.mp4"
     },
     {
       "id": "g2bdjebu",
@@ -128,7 +130,9 @@
       "groep": "plugins",
       "badge": "NIEUW",
       "cover": "media/g2bdjebu-cover.png",
-      "download_dir": "d/g2bdjebu/"
+      "download_dir": "d/g2bdjebu/",
+      "demo": "media/g2bdjebu-demo.mp4",
+      "video": "media/g2bdjebu-demo.mp4"
     },
     {
       "id": "g2bprodsuite",
@@ -143,7 +147,9 @@
       "groep": "plugins",
       "badge": "DEAL",
       "cover": "media/g2bprodsuite-cover.png",
-      "download_dir": "d/g2bprodsuite"
+      "download_dir": "d/g2bprodsuite",
+      "demo": "media/g2bprodsuite-demo.mp4",
+      "video": "media/g2bprodsuite-demo.mp4"
     },
     {
       "id": "g2bsmash",
@@ -158,7 +164,9 @@
       "groep": "studio-tools",
       "badge": "NIEUW",
       "cover": "media/g2bsmash-cover.png",
-      "download_dir": "d/g2bsmash"
+      "download_dir": "d/g2bsmash",
+      "demo": "media/g2bsmash-demo.mp4",
+      "video": "media/g2bsmash-demo.mp4"
     },
     {
       "id": "g2bairdrums",
@@ -173,7 +181,9 @@
       "groep": "studio-tools",
       "badge": "NIEUW",
       "cover": "media/g2bairdrums-cover.png",
-      "download_dir": "d/g2bairdrums/"
+      "download_dir": "d/g2bairdrums/",
+      "demo": "media/g2bairdrums-demo.mp4",
+      "video": "media/g2bairdrums-demo.mp4"
     },
     {
       "id": "g2bsuite1",
