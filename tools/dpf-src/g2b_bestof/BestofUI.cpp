@@ -20,7 +20,7 @@ static inline Color g2bsk(int sk,int r){if(sk<0)sk=0;if(sk>7)sk=7;const float*c=
 
 START_NAMESPACE_DISTRHO
 
-static const int kNInstr = 21;
+static const int kNInstr = kInstrNamesUI_N;
 
 class InstrUI : public UI {
 public:
@@ -84,10 +84,19 @@ protected:
         fillColor(g2bsk(skin,5)); fontSize(22.f);
         text(ix+24.f,iy+ih/2,"<",nullptr); text(ix+iw-24.f,iy+ih/2,">",nullptr);
         fontSize(24.f); fillColor(g2bsk(skin,2));
-        text(ix+iw/2,iy+20.f,fNames[fInstr][0]?fNames[fInstr]:"INSTRUMENT",nullptr);
+        text(ix+iw/2,iy+19.f,fNames[fInstr][0]?fNames[fInstr]:"INSTRUMENT",nullptr);
         fontSize(10.f); fillColor(g2bsk(skin,3));
-        char nb[32]; snprintf(nb,sizeof nb,"%d / %d — DICE = willekeurig",fInstr+1,kNInstr);
-        text(ix+iw/2,iy+40.f,nb,nullptr);
+        char nb[40]; snprintf(nb,sizeof nb,"%d / %d",fInstr+1,kNInstr);
+        text(ix+iw/2,iy+35.f,nb,nullptr);
+        {
+            const float rst=iw-140.f, rx0=ix+70.f, ry=iy+ih-7.f;
+            const float st=kNInstr>1?rst/(kNInstr-1):0.f;
+            for(int i=0;i<kNInstr;i++){
+                const bool cur=(i==fInstr);
+                beginPath(); circle(rx0+st*i,ry,cur?3.2f:1.6f);
+                fillColor(cur?g2bsk(skin,2):g2bsk(skin,4)); fill();
+            }
+        }
         // scope
         float sx=18.f, sy=118.f, sw=W-36.f, sh=44.f;
         beginPath(); rect(sx,sy,sw,sh); fillColor(g2bsk(skin,1)); fill();
@@ -136,12 +145,12 @@ protected:
             // instrument pijlen
             float ix=18.f,iy=54.f,iw=W-36.f,ih=52.f;
             if(y>=iy&&y<=iy+ih){
-                if(x<ix+48){setParameterValue(0,fInstr<=0?kNInstr-1:fInstr-1);return true;}
-                if(x>ix+iw-48){setParameterValue(0,fInstr>=kNInstr-1?0:fInstr+1);return true;}
+                if(x<ix+48){float v=(float)(fInstr<=0?kNInstr-1:fInstr-1);setParameterValue(0,v);parameterChanged(0,v);return true;}
+                if(x>ix+iw-48){float v=(float)(fInstr>=kNInstr-1?0:fInstr+1);setParameterValue(0,v);parameterChanged(0,v);return true;}
             }
             // AAN / DICE pills
             float ax=W-66.f,ay=H-30.f;
-            if(x>=ax&&x<=ax+52&&y>=ay&&y<=ay+20){setParameterValue(3,fOn?0.f:1.f);return true;}
+            if(x>=ax&&x<=ax+52&&y>=ay&&y<=ay+20){float v=fOn?0.f:1.f;setParameterValue(3,v);parameterChanged(3,v);return true;}
             if(x>=ax&&x<=ax+52&&y>=ay-28&&y<=ay-8){setParameterValue(6,1.f);return true;}
             // knobs
             const int nk=4;float step=(W-40)/nk;
@@ -156,7 +165,7 @@ protected:
             int p=paramOf(fDrag); if(p<0)return true;
             float nv=fValue[fDrag]+dy*(fMax[fDrag]-fMin[fDrag])/200.f;
             if(nv<fMin[fDrag])nv=fMin[fDrag]; if(nv>fMax[fDrag])nv=fMax[fDrag];
-            setParameterValue(p,nv);
+            setParameterValue(p,nv);fValue[fDrag]=nv;repaint();
         }
         return fDrag>=0;
     }

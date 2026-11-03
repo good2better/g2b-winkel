@@ -3,3 +3,7 @@ tools/build/
 tools/dgl
 tools/distrho
 tools/utils
+
+# gegenereerde sample-data (build genereert deze zelf)
+tools/dpf-src/*/??*_data.h
+tools/dpf-src/**/*_data.h

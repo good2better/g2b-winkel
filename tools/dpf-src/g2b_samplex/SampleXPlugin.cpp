@@ -53,6 +53,7 @@ struct SVoice
 {
     bool active = false;
     uint8_t note = 0;
+    uint8_t root = 0;
     float pos = 0.0f;
     float amp = 0.0f;
     float vel = 0.0f;
@@ -60,6 +61,7 @@ struct SVoice
     float lp = 0.0f;
     float end = -1.0f;
     float rate = 0.0f;
+    bool rel = false;
 };
 
 // ---- base64 ----
@@ -80,7 +82,7 @@ class SampleXPlugin : public Plugin
 {
 public:
     enum Parameters {
-        kPitch = 0, kFilter, kDrive, kDrop, kStart, kLevel, kGalaxy, kDice, kPreset, kTime, kTone, kFormant, kAutofit, kChop, kSnap, kExport, kOn, kKracht, kSfeer, kParameterCount
+        kPitch = 0, kFilter, kDrive, kDrop, kStart, kLevel, kGalaxy, kDice, kPreset, kTime, kTone, kFormant, kAutofit, kChop, kSnap, kExport, kOn, kKracht, kSfeer, kGate, kBass, kChord, kParameterCount
     };
 
     SampleXPlugin()
@@ -133,51 +135,63 @@ protected:
         {
         case kPitch:
             parameter.name = "Pitch"; parameter.symbol = "pitch"; parameter.unit = "st";
-            parameter.ranges = {-12.0f, 12.0f, 0.0f}; break;
+            parameter.ranges = {0.0f, -12.0f, 12.0f}; break;
         case kFilter:
             parameter.name = "Filter"; parameter.symbol = "filter"; parameter.unit = "Hz";
-            parameter.ranges = {500.0f, 15000.0f, 8000.0f}; break;
+            parameter.ranges = {8000.0f, 500.0f, 15000.0f}; break;
         case kDrive:
             parameter.name = "Drive"; parameter.symbol = "drive"; parameter.unit = "%";
-            parameter.ranges = {0.0f, 100.0f, 30.0f}; break;
+            parameter.ranges = {30.0f, 0.0f, 100.0f}; break;
         case kDrop:
             parameter.name = "Drop"; parameter.symbol = "drop"; parameter.unit = "%";
-            parameter.ranges = {0.0f, 100.0f, 40.0f}; break;
+            parameter.ranges = {40.0f, 0.0f, 100.0f}; break;
         case kStart:
             parameter.name = "Start"; parameter.symbol = "start"; parameter.unit = "%";
-            parameter.ranges = {0.0f, 90.0f, 0.0f}; break;
+            parameter.ranges = {0.0f, 0.0f, 90.0f}; break;
         case kLevel:
             parameter.name = "Level"; parameter.symbol = "level"; parameter.unit = "%";
-            parameter.ranges = {0.0f, 100.0f, 85.0f}; break;
-        case kDice: parameter.name="Dice"; parameter.symbol="dice"; parameter.hints=kParameterIsInteger|kParameterIsTrigger; parameter.ranges={0.0f,1.0f,0.0f}; break;
+            parameter.ranges = {85.0f, 0.0f, 100.0f}; break;
+        case kDice: parameter.name="Dice"; parameter.symbol="dice"; parameter.hints=kParameterIsInteger|kParameterIsTrigger; parameter.ranges={0.0f,0.0f,1.0f}; break;
         case kPreset:
             parameter.name = "Preset"; parameter.symbol = "preset"; parameter.unit = "";
             parameter.hints = kParameterIsInteger;
-            parameter.ranges = {0.0f, 5.0f, 0.0f}; break;
+            parameter.ranges = {0.0f, 0.0f, 5.0f}; break;
         case kTime:
             parameter.name = "Tijd"; parameter.symbol = "tijd"; parameter.unit = "%";
-            parameter.ranges = {50.0f, 200.0f, 100.0f}; break;
+            parameter.ranges = {100.0f, 50.0f, 200.0f}; break;
         case kTone:
             parameter.name = "Toon"; parameter.symbol = "toon"; parameter.unit = "st";
-            parameter.ranges = {-12.0f, 12.0f, 0.0f}; break;
-        case kAutofit: parameter.name="AUTO-FIT"; parameter.symbol="autofit"; parameter.hints=kParameterIsTrigger|kParameterIsBoolean; parameter.ranges={0.0f,1.0f,0.0f}; break;
-        case kChop:   parameter.name="CHOP";    parameter.symbol="chop";    parameter.unit="slices"; parameter.hints|=kParameterIsInteger; parameter.ranges={0.0f,16.0f,0.0f}; break;
-        case kSnap:   parameter.name="KEY-SNAP";parameter.symbol="snap";    parameter.hints|=kParameterIsBoolean; parameter.ranges={0.0f,1.0f,0.0f}; break;
-        case kExport: parameter.name="EXPORT WAV"; parameter.symbol="export"; parameter.hints=kParameterIsTrigger|kParameterIsBoolean; parameter.ranges={0.0f,1.0f,0.0f}; break;
+            parameter.ranges = {0.0f, -12.0f, 12.0f}; break;
+        case kAutofit: parameter.name="AUTO-FIT"; parameter.symbol="autofit"; parameter.hints=kParameterIsTrigger|kParameterIsBoolean; parameter.ranges={0.0f,0.0f,1.0f}; break;
+        case kChop:   parameter.name="CHOP";    parameter.symbol="chop";    parameter.unit="slices"; parameter.hints|=kParameterIsInteger; parameter.ranges={0.0f,0.0f,16.0f}; break;
+        case kSnap:   parameter.name="KEY-SNAP";parameter.symbol="snap";    parameter.hints|=kParameterIsBoolean; parameter.ranges={0.0f,0.0f,1.0f}; break;
+        case kExport: parameter.name="EXPORT WAV"; parameter.symbol="export"; parameter.hints=kParameterIsTrigger|kParameterIsBoolean; parameter.ranges={0.0f,0.0f,1.0f}; break;
         case kFormant:
             parameter.name = "Formant"; parameter.symbol = "formant"; parameter.unit = "st";
-            parameter.ranges = {-12.0f, 12.0f, 0.0f}; break;
+            parameter.ranges = {0.0f, -12.0f, 12.0f}; break;
         case kOn:
             parameter.name = "Aan"; parameter.symbol = "aan";
             parameter.hints |= kParameterIsBoolean;
-            parameter.ranges = {0.0f, 1.0f, 1.0f}; break;
+            parameter.ranges = {1.0f, 0.0f, 1.0f}; break;
         case kKracht:
             parameter.name = "Kracht"; parameter.symbol = "kracht"; parameter.unit = "%";
-            parameter.ranges = {0.0f, 100.0f, 100.0f}; break;
+            parameter.ranges = {100.0f, 0.0f, 100.0f}; break;
         case kSfeer:
             parameter.name = "Sfeer"; parameter.symbol = "sfeer";
             parameter.hints |= kParameterIsInteger;
-            parameter.ranges = {0.0f, 2.0f, 1.0f}; break;
+            parameter.ranges = {1.0f, 0.0f, 2.0f}; break;
+        case kGate:
+            parameter.name = "Gate"; parameter.symbol = "gate";
+            parameter.hints |= kParameterIsBoolean;
+            parameter.ranges = {1.0f, 0.0f, 1.0f}; break;
+        case kBass:
+            parameter.name = "Bass"; parameter.symbol = "bass";
+            parameter.hints |= kParameterIsBoolean;
+            parameter.ranges = {0.0f, 0.0f, 1.0f}; break;
+        case kChord:
+            parameter.name = "Akkoord"; parameter.symbol = "akkoord";
+            parameter.hints |= kParameterIsInteger;
+            parameter.ranges = {0.0f, 0.0f, 3.0f}; break;
         }
     }
 
@@ -196,6 +210,8 @@ protected:
         case kTime: return fTime; case kTone: return fTone; case kFormant: return fFormant;
         case kAutofit: return 0.f; case kChop: return fChop; case kSnap: return fSnap; case kExport: return 0.f;
         case kOn: return fOn; case kKracht: return fKracht; case kSfeer: return fSfeerV;
+        case kGate: return fGate;
+        case kBass: return fBass; case kChord: return fChord;
         }
         return 0.0f;
     }
@@ -227,6 +243,9 @@ protected:
         case kOn: fOn=value; break;
         case kKracht: fKracht=value; break;
         case kSfeer: fSfeerV=value; fSf.setMode((int)(value+0.5f)); break;
+        case kGate: fGate=value; break;
+        case kBass: fBass=value; break;
+        case kChord: fChord=value; break;
         }
         recalc();
     }
@@ -296,6 +315,7 @@ protected:
                         s += x * v.amp * v.vel;
                         v.age += 1.0f;
                         v.amp *= 0.99995f;
+                        if (v.rel) { v.amp *= 0.992f; if (v.amp < 0.0005f) v.active = false; }
                     }
                 }
                 const float y = s * level;
@@ -314,38 +334,51 @@ protected:
                 const uint8_t status = data[0] & 0xF0;
                 if (status == 0x90 && data[2] > 0)
                 {
-                    SVoice* v = nullptr;
-                    for (int i = 0; i < kMaxVoices; ++i)
-                        if (!fVoice[i].active) { v = &fVoice[i]; break; }
-                    if (!v) v = &fVoice[0];
-                    v->active = true;
-                    v->note = data[1];
-                    v->pos = startF;
-                    v->end = -1.0f;
                     const int nChop=(int)fChop;
-                    if(nChop>0&&hasSamp){
-                        const int idx=data[1]-36;
-                        if(idx>=0&&idx<nChop){
-                            const float sl=(float)fWork.size()/nChop;
-                            v->pos=idx*sl; v->end=v->pos+sl;
-                        }
+                    int offs[4]={0,0,0,0}; int nOff=1;
+                    const int ch=(int)(fChord+0.5f);
+                    if(nChop<=0){ // akkoord-modus (in chop-mode is elke toets een eigen slice)
+                        if(ch==1){offs[1]=4;offs[2]=7;nOff=3;}
+                        else if(ch==2){offs[1]=3;offs[2]=7;nOff=3;}
+                        else if(ch==3){offs[1]=4;offs[2]=7;offs[3]=10;nOff=4;}
                     }
-                    if(fSnap>0.5f){ // start snap naar zero-crossing (geen klik) + hele halve tonen
-                        const int n=(int)fWork.size(); int zc=(int)v->pos;
-                        for(int d=0;d<4000&&(zc+d)<n-1;d++){if(std::fabs(fWork[zc+d])<0.002f){zc+=d;break;}}
-                        v->pos=(float)zc;
-                        v->rate=std::pow(2.0f,std::round(data[1]-60.0f+fPitch)/12.0f);
-                    } else v->rate=vRate(data[1]);
-                    v->amp = 1.0f;
-                    v->vel = data[2] / 127.0f;
-                    v->age = 0.0f;
-                    v->lp = 0.0f;
+                    for(int oi=0;oi<nOff;oi++){
+                        SVoice* v = nullptr;
+                        for (int i = 0; i < kMaxVoices; ++i)
+                            if (!fVoice[i].active) { v = &fVoice[i]; break; }
+                        if (!v) break;
+                        const int nt=data[1]+offs[oi];
+                        v->active = true;
+                        v->note = (uint8_t)nt;
+                        v->root = data[1];
+                        v->pos = startF;
+                        v->end = -1.0f;
+                        if(nChop>0&&hasSamp){
+                            const int idx=data[1]-36;
+                            if(idx>=0&&idx<nChop){
+                                const float sl=(float)fWork.size()/nChop;
+                                v->pos=idx*sl; v->end=v->pos+sl;
+                            }
+                        }
+                        const int eff = nt - (fBass>0.5f?12:0);
+                        if(fSnap>0.5f){ // start snap naar zero-crossing (geen klik) + hele halve tonen
+                            const int n=(int)fWork.size(); int zc=(int)v->pos;
+                            for(int d=0;d<4000&&(zc+d)<n-1;d++){if(std::fabs(fWork[zc+d])<0.002f){zc+=d;break;}}
+                            v->pos=(float)zc;
+                            v->rate=std::pow(2.0f,std::round(eff-60.0f+fPitch)/12.0f);
+                        } else v->rate=vRate((uint8_t)(eff<0?0:(eff>127?127:eff)));
+                        v->amp = 1.0f;
+                        v->vel = data[2] / 127.0f;
+                        v->age = 0.0f;
+                        v->lp = 0.0f;
+                        v->rel = false;
+                    }
                 }
                 else if (status == 0x80 || (status == 0x90 && data[2] == 0))
                 {
                     for (int i = 0; i < kMaxVoices; ++i)
-                        if (fVoice[i].active && fVoice[i].note == data[1])
-                            fVoice[i].amp *= 0.3f;
+                        if (fVoice[i].active && fVoice[i].root == data[1])
+                        { if (fGate > 0.5f) fVoice[i].rel = true; else fVoice[i].amp *= 0.3f; }
                 }
             }
         }
@@ -558,6 +591,7 @@ private:
     float fGalaxy=9.f;
     Galaxy galaxy;
     float fOn=1.f, fKracht=100.f, fSfeerV=1.f;
+    float fGate=1.f, fBass=0.f, fChord=0.f;
     Sfeer fSf;
 };
 

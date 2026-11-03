@@ -169,12 +169,15 @@ protected:
             beginPath(); roundedRect(56,y+3.f,13,13,3.f); strokeColor(gy[0],gy[1],gy[2]); strokeWidth(1.f); stroke();
             {const float dx[5]={59.5f,65.5f,59.5f,65.5f,62.5f},dy2[5]={y+6.5f,y+6.5f,y+12.5f,y+12.5f,y+9.5f};
              for(int d=0;d<5;d++){beginPath();circle(dx[d],dy2[d],1.3f);fillColor(gy[0],gy[1],gy[2]);fill();}}
+            // ↺ terug-knopje: laag terug naar stijl-origineel
+            beginPath(); roundedRect(71,y+3.f,13,13,3.f); strokeColor(gy[0],gy[1],gy[2]); strokeWidth(1.f); stroke();
+            {fontSize(9.f);textAlign(ALIGN_CENTER|ALIGN_MIDDLE);fillColor(gy[0],gy[1],gy[2]);text(77.5f,y+9.5f,"\xE2\x86\xBA",nullptr);textAlign(ALIGN_LEFT|ALIGN_MIDDLE);}
             for(int s=0;s<16;s++){
-                float bx=74.f+s*(W-96.f)/16.f;
-                beginPath(); rect(bx,y+1.f,(W-96.f)/16.f-4.f,17.f);
+                float bx=90.f+s*(W-112.f)/16.f;
+                beginPath(); rect(bx,y+1.f,(W-112.f)/16.f-4.f,17.f);
                 if(fPat[r][s]=='x'&&fLaneOn[r]) fillColor(pc[r][0],pc[r][1],pc[r][2]); else fillColor(ed[0],ed[1],ed[2]);
                 fill();
-                if(s==(fStep%16)){beginPath();rect(bx,y+1.f,(W-96.f)/16.f-4.f,17.f);strokeColor(tx[0],tx[1],tx[2]);strokeWidth(1.f);stroke();}
+                if(s==(fStep%16)){beginPath();rect(bx,y+1.f,(W-112.f)/16.f-4.f,17.f);strokeColor(tx[0],tx[1],tx[2]);strokeWidth(1.f);stroke();}
             }
             if(r==7||r==9){ // ▸ = piano-roll openen voor deze laag
                 fontSize(11.f);textAlign(ALIGN_CENTER|ALIGN_MIDDLE);fillColor(gy[0],gy[1],gy[2]);
@@ -274,11 +277,12 @@ protected:
                 if(r>=0&&r<10){
                     if((r==7||r==9)&&ev.pos.getX()>=W-24){fEditLane_=r;repaint();return true;} // ▸ = piano-roll
                     if(ev.pos.getX()>=56&&ev.pos.getX()<70){setParameterValue(26,(float)((ev.mod&DGL::kModifierShift)?200+r:170+r));return true;} // laag-dice (SHIFT = terug naar stijl-origineel)
+                    if(ev.pos.getX()>=71&&ev.pos.getX()<86){setParameterValue(26,(float)(200+r));return true;} // ↺ laag terug naar origineel
                     if(ev.pos.getX()>=14&&ev.pos.getX()<56){
                         if(r==5||r==6){setParameterValue(26,190.f+(r-5));return true;} // +X: volgende geluid
                         fLaneOn[r]=!fLaneOn[r]; setParameterValue(26,(float)(180+r)); repaint();return true;}
-                    if(ev.pos.getX()>=74&&ev.pos.getX()<W-22){
-                        int s=(int)((ev.pos.getX()-74.f)/((W-96.f)/16.f));
+                    if(ev.pos.getX()>=90&&ev.pos.getX()<W-22){
+                        int s=(int)((ev.pos.getX()-90.f)/((W-112.f)/16.f));
                         if(s>=0&&s<16){setParameterValue(26,(float)(r*16+s));fPat[r][s]=fPat[r][s]=='x'?'.':'x';repaint();return true;}
                     }
                 }

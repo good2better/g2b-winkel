@@ -84,6 +84,9 @@ protected:
         if (index < 7) fValue[index] = value;
         if (index == 13) fChopN = (int)value;
         if (index == 14) fSnapOn = value;
+        if (index == 19) fGateOn = value;
+        if (index == 20) fBassOn = value;
+        if (index == 21) fChordN = (int)(value + 0.5f);
         if (index == 16) fOn = (int)(value + 0.5f);
         if (index == 17) fValue[7] = value; // KRACHT
         if (index == 18) fValue[8] = value; // SFEER
@@ -303,19 +306,22 @@ protected:
 
         // LANDR-rij: AUTO-FIT / EXPORT / SNAP / CHOP pills
         {
-            const char* pl[4]; char pb[4][24];
+            const char* pl[7]; char pb[7][24];
             std::snprintf(pb[0],24,"AUTO-FIT"); std::snprintf(pb[1],24,"EXPORT WAV");
             std::snprintf(pb[2],24,"SNAP:%s",fSnapOn>0.5f?"AAN":"UIT");
             std::snprintf(pb[3],24,"CHOP:%d",fChopN);
-            for(int i=0;i<4;i++)pl[i]=pb[i];
-            const float pw=86.f,ph=20.f,py=H-46.f;
-            for(int i=0;i<4;i++){
-                const float px=18.f+i*(pw+8.f);
-                const bool on=(i==2&&fSnapOn>0.5f)||(i==3&&fChopN>0);
+            std::snprintf(pb[4],24,"GATE:%s",fGateOn>0.5f?"AAN":"UIT");
+            std::snprintf(pb[5],24,"BASS:%s",fBassOn>0.5f?"AAN":"UIT");
+            const char* chn[4]={"UIT","MAJ","MIN","7"}; std::snprintf(pb[6],24,"AKK:%s",chn[fChordN<0?0:(fChordN>3?3:fChordN)]);
+            for(int i=0;i<7;i++)pl[i]=pb[i];
+            const float pw=70.f,ph=20.f,py=H-46.f;
+            for(int i=0;i<7;i++){
+                const float px=18.f+i*(pw+7.f);
+                const bool on=(i==2&&fSnapOn>0.5f)||(i==3&&fChopN>0)||(i==4&&fGateOn>0.5f)||(i==5&&fBassOn>0.5f)||(i==6&&fChordN>0);
                 beginPath(); roundedRect(px,py,pw,ph,5.f);
                 if(on){fillColor(29,122,72);fill();} else {fillColor(30,34,33);fill();}
                 strokeColor(42,47,45); strokeWidth(1.f); stroke();
-                fontSize(10.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+                fontSize(9.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
                 fillColor(on?Color(232,236,234):Color(143,160,152));
                 text(px+pw*0.5f,py+ph*0.5f,pl[i],nullptr);
             }
@@ -378,13 +384,16 @@ protected:
             }
             // LANDR-pills
             {
-                const float pw=86.f,ph=20.f,py=getHeight()-46.f;
-                for(int i=0;i<4;i++){
-                    const float px=18.f+i*(pw+8.f);
+                const float pw=70.f,ph=20.f,py=getHeight()-46.f;
+                for(int i=0;i<7;i++){
+                    const float px=18.f+i*(pw+7.f);
                     if((float)(ev.pos.getX()/getScaleFactor())>=px&&(float)(ev.pos.getX()/getScaleFactor())<=px+pw&&(float)(ev.pos.getY()/getScaleFactor())>=py&&(float)(ev.pos.getY()/getScaleFactor())<=py+ph){
                         if(i==0){spv(12,1.f);fName="AUTO-FIT → tempo+toon gefit";}
                         else if(i==1){spv(15,1.f);fName="EXPORT → Music/G2B/G2B-SampleX.wav";}
                         else if(i==2){fSnapOn=fSnapOn>0.5f?0.f:1.f;spv(14,fSnapOn);fName=fSnapOn>0.5f?"SNAP aan — start op zero-crossing":"SNAP uit";}
+                        else if(i==4){fGateOn=fGateOn>0.5f?0.f:1.f;spv(19,fGateOn);fName=fGateOn>0.5f?"GATE aan — los = stop":"GATE uit — speelt door";}
+                        else if(i==5){fBassOn=fBassOn>0.5f?0.f:1.f;spv(20,fBassOn);fName=fBassOn>0.5f?"BASS aan — alles -12 (sub)":"BASS uit";}
+                        else if(i==6){fChordN=(fChordN+1)%4;spv(21,(float)fChordN);const char* cn[4]={"UIT","MAJ","MIN","7"};char cb[48];std::snprintf(cb,sizeof(cb),"AKKOORD = %s — 1 toets = akkoord",cn[fChordN]);fName=cb;}
                         else {fChopN=(fChopN+4)%20;if(fChopN>16)fChopN=0;spv(13,(float)fChopN);char mb[40];std::snprintf(mb,sizeof(mb),"CHOP = %d slices over het keyboard",fChopN);fName=mb;}
                         repaint(); return true;
                     }
@@ -521,7 +530,8 @@ private:
     int fDrag;
     float fLastY;
     int fProg;
-    float fSnapOn; int fChopN;
+    float fSnapOn; int fChopN; float fGateOn = 1.f;
+    float fBassOn = 0.f; int fChordN = 0;
     int fLight = 0;
     int fOn = 1; bool fXYdrag = false;
     float fXX = 18.0f, fXY_ = 258.0f, fXW = 524.0f, fXH = 46.0f;

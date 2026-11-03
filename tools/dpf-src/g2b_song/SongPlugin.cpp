@@ -397,34 +397,34 @@ protected:
                 const bool gBass=bar>0;
                 if((songB==23||songB==47)&&s>=12&&s%2==0&&phn_<21){ // v113 riser naar chorus
                     ph_[phn_++]={2,2,9000.f+600.f*(s-12),11000.f,hdec*.5f,.12f+(s-12)*.03f,i};}
-                if((st==5||st==16||st==20||st==26)&&s%4==3&&phn_<21&&frand(fRsD)<fDens){ // v121 polyrhythm tripel-perc · v162 DENS
+                if((st==5||st==16||st==20||st==26)&&s%4==3&&phn_<21&&celMute_[2]&&frand(fRsD)<fDens){ // v121 polyrhythm tripel-perc · v162 DENS
                     uint32_t trd=(uint32_t)(stepLen*sr/3.f);
                     for(int k=0;k<2;k++)ph_[phn_++]={2,2,0.f,0.f,hdec*.8f,hamp*.30f,i+trd*(k+1)};
                 }
-                if(fill){ // v46: cycli — snare-roll / tom-fill / EUCLIDEAN / cascade
-                    if(((int)(fStep/128)%4)==3){if(s>=13&&phn_<21){uint32_t trd2=(uint32_t)(stepLen*sr/3.f);float tp2=230.f-(s-13)*36.f;for(int k=0;k<3;k++){ph_[phn_++]={1,2,tp2,tp2*.7f,.10f,.28f,i+trd2*k};midiHit(45,0,66,i+trd2*k,stepLen*sr*0.2f);}}}
+                if(fill&&(celMute_[1]||celMute_[2])){ // v46: alleen als de luister-laag aan staat cycli — snare-roll / tom-fill / EUCLIDEAN / cascade
+                    if(((int)(fStep/128)%4)==3){if(s>=13&&phn_<21&&celMute_[1]){uint32_t trd2=(uint32_t)(stepLen*sr/3.f);float tp2=230.f-(s-13)*36.f;for(int k=0;k<3;k++){ph_[phn_++]={1,2,tp2,tp2*.7f,.10f,.28f,i+trd2*k};midiHit(45,0,66,i+trd2*k,stepLen*sr*0.2f);}}}
                     else
                     if(((int)(fStep/128)%3)==2){
                         const int kk=3+((int)(fStep/384)%3); // v166 bjorklund: e(3,8)/e(4,8)/e(5,8) — (s*k)%n<k = eerlijke spreiding
-                        if(s>=8&&s<16&&((s-8)*kk)%8<kk){dv(1,1,sf0,sf1*1.1f,sdec*.9f,samp*.55f);midiHit(38,0,72,i,stepLen*sr*0.4f);
+                        if(s>=8&&s<16&&((s-8)*kk)%8<kk&&celMute_[1]){dv(1,1,sf0,sf1*1.1f,sdec*.9f,samp*.55f);midiHit(38,0,72,i,stepLen*sr*0.4f);
                             dv(2,2,0.f,0.f,hdec*.7f,hamp*.4f);midiHit(42,0,48,i,stepLen*sr*0.25f);}
                     }
-                    else if(((int)(fStep/128)%2)==0){dv(1,1,sf0,sf1,sdec,samp*(.5f+.13f*(s-12))); midiHit(38,0,60+(s-12)*9,i,stepLen*sr*0.4f);
+                    else if(((int)(fStep/128)%2)==0&&celMute_[1]){dv(1,1,sf0,sf1,sdec,samp*(.5f+.13f*(s-12))); midiHit(38,0,60+(s-12)*9,i,stepLen*sr*0.4f);
                         dv(2,2,0.f,0.f,hdec,hamp*.5f);           midiHit(42,0,45,i,stepLen*sr*0.3f);}
-                    else{float tp=130.f-(s-12)*18.f;dv(1,2,tp,tp*.8f,.09f,.26f+.05f*(s-12));midiHit(45,0,65,i,stepLen*sr*0.35f);
+                    else if(celMute_[1]){float tp=130.f-(s-12)*18.f;dv(1,2,tp,tp*.8f,.09f,.26f+.05f*(s-12));midiHit(45,0,65,i,stepLen*sr*0.35f);
                         dv(2,2,0.f,0.f,hdec*.8f,hamp*.35f);     midiHit(42,0,40,i,stepLen*sr*0.25f);}
-                    if((st==5||st==17||st==18)&&s>=14&&phn_<22){ // trap/dnb/grime hat-roll
+                    if((st==5||st==17||st==18)&&s>=14&&phn_<22&&celMute_[2]){ // trap/dnb/grime hat-roll
                         uint32_t third=(uint32_t)(stepLen*sr/3.f);
                         for(int k=0;k<2;k++){ph_[phn_++]={2,2,0.f,0.f,hdec*.5f,hamp*.4f,i+third*(k+1)};midiHit(42,0,40,i+third*(k+1),stepLen*sr*0.25f);}}
                 } else {
-                if((st==8||st==9) && s%4==2 && gKick && frand(fRsD)<fDens){dv(0,0,kf0*1.4f,kf1,kdec*.5f,kamp*.22f*jv);} // v77 jersey ghost-kick
-                if(songB>=48&&songB<56&&s%4==2&&gKick&&!choke&&frand(fRsD)<fDens){dv(0,0,kf0*1.25f,kf1,kdec*.4f,kamp*.20f*jv);midiHit(36,0,50,i,stepLen*sr*0.3f);} // v153 2e chorus extra
-                if(arc>.78f && s%8==6 && frand(fRsD)<fDens){dv(1,2,110.f,80.f,.10f,.20f*jv*arc);midiHit(45,0,(int)(55*arc),i+mtH,stepLen*sr*0.5f);} // tom
-                if((st==12||st==11||st==13)&&frand(fRs)<.07f&&frand(fRsD)<fDens){dv(2,2,0.f,0.f,.008f,.07f);} // v156 vinyl-knetsers
-                { // v32 shaker-bed: 16e perc onder de beat
+                if((st==8||st==9) && s%4==2 && gKick && celMute_[0] && frand(fRsD)<fDens){dv(0,0,kf0*1.4f,kf1,kdec*.5f,kamp*.22f*jv);} // v77 jersey ghost-kick
+                if(songB>=48&&songB<56&&s%4==2&&gKick&&celMute_[0]&&!choke&&frand(fRsD)<fDens){dv(0,0,kf0*1.25f,kf1,kdec*.4f,kamp*.20f*jv);midiHit(36,0,50,i,stepLen*sr*0.3f);} // v153 2e chorus extra
+                if(arc>.78f && s%8==6 && celMute_[1] && frand(fRsD)<fDens){dv(1,2,110.f,80.f,.10f,.20f*jv*arc);midiHit(45,0,(int)(55*arc),i+mtH,stepLen*sr*0.5f);} // tom
+                if((st==12||st==11||st==13)&&celMute_[4]&&frand(fRs)<.07f&&frand(fRsD)<fDens){dv(2,2,0.f,0.f,.008f,.07f);} // v156 vinyl-knetsers
+                if(celMute_[2]) { // v32 shaker-bed: 16e perc onder de beat
                     float shA=(st==16||st==20||st==25||st==0)?.16f:((st==6||st==2)?.05f:.10f); shA*=arc*secE*fDens; // shaker ademt met boog+sectie · v162 DENS
                     dv(2,2,0.f,0.f,hdec*.6f,shA*((s%2==0)?1.f:.45f)*jv*((st==20||st==16||st==26)&&(s%8==2)?1.4f:1.f));}
-                if((st==1||st==5||st==18||st==2)&&gKick && celMask_[0][s]&&phn_<22){ph_[phn_++]={3,3,35.f,32.f,.5f,.30f,i+2};} // v38 sub
+                if((st==1||st==5||st==18||st==2)&&gKick && celMask_[0][s]&&celMute_[0]&&phn_<22){ph_[phn_++]={3,3,35.f,32.f,.5f,.30f,i+2};} // v38 sub
                 if(gKick && celMask_[0][s]&&celMute_[0]){if(chorus||phn_>9){dv(0,0,kf0,kf1,kdec,kamp*jv*(s==0?1.14f:1.f));}else{ph_[phn_++]={0,0,kf0,kf1,kdec,kamp*jv*(s==0?1.14f:1.f),i+(uint32_t)(sr*0.004f)};}midiHit(36,0,(int)(105*jv),i+mtH,stepLen*sr*0.9f);fDuck=0.f;} // v158 laid-back kick
                 if(gSnare && celMask_[1][s]&&celMute_[1]){dv(1,1,sf0,sf1,sdec,samp*jv);midiHit(38,0,(int)(95*jv),i+mtH,stepLen*sr*0.9f);}
                 if(celMask_[3][s]&&celMute_[3]){dv(1,1,sf0*1.25f,sf1*1.15f,sdec*.65f,samp*.55f*jv);midiHit(39,0,(int)(70*jv),i+mtH,stepLen*sr*0.5f);} // CLAP-rij
@@ -438,14 +438,14 @@ protected:
                         else if(xs==4){dv(2,2,0.f,0.f,hdec*.6f,hamp*.5f*jv);}      // SHAKER
                         else {melody();}                                           // BELL: melodie-stem
                         midiHit(xs==5?lastMel_:54+xr,0,(int)(60*jv),i+mtH,stepLen*sr*0.3f);}}
-                    if(phn_<22&&frand(fRsD)<fDens){uint32_t dly=(uint32_t)(sr*.09f);ph_[phn_++]={1,1,sf0*.9f,sf1,sdec*3.2f,samp*.12f*jv,i+dly};} // v34 staart
-                if(s==0 && (bar==0||bar==4)){dv(2,2,0.f,0.f,.7f,.14f);midiHit(49,0,80,i,stepLen*sr*4.f);} // crash op sectie-start
-                if(gHat && s%4==2 && bar>0 && frand(fRsD)<fDens && (((int)fStijl==4||(int)fStijl==20||(int)fStijl==15)?true:(frand(fRs)<.4f))){int ho=mtH+mtLane_[2];if(phn_<22){ph_[phn_++]={2,2,0.f,0.f,hdec*4.5f,hamp*.55f*jv,i+(uint32_t)(ho>0?ho:0)};}else{dv(2,2,0.f,0.f,hdec*4.5f,hamp*.55f*jv);}midiHit(46,0,(int)(55*jv),i+mtH,stepLen*sr*0.8f);} // open hat
-                if(fGeluid>=0.5f&&(s==6||s==14)&&frand(fRsD)<fDens*.9f){dv(3,4,0.f,0.f,.12f,.16f*jv);} // v165 echte perc per stijl
+                    if(phn_<22&&celMute_[1]&&frand(fRsD)<fDens){uint32_t dly=(uint32_t)(sr*.09f);ph_[phn_++]={1,1,sf0*.9f,sf1,sdec*3.2f,samp*.12f*jv,i+dly};} // v34 staart
+                if(s==0 && (bar==0||bar==4)&&celMute_[4]){dv(2,2,0.f,0.f,.7f,.14f);midiHit(49,0,80,i,stepLen*sr*4.f);} // crash op sectie-start
+                if(gHat && s%4==2 && bar>0 && celMute_[2] && frand(fRsD)<fDens && (((int)fStijl==4||(int)fStijl==20||(int)fStijl==15)?true:(frand(fRs)<.4f))){int ho=mtH+mtLane_[2];if(phn_<22){ph_[phn_++]={2,2,0.f,0.f,hdec*4.5f,hamp*.55f*jv,i+(uint32_t)(ho>0?ho:0)};}else{dv(2,2,0.f,0.f,hdec*4.5f,hamp*.55f*jv);}midiHit(46,0,(int)(55*jv),i+mtH,stepLen*sr*0.8f);} // open hat
+                if(fGeluid>=0.5f&&(s==6||s==14)&&celMute_[4]&&frand(fRsD)<fDens*.9f){dv(3,4,0.f,0.f,.12f,.16f*jv);} // v165 echte perc per stijl
                 if(gHat && celMask_[2][s]&&celMute_[2] && !((st==6||st==13||st==2)&&s%2==1&&frand(fRs)<.42f)){dv(2,2,0.f,0.f,hdec*((st==4||st==23||st==20)?1.6f:1.f),hamp*jv*((st==1||st==2||st==6||st==18)?0.72f:1.f)); // v141 hat-kleur
                     midiHit(42,0,(int)(75*jv),i+mtH,stepLen*sr*0.5f);}
-                else if(frand(fRsD)<fDens&&(fRs=fRs*1664525u+1013904223u,(fRs>>9)&15)<2){dv(2,2,0.f,0.f,.04f,.09f);midiHit(42,0,30,i,stepLen*sr*0.4f);} // ghost-hat
-                if(s%4==2 && mut_[1][s]=='.' && frand(fRsD)<fDens && ((fRs>>9)&31)<3){dv(1,1,190.f,170.f,.10f,.14f);midiHit(38,0,28,i,stepLen*sr*0.5f);} // ghost-snare
+                else if(frand(fRsD)<fDens&&celMute_[2]&&(fRs=fRs*1664525u+1013904223u,(fRs>>9)&15)<2){dv(2,2,0.f,0.f,.04f,.09f);midiHit(42,0,30,i,stepLen*sr*0.4f);} // ghost-hat
+                if(s%4==2 && mut_[1][s]=='.' && celMute_[1] && frand(fRsD)<fDens && ((fRs>>9)&31)<3){dv(1,1,190.f,170.f,.10f,.14f);midiHit(38,0,28,i,stepLen*sr*0.5f);} // ghost-snare
                 }
                 int b8=(s/2)%8;
                 if(gBass && s%2==0 && celMask_[7][s]&&celMute_[7]){int nm=deg2midi((mutBas_[b8]<0?0:mutBas_[b8])+root)+(((int)fStep/16%8)==7&&s>=14?-7:0);bass(nm,0.9f*jv*(s==0||s==8?1.08f:1.f));midiHit(nm,1,110,i,stepLen*sr*(2.f+fGlide*2.f));}
@@ -453,13 +453,13 @@ protected:
                 if(outro&&bar>=6&&s==0){int nm=deg2midi(root);bass(nm,0.8f);midiHit(nm,1,100,i,stepLen*sr*3.f);} // v130 outro-tag
                 if(gBass && s%2==1 && celMask_[7][s]&&celMute_[7] && (st%3==0||st%5==0) && frand(fRsD)<fDens){int nm=deg2midi((mutBas_[b8]<0?0:mutBas_[b8])+root)+12;bass(nm,0.42f*jv);midiHit(nm,1,60,i,stepLen*sr*0.9f);}
                 if(s==8&&celMask_[8][s]&&celMute_[8]&&(((int)fStijl==4||(int)fStijl==23||(int)fStijl==20||(int)fStijl==24)||chorus)){chord(jv);for(int j=0;j<4;j++)midiHit(chordDeg(j,(lastBD_>=0?lastBD_:bar)%4,root)+12,2,50,i,stepLen*sr*1.5f);} // 2e stoot (voice-led)
-                if((s==4||s==12)&&((int)fStijl==4||(int)fStijl==23||(int)fStijl==24)&&frand(fRsD)<fDens){ // v33 arp-stoot
+                if((s==4||s==12)&&((int)fStijl==4||(int)fStijl==23||(int)fStijl==24)&&celMute_[8]&&frand(fRsD)<fDens){ // v33 arp-stoot
                     int j2=(s==4?1:2); midiHit(chordDeg(j2,bar%4,root)+24,2,45,i,stepLen*sr*0.8f);
                     {CV2&c2=cv2_; c2.on=true;c2.t=0;c2.f=m2f(chordDeg(j2,bar%4,root)+24);}}
-                if(s==0&&(songB==24||songB==48)){dv(3,3,70.f,38.f,1.1f,.85f);fDuck=0.f;} // v139 drop-impact
-                if(s==0&&(songB==24||songB==32||songB==48||songB==56)){dv(2,3,0.f,0.f,hdec*6.f,.30f);midiHit(49,0,80,i,stepLen*sr*2.f);} // v122 sectie-crash
+                if(s==0&&(songB==24||songB==48)&&celMute_[4]){dv(3,3,70.f,38.f,1.1f,.85f);fDuck=0.f;} // v139 drop-impact
+                if(s==0&&(songB==24||songB==32||songB==48||songB==56)&&celMute_[4]){dv(2,3,0.f,0.f,hdec*6.f,.30f);midiHit(49,0,80,i,stepLen*sr*2.f);} // v122 sectie-crash
                 if(celMask_[8][s]&&celMute_[8]){chord(jv);for(int j=0;j<4;j++)midiHit(chordDeg(j,(lastBD_>=0?lastBD_:bar)%4,root)+(((int)fStijl==1||(int)fStijl==5||(int)fStijl==18||(int)fStijl==6)?0:12),2,60,i,stepLen*sr*((st==4||st==23||st==20)?1.4f:3.f));} // voice-led + stijl-release + gebruikers-stoten
-                if(s%4==2&&bar>4&&!intro&&frand(fRs)<.28f&&frand(fRsD)<fDens){melody();midiHit(lastMel_,3,45,i,stepLen*sr*.8f);} // v36 call-response
+                if(s%4==2&&bar>4&&!intro&&celMute_[9]&&frand(fRs)<.28f&&frand(fRsD)<fDens){melody();midiHit(lastMel_,3,45,i,stepLen*sr*.8f);} // v36 call-response
                 if(celMask_[9][s]&&celMute_[9]&&bar!=3){ // v47 hook: per 4 bars herhaalt de melodie zich — gebruiker tekent de stappen
                     int hb=bar%4;
                     if(melDegU_[s]>=0){int nm=deg2midi(melDegU_[s]+root_)+12;mv_.f=m2f(lastMel_=nm);mv_.on=true;mv_.t=0;mvPick_(nm,jv);midiHit(nm,3,80,i,stepLen*sr*1.5f);} // jouw getekende noot
