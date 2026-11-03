@@ -30,7 +30,9 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/g2bmixer-cover.png",
-   "download_dir": "d/g2bmixer"
+   "download_dir": "d/g2bmixer",
+   "demo": "media/g2bmixer-demo.mp4",
+   "video": "media/g2bmixer-demo.mp4"
   },
   {
    "id": "g2bantwoord",
