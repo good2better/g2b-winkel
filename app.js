@@ -180,29 +180,32 @@ async function laden() {
           <div class="titel">${esc(p._titel)}
             ${p._badge ? ` <span style="display:inline-block;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#111;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px;vertical-align:middle">${esc(p._badge)}</span>` : ""}</div>
           ${p.prijs ? `<div class="prijs">${esc(p.prijs)}</div>` : ""}
-          ${p._beschr
-            ? `<div class="beschr">${esc(p._beschr)}</div>` : ""}
         </div>
       </div>
+      ${(p._beschr || p.video) ? `
+      <details class="meer">
+        <summary>${p.video ? "▶ demo & info" : "ℹ info"}</summary>
+        ${p._beschr ? `<div class="beschr">${esc(p._beschr)}</div>` : ""}
+        ${p.video ? `
+        <div class="vid-wrap">
+          ${p.video_en || p.video_es ? `<button class="taal" data-taal="${esc(p.id)}"
+             title="NL / EN / ES">NL</button>` : ""}
+          <video class="promo" data-vid="${esc(p.id)}"
+                 data-src="${esc(p.video)}" data-nl="${esc(p.video)}"
+                 data-en="${esc(p.video_en || "")}"
+                 data-es="${esc(p.video_es || "")}" controls playsinline
+                 ${p.cover ? `poster="${esc(p.cover)}"` : ""}
+                 preload="none"></video>
+          <button class="vidplay" data-vidplay="${esc(p.id)}"
+             aria-label="Speel video van ${esc(p._titel)}">▶</button>
+        </div>` : ""}
+      </details>` : ""}
       ${(p.soort === "audio" || p.preview) ? `
       <div class="player">
         <button class="playbtn" data-play="${esc(p.id)}"
           aria-label="Speel preview van ${esc(p._titel)}">▶</button>
         <div class="wave" data-wave="${esc(p.id)}"></div>
         <span class="duur">${fmtDuur(p.duur)}</span>
-      </div>` : ""}
-      ${p.video ? `
-      <div class="vid-wrap">
-        ${p.video_en || p.video_es ? `<button class="taal" data-taal="${esc(p.id)}"
-           title="NL / EN / ES">NL</button>` : ""}
-        <video class="promo" data-vid="${esc(p.id)}"
-               data-src="${esc(p.video)}" data-nl="${esc(p.video)}"
-               data-en="${esc(p.video_en || "")}"
-               data-es="${esc(p.video_es || "")}" controls playsinline
-               ${p.cover ? `poster="${esc(p.cover)}"` : ""}
-               preload="none"></video>
-        <button class="vidplay" data-vidplay="${esc(p.id)}"
-           aria-label="Speel video van ${esc(p._titel)}">▶</button>
       </div>` : ""}
       <div class="koop-blok">
         ${licenties.map((k, i) =>
