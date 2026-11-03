@@ -411,8 +411,8 @@
       "badge": "NIEUW",
       "cover": "media/g2bsong-cover.png",
       "download_dir": "d/g2bsong1",
-      "demo": "media/g2bsong-demo-v2.mp4",
-      "video": "media/g2bsong-demo-v2.mp4"
+      "demo": "media/song-demo-v3.mp4",
+      "video": "media/song-demo-v3.mp4"
     },
     {
       "id": "g2bvibe1",
@@ -446,8 +446,8 @@
       "cover": "media/bestof-cover.png",
       "preview": "media/bestof-demo.mp3",
       "download_dir": "d/g2bbestof",
-      "demo": "media/bestof-demo.mp4",
-      "video": "media/bestof-demo.mp4"
+      "demo": "media/bestof-demo-v3.mp4",
+      "video": "media/bestof-demo-v3.mp4"
     },
     {
       "id": "g2b-oneshots",
