@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B AI-Nieuws — dagelijks ververst</title>
+<style>
+  :root{--bg:#0b0e14;--card:#141926;--txt:#e8ecf3;--mut:#8b93a7;--acc:#39d98a;--hot:#ff5470;--line:#232a3d}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;padding:18px;max-width:1100px;margin:auto}
+  header{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  h1{font-size:1.5rem;letter-spacing:.5px}
+  h1 em{color:var(--acc);font-style:normal}
+  .upd{color:var(--mut);font-size:.8rem}
+  .bar{position:sticky;top:0;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--line);z-index:9;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .chip{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:999px;padding:5px 12px;font-size:.8rem;cursor:pointer}
+  .chip.on{background:var(--acc);color:#06110b;border-color:var(--acc);font-weight:700}
+  input[type=search]{flex:1;min-width:160px;background:var(--card);border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:7px 10px;font-size:.85rem}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;margin-top:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+  .card:hover{border-color:var(--acc)}
+  .top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+  .src{font-size:.7rem;color:var(--mut);text-transform:uppercase;letter-spacing:.6px}
+  .hot{background:var(--hot);color:#fff;font-size:.65rem;font-weight:700;border-radius:6px;padding:2px 7px}
+  h3{font-size:.98rem;line-height:1.35}
+  h3 a{color:var(--txt);text-decoration:none}
+  h3 a:hover{color:var(--acc)}
+  .sum{font-size:.8rem;color:var(--mut);line-height:1.45}
+  .meta{margin-top:auto;font-size:.72rem;color:var(--mut);display:flex;gap:10px}
+  .tag{color:var(--acc)}
+</style>
+</head>
+<body>
+<header>
+  <h1>G2B <em>AI-NIEUWS</em></h1>
+  <span class="upd" id="upd"></span>
+</header>
+<div class="bar">
+  <input type="search" id="q" placeholder="Zoek in het nieuws…">
+  <div id="topics"></div>
+</div>
+<div class="grid" id="grid"></div>
+<script>
+let items=[], curTopic=null, q="";
+const TPC=["Alles","Agents","Modellen","Audio/Muziek","Video","GPU/Chips","Wetgeving","Tools","Onderzoek","Overig"];
+function ago(iso){const s=(Date.now()-new Date(iso))/1000;if(s<3600)return Math.max(1,Math.round(s/60))+" min geleden";if(s<86400)return Math.round(s/3600)+" uur geleden";return Math.round(s/86400)+" d geleden"}
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+function render(){
+  const g=document.getElementById('grid');g.innerHTML='';
+  const f=items.filter(i=>(!curTopic||i.topic===curTopic)&&(!q||(i.title+i.summary).toLowerCase().includes(q)));
+  if(!f.length){g.innerHTML='<p style="color:var(--mut)">Niets gevonden.</p>';return}
+  for(const i of f){
+    const hot=i.score>2.2||i.mentions>2;
+    g.innerHTML+=`<div class="card">
+      <div class="top"><span class="src">${esc(i.source)}</span>${hot?'<span class="hot">HOT</span>':''}</div>
+      <h3><a href="${esc(i.link)}" target="_blank" rel="noopener">${esc(i.title)}</a></h3>
+      <p class="sum">${esc(i.summary)}</p>
+      <div class="meta"><span class="tag">${esc(i.topic)}</span><span>${ago(i.published)}</span><span>${i.mentions>1?i.mentions+' bronnen':''}</span></div>
+    </div>`;
+  }
+}
+function bar(){
+  const t=document.getElementById('topics');
+  t.innerHTML=TPC.map(x=>`<button class="chip ${x==='Alles'&&!curTopic||x===curTopic?'on':''}" onclick="curTopic=${x==='Alles'?'null':`'`+x+`'`};bar();render()">${x}</button>`).join('');
+}
+document.getElementById('q').addEventListener('input',e=>{q=e.target.value.toLowerCase();render()});
+fetch('data/news.json').then(r=>r.json()).then(d=>{
+  items=d.items;document.getElementById('upd').textContent=
+    'ververst '+ago(d.generated)+' · '+d.count+' berichten · automatisch 4× per dag';
+  bar();render();
+}).catch(e=>{document.getElementById('upd').textContent='kon news.json niet laden';});
+</script>
+</body>
+</html>

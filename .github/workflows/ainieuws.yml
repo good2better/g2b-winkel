@@ -1,0 +1,24 @@
+name: ainieuws
+on:
+  schedule:
+    - cron: "7 3,9,15,21 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install feedparser
+      - run: python tools/ainieuws/fetch.py
+      - name: commit news.json
+        run: |
+          git config user.name "g2b-bot"
+          git config user.email "bot@good2better.local"
+          git add ainieuws/data/news.json
+          git diff --cached --quiet || git commit -m "ainieuws: $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push
