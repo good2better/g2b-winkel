@@ -183,7 +183,7 @@ async function laden() {
         </div>
       </div>
       ${(p._beschr || p.video) ? `
-      <details class="meer">
+      <details class="meer" open>
         <summary>${p.video ? "▶ demo & info" : "ℹ info"}</summary>
         ${p._beschr ? `<div class="beschr">${esc(p._beschr)}</div>` : ""}
         ${p.video ? `
