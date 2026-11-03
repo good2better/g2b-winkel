@@ -199,6 +199,16 @@ async function laden() {
           <button class="vidplay" data-vidplay="${esc(p.id)}"
              aria-label="Speel video van ${esc(p._titel)}">▶</button>
         </div>` : ""}
+        ${p.uitleg ? `
+        <div class="vid-wrap" style="margin-top:8px">
+          <span class="vid-label">▶ uitleg · EN stem · NL/ES ondertiteling</span>
+          <video class="promo" controls playsinline preload="none"
+                 ${p.cover ? `poster="${esc(p.cover)}"` : ""}
+                 src="${esc(p.uitleg)}">
+            ${p.sub_nl ? `<track kind="subtitles" srclang="nl" label="Nederlands" src="${esc(p.sub_nl)}">` : ""}
+            ${p.sub_es ? `<track kind="subtitles" srclang="es" label="Español" src="${esc(p.sub_es)}">` : ""}
+          </video>
+        </div>` : ""}
       </details>` : ""}
       ${(p.soort === "audio" || p.preview) ? `
       <div class="player">
