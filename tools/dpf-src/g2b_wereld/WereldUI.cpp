@@ -21,7 +21,7 @@ static inline Color g2bsk(int sk,int r){if(sk<0)sk=0;if(sk>7)sk=7;const float*c=
 
 START_NAMESPACE_DISTRHO
 
-static const int kNInstr = 19;
+static const int kNInstr = kInstrNamesUI_N;
 
 class InstrUI : public UI {
 public:
@@ -42,7 +42,7 @@ protected:
         return slot==0?1:(slot==1?2:(slot==2?4:(slot==3?5:-1)));
     }
     void parameterChanged(uint32_t i, float v) override {
-        if(i==0) fInstr=(int)(v+0.5f);
+        if(i==0){const char* e=getenv("G2B_INSTR0");fInstr=e?atoi(e):(int)(v+0.5f);}
         else if(i==1) fValue[0]=v;
         else if(i==2) fValue[1]=v;
         else if(i==3) fOn=(int)(v+0.5f);
@@ -85,10 +85,19 @@ protected:
         fillColor(g2bsk(skin,5)); fontSize(22.f);
         text(ix+24.f,iy+ih/2,"<",nullptr); text(ix+iw-24.f,iy+ih/2,">",nullptr);
         fontSize(24.f); fillColor(g2bsk(skin,2));
-        text(ix+iw/2,iy+20.f,fNames[fInstr][0]?fNames[fInstr]:"INSTRUMENT",nullptr);
+        text(ix+iw/2,iy+19.f,fNames[fInstr][0]?fNames[fInstr]:"INSTRUMENT",nullptr);
         fontSize(10.f); fillColor(g2bsk(skin,3));
-        char nb[32]; snprintf(nb,sizeof nb,"%d / %d — DICE = willekeurig",fInstr+1,kNInstr);
-        text(ix+iw/2,iy+40.f,nb,nullptr);
+        char nb[40]; snprintf(nb,sizeof nb,"%d / %d",fInstr+1,kNInstr);
+        text(ix+iw/2,iy+35.f,nb,nullptr);
+        {
+            const float rst=iw-140.f, rx0=ix+70.f, ry=iy+ih-7.f;
+            const float st=kNInstr>1?rst/(kNInstr-1):0.f;
+            for(int i=0;i<kNInstr;i++){
+                const bool cur=(i==fInstr);
+                beginPath(); circle(rx0+st*i,ry,cur?3.2f:1.6f);
+                fillColor(cur?g2bsk(skin,2):g2bsk(skin,4)); fill();
+            }
+        }
         // scope
         float sx=18.f, sy=118.f, sw=W-36.f, sh=44.f;
         beginPath(); rect(sx,sy,sw,sh); fillColor(g2bsk(skin,1)); fill();
@@ -137,8 +146,8 @@ protected:
             // instrument pijlen
             float ix=18.f,iy=54.f,iw=W-36.f,ih=52.f;
             if(y>=iy&&y<=iy+ih){
-                if(x<ix+48){fInstr=(fInstr<=0)?kNInstr-1:fInstr-1;setParameterValue(0,(float)fInstr);repaint();return true;}
-                if(x>ix+iw-48){fInstr=(fInstr>=kNInstr-1)?0:fInstr+1;setParameterValue(0,(float)fInstr);repaint();return true;}
+                if(x<ix+48){float v=(float)(fInstr<=0?kNInstr-1:fInstr-1);setParameterValue(0,v);parameterChanged(0,v);return true;}
+                if(x>ix+iw-48){float v=(float)(fInstr>=kNInstr-1?0:fInstr+1);setParameterValue(0,v);parameterChanged(0,v);return true;}
             }
             // AAN / DICE pills
             float ax=W-66.f,ay=H-30.f;
@@ -174,7 +183,7 @@ private:
     static const int kScopeSize=512;
     float fScope[kScopeSize]={}; int fScopePos=0;
     float fMin[5],fMax[5],fValue[5]; const char* fLabel[5];
-    int fInstr=0,fOn=1,fSkin=0,fDrag=-1; float fLastY=0;
+    int fInstr=getenv("G2B_INSTR0")?atoi(getenv("G2B_INSTR0")):0,fOn=1,fSkin=0,fDrag=-1; float fLastY=0;
     char fNames[kNInstr][16];
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrUI)
 };

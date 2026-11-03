@@ -172,7 +172,6 @@ public:
         kKracht,      // output-level 0-100%
         kGalaxy,      // DIMENTIES 0-26
         kSfeer,       // dark/neutraal/licht
-        kLock,        // SLOT: smaak vastzetten (dice dobbelt alleen knoppen)
         kParameterCount
     };
 
@@ -206,53 +205,53 @@ protected:
         case kDecay:
             parameter.name = "Decay"; parameter.symbol = "decay";
             parameter.unit = "%";
-            parameter.ranges = {0.0f, 100.0f, 60.0f};
+            parameter.ranges = {60.0f, 0.0f, 100.0f};
             break;
         case kGlide:
             parameter.name = "Glide"; parameter.symbol = "glide";
             parameter.unit = "%";
-            parameter.ranges = {0.0f, 100.0f, 0.0f};
+            parameter.ranges = {0.0f, 0.0f, 100.0f};
             break;
         case kSub:
             parameter.name = "Sub"; parameter.symbol = "sub";
             parameter.unit = "%";
-            parameter.ranges = {0.0f, 100.0f, 30.0f};
+            parameter.ranges = {30.0f, 0.0f, 100.0f};
             break;
         case kClick:
             parameter.name = "Click"; parameter.symbol = "click";
             parameter.unit = "%";
-            parameter.ranges = {0.0f, 100.0f, 25.0f};
+            parameter.ranges = {25.0f, 0.0f, 100.0f};
             break;
         case kPitchD:
             parameter.name = "Drop"; parameter.symbol = "drop";
             parameter.unit = "%";
-            parameter.ranges = {0.0f, 100.0f, 50.0f};
+            parameter.ranges = {50.0f, 0.0f, 100.0f};
             break;
         case kTune:
             parameter.name = "Tune"; parameter.symbol = "tune";
             parameter.unit = "st";
-            parameter.ranges = {-12.0f, 12.0f, 0.0f};
+            parameter.ranges = {0.0f, -12.0f, 12.0f};
             break;
         case kLevel:
             parameter.name = "Level"; parameter.symbol = "level";
             parameter.unit = "%";
-            parameter.ranges = {0.0f, 100.0f, 80.0f};
+            parameter.ranges = {80.0f, 0.0f, 100.0f};
             break;
         case kKey:
             parameter.name = "Key"; parameter.symbol = "key";
             parameter.hints |= kParameterIsInteger;
-            parameter.ranges = {0.0f, 11.0f, 0.0f};
+            parameter.ranges = {0.0f, 0.0f, 11.0f};
             break;
         case kScale:
             parameter.name = "Scale"; parameter.symbol = "scale";
             parameter.hints |= kParameterIsInteger;
-            parameter.ranges = {0.0f, 1.0f, 0.0f};
+            parameter.ranges = {0.0f, 0.0f, 1.0f};
             break;
         case kDice:
             parameter.name = "Dice";
             parameter.symbol = "dice";
             parameter.hints |= kParameterIsInteger|kParameterIsTrigger;
-            parameter.ranges = {0.0f, 1.0f, 0.0f};
+            parameter.ranges = {0.0f, 0.0f, 1.0f};
             break;
         case kPreset:
             parameter.name = "Smaak";
@@ -266,27 +265,22 @@ protected:
         case kOn:
             parameter.name = "Aan"; parameter.symbol = "aan";
             parameter.hints |= kParameterIsBoolean;
-            parameter.ranges = {0.0f, 1.0f, 1.0f};
+            parameter.ranges = {1.0f, 0.0f, 1.0f};
             break;
         case kKracht:
             parameter.name = "Kracht"; parameter.symbol = "kracht";
             parameter.unit = "%";
-            parameter.ranges = {0.0f, 100.0f, 100.0f};
+            parameter.ranges = {100.0f, 0.0f, 100.0f};
             break;
         case kGalaxy:
             parameter.name = "DIMENTIES"; parameter.symbol = "dim";
             parameter.hints |= kParameterIsInteger;
-            parameter.ranges = {0.0f, 26.0f, 9.0f};
+            parameter.ranges = {9.0f, 0.0f, 26.0f};
             break;
         case kSfeer:
             parameter.name = "Sfeer"; parameter.symbol = "sfeer";
             parameter.hints |= kParameterIsInteger;
-            parameter.ranges = {0.0f, 2.0f, 1.0f};
-            break;
-        case kLock:
-            parameter.name = "Slot"; parameter.symbol = "slot";
-            parameter.hints |= kParameterIsBoolean;
-            parameter.ranges = {0.0f, 1.0f, 0.0f};
+            parameter.ranges = {1.0f, 0.0f, 2.0f};
             break;
         }
     }
@@ -316,7 +310,6 @@ protected:
         case kKracht: return fKracht;
         case kGalaxy: return fGalaxyV;
         case kSfeer:  return fSfeerV;
-        case kLock:   return fLock;
         }
         return 0.0f;
     }
@@ -340,7 +333,6 @@ protected:
         case kKracht: fKracht = value; break;
         case kGalaxy: fGalaxyV = value; fGal.setPos((int)(value + 0.5f)); break;
         case kSfeer:  fSfeerV = value; fSf.setMode((int)(value + 0.5f)); break;
-        case kLock:   fLock = value; break;
         }
         recalc();
     }
@@ -440,7 +432,7 @@ protected:
 private:
     void rollDice(){
         // nuttige dobbel: nieuwe SMAAK + passende klank-settings
-        fRnd=fRnd*1664525u+1013904223u; if (fLock<0.5f) setParameterValue(kPreset,(float)((fRnd>>8)%(kNumPresets+(int)fUsr.size()))); // SLOT: smaak blijft
+        fRnd=fRnd*1664525u+1013904223u; setParameterValue(kPreset,(float)((fRnd>>8)%(kNumPresets+(int)fUsr.size())));
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kDecay,25.f+(fRnd>>8)%66);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kGlide,(fRnd>>8)%70);
         fRnd=fRnd*1664525u+1013904223u; setParameterValue(kSub,15.f+(fRnd>>8)%71);
@@ -602,7 +594,7 @@ private:
     }
 
     float fPreset = 0.0f;
-    float fOn = 1.0f, fKracht = 100.0f, fGalaxyV = 9.0f, fSfeerV = 1.0f, fLock = 0.f;
+    float fOn = 1.0f, fKracht = 100.0f, fGalaxyV = 9.0f, fSfeerV = 1.0f;
     Galaxy fGal; Sfeer fSf;
     std::vector<UsrSmp> fUsr;
     bool fNamesSent = false;

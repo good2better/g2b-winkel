@@ -38,7 +38,7 @@ protected:
     // params: 0 BANK,1 TUNE,2 DECAY,3 LO,4 HI,5 LEVEL,6 AAN,7 GALAXY,8 SFEER,9 DICE
     static int paramOf(int slot){ return slot==0?1:(slot==1?2:(slot==2?3:(slot==3?4:(slot==4?5:7)))); }
     void parameterChanged(uint32_t i, float v) override {
-        if(i==0) fBank=(int)(v+0.5f);
+        if(i==0){const char* e=getenv("G2B_INSTR0");fBank=e?atoi(e):(int)(v+0.5f);}
         else if(i>=1&&i<=5) fValue[i-1]=v;
         else if(i==6) fOn=(int)(v+0.5f);
         else if(i==7) fValue[5]=v;
@@ -76,10 +76,17 @@ protected:
         text(ix+24.f,iy+ih/2,"<",nullptr); text(ix+iw-24.f,iy+ih/2,">",nullptr);
         fontSize(22.f); fillColor(g2bsk(skin,2));
         const char* bn=(fBank>=0&&fBank<kBankNamesUI_N)?kBankNamesUI[fBank]:"BANK";
-        text(ix+iw/2,iy+18.f,bn,nullptr);
+        text(ix+iw/2,iy+16.f,bn,nullptr);
         fontSize(9.5f); fillColor(g2bsk(skin,3));
         char nb[48]; snprintf(nb,sizeof nb,"%d / %d",fBank+1,kBankNamesUI_N);
-        text(ix+iw/2,iy+36.f,nb,nullptr);
+        text(ix+iw/2,iy+31.f,nb,nullptr);
+        {const float rst=iw-140.f, rx0=ix+70.f, ry=iy+ih-4.f;
+         const float st=kBankNamesUI_N>1?rst/(kBankNamesUI_N-1):0.f;
+         for(int i=0;i<kBankNamesUI_N;i++){
+             const bool cur=(i==fBank);
+             beginPath(); circle(rx0+st*i,ry,cur?2.6f:1.3f);
+             fillColor(cur?g2bsk(skin,2):g2bsk(skin,4)); fill();
+         }}
         // pills rechts: DICE / SFEER / AAN
         float px=W-66.f;
         for(int k=0;k<3;k++){
@@ -188,7 +195,7 @@ private:
     static const int kScopeSize=512;
     float fScope[kScopeSize]={}; int fScopePos=0;
     float fMin[6],fMax[6],fValue[6]; const char* fLabel[6];
-    int fBank=0,fOn=1,fSkin=0,fDrag=-1,fSfeer=1; float fLastY=0;
+    int fBank=getenv("G2B_INSTR0")?atoi(getenv("G2B_INSTR0")):0,fOn=1,fSkin=0,fDrag=-1,fSfeer=1; float fLastY=0;
     float fHit[16]={};
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PadsUI)
 };
