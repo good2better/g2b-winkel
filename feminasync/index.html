@@ -52,6 +52,7 @@ h2{font-family:var(--merk-font);color:var(--kop);font-size:clamp(26px,4vw,38px);
 .kaart ul{margin:10px 0 0 18px}
 .kaart .foto{border-radius:12px;overflow:hidden;margin-bottom:14px}
 .kaart .foto img{width:100%;display:block}
+.kaart .po{display:inline-block;margin-top:14px;background:var(--knop);color:var(--knopt);padding:10px 22px;border-radius:999px;text-decoration:none;font-weight:800;font-size:14px}
 .badge{display:inline-block;background:var(--zacht);color:var(--kop);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:800;margin:2px 4px 2px 0}
 .verhaal{background:var(--kaart);border:1px solid var(--lijn);border-radius:20px;padding:34px;box-shadow:var(--schaduw);font-size:17px}
 .verhaal em{color:var(--kop);font-style:normal;font-weight:800}
@@ -114,58 +115,61 @@ footer a{color:var(--kop);text-decoration:none;font-weight:700}
   </section>
 
   <h2 id="producten">Het starttrio</h2>
-  <p class="sub">Drie producten die samen een rustige cyclus ondersteunen. Ze zijn nu in de testrun — meld je interesse en je hoort als eerste wanneer ze er zijn.</p>
+  <p class="sub">Drie producten die samen een rustige cyclus ondersteunen. Je kunt ze nu <b>voorbestellen (PRE-ORDER)</b> — je betaalt pas als de eerste batch er is, en krijgt altijd je geld terug als die niet doorgaat.</p>
   <div class="grid p3">
     <div class="kaart">
       <div class="foto"><img class="lijn-foto" data-z="img/stijl-meisjes.png" data-zpos="left" data-l="img/mockup_pil_vrouwen.png" data-lpos="center" src="img/stijl-meisjes.png" alt="FeminaSync Pil pot" style="object-fit:cover;aspect-ratio:4/3;object-position:left"></div>
       <h3>Pil</h3>
       <div class="badge">60 capsules</div><div class="badge">1× per dag</div>
-      <p>Ondersteunt de hormonale balans met framboosblad, gember en vitamine B6.</p>
+      <p>Ondersteunt de hormonale balans met vitex (monnikspeper), cranberry en 10 bacteriestammen. Alleen voor volwassen vrouwen.</p>
       <div class="prijs" id="p1">€14</div>
-      <ul><li>Framboosblad &amp; gember</li><li>Vitamine B6</li><li>100% natuurlijk</li></ul>
+      <ul><li>Vitex &amp; cranberry</li><li>60 capsules</li><li>EVEENINE-lijn</li></ul>
+      <a class="cta po" href="../bestel.html?p=femina-pil">PRE-ORDER</a>
     </div>
     <div class="kaart">
       <div class="foto"><img class="lijn-foto" data-z="img/mockup_thee_meisjes.png" data-zpos="center" data-l="img/stijl-vrouwen.png" data-lpos="center" src="img/mockup_thee_meisjes.png" alt="FeminaSync Thee doos" style="object-fit:cover;aspect-ratio:4/3;object-position:center"></div>
       <h3>Thee</h3>
       <div class="badge">20 theezakjes</div><div class="badge">Kruidenmix</div>
-      <p>Rust in je hoofd, balans in je lijf. Framboosblad, kamille, gember en citroenmelisse.</p>
+      <p>Rust in je hoofd, balans in je lijf. Framboosblad, gember, kamille, venkel, kaneel + Surinaamse Blaka Uma en citroengras.</p>
       <div class="prijs" id="p2">€8</div>
-      <ul><li>Verzacht bij kramp</li><li>Kalm en warm</li><li>Zonder kunstmatige toevoegingen</li></ul>
+      <ul><li>Kruiden voor moeilijke dagen</li><li>Met Surinaamse Blaka Uma &amp; citroengras</li><li>Zonder kunstmatige toevoegingen</li></ul>
+      <a class="cta po" href="../bestel.html?p=femina-thee">PRE-ORDER</a>
     </div>
     <div class="kaart">
       <div class="foto"><img class="lijn-foto" data-z="img/stijl-meisjes.png" data-zpos="right" data-l="img/stijl-vrouwen.png" data-lpos="right" src="img/stijl-meisjes.png" alt="FeminaSync Zalf potje" style="object-fit:cover;aspect-ratio:4/3;object-position:right"></div>
       <h3>Zalf</h3>
       <div class="badge">50 ml</div><div class="badge">Voor op de huid</div>
-      <p>Verzacht en verzorgt: lavendel, kamille en Surinaamse Sneki Wiri &amp; Blaka Uma.</p>
+      <p>Verzacht en verzorgt: arnica, lavendel, kamille, eucalyptus + Surinaamse Sneki Wiri &amp; Blaka Uma.</p>
       <div class="prijs" id="p3">±€15</div>
-      <ul><li>Koelend en kalmerend</li><li>Voor buik en onderrug</li><li>Plus-variant met CBD volgt later</li></ul>
+      <ul><li>Koelend en kalmerend</li><li>Voor buik en onderrug</li><li>Plus-variant volgt later</li></ul>
+      <a class="cta po" href="../bestel.html?p=femina-zalf">PRE-ORDER</a>
     </div>
   </div>
-  <p class="note">De producten zijn in ontwikkeling (testrun) en nog niet te koop. Prijzen zijn indicaties uit het FeminaSync-plan.</p>
+  <p class="note">PRE-ORDER = voorverkoop: je mailt je bestelling, wij bevestigen met een Tikkie-link, en levering volgt zodra de eerste batch (testrun) binnen is — of je geld terug. Prijzen zijn indicaties uit het FeminaSync-plan.</p>
 
   <h2 id="cyclus">De cyclus in 4 fasen</h2>
   <p class="sub">Je lijf draait elke maand door dezelfde vier fasen. Weet je welke fase het is, dan snap je waarom je je zo voelt — en welk product op welk moment helpt.</p>
   <div class="fases">
-    <div class="fase"><b>Menstruatie</b><span>Dag 1-5. Je bloedt. Warme thee en zalf op buik/rug verzachten de kramp; rust is belangrijk.</span></div>
+    <div class="fase"><b>Menstruatie</b><span>Dag 1-5. Je bloedt. Warme thee en zalf op buik/rug maken het zachter; rust is belangrijk.</span></div>
     <div class="fase"><b>Follikelfase</b><span>Dag 6-13. Je energie groeit terug. De pil ondersteunt je balans; goede tijd om actief te zijn.</span></div>
     <div class="fase"><b>Eisprong</b><span>Rond dag 14. Je voelt je vaak sterk en social. Sommigen voelen een steekje aan één kant.</span></div>
-    <div class="fase"><b>Luteale fase</b><span>Dag 15-28. PMS kan opkomen: broekie buik, humeur, trek. Thee en de pil helpen hier het meest.</span></div>
+    <div class="fase"><b>Luteale fase</b><span>Dag 15-28. PMS kan opkomen: broekie buik, humeur, trek. In deze fase kiezen veel vrouwen thee en de pil.</span></div>
   </div>
 
   <h2 id="kruiden">De kruiden-encyclopedie</h2>
   <p class="sub" id="kruiden-sub">Elke plant in onze recepten is gekozen met een reden — klassiek gebruik én moderne kennis.</p>
   <div class="kruiden">
-    <div class="kruid"><div class="ico">🍇</div><b>Framboosblad</b><span>De klassieke "vrouwenkruid": verzacht baarmoederkramp en ondersteunt een regelmatige cyclus.</span></div>
-    <div class="kruid"><div class="ico">🫚</div><b>Gember</b><span>Warmt en verlicht misselijkheid en kramp. Werkt snel en zacht.</span></div>
+    <div class="kruid"><div class="ico">🍇</div><b>Framboosblad</b><span>De klassieke "vrouwenkruid" — al generaties gebruikt rond de cyclus.</span></div>
+    <div class="kruid"><div class="ico">🫚</div><b>Gember</b><span>Warmt de buik — traditioneel bij misselijkheid en op moeilijke dagen.</span></div>
     <div class="kruid"><div class="ico">🌼</div><b>Kamille</b><span>Kalmeert hoofd en buik; de rust-brenger van de thee.</span></div>
     <div class="kruid"><div class="ico">🍋</div><b>Citroenmelisse</b><span>Lichte citroenkruid dat spanning en prikkelbaarheid zachter maakt.</span></div>
-    <div class="kruid"><div class="ico">🌿</div><b>Kurkuma</b><span>Natuurlijke ontstekingsremmer; helpt bij een zwaardere cyclus.</span></div>
-    <div class="kruid"><div class="ico">🌱</div><b>Venkel</b><span>Verzacht darmkramp en een opgeblazen gevoel rond de menstruatie.</span></div>
-    <div class="kruid"><div class="ico">🍇</div><b>Druivenpit</b><span>Antioxidant die huid en hormonen ondersteunt.</span></div>
+    <div class="kruid"><div class="ico">🌿</div><b>Kurkuma</b><span>Het gouden kruid uit de keuken — traditioneel gebruikt door vrouwen.</span></div>
+    <div class="kruid"><div class="ico">🌱</div><b>Venkel</b><span>Zoet en mild — traditioneel bij een opgeblazen gevoel rond de menstruatie.</span></div>
+    <div class="kruid"><div class="ico">🍇</div><b>Druivenpit</b><span>Antioxidant uit de pit van de druif — beschermende celkracht.</span></div>
     <div class="kruid"><div class="ico">🌸</div><b>Vitex</b><span>Monnikspeper — bekend om het ondersteunen van een regelmatige cyclus bij vrouwen.</span></div>
-    <div class="kruid"><div class="ico">💜</div><b>Lavendel</b><span>In de zalf: kalmeert huid en hoofd, helpt ontspannen.</span></div>
+    <div class="kruid"><div class="ico">💜</div><b>Lavendel</b><span>In de zalf: bekend om zijn kalme, ontspannende geur.</span></div>
     <div class="kruid"><div class="ico">🍃</div><b>Sneki Wiri</b><span>Surinaams kruid uit de traditie — verkoelend en kalmerend voor de huid.</span></div>
-    <div class="kruid"><div class="ico">🌾</div><b>Blaka Uma</b><span>Surinaams "vrouwenkruid"; generaties gebruikt bij cyclusklachten.</span></div>
+    <div class="kruid"><div class="ico">🌾</div><b>Blaka Uma</b><span>Surinaams "vrouwenkruid" — generaties gebruikt door vrouwen.</span></div>
     <div class="kruid"><div class="ico">🧈</div><b>Sheaboter</b><span>De zachte basis van de zalf — voedt de gevoelige huid.</span></div>
   </div>
 
@@ -191,9 +195,9 @@ const Z={
  foto:"img/stijl-meisjes.png", brand:"FeminaSync", sub:"Menstruatie Care · Good2Better",
  faq:[
   ["Is ongesteld zijn eng?","Nee! Het is een teken dat je lijf gezond werkt. De eerste keren voelt het misschien raar — met thee, rust en een warme zalf wordt het steeds normaler."],
-  ["Wat doet de Pil precies?","De Pil is een voedingssupplement met framboosblad, gember en vitamine B6. Het helpt je hormonen rustig in balans te blijven — geen medicijn, gewoon natuurlijke steun."],
-  ["Mag ik de thee elke dag drinken?","Ja, kruidenthee mag dagelijks. Rond je menstruatie helpt 2-3 kopjes per dag extra tegen kramp."],
-  ["Wanneer gebruik ik de zalf?","Smeer een beetje op je onderbuik of onderrug als je kramp voelt. De lavendel en Surinaamse kruiden koelen en kalmeren."],
+  ["Wat doet de Pil precies?","De Pil is een voedingssupplement met vitex (monnikspeper), cranberry en vitamine B6. B6 draagt bij aan het reguleren van de hormonale activiteit — geen medicijn, gewoon natuurlijke steun."],
+  ["Mag ik de thee elke dag drinken?","Ja, kruidenthee mag dagelijks. Rond je menstruatie nemen veel vrouwen er graag 2-3 kopjes per dag."],
+  ["Wanneer gebruik ik de zalf?","Smeer een beetje op je onderbuik of onderrug op moeilijke dagen. De lavendel en Surinaamse kruiden koelen en kalmeren."],
   ["Waarom is dit merk anders?","Bijna alle producten in de winkel zijn voor volwassenen. FeminaSync is speciaal voor meiden van 9-12 — zachte dosering, vriendelijke uitleg, ook voor papa en mama om te begrijpen."],
   ["Wanneer kan ik het kopen?","We doen nu een testrun bij onze Nederlandse fabrikant. Meld je interesse via de winkel en je hoort als eerste wanneer het er is."]
  ]},
@@ -205,7 +209,7 @@ const Z={
  faq:[
   ["Wat is EVEENINE?","De luxe volwassen lijn van FeminaSync: dezelfde recepten als de zachte lijn, maar in een zwart-gouden verpakking voor volwassen vrouwen."],
   ["Wat doet de Pil voor mij?","Ondersteunt je hormonale balans door de hele cyclus heen — met framboosblad, gember, kurkuma, venkel, druivenpit en Vitex."],
-  ["Helpt het bij PMS?","De combinatie van kruiden is juist gekozen voor de luteale fase: minder kramp, rustiger hoofd, stabieler humeur."],
+  ["Helpt het bij PMS?","De combinatie van kruiden is juist gekozen voor de fase vóór je menstruatie: warm, kalmerend en traditioneel gebruikt door vrouwen."],
   ["Is CBD er ook?","Er komt een plus-variant van de zalf met CBD. Die volgt na de testrun."],
   ["Waarom Surinaamse kruiden?","Sneki Wiri en Blaka Uma zijn Surinaamse 'vrouwenkruiden' die al generaties worden gebruikt — wij combineren ze met moderne supplement-kennis."],
   ["Wanneer kan ik het kopen?","We doen nu een testrun bij onze Nederlandse fabrikant. Meld je interesse via de winkel en je hoort als eerste wanneer het er is."]
