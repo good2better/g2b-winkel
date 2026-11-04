@@ -1169,7 +1169,8 @@
    },
    "groep": "femina",
    "badge": "PRE-ORDER",
-   "cover": "feminasync/img/mockup_pil_vrouwen.png"
+   "cover": "feminasync/img/mockup_pil_vrouwen.png",
+   "verborgen": true
   },
   {
    "id": "femina-thee",
@@ -1182,7 +1183,8 @@
    },
    "groep": "femina",
    "badge": "PRE-ORDER",
-   "cover": "feminasync/img/mockup_thee_meisjes.png"
+   "cover": "feminasync/img/mockup_thee_meisjes.png",
+   "verborgen": true
   },
   {
    "id": "femina-zalf",
@@ -1195,7 +1197,8 @@
    },
    "groep": "femina",
    "badge": "PRE-ORDER",
-   "cover": "feminasync/img/stijl-meisjes.png"
+   "cover": "feminasync/img/stijl-meisjes.png",
+   "verborgen": true
   },
   {
    "id": "femina-startpakket",
@@ -1208,7 +1211,8 @@
    },
    "groep": "femina",
    "badge": "PRE-ORDER",
-   "cover": "feminasync/img/stijl-meisjes.png"
+   "cover": "feminasync/img/stijl-meisjes.png",
+   "verborgen": true
   },
   {
    "id": "femina-pil-zacht",
@@ -1221,7 +1225,8 @@
    "beschrijving": "VOORVERKOOP — eerste batch na de testrun (verwacht begin 2027). Betaal pas via Tikkie na onze bevestiging; levering of geld terug. 60 plantaardige gummies (aardbei+sinaasappel, vegan) met 10 vitaminen en mineralen waaronder B-vitaminen — mild en gemaakt voor kinderen. Verkoop loopt via de moeder/verzorger. Geen sterke kruiden, geen medicijn.",
    "links": {
     "koop": "bestel.html?p=femina-pil-zacht"
-   }
+   },
+   "verborgen": true
   }
  ]
 }
