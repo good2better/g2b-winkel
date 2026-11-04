@@ -1160,10 +1160,10 @@
   },
   {
    "id": "femina-pil",
-   "titel": "EVEENINE Pil — cyclus-ondersteuning (PRE-ORDER)",
+   "titel": "EVEENINE Gummies — magnesium voor vrouwen (PRE-ORDER)",
    "soort": "femina",
-   "beschrijving": "VOORVERKOOP — eerste batch komt binnen na de testrun (verwacht begin 2027). Je bestelt nu met introductievoordeel; betaal pas via Tikkie nadat wij je mail bevestigen. Levering zodra de batch binnen is, of je geld terug. 60 capsules met monnikspeper (vitex), cranberry, berendruif en 10 bacteriestammen — plantaardig, voor volwassen vrouwen. Luxe EVEENINE by FeminaSync label.",
-   "prijs": "€ 14,00",
+   "beschrijving": "VOORVERKOOP — eerste batch komt binnen na de testrun (verwacht begin 2027). Je bestelt nu met introductievoordeel; betaal pas via Tikkie nadat wij je mail bevestigen. Levering zodra de batch binnen is, of je geld terug. 60 plantaardige gummies met kersensmaak: magnesiumcitraat — de goed opneembare vorm van het mineraal dat vrouwen al generaties gebruiken bij spierspanning en vermoeidheid rond hun cyclus. Magnesium draagt bij aan normale spierwerking en aan de vermindering van vermoeidheid. Vegan, glutenvrij, voor volwassen vrouwen. Luxe EVEENINE by FeminaSync label. Geen pillen — alleen gummies.",
+   "prijs": "€ 15,00",
    "links": {
     "koop": "bestel.html?p=femina-pil"
    },
@@ -1175,8 +1175,8 @@
    "id": "femina-thee",
    "titel": "FeminaSync Zacht Thee — cyclus-kruidenmix (PRE-ORDER)",
    "soort": "femina",
-   "beschrijving": "VOORVERKOOP — eerste batch na de testrun (verwacht begin 2027). Betaal pas via Tikkie na onze bevestiging; levering of geld terug. 20 theezakjes, eigen recept v2: framboosblad, gember, kamille, citroenmelisse, kaneel, venkel + Surinaamse Blaka Uma en citroengras — kruiden die generaties vrouwen gebruiken op moeilijke dagen. Zacht en veilig, ook voor meiden vanaf 9 jaar (onder begeleiding).",
-   "prijs": "€ 8,00",
+   "beschrijving": "VOORVERKOOP — eerste batch na de testrun (verwacht begin 2027). Betaal pas via Tikkie na onze bevestiging; levering of geld terug. Doosje losse thee (50g, ±20 koppen), eigen recept v2: framboosblad, gember, kamille, citroenmelisse, kaneel, venkel + Surinaamse Blaka Uma en citroengras — kruiden die generaties vrouwen gebruiken op moeilijke dagen. Zacht en veilig, ook voor meiden vanaf 9 jaar (onder begeleiding).",
+   "prijs": "€ 12,00",
    "links": {
     "koop": "bestel.html?p=femina-thee"
    },
@@ -1189,7 +1189,7 @@
    "titel": "FeminaSync Zacht Zalf — buik & rug (PRE-ORDER)",
    "soort": "femina",
    "beschrijving": "VOORVERKOOP — eerste batch na de testrun (verwacht begin 2027). Betaal pas via Tikkie na onze bevestiging; levering of geld terug. 50ml huidzalf v2: sheaboter met arnica (traditioneel huidkruid), lavendel, kamille, eucalyptus + Surinaamse Sneki Wiri en Blaka Uma. Wrijven op buik en onderrug bij kramp; ook voor meiden vanaf 9 jaar.",
-   "prijs": "€ 15,00",
+   "prijs": "€ 18,00",
    "links": {
     "koop": "bestel.html?p=femina-zalf"
    },
@@ -1200,7 +1200,7 @@
   {
    "id": "femina-pil-zacht",
    "titel": "FeminaSync Zacht Meiden-Gummies — milde vitamines (PRE-ORDER)",
-   "prijs": 14.0,
+   "prijs": "€ 14,00",
    "soort": "femina",
    "groep": "femina",
    "badge": "PRE-ORDER",
