@@ -43,6 +43,8 @@ input[type=file]{color:var(--dim);font-size:12px}
 
 <div id="lessen"></div>
 <button class="btn ghost" onclick="nieuweLes()">+ Les toevoegen</button>
+<button class="btn ghost" onclick="vulVoorbeeld()">✨ Vul voorbeeld-cursus</button>
+<span class="tip">Klik op ✨ om te zien hoe een les eruit ziet — vervang daarna gewoon de teksten.</span>
 
 <div class="k" style="margin-top:26px">
 <button class="btn" onclick="maak()">⬇ Maak cursus &amp; download</button>
@@ -221,6 +223,16 @@ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
 function nieuweLes(){
   const les={id:rid(),titel:'',tekst:'',image:'',audio:'',quiz:[]};
   lessen.push(les); render();
+}
+function vulVoorbeeld(){
+  el('titel').value='Beatmaker Basis';
+  el('slug').value='beatmaker-basis';
+  el('intro').value='Leer in 7 lessen je eerste beat maken: drums, 808, melodie, structuur en mixen — zonder dure spullen.';
+  lessen.length=0;
+  lessen.push({id:rid(),titel:'Waar een beat uit bestaat',tekst:'## De 4 bouwstenen\n- Drums: het ritme en de energie\n- Bass/808: het gewicht onderin\n- Melodie: het gedeelte dat blijft hangen\n- FX: overgangen en spanning\n\n## Luister eerst\nPak een beat die je mooi vindt en tel hoe vaak de drums herhalen voor er iets verandert. Bijna elke beat wisselt elke 4 of 8 bars iets.',image:'',audio:'',quiz:[{q:'Welke laag geeft een beat zijn gewicht?',opts:['Melodie','808/bass','FX','Hihats'],answer:1},{q:'Hoe vaak verandert er meestal iets in een beat?',opts:['Elke bar','Elke 4 of 8 bars','Elke 32 bars','Nooit'],answer:1}]});
+  lessen.push({id:rid(),titel:'Je eerste drum-patroon',tekst:'## Stappen\n- Zet je BPM op 140 (trap) of 90 (boombap)\n- Kick op tel 1 en de & van 3\n- Snare op 2 en 4\n- Hihat elke tel, sommige dubbel\n\nSpeel hem 8 bars en voeg in bar 8 één extra snare toe als fill.',image:'',audio:'',quiz:[{q:'Waar staat de snare in een basis-patroon?',opts:['Tel 1 en 3','Tel 2 en 4','Overal','Alleen bar 8'],answer:1}]});
+  render();
+  el('stat').textContent='Voorbeeld geladen — pas de teksten aan naar jouw stijl.';
 }
 function nieuweVraag(les){ les.quiz.push({q:'',opts:['','','',''],answer:0}); render(); }
 function wis(i){ lessen.splice(i,1); render(); }
