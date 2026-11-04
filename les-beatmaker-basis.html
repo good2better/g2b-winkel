@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Beatmaker Basis — je eerste beat in 7 lessen — G2B Les-Fabriek</title>
+<style>
+:root{--bg:#0d0f0e;--panel:#141815;--line:#263028;--txt:#eef4f0;--dim:#93a69b;--accent:#2fbf71;--gold:#e8c547}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#101512 0%,var(--bg) 100%);color:var(--txt);font:15px/1.65 'Segoe UI',system-ui,sans-serif;min-height:100vh}
+.top{position:sticky;top:0;background:#101512ee;border-bottom:1px solid var(--line);padding:10px 16px;display:flex;gap:12px;align-items:center;z-index:5;backdrop-filter:blur(6px)}
+.top h1{font-size:17px;margin:0;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badge{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:3px 12px;font-size:12px;color:var(--dim);white-space:nowrap}
+.badge b{color:var(--gold)}
+.bar{flex:1;height:8px;background:#1c231e;border-radius:6px;overflow:hidden;min-width:60px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));width:0%;transition:width .3s}
+.layout{display:flex;min-height:calc(100vh - 53px)}
+nav{width:230px;min-width:230px;border-right:1px solid var(--line);padding:12px 10px;background:#0f1311}
+nav a{display:block;color:var(--dim);text-decoration:none;padding:9px 10px;border-radius:8px;font-size:13.5px;border-left:3px solid transparent;margin-bottom:2px}
+nav a:hover{color:var(--txt);background:#172019}
+nav a.act{color:var(--txt);background:#172019;border-left-color:var(--accent);font-weight:600}
+nav a.done{color:var(--accent)}
+nav a.done::after{content:" ✓";color:var(--accent)}
+main{flex:1;padding:22px 26px 60px;max-width:820px}
+.intro{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:20px}
+h2{color:var(--gold);margin:4px 0 12px;font-size:22px}
+h3{color:var(--accent);margin:18px 0 8px}
+main img{max-width:100%;border-radius:10px;margin:10px 0}
+audio{width:100%;margin:8px 0 14px;height:36px}
+.quiz{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:16px 0}
+.quiz .q{font-weight:700;margin-bottom:10px}
+.opt{display:block;width:100%;text-align:left;background:#172019;color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:6px 0;cursor:pointer;font-size:14px}
+.opt:hover{border-color:var(--accent)}
+.opt.goed{border-color:var(--accent);background:#0f2a1b;color:var(--accent);font-weight:700}
+.opt.fout{border-color:#bf2f2f;background:#2a1212;color:#e08f8f}
+.fb{font-size:13px;margin-top:8px;color:var(--dim)}
+.btn{background:var(--accent);color:#04120a;border:0;border-radius:9px;padding:11px 22px;font-weight:700;font-size:15px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btnrow{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+.diploma{display:none;text-align:center;padding:40px 20px}
+.diploma .cert{background:var(--panel);border:2px solid var(--gold);border-radius:16px;padding:34px 26px;max-width:520px;margin:0 auto}
+.diploma h2{font-size:26px}
+.klein{color:var(--dim);font-size:13px}
+@media (max-width:720px){nav{display:none}main{padding:16px}}
+.mobinav{display:none}
+@media (max-width:720px){.mobinav{display:block;margin-bottom:14px}.mobinav select{width:100%;background:var(--panel);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:14px}}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1 id="t"></h1>
+  <div class="bar"><i id="prog"></i></div>
+  <div class="badge">Score <b id="score">0</b>/<span id="max">0</span></div>
+</div>
+<div class="layout">
+<nav id="nav"></nav>
+<main>
+  <div class="mobinav"><select id="lespick" onchange="toon(this.value)"></select></div>
+  <div id="intro" class="intro"></div>
+  <div id="les"></div>
+  <div id="diploma" class="diploma"><div class="cert">
+    <div style="font-size:44px">🏆</div>
+    <h2>Gefeliciteerd!</h2>
+    <p id="diptext"></p>
+    <p class="klein">G2B Les-Fabriek — gemaakt door <span id="maker"></span></p>
+  </div></div>
+</main>
+</div>
+<script>
+const D = {"slug": "beatmaker-basis", "title": "Beatmaker Basis — je eerste beat in 7 lessen", "intro": "Van nul naar je eigen complete beat. Geen dure apparatuur nodig — alleen je laptop en deze cursus. Elke les eindigt met een korte quiz.", "maker": "Good2Better", "lessons": [{"idx": 1, "title": "Wat is een beat eigenlijk?", "body": "<p>Een beat is de ritmische basis van een nummer: drums + bas + melodie die samen de groove vormen waarop iemand rapt, zingt of danst.<\/p>\n<h3>De 4 bouwstenen<\/h3>\n<ul><li>Drums: kick (laag, op de tellen), snare (de 'klap'), hihats (de 'tikitiki')<\/li><li>Bas: de laagste noot — houdt de beat 'onder'<\/li><li>Melodie: wat je onthoudt en meezingt<\/li><li>Ruimte: wat je WEGlaat is net zo belangrijk als wat je erin zet<\/li><\/ul>\n<p>Luister deze week naar 3 beats die jij mooi vindt en probeer de 4 bouwstenen te horen.<\/p>", "quiz": [{"q": "Welke laag zorgt voor de 'klap' in de beat?", "opts": ["Kick", "Snare", "Hihat", "Bas"], "answer": 1}, {"q": "Wat is minstens zo belangrijk als wat je in een beat stopt?", "opts": ["Volume", "Ruimte/weglaten", "Tempo", "Effecten"], "answer": 1}], "audio": "", "image": ""}, {"idx": 2, "title": "Tempo en gevoel — BPM kiezen", "body": "<p>BPM = beats per minute = hoe snel je beat loopt. Het tempo bepaalt voor een groot deel het gevoel.<\/p>\n<h3>Genre-richtlijnen (vuistregels)<\/h3>\n<ul><li>Boom bap / lo-fi: 80-95 BPM<\/li><li>Trap / drill: 130-150 BPM (voelt als de helft)<\/li><li>RnB: 95-110 BPM<\/li><li>House / EDM: 120-128 BPM<\/li><li>Kawina / bubbling: 140+ BPM<\/li><\/ul>\n<p>Tip: voel het eerst. Tik met je hand mee — klopt het, dan is het goed.<\/p>", "quiz": [{"q": "Welk tempo-gebied past bij trap?", "opts": ["80-95", "95-110", "130-150", "170-180"], "answer": 2}, {"q": "Waar staat BPM voor?", "opts": ["Beats per maat", "Beats per minute", "Bass per maat", "Bass per minuut"], "answer": 1}], "audio": "", "image": ""}, {"idx": 3, "title": "Drums bouwen — kick, snare, hihat", "body": "<p>Start ALTIJD met de drums. Simpele werkwijze die elke producer gebruikt:<\/p>\n<h3>Stap voor stap<\/h3>\n<ul><li>Leg de snare op tel 2 en 4 — dat is de ruggengraat<\/li><li>Kick eromheen waar het 'loopt': vaak tel 1 en ergens in het midden<\/li><li>Hihats op elke tel, of op 8e/16e noten voor drive<\/li><li>Pas DAARNA variaties: extra kick, hat-roll, open hat aan het eind<\/li><\/ul>\n<p>Maak eerst 1 maat (4 tellen) perfect — kopieer die pas naar 4 of 8 maten.<\/p>", "quiz": [{"q": "Waar leg je de snare bij een basis-beat?", "opts": ["Tel 1 en 3", "Tel 2 en 4", "Elke tel", "Alleen tel 1"], "answer": 1}, {"q": "Wat is de beste werkwijze?", "opts": ["Eerst 8 maten tegelijk maken", "Eerst 1 maat perfect, dan herhalen", "Eerst de melodie", "Willekeurig plaatsen"], "answer": 1}], "audio": "", "image": ""}, {"idx": 4, "title": "De 808 / bas-lijn", "body": "<p>De bas (of 808) is wat een beat 'dik' maakt. Hij volgt meestal de kick: waar de kick slaat, speelt de bas (ongeveer) mee.<\/p>\n<h3>Regels die werken<\/h3>\n<ul><li>Volg de kick — speel bas-noten op dezelfde momenten<\/li><li>Gebruik weinig noten: 2-4 per maat is genoeg<\/li><li>Blijf in de toonsoort van je melodie (zie les 5)<\/li><li>Slide/glide tussen noten = typisch trap-geluid<\/li><\/ul>\n<p>Test: zet de bas uit. Mist de beat kracht? Dan was hij goed.<\/p>", "quiz": [{"q": "Wat volgt de bas-lijn meestal?", "opts": ["De hihat", "De snare", "De kick", "De melodie"], "answer": 2}, {"q": "Hoeveel bas-noten per maat is een goed begin?", "opts": ["8-16", "2-4", "1", "20+"], "answer": 1}], "audio": "", "image": ""}, {"idx": 5, "title": "Melodie — toonsoort en emotie", "body": "<p>Een toonsoort is een set noten die goed samen klinken. Kies er één en blijf erin — dan kan het bijna niet misgaan.<\/p>\n<h3>Makkelijke start<\/h3>\n<ul><li>Mineur (bijv. A mineur) = donker, serieus, trap/drill<\/li><li>Majeur = vrolijk, open, pop<\/li><li>Witte toetsen A-G zonder # of b = A mineur — speel ermee<\/li><li>Korte loop van 4-8 noten werkt beter dan een lange melodie<\/li><\/ul>\n<p>Emotie eerst: wat moet de luisteraar voelen? Kies DÁÁROP je toonsoort.<\/p>", "quiz": [{"q": "Welke toonsoort-soort past bij donkere trap?", "opts": ["Majeur", "Mineur", "Lydisch", "Mixolydisch"], "answer": 1}, {"q": "Wat werkt meestal beter als melodie?", "opts": ["Lange complexe lijnen", "Korte loop van 4-8 noten", "Willekeurige noten", "Alleen akkoorden"], "answer": 1}], "audio": "", "image": ""}, {"idx": 6, "title": "Structuur — van loop naar nummer", "body": "<p>Een beat is geen eindeloze loop — hij heeft opbouw. De hit-structuur die altijd werkt:<\/p>\n<h3>De opbouw<\/h3>\n<ul><li>Intro (4-8 maten): melodie alleen of gefilterd — stelt de sfeer voor<\/li><li>Hook/Refrein (8 maten): ALLES aan — drums + bas + melodie voluit<\/li><li>Couplet (16 maten): iets weglaten zodat de rapper zanger ruimte heeft<\/li><li>Outro (4 maten): lagen weg — netjes afronden<\/li><\/ul>\n<p>Truc: maak je 8-maten loop perfect en schuif dan lagen AAN/UIT per sectie.<\/p>", "quiz": [{"q": "Waar staat alles voluit aan in de beat?", "opts": ["Intro", "Couplet", "Hook/refrein", "Outro"], "answer": 2}, {"q": "Hoe maak je structuur uit je loop?", "opts": ["Alles opnieuw maken", "Lagen per sectie aan/uit schuiven", "Sneller afspelen", "Meer noten toevoegen"], "answer": 1}], "audio": "", "image": ""}, {"idx": 7, "title": "Mixen basis — alles hoorbaar", "body": "<p>Mixen = zorgen dat elke laag zijn plek krijgt en niets elkaar in de weg zit. Drie vuistregels voor elke mix:<\/p>\n<h3>De drie regels<\/h3>\n<ul><li>Volume: kick + bas mogen het hardst, melodie iets zachter, hats subtiel<\/li><li>Frequentie: geef elke laag zijn eigen plek — bas laag, melodie midden, hats hoog<\/li><li>Nooit in het rood: je master-meting blijft onder 0 dB, liever rond -3 dB<\/li><\/ul>\n<p>Luister je mix op telefoon-speakers én koptelefoon — klinkt hij op allebei goed, dan is hij klaar.<\/p>", "quiz": [{"q": "Welke lagen mogen het hardst in de mix?", "opts": ["Hihats", "Melodie", "Kick + bas", "Sfeer-geluiden"], "answer": 2}, {"q": "Tot waar mag je master-meting komen?", "opts": ["In het rood", "Tot -3 dB", "Tot +3 dB", "Maakt niet uit"], "answer": 1}], "audio": "", "image": ""}]};
+const KEY = 'g2b_les_' + D.slug;
+let state = {}; try{ state = JSON.parse(localStorage.getItem(KEY)||'{}') }catch(e){}
+let cur = 0;
+const nLes = D.lessons.length;
+const maxScore = D.lessons.reduce((s,l)=>s+l.quiz.length,0);
+document.getElementById('max').textContent = maxScore;
+document.getElementById('maker').textContent = D.maker;
+document.getElementById('t').textContent = D.title;
+document.getElementById('intro').innerHTML = '<b>'+D.title+'</b><br><span class="klein">'+D.intro+'</span>';
+
+function bewaar(){ try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){} }
+function klaar(i){ return state['les'+i] && state['les'+i].done }
+function score(){ return Object.values(state).reduce((s,l)=>s+(l.score||0),0) }
+function nav(){
+  let h='';
+  D.lessons.forEach((l,i)=>{
+    h += '<a href="#" class="'+(i===cur?'act ':'')+(klaar(i)?'done':'')+'" onclick="toon('+i+');return false">'+l.idx+'. '+l.title+'</a>';
+  });
+  document.getElementById('nav').innerHTML = h;
+  let sel = document.getElementById('lespick'); sel.innerHTML='';
+  D.lessons.forEach((l,i)=>{ sel.innerHTML += '<option value="'+i+'"'+(i===cur?' selected':'')+'>Les '+l.idx+' — '+l.title+'</option>'; });
+}
+function toon(i){
+  cur = i;
+  document.getElementById('diploma').style.display='none';
+  const l = D.lessons[i];
+  let h = '<h2>Les '+l.idx+' — '+l.title+'</h2>';
+  if(l.audio) h += '<audio controls src="'+l.audio+'"></audio>';
+  if(l.image) h += '<img src="'+l.image+'">';
+  h += l.body;
+  if(l.quiz.length){
+    h += '<div class="quiz"><div class="q">🎯 Quiz — check of je het snapt</div>';
+    l.quiz.forEach((q,qi)=>{
+      h += '<div style="margin:10px 0 4px;font-weight:600">'+q.q+'</div>';
+      q.opts.forEach((o,oi)=>{
+        h += '<button class="opt" id="q'+i+'_'+qi+'_'+oi+'" onclick="antw('+i+','+qi+','+oi+','+q.answer+')">'+o+'</button>';
+      });
+      h += '<div class="fb" id="fb'+i+'_'+qi+'"></div>';
+    });
+    h += '</div>';
+  }
+  h += '<div class="btnrow">';
+  if(i>0) h += '<button class="btn ghost" onclick="toon('+(i-1)+')">← Vorige</button>';
+  if(klaar(i) && i<nLes-1) h += '<button class="btn" onclick="toon('+(i+1)+')">Volgende les →</button>';
+  if(!klaar(i)) h += '<button class="btn" onclick="done('+i+')">Les afronden ✓</button>';
+  h += '</div>';
+  document.getElementById('les').innerHTML = h;
+  // beantwoorde quizzen herstellen
+  (state['les'+i]&&state['les'+i].antw||[]).forEach((a,qi)=>{
+    const q=l.quiz[qi]; markeer(i,qi,a,q.answer);
+  });
+  nav(); scrollTo(0,0); update();
+}
+function markeer(i,qi,a,goed){
+  const l=D.lessons[i];
+  l.quiz[qi].opts.forEach((o,oi)=>{
+    const b=document.getElementById('q'+i+'_'+qi+'_'+oi); if(!b)return;
+    if(oi===goed) b.className='opt goed';
+    else if(oi===a) b.className='opt fout';
+    b.disabled=true;
+  });
+  const fb=document.getElementById('fb'+i+'_'+qi);
+  if(fb) fb.textContent = a===goed ? '✓ Goed!' : 'Het goede antwoord staat nu groen.';
+}
+function antw(i,qi,a,goed){
+  const st = state['les'+i] = state['les'+i]||{antw:[],score:0,done:false};
+  if(st.antw[qi]!==undefined) return;
+  st.antw[qi]=a; if(a===goed) st.score++;
+  markeer(i,qi,a,goed); bewaar(); update();
+}
+function done(i){
+  const st = state['les'+i] = state['les'+i]||{antw:[],score:0};
+  st.done = true; bewaar(); update();
+  if(i===nLes-1 || D.lessons.every((_,j)=>klaar(j))) return eind();
+  toon(i+1);
+}
+function update(){
+  document.getElementById('score').textContent = score();
+  const pct = Math.round(Object.keys(state).filter(k=>state[k].done).length/nLes*100);
+  document.getElementById('prog').style.width = pct+'%';
+}
+function eind(){
+  document.getElementById('les').innerHTML='';
+  document.getElementById('diploma').style.display='block';
+  document.getElementById('diptext').textContent =
+    'Je hebt alle '+nLes+' lessen van “'+D.title+'” afgerond met een score van '+score()+'/'+maxScore+'.';
+}
+nav(); toon(0);
+</script>
+</body>
+</html>
