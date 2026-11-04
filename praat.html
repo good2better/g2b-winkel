@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B Praat-web — praat in plaats van typen</title>
+<style>
+:root{--bg:#0d0f0e;--panel:#141815;--panel2:#181d19;--line:#263028;--txt:#eef4f0;--dim:#93a69b;--accent:#2fbf71;--accent2:#1d7a48}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#101512 0%,var(--bg) 100%);color:var(--txt);font:15px/1.6 'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:18px}
+.wrap{max-width:640px;margin:0 auto}
+h1{color:var(--accent);font-size:24px;margin:6px 0 2px}
+.sub{color:var(--dim);font-size:13px;margin-bottom:14px}
+a{color:var(--accent)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+button{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer}
+button:hover{border-color:var(--accent2)}
+button.big{background:var(--accent);color:#04120a;font-weight:800;font-size:16px;padding:12px 22px;border:0}
+button.big.listening{background:#d9534f;color:#fff}
+#out,#in{width:100%;background:#0a0c0b;border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:12px;font-size:15px;min-height:110px}
+#status{color:var(--dim);font-size:13px;min-height:20px}
+select{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:8px;font-size:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:14px}
+.card h3{margin:0 0 8px;color:var(--accent);font-size:15px}
+.small{font-size:12px;color:var(--dim)}
+#vocab,#snips{width:100%;background:#0a0c0b;border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:8px;font-size:13px;min-height:60px}
+</style></head><body><div class="wrap">
+<a href="index.html" style="text-decoration:none;font-size:13px">← G2B Winkel</a>
+<h1>🎙 G2B Praat-web</h1>
+<div class="sub">Praat in plaats van typen — nette tekst, gratis, onbeperkt. Werkt in Chrome/Edge (ook op je telefoon-browser).</div>
+
+<div class="row">
+<select id="lang"><option value="nl-NL">🗣 Nederlands</option><option value="en-US">🗣 English</option><option value="es-ES">🗣 Español</option></select>
+<button id="mic" class="big">🎙 Start dicteren</button>
+<button id="netjes">✨ maak netjes</button>
+<button id="copy">📋 kopieer</button>
+</div>
+<div id="status">Druk op de knop en praat. "eh" en vulwoorden verdwijnen, punten en hoofdletters komen goed.</div>
+<textarea id="out" placeholder="Je tekst komt hier — je kunt ook zelf typen en ✨ netjes gebruiken."></textarea>
+
+<div class="card"><h3>Stem-commando's (uitspreken)</h3>
+<div class="small">"nieuwe regel" ↵ · "nieuwe alinea" · "punt" . · "komma" , · "vraagteken" ? · "uitroepteken" ! · "dubbele punt" : · "puntkomma" ; · "haakje open/dicht" ( ) · "aanhalingsteken" "<br>Engels/Spaans werkt ook ("new line", "comma", "nueva línea"…).</div></div>
+
+<div class="card"><h3>⭐ Favoriete zinnen</h3>
+<div id="snipBtns" class="row"></div>
+<textarea id="snips" placeholder="Eén zin per regel — bv. Check mijn shop: good2better.com"></textarea>
+<div class="row"><button id="saveSnips">zinnen opslaan</button></div></div>
+
+<div class="card"><h3>📖 Eigen woordenlijst</h3>
+<div class="small">Eén per regel: <i>gehoord = gewenst</i>. G2B-namen zijn al ingebakken.</div>
+<textarea id="vocab" placeholder="bijv.&#10;dunder = Donder&#10;mijn plugin = G2B Producer"></textarea>
+<div class="row"><button id="saveVocab">woordenlijst opslaan</button></div></div>
+
+<div class="card small">Privacy: spraak gaat via de stem-dienst van je browser/apparaat. Jouw tekst, woordenlijst en zinnen blijven lokaal (opslag in je eigen browser). Vertalen NL→ES/EN? Gebruik de <a href="vertaal.html">Vertaal-tool</a> of de G2B Praat-app.</div>
+</div>
+<script src="cookie.js"></script>
+<script>
+const FILLERS=new Set(["eh","euh","uhm","uh","hmm","mmm","ah","ohh","eigenlijk","zeg","maar","weet","toch","um","like","basically","literally","este","ehh","o","sea","pues"]);
+const COMMANDS={"nieuwe regel":"\n","new line":"\n","nueva línea":"\n","nueva linea":"\n","punt":". ","period":". ","punto":". ","komma":", ","comma":", ","coma":", ","vraagteken":"? ","question mark":"? ","signo de interrogación":"? ","uitroepteken":"! ","exclamation mark":"! ","signo de exclamación":"! ","dubbele punt":": ","colon":": ","dos puntos":": ","puntkomma":"; ","semicolon":"; ","punto y coma":"; ","nieuwe alinea":"\n\n","new paragraph":"\n\n","nuevo párrafo":"\n\n","haakje open":" (","haakje dicht":") ","aanhalingsteken":"\"","quote":"\"","enter":"\n"};
+const VOCAB_DEFAULT={"good to better":"Good2Better","goodtobetter":"Good2Better","g2b":"G2B","femina sync":"FeminaSync","feminasync":"FeminaSync","eve nine":"EVEENINE","eveenine":"EVEENINE","sneki wiri":"Sneki Wiri","blaka uma":"Blaka Uma","beatmaker":"Beatmaker","sound lab":"Sound Lab","chord lab":"ChordLab","runpod":"RunPod","run pod":"RunPod","tikkie":"Tikkie","postnl":"PostNL","whats app":"WhatsApp","appsumo":"AppSumo","app sumo":"AppSumo","steunactie":"Steunactie"};
+const ls=localStorage;
+document.getElementById('vocab').value=ls.getItem('g2b_vocab')||"";
+document.getElementById('snips').value=ls.getItem('g2b_snips')||"";
+function userVocab(){const m={};(document.getElementById('vocab').value||"").split("\n").forEach(l=>{const p=l.split("=");if(p.length===2)m[p[0].trim().toLowerCase()]=p[1].trim()});return Object.assign({},VOCAB_DEFAULT,m)}
+function polish(raw,vocab){let s=raw.trim();if(!s)return s;
+for(const[c,r]of Object.entries(COMMANDS))s=s.replace(new RegExp("\\b"+c.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b","gi"),r);
+s=s.split(/\s+/).filter(w=>!FILLERS.has(w.replace(/[?!.,]/g,"").toLowerCase())).join(" ");
+s=s.replace(/\s+([,.!?;:])/g,"$1").replace(/ {2,}/g," ").replace(/([.,!?;:])\s*\1+/g,"$1 ");
+for(const[k,v]of Object.entries(vocab))s=s.replace(new RegExp("\\b"+k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b","gi"),v);
+let out="",cap=true;for(const ch of s){if(cap&&/[a-zà-ÿ]/i.test(ch)){out+=ch.toUpperCase();cap=false}else{out+=ch;if(".!?".includes(ch)||ch==="\n")cap=true;else if(/[a-zà-ÿ0-9]/i.test(ch))cap=false}}
+return out.trimEnd()}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition,rec=SR?new SR():null;
+if(rec){rec.continuous=true;rec.interimResults=true}
+const out=document.getElementById('out'),st=document.getElementById('status'),mic=document.getElementById('mic');
+let on=false;
+mic.onclick=()=>{if(!rec){st.textContent="Je browser heeft geen spraak-API — gebruik Chrome/Edge of de G2B Praat-app.";return}
+if(on){rec.stop();return}
+rec.lang=document.getElementById('lang').value;
+rec.onresult=e=>{let fin="";for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;
+if(e.results[i].isFinal){fin+=polish(t,userVocab())+" "}else{st.textContent="…"+t}}
+if(fin){out.value+=fin;saveHist(fin.trim())}};
+rec.onerror=e=>{on=false;mic.textContent="🎙 Start dicteren";mic.classList.remove('listening');st.textContent=e.error==='not-allowed'?"Mic-recht geweigerd — sta microfoon toe in je browser":("Fout: "+e.error)};
+rec.onend=()=>{on=false;mic.textContent="🎙 Start dicteren";mic.classList.remove('listening');st.textContent="Praat klaar."};
+try{rec.start();on=true;mic.textContent="⏹ Stop";mic.classList.add('listening');st.textContent="Luistert…"}catch(err){st.textContent="Kon niet starten: "+err}};
+document.getElementById('netjes').onclick=()=>{out.value=polish(out.value,userVocab());st.textContent="Netjes ✓"};
+document.getElementById('copy').onclick=()=>{navigator.clipboard.writeText(out.value);st.textContent="Gekopieerd ✓"};
+document.getElementById('saveVocab').onclick=()=>{ls.setItem('g2b_vocab',document.getElementById('vocab').value);st.textContent="Woordenlijst opgeslagen ✓"};
+document.getElementById('saveSnips').onclick=()=>{ls.setItem('g2b_snips',document.getElementById('snips').value);renderSnips();st.textContent="Zinnen opgeslagen ✓"};
+function renderSnips(){const box=document.getElementById('snipBtns');box.innerHTML="";
+(document.getElementById('snips').value||"").split("\n").map(s=>s.trim()).filter(Boolean).slice(0,8).forEach(s=>{const b=document.createElement('button');b.textContent=s.length>40?s.slice(0,40)+"…":s;b.onclick=()=>{out.value+=(out.value&&!out.value.endsWith(" ")?" ":"")+s};box.appendChild(b)})}
+function saveHist(t){if(!t)return;const h=(ls.getItem('g2b_hist')||"").split("\n").filter(Boolean);h.unshift(t);ls.setItem('g2b_hist',h.slice(0,15).join("\n"))}
+renderSnips();
+</script></body></html>
