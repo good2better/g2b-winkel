@@ -35,7 +35,7 @@ input[type=file]{color:var(--dim);font-size:12px}
 <div class="sub">Maak je eigen cursus: lessen met tekst, plaatjes, audio en quizzen. Klik op <b>Maak cursus</b> → je krijgt één bestand dat iedereen offline kan openen.</div>
 
 <div class="k">
-<label>Cursus-titel</label><input type="text" id="titel" value="Mijn Cursus">
+<label>Cursus-titel</label><input type="text" id="titel" value="Mijn Cursus" oninput="el('slug').value=this.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'mijn-cursus'">
 <label>Korte intro (wat gaat de klant leren?)</label><textarea id="intro" rows="2"></textarea>
 <label>Gemaakt door</label><input type="text" id="maker" value="Good2Better">
 <label>Bestandsnaam (automatisch)</label><input type="text" id="slug" value="mijn-cursus">
@@ -344,6 +344,16 @@ function lesBody(tekst){
 }
 
 function maak(){
+  const warn=[];
+  lessen.forEach((l,i)=>{
+    if(!l.titel.trim()) warn.push('Les '+(i+1)+' mist een titel');
+    if(!l.tekst.trim()) warn.push('Les '+(i+1)+' heeft geen tekst');
+    l.quiz.forEach((q,qi)=>{
+      if(q.q.trim()&&!q.opts.some(o=>o.trim())) warn.push('Les '+(i+1)+' vraag '+(qi+1)+' heeft geen antwoorden');
+      if(q.q.trim()&&!(q.opts[q.answer]||'').trim()) warn.push('Les '+(i+1)+' vraag '+(qi+1)+': het goede antwoord is leeg');
+    });
+  });
+  if(warn.length&&!confirm('Let op:\n- '+warn.slice(0,8).join('\n- ')+(warn.length>8?'\n- ...':'')+'\n\nToch downloaden?')) return;
   const data={
     slug:(el('slug').value||'cursus').toLowerCase().replace(/[^a-z0-9-]/g,'-'),
     title:el('titel').value||'G2B Cursus',
