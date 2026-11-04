@@ -429,7 +429,10 @@
    "cover": "media/g2bsong-cover.png",
    "download_dir": "d/g2bsong1",
    "demo": "media/song-demo-v3.mp4",
-   "video": "media/song-demo-v3.mp4"
+   "video": "media/song-demo-v3.mp4",
+   "uitleg": "media/song-uitleg.mp4",
+   "sub_nl": "media/song-uitleg.nl.vtt",
+   "sub_es": "media/song-uitleg.es.vtt"
   },
   {
    "id": "g2bvibe1",
@@ -464,7 +467,10 @@
    "preview": "media/bestof-demo.mp3",
    "download_dir": "d/g2bbestof",
    "demo": "media/bestof-demo-v3.mp4",
-   "video": "media/bestof-demo-v3.mp4"
+   "video": "media/bestof-demo-v3.mp4",
+   "uitleg": "media/bestof-uitleg.mp4",
+   "sub_nl": "media/bestof-uitleg.nl.vtt",
+   "sub_es": "media/bestof-uitleg.es.vtt"
   },
   {
    "id": "g2b-oneshots",
@@ -996,7 +1002,10 @@
    "cover": "media/ocho-cover.png",
    "download_dir": "d/ocho01",
    "demo": "media/ocho-demo.mp4",
-   "video": "media/ocho-demo.mp4"
+   "video": "media/ocho-demo.mp4",
+   "uitleg": "media/ocho-uitleg.mp4",
+   "sub_nl": "media/ocho-uitleg.nl.vtt",
+   "sub_es": "media/ocho-uitleg.es.vtt"
   },
   {
    "titel": "G2B Sleutel-Helper",
