@@ -1198,6 +1198,19 @@
    "cover": "feminasync/img/stijl-meisjes.png"
   },
   {
+   "id": "femina-startpakket",
+   "titel": "FeminaSync Zacht Startpakket — thee + zalf (PRE-ORDER)",
+   "soort": "femina",
+   "beschrijving": "VOORVERKOOP — eerste batch na de testrun (verwacht begin 2027). Betaal pas via Tikkie na onze bevestiging; levering of geld terug. Het complete Zacht-setje: 50g losse cyclus-thee (framboosblad, gember, kamille, citroenmelisse, venkel, kaneel + Sneki Wiri en Blaka Uma) én 50ml huidzalf (sheaboter, arnica, lavendel, eucalyptus + dezelfde Surinaamse kruiden). €5 voordeliger dan los. Eigen recepten, voor meiden vanaf 9 jaar via de moeder.",
+   "prijs": "€ 25,00",
+   "links": {
+    "koop": "bestel.html?p=femina-startpakket"
+   },
+   "groep": "femina",
+   "badge": "PRE-ORDER",
+   "cover": "feminasync/img/stijl-meisjes.png"
+  },
+  {
    "id": "femina-pil-zacht",
    "titel": "FeminaSync Zacht Meiden-Gummies — milde vitamines (PRE-ORDER)",
    "prijs": "€ 14,00",
