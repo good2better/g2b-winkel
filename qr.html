@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B QR-maker — gratis QR-codes</title>
+<style>
+:root{--bg:#0d0f0e;--panel:#141815;--panel2:#181d19;--line:#263028;--txt:#eef4f0;--dim:#93a69b;--accent:#2fbf71;--accent2:#1d7a48}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#101512 0%,var(--bg) 100%);color:var(--txt);font:15px/1.6 'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:18px}
+.wrap{max-width:640px;margin:0 auto}
+h1{color:var(--accent);font-size:24px;margin:6px 0 2px}
+.sub{color:var(--dim);font-size:13px;margin-bottom:14px}
+a{color:var(--accent)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+button{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer}
+button.big{background:var(--accent);color:#04120a;font-weight:800;font-size:16px;padding:12px 22px;border:0}
+input{width:100%;background:#0a0c0b;border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:12px;font-size:15px}
+#qrbox{background:#fff;border-radius:12px;padding:18px;display:inline-block;margin:14px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:14px;font-size:12px;color:var(--dim)}
+</style></head><body><div class="wrap">
+<a href="index.html" style="text-decoration:none;font-size:13px">← G2B Winkel</a>
+<h1>▦ G2B QR-maker</h1>
+<div class="sub">Maak een QR-code van elke link of tekst — voor flyers, je steunactie, productkaartjes. Gratis, onbeperkt, alles blijft in je browser.</div>
+<input id="txt" placeholder="https://good2better.com of je eigen tekst…" value="https://good2better.com">
+<div class="row">
+<button id="go" class="big">Maak QR</button>
+<button id="dl">⬇ download PNG</button>
+</div>
+<div id="qrbox"><canvas id="cv"></canvas></div>
+<div class="card">Tip: test je QR altijd met je telefoon-camera vóórdat je print. Grote flyers? Kies een groot canvas (stel px-grootte in onder het canvas).</div>
+<div class="row"><label style="font-size:13px;color:var(--dim)">Grootte: <select id="sz"><option>256</option><option selected>512</option><option>1024</option></select> px</label></div>
+</div>
+<script src="qr-lib.js"></script><script src="cookie.js"></script>
+<script>
+function draw(){const v=document.getElementById('txt').value.trim();if(!v)return;
+const q=qrcode(0,'M');q.addData(v);q.make();
+const n=q.getModuleCount(),size=parseInt(document.getElementById('sz').value);
+const cv=document.getElementById('cv');cv.width=cv.height=size;
+const c=cv.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,size,size);c.fillStyle='#000';
+const s=size/n;for(let r=0;r<n;r++)for(let col=0;col<n;col++)if(q.isDark(r,col))c.fillRect(col*s,r*s,s,s)}
+document.getElementById('go').onclick=draw;
+document.getElementById('dl').onclick=()=>{const a=document.createElement('a');a.download='g2b-qr.png';a.href=document.getElementById('cv').toDataURL();a.click()};
+draw();
+</script></body></html>

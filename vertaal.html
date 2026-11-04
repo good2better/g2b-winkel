@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B Vertaal — NL ↔ EN / ES</title>
+<style>
+:root{--bg:#0d0f0e;--panel:#141815;--panel2:#181d19;--line:#263028;--txt:#eef4f0;--dim:#93a69b;--accent:#2fbf71;--accent2:#1d7a48}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#101512 0%,var(--bg) 100%);color:var(--txt);font:15px/1.6 'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:18px}
+.wrap{max-width:640px;margin:0 auto}
+h1{color:var(--accent);font-size:24px;margin:6px 0 2px}
+.sub{color:var(--dim);font-size:13px;margin-bottom:14px}
+a{color:var(--accent)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;align-items:center}
+button{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer}
+button.big{background:var(--accent);color:#04120a;font-weight:800;font-size:16px;padding:12px 22px;border:0}
+textarea{width:100%;background:#0a0c0b;border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:12px;font-size:15px;min-height:110px}
+select{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:8px;font-size:14px}
+#status{color:var(--dim);font-size:13px;min-height:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:14px;font-size:12px;color:var(--dim)}
+</style></head><body><div class="wrap">
+<a href="index.html" style="text-decoration:none;font-size:13px">← G2B Winkel</a>
+<h1>🌍 G2B Vertaal</h1>
+<div class="sub">Nederlands ↔ Engels / Spaans — on-device in je browser (eerste keer downloadt je browser het taalmodel, daarna offline).</div>
+<div class="row">
+<select id="from"><option value="nl">Nederlands</option><option value="en">English</option><option value="es">Español</option></select>
+<button id="swap">⇄</button>
+<select id="to"><option value="es">Español</option><option value="en">English</option><option value="nl">Nederlands</option></select>
+</div>
+<textarea id="in" placeholder="Typ of plak je tekst hier…"></textarea>
+<div class="row"><button id="go" class="big">Vertaal →</button><button id="copy">📋 kopieer</button></div>
+<div id="status"></div>
+<textarea id="out" placeholder="Vertaling komt hier…" readonly></textarea>
+<div class="card">Werkt via de ingebouwde vertaler van je browser (Chrome 138+ / Edge). Staat die uit? Gebruik de G2B Praat-app — die vertaalt óók op je telefoon. Jouw tekst blijft op je apparaat.</div>
+</div>
+<script src="cookie.js"></script>
+<script>
+const st=document.getElementById('status');
+document.getElementById('swap').onclick=()=>{const f=document.getElementById('from'),t=document.getElementById('to');const x=f.value;f.value=t.value;t.value=x;
+const i=document.getElementById('in'),o=document.getElementById('out');if(o.value){i.value=o.value;o.value=""}};
+document.getElementById('copy').onclick=()=>{navigator.clipboard.writeText(document.getElementById('out').value);st.textContent="Gekopieerd ✓"};
+document.getElementById('go').onclick=async()=>{
+const src=document.getElementById('from').value,dst=document.getElementById('to').value;
+const txt=document.getElementById('in').value.trim();
+if(!txt){st.textContent="Eerst tekst invoeren";return}
+if(src===dst){document.getElementById('out').value=txt;st.textContent="Zelfde taal — niks te vertalen";return}
+if(!('Translator'in self)){st.textContent="Je browser heeft geen ingebouwde vertaler — gebruik Chrome 138+ of de G2B Praat-app";return}
+try{st.textContent="Taalmodel klaarmaken (eerste keer kan even duren)…";
+const tr=await Translator.create({sourceLanguage:src,targetLanguage:dst});
+st.textContent="Vertaalt…";
+const res=await tr.translate(txt);
+document.getElementById('out').value=res;st.textContent="Klaar ✓"}
+catch(e){st.textContent="Vertalen lukt niet in deze browser ("+e.message+") — probeer Chrome of de Praat-app"}};
+</script></body></html>
