@@ -550,6 +550,21 @@
    "download_dir": "d/g2b-workstation"
   },
   {
+   "id": "cursus01",
+   "titel": "G2B Cursus — Beatmaker Basis",
+   "soort": "digitaal",
+   "beschrijving": "Leer beats maken in 7 lessen — in je browser, geen installatie: ritme & groove, drums patroon voor patroon, 808-subbas die met je kick meebeweegt, melodie in C-mineur, beat-structuur intro→hook→outro, mixen voor beginners, en je eigen stijl + beats afleveren. Met echte audio-voorbeelden per les (luisterknop in elke les), quiz met direct diploma, doe-opdrachten en veelgemaakte-fouten-lijsten. Download = 1 bestand, werkt offline voor altijd.",
+   "prijs": "€ 9,95",
+   "links": {
+    "koop": "bestel.html?p=cursus01",
+    "download": "bedankt.html?k=cursus01"
+   },
+   "groep": "apps",
+   "badge": "NIEUW",
+   "cover": "media/cursus-beatmaker-cover.png",
+   "download_dir": "d/cursus01"
+  },
+  {
    "id": "g2b-bedrijfsmiddelen",
    "titel": "G2B Bedrijfsmiddelen",
    "soort": "digitaal",
