@@ -49,7 +49,7 @@ fetch('pads-meta.json').then(r=>r.json()).then(m=>{
  const sel=document.getElementById('bank');
  sel.innerHTML=BANKS.map(b=>'<option>'+b+'</option>').join('');
  SETS=BANKS.map(b=>m.pads[b]||[]);
- 
+ build();load(0);
 });
 const KEYS='qwerasdfzxcv1234'.split('');
 let cur=0,buffers=[],ctx=null,geladen=0;
