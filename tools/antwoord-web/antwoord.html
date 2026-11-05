@@ -1,0 +1,178 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>G2B ANTWOOORD — browser</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#0c0f0c;--kaart:#141a15;--rand:#223227;--groen:#19c37d;--tekst:#e8f0e9;--dim:#8fa395;--cyan:#4cc9f0}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui;margin:0;padding:14px}
+h1{font-size:20px;margin:4px 0 10px}h1 small{color:var(--groen);font-size:.55em}
+.rij{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+select,button.uit{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}
+button.uit:hover{border-color:var(--groen)}
+button.go{background:var(--groen);color:#04130b;border:0;font-weight:700}
+button.stop{background:#d33;color:#fff;border:0;font-weight:700}
+label{font-size:12px;color:var(--dim)}
+input[type=range]{width:110px}
+#st{color:var(--dim);font-size:13px}
+#grid{display:grid;grid-template-columns:repeat(16,1fr);gap:3px;margin:12px 0}
+.c{aspect-ratio:1;background:var(--kaart);border:1px solid var(--rand);border-radius:4px;position:relative}
+.c.call{background:rgba(76,201,240,.25);border-color:var(--cyan)}
+.c.resp{background:rgba(25,195,125,.3);border-color:var(--groen)}
+.c.now{outline:2px solid var(--tekst)}
+#keys{display:flex;gap:2px;margin-top:10px;user-select:none}
+.k{flex:1;height:90px;background:#f4f4f4;color:#111;border-radius:0 0 5px 5px;display:flex;align-items:flex-end;justify-content:center;font-size:10px;padding-bottom:5px;cursor:pointer;position:relative}
+.k.zwart{background:#222;color:#eee;height:56px;flex:.6;margin:0 -8px;z-index:2}
+.k.on{background:var(--groen)!important}
+#midi{font-size:12px;color:var(--cyan)}
+.info{background:var(--kaart);border:1px solid var(--rand);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--dim);margin-top:10px}
+body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#12231a;--dim:#5c6b61}
+</style></head><body>
+<h1>G2B ANTWOOORD <small>speel iets → hij antwoordt · browser</small></h1>
+<div class="rij">
+<select id="genre"><option>TRAP</option><option>DRILL</option><option>BOOMBAP</option><option>RNB</option><option>HOUSE</option><option>DEMBOW</option><option>KAWINA</option><option>LOFI</option><option>SOUL</option><option>POP</option><option>AMBIENT</option><option>SOCA</option><option>DANCEHALL</option><option>ZOUK</option></select>
+<select id="bank"><option value="rec">BLOKFLUIT</option><option value="har">HARP</option></select>
+<label>HEFT <input type="range" id="heft" min="0" max="100" value="50"></label>
+<label>MENS <input type="range" id="mens" min="0" max="100" value="40"></label>
+<button class="uit" id="skin" onclick="document.body.classList.toggle('licht')">◐</button>
+</div>
+<div class="rij">
+<button class="uit go" id="bLuister" onclick="luister()">● LUISTER (speel 4 tellen)</button>
+<button class="uit stop" id="bStop" onclick="eindLuister()" disabled>■ STOP & ANTWOORD</button>
+<button class="uit" id="bVraag" onclick="vraag()">❓ VRAAG (hij speelt eerst)</button>
+<button class="uit" id="bMid" onclick="exportMid()">⬇ antwoord.mid</button>
+<span id="midi">🎹 MIDI: …</span>
+</div>
+<div id="grid"></div>
+<div id="st">klik LUISTER en speel op je MIDI-keyboard of hieronder — hij luistert 4 tellen en antwoordt in jouw toonsoort & genre.</div>
+<div id="keys"></div>
+<div class="info">HEFT: 0-32 EXACT (spiegelt je ritme) · 33-65 VARIATIE (dicht bij je melodie) · 66+ VRIJ (eigen antwoord). MENS = timing/velocity-jitter. Je call = blauw, zijn antwoord = groen.</div>
+<script>
+// --- poort van AntwoordPlugin.cpp ---
+const MAJ=[0,2,4,5,7,9,11],MIN=[0,2,3,5,7,8,10];
+const STIJL={TRAP:[.55,.8,.5,.7,2],DRILL:[.45,.4,.7,.5,3],BOOMBAP:[.4,.1,.6,.2,2],RNB:[.35,.2,.8,.3,4],HOUSE:[.6,0,.3,.4,4],DEMBOW:[.5,.1,.6,.5,3],KAWINA:[.55,.1,.9,.4,2],LOFI:[.3,.1,.4,.2,6],SOUL:[.35,.2,.7,.3,4],POP:[.5,0,.3,.3,4],AMBIENT:[.22,0,.2,.4,8],SOCA:[.55,.1,.7,.5,2],DANCEHALL:[.45,.2,.8,.4,3],ZOUK:[.4,.1,.7,.3,4]};
+const BPM=120,S16=60/BPM/4; // stap = 16e noot in sec
+let ctx=null,bufs={},noten={},call=[],resp=[],fase=0,t0=0,key=9,minor=0,conf=0,seed=Math.floor(Math.random()*1e9),playTimer=null;
+function ac(){if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();if(ctx.state=='suspended')ctx.resume();return ctx}
+const N2M=n=>{const m={C:0,'C#':1,CS:1,D:2,'D#':3,DS:3,E:4,F:5,'F#':6,FS:6,G:7,'G#':8,GS:8,A:9,'A#':10,AS:10,B:11};let s=n.toUpperCase().replace('S','S');let p=m[s.slice(0,-1)];return p+12*(+s.slice(-1)+1)};
+const BANKS={rec:{},har:{}};
+async function laadBank(b){
+ if(noten[b])return;noten[b]=[];bufs[b]={};
+ const pref={rec:'rec_kRec_',har:'har_kH_'}[b];
+ const names=b=='rec'?['F3','Gs3','As3','C4','D4','E4','Fs4','Gs4','As4','C5','D5','E5']:['C3','E3','G3','C4','E4','G4','C5','E5','G5','C6'];
+ document.getElementById('st').textContent='laden '+b+'…';
+ for(const nm of names){
+  try{const r=await fetch('../melodie-web/wav/'+pref+nm+'.wav');const ab=await r.arrayBuffer();
+   const buf=await ac().decodeAudioData(ab);noten[b].push({m:N2M(nm),b:buf})}catch(e){}
+ }
+ noten[b].sort((a,c)=>a.m-c.m);
+}
+function speelNoot(n,vel,when,dur){
+ const b=document.getElementById('bank').value,arr=noten[b];if(!arr||!arr.length)return;
+ let best=arr[0],bd=99;for(const x of arr){const d=Math.abs(n-x.m);if(d<bd){bd=d;best=x}}
+ const s=ac().createBufferSource();s.buffer=best.b;s.playbackRate.value=Math.pow(2,(n-best.m)/12);
+ const g=ac().createGain();const v=(vel||90)/127;
+ g.gain.setValueAtTime(0,when);g.gain.linearRampToValueAtTime(v,when+0.01);
+ g.gain.setValueAtTime(v,Math.max(when+0.01,when+(dur||0.4)*0.8));g.gain.linearRampToValueAtTime(0,when+(dur||0.4));
+ s.connect(g).connect(ac().destination);s.start(when);s.stop(when+(dur||0.4)+.05);
+}
+// --- grid ---
+const grid=document.getElementById('grid');for(let i=0;i<64;i++){const d=document.createElement('div');d.className='c';grid.appendChild(d)}
+function toonGrid(){const cs=grid.children;for(let i=0;i<64;i++){cs[i].className='c';
+ if(call.some(c=>Math.round(c.pos16)%64==i))cs[i].classList.add('call');
+ if(resp.some(r=>r.s==i))cs[i].classList.add('resp')}}
+// --- luisteren ---
+function luister(){call=[];resp=[];fase=1;t0=0;
+ document.getElementById('bLuister').disabled=true;document.getElementById('bStop').disabled=false;
+ document.getElementById('st').textContent='● LUISTERT — speel! (stopt 4 tellen na je eerste noot)';toonGrid()}
+function noteIn(n,vel){
+ vel=vel||90;if(fase==1){const t=ac().currentTime;if(t0==0)t0=t;
+  const pos16=(t-t0)/S16;call.push({note:n,vel:vel,pos16:pos16});
+  speelNoot(n,vel,ac().currentTime,0.3);toonGrid();
+  if(pos16>=64)eindLuister()}
+ else speelNoot(n,vel,ac().currentTime,0.3)}
+function eindLuister(){if(fase!=1)return;fase=2;
+ document.getElementById('bLuister').disabled=false;document.getElementById('bStop').disabled=true;
+ detectKey();genAntwoord();speelAntwoord()}
+// --- key-detect (eigen pitch-class histogram, zoals de plugin) ---
+function detectKey(){
+ const hist=new Array(12).fill(0);let n=call.length;
+ for(const c of call)hist[c.note%12]+=c.vel/127;
+ let best=-1,bk=9,bm=false;
+ for(let k=0;k<12;k++){let sM=0,sN=0;
+  for(let d=0;d<7;d++){sM+=hist[(k+MAJ[d])%12];sN+=hist[(k+MIN[d])%12]}
+  if(sM>best){best=sM;bk=k;bm=false}if(sN>best){best=sN;bk=k;bm=true}}
+ key=bk;minor=bm?1:0;
+ const tot=hist.reduce((a,b)=>a+b,0);conf=tot>0.5?Math.min(100,best/tot*100):0;
+ const nn=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+ document.getElementById('st').textContent='toonsoort: '+nn[key]+(minor?' mineur':' majeur')+' ('+Math.round(conf)+'% zeker) — antwoord komt…'}
+function degOf(deg){const sc=minor?MIN:MAJ;let oct=Math.floor(deg/7),d=deg-oct*7;return sc[d]+12*oct}
+function noteDeg(midi){const rel=((midi-key)%12+12)%12,sc=minor?MIN:MAJ;
+ let bd=99,bg=0;for(let d=0;d<7;d++){const dd=Math.abs(rel-sc[d]);if(dd<bd){bd=dd;bg=d}}
+ return bg+Math.floor((midi-60)/12)*7}
+// --- antwoord genereren (zelfde als C++) ---
+let _r=0;function rnd(){_r=(_r*1664525+1013904223)>>>0;return((_r>>>9)&0xFFFF)/65535}
+function genAntwoord(){
+ resp=[];const st=STIJL[document.getElementById('genre').value];
+ const heft=+document.getElementById('heft').value,mens=+document.getElementById('mens').value;
+ let vSum=0,vN=0,swSum=0,swN=0;
+ for(const c of call){vSum+=c.vel;vN++;
+  const frac=c.pos16-Math.floor(c.pos16+0.001);
+  if(Math.floor(c.pos16)%2==1&&frac<0.5){swSum+=frac;swN++}}
+ const callVel=vN?vSum/vN:80,callSwing=swN?swSum/swN:0;
+ const mode=heft<33?0:(heft<66?1:2);
+ const gridA=new Array(64).fill(-1);_r=(seed*2654435761+97)>>>0;
+ if(mode==0&&call.length){for(const c of call)gridA[Math.round(c.pos16)%64]=c.note}
+ else{let prevDeg=0;
+  for(let s=0;s<64;s++){let p=st[0];if(s%16==0)p+=0.3;if(st[2]>0.5&&(s%8==6||s%8==7))p+=0.25;
+   if(rnd()<p){let deg;
+    if(mode==1&&call.length&&rnd()*7<4)deg=noteDeg(call[Math.floor(rnd()*call.length)].note)+Math.floor(rnd()*3)-1;
+    else deg=prevDeg+Math.floor(rnd()*5)-2;
+    gridA[s]=60+key+degOf(deg);prevDeg=deg;
+    if(st[3]>0.4&&rnd()<0.2)gridA[s]+=12}}}
+ const velJ=mens/100*14;
+ for(let s=0;s<64;s++)if(gridA[s]>=0){
+  const spos=s+callSwing*(s%2==1?1:0)+(Math.random()-0.5)*mens/100*0.12;
+  const vel=Math.max(20,Math.min(127,Math.round(callVel+(Math.random()-0.5)*velJ)));
+  resp.push({s:s,at:spos*S16,dur:st[4]*S16*0.9,note:gridA[s],vel:vel})}
+ resp.sort((a,b)=>a.at-b.at);toonGrid()}
+// --- vraag: hij stelt jou iets ---
+function vraag(){resp=[];const st=STIJL[document.getElementById('genre').value];_r=99991;
+ for(let s=0;s<64;s++){const p=s%16==0?0.9:st[0]*0.7;
+  if(rnd()<p)resp.push({s:s,at:s*S16,dur:st[4]*S16*0.9,note:60+key+degOf(Math.floor(rnd()*7)),vel:70+Math.floor(rnd()*40)})}
+ speelAntwoord()}
+// --- afspelen ---
+function speelAntwoord(){
+ const t=ac().currentTime+0.15;
+ for(const r of resp){speelNoot(r.note,r.vel,t+r.at,r.dur);
+  setTimeout(((s)=>()=>{const c=grid.children[s];if(c)c.classList.add('now');setTimeout(()=>c.classList.remove('now'),120)})(r.s),(150+r.at*1000))}
+ document.getElementById('st').textContent='▶ antwoord speelt ('+resp.length+' noten) — LUISTER voor een nieuwe ronde'}
+// --- .mid export ---
+function exportMid(){
+ if(!resp.length){alert('nog geen antwoord — speel eerst iets');return}
+ const trk=[],dt=96;let at=0;
+ for(const r of resp){const a=Math.round(r.at/S16*24),d=Math.max(1,Math.round(r.dur/S16*24));
+  trk.push([a-at,0x90,r.note,r.vel]);trk.push([d,0x80,r.note,64]);at=a}
+ trk.push([0,0xFF,0x2F,0]);const body=new Uint8Array(trk.flat());
+ const hdr=[0x4D,0x54,0x72,0x6B,0,0,0,body.length];
+ const head=[0x4D,0x54,0x68,0x64,0,0,0,6,0,0,0,1,0,dt];
+ dl(new Blob([new Uint8Array(head),new Uint8Array(hdr),body],{type:'audio/midi'}),'g2b-antwoord.mid')}
+function dl(b,n){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click()}
+// --- scherm-klavier ---
+const keys=document.getElementById('keys'),WN=['C','D','E','F','G','A','B'],ZW={C:'C#',D:'D#',F:'F#',G:'G#',A:'A#'};
+for(let oct=3;oct<=4;oct++)for(const w of WN){
+ const k=document.createElement('div');k.className='k';k.textContent=w+oct;
+ k.onpointerdown=e=>{e.preventDefault();k.classList.add('on');noteIn(N2M(w+oct),90);setTimeout(()=>k.classList.remove('on'),150)};keys.appendChild(k);
+ if(ZW[w]){const z=document.createElement('div');z.className='k zwart';z.onpointerdown=e=>{e.preventDefault();z.classList.add('on');noteIn(N2M(ZW[w]+oct),90);setTimeout(()=>z.classList.remove('on'),150)};keys.appendChild(z)}}
+// --- computer-keyboard ---
+const KB={a:60,w:61,s:62,e:63,d:64,f:65,t:66,g:67,y:68,h:69,u:70,j:71,k:72,o:73,l:74,p:75};
+document.addEventListener('keydown',e=>{if(!e.repeat&&KB[e.key])noteIn(KB[e.key],90)});
+// --- MIDI keyboard ---
+if(navigator.requestMIDIAccess){navigator.requestMIDIAccess().then(m=>{
+ const st=document.getElementById('midi');
+ const hook=()=>{let any=false;m.inputs.forEach(i=>{any=true;i.onmidimessage=ev=>{
+  const t=ev.data[0]&0xF0,n=ev.data[1],v=ev.data[2];
+  if(t==0x90&&v>0)noteIn(n,v);else if(t==0x80||(t==0x90&&v==0)){}
+ }});st.textContent='🎹 MIDI: '+(any?'verbonden — speel maar':'geen apparaat')};
+ hook();m.onstatechange=hook},()=>{document.getElementById('midi').textContent='🎹 MIDI: geblokkeerd'})}
+else document.getElementById('midi').textContent='🎹 MIDI: niet in deze browser';
+laadBank('rec');
+document.getElementById('bank').onchange=e=>laadBank(e.target.value);
+</script></body></html>
