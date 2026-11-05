@@ -1,0 +1,192 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>G2B REFORS — browser</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#0c0f0c;--kaart:#141a15;--rand:#223227;--groen:#19c37d;--tekst:#e8f0e9;--dim:#8fa395;--cyan:#4cc9f0}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui;margin:0;padding:14px}
+h1{font-size:20px;margin:4px 0 10px}h1 small{color:var(--groen);font-size:.55em}
+.rij{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+button.uit{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}
+button.uit:hover{border-color:var(--groen)}
+button.go{background:var(--groen);color:#04130b;border:0;font-weight:700}
+button.stop{background:#d33;color:#fff;border:0;font-weight:700}
+button:disabled{opacity:.45;cursor:default}
+label{font-size:12px;color:var(--dim);display:flex;flex-direction:column;gap:2px}
+label b{color:var(--tekst);font-weight:600}
+input[type=range]{width:140px;accent-color:var(--groen)}
+#st{color:var(--dim);font-size:13px}
+#drop{border:2px dashed var(--rand);border-radius:12px;padding:22px;text-align:center;color:var(--dim);cursor:pointer;margin-bottom:12px;background:var(--kaart)}
+#drop.over,#drop:hover{border-color:var(--groen);color:var(--tekst)}
+#pills{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.pill{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:999px;padding:10px 6px;font-size:14px;font-weight:700;cursor:pointer}
+.pill:hover{border-color:var(--groen)}
+.pill.on{background:var(--groen);color:#04130b;border-color:var(--groen)}
+#meter{width:100%;height:90px;background:var(--kaart);border:1px solid var(--rand);border-radius:10px;display:block}
+.info{background:var(--kaart);border:1px solid var(--rand);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--dim);margin-top:10px}
+body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#12231a;--dim:#5c6b61}
+</style></head><body>
+<h1>G2B REFORS <small>hoor je track zoals kopers hem horen · browser</small></h1>
+<div id="drop">🔊 Sleep je track hierheen of klik om een audio-bestand te kiezen (wav/mp3/ogg/flac)<input type="file" id="file" accept="audio/*" hidden></div>
+<div class="rij">
+<button class="uit go" id="bPlay" onclick="speel()" disabled>▶ SPEEL (loop)</button>
+<button class="uit stop" id="bStop" onclick="stop()" disabled>■ STOP</button>
+<button class="uit" id="bAan" onclick="zetAan(!P.aan)">AAN</button>
+<button class="uit" id="bDice" onclick="dice()">🎲 DICE</button>
+<button class="uit" id="skin" onclick="document.body.classList.toggle('licht')">◐</button>
+<span id="st">nog geen track geladen</span>
+</div>
+<div id="pills"></div>
+<div class="rij">
+<label>AFSTAND <b id="vAfst">0%</b><input type="range" id="afst" min="0" max="100" value="0"></label>
+<label>KAMER <b id="vKamer">100%</b><input type="range" id="kamer" min="0" max="100" value="100"></label>
+<label>MENIGTE <b id="vMenigte">0%</b><input type="range" id="menigte" min="0" max="100" value="0"></label>
+<label>VOLUME <b id="vVol">80%</b><input type="range" id="vol" min="0" max="100" value="80"></label>
+<label>KRACHT <b id="vKracht">100%</b><input type="range" id="kracht" min="0" max="100" value="100"></label>
+</div>
+<canvas id="meter" width="900" height="90"></canvas>
+<div class="info">Kies een ruimte: STUDIO = plat (referentie) · CLUB = grote PA + zaal · AUTO = basbult + cabine · TELEFOON = smal, mono, krakerig · AIRPODS = dun maar clean · FESTIVAL = buiten, top valt weg · TV = boxy midden · TIENTJE = goedkope oordopjes.<br>AFSTAND = verder weg (minder top, zachter, meer ruimte) · KAMER = hoeveel echo van de ruimte · MENIGTE = publiek-geruis · VOLUME = hoe hard de speaker staat · KRACHT = 0% je originele track, 100% volle simulatie. Alles draait in je browser — niks gaat naar internet.</div>
+<script>
+// --- poort van ReforsPlugin.cpp ---
+const NAMEN=["STUDIO","CLUB","AUTO","TELEFOON","AIRPODS","FESTIVAL","TV","TIENTJE"];
+// per ruimte: loHz, hiHz, bassDb(@120Hz), presDb, drive, echoMs, echoFb, echoMix, width(0=mono..1), gainDb
+const ENV=[
+ [ 20,19000, 0, 0,0.00,  0,0.00,0.00,1.0 , 0], // STUDIO
+ [ 35,13500, 5, 2,0.15,220,0.35,0.30,0.9 , 1], // CLUB
+ [ 50,14000, 7, 3,0.10, 60,0.25,0.12,0.85, 1], // AUTO
+ [350, 3400,-8, 2,0.35,  0,0.00,0.00,0.0 ,-2], // TELEFOON
+ [ 60,17000,-3, 2,0.05,  0,0.00,0.00,0.9 , 0], // AIRPODS
+ [ 30, 9000, 6, 0,0.08,350,0.45,0.35,1.0 ,-1], // FESTIVAL
+ [150, 8000,-2, 4,0.12, 90,0.20,0.10,0.7 , 0], // TV
+ [ 90,11000,-2, 3,0.25,  0,0.00,0.00,0.8 ,-1], // TIENTJE
+];
+const P={afst:0,kamer:100,menigte:0,vol:80,kracht:100,ruimte:0,aan:true};
+let ctx=null,buf=null,src=null,G=null,seed=777>>>0,lastDrv=-1;
+const $=id=>document.getElementById(id);
+
+function ac(){if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();if(ctx.state=='suspended')ctx.resume();return ctx}
+
+function bouwGraaf(){
+ const c=ac(),g={};
+ g.in=c.createGain();
+ g.dry=c.createGain(); g.wet=c.createGain(); g.out=c.createGain();
+ // speaker-curve
+ g.hp=c.createBiquadFilter(); g.hp.type='highpass'; g.hp.Q.value=0.707;
+ g.bas=c.createBiquadFilter(); g.bas.type='lowshelf'; g.bas.frequency.value=120;
+ g.pres=c.createBiquadFilter(); g.pres.type='highshelf'; g.pres.frequency.value=2500;
+ g.lp=c.createBiquadFilter(); g.lp.type='lowpass'; g.lp.Q.value=0.707;
+ g.drive=c.createWaveShaper(); g.drive.oversample='2x';
+ // WaveShaper-domein is -1..1 → signaal ÷4 erin, curve rekent over ±4
+ g.dPre=c.createGain(); g.dPre.gain.value=1/4;
+ g.in.connect(g.hp);g.hp.connect(g.bas);g.bas.connect(g.pres);g.pres.connect(g.lp);g.lp.connect(g.dPre);g.dPre.connect(g.drive);
+ // echo-ruimte: mono-in, stereo-uit (R 11 ms later)
+ g.eDry=c.createGain(); g.eWet=c.createGain();
+ g.mono=c.createGain(); g.mono.channelCount=1; g.mono.channelCountMode='explicit'; g.mono.gain.value=1; // downmix = (L+R)/2
+ g.dL=c.createDelay(1.5); g.dR=c.createDelay(1.5); g.fbL=c.createGain(); g.fbR=c.createGain();
+ g.eMerge=c.createChannelMerger(2);
+ g.drive.connect(g.eDry); g.drive.connect(g.mono);
+ g.mono.connect(g.dL); g.mono.connect(g.dR);
+ g.dL.connect(g.fbL); g.fbL.connect(g.dL); g.dR.connect(g.fbR); g.fbR.connect(g.dR);
+ g.dL.connect(g.eMerge,0,0); g.dR.connect(g.eMerge,0,1); g.eMerge.connect(g.eWet);
+ g.eSum=c.createGain(); g.eDry.connect(g.eSum); g.eWet.connect(g.eSum);
+ // stereo-breedte: L'=L(1+w)/2+R(1-w)/2 , R'=R(1+w)/2+L(1-w)/2
+ g.split=c.createChannelSplitter(2); g.wMerge=c.createChannelMerger(2);
+ g.eSum.connect(g.split);
+ g.LL=c.createGain();g.RL=c.createGain();g.RR=c.createGain();g.LR=c.createGain();
+ g.split.connect(g.LL,0);g.split.connect(g.LR,0);g.split.connect(g.RR,1);g.split.connect(g.RL,1);
+ g.LL.connect(g.wMerge,0,0);g.RL.connect(g.wMerge,0,0);g.RR.connect(g.wMerge,0,1);g.LR.connect(g.wMerge,0,1);
+ // MENIGTE: ruis → 1-pool 1200 Hz → langzame deining (τ 40/50 ms), net als de plugin
+ const nb=c.createBuffer(1,c.sampleRate*4,c.sampleRate),nd=nb.getChannelData(0);
+ for(let i=0;i<nd.length;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;nd[i]=((seed>>>9)-32768)/32768}
+ g.noise=c.createBufferSource(); g.noise.buffer=nb; g.noise.loop=true;
+ const a1=1-Math.exp(-2*Math.PI*1200/c.sampleRate);
+ g.nLp=c.createIIRFilter([a1],[1,-(1-a1)]);
+ const aL=1-Math.exp(-1/(0.04*c.sampleRate)),aR=1-Math.exp(-1/(0.05*c.sampleRate));
+ g.cL=c.createIIRFilter([aL],[1,-(1-aL)]); g.cR=c.createIIRFilter([aR],[1,-(1-aR)]);
+ g.crowd=c.createGain(); g.cMerge=c.createChannelMerger(2);
+ g.noise.connect(g.nLp); g.nLp.connect(g.cL); g.nLp.connect(g.cR);
+ g.cL.connect(g.cMerge,0,0); g.cR.connect(g.cMerge,0,1); g.cMerge.connect(g.crowd);
+ g.noise.start();
+ g.mix=c.createGain(); g.wMerge.connect(g.mix); g.crowd.connect(g.mix);
+ // outG + veiligheids-limiter tanh(x*1.1)*0.91
+ g.outG=c.createGain(); g.lim=c.createWaveShaper(); g.lim.curve=curve(x=>Math.tanh(x*1.1)*0.91,4);
+ g.lPre=c.createGain(); g.lPre.gain.value=1/4;
+ g.mix.connect(g.outG); g.outG.connect(g.lPre); g.lPre.connect(g.lim); g.lim.connect(g.wet);
+ // KRACHT: dry*(1-k)+wet*k
+ g.in.connect(g.dry); g.dry.connect(g.out); g.wet.connect(g.out);
+ g.an=c.createAnalyser(); g.an.fftSize=2048; g.out.connect(g.an); g.out.connect(c.destination);
+ G=g; lastDrv=-1; update(true);
+}
+function curve(f,range){const n=4096,a=new Float32Array(n);for(let i=0;i<n;i++){const x=(i/(n-1)*2-1)*range;a[i]=f(x)}return a}
+
+function update(direct){
+ if(!G)return; const c=ctx,t=c.currentTime,T=direct?0.001:0.03;
+ const set=(p,v)=>p.setTargetAtTime(v,t,T);
+ const E=ENV[P.ruimte],af=P.afst/100,kam=P.kamer/100;
+ const hiHz=Math.max(800,E[1]*(1-0.65*af));
+ set(G.hp.frequency,E[0]); set(G.lp.frequency,Math.min(hiHz,c.sampleRate*0.45));
+ set(G.bas.gain,E[2]);
+ // plugin: boven-2.5k rest * (gPres-1)*0.6 erbij → shelf-gain in dB
+ const gPres=Math.pow(10,E[3]/20); set(G.pres.gain,20*Math.log10(1+(gPres-1)*0.6));
+ if(E[4]!==lastDrv){lastDrv=E[4];const drv=1+E[4]*6,dm=E[4]*0.8;
+  G.drive.curve=curve(x=>x*(1-dm)+Math.tanh(x*drv)*dm/drv,4)}
+ const delS=E[5]/1000, heeftEcho=delS*c.sampleRate>16;
+ const echoMix=heeftEcho?Math.min(E[7]*(0.5+1.5*kam)+af*0.15,0.6):0;
+ set(G.eDry.gain,1-echoMix); set(G.eWet.gain,echoMix);
+ if(heeftEcho){set(G.dL.delayTime,delS);set(G.dR.delayTime,delS+0.011)}
+ set(G.fbL.gain,heeftEcho?E[6]:0); set(G.fbR.gain,heeftEcho?E[6]:0);
+ const w=E[8]; set(G.LL.gain,(1+w)/2);set(G.RR.gain,(1+w)/2);set(G.RL.gain,(1-w)/2);set(G.LR.gain,(1-w)/2);
+ set(G.crowd.gain,P.menigte/100*0.10);
+ set(G.outG.gain,Math.pow(10,(E[9]-af*6)/20)*(0.5+0.5*(P.vol/100)*2));
+ const k=P.aan?P.kracht/100:0; set(G.dry.gain,1-k); set(G.wet.gain,k);
+}
+
+function laad(file){
+ $('st').textContent='laden: '+file.name+'…';
+ file.arrayBuffer().then(ab=>ac().decodeAudioData(ab)).then(b=>{
+  buf=b; $('st').textContent='✔ '+file.name+' · '+b.duration.toFixed(1)+' s · '+b.numberOfChannels+' kan.';
+  $('bPlay').disabled=false; if(src){stop();speel()}
+ }).catch(e=>{$('st').textContent='✖ kan dit bestand niet lezen ('+e.message+')';console.warn(e)});
+}
+function speel(){
+ if(!buf)return; ac(); if(!G)bouwGraaf(); if(src)stop();
+ src=ctx.createBufferSource(); src.buffer=buf; src.loop=true; src.connect(G.in); src.start();
+ $('bPlay').disabled=true; $('bStop').disabled=false;
+}
+function stop(){if(src){try{src.stop()}catch(e){}src.disconnect();src=null}$('bPlay').disabled=!buf;$('bStop').disabled=true}
+function kiesRuimte(i){P.ruimte=i;document.querySelectorAll('.pill').forEach((b,j)=>b.classList.toggle('on',j===i));update()}
+function zetAan(v){P.aan=v;$('bAan').textContent=v?'AAN':'UIT (bypass)';$('bAan').classList.toggle('go',v);update()}
+function dice(){
+ let sd=seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+ const rng=()=>{sd^=sd<<13;sd>>>=0;sd^=sd>>>17;sd^=sd<<5;sd>>>=0;return (sd&0xFFFF)/65536};
+ P.afst=rng()*60; P.kamer=50+rng()*50;
+ P.menigte=(P.ruimte===1||P.ruimte===5)?rng()*70:rng()*30; P.vol=60+rng()*40;
+ for(const k of ['afst','kamer','menigte','vol'])$(k).value=Math.round(P[k]); toonWaardes(); update();
+}
+function toonWaardes(){$('vAfst').textContent=Math.round(P.afst)+'%';$('vKamer').textContent=Math.round(P.kamer)+'%';
+ $('vMenigte').textContent=Math.round(P.menigte)+'%';$('vVol').textContent=Math.round(P.vol)+'%';$('vKracht').textContent=Math.round(P.kracht)+'%'}
+
+NAMEN.forEach((n,i)=>{const b=document.createElement('button');b.className='pill'+(i===0?' on':'');b.textContent=n;b.onclick=()=>kiesRuimte(i);$('pills').appendChild(b)});
+for(const k of ['afst','kamer','menigte','vol','kracht'])$(k).oninput=e=>{P[k]=+e.target.value;toonWaardes();update()};
+const drop=$('drop');
+drop.onclick=()=>$('file').click(); $('file').onchange=e=>{if(e.target.files[0])laad(e.target.files[0])};
+drop.ondragover=e=>{e.preventDefault();drop.classList.add('over')}; drop.ondragleave=()=>drop.classList.remove('over');
+drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');const f=e.dataTransfer.files[0];if(f)laad(f)};
+zetAan(true);
+
+// meter: spectrum + piek-balk
+const cv=$('meter'),g2=cv.getContext('2d');let piekHold=0;
+function teken(){
+ requestAnimationFrame(teken);
+ const W=cv.width,H=cv.height,cs=getComputedStyle(document.body);
+ g2.clearRect(0,0,W,H);
+ if(!G)return;
+ const n=G.an.frequencyBinCount,f=new Uint8Array(n),td=new Float32Array(G.an.fftSize);
+ G.an.getByteFrequencyData(f); G.an.getFloatTimeDomainData(td);
+ let pk=0;for(const v of td)pk=Math.max(pk,Math.abs(v)); piekHold=Math.max(pk,piekHold*0.95);
+ g2.fillStyle=cs.getPropertyValue('--cyan');
+ const bars=96,sw=(W-40)/bars;
+ for(let b=0;b<bars;b++){const i=Math.floor(Math.pow(n,b/bars));const h=f[Math.min(i,n-1)]/255*(H-8);g2.fillRect(b*sw,H-h,sw-1,h)}
+ g2.fillStyle=cs.getPropertyValue('--groen');const lh=Math.min(1,piekHold)*(H-4);g2.fillRect(W-30,H-lh,26,lh);
+}
+teken();
+</script>
+</body></html>
