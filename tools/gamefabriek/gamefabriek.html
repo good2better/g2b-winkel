@@ -68,6 +68,7 @@ label{font-size:.8rem;color:var(--zacht)}
 </div>
 
 <button class="knop" id="maak">🎮 MAAK MIJN SPEL</button>
+<button class="knop" id="proef" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6);margin-top:6px" title="Bouwt je spel en opent het meteen in een nieuw tabblad — klik eerst op MAAK MIJN SPEL">▶ SPEEL GELIJK — live preview</button>
 <label style="display:flex;gap:8px;align-items:center;margin-top:8px;font-size:.85rem"><input type="checkbox" id="verkoop"> 📦 Verkoop-pakket — ZIP met spel + cover + handleiding</label>
 <div class="log" id="log"></div>
 
@@ -361,7 +362,8 @@ C.addEventListener('pointerup',e=>{if(!tch)return;const ax=e.offsetX-tch.x,ay=e.
   if(h.x<0||h.y<0||h.x>=G||h.y>=G*1.33||sl.some(s=>s.x==h.x&&s.y==h.y)){lev--;lvs();blip(120,.3,'sawtooth');sl=[{x:10,y:10}];dx=1;dy=0;nx=1;ny=0;if(lev<=0){einde();return}}
   else{sl.unshift(h);
    if(h.x==eten.x&&h.y==eten.y){punt(10,h.x*S+S/2,h.y*S+S/2);blip(700,.1,'triangle');
-    do{eten={x:Math.floor(rand(0,G)),y:Math.floor(rand(0,G*1.33))}}while(sl.some(s=>s.x==eten.x&&s.y==eten.y))}
+    let _ok=false;for(let i=0;i<800;i++){const x=Math.floor(rand(0,G)),y=Math.floor(rand(0,G*1.33));if(!sl.some(s=>s.x==x&&s.y==y)){eten={x,y};_ok=true;break}}
+    if(!_ok){eten={x:-99,y:-99}}}
    else sl.pop()}}
  bg();{const ex=eten.x*S+S/2,ey=eten.y*S+S/2;X.save();X.globalAlpha=.25;X.fillStyle='#fff';X.beginPath();X.arc(ex,ey,S*.8,0,7);X.fill();X.globalAlpha=1;emoji(T.items[0],ex,ey,S+2,'rgba(255,255,255,.8)');X.restore()}
  sl.forEach((s,i)=>{if(i==0){held(s.x*S+S/2,s.y*S+S/2,S-2)}else{X.fillStyle=T.acc+'88';X.beginPath();X.roundRect(s.x*S+1,s.y*S+1,S-2,S-2,6);X.fill()}});
@@ -757,6 +759,9 @@ function slag(){if(Math.hypot(vx,vy)>.4)return;
 </`+'script></body></html>',
 };
 
+T('proef').onclick=()=>{if(!window._laatste){log('⚠️ Klik eerst op 🎮 MAAK MIJN SPEL — dan kun je hem hier meteen uitproberen');return}
+ window.open(URL.createObjectURL(new Blob([_laatste.code],{type:'text/html'})),'_blank');
+ log('▶ '+_laatste.naam+' live geopend in nieuw tabblad — speel hem meteen')};
 T('maak').onclick=()=>{
  const naam=T('naam').value.trim()||'Mijn Spel';
  const lv=T('moeilijk').value;
@@ -776,6 +781,7 @@ T('maak').onclick=()=>{
   .replace(JSON.stringify('SPELERS'),JSON.stringify(sp));
  if(type=='quiz')code=code.replace("'THEMA_ID'",JSON.stringify(thema));
  log('🔨 '+naam+' ('+type+'/'+thema+') gebouwd: '+(code.length/1024).toFixed(0)+' KB, één bestand, geen externe bestanden nodig');
+ window._laatste={code,naam};
  const fn=naam.toLowerCase().replace(/[^a-z0-9]+/g,'-');
  if(T('verkoop').checked){
   /* minimale ZIP (store): spel + cover + LEESMIJ — verkoopklaar */
