@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🎮 G2B GAME-FABRIEK</title>
+<style>
+:root{--groen:#16a34a;--donker:#0b1220;--kaart:#131c2e;--rand:#22314d;--tekst:#e8eef8;--zacht:#9fb0c9}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--donker);color:var(--tekst);font:15px/1.5 system-ui,sans-serif;padding:24px;max-width:920px;margin:0 auto}
+h1{font-size:1.6rem;margin-bottom:4px}
+.sub{color:var(--zacht);margin-bottom:20px}
+.kaart{background:var(--kaart);border:1px solid var(--rand);border-radius:14px;padding:18px;margin-bottom:14px}
+.kaart h2{font-size:1rem;margin-bottom:12px;color:#7ee2a8}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.kies{background:#0d1626;border:1px solid var(--rand);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:.15s}
+.kies:hover{border-color:var(--groen)}
+.kies.aan{border-color:var(--groen);background:#12351f;box-shadow:0 0 0 1px var(--groen)}
+.kies .ic{font-size:1.7rem;display:block;margin-bottom:4px}
+.kies .nm{font-size:.85rem;font-weight:600}
+.kies .info{font-size:.7rem;color:var(--zacht)}
+input[type=text],select{width:100%;background:#0d1626;border:1px solid var(--rand);border-radius:8px;color:var(--tekst);padding:10px;font-size:1rem;margin-top:6px}
+label{font-size:.8rem;color:var(--zacht)}
+.rij{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.knop{width:100%;background:var(--groen);color:#fff;border:0;border-radius:12px;padding:16px;font-size:1.15rem;font-weight:700;cursor:pointer;margin-top:8px}
+.knop:hover{background:#1db954}
+.log{background:#0a0f1a;border:1px solid var(--rand);border-radius:10px;padding:12px;font:12px/1.6 monospace;color:#8fe3ad;white-space:pre-wrap;max-height:200px;overflow:auto;display:none}
+.log.toon{display:block}
+.tag{display:inline-block;background:#12351f;color:#7ee2a8;border-radius:20px;padding:2px 10px;font-size:.72rem;margin-left:6px}
+</style>
+</head>
+<body>
+<h1>🎮 G2B GAME-FABRIEK <span style="font-size:.5em;color:#7ee2a8">MINI</span></h1>
+<p class="sub">Maak een eigen spel in één bestand — probeer het uit! De VOLLE versie (15 types, 6 thema's, multiplayer, verkoop-pakket) staat in de G2B Muziekwinkel te verkopen.</p>
+
+<div class="kaart">
+<h2>1. Wat voor spel?</h2>
+<div class="grid" id="types"></div>
+</div>
+
+<div class="kaart">
+<h2>2. Welk thema?</h2>
+<div class="grid" id="themas"></div>
+</div>
+
+<div class="kaart">
+<h2>3. Naam en instellingen</h2>
+<div class="rij">
+<div><label>Spelnaam</label><input type="text" id="naam" value="Animal Heroes"></div>
+<div><label>Leeftijd</label><select id="moeilijk"><option value="peuter">🍼 2-4 jaar (peuter)</option><option value="kleuter">🧒 5-8 jaar (groep 1-4)</option><option value="kind" selected>🎮 9-12 jaar (groep 5-8)</option><option value="groot">🔥 13+ jaar</option></select></div>
+<div><label>⏱️ Speeltijd</label><select id="tijd"><option value="0">∞ oneindig</option><option value="60">60 sec</option><option value="90" selected>90 sec</option><option value="120">2 min</option></select></div>
+<input type="hidden" id="spelers" value="1">
+</div>
+</div>
+
+<div class="kaart">
+<h2>4. Eigen foto's (optioneel) — jij in het spel</h2>
+<div class="rij">
+<div><label>📷 Held (jouwe foto)</label><input type="file" id="heldfoto" accept="image/*" style="margin-top:6px"><div id="heldprev" style="margin-top:6px"></div></div>
+<div><label>👥 Extra karakters (meerdere foto's)</label><input type="file" id="xfotos" accept="image/*" multiple style="margin-top:6px"><div id="xprev" style="margin-top:6px;font-size:.75rem;color:var(--zacht)"></div></div>
+</div>
+</div>
+
+<div class="kaart">
+<h2>5. Eigen beat / muziek</h2>
+<label>🎵 Jouw track (mp3/wav) — verplicht bij 🎧 Beat-Spel, bij andere spellen = achtergrondmuziek</label>
+<input type="file" id="beatfile" accept="audio/*" style="margin-top:6px"><div id="beatprev" style="margin-top:6px;font-size:.75rem;color:var(--zacht)"></div>
+</div>
+
+<button class="knop" id="maak">🎮 MAAK MIJN SPEL</button>
+<button class="knop" id="proef" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6);margin-top:6px" title="Bouwt je spel en opent het meteen in een nieuw tabblad — klik eerst op MAAK MIJN SPEL">▶ SPEEL GELIJK — live preview</button>
+
+<div class="log" id="log"></div>
+
+<script>
+const TYPES=[
+ {id:'vang',ic:'🧺',nm:'Vang-Spel',info:'Vallende dingen opvangen'},
+ {id:'memory',ic:'🃏',nm:'Memory',info:'Paren zoeken'},
+ {id:'renner',ic:'🏃',nm:'Renner',info:'Spring over obstakels'},
+ {id:'slang',ic:'🐍',nm:'Slang',info:'Klassieke slang'},
+ {id:'quiz',ic:'❓',nm:'Quiz',info:'Vragen met thema'},
+];
+const THEMAS=[
+ {id:'dieren',ic:'🦁',nm:'Dieren',items:['🐶','🐱','🐰','🦊','🐻','🐼','🦁','🐸','🐷','🐵'],vijand:'🐍',held:'🐶',achtergr:'#0e2a1a',acc:'#4ade80'},
+ {id:'ruimte',ic:'🚀',nm:'Ruimte',items:['⭐','🪐','☄️','🌙','🛸','👾'],vijand:'👾',held:'🚀',achtergr:'#0a0e2a',acc:'#818cf8'},
+ {id:'zee',ic:'🐠',nm:'Zee',items:['🐟','🐠','🐡','🦀','🐙','🦑','🐬'],vijand:'🦈',held:'🐠',achtergr:'#062a3a',acc:'#22d3ee'},];
+const MOEILIJK={peuter:{snel:.45,leven:99,fout:99},kleuter:{snel:.7,leven:8,fout:5},kind:{snel:1,leven:3,fout:3},groot:{snel:1.5,leven:2,fout:2}};
+/* kleur mixer voor peuter-pastel: mix(hex,doel,fractie) */
+const mix=(a,b,f)=>{const h=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16));const[x1,y1,z1]=h(a),[x2,y2,z2]=h(b);return '#'+[x1,y1,z1].map((v,i)=>Math.round(v*(1-f)+[x2,y2,z2][i]*f).toString(16).padStart(2,'0')).join('')};
+let type='vang',thema='dieren';
+const T=id=>document.getElementById(id);
+function bouwKies(el,lijst,kies){
+ lijst.forEach(t=>{const d=document.createElement('div');d.className='kies';d.innerHTML=`<span class="ic">${t.ic}</span><span class="nm">${t.nm}</span><div class="info">${t.info||''}</div>`;
+  d.onclick=()=>{el.querySelectorAll('.kies').forEach(k=>k.classList.remove('aan'));d.classList.add('aan');kies(t.id)};el.appendChild(d)});
+ el.firstChild.classList.add('aan')}
+bouwKies(T('types'),TYPES,v=>type=v);bouwKies(T('themas'),THEMAS,v=>thema=v);
+
+function log(t){const L=T('log');L.classList.add('toon');L.textContent+=t+'\n'}
+
+/* foto-uploads: held + extra karakters als dataURL */
+let heldImg=null,xImgs=[];
+function leesFoto(file){return new Promise(r=>{const fr=new FileReader();
+ fr.onload=e=>{const im=new Image();im.onload=()=>{/* verklein naar max 160px → kleine game */
+  const c=document.createElement('canvas'),s=Math.min(1,160/Math.max(im.width,im.height));
+  c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+  r(c.toDataURL('image/png'))};im.src=e.target.result};fr.readAsDataURL(file)})}
+T('heldfoto').onchange=async e=>{heldImg=await leesFoto(e.target.files[0]);
+ T('heldprev').innerHTML=`<img src="${heldImg}" style="width:48px;height:48px;border-radius:50%;border:2px solid var(--groen)">`;
+ log('📷 held-foto klaar — jij speelt jezelf')};
+T('xfotos').onchange=async e=>{xImgs=[];for(const f of e.target.files)xImgs.push(await leesFoto(f));
+ T('xprev').textContent=xImgs.length+' karakter(s) klaar — die komen in het spel';
+ log('👥 '+xImgs.length+' extra karakters geladen')};
+/* eigen beat voor het Beat-Spel (wordt als dataURL in de game gebakken) */
+let beatData=null;
+T('beatfile').onchange=e=>{const f=e.target.files[0];if(!f)return;const fr=new FileReader();
+ fr.onload=ev=>{beatData=ev.target.result;
+  T('beatprev').textContent='🎵 '+f.name+' ('+(f.size/1048576).toFixed(1)+' MB) — gaat het spel in';
+  log('🎵 beat klaar: '+f.name)};fr.readAsDataURL(f)};
+
+/* ===== SPEL-GENERATOREN — elke functie geeft complete game-JS terug ===== */
+const H=(naam,t)=>`<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${naam}</title><style>body{margin:0;background:${t.achtergr};display:flex;flex-direction:column;align-items:center;font-family:system-ui;color:#fff;min-height:100vh}
+h1{font-size:1.1rem;margin:10px}canvas{background:${t.achtergr};border-radius:12px;touch-action:none;max-width:96vw}#fx{background:transparent}
+#hud{display:flex;gap:18px;font-size:1rem;margin:6px}#over{display:none;position:fixed;inset:0;background:#000c;align-items:center;justify-content:center;flex-direction:column;text-align:center}
+#over h2{font-size:2rem}button{background:${t.acc};border:0;color:#042;padding:12px 28px;border-radius:10px;font-size:1.1rem;font-weight:700;cursor:pointer;margin-top:12px}
+.tip{opacity:.7;font-size:.8rem;margin:6px}
+button,#fok,#fos{transition:transform .08s}button:active,#fok:active,#fos:active{transform:scale(1.08,.86)}
+.bge{position:fixed;font-size:2rem;opacity:.10;pointer-events:none;animation:drift var(--d,6s) ease-in-out infinite alternate}@keyframes drift{from{transform:translateY(0) rotate(-8deg)}to{transform:translateY(-60px) rotate(8deg)}}</style></head><body>
+<div id="bgx"></div><h1>${naam}</h1><div id="hud"><span id="score">⭐ 0</span><span id="lvs">❤️</span><span id="lv"></span><span id="klok"></span><span id="hs"></span></div>
+<div style="position:relative"><canvas id="c" width="420" height="560"></canvas><canvas id="fx" width="420" height="560" style="position:absolute;left:0;top:0;pointer-events:none"></canvas>
+<button id="fok" title="Eigen foto als karakter" style="position:absolute;right:8px;top:8px;background:#ffffff22;border:1px solid #fff4;color:#fff;border-radius:8px;padding:4px 9px;cursor:pointer;font-size:1rem">📷</button>
+<button id="fos" title="Selfie als karakter" style="position:absolute;right:8px;top:44px;background:#ffffff22;border:1px solid #fff4;color:#fff;border-radius:8px;padding:4px 9px;cursor:pointer;font-size:1rem">🤳</button>
+<input type="file" id="foi" accept="image/*" style="display:none">
+<input type="file" id="foi2" accept="image/*" capture="user" style="display:none"></div>
+<div class="tip">⬅️ ➡️ of tik/sleep — Spatie = actie — 🎮 gamepad werkt ook — 📷/🤳 eigen foto</div>
+<div id="over"><h2 id="ot"></h2><p id="os"></p><button onclick="location.reload()">Opnieuw</button></div>
+<script>
+const C=document.getElementById('c'),X=C.getContext('2d'),W=C.width,Hh=C.height;
+const T=${JSON.stringify('THEMA')},D=${JSON.stringify('MOEIL')},SPELERS=${JSON.stringify('SPELERS')};
+/* zachte zwevende thema-figuren op de achtergrond — subtiel, kids-rustig */
+{const bgx=document.getElementById('bgx');for(let i=0;i<9;i++){const s=document.createElement('span');s.className='bge';s.textContent=T.items[i%T.items.length];s.style.left=(4+i*11)+'vw';s.style.top=(10+((i*37)%80))+'vh';s.style.setProperty('--d',(5+i*1.3).toFixed(1)+'s');s.style.fontSize=(1.4+(i%3)*.5)+'rem';bgx.appendChild(s)}}
+let score=0,lev=D.leven,af=false,HSK='g2bhs_'+document.title,hs=+(localStorage.getItem(HSK)||0);
+/* omstebeurt: score van P1 bewaren, P2 speelt daarna */
+const _bk='g2b_beurt_'+document.title,_bv=SPELERS=='beurt'?JSON.parse(localStorage.getItem(_bk)||'null'):null;
+let beurtNr=_bv?2:1;
+document.getElementById('hs').textContent=SPELERS=='beurt'?'👤 P'+beurtNr+(_bv!=null?' — P1: '+_bv:''):(hs?'🏆 '+hs:'');
+const lvs=()=>document.getElementById('lvs').textContent='❤️'.repeat(lev);lvs();
+const A=new(window.AudioContext||window.webkitAudioContext)();
+/* kids: zachte marimba-achtige tonen (sine), grotere kids: arcade-square */
+const blip=(f,d=.08,type,v=.15)=>{type=type||(D.kid?'sine':'square');const o=A.createOscillator(),g=A.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,A.currentTime);g.gain.exponentialRampToValueAtTime(.001,A.currentTime+d);o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
+/* stijgende belonings-pling voor kids */
+const pling=()=>{blip(660,.07,'sine',.12);setTimeout(()=>blip(880,.09,'sine',.12),75)};
+let _lastLv=1;
+const punt=(n,x,y)=>{score+=n;document.getElementById('score').textContent='⭐ '+score;if(score>hs){hs=score;localStorage.setItem(HSK,hs);document.getElementById('hs').textContent='🏆 '+hs}if(x!=null)pop(x,y,'+'+n);if(D.kid){pling();if(navigator.vibrate)navigator.vibrate(12)}
+ /* levels: elke 50/100 punten omhoog — sneller + feestje */
+ const lv=1+Math.floor(score/(D.kid?50:100));if(lv>_lastLv){_lastLv=lv;document.getElementById('lv').textContent='LV '+lv;pop(W/2,Hh/3,'🚀 LEVEL '+lv+'!','#ffd700');confetti();try{spd*=1.12}catch(e){}}};
+/* kids: ruimere raak-zones (HB) en kleinere obstakel-zones (SB) — voelt alsof ze perfect raken */
+const HB=D.kid?1.3:1,SB=D.kid?.8:1;
+/* effect-laag: zwevende score-pops + confetti bovenop het spel */
+const FX=document.getElementById('fx'),FX2=FX.getContext('2d'),pops=[];
+const pop=(x,y,t,k='#ffe066')=>pops.push({x,y,t,k,l:1,v:-.9});
+const confetti=()=>{for(let i=0;i<50;i++)pops.push({x:rand(0,W),y:rand(-80,Hh*.4),t:['🎉','⭐','✨','🎊'][i%4],k:'#fff',l:1,v:rand(.5,2)})};
+(function fxloop(){FX2.clearRect(0,0,W,Hh);for(let i=pops.length-1;i>=0;i--){const p=pops[i];p.y+=p.v;p.l-=.012;if(p.l<=0){pops.splice(i,1);continue}FX2.globalAlpha=p.l;FX2.font='bold 18px system-ui';FX2.fillStyle=p.k;FX2.textAlign='center';FX2.fillText(p.t,p.x,p.y)}FX2.globalAlpha=1;requestAnimationFrame(fxloop)})();
+/* speeltijd: 0 = oneindig */
+let tijd=${JSON.stringify('TIJD')};
+if(tijd>0){const T0=tijd,VK=['🌞','🌤️','⛅','🌥️','🌙'];
+ /* kids: zon gaat onder i.p.v. een enge tikkende klok */
+ const k=()=>{document.getElementById('klok').textContent=D.kid?VK[Math.min(4,Math.floor((1-tijd/T0)*5))]:'⏰ '+tijd+'s'};k();
+ setInterval(()=>{if(af)return;tijd--;k();if(tijd<=0){einde();document.getElementById('ot').textContent=D.kid?'🌙 Tijd om — goed gespeeld!':'⏰ TIJD OM!'}},1000)}
+const einde=()=>{af=true;confetti();
+ if(SPELERS=='beurt'){if(beurtNr==1){localStorage.setItem(_bk,score);
+   document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='👤 Speler 1: '+score+' punten';
+   document.getElementById('os').textContent='Nu is speler 2 — geef de pad of het toetsenbord door';
+   document.querySelector('#over button').textContent='▶ Beurt Speler 2'}
+  else{localStorage.removeItem(_bk);const w=score>_bv?'🏆 Speler 2 wint!':score<_bv?'🏆 Speler 1 wint!':'🤝 Gelijkspel!';
+   document.getElementById('over').style.display='flex';document.getElementById('ot').textContent=w;
+   document.getElementById('os').textContent='P1: '+_bv+' — P2: '+score}
+  blip(180,.4,'sawtooth');return}
+ document.getElementById('over').style.display='flex';const st=score<=0?'☆☆☆':score<80?'⭐☆☆':score<200?'⭐⭐☆':'⭐⭐⭐';
+ document.getElementById('ot').textContent=(score>0?'🎉 Goed gedaan! ':'😅 Nog een keer? ')+st;
+ document.getElementById('os').textContent='Score: '+score+(score>=hs&&score>0?' — NIEUW RECORD!':'');blip(180,.4,'sawtooth')};
+/* glow erachter = items altijd goed zichtbaar op donkere achtergrond */
+const emoji=(e,x,y,s,g)=>{X.save();X.font=s+'px serif';X.textAlign='center';X.textBaseline='middle';if(g){X.shadowColor=g;X.shadowBlur=14}X.fillText(e,x,y);X.restore()};
+/* eigen foto's als sprites: held + extra karakters */
+const FOTOS=${JSON.stringify('FOTOS')};
+const _pi=u=>{const i=new Image();i.src=u;return i};
+let FHELD=FOTOS.held?_pi(FOTOS.held):null;
+const FITEMS=(FOTOS.items||[]).map(_pi);
+const _rond=(i,x,y,s)=>{X.save();X.beginPath();X.arc(x,y,s/2,0,7);X.clip();X.drawImage(i,x-s/2,y-s/2,s,s);X.restore();X.strokeStyle=T.acc;X.lineWidth=2;X.beginPath();X.arc(x,y,s/2,0,7);X.stroke()};
+const ok=i=>i&&i.complete&&i.naturalWidth;
+const held=(x,y,s)=>{if(ok(FHELD))_rond(FHELD,x,y,s);else emoji(T.held,x,y,s)};
+/* licht schijfje achter elk item — altijd duidelijk, óók als een emoji donker rendert */
+const itemX=(i,x,y,s)=>{const im=FITEMS.length?FITEMS[i%FITEMS.length]:null;if(ok(im))_rond(im,x,y,s);else{X.save();X.globalAlpha=.18;X.fillStyle='#fff';X.beginPath();X.arc(x,y,s*.62,0,7);X.fill();X.globalAlpha=1;emoji(T.items[i%T.items.length],x,y,s,'rgba(255,255,255,.75)');X.restore()}};
+/* 📷 eigen foto als karakter — wie het spel ook opent */
+const _fk='g2b_foto_'+document.title,_svF=localStorage.getItem(_fk);
+if(_svF)FHELD=_pi(_svF);
+document.getElementById('fok').onclick=e=>{e.stopPropagation();document.getElementById('foi').click()};
+document.getElementById('fos').onclick=e=>{e.stopPropagation();document.getElementById('foi2').click()};
+const _fot=(e)=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{try{localStorage.setItem(_fk,r.result)}catch(_){ }FHELD=_pi(r.result)};r.readAsDataURL(f)};
+document.getElementById('foi').onchange=_fot;document.getElementById('foi2').onchange=_fot;
+const rand=(a,b)=>a+Math.random()*(b-a);
+/* getekende thema-achtergrond: gradiënt-lucht + bewegende elementen per thema */
+const _bgt={t:0,el:Array.from({length:12},(_,i)=>({x:Math.random()*W,y:Math.random()*Hh*.7,s:.4+Math.random(),v:.1+Math.random()*.4}))};
+const BGT={dieren:['☁️','🌿','🦋'],ruimte:['✦','✧','·'],zee:['🫧','🐚','~'],snoep:['✿','·','🍬'],sport:['·','✦','🏟️'],muziek:['♪','♫','✨']};
+const bg=()=>{_bgt.t++;
+ const g=X.createLinearGradient(0,0,0,Hh);g.addColorStop(0,T.acc+'33');g.addColorStop(.55,T.achtergr);g.addColorStop(1,'#050510');X.fillStyle=g;X.fillRect(0,0,W,Hh);
+ /* zachte grond-bolling onderin */
+ X.fillStyle=T.acc+'18';X.beginPath();X.ellipse(W/2,Hh+60,W*.9,130,0,0,7);X.fill();
+ const items=BGT[T.id]||['✦','·','✧'];
+ _bgt.el.forEach((e,i)=>{e.x-=e.v;if(e.x<-30){e.x=W+30;e.y=Math.random()*Hh*.7}
+  X.globalAlpha=.25+.15*Math.sin(_bgt.t*.02+i);emoji(items[i%items.length],e.x,e.y,14*e.s)});X.globalAlpha=1};
+let px=W/2,keys={};addEventListener('keydown',e=>{keys[e.key]=true;if(A.state=='suspended')A.resume()});addEventListener('keyup',e=>keys[e.key]=false);
+/* MIDI-keyboard: noteOn -> midiNote(noot) als het spel die heeft */
+if(navigator.requestMIDIAccess)navigator.requestMIDIAccess().then(m=>{const f=i=>{i.onmidimessage=e=>{const n=e.data[0]&240,v=e.data[2];if(n==144&&v>0&&typeof midiNote=='function')midiNote(e.data[1])}};m.inputs.forEach(f);m.onstatechange=()=>m.inputs.forEach(f)}).catch(()=>{});
+/* eigen muziek als achtergrond (niet in muziekspellen — die gebruiken 'm zelf) */
+const _bgm=${JSON.stringify('MUZIEK')};
+if(_bgm&&typeof __spelmetmuziek!=='function'){let _bgOn=false;const _bgPlay=()=>{if(_bgOn)return;_bgOn=true;const au=new Audio(_bgm);au.loop=true;au.volume=.5;au.play().catch(()=>{})};
+ addEventListener('pointerdown',_bgPlay);addEventListener('keydown',_bgPlay)}
+let tx=null;C.addEventListener('pointermove',e=>{tx=e.offsetX*W/C.clientWidth});C.addEventListener('pointerdown',e=>{tx=e.offsetX*W/C.clientWidth;if(A.state=='suspended')A.resume();tik(e.offsetX*W/C.clientWidth,e.offsetY*Hh/C.clientHeight)});
+/* gamepad: joystick/dpad sturen, A/B = actie */
+const PAD=(pi=0)=>{try{const g=navigator.getGamepads&&navigator.getGamepads()[pi];if(!g)return{l:0,r:0,u:0,d:0,a:0};
+ const ax=g.axes[0]||0,ay=g.axes[1]||0,B=i=>g.buttons[i]&&g.buttons[i].pressed;
+ return{l:ax<-.3||B(14),r:ax>.3||B(15),u:ay<-.3||B(12),d:ay>.3||B(13),a:B(0)||B(1)}}catch(e){return{l:0,r:0,u:0,d:0,a:0}}};
+addEventListener('gamepadconnected',()=>{if(A.state=='suspended')A.resume()});
+function tik(x,y){}
+`;
+
+const GEN={
+/* VANG: vallende items opvangen met een mandje */
+vang:(naam,t,d)=>H(naam,t)+`
+let mand={x:W/2-60},mand2={x:W/2+60},items=[],t=0,spd=1.8*D.snel;
+const DUO=SPELERS=='duo';let s1=0,s2=0,l2=D.leven;
+function spawn(){items.push({x:rand(30,W-30),y:-20,v:spd*rand(.8,1.4),ix:Math.floor(rand(0,20)),e:Math.random()<.85?T.items[Math.floor(rand(0,T.items.length))]:T.vijand, kwaad:Math.random()<.15})}
+function tik(x){}
+(function loop(){if(af)return;bg();
+ const pd=PAD(0),pd2=DUO?PAD(1):{l:0,r:0};
+ if(keys['ArrowLeft']||pd.l)mand.x-=6;if(keys['ArrowRight']||pd.r)mand.x+=6;if(tx!=null)mand.x+=(tx-mand.x)*.2;
+ if(DUO){if(keys['a']||keys['A']||pd2.l)mand2.x-=6;if(keys['d']||keys['D']||pd2.r)mand2.x+=6}
+ mand.x=Math.max(30,Math.min(W-30,mand.x));mand2.x=Math.max(30,Math.min(W-30,mand2.x));
+ if(++t>40/D.snel){t=0;spawn()}
+ held(mand.x,Hh-56,44);X.fillStyle=T.acc;X.fillRect(mand.x-38,Hh-72,76,6);
+ if(DUO){const im2=FITEMS.length?FITEMS[0]:null;if(ok(im2))_rond(im2,mand2.x,Hh-56,44);else emoji(T.held=='🐶'?'🐱':T.held,mand2.x,Hh-56,44);
+  X.fillStyle='#f472b6';X.fillRect(mand2.x-38,Hh-72,76,6)}
+ items.forEach(i=>{i.y+=i.v;if(i.kwaad)emoji(T.vijand,i.x,i.y,34,'rgba(255,90,90,.85)');else itemX(i.ix,i.x,i.y,34);
+  if(i.y>Hh-78&&Math.abs(i.x-mand.x)<44*HB){if(i.kwaad){lev--;lvs();blip(120,.3,'sawtooth')}else{punt(10,i.x,i.y);if(DUO){s1++;document.getElementById('score').textContent='P1 '+s1+' — P2 '+s2}blip(600,.1,'triangle')}i.y=Hh+99}
+  if(DUO&&i.y>Hh-78&&Math.abs(i.x-mand2.x)<44*HB){if(i.kwaad){l2--;blip(120,.3,'sawtooth')}else{s2++;document.getElementById('score').textContent='P1 '+s1+' — P2 '+s2;blip(700,.1,'triangle')}i.y=Hh+99}
+  if(i.y>Hh-10&&!i.kwaad){i.y=Hh+99}});
+ items=items.filter(i=>i.y<Hh+50);
+ if(lev<=0||(DUO&&l2<=0)){if(DUO){const w=s1>s2?'🏆 Speler 1 wint!':s2>s1?'🏆 Speler 2 wint!':'🤝 Gelijkspel!';
+   document.getElementById('over').style.display='flex';document.getElementById('ot').textContent=w;
+   document.getElementById('os').textContent='P1: '+s1+' — P2: '+s2;af=true;confetti();return}
+  einde()}else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+
+/* TAP: tik de goede voordat hij weg is */
+tap:(naam,t,d)=>H(naam,t)+`
+let doel,t=0,levenT=0;
+function nieuw(){doel={x:rand(50,W-50),y:rand(80,Hh-120),ix:Math.floor(rand(0,20)),e:Math.random()<.7?T.items[Math.floor(rand(0,T.items.length))]:T.vijand,kwaad:Math.random()<.3,r:34,age:0}}
+nieuw();
+function tik(x,y){if(!doel)return;const dx=x-doel.x,dy=y-doel.y;
+ if(dx*dx+dy*dy<doel.r*doel.r*2){if(doel.kwaad){lev--;lvs();blip(120,.3,'sawtooth')}else{punt(15,doel.x,doel.y);blip(700,.1,'triangle')}doel=null}}
+(function loop(){if(af)return;bg();
+ if(!doel){if(++t>30)nieuw()}else{doel.age++;if(doel.kwaad)emoji(T.vijand,doel.x,doel.y,46,'rgba(255,90,90,.85)');else itemX(doel.ix,doel.x,doel.y,40);
+  X.strokeStyle=doel.kwaad?'#f44':T.acc;X.lineWidth=3;X.beginPath();X.arc(doel.x,doel.y,doel.r+8-doel.age*.15,0,7);X.stroke();
+  if(doel.age>90){if(!doel.kwaad){}doel=null;t=0}}
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+
+/* MEMORY: paren zoeken op een 4x4 grid */
+memory:(naam,t,d)=>`<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${naam}</title>
+<style>body{margin:0;background:${t.achtergr};display:flex;flex-direction:column;align-items:center;font-family:system-ui;color:#fff;min-height:100vh}
+h1{margin:12px}#b{display:grid;grid-template-columns:repeat(4,72px);gap:10px;margin-top:14px}
+.k{width:72px;height:72px;background:#ffffff18;border:2px solid ${t.acc};border-radius:12px;font-size:2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none}
+.k.open{background:${t.acc}}#hud{margin:8px;font-size:1.1rem}#over{display:none;text-align:center;margin:20px;font-size:1.4rem}
+button{background:${t.acc};border:0;color:#042;padding:10px 24px;border-radius:10px;font-weight:700;cursor:pointer}
+.bge{position:fixed;font-size:2rem;opacity:.10;pointer-events:none;animation:drift var(--d,6s) ease-in-out infinite alternate}@keyframes drift{from{transform:translateY(0) rotate(-8deg)}to{transform:translateY(-60px) rotate(8deg)}}</style></head><body>
+<div id="bgx"></div><h1>${naam}</h1><div id="hud">⭐ <span id="s">0</span> — zetten: <span id="z">0</span></div><div id="b"></div><div id="over">🎉 Alles gevonden! <button onclick="location.reload()">Opnieuw</button></div>
+<script>
+const T=${JSON.stringify('THEMA')};{const bgx=document.getElementById('bgx');for(let i=0;i<9;i++){const s=document.createElement('span');s.className='bge';s.textContent=T.items[i%T.items.length];s.style.left=(4+i*11)+'vw';s.style.top=(10+((i*37)%80))+'vh';s.style.setProperty('--d',(5+i*1.3).toFixed(1)+'s');s.style.fontSize=(1.4+(i%3)*.5)+'rem';bgx.appendChild(s)}}
+let kaarten=T.items.slice(0,8);kaarten=kaarten.concat(kaarten).sort(()=>Math.random()-.5);
+let open=[],klaar=0,zet=0,score=0,blok=false;
+const B=document.getElementById('b');
+const A=new(window.AudioContext||window.webkitAudioContext)();
+const blip=f=>{const o=A.createOscillator(),g=A.createGain();o.frequency.value=f;g.gain.value=.15;o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+.1)};
+const FOTOS=${JSON.stringify('FOTOS')};const FITEMS=(FOTOS.items||[]).map(u=>{const i=new Image();i.src=u;return i});
+kaarten.forEach((e,i)=>{const k=document.createElement('div');k.className='k';k.textContent='❓';
+ k.onclick=()=>{if(blok||k.classList.contains('open'))return;k.classList.add('open');
+  if(FITEMS.length){const im=FITEMS[i%FITEMS.length];k.innerHTML='';const m=document.createElement('img');m.src=im.src;m.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:10px';k.appendChild(m)}
+  else k.textContent=e;blip(500);open.push({k,e});
+  if(open.length==2){zet++;document.getElementById('z').textContent=zet;
+   if(open[0].e==open[1].e){score+=20;document.getElementById('s').textContent=score;blip(750);klaar+=2;open=[];if(klaar==16)document.getElementById('over').style.display='block'}
+   else{blok=true;setTimeout(()=>{open.forEach(o=>{o.k.classList.remove('open');o.k.textContent='❓'});open=[];blok=false},700)}}};
+ B.appendChild(k)});
+</`+'script></body></html>',
+
+/* RENNER: spring over obstakels */
+renner:(naam,t,d)=>H(naam,t)+`
+let y=Hh-90,vy=0,grond=Hh-90,obs=[],t=0,spd=4*D.snel,dist=0;
+addEventListener('keydown',e=>{if(e.key==' '&&y>=grond-1){vy=-11;blip(300,.15,'triangle')}});
+function tik(){if(y>=grond-1){vy=-11;blip(300,.15,'triangle')}}
+(function loop(){if(af)return;bg();
+ if(PAD().a&&y>=grond-1){vy=-11;blip(300,.15,'triangle')}
+ X.strokeStyle=T.acc;X.beginPath();X.moveTo(0,grond+24);X.lineTo(W,grond+24);X.stroke();
+ vy+=.55;y+=vy;if(y>grond){y=grond;vy=0}
+ if(++t>Math.max(35,80-dist*.005)){t=0;obs.push({x:W+30,kwaad:true})}
+ held(70,y,44);
+ obs.forEach(o=>{o.x-=spd+dist*.0004;emoji(T.vijand,o.x,grond,40,'rgba(255,90,90,.85)');
+  if(Math.abs(o.x-70)<32*SB&&y>grond-40){lev--;lvs();blip(120,.3,'sawtooth');o.x=-99}});
+ obs=obs.filter(o=>o.x>-40);dist+=spd;if(dist%200<spd)punt(1);
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+
+/* SCHIET: beweeg + schiet op vallende vijanden */
+schiet:(naam,t,d)=>H(naam,t)+`
+let ship={x:W/2},kogels=[],vij=[],t=0,spd=2*D.snel,pT=0;
+addEventListener('keydown',e=>{if(e.key==' '){kogels.push({x:ship.x,y:Hh-90});blip(900,.05)}});
+function tik(x){kogels.push({x:ship.x,y:Hh-90});blip(900,.05)}
+(function loop(){if(af)return;bg();
+ const pd=PAD();if(pd.a&&++pT>12){pT=0;kogels.push({x:ship.x,y:Hh-90});blip(900,.05)}
+ if(keys['ArrowLeft']||pd.l)ship.x-=6;if(keys['ArrowRight']||pd.r)ship.x+=6;if(tx!=null)ship.x+=(tx-ship.x)*.25;
+ ship.x=Math.max(26,Math.min(W-26,ship.x));
+ if(++t>34/D.snel){t=0;vij.push({x:rand(30,W-30),y:-20,v:spd*rand(.8,1.5)})}
+ held(ship.x,Hh-60,42);
+ kogels.forEach(k=>{k.y-=9;X.fillStyle=T.acc;X.fillRect(k.x-2,k.y,4,12)});
+ vij.forEach(v=>{v.y+=v.v;emoji(v.kwaad===undefined?T.vijand:T.items[0],v.x,v.y,36);
+  kogels.forEach(k=>{if(Math.abs(k.x-v.x)<24&&Math.abs(k.y-v.y)<24){v.y=Hh+99;k.y=-99;punt(10,v.x,v.y);blip(500,.12,'square')}});
+  if(v.y>Hh-50){lev--;lvs();blip(120,.3,'sawtooth');v.y=Hh+99}});
+ kogels=kogels.filter(k=>k.y>-20);vij=vij.filter(v=>v.y<Hh+40);
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+
+/* SLANG */
+slang:(naam,t,d)=>H(naam,t)+`
+let sl=[{x:10,y:10}],dx=1,dy=0,eten={x:15,y:10},t=0,nx=1,ny=0;const G=20,S=W/G;
+addEventListener('keydown',e=>{const k=e.key;
+ if(k=='ArrowUp'&&dy!=1){nx=0;ny=-1}if(k=='ArrowDown'&&dy!=-1){nx=0;ny=1}
+ if(k=='ArrowLeft'&&dx!=1){nx=-1;ny=0}if(k=='ArrowRight'&&dx!=-1){nx=1;ny=0}});
+const padDir=setInterval(()=>{const pd=PAD();
+ if(pd.u&&dy!=1){nx=0;ny=-1}else if(pd.d&&dy!=-1){nx=0;ny=1}
+ else if(pd.l&&dx!=1){nx=-1;ny=0}else if(pd.r&&dx!=-1){nx=1;ny=0}},80);
+let tch=null;C.addEventListener('pointerdown',e=>tch={x:e.offsetX,y:e.offsetY});
+C.addEventListener('pointerup',e=>{if(!tch)return;const ax=e.offsetX-tch.x,ay=e.offsetY-tch.y;
+ if(Math.abs(ax)>Math.abs(ay)){if(ax>0&&dx!=-1){nx=1;ny=0}else if(ax<0&&dx!=1){nx=-1;ny=0}}
+ else{if(ay>0&&dy!=-1){nx=0;ny=1}else if(ay<0&&dy!=1){nx=0;ny=-1}}});
+(function loop(){if(af)return;
+ if(++t>=Math.max(4,10/D.snel)){t=0;dx=nx;dy=ny;const h={x:sl[0].x+dx,y:sl[0].y+dy};
+  if(h.x<0||h.y<0||h.x>=G||h.y>=G*1.33||sl.some(s=>s.x==h.x&&s.y==h.y)){lev--;lvs();blip(120,.3,'sawtooth');sl=[{x:10,y:10}];dx=1;dy=0;nx=1;ny=0;if(lev<=0){einde();return}}
+  else{sl.unshift(h);
+   if(h.x==eten.x&&h.y==eten.y){punt(10,h.x*S+S/2,h.y*S+S/2);blip(700,.1,'triangle');
+    let _ok=false;for(let i=0;i<800;i++){const x=Math.floor(rand(0,G)),y=Math.floor(rand(0,G*1.33));if(!sl.some(s=>s.x==x&&s.y==y)){eten={x,y};_ok=true;break}}
+    if(!_ok){eten={x:-99,y:-99}}}
+   else sl.pop()}}
+ bg();{const ex=eten.x*S+S/2,ey=eten.y*S+S/2;X.save();X.globalAlpha=.25;X.fillStyle='#fff';X.beginPath();X.arc(ex,ey,S*.8,0,7);X.fill();X.globalAlpha=1;emoji(T.items[0],ex,ey,S+2,'rgba(255,255,255,.8)');X.restore()}
+ sl.forEach((s,i)=>{if(i==0){held(s.x*S+S/2,s.y*S+S/2,S-2)}else{X.fillStyle=T.acc+'88';X.beginPath();X.roundRect(s.x*S+1,s.y*S+1,S-2,S-2,6);X.fill()}});
+ requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+
+/* QUIZ */
+quiz:(naam,t,d)=>`<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${naam}</title>
+<style>body{margin:0;background:${t.achtergr};display:flex;flex-direction:column;align-items:center;font-family:system-ui;color:#fff;min-height:100vh;justify-content:center;padding:16px}
+h1{margin-bottom:6px}#v{font-size:1.3rem;margin:18px;text-align:center;min-height:60px}
+.a{width:280px;background:#ffffff14;border:2px solid ${t.acc};border-radius:12px;padding:14px;margin:6px;font-size:1.1rem;cursor:pointer;text-align:center;transition:transform .08s}
+.a:active{transform:scale(1.08,.86)}
+${d.kid?'.a{width:330px;padding:22px;font-size:1.3rem}':''}
+.a:hover{background:#ffffff28}.a.goed{background:#16a34a}.a.fout{background:#dc2626}
+.a.hint{animation:hp .7s infinite alternate}@keyframes hp{from{box-shadow:0 0 0 0 #fff0}to{box-shadow:0 0 16px 5px ${t.acc}}}
+#hud{font-size:1.1rem}
+.bge{position:fixed;font-size:2rem;opacity:.10;pointer-events:none;animation:drift var(--d,6s) ease-in-out infinite alternate}@keyframes drift{from{transform:translateY(0) rotate(-8deg)}to{transform:translateY(-60px) rotate(8deg)}}</style></head><body>
+<div id="bgx"></div><h1>${naam}</h1><div id="hud">⭐ <span id="s">0</span> / vraag <span id="vn">1</span>/10</div>
+<div id="v"></div><div id="ant"></div>
+<script>
+const VR={
+dieren:[['Welk dier zegt "woef"?','🐶',['🐱','🐰','🐍']],['Welk dier is het grootst?','🐘',['🐭','🐹','🐰']],['Welk dier kan vliegen?','🦅',['🐷','🐄','🐴']],['Welk dier leeft in de zee?','🐬',['🐶','🐱','🐔']],['Welk dier heeft een slurf?','🐘',['🦁','🐯','🐻']],['Welk dier springt het hoogst?','🦘',['🐢','🐌','🐛']],['Welk dier is de koning?','🦁',['🐭','🐰','🦆']],['Welk dier maakt honing?','🐝',['🦋','🐌','🐜']],['Welk dier is gestreept?','🦓',['🐄','🐖','🐑']],['Welk dier draagt een huis?','🐌',['🐕','🐈','🐇']]],
+ruimte:[['Wat is de grootste planeet?','♃ Jupiter',['Mars','Venus','Maan']],['Waar wonen astronauten?','🛰️ ISS',['Boot','Berg','Wolk']],['Wat is onze ster?','☀️ Zon',['Maan','Mars','Komeet']],['Wat valt uit de ruimte?','☄️ Meteoor',['Regen','Sneeuw','Hagel']],['Welke planeet is rood?','🔴 Mars',['Aarde','Neptunus','Venus']],['Wat heeft een staart in de ruimte?','☄️ Komeet',['Auto','Fiets','Bal']],['Op welke planeet wonen wij?','🌍 Aarde',['Mars','Jupiter','Saturnus']],['Wat draait om de aarde?','🌙 Maan',['Zon','Ster','Wolk']],['Hoe heet ons sterrenstelsel?','🌌 Melkweg',['Snelweg','Fietspad','Rivier']],['Waarmee vlieg je de ruimte in?','🚀 Raket',['Auto','Bus','Tram']]],
+zee:[['Wat heeft 8 armen?','🐙 Octopus',['Krabbing','Vis','Zeester']],['Welke vis is het grootst?','🐋 Walvis',['Goudvis','Sardine','Piranha']],['Wat loopt zijwaarts?','🦀 Krab',['Vis','Dolfijn','Schildpad']],['Waar leeft een clownvis?','🪸 Koraalrif',['Woestijn','Bos','Berg']],['Wat spuit water omhoog?','🐳 Walvis',['Krab','Mossel','Kwal']],['Welke zee-dier verandert van kleur?','🦑 Inktvis',['Mossel','Zee-egel','Krab']],['Wat eet een haai?','🐟 Vis',['Gras','Bloemen','Zand']],['Waar zit een parel in?','🦪 Oester',['Krabbing','Zeester','Kwal']],['Welke zee-vogel kan niet vliegen?','🐧 Pinguïn',['Meeuw','Albatros','Pelikaan']],['Wat is een school vis?','🐟 Groepje',['Boek','Pen','Tafel']]],
+snoep:[['Wat is bruin en zoet?','🍫 Chocolade',['Broccoli','Wortel','Spinazie']],['Wat draait rond op een stok?','🍭 Lolly',['Peer','Banaan','Appel']],['Wat heeft glazuur?','🍩 Donut',['Aardappel','Ui','Knoflook']],['Wat is een cupcake?','🧁 Gebak',['Groente','Fruit','Soep']],['Welk snoep is kleurrijk?','🍬 Snoep',['Rijst','Brood','Kaas']],['Wat wordt gemaakt van cacao?','🍫 Chocolade',['Thee','Sap','Melk']],['Welke vorm is een donut?','⭕ Rond',['Vierkant','Driehoek','Ster']],['Wat zit op een ijsje?','🍦 Bolletje',['Blad','Steen','Zand']],['Welk snoep is hard?','🍭 Lolly',['Pudding','Cake','Saus']],['Waar zit chocola in?','🍪 Koek',['Salade','Soep','Pasta']]],
+sport:[['Met welke bal trap je?','⚽ Voetbal',['Tennisbal','Bal','Knikker']],['In welke sport gooi je door een ring?','🏀 Basketbal',['Voetbal','Hockey','Tennis']],['Wat gebruik je in tennis?','🎾 Racket',['Stick','Club','Knuppel']],['Welke sport is op ijs?','⛸️ Schaatsen',['Zwemmen','Hardlopen','Voetbal']],['Hoeveel doelpunten is een touchdown?','🏈 6',['1','3','10']],['Wat doe je in een zwembad?','🏊 Zwemmen',['Fietsen','Skaten','Rennen']],['Welke bal is het kleinst?','🏓 Pingpongbal',['Voetbal','Basketbal','Volleybal']],['Wat win je bij de finish?','🏆 Prijs',['Brood','Water','Sokken']],['In welke sport gebruik je een handschoen?','⚾ Honkbal',['Voetbal','Judo','Roeien']],['Welke kleur heeft een tennisbal?','💛 Geel',['Blauw','Rood','Paars']]],
+muziek:[['Wat heeft snaren?','🎸 Gitaar',['Drum','Fluit','Trompet']],['Wat heeft toetsen?','🎹 Piano',['Gitaar','Drum','Hoorn']],['Wat sla je?','🥁 Drum',['Piano','Viool','Fluit']],['Waar zing je in?','🎤 Microfoon',['Telefoon','Radio','Klok']],['Wat blaas je?','🎺 Trompet',['Piano','Drum','Gitaar']],['Hoeveel snaren heeft een gitaar?','6',['2','10','20']],['Wat maakt ritme?','🥁 Drum',['Schilderij','Boek','Stoel']],['Welke noot komt na do?','re',['bo','zo','la']],['Wat is een band?','🎸 Groep muzikanten',['Schoen','Rijm','Pasta']],['Waar speel je een concert?','🎤 Podium',['Keuken','Badkamer','Kelder']]]};
+const _TI='THEMA_ID';const vr=VR[_TI].sort(()=>Math.random()-.5).slice(0,10);
+{const ITS={dieren:['🐶','🐱','🐰','🦁'],ruimte:['⭐','🪐','🚀','🌙'],zee:['🐟','🐠','🦀','🐬'],snoep:['🍬','🍭','🧁','🍩'],sport:['⚽','🏀','🎾','🏈'],muziek:['🎵','🎶','🎸','🥁']};const IT=ITS[_TI]||ITS.dieren;
+ const bgx=document.getElementById('bgx');for(let i=0;i<9;i++){const s=document.createElement('span');s.className='bge';s.textContent=IT[i%IT.length];s.style.left=(4+i*11)+'vw';s.style.top=(10+((i*37)%80))+'vh';s.style.setProperty('--d',(5+i*1.3).toFixed(1)+'s');s.style.fontSize=(1.4+(i%3)*.5)+'rem';bgx.appendChild(s)}}
+let n=0,score=0;const A=new(window.AudioContext||window.webkitAudioContext)();
+const blip=(f,d=.1)=>{const o=A.createOscillator(),g=A.createGain();o.frequency.value=f;g.gain.value=.15;o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
+function vraag(){const[q,goed,fout]=vr[n];document.getElementById('v').textContent=q;document.getElementById('vn').textContent=n+1;let foutN=0;
+ const ant=[goed,...fout].sort(()=>Math.random()-.5);const A2=document.getElementById('ant');A2.innerHTML='';
+ ant.forEach(a=>{const d=document.createElement('div');d.className='a';d.textContent=a;if(a==goed)d.dataset.g='1';
+  d.onclick=()=>{if(a==goed){d.classList.add('goed');score+=10;document.getElementById('s').textContent=score;blip(700)}else{d.classList.add('fout');blip(300,.25,'sine');foutN++;if(foutN>=3)A2.querySelector('[data-g]').classList.add('hint')};
+   setTimeout(()=>{if(++n<10){vraag()}else{document.getElementById('v').innerHTML='🎉 Klaar! Score: '+score+'<br><button onclick="location.reload()" style="margin-top:12px;padding:10px 24px;border-radius:10px;border:0;background:${t.acc};font-weight:700">Opnieuw</button>';document.getElementById('ant').innerHTML=''}},700)};
+  A2.appendChild(d)})}
+vraag();
+</`+'script></body></html>',
+
+/* DOOLHOF/VERZAMELAAR: pac-man achtig */
+doolhof:(naam,t,d)=>H(naam,t)+`
+let p={x:W/2,y:Hh-60},dots=[],vij=[{x:60,y:60,vx:2*D.snel,vy:1.5*D.snel},{x:W-60,y:80,vx:-2*D.snel,vy:2*D.snel}],t=0;
+for(let i=0;i<20;i++)dots.push({x:rand(30,W-30),y:rand(60,Hh-120),e:T.items[i%T.items.length]});
+addEventListener('keydown',e=>{const s=26;if(e.key=='ArrowUp')p.y-=s;if(e.key=='ArrowDown')p.y+=s;if(e.key=='ArrowLeft')p.x-=s;if(e.key=='ArrowRight')p.x+=s});
+const pad2=setInterval(()=>{const pd=PAD(),s=5;if(pd.u)p.y-=s;if(pd.d)p.y+=s;if(pd.l)p.x-=s;if(pd.r)p.x+=s},33);
+let t2=null;C.addEventListener('pointerdown',e=>t2={x:e.offsetX*W/C.clientWidth,y:e.offsetY*Hh/C.clientHeight});
+C.addEventListener('pointermove',e=>{if(!t2)return;const nx=e.offsetX*W/C.clientWidth,ny=e.offsetY*Hh/C.clientHeight;
+ p.x+=(nx-t2.x)*.3;p.y+=(ny-t2.y)*.3;t2={x:nx,y:ny}});
+(function loop(){if(af)return;bg();
+ p.x=Math.max(20,Math.min(W-20,p.x));p.y=Math.max(50,Math.min(Hh-30,p.y));
+ vij.forEach(v=>{v.x+=v.vx;v.y+=v.vy;if(v.x<30||v.x>W-30)v.vx*=-1;if(v.y<50||v.y>Hh-80)v.vy*=-1;
+  emoji(T.vijand,v.x,v.y,36,'rgba(255,90,90,.85)');
+  if(Math.abs(v.x-p.x)<30*SB&&Math.abs(v.y-p.y)<30*SB){lev--;lvs();blip(120,.3,'sawtooth');p={x:W/2,y:Hh-60}}});
+ dots.forEach((o,di)=>{itemX(di,o.x,o.y,28);
+  if(Math.abs(o.x-p.x)<28*HB&&Math.abs(o.y-p.y)<28*HB){o.y=-99;punt(10,o.x,o.y);blip(700,.08,'triangle')}});
+ dots=dots.filter(o=>o.y>0);held(p.x,p.y,40);
+ if(!dots.length){punt(50);if(SPELERS=='beurt'){einde();return}af=true;document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🎉 Alles gepakt!';document.getElementById('os').textContent='Score: '+score;return}
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+
+/* PLATFORMER: echte getekende wereld — heuvels, wolken, platformen, spikes, vlag */
+platform:(naam,t,d)=>H(naam,t)+`
+const GR=.6,VY=-12.5*Math.min(1.15,D.snel);
+let p={x:60,y:200,vx:0,vy:0,op:false,face:1},cam=0,t2=0,pJ=false;
+/* level: platform-segmenten met gaten */
+const plats=[],munten=[],spikes=[];
+let wx=0,wy=340;
+for(let i=0;i<26;i++){const w=rand(90,190);const g=i?rand(50,110*D.snel):0;wx+=g;
+ wy=Math.max(140,Math.min(430,wy+rand(-45,45))); /* stijging < sprong-apex (~63px bij Makkelijk) */
+ plats.push({x:wx,y:wy,w});
+ for(let c=0;c<Math.floor(w/40);c++)if(Math.random()<.5)munten.push({x:wx+20+c*40,y:wy-38,pak:false});
+ if(i>3&&Math.random()<.3)spikes.push({x:wx+rand(10,w-30),y:wy-14});
+ wx+=w}
+const EINDE=wx+80;
+const wolken=Array.from({length:14},(_,i)=>({x:i*260+rand(0,150),y:rand(20,160),s:rand(.7,1.4)}));
+const sterren=Array.from({length:30},()=>({x:rand(0,EINDE),y:rand(0,180)}));
+addEventListener('keydown',e=>{if((e.key==' '||e.key=='ArrowUp')&&p.op){p.vy=VY;p.op=false;blip(320,.12,'triangle')}});
+function tik(){if(p.op){p.vy=VY;p.op=false;blip(320,.12,'triangle')}}
+/* getekende helpers */
+const heuvel=(x,y,r,k)=>{X.fillStyle=k;X.beginPath();X.arc(x,y+r,r,Math.PI,0);X.fill()};
+const wolk=(x,y,s)=>{X.fillStyle='#ffffffE8';X.beginPath();X.arc(x,y,14*s,0,7);X.arc(x+16*s,y-6*s,12*s,0,7);X.arc(x+32*s,y,14*s,0,7);X.fill()};
+const blok=(b)=>{X.fillStyle=T.acc;X.fillRect(b.x-cam,b.y-8,b.w,10); /* gras-top */
+ X.fillStyle='#5b3a4a';X.fillRect(b.x-cam,b.y+2,b.w,60); /* aarde */
+ X.strokeStyle='#3f2434';X.lineWidth=3;for(let i=0;i<4;i++){X.beginPath();X.moveTo(b.x-cam,b.y+12+i*14);
+  for(let x=0;x<b.w;x+=18)X.quadraticCurveTo(b.x-cam+x+9,b.y+12+i*14+(i%2?6:-6),b.x-cam+x+18,b.y+12+i*14);X.stroke()}
+ /* bloemetjes/grassprieten */
+ X.strokeStyle=T.acc;X.lineWidth=2;for(let x=8;x<b.w;x+=34){X.beginPath();X.moveTo(b.x-cam+x,b.y-8);X.lineTo(b.x-cam+x+3,b.y-15);X.stroke()}};
+const munt=(m)=>{X.fillStyle='#fbbf24';X.beginPath();X.arc(m.x-cam,m.y,9,0,7);X.fill();
+ X.fillStyle='#fde68a';X.beginPath();X.arc(m.x-cam-2,m.y-2,4,0,7);X.fill()};
+const spijker=(s)=>{X.fillStyle='#94a3b8';X.beginPath();X.moveTo(s.x-cam,s.y+14);X.lineTo(s.x-cam+7,s.y-6);X.lineTo(s.x-cam+14,s.y+14);X.fill()};
+const kereltje=(x,y)=>{ /* eigen getekend figuurtje als er geen foto is */
+ X.fillStyle=T.acc;X.beginPath();X.roundRect(x-cam-11,y-16,22,28,8);X.fill(); /* lijf */
+ X.fillStyle='#fff';X.beginPath();X.arc(x-cam+(p.face>0?5:-5),y-8,3.4,0,7);X.arc(x-cam+(p.face>0?11:-11),y-8,3.4,0,7);X.fill();
+ X.fillStyle='#0b1220';X.beginPath();X.arc(x-cam+(p.face>0?6:-6),y-8,1.6,0,7);X.arc(x-cam+(p.face>0?12:-12),y-8,1.6,0,7);X.fill();
+ X.strokeStyle=T.acc;X.lineWidth=4;const st=Math.sin(t2*.3)*6;
+ X.beginPath();X.moveTo(x-cam-5,y+12);X.lineTo(x-cam-5+st*.4,y+22);X.moveTo(x-cam+5,y+12);X.lineTo(x-cam+5-st*.4,y+22);X.stroke()};
+let chk=60;
+(function loop(){if(af)return;t2++;
+ /* beweging */
+ const pd=PAD();if(pd.a&&p.op&&!pJ){p.vy=VY;p.op=false;pJ=true;blip(320,.12,'triangle')}if(!pd.a)pJ=false;
+ if(keys['ArrowLeft']||keys['a']||pd.l){p.vx=-4.5*D.snel;p.face=-1}
+ else if(keys['ArrowRight']||keys['d']||pd.r){p.vx=4.5*D.snel;p.face=1}
+ else if(tx!=null){const dx=tx-(p.x-cam);p.vx=Math.abs(dx)>12?Math.sign(dx)*4.5*D.snel:0;if(p.vx)p.face=Math.sign(p.vx)}
+ else p.vx=0;
+ p.x+=p.vx;p.vy+=GR;p.y+=p.vy;p.op=false;
+ for(const b of plats){if(p.x>b.x-10&&p.x<b.x+b.w+10&&p.vy>=0&&p.y+22>b.y-8&&p.y+22<b.y+24){p.y=b.y-30;p.vy=0;p.op=true}}
+ if(p.y>Hh+80){lev--;lvs();blip(120,.3,'sawtooth');p={x:chk,y:200,vx:0,vy:0,face:p.face};cam=Math.max(0,chk-W/2)}
+ /* camera */
+ cam=Math.max(0,Math.min(EINDE-W,p.x-W*.38));
+ /* tekenen */
+ const gr=X.createLinearGradient(0,0,0,Hh);gr.addColorStop(0,T.acc+'55');gr.addColorStop(.5,T.achtergr);gr.addColorStop(1,'#060a14');X.fillStyle=gr;X.fillRect(0,0,W,Hh);
+ X.fillStyle='#ffffff66';sterren.forEach(s=>{const sx=s.x*.3-cam*.3;X.fillRect(((sx%W)+W)%W,s.y,2,2)});
+ heuvels: for(let i=0;i<8;i++){const hx=i*480-cam*.35,hy=Hh-40;heuvel(((hx%2400)+2400)%2400-200,hy,220,'#1c2438');heuvel(((hx%2400)+2400)%2400+120,hy,150,'#232d45')}
+ wolken.forEach(w=>{const wx2=((w.x-cam*.6)%(EINDE+400)+EINDE+400)%(EINDE+400)-200;if(wx2>W+100||wx2<-120)return;wolk(wx2,w.y,w.s)});
+ plats.forEach(b=>{if(b.x-cam>-200&&b.x-cam<W+200)blok(b)});
+ munten.forEach(m=>{if(!m.pak&&m.x-cam>-30&&m.x-cam<W+30)munt(m);
+  if(!m.pak&&Math.abs(m.x-p.x)<20&&Math.abs(m.y-p.y)<26){m.pak=true;punt(10,m.x,m.y);blip(760,.08,'triangle')}});
+ spikes.forEach(s=>{if(s.x-cam>-30&&s.x-cam<W+30)spijker(s);
+  if(Math.abs(s.x+7-p.x)<18&&Math.abs(s.y-p.y)<26){lev--;lvs();blip(120,.3,'sawtooth');p.vy=-8}});
+ /* checkpoint: linkerrand van het platform waar je op staat, elke ~1200px — kan nooit in een gat landen */
+ if(p.op&&p.x>chk+1200){const cb=plats.find(q=>p.x>=q.x&&p.x<=q.x+q.w);if(cb)chk=cb.x}
+ /* vlag */
+ X.fillStyle='#e8eef8';X.fillRect(EINDE-cam,180,6,160);
+ X.fillStyle=T.acc;X.beginPath();X.moveTo(EINDE-cam+6,180);X.lineTo(EINDE-cam+56,196);X.lineTo(EINDE-cam+6,212);X.fill();
+ if(p.x>EINDE-30){punt(100);if(SPELERS=='beurt'){einde();return}af=true;document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🏁 Level gehaald!';document.getElementById('os').textContent='Score: '+score;blip(880,.3,'triangle');return}
+ /* held: foto of eigen figuurtje */
+ if(ok(FHELD)){_rond(FHELD,p.x-cam,p.y-4,36)}else kereltje(p.x,p.y);
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+
+/* RITME: noten vallen in 4 banen op de beat — raak ze op tijd (Guitar Hero-stijl) */
+ritme:(naam,t,d)=>H(naam,t)+`
+function __spelmetmuziek(){}
+const BPM=100+30*(D.snel-0.7),SPB=60/BPM,N=4,LY=Hh-110,LW=W/N;
+const TOETS=['D','F','J','K'],KL=['#f472b6','#22d3ee','#a3e635','#fbbf24'];
+/* eigen beat: kick op beat, hat offbeat, snare op 2&4 (WebAudio) */
+const kick=t=>{const o=A.createOscillator(),g=A.createGain();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(40,t+.1);g.gain.setValueAtTime(.5,t);g.gain.exponentialRampToValueAtTime(.001,t+.15);o.connect(g);g.connect(A.destination);o.start(t);o.stop(t+.16)};
+const hat=t=>{const b=A.createBuffer(1,800,A.sampleRate),s=A.createBufferSource(),g=A.createGain(),f=A.createBiquadFilter();const dd=b.getChannelData(0);for(let i=0;i<800;i++)dd[i]=(Math.random()*2-1)*Math.pow(1-i/800,2);s.buffer=b;f.type='highpass';f.frequency.value=8000;g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.001,t+.03);s.connect(f);f.connect(g);g.connect(A.destination);s.start(t)};
+const snare=t=>{const b=A.createBuffer(1,2200,A.sampleRate),s=A.createBufferSource(),g=A.createGain(),f=A.createBiquadFilter();const dd=b.getChannelData(0);for(let i=0;i<2200;i++)dd[i]=(Math.random()*2-1)*Math.pow(1-i/2200,2);s.buffer=b;f.type='bandpass';f.frequency.value=1800;g.gain.setValueAtTime(.3,t);g.gain.exponentialRampToValueAtTime(.001,t+.1);s.connect(f);f.connect(g);g.connect(A.destination);s.start(t)};
+/* noot-map: 4 banen × 48 beats, gegenereerd patroon */
+const noten=[];
+for(let b=0;b<48;b++){const r=Math.random();
+ if(b<4)noten.push({b,baan:b%4}); /* intro */
+ else if(r<.5)noten.push({b,baan:Math.floor(rand(0,4))});
+ else if(r<.7&&D.snel>1)noten.push({b,baan:Math.floor(rand(0,4))},{b:b+.5,baan:Math.floor(rand(0,4))})}
+let gestart=false,t0=0,combo=0,maxC=0,hit='',hitT=0,miss=0;
+const press=i=>{if(!gestart)return;const nu=(A.currentTime-t0)/SPB;
+ const n=noten.find(n=>!n.hit&&!n.gemist&&n.baan==i&&Math.abs(n.b-nu)<.28);
+ if(n){n.hit=true;const afw=Math.abs(n.b-nu);
+  if(afw<.12){hit='PERFECT!';punt(20,i*LW+LW/2,LY-40);blip(880,.07,'triangle')}else{hit='GOED';punt(10,i*LW+LW/2,LY-40);blip(660,.07,'triangle')}
+  combo++;if(combo>maxC)maxC=combo;hitT=A.currentTime}
+ else{combo=0;hit='';blip(200,.15,'sawtooth')}};
+TOETS.forEach((k,i)=>{addEventListener('keydown',e=>{if(e.key.toUpperCase()==k)press(i)})});
+midiNote=n=>press(n%4); /* midi-keyboard noot -> baan */
+function tik(x){press(Math.min(3,Math.floor(x/LW)))}
+let ci=0;
+const startKnop=document.createElement('button');startKnop.textContent='▶ START MUZIEK';startKnop.style.cssText='position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);z-index:5';
+document.body.appendChild(startKnop);
+startKnop.onclick=()=>{startKnop.remove();gestart=true;t0=A.currentTime+.5;
+ /* beat vooruit-scheduleren */
+ const sched=()=>{if(af)return;const nu=A.currentTime-t0;
+  while(ci<60&&ci*SPB<nu+1){const b=ci;kick(t0+b*SPB);if(b%2)hat(t0+b*SPB+SPB/2);if(b%4==1||b%4==3)snare(t0+b*SPB);ci++}
+  setTimeout(sched,60)};sched()};
+(function loop(){if(af)return;const nu=gestart?(A.currentTime-t0)/SPB:0;
+ /* tekening */
+ const gr=X.createLinearGradient(0,0,0,Hh);gr.addColorStop(0,'#12051f');gr.addColorStop(.6,T.achtergr);gr.addColorStop(1,'#050210');X.fillStyle=gr;X.fillRect(0,0,W,Hh);
+ /* banen */
+ for(let i=0;i<N;i++){X.fillStyle=i%2?'#ffffff08':'#ffffff05';X.fillRect(i*LW+2,60,LW-4,LY-60);
+  X.strokeStyle='#ffffff18';X.strokeRect(i*LW+2,60,LW-4,LY-60)}
+ /* hit-lijn */
+ X.fillStyle=T.acc;X.fillRect(0,LY,W,4);
+ for(let i=0;i<N;i++){X.fillStyle=KL[i];X.globalAlpha=.35;X.beginPath();X.arc(i*LW+LW/2,LY+2,22,0,7);X.fill();X.globalAlpha=1;
+  X.fillStyle='#fff';X.font='bold 16px system-ui';X.fillText(TOETS[i],i*LW+LW/2,LY+30)}
+ /* noten vallen */
+ const snel=(LY-60)/(SPB*3); /* 3 beats leidtijd */
+ noten.forEach(n=>{if(n.hit||n.gemist)return;const y=60+(nu-n.b+3)*snel/3;
+  if(y<60||y>LY+40)return;
+  if(y>LY+30){n.gemist=true;combo=0;miss++;lev--;lvs();hit='MISS';hitT=A.currentTime;return}
+  const g=X.createRadialGradient(n.baan*LW+LW/2,y,2,n.baan*LW+LW/2,y,18);g.addColorStop(0,'#fff');g.addColorStop(.4,KL[n.baan]);g.addColorStop(1,KL[n.baan]+'00');
+  X.fillStyle=g;X.beginPath();X.arc(n.baan*LW+LW/2,y,17,0,7);X.fill();
+  X.fillStyle='#fff';X.font='13px system-ui';X.fillText('♪',n.baan*LW+LW/2,y)});
+ /* held bovenop danst mee */
+ if(ok(FHELD))_rond(FHELD,W/2,32,44);else emoji(T.held,W/2,32,44);
+ /* combo + hit-tekst */
+ if(combo>1){X.fillStyle=T.acc;X.font='bold 20px system-ui';X.fillText(combo+'x combo',W/2,80)}
+ if(A.currentTime-hitT<.6&&hit){X.fillStyle=hit=='MISS'?'#f66':hit=='PERFECT!'?'#fde047':'#a3e635';X.font='bold 24px system-ui';X.fillText(hit,W/2,Hh/2)}
+ /* einde na laatste noot */
+ if(ci>=60&&noten.every(n=>n.hit||n.gemist)){af=true;document.getElementById('over').style.display='flex';
+  document.getElementById('ot').textContent='🎵 Nummer klaar!';document.getElementById('os').textContent='Score: '+score+' — Beste combo: '+maxC+'x';return}
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+
+/* BEATGAME: producer-ritme op een ECHTE geuploade beat — onsets → noten */
+beatgame:(naam,t,d)=>H(naam,t)+`
+function __spelmetmuziek(){}
+const MUZIEK=${JSON.stringify('MUZIEK')},N=4,LY=Hh-110,LW=W/N;
+const TOETS=['D','F','J','K'],KL=['#f472b6','#22d3ee','#a3e635','#fbbf24'];
+let gestart=false,t0=0,combo=0,maxC=0,hit='',hitT=0,miss=0,noten=[],SPB=.5,dur=0,bron=null;
+/* beat-analyse: energie-envelope → BPM-autocorrelatie → onset-pieken → banen */
+const analyse=buf=>{const ch=buf.getChannelData(0),sr=buf.sampleRate,hop=512;
+ const n=Math.floor(ch.length/hop),env=new Float32Array(n),low=new Float32Array(n);
+ for(let i=0;i<n;i++){let e=0,lp=0;for(let j=0;j<hop;j+=8){const s=ch[i*hop+j];e+=s*s;lp+=(s-lp)*.15}
+  env[i]=Math.sqrt(e/(hop/8));low[i]=Math.abs(lp)}
+ const fps=sr/hop,med=[...env].sort((a,b2)=>a-b2)[n>>1]||0;
+ let best=0,bpm=120;for(let b=70;b<=180;b++){const lag=Math.round(fps*60/b);let s=0;
+  for(let i=0;i+lag<n;i++)s+=env[i]*env[i+lag];if(s>best){best=s;bpm=b}}
+ const ons=[];for(let i=1;i<n;i++)if(env[i]>env[i-1]*1.3&&env[i]>med*1.35&&(!ons.length||i-ons[ons.length-1]>fps*.14))ons.push(i);
+ const spb=60/bpm*fps,k=ons.filter(o=>o/spb>1).map((o,i2)=>{
+  const bas=low[o]/(env[o]+1e-9);return{b:o/spb,baan:bas>.55?(i2%2):(2+i2%2)}});
+ return{bpm,noten:k,dur:buf.duration}};
+const press=i=>{if(!gestart)return;const nu=(A.currentTime-t0)/SPB;
+ const nn=noten.find(q=>!q.hit&&!q.gemist&&q.baan==i&&Math.abs(q.b-nu)<.28);
+ if(nn){nn.hit=true;const afw=Math.abs(nn.b-nu);
+  if(afw<.12){hit='PERFECT!';punt(20,i*LW+LW/2,LY-40);blip(880,.07,'triangle')}else{hit='GOED';punt(10,i*LW+LW/2,LY-40);blip(660,.07,'triangle')}
+  combo++;if(combo>maxC)maxC=combo;hitT=A.currentTime}
+ else{combo=0;hit='';blip(200,.15,'sawtooth')}};
+TOETS.forEach((k,i)=>{addEventListener('keydown',e=>{if(e.key.toUpperCase()==k)press(i)})});
+midiNote=n=>press(n%4); /* midi-keyboard noot -> baan */
+function tik(x){press(Math.min(3,Math.floor(x/LW)))}
+const startKnop=document.createElement('button');startKnop.textContent='▶ LADEN & START';startKnop.style.cssText='position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);z-index:5';
+document.body.appendChild(startKnop);
+startKnop.onclick=async()=>{startKnop.textContent='⏳ beat analyseren...';
+ try{const res=await fetch(MUZIEK),ab=await res.arrayBuffer(),buf=await A.decodeAudioData(ab);
+  const an=analyse(buf);noten=an.noten;SPB=60/an.bpm;dur=an.dur;
+  startKnop.textContent='🎵 '+Math.round(an.bpm)+' BPM — START';setTimeout(()=>{startKnop.remove();
+   const s=A.createBufferSource();s.buffer=buf;s.connect(A.destination);s.start(A.currentTime+.5);
+   gestart=true;t0=A.currentTime+.5;bron=s},400)}
+ catch(e){startKnop.textContent='⚠️ beat laden mislukt'}};
+(function loop(){if(af)return;const nu=gestart?(A.currentTime-t0)/SPB:0;
+ const gr=X.createLinearGradient(0,0,0,Hh);gr.addColorStop(0,'#12051f');gr.addColorStop(.6,T.achtergr);gr.addColorStop(1,'#050210');X.fillStyle=gr;X.fillRect(0,0,W,Hh);
+ for(let i=0;i<N;i++){X.fillStyle=i%2?'#ffffff08':'#ffffff05';X.fillRect(i*LW+2,60,LW-4,LY-60);
+  X.strokeStyle='#ffffff18';X.strokeRect(i*LW+2,60,LW-4,LY-60)}
+ X.fillStyle=T.acc;X.fillRect(0,LY,W,4);
+ for(let i=0;i<N;i++){X.fillStyle=KL[i];X.globalAlpha=.35;X.beginPath();X.arc(i*LW+LW/2,LY+2,22,0,7);X.fill();X.globalAlpha=1;
+  X.fillStyle='#fff';X.font='bold 16px system-ui';X.fillText(TOETS[i],i*LW+LW/2,LY+30)}
+ const snel=(LY-60)/(SPB*3);
+ noten.forEach(nn=>{if(nn.hit||nn.gemist)return;const y=60+(nu-nn.b+3)*snel/3;
+  if(y<60||y>LY+40)return;
+  if(y>LY+30){nn.gemist=true;combo=0;miss++;hit='MISS';hitT=A.currentTime;return}
+  const g=X.createRadialGradient(nn.baan*LW+LW/2,y,2,nn.baan*LW+LW/2,y,18);g.addColorStop(0,'#fff');g.addColorStop(.4,KL[nn.baan]);g.addColorStop(1,KL[nn.baan]+'00');
+  X.fillStyle=g;X.beginPath();X.arc(nn.baan*LW+LW/2,y,17,0,7);X.fill();
+  X.fillStyle='#fff';X.font='13px system-ui';X.fillText('♪',nn.baan*LW+LW/2,y)});
+ if(ok(FHELD))_rond(FHELD,W/2,32,44);else emoji(T.held,W/2,32,44);
+ if(combo>1){X.fillStyle=T.acc;X.font='bold 20px system-ui';X.fillText(combo+'x combo',W/2,80)}
+ if(A.currentTime-hitT<.6&&hit){X.fillStyle=hit=='MISS'?'#f66':hit=='PERFECT!'?'#fde047':'#a3e635';X.font='bold 24px system-ui';X.fillText(hit,W/2,Hh/2)}
+ if(gestart&&A.currentTime-t0>dur+1){af=true;confetti();
+  const pct=noten.length?Math.round(100*(noten.filter(q=>q.hit).length)/noten.length):0;
+  document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🎵 Nummer klaar!';
+  document.getElementById('os').textContent='Score: '+score+' — '+pct+'% geraakt — max combo '+maxC+' — miss '+miss;return}
+ requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+
+/* RACE: skelter/driewieler — bochtige weg, obstakels ontwijken, boosts pakken, finish */
+race:(naam,t,d)=>H(naam,t)+`
+const PY=Hh-90,RITM=Math.min(1.4,D.snel);
+let mx=W/2-45,mxb=W/2+45,t=0,spd=3*RITM,weg=0,crash=0,crash2=0,boost=0;
+const FOTO_AUTO=FHELD; /* jouw foto als rijder */
+/* voertuigen per thema: kids = skelter/driewieler */
+const VOERT=['🛺','🚲','🛴','🛵','🏎️','🚗'];
+const mij = FOTO_AUTO?null:VOERT[Math.floor(rand(0,VOERT.length))];
+let obst=[],boosts=[],bomen=[];
+for(let i=0;i<10;i++)bomen.push({x:Math.random()<.5?rand(10,50):rand(W-50,W-10),y:i*80});
+const spawn=()=>{const r=Math.random();
+ if(r<.6)obst.push({x:rand(80,W-80),y:-30,v:spd*rand(.5,.9),ix:Math.floor(rand(0,20))});
+ else boosts.push({x:rand(80,W-80),y:-30,v:spd*rand(.5,.9)})};
+/* weg-tekening: bochtig midden */
+const wegM=x=>W/2+Math.sin((weg+x)*.008)*40;
+addEventListener('keydown',e=>{if(e.key==' ')boost=Math.min(boost+20,40)});
+function tik(x){mx=x}
+(function loop(){if(af)return;t++;weg+=spd;
+ /* sturen */
+ const DUO=SPELERS=='duo',pd=PAD(0),pd2=DUO?PAD(1):{l:0,r:0};
+ if(keys['ArrowLeft']||pd.l)mx-=6*RITM;if(keys['ArrowRight']||pd.r)mx+=6*RITM;if(tx!=null)mx+=(tx-mx)*.25;
+ if(DUO){if(keys['a']||keys['A']||pd2.l)mxb-=6*RITM;if(keys['d']||keys['D']||pd2.r)mxb+=6*RITM;
+  mxb=Math.max(wegM(PY-60)-62,Math.min(wegM(PY-60)+62,mxb))}
+ mx=Math.max(wegM(PY-60)-62,Math.min(wegM(PY-60)+62,mx)); /* binnen de weg blijven */
+ /* weg */
+ const m=wegM(0);
+ X.fillStyle='#1a3a1a';X.fillRect(0,0,W,Hh); /* gras */
+ bomen.forEach(b=>{b.y+=spd;if(b.y>Hh+40){b.y=-40;b.x=Math.random()<.5?rand(10,50):rand(W-50,W-10)}emoji('🌳',b.x,b.y,34)});
+ X.fillStyle='#333';for(let y=-60;y<Hh+60;y+=4){const mx=wegM(y-60);X.fillRect(mx-70,y,140,4)}
+ X.strokeStyle='#fff';X.lineWidth=3;X.setLineDash([24,20]);X.beginPath();X.moveTo(m,0);for(let y=0;y<Hh;y+=20)X.lineTo(wegM(y-60),y);X.stroke();X.setLineDash([]);
+ X.strokeStyle='#fbbf24';X.lineWidth=2;X.beginPath();X.moveTo(m-70,0);for(let y=0;y<Hh;y+=20)X.lineTo(wegM(y-60)-70,y);X.stroke();
+ X.beginPath();X.moveTo(m+70,0);for(let y=0;y<Hh;y+=20)X.lineTo(wegM(y-60)+70,y);X.stroke();
+ /* spawn + obstakels */
+ if(t>50/RITM){t=0;spawn()}
+ obst.forEach(o=>{o.y+=o.v+spd*.4;const om=wegM(o.y-60);
+  itemX(o.ix,om+o.x-W/2,o.y,30);
+  if(Math.abs(o.y-PY)<30&&Math.abs((om+o.x-W/2)-mx)<34){crash++ ;lev--;lvs();blip(90,.4,'sawtooth');o.y=-99;mx=W/2}
+  if(DUO&&Math.abs(o.y-PY)<30&&Math.abs((om+o.x-W/2)-mxb)<34){crash2++;blip(90,.4,'sawtooth');o.y=-99;mxb=W/2}});
+ obst=obst.filter(o=>o.y<Hh+40&&o.y>-50);
+ boosts.forEach(b=>{b.y+=b.v+spd*.4;const bm=wegM(b.y-60);
+  X.fillStyle='#fbbf24';X.beginPath();X.arc(bm+b.x-W/2,b.y,12,0,7);X.fill();X.fillStyle='#fff';X.font='14px serif';X.fillText('⚡',bm+b.x-W/2,b.y);
+  if(Math.abs(b.y-PY)<30&&Math.abs((bm+b.x-W/2)-mx)<32){b.y=-99;punt(15,bm+b.x,b.y);blip(900,.1,'triangle');spd+=.3}});
+ boosts=boosts.filter(b=>b.y<Hh+40&&b.y>-50);
+ /* mij: foto of voertuig-emoji */
+ const mx2=wegM(PY-60);
+ if(ok(FOTO_AUTO))_rond(FOTO_AUTO,mx,PY,46);else emoji(mij,mx,PY,42);
+ if(DUO)emoji('🚲',mxb,PY,42);
+ /* voortgang */
+ punt(0);document.getElementById('score').textContent='⭐ '+score+' — '+Math.floor(weg/50)+'m';
+ if(weg>8000){punt(200);if(SPELERS=='beurt'){einde();return}af=true;confetti();
+  if(DUO){const w=crash<crash2?'🏆 Speler 1 wint!':crash>crash2?'🏆 Speler 2 wint!':'🤝 Gelijkspel!';
+   document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🏁 Finish! '+w;
+   document.getElementById('os').textContent='crashes — P1: '+crash+' P2: '+crash2;return}
+  document.getElementById('over').style.display='flex';document.getElementById('ot').textContent='🏁 Finish! '+Math.floor(weg/50)+'m';document.getElementById('os').textContent='Score: '+score+' — crashes: '+crash;return}
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+zweef:(naam,t,d)=>H(naam,t)+`
+let y=Hh*.5,vy=0,obst=[],items2=[],t=0,dist=0,thrust=false;
+function spawn(){const g=rand(140,220),gy=rand(90,Hh-160);obst.push({x:W+40,gy,g,v:2.2*D.snel});
+ if(Math.random()<.7)items2.push({x:W+40,y:gy+rand(30,g-30),v:2.2*D.snel,ix:Math.floor(rand(0,20))})}
+function tik(){thrust=true}
+addEventListener('keyup',e=>{if(e.key==' ')thrust=false});
+addEventListener('keydown',e=>{if(e.key==' ')thrust=true});
+C.addEventListener('pointerup',()=>thrust=false);
+(function loop(){if(af)return;bg();
+ const pd=PAD(0);if(pd.a)thrust=true;
+ vy+=thrust?-.42:.3;vy=Math.max(-5,Math.min(5,vy));y+=vy;
+ if(y<20){y=20;vy=0}if(y>Hh-40){y=Hh-40;vy=0}
+ if(++t>110/D.snel){t=0;spawn()}
+ obst.forEach(o=>{o.x-=o.v;X.fillStyle=T.acc+'55';X.fillRect(o.x-14,0,28,o.gy);X.fillRect(o.x-14,o.gy+o.g,28,Hh);
+  X.fillStyle=T.acc;X.fillRect(o.x-16,o.gy-8,32,8);X.fillRect(o.x-16,o.gy+o.g,32,8);
+  if(o.x>40&&o.x<90&&(y<o.gy||y>o.gy+o.g)){lev--;lvs();blip(90,.4,'sawtooth');o.x=-99;y=Hh*.5;vy=0}});
+ obst=obst.filter(o=>o.x>-50);
+ items2.forEach(i=>{i.x-=i.v;itemX(i.ix,i.x,i.y=0?0:i.y,26);
+  if(Math.abs(i.x-65)<28&&Math.abs(i.y-y)<28){i.x=-99;punt(10,i.x,i.y);blip(700,.1,'triangle')}});
+ items2=items2.filter(i=>i.x>-50);
+ dist++;if(dist%30==0)punt(1);
+ if(ok(FHELD))_rond(FHELD,65,y,40);else emoji('🛸',65,y,38);
+ X.fillStyle='#fff9';X.font='12px sans-serif';X.textAlign='left';X.fillText('hoogte',8,20);
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+bowling:(naam,t,d)=>H(naam,t)+`
+let fase=0,ang=0,angDir=1,pow=0,powDir=1,ball=null,pins=[],worpen=0,gooiT=0;
+const reset=()=>{pins=[];for(let r=0;r<3;r++)for(let i=0;i<=r;i++)pins.push({x:W/2+(i-r/2)*36,y:60+r*34,om:true});worpen=0};
+reset();
+function tik(){slag()}
+addEventListener('keydown',e=>{if(e.key==' ')slag()});
+function slag(){if(ball)return;
+ if(fase==0){fase=1;blip(500,.05)}else if(fase==1){fase=2;
+  ball={x:W/2,y:Hh-60,a:(ang-90)*Math.PI/180,v:4+pow*.12};blip(300,.2);fase=0}}
+(function loop(){if(af)return;bg();
+ if(!ball){if(fase==0){ang+=angDir*2.4*D.snel;if(ang>60||ang<-60)angDir*=-1}
+  else{pow+=powDir*3.5*D.snel;if(pow>100||pow<0)powDir*=-1}
+  /* richt-pijl + krachtbalk */
+  X.strokeStyle='#fff';X.lineWidth=3;X.beginPath();X.moveTo(W/2,Hh-60);
+  X.lineTo(W/2+Math.sin(ang*Math.PI/180)*60,Hh-60-Math.cos(ang*Math.PI/180)*60);X.stroke();
+  X.fillStyle='#f472b6';X.fillRect(20,Hh-40,380*Math.max(0,pow)/100,14);X.strokeStyle='#fff6';X.strokeRect(20,Hh-40,380,14);
+  X.fillStyle='#fff';X.font='13px sans-serif';X.textAlign='center';X.fillText(fase==0?'TIK = richting vastzetten':'TIK = gooien! ('+Math.round(pow)+'%)',W/2,Hh-16)}
+ pins.forEach(p=>{if(p.om)emoji('🎳',p.x,p.y,26)});
+ if(ball){ball.x+=Math.sin(ball.a)*ball.v;ball.y-=Math.cos(ball.a)*ball.v;
+  emoji('⚫',ball.x,ball.y,20);
+  pins.forEach(p=>{if(p.om&&Math.hypot(p.x-ball.x,p.y-ball.y)<24){p.om=false;punt(10,p.x,p.y);blip(800,.1,'triangle')}});
+  if(ball.y<10||ball.x<0||ball.x>W){ball=null;worpen++;
+   if(!pins.some(p=>p.om)){punt(50,W/2,Hh/2);confetti();reset()}
+   else if(worpen>=3){const ov=pins.filter(p=>p.om).length;
+    if(lev>0){worpen=0;pins=[];for(let r=0;r<3;r++)for(let i=0;i<=r;i++)pins.push({x:W/2+(i-r/2)*36,y:60+r*34,om:true})}}}}
+ document.getElementById('score').textContent='⭐ '+score+' — worp '+(worpen+1)+'/3';
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+golf:(naam,t,d)=>H(naam,t)+`
+let hole={x:rand(60,W-60),y:rand(60,180)},ball={x:W/2,y:Hh-80},fase=0,ang=0,angDir=1,pow=0,powDir=1,vx=0,vy=0,slagen=0,holes=0;
+function tik(){slag()}
+addEventListener('keydown',e=>{if(e.key==' ')slag()});
+function slag(){if(Math.hypot(vx,vy)>.4)return;
+ if(fase==0){fase=1;blip(500,.05)}
+ else if(fase==1){fase=0;const r=(ang-90)*Math.PI/180,vv=3+pow*.14;vx=Math.cos(r+Math.PI/2)*vv;vy=Math.sin(r+Math.PI/2)*vv;slagen++;blip(300,.15)}}
+(function loop(){if(af)return;bg();
+ /* green + hole */
+ X.fillStyle='#3f621233';X.fillRect(0,0,W,Hh);
+ X.fillStyle='#111';X.beginPath();X.arc(hole.x,hole.y,12,0,7);X.fill();
+ X.fillStyle='#fbbf24';X.fillRect(hole.x,hole.y-34,2,34);emoji('🚩',hole.x+9,hole.y-28,18);
+ if(Math.hypot(vx,vy)>.4){ball.x+=vx;ball.y+=vy;vx*=.97;vy*=.97;
+  if(ball.x<10||ball.x>W-10)vx*=-.7;if(ball.y<10||ball.y>Hh-10)vy*=-.7;
+  ball.x=Math.max(10,Math.min(W-10,ball.x));ball.y=Math.max(10,Math.min(Hh-10,ball.y))}
+ else{fase==0?ang+=angDir*2.4*D.snel:0;if(ang>80||ang<-80)angDir*=-1;
+  if(fase==1){pow+=powDir*3.5*D.snel;if(pow>100||pow<0)powDir*=-1}
+  X.strokeStyle='#fff';X.lineWidth=3;X.beginPath();X.moveTo(ball.x,ball.y);
+  X.lineTo(ball.x+Math.sin(ang*Math.PI/180)*55,ball.y-Math.cos(ang*Math.PI/180)*55);X.stroke();
+  X.fillStyle='#f472b6';X.fillRect(20,Hh-40,380*Math.max(0,pow)/100,14);X.strokeStyle='#fff6';X.strokeRect(20,Hh-40,380,14);
+  X.fillStyle='#fff';X.font='13px sans-serif';X.textAlign='center';X.fillText(fase==0?'TIK = richting':'TIK = slaan! ('+Math.round(pow)+'%)',W/2,Hh-16)}
+ emoji('⚪',ball.x,ball.y,18);
+ if(Math.hypot(ball.x-hole.x,ball.y-hole.y)<14){holes++;const pts=Math.max(10,60-slagen*5);punt(pts,hole.x,hole.y);confetti();blip(900,.2,'triangle');
+  hole={x:rand(60,W-60),y:rand(60,180)};ball={x:W/2,y:Hh-80};vx=vy=0;
+  if(holes>=6){af=true;document.getElementById('over').style.display='flex';
+   document.getElementById('ot').textContent='⛳ '+holes+' holes in '+slagen+' slagen!';
+   document.getElementById('os').textContent='Score: '+score;return}}
+ document.getElementById('score').textContent='⭐ '+score+' — hole '+(holes+1)+'/6';
+ if(lev<=0)einde();else requestAnimationFrame(loop)})();
+</`+'script></body></html>',
+};
+
+T('proef').onclick=()=>{if(!window._laatste){log('⚠️ Klik eerst op 🎮 MAAK MIJN SPEL — dan kun je hem hier meteen uitproberen');return}
+ window.open(URL.createObjectURL(new Blob([_laatste.code],{type:'text/html'})),'_blank');
+ log('▶ '+_laatste.naam+' live geopend in nieuw tabblad — speel hem meteen')};
+T('maak').onclick=()=>{
+ const naam=T('naam').value.trim()||'Mijn Spel';
+ const lv=T('moeilijk').value;
+ const mo={...MOEILIJK[lv],kid:lv=='peuter'||lv=='kleuter'};
+ const th0=THEMAS.find(t=>t.id===thema);
+ /* peuter: zachte pastel-wereld — lichte achtergrond + zachtere accentkleur */
+ const th=lv=='peuter'?{...th0,achtergr:mix(th0.achtergr,'#f4f9ff',.72),acc:mix(th0.acc,'#ffffff',.3)}:th0;
+ if(type=='beatgame'&&!beatData){log('⚠️ Beat-Spel heeft een beat nodig — upload eerst je mp3/wav bij stap 5');return}
+ let sp=T('spelers').value;
+ if(sp=='duo'&&!['vang','race'].includes(type)){log('ℹ️ 2-tegelijk kan bij Vang-Spel en Skelter-Race — omstebeurt gebruikt');sp='beurt'}
+ const gen=GEN[type];
+ let code=gen(naam,th,mo);
+ code=code.replace(JSON.stringify('THEMA'),JSON.stringify(th)).replace(JSON.stringify('MOEIL'),JSON.stringify(mo))
+   .replace(JSON.stringify('FOTOS'),JSON.stringify({held:heldImg,items:xImgs}))
+  .replace(JSON.stringify('TIJD'),+T('tijd').value)
+  .replace(JSON.stringify('MUZIEK'),JSON.stringify(beatData))
+  .replace(JSON.stringify('SPELERS'),JSON.stringify(sp));
+ if(type=='quiz')code=code.replace("'THEMA_ID'",JSON.stringify(thema));
+ log('🔨 '+naam+' ('+type+'/'+thema+') gebouwd: '+(code.length/1024).toFixed(0)+' KB, één bestand, geen externe bestanden nodig');
+ window._laatste={code,naam};
+ const fn=naam.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+ {
+  const blob=new Blob([code],{type:'text/html'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=fn+'.html';a.click();
+  log('⬇️ '+a.download+' gedownload — open in je browser en speel!');
+ }
+};
+</script>
+</body>
+</html>
