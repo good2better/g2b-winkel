@@ -1242,6 +1242,21 @@
     "koop": "bestel.html?p=femina-pil-zacht"
    },
    "verborgen": true
+  },
+  {
+   "id": "gamefabriek1",
+   "titel": "G2B GAME-FABRIEK",
+   "soort": "app",
+   "beschrijving": "Maak complete browser-spelletjes zonder code: 15 spel-types (slang, memory, race, quiz, beat-spel, platformer, bowling, mini-golf...), 6 thema's, eigen foto's als karakter, eigen beat als muziek, multiplayer (2 spelers), levels + score + deel-knop. Elk spel = 1 bestand dat offline werkt. VERKOOP-pakket: ZIP met spel + cover + handleiding.",
+   "prijs": 39,
+   "links": {
+    "koop": "bestel.html?p=gamefabriek1",
+    "download": "bedankt.html?k=gamefabriek1"
+   },
+   "groep": "apps",
+   "badge": "NIEUW",
+   "download_dir": "d/gamefabriek1",
+   "video": "media/gamefabriek-demo.mp4"
   }
  ]
 }
