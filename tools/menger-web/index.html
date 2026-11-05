@@ -223,9 +223,19 @@ window.doMaster=async()=>{
     $('postPlay').src=URL.createObjectURL(postBlob);
     $('dlWav').href=URL.createObjectURL(postBlob);$('dlWav').download='G2B-master.wav';
     $('abCard').style.display='';
-    const lufs=(res.outputLufs!==undefined)?` — ${res.outputLufs.toFixed(1)} LUFS`:'';
-    const tp=(res.outputTruePeakDbtp!==undefined)?`, piek ${res.outputTruePeakDbtp.toFixed(1)} dBTP`:'';
-    out.innerHTML=`<div class="line">✅ Klaar! Je master is ${res.outputLufs!==undefined?res.outputLufs.toFixed(1)+' LUFS, piek '+res.outputTruePeakDbtp.toFixed(1)+' dBTP':'klaar'} — luister vóór/ná hieronder.</div>`;
+    const rms=a=>{let t=0;for(let i=0;i<a.length;i++)t+=a[i]*a[i];return Math.sqrt(t/Math.max(1,a.length));};
+    const pk=a=>{let m=0;for(let i=0;i<a.length;i++)m=Math.max(m,Math.abs(a[i]));return m;};
+    const db=x=>20*Math.log10(Math.max(x,1e-8));
+    const dPre=db(rms(mixL)+rms(mixR)),dPost=db(rms(OL)+rms(OR));
+    const delta=dPost-dPre;
+    const peakDb=(res.outputTruePeakDbtp!==undefined)?res.outputTruePeakDbtp:db(Math.max(pk(OL),pk(OR)));
+    const ceil=(CFG[$('preset').value]||CFG.g2b).loudness.ceilingDb;
+    const okLoud=delta>0.3||(res.outputLufs!==undefined&&Math.abs(res.outputLufs-CFG[$('preset').value].loudness.targetLufs)<1.5);
+    const okPeak=peakDb<=ceil+0.4;
+    const check=(okLoud&&okPeak)
+      ?`<div class="line">📊 Controle: ${dPre.toFixed(1)} → ${dPost.toFixed(1)} dB (${delta>=0?'+':''}${delta.toFixed(1)} luider), piek ${peakDb.toFixed(1)} dBTP onder het plafond — de master is beter dan de mix. 👍</div>`
+      :`<div class="line">⚠ Controle: ${dPre.toFixed(1)} → ${dPost.toFixed(1)} dB, piek ${peakDb.toFixed(1)} dBTP — luister A/B; is de master niet beter, gebruik dan de vóór-versie.</div>`;
+    out.innerHTML=`<div class="line">✅ Klaar! Je master is ${res.outputLufs!==undefined?res.outputLufs.toFixed(1)+' LUFS, piek '+res.outputTruePeakDbtp.toFixed(1)+' dBTP':'klaar'} — luister vóór/ná hieronder.</div>`+check;
   }catch(e){out.innerHTML=`<div class="line">⚠ ${e.message||e}</div>`;}
   btn.classList.remove('busy');btn.textContent='💎 MAAK DE MASTER';
 };
