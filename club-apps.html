@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>G2B CLUB — ledenpagina</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230D0F0E'/><text x='50' y='68' font-size='52' font-weight='bold' text-anchor='middle' fill='%232FBF71' font-family='sans-serif'>G2</text></svg>">
+<style>
+:root{--groen:#16a34a;--donker:#0b1220;--kaart:#131c2e;--rand:#22314d;--tekst:#e8eef8;--zacht:#9fb0c9}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--donker);color:var(--tekst);font:15px/1.5 system-ui,sans-serif}
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.gate-box{background:#111a2b;border:1px solid var(--rand);border-radius:18px;padding:38px;width:380px;max-width:100%;text-align:center}
+.gate-box h1{font-size:1.4rem;color:#4ade80;letter-spacing:1px}
+.gate-box p{color:var(--zacht);font-size:.85rem;margin:10px 0 18px}
+.gate-box input{width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid var(--rand);background:#0b1220;color:var(--tekst);font-size:15px;text-align:center;letter-spacing:2px}
+.gate-box button{width:100%;margin-top:12px;padding:13px;background:var(--groen);color:#04120a;font-weight:800;border:0;border-radius:10px;font-size:15px;cursor:pointer}
+.gate-box button:hover{background:#22c55e}
+.err{color:#f87171;font-size:.8rem;margin-top:10px;display:none}
+#page{display:none;max-width:1060px;margin:0 auto;padding:24px}
+h1{font-size:1.7rem}
+h1 b{color:#4ade80}
+.sub{color:var(--zacht);margin-bottom:22px}
+.groep{color:#7ee2a8;font-size:.95rem;font-weight:700;letter-spacing:.5px;margin:22px 0 10px;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+a.app{background:var(--kaart);border:1px solid var(--rand);border-radius:14px;padding:16px;text-decoration:none;color:var(--tekst);display:block;transition:.15s}
+a.app:hover{border-color:var(--groen);transform:translateY(-2px);box-shadow:0 8px 20px #0006}
+a.app .ic{font-size:1.9rem;display:block;margin-bottom:6px}
+a.app img{width:100%;aspect-ratio:8/5;object-fit:cover;object-position:top;border-radius:9px;margin-bottom:9px;border:1px solid var(--rand)}
+a.app .nm{font-weight:700;font-size:.95rem}
+a.app .in{color:var(--zacht);font-size:.78rem;margin-top:3px}
+a.app.lokaal{opacity:.75;border-style:dashed}
+.tag{float:right;font-size:.65rem;color:#7ee2a8;border:1px solid #7ee2a855;border-radius:6px;padding:1px 6px}
+.tag.prive{color:#fbbf24;border-color:#fbbf2455}
+.foot{color:var(--zacht);font-size:.75rem;margin-top:28px;text-align:center}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-box">
+    <h1>🔓 G2B APPS</h1>
+    <p>Club-pagina — leden krijgen een code van Giorgio.<br>Vul hem hieronder in.</p>
+    <input id="code" type="password" placeholder="CODE" autocomplete="off">
+    <button onclick="unlock()">OPEN</button>
+    <div class="err" id="err">Verkeerde code</div>
+  </div>
+</div>
+
+<div id="page">
+<h1>🎧 G2B <b>CLUB</b> — ledenpagina</h1>
+<p class="sub">Alles werkt in je browser, niks installeren. Dit is de club-versie — betalende leden krijgen deze set van Giorgio.</p>
+
+<div class="groep">🎵 Muziek maken</div>
+<div class="grid">
+
+<a class="app" href="beatmaker.html"><img src="apps-img/beatmaker.jpg" alt="" loading="lazy"><span class="ic">🥁</span><span class="nm">Beat Maker</span><div class="in">De gratis versie — beats maken in je browser</div></a>
+
+
+
+
+
+
+<a class="app" href="radio.html"><img src="apps-img/radio.jpg" alt="" loading="lazy"><span class="ic">📻</span><span class="nm">G2B Radio</span><div class="in">Giorgio's radio — 24/7 zijn muziek</div></a>
+
+</div>
+
+<div class="groep">🛍️ Winkel</div>
+<div class="grid">
+<a class="app" href="index.html"><img src="apps-img/winkel.jpg" alt="" loading="lazy"><span class="ic">🛍️</span><span class="nm">Muziekwinkel</span><div class="in">Beats, packs, plugins en fabrieken</div></a>
+<a class="app" href="gratis.html"><img src="apps-img/gratis.jpg" alt="" loading="lazy"><span class="ic">🎁</span><span class="nm">Gratis</span><div class="in">Gratis downloads</div></a>
+<a class="app" href="bouwer.html"><img src="apps-img/bouwer.jpg" alt="" loading="lazy"><span class="ic">🧰</span><span class="nm">Bundel-bouwer</span><div class="in">Stel je eigen bundel samen</div></a>
+</div>
+
+<div class="groep">🎮 Games & kids</div>
+<div class="grid">
+<a class="app" href="tools/gamefabriek/gamefabriek-mini.html"><img src="apps-img/gamefabriek.jpg" alt="" loading="lazy"><span class="ic">🏭</span><span class="nm">GAME-FABRIEK MINI</span><div class="in">Maak eigen spellen — 5 types, 3 thema's (kleinere versie)</div></a>
+<a class="app" href="games/index.html"><img src="apps-img/games.jpg" alt="" loading="lazy"><span class="ic">🦁</span><span class="nm">Alle spellen</span><div class="in">20 thema-spellen — met eigen foto als karakter</div></a>
+<a class="app" href="schoolspelen/index.html"><img src="apps-img/schoolspelen.jpg" alt="" loading="lazy"><span class="ic">🎓</span><span class="nm">Schoolspelen</span><div class="in">Leer-ladder groep 1 → genius, NL-stem</div></a>
+
+
+</div>
+
+<div class="groep">🧰 Handige webtools</div>
+<div class="grid">
+<a class="app" href="praat.html"><img src="apps-img/praat.jpg" alt="" loading="lazy"><span class="ic">🎙️</span><span class="nm">Praat-web</span><div class="in">Dicteer in de browser — nette tekst, NL/EN/ES</div></a>
+<a class="app" href="vertaal.html"><img src="apps-img/vertaal.jpg" alt="" loading="lazy"><span class="ic">🌍</span><span class="nm">Vertaal</span><div class="in">NL ↔ EN / ES vertalen, on-device in je browser</div></a>
+<a class="app" href="qr.html"><img src="apps-img/qr.jpg" alt="" loading="lazy"><span class="ic">▦</span><span class="nm">QR-maker</span><div class="in">QR-code van elke link</div></a>
+
+<a class="app" href="les-beatmaker-basis.html"><img src="apps-img/beatbasis.jpg" alt="" loading="lazy"><span class="ic">🎓</span><span class="nm">Beatmaker Basis</span><div class="in">Eerste beat in 7 lessen — quiz, score, diploma</div></a>
+</div>
+
+
+
+
+<p class="foot">💾 Niets installeren — alles hierboven opent in je browser. Favoriet zetten: Ctrl+D</p>
+</div>
+<script>
+function _g2b_sha256(ascii){
+ function rr(v,a){return (v>>>a)|(v<<(32-a))}
+ var mp=Math.pow,mx=mp(2,32),ln=ascii.length*8,result='',words=[];
+ var hash=[0x6A09E667,0xBB67AE85,0x3C6EF372,0xA54FF53A,0x510E527F,0x9B05688C,0x1F83D9AB,0x5BE0CD19];
+ var k=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+ ascii+='\x80';
+ while(ascii.length%64-56)ascii+='\x00';
+ for(var i=0;i<ascii.length;i++){var j=ascii.charCodeAt(i);words[i>>2]|=j<<((3-i)%4)*8}
+ words[words.length]=((ln/mx)|0);words[words.length]=(ln);
+ for(var j=0;j<words.length;){
+  var w=words.slice(j,j+=16),o=hash;hash=hash.slice(0,8);
+  for(var i=0;i<64;i++){
+   var w15=w[i-15],w2=w[i-2];
+   var a=hash[0],e=hash[4];
+   var t1=hash[7]+(rr(e,6)^rr(e,11)^rr(e,25))+((e&hash[5])^(~e&hash[6]))+k[i]
+    +(w[i]=i<16?w[i]:(w[i-16]+(rr(w15,7)^rr(w15,18)^(w15>>>3))+w[i-7]+(rr(w2,17)^rr(w2,19)^(w2>>>10)))|0);
+   var t2=(rr(a,2)^rr(a,13)^rr(a,22))+((a&hash[1])^(a&hash[2])^(hash[1]&hash[2]));
+   hash=[(t1+t2)|0].concat(hash);hash[4]=(hash[4]+t1)|0;
+  }
+  for(var i=0;i<8;i++)hash[i]=(hash[i]+o[i])|0;
+ }
+ for(var i=0;i<8;i++)for(var j=3;j+1;j--){var b=(hash[i]>>(j*8))&255;result+=((b<16)?0:'')+b.toString(16)}
+ return result;
+}
+async function _g2b_hex(s){if(crypto.subtle&&crypto.subtle.digest){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}return _g2b_sha256(s)}
+const HASHES=['cff60c87705041c98f762c822d780d4a2076f2c747240a62e1f71f340fca3b34','95b714bba3b80d76c800206ade5dfe20e189ef16d5313ec59d54672fa1efc7cf','22985a253e7a7ca83f454c7c5e4f5ace779b007fe333c70d13a9cf4c007b22d6']; // g2bclub01 · g2bclub02 · g2bclub-reserve — codes per lid toe te voegen/verwijderen
+const G2BLOG='https://script.google.com/macros/s/AKfycbzKWU72wn2xxXiNy040qfP4NOqz-CzmOYHrRXMK_DH-LzBEqLjwtiwTyKJAyx7MTf0/exec';
+function _g2b_log(code,ok){try{fetch(G2BLOG,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({email:code+'@login',bron:'club-'+(ok?'ok':'fout'),tijd:new Date().toISOString(),apparaat:navigator.userAgent.slice(0,120)})})}catch(_){}}
+async function unlock(){
+  const v=document.getElementById('code').value.trim().toLowerCase();
+  const hex=await _g2b_hex(v);
+  const ok=HASHES.includes(hex);_g2b_log(v,ok);
+  if(ok){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';sessionStorage.g2bclub='1';}
+  else document.getElementById('err').style.display='block';
+}
+if(sessionStorage.g2bclub==='1'){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';}
+document.getElementById('code').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
+</script>
+</body>
+</html>
