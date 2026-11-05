@@ -31,10 +31,13 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <button class="uit" onclick="exportStems()">⬇ STEMS</button>
 <span id="st">sets laden…</span>
 <button class="uit" id="skin" onclick="skin()">◐ WIT</button>
+<button class="uit" id="rec" onclick="rec()">⏺ REC</button>
 </div>
 <div id="traks"></div>
 <div id="wm">⚡ G2B GAW-LITE</div>
 <script>
+let REC=false;function rec(){REC=!REC;document.getElementById('rec').style.background=REC?'#d33':'';document.getElementById('rec').style.color=REC?'#fff':''}
+window.onMidiNote=(n,idx)=>{if(REC&&playing){const t=idx%4;TR[t].grid[step]=true;document.getElementById('st'+t).children[step].classList.add('aan')}}
 function skin(){document.body.classList.toggle('licht');const l=document.body.classList.contains('licht');document.getElementById('skin').textContent=l?'◑ ZWART':'◐ WIT'}
 // bronnen: [map, meta-bestand, bank->files functie]
 const BRON={
