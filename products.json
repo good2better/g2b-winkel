@@ -1107,15 +1107,15 @@
    "id": "school1",
    "titel": "G2B Schoolspelen — GRATIS (binnenkort €29)",
    "soort": "digitaal",
-   "beschrijving": "Complete NL leer-app voor kinderen 4-12: adaptieve ladder groep 1 t/m genius, NL-stem leest alles voor, Helden-Quiz met echt diploma, beloningsclips. Werkt in elke browser — GRATIS tijdens de lancering, daarna €29. Download/spel NU!",
+   "beschrijving": "Complete NL leer-app voor kinderen 4-12: adaptieve ladder groep 1 t/m genius, NL-stem leest alles voor, Helden-Quiz met echt diploma, beloningsclips. Werkt in elke browser — GRATIS tijdens de lancering, daarna €29. Download/spel NU! (gratis in je browser op good2better.com)",
    "prijs": "GRATIS",
    "prijzen": {
     "gratis": "€ 0",
     "binnenkort": "€ 29"
    },
    "links": {
-    "koop": "https://g2bschoolspelen.beezer.com/",
-    "download": "https://g2bschoolspelen.beezer.com/"
+    "koop": "schoolspelen/index.html",
+    "download": "schoolspelen/index.html"
    },
    "groep": "gratis",
    "badge": "GRATIS"
