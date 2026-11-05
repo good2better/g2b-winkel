@@ -1,0 +1,296 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>G2B LUISTER — browser</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#0c0f0c;--kaart:#141a15;--rand:#223227;--groen:#19c37d;--tekst:#e8f0e9;--dim:#8fa395;--cyan:#4cc9f0}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui;margin:0;padding:14px}
+h1{font-size:20px;margin:4px 0 10px}h1 small{color:var(--groen);font-size:.55em}
+.rij{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+button.uit{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}
+button.uit:hover{border-color:var(--groen)}
+button.go{background:var(--groen);color:#04130b;border:0;font-weight:700}
+button.stop{background:#d33;color:#fff;border:0;font-weight:700}
+button.rec{background:#a33;color:#fff;border:0;font-weight:700}
+button:disabled{opacity:.45;cursor:default}
+label{font-size:12px;color:var(--dim);display:flex;flex-direction:column;gap:2px}
+label b{color:var(--tekst);font-weight:600}
+input[type=range]{width:140px;accent-color:var(--groen)}
+#st{color:var(--dim);font-size:13px}
+#drop{border:2px dashed var(--rand);border-radius:12px;padding:22px;text-align:center;color:var(--dim);cursor:pointer;margin-bottom:12px;background:var(--kaart)}
+#drop.over,#drop:hover{border-color:var(--groen);color:var(--tekst)}
+#pills{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}
+.pill{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:999px;padding:8px 4px;font-size:12px;font-weight:700;cursor:pointer}
+.pill:hover{border-color:var(--groen)}
+.pill.on{background:var(--groen);color:#04130b;border-color:var(--groen)}
+#grid{width:100%;background:var(--kaart);border:1px solid var(--rand);border-radius:10px;display:block;margin-top:10px}
+.info{background:var(--kaart);border:1px solid var(--rand);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--dim);margin-top:10px}
+body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#12231a;--dim:#5c6b61}
+</style></head><body>
+<h1>G2B LUISTER <small>geluid → MIDI-loop schrijver · browser</small></h1>
+<div id="drop">👂 Sleep een audio-bestand hierheen of klik om te kiezen (wav/mp3/ogg) — of druk 🎤 en neurie 4 tellen<input type="file" id="file" accept="audio/*" hidden></div>
+<div class="rij">
+<button class="uit rec" id="bMic" onclick="neuri()">🎤 NEURIËN</button>
+<button class="uit go" id="bPlay" onclick="speel()" disabled>▶ SPEEL (loop)</button>
+<button class="uit stop" id="bStop" onclick="stop()" disabled>■ STOP</button>
+<button class="uit" id="bRef" onclick="refine()" disabled>↻ REFINE</button>
+<button class="uit" id="bDice" onclick="dice()">🎲 DICE</button>
+<button class="uit" id="skin" onclick="document.body.classList.toggle('licht')">◐</button>
+<span id="st">nog geen geluid geladen</span>
+</div>
+<div id="pills"></div>
+<div class="rij">
+<label>HEFT (dichtheid) <b id="vHeft">50%</b><input type="range" id="heft" min="0" max="100" value="50"></label>
+<label>MENS <b id="vMens">30%</b><input type="range" id="mens" min="0" max="100" value="30"></label>
+<label>LENGTE <b id="vLen">4 bars</b><input type="range" id="len" min="0" max="3" value="1"></label>
+<label>VAR (variatie) <b id="vVar">30%</b><input type="range" id="var" min="0" max="100" value="30"></label>
+<label>VOLUME <b id="vVol">80%</b><input type="range" id="vol" min="0" max="100" value="80"></label>
+</div>
+<div class="rij">
+<button class="uit" id="bMidD" onclick="mid(0)" disabled>↓DRUMS.mid</button>
+<button class="uit" id="bMidM" onclick="mid(1)" disabled>↓MELODIE.mid</button>
+</div>
+<canvas id="grid"></canvas>
+<div class="info">Zo werkt het: hij luistert naar je geluid → vindt de slagen (kick/snare/hat), het tempo en de toonsoort → schrijft een MIDI-loop in je genre. Rijen: KICK · SNARE · HAT · TOM · MELODIE (blokfluit) · BAS. ↓DRUMS en ↓MELODIE downloaden echte .mid-bestanden voor je DAW. Alles draait in je browser — niks gaat naar internet.</div>
+<script>
+"use strict";
+// ===== poort van LuisterPlugin.cpp (analyse + generate) =====
+const GENRES=["TRAP","DRILL","BOOMBAP","RNB","HOUSE","DEMBOW","KAWINA","LOFI","SOUL","POP","AMBIENT","SOCA","DANCEHALL","ZOUK"];
+const kGKick=[0x8424,0x9084,0x8424,0x8421,0x1111,0x8424,0x9494,0x8424,0x8421,0x8424,0x8421,0x9090,0x8424,0x8421];
+const kGSnar=[0x1010,0x1010,0x1010,0x0010,0x1010,0x1818,0x1090,0x1010,0x1010,0x1010,0x1010,0x1010,0x1818,0x0010];
+const kGHats=[0xAAAA,0xEEBE,0xA2AA,0xAAAA,0xAAAA,0xAAAA,0xB2AA,0x2828,0xA2A2,0xAAAA,0xAAAA,0xAEAE,0xAAAA,0xAA8A];
+const MAJ=[0,2,4,5,7,9,11],MIN=[0,2,3,5,7,8,10];
+const NAMEN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const KLAS=["","DRUMS","MELODIE","MINIMAAL","DRUMS+MELODIE"];
+const $=id=>document.getElementById(id);
+const st=$('st');
+let AC=null;function ac(){if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC;}
+let seed=12345;
+function rndi(){seed=(seed*1664525+1013904223)>>>0;return seed;}
+let preset=0,buf=null,sr=44100;
+let bpm=120,key=-1,klas=0,hits=0,notes=[],step16s=0.125;
+let lastOns=[],lastCls=[],lastPit=[];
+let noiseBuf=null;
+function noise(){if(noiseBuf)return noiseBuf;const a=ac();const b=a.createBuffer(1,a.sampleRate*0.5,a.sampleRate);const d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;noiseBuf=b;return b;}
+
+// ===== analyse (3-band onset + autocorr pitch + bpm + key) =====
+function analyseer(){
+ if(!buf)return;
+ const b=buf,n=b.length;
+ if(n<4800){st.textContent='te kort — geef minstens 0,1 sec geluid';return;}
+ const HOP=512,FR=1024,nf=Math.floor((n-FR)/HOP);
+ if(nf<8){st.textContent='te kort';return;}
+ st.textContent='analyseren…';
+ setTimeout(()=>{
+ const eL=new Float32Array(nf),eM=new Float32Array(nf),eH=new Float32Array(nf);
+ let lp1=0,lp2=0;
+ const aL=1-Math.exp(-2*Math.PI*200/sr),aM=1-Math.exp(-2*Math.PI*4000/sr);
+ for(let f=0;f<nf;f++){let l=0,m=0,h=0;const o=f*HOP;
+  for(let i=0;i<FR;i++){const x=b[o+i];lp1+=aL*(x-lp1);lp2+=aM*(x-lp2);const lo=lp1,hi=x-lp2,mi=lp2-lp1;l+=lo*lo;m+=mi*mi;h+=hi*h;}
+  eL[f]=l;eM[f]=m;eH[f]=h;}
+ const ons=[],cls=[];
+ for(let f=1;f<nf;f++){
+  const dL=eL[f]-eL[f-1],dM=eM[f]-eM[f-1],dH=eH[f]-eH[f-1];
+  const flux=Math.max(dL,Math.max(dM,dH))/(eL[f]+eM[f]+eH[f]+1e-9);
+  if(flux>0.35&&(ons.length===0||f-ons[ons.length-1]>2)){
+   ons.push(f);cls.push(dL>=dM&&dL>=dH?0:(dM>=dH?1:2));}}
+ hits=ons.length;
+ let tonalE=0,tc=0;const pits=[];
+ for(let f=0;f<nf;f+=4){
+  const o=f*HOP;let e0=0;for(let i=0;i<FR;i++)e0+=b[o+i]*b[o+i];
+  if(e0<0.001*FR)continue;
+  let best=0,blag=0;
+  for(let lag=40;lag<600;lag+=2){let c=0;for(let i=0;i<FR-lag;i++)c+=b[o+i]*b[o+i+lag];if(c>best){best=c;blag=lag;}}
+  if(best/(e0+1e-9)>0.5){tonalE+=best/e0;tc++;pits.push(sr/blag);}}
+ const tonalFrac=nf>0?tc/(nf/4):0;
+ if(ons.length>=4){
+  let bestB=0,bs=0;
+  for(let bb=70;bb<180;bb+=0.5){
+   let sc=0;const beat=60000/bb;
+   for(let i=1;i<ons.length;i++){
+    const d=(ons[i]-ons[i-1])*HOP*1000/sr;
+    const r=(d+beat*0.5)%beat-beat*0.5;
+    if(Math.abs(r)<beat*0.15)sc+=1-Math.abs(r)/(beat*0.15);}
+   if(sc>bs){bs=sc;bestB=bb;}}
+  if(bs>1)bpm=bestB;}
+ step16s=60/bpm/4;
+ key=-1;
+ if(tonalFrac>0.25&&pits.length){
+  const hist=new Array(12).fill(0);
+  for(const p of pits){let pc=Math.round(69.5+12*Math.log2(p/440))%12;if(pc<0)pc+=12;hist[pc]++;}
+  let bs=-1,bk=-1;
+  for(let root=0;root<12;root++)for(let mn=0;mn<2;mn++){
+   const sc=mn?MIN:MAJ;let s=0;for(let g=0;g<7;g++)s+=hist[(root+sc[g])%12];
+   if(s>bs){bs=s;bk=root+mn*12;}}
+  key=bk;}
+ if(ons.length<=2&&tonalFrac<0.25)klas=3;
+ else if(tonalFrac>0.4&&ons.length<8)klas=2;
+ else if(tonalFrac>0.4)klas=4;
+ else klas=1;
+ lastOns=ons;lastCls=cls;lastPit=pits;
+ genereer(false);teken();
+ st.textContent='analyse: '+hits+' hits · '+Math.round(bpm)+' bpm · toonsoort '+(key<0?'?':NAMEN[key%12]+(key>=12?'m':''))+' · '+KLAS[klas]+' → '+notes.length+' noten';
+ $('bPlay').disabled=$('bRef').disabled=$('bMidD').disabled=$('bMidM').disabled=false;
+ },30);}
+
+// ===== generate =====
+function genereer(refine){
+ notes=[];
+ const barsL=[2,4,8,16],bars=barsL[Math.max(0,Math.min(3,+$('len').value))];
+ const steps=bars*16;
+ const dens=+$('heft').value/100,vv=+$('var').value/100,mens=+$('mens').value/100;
+ if(refine)rndi();
+ const rnd=()=>{return (rndi()>>>9&0xFFFF)/65535;};
+ const addN=(step,note,vel,dur16,ch)=>{
+  if(step<0||step>=steps)return;
+  notes.push({at:Math.max(0,step*step16s+mens*(rnd()-0.5)*step16s*0.25),
+   dur:dur16*step16s*0.9,note,vel:Math.max(1,Math.min(127,Math.round(vel+mens*(rnd()-0.5)*30))),ch});};
+ const wantD=(klas===1||klas===3||klas===4),wantM=(klas===2||klas===3||klas===4);
+ if(wantD){
+  if(klas!==3){for(let i=0;i<lastOns.length;i++){
+   const stp=Math.round(lastOns[i]*512/sr/step16s);
+   const c=lastCls[i];addN(stp,c===0?36:(c===1?38:42),c===0?110:(c===1?105:85),1,0);}}
+  for(let s=0;s<steps;s++){const m=s%16,need=dens*0.9;
+   if((kGHats[preset]>>m)&1&&rnd()<need+0.3)addN(s,42,60+rnd()*30,1,0);
+   if((kGKick[preset]>>m)&1&&rnd()<(klas===3?0.9:need*0.4))addN(s,36,110,1,0);
+   if((kGSnar[preset]>>m)&1&&rnd()<0.95)addN(s,38,105,1,0);
+   if(rnd()<vv*0.08)addN(s,rnd()<0.5?45:46,80,1,0);}}
+ if(wantM){
+  const root=key>=0?60+key%12:60,minor=key>=12,sc=minor?MIN:MAJ;
+  if(klas===3||lastPit.length===0){
+   const mot=[0,7,12,7,0,10,12,0];
+   for(let s=0;s<steps;s+=2)if(rnd()<0.5+dens*0.4)addN(s,root+mot[(s/2)%8],90,2,1);
+  }else{
+   for(let i=0;i<lastPit.length&&i<512;i++){
+    const midi=Math.round(69.5+12*Math.log2(lastPit[i]/440));
+    addN(Math.round(i*4*512/sr/step16s),midi,95,2,1);}}
+  for(let bb=0;bb<bars;bb++){
+   addN(bb*16,root-12,100,4,2);
+   if(rnd()<dens)addN(bb*16+8,root-12+sc[(bb%3)*2]%12,95,4,2);}}
+ notes.sort((a,b)=>a.at-b.at);}
+
+// ===== afspelen =====
+const FLUIT={As3:58,As4:70,C4:60,C5:72,D4:62,D5:74,E4:64,E5:76,F3:53,Fs4:66,Gs3:56,Gs4:68};
+const fluitBuf={};let fluitLaden=false;
+async function laadFluit(){if(fluitLaden)return;fluitLaden=true;const a=ac();
+ await Promise.all(Object.keys(FLUIT).map(async k=>{
+  try{const r=await fetch('../melodie-web/wav/rec_kRec_'+k+'.wav');
+   fluitBuf[FLUIT[k]]=await a.decodeAudioData(await r.arrayBuffer());}catch(e){}}));}
+let master=null,playTimer=null,loopAt=0,loopLen=0;
+function mg(){const a=ac();if(!master){master=a.createGain();master.gain.value=+$('vol').value/100*.8;master.connect(a.destination);}return master;}
+function drum(n,v,t){const a=ac(),g=a.createGain();g.connect(mg());
+ if(n===36){const o=a.createOscillator();o.type='sine';o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(42,t+0.1);
+  g.gain.setValueAtTime(v/127,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.16);o.connect(g);o.start(t);o.stop(t+0.17);}
+ else if(n===38){const s=a.createBufferSource();s.buffer=noise();const f=a.createBiquadFilter();f.type='bandpass';f.frequency.value=1800;f.Q.value=0.8;
+  g.gain.setValueAtTime(v/127*0.8,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.12);s.connect(f);f.connect(g);s.start(t);s.stop(t+0.13);
+  const o=a.createOscillator();o.type='triangle';o.frequency.value=180;const g2=a.createGain();g2.gain.setValueAtTime(v/127*0.4,t);g2.gain.exponentialRampToValueAtTime(0.001,t+0.06);o.connect(g2);g2.connect(mg());o.start(t);o.stop(t+0.07);}
+ else if(n===42||n===46){const s=a.createBufferSource();s.buffer=noise();const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=7000;
+  g.gain.setValueAtTime(v/127*0.5,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.05);s.connect(f);f.connect(g);s.start(t);s.stop(t+0.06);}
+ else{const o=a.createOscillator();o.type='sine';o.frequency.value=n===45?100:130;
+  g.gain.setValueAtTime(v/127*0.7,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.15);o.connect(g);o.start(t);o.stop(t+0.16);}}
+function melNote(n,v,dur,t,ch){const a=ac();
+ if(ch===1){
+  const refs=Object.keys(fluitBuf).map(Number);if(!refs.length)return;
+  let best=refs[0];for(const r of refs)if(Math.abs(r-n)<Math.abs(best-n))best=r;
+  const s=a.createBufferSource();s.buffer=fluitBuf[best];s.playbackRate.value=Math.pow(2,(n-best)/12);
+  const g=a.createGain();g.gain.setValueAtTime(v/127*0.9,t);g.gain.setValueAtTime(v/127*0.9,t+dur-0.03);g.gain.linearRampToValueAtTime(0,t+dur);
+  s.connect(g);g.connect(mg());s.start(t);s.stop(t+Math.max(dur,s.buffer.duration*s.playbackRate.value)+0.05);}
+ else{const o=a.createOscillator();o.type='triangle';o.frequency.value=440*Math.pow(2,(n-69)/12);
+  const g=a.createGain();g.gain.setValueAtTime(v/127*0.6,t);g.gain.linearRampToValueAtTime(0,t+Math.max(0.05,dur));
+  o.connect(g);g.connect(mg());o.start(t);o.stop(t+dur+0.05);}}
+async function speel(){if(!notes.length)return;await laadFluit();const a=ac();mg();
+ loopLen=Math.max(...notes.map(x=>x.at))+0.5;
+ const plan=()=>{const t0=loopAt;
+  for(const n of notes){const t=t0+n.at;if(n.ch===0)drum(n.note,n.vel,t);else melNote(n.note,n.vel,n.dur,t,n.ch);}
+  loopAt=t0+loopLen;};
+ loopAt=a.currentTime+0.08;plan();
+ playTimer=setInterval(()=>{if(loopAt<a.currentTime+0.6)plan();},200);
+ $('bPlay').disabled=true;$('bStop').disabled=false;
+ st.textContent='speelt loop ('+Math.round(bpm)+' bpm)…';}
+function stop(){if(playTimer){clearInterval(playTimer);playTimer=null;}
+ $('bPlay').disabled=!notes.length;$('bStop').disabled=true;
+ st.textContent='gestopt — ▶ SPEEL opnieuw of ↓ de .mid';}
+
+// ===== mid export (2 bestanden zoals de plugin) =====
+function mid(groep){
+ if(!notes.length)return;
+ const evs=[];
+ for(const n of notes){const drum_=n.ch===0;
+  if((groep===0)!==drum_)continue;
+  const on=Math.round(n.at/step16s*120),off=Math.round((n.at+n.dur)/step16s*120);
+  evs.push([on,0x90|n.ch,n.note,n.vel]);evs.push([off,0x80|n.ch,n.note,0]);}
+ if(!evs.length){st.textContent='geen noten in deze groep';return;}
+ evs.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+ const vlen=x=>{const b=[x&0x7F];while(x>>=7)b.unshift((x&0x7F)|0x80);return b;};
+ const trk=[];let last=0;
+ trk.push(0,0xFF,0x51,3,(60000000/bpm)>>16&255,(60000000/bpm)>>8&255,Math.round(60000000/bpm)&255);
+ for(const e of evs){trk.push(...vlen(e[0]-last));last=e[0];trk.push(e[1],e[2],e[3]);}
+ trk.push(0,0xFF,0x2F,0);
+ const head=[0x4D,0x54,0x68,0x64,0,0,0,6,0,0,0,1,480>>8,480&255,
+  0x4D,0x54,0x72,0x6B,(trk.length>>>24)&255,(trk.length>>>16)&255,(trk.length>>>8)&255,trk.length&255];
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([new Uint8Array([...head,...trk])],{type:'audio/midi'}));
+ a.download='G2B-LUISTER-'+(groep===0?'DRUMS':'MELODIE')+'-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'')+'.mid';
+ a.click();}
+
+// ===== grid =====
+function teken(){
+ const c=$('grid');const barsL=[2,4,8,16],steps=barsL[Math.max(0,Math.min(3,+$('len').value))]*16;
+ const cw=Math.max(4,Math.min(14,Math.floor(940/steps))),rh=16;
+ c.width=steps*cw+30;c.height=rh*7+6;
+ const x=c.getContext('2d');const cs=getComputedStyle(document.body);
+ x.fillStyle=cs.getPropertyValue('--kaart');x.fillRect(0,0,c.width,c.height);
+ const rijen=[{n:'KICK',f:n=>n.ch===0&&n.note===36,k:'#19c37d'},{n:'SNARE',f:n=>n.ch===0&&n.note===38,k:'#4cc9f0'},
+  {n:'HAT',f:n=>n.ch===0&&n.note===42,k:'#8fa395'},{n:'TOM',f:n=>n.ch===0&&(n.note===45||n.note===46),k:'#c9a94c'},
+  {n:'MELODIE',f:n=>n.ch===1,k:'#7ddf9d'},{n:'BAS',f:n=>n.ch===2,k:'#5c9bff'}];
+ x.font='9px system-ui';
+ rijen.forEach((r,i)=>{x.fillStyle=cs.getPropertyValue('--dim');x.fillText(r.n,2,i*rh+rh-5);});
+ for(let s=0;s<steps;s++){
+  if(s%4===0){x.fillStyle=cs.getPropertyValue('--rand');x.fillRect(30+s*cw,0,1,rh*6);}
+  for(const n of notes){const stp=Math.round(n.at/step16s);if(stp!==s)continue;
+   rijen.forEach((r,i)=>{if(r.f(n)){x.fillStyle=r.k;x.fillRect(30+s*cw+1,i*rh+2,cw-2,rh-5);}});}}}
+
+// ===== input: bestand + mic =====
+function zetBuf(audioBuf){
+ const n=audioBuf.length,mono=new Float32Array(n);
+ const ch0=audioBuf.getChannelData(0),ch1=audioBuf.numberOfChannels>1?audioBuf.getChannelData(1):ch0;
+ for(let i=0;i<n;i++)mono[i]=(ch0[i]+ch1[i])*0.5;
+ buf=mono;sr=audioBuf.sampleRate;stop();
+ st.textContent='geladen ('+(n/sr).toFixed(1)+' sec) — analyseren…';
+ analyseer();}
+const drop=$('drop'),file=$('file');
+drop.onclick=()=>file.click();
+drop.ondragover=e=>{e.preventDefault();drop.classList.add('over');};
+drop.ondragleave=()=>drop.classList.remove('over');
+drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');if(e.dataTransfer.files[0])lees(e.dataTransfer.files[0]);};
+file.onchange=()=>{if(file.files[0])lees(file.files[0]);};
+function lees(f){f.arrayBuffer().then(ab=>ac().decodeAudioData(ab)).then(zetBuf).catch(()=>st.textContent='kan dit bestand niet lezen');}
+async function neuri(){
+ const a=ac();
+ try{
+  const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  const rec=new MediaRecorder(stream);const parts=[];
+  rec.ondataavailable=e=>parts.push(e.data);
+  rec.onstop=async()=>{stream.getTracks().forEach(t=>t.stop());
+   const ab=await new Blob(parts).arrayBuffer();
+   try{const ab2=await a.decodeAudioData(ab);zetBuf(ab2);}catch(e){st.textContent='opname niet leesbaar';}};
+  st.textContent='OPNAME — neurie/speel nu… (4 sec)';$('bMic').disabled=true;
+  rec.start();setTimeout(()=>{rec.stop();$('bMic').disabled=false;},4000);
+ }catch(e){st.textContent='geen microfoon-toegang — sleep een bestand erin';}}
+
+// ===== ui =====
+const pills=$('pills');
+GENRES.forEach((g,i)=>{const p=document.createElement('button');p.className='pill'+(i===0?' on':'');p.textContent=g;
+ p.onclick=()=>{preset=i;document.querySelectorAll('#pills .pill').forEach(x=>x.classList.remove('on'));p.classList.add('on');if(notes.length){genereer(true);teken();}};
+ pills.appendChild(p);});
+$('heft').oninput=e=>$('vHeft').textContent=e.target.value+'%';
+$('mens').oninput=e=>$('vMens').textContent=e.target.value+'%';
+$('var').oninput=e=>$('vVar').textContent=e.target.value+'%';
+$('vol').oninput=e=>{$('vVol').textContent=e.target.value+'%';if(master)master.gain.value=e.target.value/100*.8;};
+$('len').oninput=e=>{$('vLen').textContent=[2,4,8,16][e.target.value]+' bars';if(notes.length){genereer(true);teken();}};
+$('heft').onchange=$('var').onchange=$('mens').onchange=()=>{if(notes.length){genereer(true);teken();}};
+function refine(){if(lastOns.length||lastPit.length){genereer(true);teken();st.textContent='REFINE — nieuwe variatie ('+notes.length+' noten)';}}
+function dice(){$('heft').value=20+Math.random()*70;$('var').value=10+Math.random()*60;
+ $('heft').oninput({target:$('heft')});$('var').oninput({target:$('var')});
+ pills.children[Math.floor(Math.random()*GENRES.length)].click();
+ if(notes.length){genereer(true);teken();}}
+</script>
+</body></html>
