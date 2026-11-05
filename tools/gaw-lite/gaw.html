@@ -1,0 +1,162 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B GAW-LITE — browser werkplek</title>
+<style>
+:root{--bg:#0b0e11;--kaart:#141a20;--rand:#232b33;--groen:#00c853;--tekst:#e6edf3;--dim:#8b98a5}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tekst);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:18px}
+h1{font-size:1.15rem;margin:0 0 4px}h1 b{color:var(--groen)}
+.sub{color:var(--dim);font-size:.78rem;margin-bottom:12px}
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+button{background:var(--groen);color:#04140a;border:0;border-radius:10px;padding:10px 18px;font-weight:800;font-size:.9rem;cursor:pointer}
+button.uit{background:var(--rand);color:var(--tekst)}
+label{font-size:.7rem;color:var(--dim);display:flex;flex-direction:column;gap:3px}
+input[type=range]{accent-color:var(--groen)}
+select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:5px 8px;font-size:.75rem;max-width:150px}
+.trak{display:flex;align-items:center;gap:8px;background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:8px 10px;margin-bottom:8px;flex-wrap:wrap}
+.trak .nm{font-weight:800;font-size:.7rem;color:var(--groen);width:58px}
+.steps{display:grid;grid-template-columns:repeat(16,1fr);gap:4px;flex:1;min-width:280px}
+.st{aspect-ratio:1;border-radius:5px;background:var(--rand);cursor:pointer;border:0;min-width:16px}
+.st.aan{background:var(--groen);box-shadow:0 0 6px #00c85366}
+.st.play{outline:2px solid #fff}
+#st{font-size:.75rem;color:var(--dim)}
+#wm{position:fixed;right:10px;bottom:8px;font-size:.62rem;color:var(--dim);opacity:.55;pointer-events:none}
+</style></head><body>
+<h1>🎛️ G2B <b>GAW-LITE</b></h1>
+<p class="sub">Jouw browser-werkplek: 4 tracks, je échte VST-sounds. Klik stappen aan/uit, druk ▶.<br>Tracks 1-2 = ritme (drums/kicks), 3-4 = toon (bas/melodie/keys).</p>
+<div class="bar">
+<button id="play" onclick="toggle()">▶ SPEEL</button>
+<label>BPM <span id="bpmv">96</span><input type="range" id="bpm" min="60" max="160" value="96" oninput="bpmv.textContent=this.value"></label>
+<button class="uit" onclick="exportMid()">⬇ .MID</button>
+<button class="uit" onclick="exportWav()">⬇ .WAV</button>
+<span id="st">sets laden…</span>
+</div>
+<div id="traks"></div>
+<div id="wm">⚡ G2B GAW-LITE</div>
+<script>
+// bronnen: [map, meta-bestand, bank->files functie]
+const BRON={
+ 'OCHO':{dir:'ocho-web',sets:['OCHO','SUB808'],load:async s=>{const n=[['DONDER','KICKBAS','TRAP','BOOM','AFRO','DEMBOW','DRILL','SUB808','SKRATJI','BANGI','KOTI','AGOGO','SEKI','SURDO','TIMBAL','KLAP'],['SUB-ORIG','SUB-KORT','SUB-LANG','SUB-GLAF','SUB-GLOP','SUB-VIES','SUB-DONK','SUB-HELD','SUB-DEMB','SUB-PNCH','SUB-WOBB','SUB-ROLL','SUB-MUTE','SUB-WARM','SUB-REES','SUB-DIST']];return{namen:n[s],files:n[s].map(x=>x.toLowerCase())}}},
+ 'PADS':{dir:'pads-web',meta:1},'SURI':{dir:'suri-web',meta:1},'BASSDRUM':{dir:'bassdrum-web',meta:1},
+ 'MELODIE':{dir:'melodie-web',meta:1},'FUSION':{dir:'fusion-web',meta:1},'KEYS':{dir:'keys-web',meta:1},'AKKOORD':{dir:'akkoord-web',meta:1},
+ 'DRUMS':{dir:'drums-web',load:async()=>{const m=await(await fetch('/tools/drums-web/meta.json')).json();return{namen:m.names,files:m.files}}},
+ 'BAS':{dir:'bas-web',load:async()=>{const m=await(await fetch('/tools/bas-web/meta.json')).json();return{namen:m.names,files:m.files}}}
+};
+const PREF={1:['OCHO',0],2:['BASSDRUM',0],3:['BAS',0],4:['MELODIE',0]};
+let ctx=null,TR=[],bpm=96,playing=false,step=0,timer=null;
+const cache={};
+function ac(){if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume();return ctx}
+async function bronData(src){
+ if(cache[src])return cache[src];
+ const b=BRON[src];let d={};
+ if(b.meta){const m=await(await fetch(`/tools/${b.dir}/pads-meta.json`)).json();d={banken:m.banks,per:m.banks.map((k,i)=>({namen:m.pads[k],files:m.files?m.files[k]:m.pads[k].map((_,j)=>`b${String(i).padStart(2,'0')}_${j}`)}))}}
+ else{const r=await b.load(0);d={banken:b.sets||[src],per:[]};for(let s=0;s<d.banken.length;s++)d.per.push(await b.load(s))}
+ cache[src]=d;return d;
+}
+async function buildTraks(){
+ const el=document.getElementById('traks');el.innerHTML='';
+ for(let t=0;t<4;t++){
+  const row=document.createElement('div');row.className='trak';
+  row.innerHTML=`<span class="nm">TR${t+1}</span>
+   <select id="src${t}" onchange="trackSet(${t})"></select>
+   <select id="bank${t}" onchange="trackBank(${t})"></select>
+   <select id="pad${t}"></select>
+   <div class="steps" id="st${t}"></div>
+   <label>vol<input type="range" id="vol${t}" min="0" max="100" value="80" style="width:60px"></label>`;
+  el.appendChild(row);
+  const ss=document.getElementById('src'+t);
+  ss.innerHTML=Object.keys(BRON).map(k=>`<option>${k}</option>`).join('');
+  ss.value=PREF[t+1]?PREF[t+1][0]:'OCHO';
+  const steps=document.getElementById('st'+t);
+  for(let s=0;s<16;s++){const c=document.createElement('button');c.className='st';c.onclick=()=>{TR[t].grid[s]=!TR[t].grid[s];c.className='st'+(TR[t].grid[s]?' aan':'')};steps.appendChild(c)}
+  TR[t]={grid:new Array(16).fill(false),buffers:[],pad:0,vol:.8};
+  await trackSet(t);
+ }
+}
+async function trackSet(t){
+ const src=document.getElementById('src'+t).value;
+ const d=await bronData(src);
+ const bs=document.getElementById('bank'+t);
+ bs.innerHTML=d.banken.map((b,i)=>`<option>${b}</option>`).join('');
+ bs.selectedIndex=PREF[t+1]&&PREF[t+1][0]===src?PREF[t+1][1]:0;
+ await trackBank(t);
+}
+async function trackBank(t){
+ const src=document.getElementById('src'+t).value;
+ const d=await bronData(src);
+ const bi=document.getElementById('bank'+t).selectedIndex;
+ const per=d.per[bi];
+ const ps=document.getElementById('pad'+t);
+ ps.innerHTML=per.namen.map((n,i)=>`<option value="${i}">${n}</option>`).join('');
+ ps.onchange=()=>{TR[t].pad=+ps.value};
+ document.getElementById('st').textContent=`${src}/${d.banken[bi]} laden…`;
+ TR[t].buffers=[];
+ for(let i=0;i<per.files.length;i++){
+  try{const r=await fetch(`/tools/${BRON[src].dir}/wav/${per.files[i]}.wav`);const ab=await r.arrayBuffer();TR[t].buffers.push(await ac().decodeAudioData(ab))}
+  catch(e){TR[t].buffers.push(null)}
+ }
+ document.getElementById('st').textContent='klaar';
+}
+function speel(t){
+ const b=TR[t].buffers[TR[t].pad];if(!b)return;
+ const s=ac().createBufferSource();s.buffer=b;
+ const g=ac().createGain();g.gain.value=+document.getElementById('vol'+t).value/100;
+ s.connect(g).connect(ac().destination);s.start();
+}
+function tick(){
+ document.querySelectorAll('.st').forEach(c=>c.classList.remove('play'));
+ for(let t=0;t<4;t++){
+  if(TR[t].grid[step])speel(t);
+  document.getElementById('st'+t).children[step].classList.add('play');
+ }
+ step=(step+1)%16;
+}
+function toggle(){
+ if(playing){clearInterval(timer);playing=false;document.getElementById('play').textContent='▶ SPEEL';return}
+ ac();bpm=+document.getElementById('bpm').value;step=0;
+ timer=setInterval(tick,60000/bpm/4);playing=true;
+ document.getElementById('play').textContent='⏹ STOP';
+}
+document.getElementById('bpm').onchange=()=>{if(playing){clearInterval(timer);timer=setInterval(tick,60000/+document.getElementById('bpm').value/4)}};
+// ---- .MID export: 16-staps grid → GM-notes (TR1-2 percussie kanaal 10, TR3-4 noot 36+t*8) ----
+function exportMid(){
+ const TPQ=96,SPB=TPQ/4; // ticks per 16e
+ const ev=[];
+ for(let t=0;t<4;t++){
+  const ch=t<2?9:0,base=t<2?[36,38,42,46][t*2]||36:36+TR[t].pad;
+  for(let s=0;s<16;s++)if(TR[t].grid[s]){
+   ev.push({t:s*SPB,on:true,n:base,ch});ev.push({t:s*SPB+SPB-4,on:false,n:base,ch});
+  }
+ }
+ ev.sort((a,b)=>a.t-b.t||a.on-b.on);
+ const bytes=[];const vlq=x=>{const b=[x&127];while(x>>=7)b.unshift((x&127)|128);return b};
+ bytes.push(...[0,255,81,3],(60e6/ +document.getElementById('bpm').value)>>16&255,(60e6/ +document.getElementById('bpm').value)>>8&255,(60e6/ +document.getElementById('bpm').value)&255);
+ let lt=0;
+ for(const e of ev){bytes.push(...vlq(e.t-lt),e.on?144+e.ch:128+e.ch,e.n,80);lt=e.t}
+ bytes.push(0,255,47,0);
+ const trk=new Uint8Array(bytes);
+ const hdr=[77,84,104,100,0,0,0,6,0,0,0,1,0,TPQ,77,84,114,107,(trk.length>>24)&255,(trk.length>>16)&255,(trk.length>>8)&255,trk.length&255];
+ dl(new Blob([new Uint8Array(hdr),trk],{type:'audio/midi'}),'g2b-gaw-lite.mid');
+}
+// ---- .WAV export: 1 ronde (4 maten van 16 stappen) offline renderen ----
+async function exportWav(){
+ const bpm=+document.getElementById('bpm').value,dur=16*(60/bpm/4)+0.3;
+ const oc=new OfflineAudioContext(1,Math.ceil(dur*22050),22050);
+ for(let t=0;t<4;t++){
+  const b=TR[t].buffers[TR[t].pad];if(!b)continue;
+  for(let s=0;s<16;s++)if(TR[t].grid[s]){
+   const src=oc.createBufferSource();src.buffer=b;
+   const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;
+   src.connect(g).connect(oc.destination);src.start(s*60/bpm/4);
+  }
+ }
+ const rb=await oc.startRendering();
+ const d=rb.getChannelData(0),n=d.length,ab=new ArrayBuffer(44+n*2),v=new DataView(ab);
+ const ws=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+ ws(0,'RIFF');v.setUint32(4,36+n*2,true);ws(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
+ v.setUint32(24,22050,true);v.setUint32(28,44100,true);v.setUint16(32,2,true);v.setUint16(34,16,true);
+ ws(36,'data');v.setUint32(40,n*2,true);
+ for(let i=0;i<n;i++)v.setInt16(44+i*2,Math.max(-32768,Math.min(32767,d[i]*32767)),true);
+ dl(new Blob([ab],{type:'audio/wav'}),'g2b-gaw-lite.wav');
+}
+function dl(b,n){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),3000)}
+buildTraks().then(()=>document.getElementById('st').textContent='klaar — druk ▶');
+</script></body></html>
