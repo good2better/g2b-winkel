@@ -57,6 +57,9 @@ audio{width:100%;height:34px;margin-top:4px}
       <option value="pop">Pop — helder + breed</option>
       <option value="house">House/Dance — pompend</option>
       <option value="rnb">R&B — zacht + rond</option>
+      <option value="zouk">Zouk/Kompa — warm + vloeiend</option>
+      <option value="kawina">Kawina/Suri — punch + ruim</option>
+      <option value="dancehall">Dancehall — warme drive</option>
     </select>
     <button id="masterBtn" onclick="doMaster()">💎 MAAK DE MASTER</button>
     <span class="note" id="loadNote">engine laden…</span>
@@ -153,7 +156,25 @@ const CFG={
        spectral:{airBand:{shelfFrequencyHz:9000,amount:0.55}},
        stereo:{imager:{width:1.1}},
        maximizer:{truePeakLimiter:{ceilingDb:-1.0,oversampleFactor:4,lookaheadMs:5}},
-       loudness:{targetLufs:-11.0,ceilingDb:-1.0,truePeakOversample:4}}
+       loudness:{targetLufs:-11.0,ceilingDb:-1.0,truePeakOversample:4}},
+  zouk:{dynamics:{compressor:{thresholdDb:-12,ratio:1.9,attackMs:18,releaseMs:160}},
+       saturation:{tape:{driveDb:1.6,saturation:0.55}},
+       spectral:{airBand:{shelfFrequencyHz:8500,amount:0.5}},
+       stereo:{imager:{width:1.15}},
+       maximizer:{truePeakLimiter:{ceilingDb:-1.0,oversampleFactor:4,lookaheadMs:5}},
+       loudness:{targetLufs:-10.5,ceilingDb:-1.0,truePeakOversample:4}},
+  kawina:{dynamics:{compressor:{thresholdDb:-14,ratio:2.3,attackMs:9,releaseMs:95}},
+       saturation:{tape:{driveDb:1.8,saturation:0.55}},
+       spectral:{airBand:{shelfFrequencyHz:10000,amount:0.6}},
+       stereo:{imager:{width:1.15}},
+       maximizer:{truePeakLimiter:{ceilingDb:-0.9,oversampleFactor:4,lookaheadMs:5}},
+       loudness:{targetLufs:-9.8,ceilingDb:-0.9,truePeakOversample:4}},
+  dancehall:{dynamics:{compressor:{thresholdDb:-14,ratio:2.2,attackMs:11,releaseMs:110}},
+       saturation:{tape:{driveDb:1.8,saturation:0.55}},
+       spectral:{airBand:{shelfFrequencyHz:9500,amount:0.6}},
+       stereo:{imager:{width:1.15}},
+       maximizer:{truePeakLimiter:{ceilingDb:-0.9,oversampleFactor:4,lookaheadMs:5}},
+       loudness:{targetLufs:-9.8,ceilingDb:-0.9,truePeakOversample:4}}
 };
 
 function toStereo(buf){
