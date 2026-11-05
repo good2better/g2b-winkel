@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PagePlay spel</title>
+<style>
+* { box-sizing: border-box; margin: 0; }
+body { background:#0b1020; color:#e2e8f0; font-family:system-ui,'Segoe UI',sans-serif;
+       min-height:100vh; padding:16px; }
+h1 { font-size:22px; margin-bottom:10px; }
+.wrap { max-width:1000px; margin:0 auto; }
+.brand { text-align:center; margin-bottom:14px; opacity:.85; }
+.brand b { color:#f7c948; letter-spacing:2px; font-size:12px; }
+.menu { display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+.menu button, .btn { background:#334155; color:#e2e8f0; border:0; border-radius:8px;
+       padding:8px 14px; cursor:pointer; font-size:14px; }
+.menu button.on, .btn.main { background:#6366f1; font-weight:600; }
+.btn:disabled { opacity:.4; cursor:default; }
+.tqin { background:#1e293b; color:#e2e8f0; border:1px solid #475569;
+        border-radius:8px; padding:9px 14px; font-size:15px; width:260px; }
+.grid { display:grid; grid-template-columns:repeat(6,1fr); gap:4px; }
+.tile { position:relative; aspect-ratio:1; border:1px solid #334155; border-radius:8px;
+        background:#1e293b; overflow:hidden; }
+.tile img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.55; }
+.tile .num { position:absolute; top:3px; left:4px; font-size:10px; font-weight:700;
+             background:rgba(2,6,23,.7); border-radius:4px; padding:1px 4px; }
+.tile .fin { position:absolute; top:3px; right:4px; }
+.pions { position:absolute; bottom:3px; left:3px; display:flex; gap:2px; }
+.pion { width:12px; height:12px; border-radius:50%; border:1px solid rgba(255,255,255,.6); }
+.side { margin-top:12px; display:flex; gap:12px; flex-wrap:wrap; align-items:flex-start; }
+.card { background:#1e293b; border:1px solid #334155; border-radius:12px; padding:14px; }
+.dice { width:64px; height:64px; border-radius:12px; background:linear-gradient(135deg,#f1f5f9,#94a3b8);
+        color:#0f172a; display:flex; align-items:center; justify-content:center;
+        font-size:32px; font-weight:900; margin:8px auto; }
+.dice.roll { animation:spin .6s; }
+@keyframes spin { 50% { transform:rotate(180deg) scale(1.15);} }
+.plist div { padding:3px 6px; border-radius:6px; display:flex; gap:6px; align-items:center; font-size:13px; }
+.plist .cur { background:#334155; }
+.overlay { position:fixed; inset:0; background:rgba(0,0,0,.72); display:flex;
+           align-items:center; justify-content:center; padding:16px; z-index:10; }
+.popup { background:#1e293b; border:1px solid #475569; border-radius:16px;
+         max-width:420px; width:100%; padding:20px; }
+.popup img { width:100%; height:190px; object-fit:cover; border-radius:10px; margin-bottom:10px; }
+.popup .task { color:#fbbf24; font-weight:600; margin:8px 0 14px; }
+.popup .win { text-align:center; }
+.popup .win .cup { font-size:52px; }
+.mem { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; max-width:700px; }
+.mcard { aspect-ratio:5/7; border:1px solid #334155; border-radius:8px; background:#1e293b;
+         cursor:pointer; display:flex; align-items:center; justify-content:center;
+         font-size:26px; overflow:hidden; padding:0; }
+.mcard img { width:100%; height:100%; object-fit:cover; }
+.mcard.open { border-color:#818cf8; }
+.qwrap { max-width:720px; margin:0 auto; }
+.qtxt { font-size:16px; line-height:1.5; background:#1e293b; border:1px solid #334155;
+        border-radius:12px; padding:14px; margin-bottom:12px; }
+.qopts { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.qopt { aspect-ratio:1; border:2px solid #334155; border-radius:10px; overflow:hidden;
+        cursor:pointer; background:#1e293b; padding:0; font-size:34px; color:#cbd5e1;
+        font-weight:800; }
+.qopt img { width:100%; height:100%; object-fit:cover; }
+.qopt.goed { border-color:#34d399; }
+.qopt.fout { border-color:#f87171; opacity:.55; }
+.qscore { margin-top:10px; font-size:13px; color:#94a3b8; text-align:center; }
+.puz { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; max-width:520px; margin:0 auto; }
+.piece { aspect-ratio:1; border:1px solid #334155; border-radius:6px; overflow:hidden;
+         cursor:pointer; position:relative; background:#1e293b; padding:0; }
+.piece canvas { width:100%; height:100%; display:block; }
+.piece.sel { border-color:#818cf8; box-shadow:0 0 0 2px #818cf8; }
+.piece.ok { border-color:#34d399; }
+.hint { color:#94a3b8; font-size:12px; margin-top:8px; }
+footer { text-align:center; margin-top:20px; font-size:11px; color:#64748b; }
+@media(max-width:640px){ .grid{grid-template-columns:repeat(4,1fr);} .mem{grid-template-columns:repeat(4,1fr);} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><b>ANIMAL HEROES</b> · animalheroes.club</div>
+  <h1 id="title"></h1>
+  <div class="menu">
+    <button id="mBoard" class="on">🎲 Bordspel</button>
+    <button id="mMem">🃏 Memory</button>
+    <button id="mQuiz">❓ Plaatjes-quiz</button>
+    <button id="mPuz">🧩 Puzzel</button>
+    <button id="mZoom">🔎 Raad-het-plaatje</button>
+    <button id="mTQuiz" style="display:none">✏️ Verhaal-quiz</button>
+    <button id="btnReset">↺ Opnieuw</button>
+  </div>
+  <div id="game"></div>
+  <p class="hint" id="hint"></p>
+  <footer>Gemaakt met PagePlay · dubbelklik dit bestand om te spelen — werkt offline</footer>
+</div>
+
+<div class="overlay" id="overlay" style="display:none">
+  <div class="popup" id="popup"></div>
+</div>
+
+<script>
+var DATA = JSON.parse(localStorage.getItem('pp_data')||'{"title":"","tiles":[],"quiz":[]}');
+var TILES = DATA.tiles;
+var COLORS = ['#f87171','#60a5fa','#4ade80','#facc15','#c084fc','#fb923c'];
+var NAMES  = ['Rood','Blauw','Groen','Geel','Paars','Oranje'];
+var COLS = 6;
+var mode = 'board';
+var players, turn, phase, winner, dice;
+
+function $(id){ return document.getElementById(id); }
+function speak(txt){
+  try{ var u = new SpeechSynthesisUtterance(txt); u.lang='nl-NL';
+       speechSynthesis.cancel(); speechSynthesis.speak(u); }catch(e){}
+}
+function tileCoord(i){ var r=Math.floor(i/COLS); var c = r%2===0 ? i%COLS : COLS-1-i%COLS;
+                       return {row:r,col:c}; }
+
+/* ---------- Bordspel ---------- */
+function initBoard(){
+  players=[{name:'Jij',color:COLORS[0],pos:-1,ai:false},
+           {name:'AI-Buddy',color:COLORS[1],pos:-1,ai:true}];
+  turn=0; phase='idle'; winner=null; dice=null;
+}
+function renderBoard(){
+  var last = TILES.length-1;
+  var html = '<div class="grid">';
+  TILES.forEach(function(t){
+    var c = tileCoord(t.idx);
+    var here = players.filter(function(p){return p.pos===t.idx;});
+    html += '<div class="tile" style="grid-row:'+(c.row+1)+';grid-column:'+(c.col+1)+'">'
+         + (t.image?'<img src="'+t.image+'">':'')
+         + '<span class="num">'+(t.idx+1)+'</span>'
+         + (t.idx===last?'<span class="fin">🏁</span>'
+            :((DATA.quiz||[]).length&&t.idx%4===3?'<span class="fin">⭐</span>':''))
+         + '<div class="pions">'+here.map(function(p){
+             return '<span class="pion" style="background:'+p.color+'" title="'+p.name+'"></span>';}).join('')
+         + '</div></div>';
+  });
+  html += '</div><div class="side"><div class="card" style="text-align:center;min-width:170px">'
+       + '<p style="font-size:13px;color:#94a3b8">'+(winner?('🏆 '+winner.name+' wint!'):('Beurt: '+players[turn].name))+'</p>'
+       + '<div class="dice'+(phase==='rolling'?' roll':'')+'">'+(dice||'?')+'</div>'
+       + '<button class="btn main" id="btnRoll"'+(phase!=='idle'||winner||players[turn].ai?' disabled':'')+'>'
+       + (players[turn].ai?'AI gooit…':'Gooi dobbelsteen')+'</button></div>'
+       + '<div class="card plist" style="min-width:190px">'
+       + players.map(function(p,i){
+           return '<div class="'+(i===turn&&!winner?'cur':'')+'"><span class="pion" style="background:'+p.color+'"></span>'
+                + p.name+' <span style="color:#64748b;font-size:11px;margin-left:auto">'
+                + (p.pos>=0?'vak '+(p.pos+1):'start')+'</span></div>';}).join('')
+       + (players.length<6&&phase==='idle'&&players.every(function(p){return p.pos===-1;})
+           ? '<div style="margin-top:6px"><button class="btn" id="btnAdd" style="font-size:12px">+ speler</button></div>':'')
+       + '</div></div>';
+  $('game').innerHTML = html;
+  $('hint').textContent = 'Gooi de dobbelsteen, loop het verhaal-pad, en doe bij elk vakje de opdracht. Wie als eerste bij 🏁 is, wint.';
+  var br=$('btnRoll'); if(br) br.onclick=function(){roll(turn);};
+  var ba=$('btnAdd'); if(ba) ba.onclick=function(){
+    players.push({name:NAMES[players.length]||('Speler '+(players.length+1)),color:COLORS[players.length],pos:-1,ai:false});
+    renderBoard();};
+}
+function roll(pi){
+  if(phase==='rolling'||phase==='popup'||winner) return;
+  phase='rolling';
+  var v=1+Math.floor(Math.random()*6); dice=v; renderBoard();
+  var last=TILES.length-1, moved=0, startPos=players[pi].pos;
+  setTimeout(function(){
+    var iv=setInterval(function(){
+      moved++;
+      var np=Math.min(last,startPos+moved);
+      players[pi].pos=np; renderBoard();
+      if(moved>=v||np>=last){
+        clearInterval(iv);
+        if(np>=last){ winner=players[pi]; phase='done'; renderBoard(); showWin(); }
+        else{
+          var t=TILES[np]; phase='popup';
+          if((DATA.quiz||[]).length && np%4===3){
+            showQuizPopup(players[pi]);
+          }else{
+            showPopup(t);
+            speak(t.text+' '+t.assignment);
+          }
+        }
+        turn=(turn+1)%players.length;
+      }
+    },240);
+  },650);
+}
+function showPopup(t){
+  $('popup').innerHTML = (t.image?'<img src="'+t.image+'">':'')
+    + '<p style="font-size:14px">'+t.text+'</p>'
+    + '<p class="task">🎯 '+t.assignment+'</p>'
+    + '<button class="btn main" style="width:100%" id="btnDone">Klaar!</button>';
+  $('overlay').style.display='flex';
+  $('btnDone').onclick=closePopup;
+  $('overlay').onclick=function(e){ if(e.target===$('overlay')) closePopup(); };
+}
+function closePopup(){ $('overlay').style.display='none'; phase='idle'; renderBoard();
+  try{speechSynthesis.cancel();}catch(e){} }
+function showQuizPopup(pl){
+  var qs=(DATA.quiz||[]).filter(function(q){return q.q&&q.a;});
+  var q=qs[Math.floor(Math.random()*qs.length)];
+  $('popup').innerHTML='<div class="win">'
+    +'<p style="font-size:17px;font-weight:700;margin-bottom:6px">⭐ Quizvak!</p>'
+    +'<p style="font-size:14px;margin-bottom:12px">'+q.q+'</p>'
+    +'<input id="bqIn" class="tqin" style="width:100%;margin-bottom:8px" '
+    +'placeholder="Typ je antwoord…" autocomplete="off">'
+    +'<div id="bqFb" style="min-height:20px;font-size:13px;margin-bottom:8px"></div>'
+    +'<button class="btn main" style="width:100%" id="bqGo">Controleren</button></div>';
+  $('overlay').style.display='flex';
+  speak('Quizvak! '+q.q);
+  var done=function(ok){
+    $('overlay').style.display='none'; phase='idle';
+    if(ok){
+      var last=TILES.length-1;
+      pl.pos=Math.min(last,pl.pos+2);
+      if(pl.pos>=last){ winner=pl; phase='done'; renderBoard(); showWin(); return; }
+    }
+    renderBoard();
+  };
+  $('bqGo').onclick=function(){
+    var ok=tqGoed($('bqIn').value,q.a);
+    $('bqGo').disabled=true; $('bqIn').disabled=true;
+    if(ok){ $('bqFb').innerHTML='<span style="color:#4ade80">✔ Goed! +2 stappen</span>'; speak('Goed zo, twee extra stappen!'); }
+    else{ $('bqFb').innerHTML='<span style="color:#f87171">✘ Het was: '+q.a+'</span>'; }
+    setTimeout(function(){done(ok);}, ok?1200:2400);
+  };
+  $('bqIn').onkeydown=function(e){ if(e.key==='Enter') $('bqGo').click(); };
+  $('bqIn').focus();
+}
+function showWin(){
+  $('popup').innerHTML='<div class="win"><div class="cup">🏆</div>'
+    +'<p style="font-size:19px;font-weight:700;margin:8px 0">'+winner.name+' wint!</p>'
+    +'<p style="font-size:13px;color:#94a3b8;margin-bottom:14px">Het verhaal is uitgespeeld.</p>'
+    +'<button class="btn main" id="btnAgain">Nog een keer</button></div>';
+  $('overlay').style.display='flex';
+  $('btnAgain').onclick=function(){$('overlay').style.display='none';initBoard();renderBoard();};
+}
+function aiTick(){
+  if(mode==='board'&&players&&players[turn]&&players[turn].ai&&phase==='idle'&&!winner){
+    setTimeout(function(){ if(phase==='idle') roll(turn); },1100);
+  }
+}
+setInterval(aiTick,500);
+
+/* ---------- Memory ---------- */
+var mem = {open:[],matched:{},moves:0,cards:[]};
+function initMem(){
+  var usable = TILES.filter(function(t){return t.image;});
+  var src = (usable.length>=3?usable:TILES).slice(0,12);
+  var pairs=[];
+  src.forEach(function(t){ pairs.push(t); pairs.push(t); });
+  for(var i=pairs.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1));
+    var tmp=pairs[i];pairs[i]=pairs[j];pairs[j]=tmp; }
+  mem={open:[],matched:{},moves:0,cards:pairs};
+}
+function renderMem(){
+  var html='<div class="mem">'+mem.cards.map(function(t,i){
+    var open = mem.open.indexOf(i)>=0 || mem.matched[t.idx];
+    return '<button class="mcard'+(open?' open':'')+'" data-i="'+i+'">'
+         +(open?(t.image?'<img src="'+t.image+'">':'<b>'+(t.idx+1)+'</b>'):'🐾')+'</button>';
+  }).join('')+'</div>'
+  +'<p class="hint" style="margin-top:10px">Zetels: '+mem.moves+' · paren gevonden: '
+  +Object.keys(mem.matched).length+'/'+Math.floor(mem.cards.length/2)+'</p>'
+  +(Object.keys(mem.matched).length===mem.cards.length/2&&mem.cards.length>0
+     ?'<p style="margin-top:10px;font-weight:700;color:#34d399">🎉 Alles gevonden in '+mem.moves+' zetten!</p>':'');
+  $('game').innerHTML=html;
+  $('hint').textContent='Klik twee kaartjes om — zijn ze hetzelfde, dan blijven ze open.';
+  [].forEach.call(document.querySelectorAll('.mcard'),function(el){
+    el.onclick=function(){flip(parseInt(el.dataset.i));};
+  });
+}
+function flip(i){
+  if(mem.open.length===2||mem.open.indexOf(i)>=0||mem.matched[mem.cards[i].idx])return;
+  mem.open.push(i); renderMem();
+  if(mem.open.length===2){
+    mem.moves++;
+    var a=mem.cards[mem.open[0]],b=mem.cards[mem.open[1]];
+    if(a.idx===b.idx){ var ix=a.idx; setTimeout(function(){mem.matched[ix]=1;mem.open=[];renderMem();},400); }
+    else setTimeout(function(){mem.open=[];renderMem();},900);
+  }
+}
+
+/* ---------- Plaatjes-quiz ---------- */
+var quiz = {i:0,score:0,order:[],opts:[],locked:false};
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1));
+  var t=a[i];a[i]=a[j];a[j]=t; } return a; }
+function initQuiz(){
+  var withImg = TILES.filter(function(t){return t.image;});
+  var pool = (withImg.length>=4?withImg:TILES).slice();
+  shuffle(pool);
+  quiz = {i:0,score:0,order:pool.slice(0,10),opts:[],locked:false};
+}
+function renderQuiz(){
+  if(quiz.i>=quiz.order.length){
+    $('popup').innerHTML='<div class="win"><div class="cup">🏆</div>'
+      +'<p style="font-size:19px;font-weight:700;margin:8px 0">Quiz klaar!</p>'
+      +'<p style="font-size:13px;color:#94a3b8;margin-bottom:14px">Score: '+quiz.score+'/'+quiz.order.length+'</p>'
+      +'<button class="btn main" id="btnQAgain">Nog een keer</button></div>';
+    $('overlay').style.display='flex';
+    $('btnQAgain').onclick=function(){$('overlay').style.display='none';initQuiz();renderQuiz();};
+    return;
+  }
+  var t=quiz.order[quiz.i];
+  var others=TILES.filter(function(x){return x.idx!==t.idx;});
+  shuffle(others);
+  var opts=shuffle([t,others[0],others[1]].filter(Boolean));
+  quiz.opts=opts; quiz.locked=false;
+  var html='<div class="qwrap"><div class="qtxt">📖 '+t.text+'</div>'
+    +'<div class="qopts">'+opts.map(function(o,i){
+      return '<button class="qopt" data-i="'+i+'">'
+        +(o.image?'<img src="'+o.image+'">':'<span>'+(o.idx+1)+'</span>')+'</button>';}).join('')
+    +'</div><p class="qscore">Vraag '+(quiz.i+1)+'/'+quiz.order.length
+    +' · score '+quiz.score+'</p></div>';
+  $('game').innerHTML=html;
+  $('hint').textContent='Welk plaatje hoort bij dit stukje verhaal? Klik erop.';
+  [].forEach.call(document.querySelectorAll('.qopt'),function(el){
+    el.onclick=function(){answerQuiz(parseInt(el.dataset.i),el);};
+  });
+  speak(quiz.order[quiz.i].text);
+}
+function answerQuiz(i,el){
+  if(quiz.locked) return;
+  quiz.locked=true;
+  var ok = quiz.opts[i].idx===quiz.order[quiz.i].idx;
+  if(ok){ quiz.score++; el.className='qopt goed'; speak('Goed zo!'); }
+  else{
+    el.className='qopt fout'; speak('Nee, probeer het volgende plaatje!');
+    [].forEach.call(document.querySelectorAll('.qopt'),function(e2,j){
+      if(quiz.opts[j].idx===quiz.order[quiz.i].idx) e2.className='qopt goed'; });
+  }
+  setTimeout(function(){ quiz.i++; renderQuiz(); }, ok?900:1700);
+}
+
+/* ---------- Verhaal-quiz (AI-vragen, invul-antwoord) ---------- */
+var tq = {i:0,score:0,qs:[]};
+function normTxt(s){
+  return String(s||'').toLowerCase().normalize('NFD')
+    .replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,'')
+    .replace(/\s+/g,' ').trim();
+}
+function initTQuiz(){
+  tq = {i:0,score:0,qs:(DATA.quiz||[]).filter(function(q){return q.q&&q.a;}).slice(0,10)};
+}
+function tqGoed(inp,ans){
+  var i=normTxt(inp), a=normTxt(ans);
+  if(!i||!a) return false;
+  if(i===a || a.indexOf(i)===0 || (i.length>=4 && a.indexOf(i)>=0)) return true;
+  var words=a.split(' ').filter(function(w){return w.length>3;});
+  return words.length>0 && words.every(function(w){return i.indexOf(w)>=0;});
+}
+function renderTQuiz(){
+  if(tq.i>=tq.qs.length){
+    $('popup').innerHTML='<div class="win"><div class="cup">🏆</div>'
+      +'<p style="font-size:19px;font-weight:700;margin:8px 0">Quiz klaar!</p>'
+      +'<p style="font-size:13px;color:#94a3b8;margin-bottom:14px">Score: '+tq.score+'/'+tq.qs.length+'</p>'
+      +'<button class="btn main" id="btnTAgain">Nog een keer</button></div>';
+    $('overlay').style.display='flex';
+    $('btnTAgain').onclick=function(){$('overlay').style.display='none';initTQuiz();renderTQuiz();};
+    return;
+  }
+  var q=tq.qs[tq.i];
+  $('game').innerHTML='<div class="qwrap"><div class="qtxt">✏️ '+q.q+'</div>'
+    +'<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">'
+    +'<input id="tqIn" class="tqin" placeholder="Typ je antwoord…" autocomplete="off">'
+    +'<button class="btn main" id="tqGo">Controleren</button></div>'
+    +'<div id="tqFb" class="qscore"></div>'
+    +'<p class="qscore">Vraag '+(tq.i+1)+'/'+tq.qs.length
+    +' · score '+tq.score+'</p></div>';
+  $('hint').textContent='Beantwoord de vraag over het verhaal.';
+  speak(q.q);
+  var go=function(){
+    var inp=$('tqIn').value;
+    var ok=tqGoed(inp,q.a);
+    if(ok){ tq.score++; $('tqFb').innerHTML='<span style="color:#4ade80">✔ Goed zo!</span>'; speak('Goed zo!'); }
+    else{ $('tqFb').innerHTML='<span style="color:#f87171">✘ Het antwoord was: <b>'+q.a+'</b></span>'; }
+    $('tqGo').disabled=true; $('tqIn').disabled=true;
+    setTimeout(function(){ tq.i++; renderTQuiz(); }, ok?1100:2600);
+  };
+  $('tqGo').onclick=go;
+  $('tqIn').onkeydown=function(e){ if(e.key==='Enter') go(); };
+  $('tqIn').focus();
+}
+
+/* ---------- Puzzel (3x3, klik twee stukjes = wissel) ---------- */
+var puz = {tiles:[],sel:-1,done:false,imgIdx:0,ready:false};
+function initPuz(){
+  var imgs = TILES.filter(function(t){return t.image;});
+  if(!imgs.length){ puz.ready=false; return; }
+  puz.imgIdx = Math.floor(Math.random()*imgs.length);
+  var ord=[0,1,2,3,4,5,6,7,8];
+  do{ shuffle(ord); } while(ord.every(function(v,i){return v===i;}));
+  puz={tiles:ord,sel:-1,done:false,imgIdx:puz.imgIdx,ready:true};
+}
+function drawPiece(ctx,src,pos){
+  var s=src.width/3, x=(pos%3)*s, y=Math.floor(pos/3)*s;
+  ctx.drawImage(src,x,y,s,s,0,0,ctx.canvas.width,ctx.canvas.height);
+}
+function renderPuz(){
+  if(!puz.ready){ $('game').innerHTML='<p class="qtxt">Deze puzzel heeft plaatjes nodig — upload eerst beelden in de scènes.</p>';
+    $('hint').textContent=''; return; }
+  var t=TILES.filter(function(x){return x.image;})[puz.imgIdx];
+  var img=new Image(); img.src=t.image;
+  var html='<div class="puz">'+puz.tiles.map(function(pos,i){
+    return '<button class="piece'+(puz.sel===i?' sel':'')+(puz.done||pos===i?' ok':'')+'" data-i="'+i+'"><canvas></canvas></button>';
+  }).join('')+'</div>'
+  +'<p class="qscore">Verwissel twee stukjes tot het plaatje klopt · '+(puz.done?'✅ opgelost!':'')+'</p>';
+  $('game').innerHTML=html;
+  $('hint').textContent='Klik een stukje, daarna een ander — ze wisselen. Alles groen = puzzel af.';
+  img.onload=function(){
+    [].forEach.call(document.querySelectorAll('.piece'),function(el,i){
+      var c=el.querySelector('canvas'); c.width=160; c.height=160;
+      drawPiece(c.getContext('2d'),img,puz.tiles[i]);
+      el.onclick=function(){puzClick(i);};
+    });
+  };
+}
+function puzClick(i){
+  if(puz.done) return;
+  if(puz.sel<0){ puz.sel=i; renderPuz(); return; }
+  var tmp=puz.tiles[puz.sel]; puz.tiles[puz.sel]=puz.tiles[i]; puz.tiles[i]=tmp;
+  puz.sel=-1;
+  if(puz.tiles.every(function(v,j){return v===j;})){
+    puz.done=true; renderPuz(); speak('Puzzel af! Goed gedaan!');
+    setTimeout(function(){
+      $('popup').innerHTML='<div class="win"><div class="cup">🧩</div>'
+        +'<p style="font-size:19px;font-weight:700;margin:8px 0">Puzzel opgelost!</p>'
+        +'<button class="btn main" id="btnPAgain">Nog een plaatje</button></div>';
+      $('overlay').style.display='flex';
+      $('btnPAgain').onclick=function(){$('overlay').style.display='none';initPuz();renderPuz();};
+    },400);
+    return;
+  }
+  renderPuz();
+}
+
+/* ---------- Raad-het-plaatje (ingezoomd → raden) ---------- */
+var zoom = {i:0,score:0,order:[],opts:[],locked:false};
+function initZoom(){
+  /* alleen echte art (server markeert t.art), gespreid over het boek */
+  var imgs = TILES.filter(function(t){return t.art;});
+  if(!imgs.length) imgs = TILES.filter(function(t){return t.image;});
+  var n = Math.min(imgs.length, 10), step = imgs.length / n, order = [];
+  for(var k=0;k<n;k++) order.push(imgs[Math.floor(k*step)]);
+  zoom = {i:0,score:0,order:order,opts:[],locked:false};
+}
+function zoomLevel(){
+  /* fout antwoord = uitzoomen (5→3→1.6); direct goed = max punten */
+  return [5,3,1.6][Math.min(zoom.miss||0,2)];
+}
+function renderZoom(){
+  if(!zoom.order.length){
+    $('game').innerHTML='<p class="qtxt">Dit spel heeft plaatjes nodig — upload eerst beelden in de scènes.</p>';
+    $('hint').textContent=''; return;
+  }
+  if(zoom.i>=zoom.order.length){
+    $('popup').innerHTML='<div class="win"><div class="cup">🔎</div>'
+      +'<p style="font-size:19px;font-weight:700;margin:8px 0">Alle plaatjes geraden!</p>'
+      +'<p style="font-size:13px;color:#94a3b8;margin-bottom:14px">Score: '+zoom.score+'/'+zoom.order.length+'</p>'
+      +'<button class="btn main" id="btnZAgain">Nog een keer</button></div>';
+    $('overlay').style.display='flex';
+    $('btnZAgain').onclick=function(){$('overlay').style.display='none';initZoom();renderZoom();};
+    return;
+  }
+  var t=zoom.order[zoom.i];
+  var others=TILES.filter(function(x){return x.idx!==t.idx&&x.image;});
+  shuffle(others);
+  var opts=others.slice(0,3).concat([t]); shuffle(opts);
+  zoom.opts=opts; zoom.locked=false; zoom.miss=0;
+  var z=zoomLevel();
+  $('game').innerHTML='<div class="qwrap">'
+    +'<div style="width:230px;height:230px;overflow:hidden;border-radius:12px;'
+    +'border:2px solid #334155;margin:0 auto 12px">'
+    +'<img id="zimg" src="'+t.image+'" style="width:'+(z*100)+'%;height:'+(z*100)
+    +'%;object-fit:cover;transform:translate(-12%,-8%)"></div>'
+    +'<p class="qtxt" style="font-size:14px">Welke tekst hoort bij dit plaatje? '
+    +'<span style="color:#f59e0b">(te sterk ingezoomd? raad — fout = uitzoomen)</span></p>'
+    +opts.map(function(o,i){ return '<button class="qopt" data-i="'+i+'">'
+      +(o.text||'').slice(0,140)+'</button>'; }).join('')
+    +'<p class="qscore">Plaatje '+(zoom.i+1)+'/'+zoom.order.length
+    +' · score '+zoom.score+'</p></div>';
+  $('hint').textContent='Het plaatje is vergroot — kies de tekst die erbij hoort. Fout raden = verder uitzoomen.';
+  [].forEach.call(document.querySelectorAll('.qopt'),function(el){
+    el.onclick=function(){zoomPick(parseInt(el.dataset.i),el);};
+  });
+}
+function zoomPick(i,el){
+  if(zoom.locked) return;
+  var ok = zoom.opts[i].idx===zoom.order[zoom.i].idx;
+  if(ok){
+    zoom.locked=true; el.className='qopt goed';
+    zoom.score += (zoom.miss===0?2:1); speak('Goed geraden!');
+    setTimeout(function(){ zoom.i++; renderZoom(); },1000);
+  } else {
+    el.className='qopt fout'; zoom.miss=(zoom.miss||0)+1;
+    var z=zoomLevel(), im=document.getElementById('zimg');
+    if(im){ im.style.width=(z*100)+'%'; im.style.height=(z*100)+'%'; }
+    speak('Bijna — het plaatje zoomt uit');
+    if(zoom.miss>=2){ /* tweede misser = volgend plaatje */
+      zoom.locked=true;
+      var correct=zoom.order[zoom.i].idx;
+      [].forEach.call(document.querySelectorAll('.qopt'),function(e2,k){
+        if(zoom.opts[k].idx===correct) e2.className='qopt goed';
+      });
+      setTimeout(function(){ zoom.i++; renderZoom(); },1800);
+    }
+  }
+}
+
+/* ---------- shell ---------- */
+function setMode(m){
+  mode=m;
+  $('mBoard').className = m==='board'?'on':'';
+  $('mMem').className   = m==='mem'?'on':'';
+  $('mQuiz').className  = m==='quiz'?'on':'';
+  $('mPuz').className   = m==='puz'?'on':'';
+  $('mTQuiz').className = m==='tquiz'?'on':'';
+  $('mZoom').className  = m==='zoom'?'on':'';
+  $('overlay').style.display='none';
+  if(m==='board'){ initBoard(); renderBoard(); }
+  else if(m==='mem'){ initMem(); renderMem(); }
+  else if(m==='puz'){ initPuz(); renderPuz(); }
+  else if(m==='tquiz'){ initTQuiz(); renderTQuiz(); }
+  else if(m==='zoom'){ initZoom(); renderZoom(); }
+  else { initQuiz(); renderQuiz(); }
+}
+$('title').textContent = DATA.title;
+if((DATA.quiz||[]).length){ $('mTQuiz').style.display=''; }
+$('mBoard').onclick=function(){setMode('board');};
+$('mMem').onclick=function(){setMode('mem');};
+$('mQuiz').onclick=function(){setMode('quiz');};
+$('mPuz').onclick=function(){setMode('puz');};
+$('mTQuiz').onclick=function(){setMode('tquiz');};
+$('mZoom').onclick=function(){setMode('zoom');};
+$('btnReset').onclick=function(){setMode(mode);};
+setMode('board');
+</script>
+</body>
+</html>
