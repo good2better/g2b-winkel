@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>G2B BAS — 16 basnoten</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230D0F0E'/><text x='50' y='68' font-size='52' font-weight='bold' text-anchor='middle' fill='%232FBF71' font-family='sans-serif'>G2</text></svg>">
+<style>
+:root{--groen:#16a34a;--donker:#0b1220;--kaart:#131c2e;--rand:#22314d;--tekst:#e8eef8;--zacht:#9fb0c9}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--donker);color:var(--tekst);font:15px/1.5 system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px}
+h1{font-size:1.6rem;margin-bottom:4px}
+h1 b{color:#4ade80}
+.sub{color:var(--zacht);font-size:.85rem;margin-bottom:16px;text-align:center}
+.sets{display:flex;gap:8px;margin-bottom:16px}
+.sets button{padding:9px 18px;border-radius:10px;border:1px solid var(--rand);background:var(--kaart);color:var(--tekst);font-weight:700;cursor:pointer}
+.sets button.aan{background:var(--groen);color:#04120a;border-color:var(--groen)}
+.pads{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:min(560px,95vw)}
+.pad{aspect-ratio:1.35;background:var(--kaart);border:1px solid var(--rand);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;user-select:none;transition:.06s;font-weight:800;font-size:.8rem;letter-spacing:.5px;color:#7ee2a8;position:relative}
+.pad small{color:var(--zacht);font-weight:400;font-size:.62rem;margin-top:3px}
+.pad.hit{background:#1d3a2a;border-color:var(--groen);transform:scale(.96);box-shadow:0 0 18px #16a34a66}
+.ctrls{display:flex;gap:18px;margin-top:20px;width:min(560px,95vw);flex-wrap:wrap}
+.ctrl{flex:1;min-width:110px;background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:10px 14px}
+.ctrl label{display:flex;justify-content:space-between;font-size:.72rem;color:var(--zacht);margin-bottom:6px}
+.ctrl label b{color:#7ee2a8}
+.ctrl input{width:100%;accent-color:var(--groen)}
+.foot{color:var(--zacht);font-size:.72rem;margin-top:18px;text-align:center}
+#wm{position:fixed;bottom:6px;right:10px;font-size:.7rem;opacity:.5;pointer-events:none}
+</style>
+</head>
+<body>
+<h1>🎸 G2B <b>BAS</b></h1>
+<p class="sub">Je échte bas-noten in de browser — dezelfde sounds als de VST.<br>Klik pads of gebruik toetsenbord (Q W E R … Z X C V + 1-4).</p>
+
+<div class="pads" id="pads"></div>
+<div class="ctrls">
+<div class="ctrl"><label>TOON <b id="vp">0</b></label><input id="pitch" type="range" min="-12" max="12" step="1" value="0"></div>
+<div class="ctrl"><label>LENGTE <b id="vl">100%</b></label><input id="leng" type="range" min="10" max="100" step="5" value="100"></div>
+<div class="ctrl"><label>FILTER <b id="vf">uit</b></label><input id="filt" type="range" min="0" max="12000" step="100" value="0"></div>
+<div class="ctrl"><label>VOLUME <b id="vv">80%</b></label><input id="vol" type="range" min="0" max="100" step="1" value="80"></div>
+</div>
+<p class="foot">⚡ Geladen sounds: <span id="st">…</span></p>
+<div id="wm">⚡ G2B BAS</div>
+<script>
+const SETS=[['E0','F#0','G0','A#0','C1','D1','E1','F#1','G#1','A1','C#2','E2','G#2','B2','E0+','E1+']];
+const FILES=['E0','Fs0','G0','As0','C1','D1','E1','Fs1','Gs1','A1','Cs2','E2','Gs2','B2','E0_h','E1_h'];
+const KEYS='qwerasdfzxcv1234'.split('');
+let cur=0,buffers=[],ctx=null,geladen=0;
+function ac(){if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume();return ctx}
+async function load(i){
+ geladen=0;document.getElementById('st').textContent='laden…';buffers=[];
+ for(let i2=0;i2<16;i2++){
+  try{const r=await fetch('wav/'+FILES[i2]+'.wav');const ab=await r.arrayBuffer();buffers.push(await ac().decodeAudioData(ab));geladen++}
+  catch(e){buffers.push(null)}
+ }
+ document.getElementById('st').textContent=geladen+'/16';
+}
+function build(){
+ const p=document.getElementById('pads');p.innerHTML='';
+ SETS[cur].forEach((n,i)=>{
+  const d=document.createElement('div');d.className='pad';d.id='p'+i;
+  d.innerHTML=n+'<small>'+KEYS[i].toUpperCase()+'</small>';
+  d.onpointerdown=e=>{e.preventDefault();speel(i)};
+  p.appendChild(d);
+ });
+}
+
+const voices={};
+function speel(i){
+ const b=buffers[i];if(!b)return;
+ const a=ac(),t=a.currentTime;
+ if(voices[i]){try{voices[i].stop()}catch(e){}}
+ const s=a.createBufferSource();s.buffer=b;
+ s.playbackRate.value=Math.pow(2,(+document.getElementById('pitch').value)/12);
+ const f=+document.getElementById('filt').value;
+ let node=s;
+ if(f>0){const lp=a.createBiquadFilter();lp.type='lowpass';lp.frequency.value=f;s.connect(lp);node=lp}
+ const g=a.createGain();g.gain.value=(+document.getElementById('vol').value)/100;
+ node.connect(g);g.connect(a.destination);
+ const len=Math.min(b.duration,b.duration*(+document.getElementById('leng').value)/100);
+ g.gain.setValueAtTime(g.gain.value,t);
+ g.gain.setTargetAtTime(0,t+len,0.03);
+ s.start(t);s.stop(t+len+0.2);voices[i]=s;
+ const el=document.getElementById('p'+i);el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),120);
+}
+document.addEventListener('keydown',e=>{
+ const i=KEYS.indexOf(e.key.toLowerCase());if(i>=0&&!e.repeat)speel(i);
+});
+['pitch','leng','filt','vol'].forEach(id=>{
+ document.getElementById(id).addEventListener('input',e=>{
+  const v=+e.target.value;
+  document.getElementById({pitch:'vp',leng:'vl',filt:'vf',vol:'vv'}[id]).textContent=
+   id==='pitch'?v:id==='filt'?(v?v+'Hz':'uit'):v+'%';
+ });
+});
+build();load(0);
+</script>
+</body>
+</html>
