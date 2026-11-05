@@ -115,6 +115,7 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/g2btrein-cover.png",
+   "video": "media/g2btrein-demo.mp4",
    "download_dir": "d/g2btrein"
   },
   {
@@ -206,6 +207,7 @@
    "id": "g2bsuite1",
    "titel": "G2B SUITE — alle marketeer-tools",
    "soort": "app",
+   "video": "media/g2bsuite-demo.mp4",
    "beschrijving": "ALLES-IN-EEN: alle 9 G2B Fabrieken in één ZIP — Lead, Lijst, Sheet, Mail, Sequentie, CRM, Flow, Watcher én SEO-Fabriek. Eén pakket, negen licentiecodes erbij. Los bij elkaar EUR341 — als suite EUR99. Windows, 100% lokaal, eenmalig.",
    "prijs": 99,
    "links": {
@@ -237,6 +239,7 @@
    "id": "agency1",
    "titel": "G2B AGENCY-LICENTIE",
    "soort": "licentie",
+   "video": "media/g2bagency-demo.mp4",
    "beschrijving": "Voor bureaus: gebruik de hele G2B Suite (alle 9 tools) voor max. 10 eigen klanten, 1 jaar. Inclusief alle Suite-downloads + codes per klant. €299/jaar.",
    "prijs": 299,
    "links": {
@@ -251,6 +254,7 @@
    "id": "marketerbundel1",
    "titel": "G2B MARKETER-BUNDEL",
    "soort": "bundle",
+   "video": "media/g2bmarketer-demo.mp4",
    "beschrijving": "De complete marketeer-set: Lijst-Fabriek (maak je e-maillijst schoon) + Lead-Fabriek (vind bedrijven + e-mails). Los samen €88 — in de bundel voor €69. 100% lokaal, onbeperkt, éénmalige koop.",
    "prijs": 69,
    "links": {
@@ -553,6 +557,7 @@
    "id": "cursus01",
    "titel": "G2B Cursus — Beatmaker Basis",
    "soort": "digitaal",
+   "video": "media/cursus-beatmaker-demo.mp4",
    "beschrijving": "Leer beats maken in 7 lessen — in je browser, geen installatie: ritme & groove, drums patroon voor patroon, 808-subbas die met je kick meebeweegt, melodie in C-mineur, beat-structuur intro→hook→outro, mixen voor beginners, en je eigen stijl + beats afleveren. Met echte audio-voorbeelden per les (luisterknop in elke les), quiz met direct diploma, doe-opdrachten en veelgemaakte-fouten-lijsten. Download = 1 bestand, werkt offline voor altijd.",
    "prijs": "€ 9,95",
    "links": {
