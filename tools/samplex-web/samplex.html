@@ -1,0 +1,122 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>G2B SAMPLEX — browser</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#0c0f0c;--kaart:#141a15;--rand:#223227;--groen:#19c37d;--tekst:#e8f0e9;--dim:#8fa395;--cyan:#4cc9f0}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui;margin:0;padding:14px}
+h1{font-size:20px;margin:4px 0 10px}h1 small{color:var(--groen);font-size:.55em}
+.rij{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+button.uit{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}
+button.uit:hover{border-color:var(--groen)}
+button.go{background:var(--groen);color:#04130b;border:0;font-weight:700}
+button.mod{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer}
+button.mod.on{background:var(--groen);color:#04130b}
+label{font-size:12px;color:var(--dim);display:flex;flex-direction:column;gap:2px}
+label b{color:var(--tekst);font-weight:600}
+input[type=range]{width:140px;accent-color:var(--groen)}
+#st{color:var(--dim);font-size:13px}
+#drop{border:2px dashed var(--rand);border-radius:12px;padding:22px;text-align:center;color:var(--dim);cursor:pointer;margin-bottom:12px;background:var(--kaart)}
+#drop.over,#drop:hover{border-color:var(--groen);color:var(--tekst)}
+#pads{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:560px;margin:10px 0}
+.pad{aspect-ratio:1;background:var(--kaart);border:1px solid var(--rand);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;user-select:none;font-size:12px;color:var(--dim);gap:4px;transition:transform .05s}
+.pad b{font-size:15px;color:var(--tekst)}
+.pad.hit{background:var(--groen);transform:scale(.93)}
+.pad.hit b{color:#04130b}
+#wave{width:100%;max-width:560px;height:70px;background:var(--kaart);border:1px solid var(--rand);border-radius:10px;display:block}
+.info{background:var(--kaart);border:1px solid var(--rand);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--dim);margin-top:10px}
+body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#12231a;--dim:#5c6b61}
+</style></head><body>
+<h1>G2B SAMPLEX <small>sleep een sample erin → speelbaar instrument · browser</small></h1>
+<div id="drop">🎹 Sleep een sample (wav/mp3/ogg) hierheen of klik om te kiezen<input type="file" id="file" accept="audio/*" hidden></div>
+<div class="rij">
+<button class="mod on" id="mPitch" onclick="modus('pitch')">TOONHOOGTE</button>
+<button class="mod" id="mChop" onclick="modus('chop')">CHOP (16 slices)</button>
+<button class="uit" id="skin" onclick="document.body.classList.toggle('licht')">◐</button>
+<span id="st">nog geen sample — speel met muis, toetsen (qwer…1234) of MIDI-keyboard</span>
+</div>
+<div class="rij">
+<label>TOON <b id="vToon">0</b><input type="range" id="toon" min="-12" max="12" value="0"></label>
+<label>FILTER <b id="vFil">8000 Hz</b><input type="range" id="fil" min="500" max="15000" value="8000"></label>
+<label>DRIVE <b id="vDrv">30%</b><input type="range" id="drv" min="0" max="100" value="30"></label>
+<label>START <b id="vStr">0%</b><input type="range" id="strt" min="0" max="90" value="0"></label>
+<label>LENGTE <b id="vLen">100%</b><input type="range" id="len" min="5" max="100" value="100"></label>
+<label>VOLUME <b id="vVol">85%</b><input type="range" id="vol" min="0" max="100" value="85"></label>
+</div>
+<canvas id="wave"></canvas>
+<div id="pads"></div>
+<div class="info">TOONHOOGTE-modus: de 16 pads spelen je sample in oplopende toonhoogte (pad 1 = je toon). CHOP-modus: je sample wordt in 16 gelijke slices geknipt — pad i speelt slice i (zoals in je VST). TOON = alle pads ±12 halve noten · FILTER = lagedoorlaat · DRIVE = vervorming · START = beginpunt · LENGTE = hoe lang de sample speelt. Alles in je browser — niks gaat naar internet.</div>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const st=$('st');
+let AC=null;function ac(){if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC;}
+let buf=null,master=null,mode='pitch';
+const NAMES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+function mg(){const a=ac();if(!master){master=a.createGain();master.connect(a.destination);}master.gain.value=+$('vol').value/100;return master;}
+function drijn(k){return k<=0?x=>x:(k=Math.min(0.95,k),x=>(Math.tanh(x*(1+4*k))/(1+2*k)));}
+let ws=null;
+function waveShaper(){if(ws)return ws;const k=+$('drv').value/100;
+ const a=ac();ws=a.createWaveShaper();const n=1024,c=new Float32Array(n),f=drijn(k);
+ for(let i=0;i<n;i++)c[i]=f(i/(n-1)*2-1);ws.curve=c;return ws;}
+function speel(i){
+ if(!buf)return;const a=ac(),t=a.currentTime;
+ const src=a.createBufferSource();src.buffer=buf;
+ const toon=+$('toon').value;
+ let rate=1,offset=buf.duration*+$('strt').value/100,dur=buf.duration-offset;
+ if(mode==='pitch'){rate=Math.pow(2,(i+toon)/12);src.playbackRate.value=rate;}
+ else{const sl=buf.duration/16;offset=i*sl;dur=sl;src.playbackRate.value=Math.pow(2,toon/12);}
+ const g=a.createGain(),filt=a.createBiquadFilter();
+ filt.type='lowpass';filt.frequency.value=+$('fil').value;filt.Q.value=0.7;
+ const L=Math.min(dur/rate,buf.duration*+$('len').value/100/rate);
+ g.gain.setValueAtTime(0.9,t);g.gain.setValueAtTime(0.9,t+Math.max(0.01,L-0.03));g.gain.linearRampToValueAtTime(0,t+L);
+ src.connect(filt);filt.connect(ws);ws.connect(g);g.connect(mg());
+ src.start(t,offset,Math.min(dur,L*rate));src.onended=()=>g.disconnect();
+ flash(i);}
+function flash(i){const p=pads.children[i];if(!p)return;p.classList.add('hit');setTimeout(()=>p.classList.remove('hit'),120);}
+function modus(m){mode=m;$('mPitch').classList.toggle('on',m==='pitch');$('mChop').classList.toggle('on',m==='chop');labels();}
+function labels(){const p=document.querySelectorAll('#pads .pad b');
+ for(let i=0;i<16;i++)p[i].textContent=mode==='pitch'?NAMES[(60+i)%12]+(Math.floor((60+i)/12)-1):('S'+(i+1));
+ st.textContent=mode==='pitch'?'TOONHOOGTE: pad 1 = je sample, hoger = hogere toon':'CHOP: je sample in 16 slices';}
+const pads=$('pads');
+for(let i=0;i<16;i++){const d=document.createElement('div');d.className='pad';
+ d.innerHTML='<b></b><span>'+(i+1)+'</span>';
+ d.onmousedown=e=>{e.preventDefault();speel(i);};
+ d.ontouchstart=e=>{e.preventDefault();speel(i);};
+ pads.appendChild(d);}
+labels();
+const KEYS='qwerasdfzxcv1234';
+document.onkeydown=e=>{const i=KEYS.indexOf(e.key.toLowerCase());if(i>=0&&i<16)speel(i);};
+if(navigator.requestMIDIAccess)navigator.requestMIDIAccess().then(m=>{
+ st.textContent=st.textContent.replace('MIDI-keyboard','MIDI-keyboard ✓');
+ for(const inp of m.inputs.values())inp.onmidimessage=ev=>{
+  const[s,n,v]=ev.data;
+  if((s&0xF0)===0x90&&v>0){const i=(n-36)%16;speel(((i%16)+16)%16);}};}).catch(()=>{});
+// wave-tekening
+function teken(){const c=$('wave');c.width=c.clientWidth*2;c.height=140;
+ const x=c.getContext('2d');const cs=getComputedStyle(document.body);
+ x.fillStyle=cs.getPropertyValue('--kaart');x.fillRect(0,0,c.width,c.height);
+ if(!buf)return;const d=buf.getChannelData(0),st_=Math.ceil(d.length/c.width);
+ x.strokeStyle=cs.getPropertyValue('--groen');x.beginPath();
+ for(let i=0;i<c.width;i++){let mx=0;for(let j=i*st_;j<(i+1)*st_&&j<d.length;j+=17)if(Math.abs(d[j])>mx)mx=Math.abs(d[j]);
+  x.moveTo(i,70-mx*65);x.lineTo(i,70+mx*65);}
+ x.stroke();
+ if(mode==='chop'){x.strokeStyle=cs.getPropertyValue('--rand');
+  for(let i=1;i<16;i++){x.beginPath();x.moveTo(i*c.width/16,0);x.lineTo(i*c.width/16,140);x.stroke();}}}
+const drop=$('drop'),file=$('file');
+drop.onclick=()=>file.click();
+drop.ondragover=e=>{e.preventDefault();drop.classList.add('over');};
+drop.ondragleave=()=>drop.classList.remove('over');
+drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');if(e.dataTransfer.files[0])lees(e.dataTransfer.files[0]);};
+file.onchange=()=>{if(file.files[0])lees(file.files[0]);};
+function lees(f){f.arrayBuffer().then(ab=>ac().decodeAudioData(ab)).then(b=>{
+ buf=b;ws=null;waveShaper();teken();
+ st.textContent=f.name+' geladen ('+b.duration.toFixed(1)+'s) — speel de pads';
+}).catch(()=>st.textContent='kan dit bestand niet lezen');}
+$('toon').oninput=e=>$('vToon').textContent=e.target.value;
+$('fil').oninput=e=>$('vFil').textContent=e.target.value+' Hz';
+$('drv').oninput=e=>{$('vDrv').textContent=e.target.value+'%';ws=null;waveShaper();};
+$('strt').oninput=e=>$('vStr').textContent=e.target.value+'%';
+$('len').oninput=e=>$('vLen').textContent=e.target.value+'%';
+$('vol').oninput=e=>{$('vVol').textContent=e.target.value+'%';if(master)master.gain.value=e.target.value/100;};
+new ResizeObserver(teken).observe($('wave'));
+</script>
+</body></html>
