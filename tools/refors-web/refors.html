@@ -93,18 +93,22 @@ function bouwGraaf(){
  g.LL=c.createGain();g.RL=c.createGain();g.RR=c.createGain();g.LR=c.createGain();
  g.split.connect(g.LL,0);g.split.connect(g.LR,0);g.split.connect(g.RR,1);g.split.connect(g.RL,1);
  g.LL.connect(g.wMerge,0,0);g.RL.connect(g.wMerge,0,0);g.RR.connect(g.wMerge,0,1);g.LR.connect(g.wMerge,0,1);
- // MENIGTE: ruis → 1-pool 1200 Hz → langzame deining (τ 40/50 ms), net als de plugin
- const nb=c.createBuffer(1,c.sampleRate*4,c.sampleRate),nd=nb.getChannelData(0);
- for(let i=0;i<nd.length;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;nd[i]=((seed>>>9)-32768)/32768}
- g.noise=c.createBufferSource(); g.noise.buffer=nb; g.noise.loop=true;
- const a1=1-Math.exp(-2*Math.PI*1200/c.sampleRate);
- g.nLp=c.createIIRFilter([a1],[1,-(1-a1)]);
- const aL=1-Math.exp(-1/(0.04*c.sampleRate)),aR=1-Math.exp(-1/(0.05*c.sampleRate));
- g.cL=c.createIIRFilter([aL],[1,-(1-aL)]); g.cR=c.createIIRFilter([aR],[1,-(1-aR)]);
+ // MENIGTE: publiek-geroezemoes — 2 losse ruis-kanalen → band 300-3000 Hz (stemmen-gebied) → langzame deining (LFO 0.23/0.31 Hz)
  g.crowd=c.createGain(); g.cMerge=c.createChannelMerger(2);
- g.noise.connect(g.nLp); g.nLp.connect(g.cL); g.nLp.connect(g.cR);
- g.cL.connect(g.cMerge,0,0); g.cR.connect(g.cMerge,0,1); g.cMerge.connect(g.crowd);
- g.noise.start();
+ [0.23,0.31].forEach((hz,ch)=>{
+  const nb=c.createBuffer(1,c.sampleRate*4,c.sampleRate),nd=nb.getChannelData(0);
+  for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;
+  const n=c.createBufferSource(); n.buffer=nb; n.loop=true;
+  const hp=c.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=300;
+  const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=3000;
+  const pk=c.createBiquadFilter(); pk.type='peaking'; pk.frequency.value=900; pk.Q.value=1; pk.gain.value=4;
+  const sw=c.createGain(); sw.gain.value=0.65;
+  const lfo=c.createOscillator(); lfo.frequency.value=hz; const lg=c.createGain(); lg.gain.value=0.35;
+  lfo.connect(lg); lg.connect(sw.gain);
+  n.connect(hp); hp.connect(lp); lp.connect(pk); pk.connect(sw); sw.connect(g.cMerge,0,ch);
+  n.start(); lfo.start();
+ });
+ g.cMerge.connect(g.crowd);
  g.mix=c.createGain(); g.wMerge.connect(g.mix); g.crowd.connect(g.mix);
  // outG + veiligheids-limiter tanh(x*1.1)*0.91
  g.outG=c.createGain(); g.lim=c.createWaveShaper(); g.lim.curve=curve(x=>Math.tanh(x*1.1)*0.91,4);
@@ -134,7 +138,7 @@ function update(direct){
  if(heeftEcho){set(G.dL.delayTime,delS);set(G.dR.delayTime,delS+0.011)}
  set(G.fbL.gain,heeftEcho?E[6]:0); set(G.fbR.gain,heeftEcho?E[6]:0);
  const w=E[8]; set(G.LL.gain,(1+w)/2);set(G.RR.gain,(1+w)/2);set(G.RL.gain,(1-w)/2);set(G.LR.gain,(1-w)/2);
- set(G.crowd.gain,P.menigte/100*0.10);
+ set(G.crowd.gain,P.menigte/100*0.25);
  set(G.outG.gain,Math.pow(10,(E[9]-af*6)/20)*(0.5+0.5*(P.vol/100)*2));
  const k=P.aan?P.kracht/100:0; set(G.dry.gain,1-k); set(G.wet.gain,k);
 }
