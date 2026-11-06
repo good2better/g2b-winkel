@@ -1,6 +1,23 @@
 {
  "producten": [
   {
+   "id": "g2bdicesynth",
+   "titel": "G2B DICE-SYNTH — 1 klik = nieuwe sound",
+   "soort": "plugin",
+   "beschrijving": "DE SYNC-KANON: één klik op de DICE rolt een compleet nieuwe, altijd bruikbare sound — eindeloos en 100% van jou (eigen synth = sync-veilig licenseren). 5 INSTRUMENT-MODI: KEYS · PADS · TEXTURE · BASS · HIT, elk binnen eigen muzikale grenzen. CHORD: 1 toets = filmisch akkoord. STRUM: akkoord-noten tokkelen als een echte gitaar (exponentiële curve, om-en-om laag↔hoog). HUMAN: menselijke timing — zacht spelen = relaxter. SLOT-knoppen houden vast wat goed is; MUTATE varieert subtiel; TERUG/VOOR bladert door je laatste 24 sounds; DICE-morph laat de klank in 0,3s vloeiend overgaan. Akoestiek geborgd: micro-crossfades (geen tikjes) + mono-laag onder 150Hz (bas dooft nooit uit). VST3 + CLAP + standalone EXE.",
+   "prijs": "€ 34,95",
+   "links": {
+    "koop": "bestel.html?p=g2bdicesynth",
+    "download": "bedankt.html?k=g2bdicesynth"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/dicesynth-cover.png",
+   "download_dir": "d/g2bdicesynth",
+   "demo": "media/dicesynth-demo.mp4",
+   "video": "media/dicesynth-demo.mp4"
+  },
+  {
    "id": "g2bmaster",
    "titel": "G2B MASTER — mastering in 4 knoppen + AUTO",
    "soort": "plugin",
