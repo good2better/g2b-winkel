@@ -11,9 +11,15 @@
 body{background:var(--bg);color:var(--txt);font:15px/1.65 'Segoe UI',system-ui,sans-serif;max-width:860px;margin:0 auto;padding:24px 18px 60px}
 h1{color:var(--accent);font-size:26px;margin-bottom:4px}
 .sub{color:var(--dim);font-size:14px;margin-bottom:20px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:10px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:6px 0;display:flex;gap:12px;align-items:baseline}
 .card.go{border-left:3px solid var(--accent)}
 .card.maybe{border-left:3px solid var(--warn)}
+.card .bd{flex:1;min-width:0}
+.sc{flex:0 0 46px;text-align:right;font-weight:800;font-size:15px;color:var(--accent)}
+.sc.dim{color:var(--dim)}
+.fbar{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 2px}
+.fb{background:var(--panel);color:var(--dim);border:1px solid var(--line);border-radius:14px;padding:4px 12px;font-size:11px;font-weight:800;letter-spacing:.4px;cursor:pointer}
+.fb.on{background:var(--accent);color:#04140b;border-color:var(--accent)}
 .card .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;margin-right:6px;border:1px solid var(--line)}
 .tag.g{background:#1a3328;border-color:var(--accent);color:var(--accent)}
 .tag.y{background:#332c1a;border-color:var(--warn);color:var(--warn)}
@@ -49,24 +55,25 @@ footer{margin-top:36px;padding-top:14px;border-top:1px solid var(--line);color:v
   <button class="sec" onclick="window.open('https://huggingface.co/models?pipeline_tag=audio&sort=likes7d','_blank')">HuggingFace audio top ↗</button>
 </div>
 <div id="status"></div>
+<div class="fbar" id="fbar"></div>
 </div>
 
 <div id="picks">
 <h2>📌 Picks van Devin (uit AlphaSignal)</h2>
 <div class="card maybe">
-  <a href="https://alphasignal.ai/news/minimax-drops-music-3-an-open-weight-ai-that-writes-5-minute-songs" target="_blank"><b>MiniMax Music 3</b></a>
+<span class="bd">  <a href="https://alphasignal.ai/news/minimax-drops-music-3-an-open-weight-ai-that-writes-5-minute-songs" target="_blank"><b>MiniMax Music 3</b></a>
   <span class="tag y">licentie checken</span><span class="tag d">audio · GPU</span>
-  <div class="why">Open-gewicht muziek-AI, complete nummers tot 5 min. Te zwaar voor je pc — staat op de pod-lijst samen met ACE-Step. Eerst de licentie verifiëren.</div>
+  <div class="why">Open-gewicht muziek-AI, complete nummers tot 5 min. Te zwaar voor je pc — staat op de pod-lijst samen met ACE-Step. Eerst de licentie verifiëren.</span></div>
 </div>
 <div class="card maybe">
-  <a href="https://alphasignal.ai/news/a-community-krea-2-lora-for-anime-characters-hits-864k-downloads" target="_blank"><b>Krea 2 LoRA-hype</b></a>
+<span class="bd">  <a href="https://alphasignal.ai/news/a-community-krea-2-lora-for-anime-characters-hits-864k-downloads" target="_blank"><b>Krea 2 LoRA-hype</b></a>
   <span class="tag y">idee-bewijs</span><span class="tag d">beeld · GPU</span>
-  <div class="why">Community-LoRA met 864k downloads — bewijst dat ons eigen "LoRA op Giorgio's sound" plan de goede kant is. Training = GPU → pod-lijst.</div>
+  <div class="why">Community-LoRA met 864k downloads — bewijst dat ons eigen "LoRA op Giorgio's sound" plan de goede kant is. Training = GPU → pod-lijst.</span></div>
 </div>
 <div class="card go">
-  <a href="https://alphasignal.ai/news/xiaomi-releases-xiaomi-ocr-0-a-tiny-0-8b-model-that-reads-documents-like-bigger" target="_blank"><b>Xiaomi-OCR-0</b></a>
+<span class="bd">  <a href="https://alphasignal.ai/news/xiaomi-releases-xiaomi-ocr-0-a-tiny-0-8b-model-that-reads-documents-like-bigger" target="_blank"><b>Xiaomi-OCR-0</b></a>
   <span class="tag g">klein genoeg</span><span class="tag d">documenten · later</span>
-  <div class="why">0.8B-model dat documenten leest als een grote. Later handig voor gescande pdf's in PagePlay — nu pdf-upload al zonder OCR werkt.</div>
+  <div class="why">0.8B-model dat documenten leest als een grote. Later handig voor gescande pdf's in PagePlay — nu pdf-upload al zonder OCR werkt.</span></div>
 </div>
 </div>
 
@@ -153,20 +160,39 @@ async function scan(){
   // dedup op titel
   const seen=new Set();items=items.filter(i=>{const k=i.title.toLowerCase().slice(0,60);if(seen.has(k))return false;seen.add(k);return true});
   const scored=items.map(i=>({...i,...score(i)}));
+  scored.forEach(i=>{const dom=i.hits.filter(h=>['audio','video','boeken','games'].includes(h)).length;i._sc=i.hits.length+dom;});
   const go=scored.filter(i=>i.tier==='go');
   const maybe=scored.filter(i=>i.tier==='maybe');
   const rest=scored.filter(i=>i.tier==='rest');
   S.textContent=`klaar — ${items.length} items gescand · 🟢 ${go.length} bruikbaar · 🟡 ${maybe.length} checken · ⚪ ${rest.length} rest`;
-  const card=(i,cls)=>`<div class="card ${cls}">
+  window._last=scored;
+  const card=(i,cls)=>`<div class="card ${cls}" data-h="${i.hits.join(' ')}">
+    <span class="sc ${i.tier==='rest'?'dim':''}">${i._sc}</span>
+    <span class="bd">
     ${i.hits.filter(h=>TAGNL[h]).map(h=>`<span class="tag ${h==='licentie'||h==='licht'?'g':''}">${TAGNL[h]}</span>`).join('')}
     <span class="tag d">${i.src}</span>
     <div><a href="${i.url}" target="_blank" rel="noopener">${i.title}</a></div>
     ${i.desc?`<div class="why">${i.desc.slice(0,160)}</div>`:''}
-    <div class="why">→ ${i.why}</div></div>`;
+    <div class="why">→ ${i.why}</div></span></div>`;
   document.getElementById('go').innerHTML=go.length?go.map(i=>card(i,'go')).join(''):'<div class="card" style="color:var(--dim)">Niks nieuws bruikbaar deze ronde — probeer later opnieuw (bronnen updaten dagelijks).</div>';
   document.getElementById('maybe').innerHTML=maybe.map(i=>card(i,'maybe')).join('')||'<div class="card" style="color:var(--dim)">—</div>';
   document.getElementById('rest').innerHTML=rest.map(i=>card(i,'')).join('')||'—';
   document.getElementById('restN').textContent=rest.length+' items';
+  buildFilters();
+}
+// ---- AlphaSignal-filters: onderwerp-knoppen -------------------------------
+const FILTERS=[['alles','ALLES'],['audio','AUDIO'],['video','VIDEO'],['boeken','BOEKEN'],['games','GAMES'],['licht','LICHT/CPU'],['licentie','OPEN']];
+let _f='alles';
+function buildFilters(){
+  const bar=document.getElementById('fbar');if(!bar)return;
+  bar.innerHTML=FILTERS.map(([k,n])=>`<button class="fb ${_f===k?'on':''}" onclick="setF('${k}')">${n}</button>`).join('');
+}
+function setF(k){
+  _f=k;buildFilters();
+  document.querySelectorAll('#go .card,#maybe .card,#rest .card').forEach(c=>{
+    if(!c.dataset.h||_f==='alles'){c.style.display='';return;}
+    c.style.display=c.dataset.h.includes(_f)?'':'none';
+  });
 }
 </script>
 </body>
