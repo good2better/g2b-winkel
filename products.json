@@ -92,7 +92,7 @@
    "beschrijving": "DE STEM-PLUGIN MET 2 MODI: MELODIE — druk LUISTER, neurie/zing je lijn ±8 sec → hij schrijft de strakke melodie-MIDI in je toonsoort (AUTO-KEY corrigeert valse noten zachtjes mee). INSTRUMENT — zing of speel één toon/one-shot → het wordt meteen een bespeelbaar instrument op je MIDI-keyboard (16 stemmen). TOONLADDER-PILLS: MAJEUR·MINEUR·PENTA·BLUES·CHROMA (+4 extra in GIO). 4 knoppen: GEVOEL (quantize-sterkte) · GRID (8e/16e/32e) · OCTAAF (−2/+2) · VAR (versiering). ↓MID schrijft G2B-OPROEP-MELODIE.mid in Music/G2B — map opent vanzelf → sleep op je spoor. MIDI-output volgt je transport (PLAY speelt, STOP stil). REFINE-knop, DICE, AAN/UIT, 8 skins, level-meter. Perfect naast LUISTER (drums) — samen een hele beat uit 2 plugins. VST3 + CLAP + standalone EXE + handleiding-PDF.",
    "prijs": 29.95,
    "links": {
-    "koop": "https://good2better.github.io/g2b-winkel/bestellen.html?p=g2boproep",
+    "koop": "https://good2better.github.io/g2b-winkel/bestel.html?p=g2boproep",
     "download": "d/g2boproep/"
    },
    "groep": "studio-tools",
