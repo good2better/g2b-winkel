@@ -47,7 +47,9 @@
       "groep": "plugins",
       "badge": "NIEUW — 3 IN 1",
       "cover": "media/g2bgeluidmidi-cover.png",
-      "download_dir": "d/g2bgeluidmidi"
+      "download_dir": "d/g2bgeluidmidi",
+      "video": "media/g2bgeluidmidi-demo.mp4",
+      "demo": "media/g2bgeluidmidi-demo.mp4"
     },
     {
       "id": "g2brefors",
@@ -96,7 +98,9 @@
       "groep": "plugins",
       "badge": "NIEUW — 4 IN 1",
       "cover": "media/g2bband-cover.png",
-      "download_dir": "d/g2bband"
+      "download_dir": "d/g2bband",
+      "video": "media/g2bband-demo.mp4",
+      "demo": "media/g2bband-demo.mp4"
     },
     {
       "id": "g2bsmash",
@@ -1185,7 +1189,9 @@
       "groep": "plugins",
       "badge": "NIEUW — 320 PRESETS",
       "cover": "media/dren-cover.png",
-      "download_dir": "d/g2bdren"
+      "download_dir": "d/g2bdren",
+      "video": "media/g2bdren-demo.mp4",
+      "demo": "media/g2bdren-demo.mp4"
     },
     {
       "id": "drenlite",
@@ -1199,7 +1205,9 @@
       },
       "groep": "plugins",
       "badge": "GRATIS",
-      "cover": "media/drenlite-cover.png"
+      "cover": "media/drenlite-cover.png",
+      "video": "media/drenlite-demo.mp4",
+      "demo": "media/drenlite-demo.mp4"
     },
     {
       "id": "ocholite",
@@ -1213,7 +1221,9 @@
       },
       "groep": "plugins",
       "badge": "GRATIS",
-      "cover": "media/ocholite-cover.png"
+      "cover": "media/ocholite-cover.png",
+      "video": "media/ocholite-demo.mp4",
+      "demo": "media/ocholite-demo.mp4"
     }
   ]
 }
