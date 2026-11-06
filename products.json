@@ -25,7 +25,7 @@
    "id": "g2bmixer",
    "titel": "G2B MIXER — slimme channel-strip die elk spoor klaarmaakt",
    "soort": "plugin",
-   "beschrijving": "DE BRUG NAAR JE MASTER: zet MIXER op één spoor, kies je instrument-profiel (DRUMS · 808/BASS · KEYS · MELODIE · PERC · FX/LOOP) en druk MAAK MIX-KLAAR — hij luistert 5 sec en kalibreert je spoor zelf naar -12 dB doelniveau: TRIM naar juiste gain, HP-filter op het profiel, TILT donker-helder uit je spectrum, GLUE-compressie op je dynamiek. 6 grote knoppen (TRIM · HP · TILT · GLUE · WARMTE · LUID), live LEVEL + GR meter met doelstreep, LUFS live+gemiddeld, KRACHT dry/wet-slider, DICE, AAN/UIT-bypass, 8 skins. VST3 + CLAP + standalone EXE + handleiding.",
+   "beschrijving": "v2 — zet MIXER op ELKE spoor: ze luisteren naar elkaar via de BUS en maken zelf ruimte. MAAK MIX-KLAAR kalibreert je spoor én kiest je prioriteit. PRIO per spoor: HOOG dukit nooit, MIDDEN, LAAG wijkt voor alles. RUIMTE-slider: vechtende sporen maken plek — de verliezer vlucht naar de zijkant (M/S), mix blijft breed, zang houdt het midden. MASTER-link: staat er een G2B MASTER op je mix, dan duken LAAG/MIDDEN-sporen extra waar de mix te vol zit. TRIM · HP · TILT · GLUE · WARMTE · LUID, live LEVEL+GR, LUFS, KRACHT, DICE, AAN/UIT, 8 skins. VST3 + CLAP + EXE + handleiding.",
    "prijs": "€ 24,95",
    "links": {
     "koop": "bestel.html?p=g2bmixer",
@@ -37,9 +37,9 @@
    "download_dir": "d/g2bmixer",
    "demo": "media/g2bmixer-demo.mp4",
    "video": "media/g2bmixer-demo.mp4",
-   "uitleg": "media/mixer-uitleg.mp4",
-   "sub_nl": "media/mixer-uitleg.nl.vtt",
-   "sub_es": "media/mixer-uitleg.es.vtt",
+   "uitleg": "media/mixerv2-uitleg.mp4",
+   "sub_nl": "media/mixerv2-uitleg.nl.vtt",
+   "sub_es": "media/mixerv2-uitleg.es.vtt",
    "preview": "media/g2bmixer-preview.mp3"
   },
   {
