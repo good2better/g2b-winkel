@@ -278,7 +278,7 @@ function nNaam(m){return TNn[m%12]+Math.floor(m/12-1)}
 function melNoten(melArr,frameT){ // pitch-curve → noten {midi,t0,dur,v}
  const ampMx=Math.max(...melArr.map(f=>f.a),1e-9),ampThr=ampMx*0.06,noten=[];
  let cur=null;
- const push=c=>{if(c.len>=4)noten.push({midi:Math.round(median(c.mids)),t0:c.t0,dur:c.len*frameT,v:Math.min(1,c.ampSum/c.len/ampMx*1.6)})};
+ const push=c=>{if(c.len>=3)noten.push({midi:Math.round(median(c.mids)),t0:c.t0,dur:c.len*frameT,v:Math.min(1,c.ampSum/c.len/ampMx*1.6)})};
  for(let f=0;f<melArr.length;f++){
   const fr=melArr[f];if(fr.f<=0||fr.a<ampThr){if(cur){push(cur);cur=null}continue}
   const mi=69+12*Math.log2(fr.f/440);
@@ -323,6 +323,8 @@ function melUI(){
 const MSTEP=new Map(); // stap-index → noten die op die stap starten
 let stepDurAbs=0,melLoopS=0; // stepDurAbs/melLoopS: echte seconden per stap / loop-lengte
 function melGrid(){MSTEP.clear();
+ const last=MEL.length?Math.max(...MEL.map(n=>n.t0+n.dur)):0;
+ const need=Math.ceil(last/(stepDurAbs*nSub));if(need>nBars){nBars=need;renderGrid()}
  for(const n of MEL){const s=Math.round(n.t0/stepDurAbs);n.st=Math.max(0,Math.min(nBars*nSub-1,s));n.dt=Math.max(0,n.t0-n.st*stepDurAbs);
   if(!MSTEP.has(n.st))MSTEP.set(n.st,[]);MSTEP.get(n.st).push(n)}}
 // MIDI-export: noten → standaard .mid (format 0, 480 ticks/kwartsnoot, tempo uit BPM)
