@@ -35,21 +35,19 @@
    "video": "media/g2bmixer-demo.mp4"
   },
   {
-   "id": "g2bantwoord",
-   "titel": "G2B ANTWOORD — jij speelt 4 tellen, hij antwoordt in jouw stijl",
+   "id": "g2bgeluidmidi",
+   "titel": "G2B GELUID→MIDI — geluid in, MIDI uit",
    "soort": "plugin",
-   "beschrijving": "DE UNIEKE CALL & RESPONSE PLUGIN: druk LUISTER, speel 4 tellen op je keyboard → hij antwoordt de volgende 4 tellen terug in jouw toonsoort, jouw genre en jouw speelgevoel. 10 GENRE-PILLS (TRAP·DRILL·BOOMBAP·RNB·HOUSE·DEMBOW·KAWINA·LOFI·SOUL·POP) — elk antwoordt in z'n eigen taal. KEY-DETECT met zekerheids-% (bijv. A min 90%). RITME-SLOT: neemt jouw velocity en swing mee in het antwoord. HEFTRIGHEID-knop: EXACT spiegel → VARIATIE → VRIJ improv. MENS-knop voor human timing, GEHEUGEN-knop voor terugkerende thema's. VRAAG-knop: hij stelt jóú een vraag om op te antwoorden. LOOP-gesprekmodus, ↓MID export van het antwoord, MIDI-UIT naar andere plugins, DICE, 8 skins, level-meter. 100% eigen DSP — geen cloud, geen AI-abonnement. VST3 + CLAP + standalone EXE + handleiding-PDF.",
-   "prijs": "€ 29,95",
+   "beschrijving": "ÉÉN PLUGIN IN PLAATS VAN DRIE (LUISTER+OPROEP+ANTWOORD in één): alles wat je hoort wordt MIDI. LUISTER-modus: speel een beat, loop of geluid erdoor en hij schrijft de MIDI-loops (kick/snare/hat/melodie apart). NEURIE-modus: zing of neurie je lijn ±8 sec → strakke melodie-MIDI in je toonsoort, AUTO-KEY corrigeert valse noten zachtjes mee. ANTWOORD-modus: speel 4 tellen en hij antwoordt de volgende 4 tellen in jouw stijl, toonsoort en swing. Elke MIDI is een ECHT .mid-bestand in Music\\G2B — sleep het in je DAW en verander elke noot. 10 GENRE-PILLS, KEY-DETECT met zekerheids-%, BPM-detect, REFINE voor de volgende variatie, MIDI-UIT naar andere plugins, DICE, 8 skins. Werkt volledig offline, 100% eigen DSP — geen AI, geen cloud. VST3 + CLAP + standalone EXE + handleiding-PDF.",
+   "prijs": "€ 34,95",
    "links": {
-    "koop": "bestel.html?p=g2bantwoord",
-    "download": "bedankt.html?k=g2bantwoord"
+    "koop": "bestel.html?p=g2bgeluidmidi",
+    "download": "bedankt.html?k=g2bgeluidmidi"
    },
    "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/g2bantwoord-cover.png",
-   "download_dir": "d/g2bantwoord",
-   "demo": "media/g2bantwoord-demo.mp4",
-   "video": "media/g2bantwoord-demo.mp4"
+   "badge": "NIEUW — 3 IN 1",
+   "cover": "media/g2bgeluidmidi-cover.png",
+   "download_dir": "d/g2bgeluidmidi"
   },
   {
    "id": "g2brefors",
@@ -69,94 +67,10 @@
    "video": "media/g2brefors-demo.mp4"
   },
   {
-   "id": "g2bluister",
-   "titel": "G2B LUISTER — speel een geluid, hij schrijft de MIDI-loop",
-   "soort": "plugin",
-   "beschrijving": "NOOIT MEER GRIDS ZELF PROGRAMMEREN: zet LUISTER op een spoor, druk LUISTER en speel je geluid erdoor — een beat, one-shot of neuriën — en hij schrijft de passende MIDI-LOOPS erbij. Hij splitst wat hij hoort in KICK/SNARE/HAT/MELODIE en bouwt een strak patroon in jouw genre: 10 PILLS (TRAP·DRILL·BOOMBAP·RNB·HOUSE·DEMBOW·KAWINA·LOFI·SOUL·POP). Toonsoort-detect, BPM-detect, hit-teller in de scope. 4 knoppen: HEFT (patroon-dichtheid), MENS (humanize), LENGTE (2-16 bars), VAR (variatie). REFINE = volgende variatie op dezelfde analyse. ↓MID schrijft 2 APARTE .mid's — DRUMS + MELODIE — in je Music\\G2B map en opent die meteen om te slepen naar je tijdlijn. Loop speelt live mee als MIDI-output en volgt je transport (PLAY = speelt, STOP = stil). DICE, AAN/UIT, 8 skins, level-meter. 100% eigen DSP — geen AI, geen cloud, werkt offline. VST3 + CLAP + standalone EXE + handleiding-PDF.",
-   "prijs": "€ 29,95",
-   "links": {
-    "koop": "bestel.html?p=g2bluister",
-    "download": "bedankt.html?k=g2bluister"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/g2bluister-cover.png",
-   "download_dir": "d/g2bluister",
-   "demo": "media/g2bluister-demo.mp4",
-   "video": "media/g2bluister-demo.mp4"
-  },
-  {
-   "id": "g2boproep",
-   "titel": "G2B OPROEP — neurie→MIDI + stem→instrument",
-   "soort": "plugin",
-   "beschrijving": "DE STEM-PLUGIN MET 2 MODI: MELODIE — druk LUISTER, neurie/zing je lijn ±8 sec → hij schrijft de strakke melodie-MIDI in je toonsoort (AUTO-KEY corrigeert valse noten zachtjes mee). INSTRUMENT — zing of speel één toon/one-shot → het wordt meteen een bespeelbaar instrument op je MIDI-keyboard (16 stemmen). TOONLADDER-PILLS: MAJEUR·MINEUR·PENTA·BLUES·CHROMA (+4 extra in GIO). 4 knoppen: GEVOEL (quantize-sterkte) · GRID (8e/16e/32e) · OCTAAF (−2/+2) · VAR (versiering). ↓MID schrijft G2B-OPROEP-MELODIE.mid in Music/G2B — map opent vanzelf → sleep op je spoor. MIDI-output volgt je transport (PLAY speelt, STOP stil). REFINE-knop, DICE, AAN/UIT, 8 skins, level-meter. Perfect naast LUISTER (drums) — samen een hele beat uit 2 plugins. VST3 + CLAP + standalone EXE + handleiding-PDF.",
-   "prijs": 29.95,
-   "links": {
-    "koop": "https://good2better.github.io/g2b-winkel/bestel.html?p=g2boproep",
-    "download": "d/g2boproep/"
-   },
-   "groep": "studio-tools",
-   "badge": "NIEUW",
-   "cover": "media/g2boproep-cover.png",
-   "download_dir": "d/g2boproep",
-   "demo": "media/g2boproep-demo.mp4",
-   "video": "media/g2boproep-demo.mp4"
-  },
-  {
-   "id": "g2btrein",
-   "titel": "G2B TREIN",
-   "soort": "VST3 + CLAP plugin",
-   "beschrijving": "Van je 8-bars loop naar een HEEL nummer. Zet TREIN op je spoor, druk LUISTER en speel je loop erdoor — hij splitst drums+melodie en schrijft een compleet arrangement als .mid: INTRO, BUILD, DROP, BREAK en OUTRO als markers plus een MIX-kaart die vertelt welke bars wat doen. Sleep de MIDI op je eigen plugins en je nummer is klaar. 100% eigen code, werkt volledig offline.",
-   "prijs": 29.95,
-   "links": {
-    "koop": "mailto:g.sandvliet88@gmail.com?subject=G2B%20TREIN%20kopen",
-    "download": "d/g2btrein/"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/g2btrein-cover.png",
-   "video": "media/g2btrein-demo.mp4",
-   "download_dir": "d/g2btrein"
-  },
-  {
-   "id": "g2bcopro",
-   "titel": "G2B CO-PRODUCER",
-   "soort": "VST3 + CLAP plugin",
-   "beschrijving": "Jouw AI co-producer. Druk LUIS en speel je halve beat — hij leert je toonsoort, groove, dynamiek en akkoorden. Druk GEN en hij schrijft de tweede helft: voice-led bass, melodie die voortbouwt op jouw intervallen, drums in je genre en een tension-build in de laatste maten. DURF-schuif bepaalt hoe gewaagd. ↓MID schrijft het vervolg als MIDI (drums ch10, bass 2, melodie 3, counter 4). 100% eigen code, werkt volledig offline.",
-   "prijs": 29.95,
-   "links": {
-    "koop": "bestel.html?p=g2bcopro",
-    "download": "d/g2bcopro/"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/g2bcopro-cover.png",
-   "download_dir": "d/g2bcopro/",
-   "demo": "media/g2bcopro-demo.mp4",
-   "video": "media/g2bcopro-demo.mp4"
-  },
-  {
-   "id": "g2bdjebu",
-   "titel": "G2B DJEBU",
-   "soort": "VST3 + CLAP plugin",
-   "beschrijving": "Je eigen bandlid in een plugin. Druk SPEL en speel akkoorden — DJEBU speelt er automatisch een basslijn en drumpartij bij, in jouw genre en jouw akkoord (hij herkent toonsoort zelf). 10 stijlen van trap tot kawina, VOLHED/MENS/SWING-knoppen voor het gevoel, en ↓MID schrijft de hele band-partij als MIDI met drums op kanaal 10 en bass op kanaal 2 — Reason splitst ze zelf naar sporen. 100% eigen code, werkt volledig offline.",
-   "prijs": 29.95,
-   "links": {
-    "koop": "bestel.html?p=g2bdjebu",
-    "download": "d/g2bdjebu/"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/g2bdjebu-cover.png",
-   "download_dir": "d/g2bdjebu/",
-   "demo": "media/g2bdjebu-demo.mp4",
-   "video": "media/g2bdjebu-demo.mp4"
-  },
-  {
    "id": "g2bprodsuite",
    "titel": "G2B PRODUCER SUITE",
    "soort": "6 plugins in één set",
-   "beschrijving": "De complete G2B-plugin-set in één download: MASTER (polish), ANTWOORD (call→response), REFORS (auto/club/telefoon-test), LUISTER (geluid→MIDI), OPROEP (neuriën→melodie/instrument) en TREIN (loop→heel arrangement). Van idee naar af nummer — samen EUR180 los, als suite EUR79. Alle plugins VST3 + CLAP + standalone EXE, werkt offline, 100% eigen code.",
+   "beschrijving": "De complete G2B-plugin-set in één download: MASTER (auto-mastering op je eindtrack), MIXER (elk spoor mix-klaar in 1 klik), REFORS (auto/club/telefoon-test), BAND (MIDI/drumloop erin → heel nummer eruit) en GELUID→MIDI (geluid/neuriën erin → MIDI eruit). Van idee naar af nummer — samen EUR155 los, als suite EUR79. Alle plugins VST3 + CLAP + standalone EXE, werkt offline, 100% eigen code.",
    "prijs": 79.0,
    "links": {
     "koop": "bestel.html?p=g2bprodsuite",
@@ -168,6 +82,21 @@
    "download_dir": "d/g2bprodsuite",
    "demo": "media/g2bprodsuite-demo.mp4",
    "video": "media/g2bprodsuite-demo.mp4"
+  },
+  {
+   "id": "g2bband",
+   "titel": "G2B BAND — jouw MIDI of drumloop wordt een heel nummer",
+   "soort": "plugin",
+   "beschrijving": "ÉÉN PLUGIN IN PLAATS VAN VIER (DJEBU+CO-PRODUCER+TREIN+SONG in één): zet BAND op je spoor en kies je modus — SPEL: speel akkoorden op je keyboard en hij speelt live bass+drums mee in jouw genre. VERVOLG: druk LUISTER, speel je halve beat, druk GEN en hij schrijft de tweede helft. ARRANGEMENT: stuur je MIDI of drumloop erin en hij maakt een HEEL nummer met INTRO, BUILD, DROP, BREAK en OUTRO — als .mid klaar om te slepen naar je DAW-grid zodat je elke noot kan aanpassen. 10 GENRE-PILLS (TRAP·DRILL·BOOMBAP·RNB·HOUSE·DEMBOW·KAWINA·LOFI·SOUL·POP). Knoppen: VOLHEID·DURF·HEFT·MENS·SWING·LENGTE·VAR + ↓MID export + MIDI-UIT + DICE + 8 skins. Speelt hoorbaar (eigen synth) én schrijft MIDI uit. 100% eigen code — geen cloud, geen AI-abonnement. VST3 + CLAP + standalone EXE + handleiding-PDF.",
+   "prijs": "€ 34,95",
+   "links": {
+    "koop": "bestel.html?p=g2bband",
+    "download": "bedankt.html?k=g2bband"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW — 4 IN 1",
+   "cover": "media/g2bband-cover.png",
+   "download_dir": "d/g2bband"
   },
   {
    "id": "g2bsmash",
@@ -417,26 +346,6 @@
    "video": "media/lijstfabriek-demo.mp4",
    "video_en": "media/lijstfabriek-demo-en.mp4",
    "video_es": "media/lijstfabriek-demo-es.mp4"
-  },
-  {
-   "id": "g2bsong1",
-   "titel": "G2B SONG — all-in-one song-machine",
-   "soort": "plugin",
-   "beschrijving": "V2: DE OPVOLGER VAN DONDER GLIDER — complete song-machine als instrument met echt 10-RIJ DRUM-RASTER (KICK·SNARE·HAT·CLAP·PERC·+X1·+X2·808·CHORD·MEL): elk vakje aanklikbaar, teken je eigen patroon, per rij een dobbelsteentje voor nieuwe varianten, rij-naam = laag aan/uit, +X-rijen kiezen zelf hun geluid (tamboerijn/cowbell/rimshot/shaker/bel), SHIFT+dobbelsteen = terug naar stijl. Plus echte 808-GLIDE, 27 stijlen, DICE, AUTO-mutatie, ↓MID export naar je piano roll, MIDI-keyboard live (k1=808 legato-glide, k2=akkoorden, k3=melodie, k4=drums), 1-TOETS-modes. VST3 + CLAP + standalone EXE + handleiding-PDF.",
-   "prijs": "€ 29,95",
-   "links": {
-    "koop": "bestel.html?p=g2bsong1",
-    "download": "bedankt.html?k=g2bsong1"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/g2bsong-cover.png",
-   "download_dir": "d/g2bsong1",
-   "demo": "media/song-demo-v3.mp4",
-   "video": "media/song-demo-v3.mp4",
-   "uitleg": "media/song-uitleg.mp4",
-   "sub_nl": "media/song-uitleg.nl.vtt",
-   "sub_es": "media/song-uitleg.es.vtt"
   },
   {
    "id": "g2bvibe1",
