@@ -15,7 +15,10 @@
       "cover": "media/g2bmaster-cover.png",
       "download_dir": "d/g2bmaster",
       "demo": "media/g2bmaster-demo.mp4",
-      "video": "media/g2bmaster-demo.mp4"
+      "video": "media/g2bmaster-demo.mp4",
+      "uitleg": "media/master-uitleg.mp4",
+      "sub_nl": "media/master-uitleg.nl.vtt",
+      "sub_es": "media/master-uitleg.es.vtt"
     },
     {
       "id": "g2bmixer",
@@ -32,7 +35,10 @@
       "cover": "media/g2bmixer-cover.png",
       "download_dir": "d/g2bmixer",
       "demo": "media/g2bmixer-demo.mp4",
-      "video": "media/g2bmixer-demo.mp4"
+      "video": "media/g2bmixer-demo.mp4",
+      "uitleg": "media/mixer-uitleg.mp4",
+      "sub_nl": "media/mixer-uitleg.nl.vtt",
+      "sub_es": "media/mixer-uitleg.es.vtt"
     },
     {
       "id": "g2bgeluidmidi",
@@ -49,7 +55,10 @@
       "cover": "media/g2bgeluidmidi-cover.png",
       "download_dir": "d/g2bgeluidmidi",
       "video": "media/g2bgeluidmidi-demo.mp4",
-      "demo": "media/g2bgeluidmidi-demo.mp4"
+      "demo": "media/g2bgeluidmidi-demo.mp4",
+      "uitleg": "media/geluidmidi-uitleg.mp4",
+      "sub_nl": "media/geluidmidi-uitleg.nl.vtt",
+      "sub_es": "media/geluidmidi-uitleg.es.vtt"
     },
     {
       "id": "g2brefors",
@@ -66,7 +75,10 @@
       "cover": "media/g2brefors-cover.png",
       "download_dir": "d/g2brefors",
       "demo": "media/g2brefors-demo.mp4",
-      "video": "media/g2brefors-demo.mp4"
+      "video": "media/g2brefors-demo.mp4",
+      "uitleg": "media/refors-uitleg.mp4",
+      "sub_nl": "media/refors-uitleg.nl.vtt",
+      "sub_es": "media/refors-uitleg.es.vtt"
     },
     {
       "id": "g2bprodsuite",
@@ -83,7 +95,10 @@
       "cover": "media/g2bprodsuite-cover.png",
       "download_dir": "d/g2bprodsuite",
       "demo": "media/g2bprodsuite-demo.mp4",
-      "video": "media/g2bprodsuite-demo.mp4"
+      "video": "media/g2bprodsuite-demo.mp4",
+      "uitleg": "media/prodsuite-uitleg.mp4",
+      "sub_nl": "media/prodsuite-uitleg.nl.vtt",
+      "sub_es": "media/prodsuite-uitleg.es.vtt"
     },
     {
       "id": "g2bband",
@@ -100,7 +115,10 @@
       "cover": "media/g2bband-cover.png",
       "download_dir": "d/g2bband",
       "video": "media/g2bband-demo.mp4",
-      "demo": "media/g2bband-demo.mp4"
+      "demo": "media/g2bband-demo.mp4",
+      "uitleg": "media/band-uitleg.mp4",
+      "sub_nl": "media/band-uitleg.nl.vtt",
+      "sub_es": "media/band-uitleg.es.vtt"
     },
     {
       "id": "g2bsmash",
@@ -117,7 +135,10 @@
       "cover": "media/g2bsmash-cover.png",
       "download_dir": "d/g2bsmash",
       "demo": "media/g2bsmash-demo.mp4",
-      "video": "media/g2bsmash-demo.mp4"
+      "video": "media/g2bsmash-demo.mp4",
+      "uitleg": "media/smash-uitleg.mp4",
+      "sub_nl": "media/smash-uitleg.nl.vtt",
+      "sub_es": "media/smash-uitleg.es.vtt"
     },
     {
       "id": "g2bairdrums",
@@ -134,7 +155,10 @@
       "cover": "media/g2bairdrums-cover.png",
       "download_dir": "d/g2bairdrums/",
       "demo": "media/g2bairdrums-demo.mp4",
-      "video": "media/g2bairdrums-demo.mp4"
+      "video": "media/g2bairdrums-demo.mp4",
+      "uitleg": "media/airdrums-uitleg.mp4",
+      "sub_nl": "media/airdrums-uitleg.nl.vtt",
+      "sub_es": "media/airdrums-uitleg.es.vtt"
     },
     {
       "id": "g2bsuite1",
@@ -149,7 +173,10 @@
       },
       "groep": "apps",
       "badge": "ALLES-IN-1",
-      "download_dir": "d/g2bsuite1"
+      "download_dir": "d/g2bsuite1",
+      "uitleg": "media/suite1-uitleg.mp4",
+      "sub_nl": "media/suite1-uitleg.nl.vtt",
+      "sub_es": "media/suite1-uitleg.es.vtt"
     },
     {
       "id": "seofabriek1",
@@ -166,7 +193,10 @@
         "koop": "bestel.html?p=seofabriek1",
         "download": "bedankt.html?k=seofabriek1"
       },
-      "download_dir": "d/seofabriek1"
+      "download_dir": "d/seofabriek1",
+      "uitleg": "media/seofabriek1-uitleg.mp4",
+      "sub_nl": "media/seofabriek1-uitleg.nl.vtt",
+      "sub_es": "media/seofabriek1-uitleg.es.vtt"
     },
     {
       "id": "agency1",
@@ -181,7 +211,10 @@
       },
       "groep": "apps",
       "badge": "AGENCY",
-      "download_dir": "d/agency1"
+      "download_dir": "d/agency1",
+      "uitleg": "media/agency1-uitleg.mp4",
+      "sub_nl": "media/agency1-uitleg.nl.vtt",
+      "sub_es": "media/agency1-uitleg.es.vtt"
     },
     {
       "id": "marketerbundel1",
@@ -196,7 +229,10 @@
       },
       "groep": "apps",
       "badge": "BUNDEL",
-      "download_dir": "d/marketerbundel1"
+      "download_dir": "d/marketerbundel1",
+      "uitleg": "media/marketerbundel1-uitleg.mp4",
+      "sub_nl": "media/marketerbundel1-uitleg.nl.vtt",
+      "sub_es": "media/marketerbundel1-uitleg.es.vtt"
     },
     {
       "id": "mailfabriek1",
@@ -213,7 +249,10 @@
       "download_dir": "d/mailfabriek1",
       "video": "media/mailfabriek-demo.mp4",
       "video_en": "media/mailfabriek-demo-en.mp4",
-      "video_es": "media/mailfabriek-demo-es.mp4"
+      "video_es": "media/mailfabriek-demo-es.mp4",
+      "uitleg": "media/mailfabriek1-uitleg.mp4",
+      "sub_nl": "media/mailfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/mailfabriek1-uitleg.es.vtt"
     },
     {
       "id": "sheetfabriek1",
@@ -230,7 +269,10 @@
       "download_dir": "d/sheetfabriek1",
       "video": "media/sheetfabriek-demo.mp4",
       "video_en": "media/sheetfabriek-demo-en.mp4",
-      "video_es": "media/sheetfabriek-demo-es.mp4"
+      "video_es": "media/sheetfabriek-demo-es.mp4",
+      "uitleg": "media/sheetfabriek1-uitleg.mp4",
+      "sub_nl": "media/sheetfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/sheetfabriek1-uitleg.es.vtt"
     },
     {
       "id": "sequentiefabriek1",
@@ -247,7 +289,10 @@
       "download_dir": "d/sequentiefabriek1",
       "video": "media/sequentiefabriek-demo.mp4",
       "video_en": "media/sequentiefabriek-demo-en.mp4",
-      "video_es": "media/sequentiefabriek-demo-es.mp4"
+      "video_es": "media/sequentiefabriek-demo-es.mp4",
+      "uitleg": "media/sequentiefabriek1-uitleg.mp4",
+      "sub_nl": "media/sequentiefabriek1-uitleg.nl.vtt",
+      "sub_es": "media/sequentiefabriek1-uitleg.es.vtt"
     },
     {
       "id": "crmfabriek1",
@@ -264,7 +309,10 @@
       "download_dir": "d/crmfabriek1",
       "video": "media/crmfabriek-demo.mp4",
       "video_en": "media/crmfabriek-demo-en.mp4",
-      "video_es": "media/crmfabriek-demo-es.mp4"
+      "video_es": "media/crmfabriek-demo-es.mp4",
+      "uitleg": "media/crmfabriek1-uitleg.mp4",
+      "sub_nl": "media/crmfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/crmfabriek1-uitleg.es.vtt"
     },
     {
       "id": "watcherfabriek1",
@@ -281,7 +329,10 @@
       "download_dir": "d/watcherfabriek1",
       "video": "media/watcherfabriek-demo.mp4",
       "video_en": "media/watcherfabriek-demo-en.mp4",
-      "video_es": "media/watcherfabriek-demo-es.mp4"
+      "video_es": "media/watcherfabriek-demo-es.mp4",
+      "uitleg": "media/watcherfabriek1-uitleg.mp4",
+      "sub_nl": "media/watcherfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/watcherfabriek1-uitleg.es.vtt"
     },
     {
       "id": "flowfabriek1",
@@ -298,7 +349,10 @@
       "download_dir": "d/flowfabriek1",
       "video": "media/flowfabriek-demo.mp4",
       "video_en": "media/flowfabriek-demo-en.mp4",
-      "video_es": "media/flowfabriek-demo-es.mp4"
+      "video_es": "media/flowfabriek-demo-es.mp4",
+      "uitleg": "media/flowfabriek1-uitleg.mp4",
+      "sub_nl": "media/flowfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/flowfabriek1-uitleg.es.vtt"
     },
     {
       "id": "kanaalfabriek1",
@@ -315,7 +369,10 @@
       "cover": "media/kanaalfabriek-cover.png",
       "download_dir": "d/kanaalfabriek1",
       "demo": "media/kanaalfabriek-demo.mp4",
-      "video": "media/kanaalfabriek-demo.mp4"
+      "video": "media/kanaalfabriek-demo.mp4",
+      "uitleg": "media/kanaalfabriek1-uitleg.mp4",
+      "sub_nl": "media/kanaalfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/kanaalfabriek1-uitleg.es.vtt"
     },
     {
       "id": "leadfabriek1",
@@ -332,7 +389,10 @@
       "download_dir": "d/leadfabriek1",
       "video": "media/leadfabriek-demo.mp4",
       "video_en": "media/leadfabriek-demo-en.mp4",
-      "video_es": "media/leadfabriek-demo-es.mp4"
+      "video_es": "media/leadfabriek-demo-es.mp4",
+      "uitleg": "media/leadfabriek1-uitleg.mp4",
+      "sub_nl": "media/leadfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/leadfabriek1-uitleg.es.vtt"
     },
     {
       "id": "lijstfabriek1",
@@ -349,7 +409,10 @@
       "download_dir": "d/lijstfabriek1",
       "video": "media/lijstfabriek-demo.mp4",
       "video_en": "media/lijstfabriek-demo-en.mp4",
-      "video_es": "media/lijstfabriek-demo-es.mp4"
+      "video_es": "media/lijstfabriek-demo-es.mp4",
+      "uitleg": "media/lijstfabriek1-uitleg.mp4",
+      "sub_nl": "media/lijstfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/lijstfabriek1-uitleg.es.vtt"
     },
     {
       "id": "g2bvibe1",
@@ -366,7 +429,10 @@
       "cover": "media/g2bvibe-cover.png",
       "download_dir": "d/g2bvibe1",
       "demo": "media/g2bvibe-demo.mp4",
-      "video": "media/g2bvibe-demo.mp4"
+      "video": "media/g2bvibe-demo.mp4",
+      "uitleg": "media/vibe1-uitleg.mp4",
+      "sub_nl": "media/vibe1-uitleg.nl.vtt",
+      "sub_es": "media/vibe1-uitleg.es.vtt"
     },
     {
       "id": "g2bbestof",
@@ -406,7 +472,10 @@
       "demo": "media/oneshots-demo.mp4",
       "video": "media/oneshots-demo.mp4",
       "download_dir": "d/g2boneshots",
-      "eerst": true
+      "eerst": true,
+      "uitleg": "media/oneshots-uitleg.mp4",
+      "sub_nl": "media/oneshots-uitleg.nl.vtt",
+      "sub_es": "media/oneshots-uitleg.es.vtt"
     },
     {
       "id": "g2b-juridisch",
@@ -425,7 +494,10 @@
       "demo": "media/juridisch-demo.mp4",
       "video": "media/juridisch-demo.mp4",
       "video_en": "media/juridisch-demo-en.mp4",
-      "video_es": "media/juridisch-demo-es.mp4"
+      "video_es": "media/juridisch-demo-es.mp4",
+      "uitleg": "media/juridisch-uitleg.mp4",
+      "sub_nl": "media/juridisch-uitleg.nl.vtt",
+      "sub_es": "media/juridisch-uitleg.es.vtt"
     },
     {
       "id": "g2b-psychologie",
@@ -444,7 +516,10 @@
       "demo": "media/psychologie-demo.mp4",
       "video": "media/psychologie-demo.mp4",
       "video_en": "media/psychologie-demo-en.mp4",
-      "video_es": "media/psychologie-demo-es.mp4"
+      "video_es": "media/psychologie-demo-es.mp4",
+      "uitleg": "media/psychologie-uitleg.mp4",
+      "sub_nl": "media/psychologie-uitleg.nl.vtt",
+      "sub_es": "media/psychologie-uitleg.es.vtt"
     },
     {
       "id": "g2b-workstation",
@@ -464,7 +539,10 @@
       "video_es": "media/workstation-demo-es.mp4",
       "badge": "100% LOKAAL — ook AI",
       "eerst": true,
-      "download_dir": "d/g2b-workstation"
+      "download_dir": "d/g2b-workstation",
+      "uitleg": "media/workstation-uitleg.mp4",
+      "sub_nl": "media/workstation-uitleg.nl.vtt",
+      "sub_es": "media/workstation-uitleg.es.vtt"
     },
     {
       "id": "cursus01",
@@ -480,7 +558,10 @@
       "groep": "apps",
       "badge": "NIEUW",
       "cover": "media/cursus-beatmaker-cover.png",
-      "download_dir": "d/cursus01"
+      "download_dir": "d/cursus01",
+      "uitleg": "media/cursus01-uitleg.mp4",
+      "sub_nl": "media/cursus01-uitleg.nl.vtt",
+      "sub_es": "media/cursus01-uitleg.es.vtt"
     },
     {
       "id": "g2b-bedrijfsmiddelen",
@@ -499,7 +580,10 @@
       "demo": "media/bedrijfsmiddelen-demo.mp4",
       "video": "media/bedrijfsmiddelen-demo.mp4",
       "video_en": "media/bedrijfsmiddelen-demo-en.mp4",
-      "video_es": "media/bedrijfsmiddelen-demo-es.mp4"
+      "video_es": "media/bedrijfsmiddelen-demo-es.mp4",
+      "uitleg": "media/bedrijfsmiddelen-uitleg.mp4",
+      "sub_nl": "media/bedrijfsmiddelen-uitleg.nl.vtt",
+      "sub_es": "media/bedrijfsmiddelen-uitleg.es.vtt"
     },
     {
       "id": "2878e291",
@@ -900,7 +984,10 @@
       "cover": "media/ritmosbundle-cover.png",
       "preview": "media/ritmosalbum-preview.mp3",
       "video": "media/ritmosbundle-promo.mp4",
-      "download_dir": "d/d74976fef7dfff6a"
+      "download_dir": "d/d74976fef7dfff6a",
+      "uitleg": "media/ritmosbundel-uitleg.mp4",
+      "sub_nl": "media/ritmosbundel-uitleg.nl.vtt",
+      "sub_es": "media/ritmosbundel-uitleg.es.vtt"
     },
     {
       "id": "g2bfx1",
@@ -917,7 +1004,10 @@
       "cover": "media/sat-cover.png",
       "download_dir": "d/g2bfx1",
       "video": "media/g2bfx-demo-v3.mp4",
-      "demo": "media/g2bfx-demo-v3.mp4"
+      "demo": "media/g2bfx-demo-v3.mp4",
+      "uitleg": "media/fx1-uitleg.mp4",
+      "sub_nl": "media/fx1-uitleg.nl.vtt",
+      "sub_es": "media/fx1-uitleg.es.vtt"
     },
     {
       "id": "ocho01",
@@ -967,7 +1057,10 @@
       },
       "moods": [
         "tool"
-      ]
+      ],
+      "uitleg": "media/sl3ut3-uitleg.mp4",
+      "sub_nl": "media/sl3ut3-uitleg.nl.vtt",
+      "sub_es": "media/sl3ut3-uitleg.es.vtt"
     },
     {
       "id": "g2b-brein",
@@ -983,7 +1076,10 @@
       "download_dir": "d/f6da0caecdf195",
       "demo": "media/g2b-brein-demo.mp4",
       "video": "media/g2b-brein-demo.mp4",
-      "badge": "NIEUW"
+      "badge": "NIEUW",
+      "uitleg": "media/brein-uitleg.mp4",
+      "sub_nl": "media/brein-uitleg.nl.vtt",
+      "sub_es": "media/brein-uitleg.es.vtt"
     },
     {
       "id": "prod01",
@@ -1000,7 +1096,10 @@
       "cover": "media/sat-cover.png",
       "download_dir": "d/prod01",
       "video": "media/producer-demo.mp4",
-      "demo": "media/producer-demo.mp4"
+      "demo": "media/producer-demo.mp4",
+      "uitleg": "media/prod01-uitleg.mp4",
+      "sub_nl": "media/prod01-uitleg.nl.vtt",
+      "sub_es": "media/prod01-uitleg.es.vtt"
     },
     {
       "id": "sp00ky",
@@ -1019,7 +1118,10 @@
       "download_dir": "d/sp00ky",
       "eerst": true,
       "demo": "media/sp00ky-preview.mp4",
-      "video": "media/sp00ky-preview.mp4"
+      "video": "media/sp00ky-preview.mp4",
+      "uitleg": "media/sp00ky-uitleg.mp4",
+      "sub_nl": "media/sp00ky-uitleg.nl.vtt",
+      "sub_es": "media/sp00ky-uitleg.es.vtt"
     },
     {
       "id": "school1",
@@ -1036,7 +1138,10 @@
         "download": "schoolspelen/index.html"
       },
       "groep": "gratis",
-      "badge": "GRATIS"
+      "badge": "GRATIS",
+      "uitleg": "media/school1-uitleg.mp4",
+      "sub_nl": "media/school1-uitleg.nl.vtt",
+      "sub_es": "media/school1-uitleg.es.vtt"
     },
     {
       "id": "g2bbd1",
@@ -1053,7 +1158,10 @@
       "cover": "media/g2bbd-cover.png",
       "demo": "media/g2bbd-demo.mp4",
       "video": "media/g2bbd-demo.mp4",
-      "download_dir": "d/g2bbd1"
+      "download_dir": "d/g2bbd1",
+      "uitleg": "media/bd1-uitleg.mp4",
+      "sub_nl": "media/bd1-uitleg.nl.vtt",
+      "sub_es": "media/bd1-uitleg.es.vtt"
     },
     {
       "id": "steun-3",
@@ -1065,7 +1173,10 @@
       "beschrijving": "Trakteer de maker — steun G2B met een bijdrage. Geen product-download; wij bedanken je met een mailtje.",
       "links": {
         "koop": "bestel.html?p=steun-3"
-      }
+      },
+      "uitleg": "media/steun3-uitleg.mp4",
+      "sub_nl": "media/steun3-uitleg.nl.vtt",
+      "sub_es": "media/steun3-uitleg.es.vtt"
     },
     {
       "id": "steun-5",
@@ -1077,7 +1188,10 @@
       "beschrijving": "Trakteer de maker — steun G2B met een bijdrage. Geen product-download; wij bedanken je met een mailtje.",
       "links": {
         "koop": "bestel.html?p=steun-5"
-      }
+      },
+      "uitleg": "media/steun5-uitleg.mp4",
+      "sub_nl": "media/steun5-uitleg.nl.vtt",
+      "sub_es": "media/steun5-uitleg.es.vtt"
     },
     {
       "id": "steun-10",
@@ -1089,7 +1203,10 @@
       "beschrijving": "Trakteer de maker — steun G2B met een bijdrage. Geen product-download; wij bedanken je met een mailtje.",
       "links": {
         "koop": "bestel.html?p=steun-10"
-      }
+      },
+      "uitleg": "media/steun10-uitleg.mp4",
+      "sub_nl": "media/steun10-uitleg.nl.vtt",
+      "sub_es": "media/steun10-uitleg.es.vtt"
     },
     {
       "id": "femina-pil",
@@ -1103,7 +1220,10 @@
       "groep": "femina",
       "badge": "PRE-ORDER",
       "cover": "feminasync/img/mockup_pil_vrouwen.png",
-      "verborgen": true
+      "verborgen": true,
+      "uitleg": "media/feminapil-uitleg.mp4",
+      "sub_nl": "media/feminapil-uitleg.nl.vtt",
+      "sub_es": "media/feminapil-uitleg.es.vtt"
     },
     {
       "id": "femina-thee",
@@ -1117,7 +1237,10 @@
       "groep": "femina",
       "badge": "PRE-ORDER",
       "cover": "feminasync/img/mockup_thee_meisjes.png",
-      "verborgen": true
+      "verborgen": true,
+      "uitleg": "media/feminathee-uitleg.mp4",
+      "sub_nl": "media/feminathee-uitleg.nl.vtt",
+      "sub_es": "media/feminathee-uitleg.es.vtt"
     },
     {
       "id": "femina-zalf",
@@ -1131,7 +1254,10 @@
       "groep": "femina",
       "badge": "PRE-ORDER",
       "cover": "feminasync/img/stijl-meisjes.png",
-      "verborgen": true
+      "verborgen": true,
+      "uitleg": "media/feminazalf-uitleg.mp4",
+      "sub_nl": "media/feminazalf-uitleg.nl.vtt",
+      "sub_es": "media/feminazalf-uitleg.es.vtt"
     },
     {
       "id": "femina-startpakket",
@@ -1145,7 +1271,10 @@
       "groep": "femina",
       "badge": "PRE-ORDER",
       "cover": "feminasync/img/stijl-meisjes.png",
-      "verborgen": true
+      "verborgen": true,
+      "uitleg": "media/feminastartpakket-uitleg.mp4",
+      "sub_nl": "media/feminastartpakket-uitleg.nl.vtt",
+      "sub_es": "media/feminastartpakket-uitleg.es.vtt"
     },
     {
       "id": "femina-pil-zacht",
@@ -1159,7 +1288,10 @@
       "links": {
         "koop": "bestel.html?p=femina-pil-zacht"
       },
-      "verborgen": true
+      "verborgen": true,
+      "uitleg": "media/feminapilzacht-uitleg.mp4",
+      "sub_nl": "media/feminapilzacht-uitleg.nl.vtt",
+      "sub_es": "media/feminapilzacht-uitleg.es.vtt"
     },
     {
       "id": "gamefabriek1",
@@ -1174,7 +1306,10 @@
       "groep": "apps",
       "badge": "NIEUW",
       "download_dir": "d/gamefabriek1",
-      "video": "media/gamefabriek-demo.mp4"
+      "video": "media/gamefabriek-demo.mp4",
+      "uitleg": "media/gamefabriek1-uitleg.mp4",
+      "sub_nl": "media/gamefabriek1-uitleg.nl.vtt",
+      "sub_es": "media/gamefabriek1-uitleg.es.vtt"
     },
     {
       "id": "g2bdren",
@@ -1191,7 +1326,10 @@
       "cover": "media/dren-cover.png",
       "download_dir": "d/g2bdren",
       "video": "media/g2bdren-demo.mp4",
-      "demo": "media/g2bdren-demo.mp4"
+      "demo": "media/g2bdren-demo.mp4",
+      "uitleg": "media/dren-uitleg.mp4",
+      "sub_nl": "media/dren-uitleg.nl.vtt",
+      "sub_es": "media/dren-uitleg.es.vtt"
     },
     {
       "id": "drenlite",
@@ -1207,7 +1345,10 @@
       "badge": "GRATIS",
       "cover": "media/drenlite-cover.png",
       "video": "media/drenlite-demo.mp4",
-      "demo": "media/drenlite-demo.mp4"
+      "demo": "media/drenlite-demo.mp4",
+      "uitleg": "media/drenlite-uitleg.mp4",
+      "sub_nl": "media/drenlite-uitleg.nl.vtt",
+      "sub_es": "media/drenlite-uitleg.es.vtt"
     },
     {
       "id": "ocholite",
@@ -1223,7 +1364,10 @@
       "badge": "GRATIS",
       "cover": "media/ocholite-cover.png",
       "video": "media/ocholite-demo.mp4",
-      "demo": "media/ocholite-demo.mp4"
+      "demo": "media/ocholite-demo.mp4",
+      "uitleg": "media/ocholite-uitleg.mp4",
+      "sub_nl": "media/ocholite-uitleg.nl.vtt",
+      "sub_es": "media/ocholite-uitleg.es.vtt"
     }
   ]
 }
