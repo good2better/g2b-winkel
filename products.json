@@ -35,13 +35,14 @@
    "video": "media/g2bmaster-demo.mp4",
    "uitleg": "media/master-uitleg.mp4",
    "sub_nl": "media/master-uitleg.nl.vtt",
-   "sub_es": "media/master-uitleg.es.vtt"
+   "sub_es": "media/master-uitleg.es.vtt",
+   "preview": "media/g2bmaster-preview.mp3"
   },
   {
    "id": "g2bmixer",
    "titel": "G2B MIXER — slimme channel-strip die elk spoor klaarmaakt",
    "soort": "plugin",
-   "beschrijving": "DE BRUG NAAR JE MASTER: zet MIXER op één spoor, kies je instrument-profiel (DRUMS · 808/BASS · KEYS · MELODIE · PERC · FX/LOOP) en druk MAAK MIX-KLAAR — hij luistert 5 sec en kalibreert je spoor zelf naar -12 dB doelniveau: TRIM naar juiste gain, HP-filter op het profiel, TILT donker-helder uit je spectrum, GLUE-compressie op je dynamiek. 6 grote knoppen (TRIM · HP · TILT · GLUE · WARMTE · LUID), live LEVEL + GR meter met doelstreep, LUFS live+gemiddeld, KRACHT dry/wet-slider, DICE, AAN/UIT-bypass, 8 skins. VST3 + CLAP + standalone EXE + handleiding.",
+   "beschrijving": "v2 — zet MIXER op ELKE spoor: ze luisteren naar elkaar via de BUS en maken zelf ruimte. MAAK MIX-KLAAR kalibreert je spoor én kiest je prioriteit. PRIO per spoor: HOOG dukit nooit, MIDDEN, LAAG wijkt voor alles. RUIMTE-slider: vechtende sporen maken plek — de verliezer vlucht naar de zijkant (M/S), mix blijft breed, zang houdt het midden. MASTER-link: staat er een G2B MASTER op je mix, dan duken LAAG/MIDDEN-sporen extra waar de mix te vol zit. TRIM · HP · TILT · GLUE · WARMTE · LUID, live LEVEL+GR, LUFS, KRACHT, DICE, AAN/UIT, 8 skins. VST3 + CLAP + EXE + handleiding.",
    "prijs": "€ 24,95",
    "links": {
     "koop": "bestel.html?p=g2bmixer",
@@ -53,9 +54,10 @@
    "download_dir": "d/g2bmixer",
    "demo": "media/g2bmixer-demo.mp4",
    "video": "media/g2bmixer-demo.mp4",
-   "uitleg": "media/mixer-uitleg.mp4",
-   "sub_nl": "media/mixer-uitleg.nl.vtt",
-   "sub_es": "media/mixer-uitleg.es.vtt"
+   "uitleg": "media/mixerv2-uitleg.mp4",
+   "sub_nl": "media/mixerv2-uitleg.nl.vtt",
+   "sub_es": "media/mixerv2-uitleg.es.vtt",
+   "preview": "media/g2bmixer-preview.mp3"
   },
   {
    "id": "g2bgeluidmidi",
@@ -75,7 +77,8 @@
    "demo": "media/g2bgeluidmidi-demo.mp4",
    "uitleg": "media/geluidmidi-uitleg.mp4",
    "sub_nl": "media/geluidmidi-uitleg.nl.vtt",
-   "sub_es": "media/geluidmidi-uitleg.es.vtt"
+   "sub_es": "media/geluidmidi-uitleg.es.vtt",
+   "preview": "media/g2bgeluidmidi-preview.mp3"
   },
   {
    "id": "g2brefors",
@@ -95,7 +98,8 @@
    "video": "media/g2brefors-demo.mp4",
    "uitleg": "media/refors-uitleg.mp4",
    "sub_nl": "media/refors-uitleg.nl.vtt",
-   "sub_es": "media/refors-uitleg.es.vtt"
+   "sub_es": "media/refors-uitleg.es.vtt",
+   "preview": "media/g2brefors-preview.mp3"
   },
   {
    "id": "g2bprodsuite",
@@ -115,7 +119,8 @@
    "video": "media/g2bprodsuite-demo.mp4",
    "uitleg": "media/prodsuite-uitleg.mp4",
    "sub_nl": "media/prodsuite-uitleg.nl.vtt",
-   "sub_es": "media/prodsuite-uitleg.es.vtt"
+   "sub_es": "media/prodsuite-uitleg.es.vtt",
+   "preview": "media/g2bprodsuite-preview.mp3"
   },
   {
    "id": "g2bband",
@@ -135,7 +140,8 @@
    "demo": "media/g2bband-demo.mp4",
    "uitleg": "media/band-uitleg.mp4",
    "sub_nl": "media/band-uitleg.nl.vtt",
-   "sub_es": "media/band-uitleg.es.vtt"
+   "sub_es": "media/band-uitleg.es.vtt",
+   "preview": "media/g2bband-preview.mp3"
   },
   {
    "id": "g2bsmash",
@@ -155,7 +161,8 @@
    "video": "media/g2bsmash-demo.mp4",
    "uitleg": "media/smash-uitleg.mp4",
    "sub_nl": "media/smash-uitleg.nl.vtt",
-   "sub_es": "media/smash-uitleg.es.vtt"
+   "sub_es": "media/smash-uitleg.es.vtt",
+   "preview": "media/g2bsmash-preview.mp3"
   },
   {
    "id": "g2bairdrums",
@@ -175,7 +182,8 @@
    "video": "media/g2bairdrums-demo.mp4",
    "uitleg": "media/airdrums-uitleg.mp4",
    "sub_nl": "media/airdrums-uitleg.nl.vtt",
-   "sub_es": "media/airdrums-uitleg.es.vtt"
+   "sub_es": "media/airdrums-uitleg.es.vtt",
+   "preview": "media/g2bairdrums-preview.mp3"
   },
   {
    "id": "g2bsuite1",
@@ -449,7 +457,8 @@
    "video": "media/g2bvibe-demo.mp4",
    "uitleg": "media/vibe1-uitleg.mp4",
    "sub_nl": "media/vibe1-uitleg.nl.vtt",
-   "sub_es": "media/vibe1-uitleg.es.vtt"
+   "sub_es": "media/vibe1-uitleg.es.vtt",
+   "preview": "media/g2bvibe1-preview.mp3"
   },
   {
    "id": "g2bbestof",
@@ -1024,7 +1033,8 @@
    "demo": "media/g2bfx-demo-v3.mp4",
    "uitleg": "media/fx1-uitleg.mp4",
    "sub_nl": "media/fx1-uitleg.nl.vtt",
-   "sub_es": "media/fx1-uitleg.es.vtt"
+   "sub_es": "media/fx1-uitleg.es.vtt",
+   "preview": "media/g2bfx1-preview.mp3"
   },
   {
    "id": "ocho01",
@@ -1045,7 +1055,8 @@
    "video": "media/ocho-demo.mp4",
    "uitleg": "media/ocho-uitleg.mp4",
    "sub_nl": "media/ocho-uitleg.nl.vtt",
-   "sub_es": "media/ocho-uitleg.es.vtt"
+   "sub_es": "media/ocho-uitleg.es.vtt",
+   "preview": "media/ocho01-preview.mp3"
   },
   {
    "titel": "G2B Sleutel-Helper",
@@ -1096,7 +1107,8 @@
    "badge": "NIEUW",
    "uitleg": "media/brein-uitleg.mp4",
    "sub_nl": "media/brein-uitleg.nl.vtt",
-   "sub_es": "media/brein-uitleg.es.vtt"
+   "sub_es": "media/brein-uitleg.es.vtt",
+   "preview": "media/g2b-brein-preview.mp3"
   },
   {
    "id": "prod01",
@@ -1116,7 +1128,8 @@
    "demo": "media/producer-demo.mp4",
    "uitleg": "media/prod01-uitleg.mp4",
    "sub_nl": "media/prod01-uitleg.nl.vtt",
-   "sub_es": "media/prod01-uitleg.es.vtt"
+   "sub_es": "media/prod01-uitleg.es.vtt",
+   "preview": "media/prod01-preview.mp3"
   },
   {
    "id": "sp00ky",
@@ -1178,7 +1191,8 @@
    "download_dir": "d/g2bbd1",
    "uitleg": "media/bd1-uitleg.mp4",
    "sub_nl": "media/bd1-uitleg.nl.vtt",
-   "sub_es": "media/bd1-uitleg.es.vtt"
+   "sub_es": "media/bd1-uitleg.es.vtt",
+   "preview": "media/g2bbd1-preview.mp3"
   },
   {
    "id": "steun-3",
@@ -1346,7 +1360,8 @@
    "demo": "media/g2bdren-demo.mp4",
    "uitleg": "media/dren-uitleg.mp4",
    "sub_nl": "media/dren-uitleg.nl.vtt",
-   "sub_es": "media/dren-uitleg.es.vtt"
+   "sub_es": "media/dren-uitleg.es.vtt",
+   "preview": "media/g2bdren-preview.mp3"
   },
   {
    "id": "drenlite",
@@ -1365,7 +1380,8 @@
    "demo": "media/drenlite-demo.mp4",
    "uitleg": "media/drenlite-uitleg.mp4",
    "sub_nl": "media/drenlite-uitleg.nl.vtt",
-   "sub_es": "media/drenlite-uitleg.es.vtt"
+   "sub_es": "media/drenlite-uitleg.es.vtt",
+   "preview": "media/drenlite-preview.mp3"
   },
   {
    "id": "ocholite",
@@ -1384,7 +1400,8 @@
    "demo": "media/ocholite-demo.mp4",
    "uitleg": "media/ocholite-uitleg.mp4",
    "sub_nl": "media/ocholite-uitleg.nl.vtt",
-   "sub_es": "media/ocholite-uitleg.es.vtt"
+   "sub_es": "media/ocholite-uitleg.es.vtt",
+   "preview": "media/ocholite-preview.mp3"
   }
  ]
 }
