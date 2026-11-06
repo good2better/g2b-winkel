@@ -665,7 +665,7 @@ async function analyseer(file){
   // shaker: doorlopende hoog-ruis zonder slag = shaker aanwezig → eigen rij vullen
   const hi95=[...hiArr].sort((a,b)=>b-a)[Math.floor(hiArr.length*0.05)]||1;
   const hotFrac=hiArr.filter(v=>v>0.35*hi95).length/hiArr.length;
-  const shaker=hotFrac>0.55;
+  const shaker=hotFrac>0.8;
   // eigen keuze: per rij de sample die het meest op de loop klinkt
   const fOf=o=>Math.max(0,Math.min(NF-1,Math.round(o.t/(HOP/sr))));
   const tgt=r=>{const f=hits[r].map(fOf);if(!f.length)return 0;
@@ -678,7 +678,7 @@ async function analyseer(file){
   if(shaker){picks.shkr=matchRow('shkr',tgt('hat')||8000);
    if(!RIJEN.includes('shkr'))RIJEN.push('shkr');state.shkr=state.shkr||new Set();
    for(let st=0;st<nSteps;st++){const f=Math.max(0,Math.min(NF-1,Math.round(st*stepDur/(HOP/sr))));
-    const v=hiArr[f]/hi95;if(v>0.35&&(st%2==0||v>0.6)){state.shkr.add(st);VEL['shkr:'+st]=Math.min(1,v)*(st%2==1?0.55:1)}}}
+    const v=hiArr[f]/hi95;if(v>0.55&&(st%2==0||v>0.8)){state.shkr.add(st);VEL['shkr:'+st]=Math.min(1,v)*(st%2==1?0.55:1)}}}
   else if(RIJEN.includes('shkr')){RIJEN=RIJEN.filter(r=>r!='shkr');delete state.shkr}
   renderGrid();laad('eigen');cur='eigen';await laadEigen(picks);
   document.querySelectorAll('.cel').forEach(c=>{const v=VEL[c.dataset.r+':'+c.dataset.s];
