@@ -350,6 +350,73 @@ function resample(ch,sr,target){
     out[i]=ch[i0]+(i0+1<ch.length?(ch[i0+1]-ch[i0])*f:0);}
   return out;
 }
+
+// ---- MASTER-bus truc: top-down correctie (zoals MASTER v2 / Engineer v15) ----
+const BANDS=[60,120,250,500,1000,2000,4000]; // zelfde 7 splits als MIXER
+function _fft(re,im){ // radix-2 in-place, n = macht van 2
+  const n=re.length;
+  for(let i=1,j=0;i<n;i++){let bit=n>>1;for(;j&bit;bit>>=1)j^=bit;j^=bit;
+    if(i<j){let t=re[i];re[i]=re[j];re[j]=t;t=im[i];im[i]=im[j];im[j]=t;}}
+  for(let s=2;s<=n;s<<=1){const a=-2*Math.PI/s,c=Math.cos(a),si=Math.sin(a);
+    for(let i=0;i<n;i+=s){let wr=1,wi=0;
+      for(let j=0;j<s/2;j++){const k=i+j+s/2;
+        const tr=re[k]*wr-im[k]*wi,ti=re[k]*wi+im[k]*wr;
+        re[k]=re[i+j]-tr;im[k]=im[i+j]-ti;re[i+j]+=tr;im[i+j]+=ti;
+        const tw=wr*c-wi*si;wi=wr*si+wi*c;wr=tw;}}}
+}
+function bandE8(L,sr){ // 8 band-energies via echte FFT (8192-bins, 8 hops)
+  const N=8192,re=new Float32Array(N),im=new Float32Array(N),e=new Float32Array(8);
+  const hops=8,step=Math.max(N,Math.floor((L.length-N)/hops));
+  let cnt=0;
+  for(let off=0;off+N<=L.length&&cnt<hops;off+=step,cnt++){
+    for(let i=0;i<N;i++){re[i]=L[off+i]*(0.5-0.5*Math.cos(2*Math.PI*i/N));im[i]=0;}
+    _fft(re,im);
+    for(let k=1;k<N/2;k++){const m=Math.sqrt(re[k]*re[k]+im[k]*im[k]);const fq=k*sr/N;
+      let b=0;while(b<7&&fq>=BANDS[b])b++;e[b]+=m*m;}
+  }
+  const sc=Math.max(1,cnt*N/2);
+  for(let b=0;b<8;b++)e[b]=Math.sqrt(e[b]/sc);
+  return e;
+}
+function stemPrio(name){ // HOOG wijkt nooit, MIDDEN normaal, LAAG wijkt voor alles
+  const n=name.toLowerCase();
+  if(/vox|vocal|zang|lead|melod|synth|keys|piano|hook/.test(n))return 1;
+  if(/pad|loop|textu|reverb|galm|atmo|fx|drone|ambient|layer/.test(n))return 3;
+  return 2;
+}
+function dipStem(L,R,sr,b,d){ // band b eruit halen: x' = x - d*band(x) (2-traps)
+  const hi=b<7;
+  const a=1-Math.exp(-2*Math.PI*BANDS[Math.min(b,6)]/sr);
+  const a2=b>0?1-Math.exp(-2*Math.PI*BANDS[b-1]/sr):0;
+  let h1L=0,h2L=0,h1R=0,h2R=0,l1L=0,l2L=0,l1R=0,l2R=0;
+  for(let i=0;i<L.length;i++){
+    h1L+=a*(L[i]-h1L);h2L+=a*(h1L-h2L);h1R+=a*(R[i]-h1R);h2R+=a*(h1R-h2R);
+    if(a2>0){l1L+=a2*(L[i]-l1L);l2L+=a2*(l1L-l2L);l1R+=a2*(R[i]-l1R);l2R+=a2*(l1R-l2R);}
+    const bL=hi?h2L-(a2>0?l2L:0):L[i]-l2L,
+          bR=hi?h2R-(a2>0?l2R:0):R[i]-l2R;
+    L[i]-=d*bL;R[i]-=d*bR;
+  }
+}
+function masterCorrect(parts,sr){
+  const msgs=[];if(parts.length<2)return msgs;
+  parts.forEach(p=>{p.prio=stemPrio(p.s.name);p.e=bandE8(p.l,sr);
+    p.tot=p.e.reduce((x,y)=>x+y,0)||1e-9;});
+  const overvol=new Set();
+  for(let b=0;b<8;b++){ // vechtende stemmen: allebei >35% eigen energie in band b
+    const fight=parts.filter(p=>p.e[b]/p.tot>0.35);
+    if(fight.length<2)continue;
+    fight.sort((a,c)=>a.prio-c.prio||c.e[b]-a.e[b]); // winnaar: hoogste prio + luidst
+    const win=fight[0];overvol.add(b);
+    for(const p of fight.slice(1)){
+      const scale=win.prio===1?1.0:(p.prio===3?1.0:0.45);
+      const d=Math.min(0.55,0.55*Math.min(p.e[b]/p.tot,win.e[b]/win.tot))*scale;
+      if(d>0.05){dipStem(p.l,p.r,sr,b,d);p.dips=(p.dips||0)+1;}
+    }
+  }
+  for(const p of parts)if(p.dips)msgs.push(`• ${p.s.name} wijkt op ${p.dips} band(en) (PRIO ${['?','HOOG','MIDDEN','LAAG'][p.prio]})`);
+  return msgs;
+}
+
 window.doMaster=async()=>{
   const out=$('out'),btn=$('masterBtn');
   if(!ready){out.innerHTML='<div class="line">⚠ Engine is nog aan het laden — wacht op "engine klaar".</div>';return;}
@@ -361,12 +428,12 @@ window.doMaster=async()=>{
     const dur=Math.max(...stems.map(s=>s.buf.duration));
     const n=Math.round(dur*target);
     const mixL=new Float32Array(n),mixR=new Float32Array(n);
-    for(const s of stems){
-      const[l,r]=toStereo(s.buf);
-      const g=Math.pow(10,s.gain/20);
+    const parts=stems.map(s=>{const[l,r]=toStereo(s.buf);const g=Math.pow(10,s.gain/20);
       const lr=resample(l,s.buf.sampleRate,target),rr=resample(r,s.buf.sampleRate,target);
-      for(let i=0;i<Math.min(n,lr.length);i++){mixL[i]+=lr[i]*g;mixR[i]+=rr[i]*g;}
-    }
+      for(let i=0;i<Math.min(n,lr.length);i++){lr[i]*=g;rr[i]*=g;}
+      return{s,l:lr,r:rr};});
+    const busMsgs=masterCorrect(parts,target);
+    for(const p of parts){for(let i=0;i<Math.min(n,p.l.length);i++){mixL[i]+=p.l[i];mixR[i]+=p.r[i];}}
     // dynamiek-waak: een stille, levende mix (lofi/chill) niet dichtknijpen
     const rmsP=a=>{let t=0;for(let i=0;i<a.length;i+=8)t+=a[i]*a[i];return Math.sqrt(t/Math.max(1,a.length/8));};
     const dB=x=>20*Math.log10(Math.max(x,1e-8));
@@ -402,7 +469,8 @@ window.doMaster=async()=>{
     const check=(okLoud&&okPeak)
       ?`<div class="line">📊 Controle: ${dPre.toFixed(1)} → ${dPost.toFixed(1)} dB (${dl}), piek ${peakDb.toFixed(1)} dBTP onder het plafond — de master is beter dan de mix. 👍</div>`
       :`<div class="line">⚠ Controle: ${dPre.toFixed(1)} → ${dPost.toFixed(1)} dB, piek ${peakDb.toFixed(1)} dBTP — luister A/B; is de master niet beter, gebruik dan de vóór-versie.</div>`;
-    out.innerHTML=`<div class="line">✅ Klaar! Je master is ${res.outputLufs!==undefined?res.outputLufs.toFixed(1)+' LUFS, piek '+res.outputTruePeakDbtp.toFixed(1)+' dBTP':'klaar'} — luister vóór/ná hieronder.</div>`+waak+check;
+    const bus=busMsgs.length?`<div class="line">🧠 MASTER-check: `+busMsgs.join(' ')+`</div>`:'';
+    out.innerHTML=`<div class="line">✅ Klaar! Je master is ${res.outputLufs!==undefined?res.outputLufs.toFixed(1)+' LUFS, piek '+res.outputTruePeakDbtp.toFixed(1)+' dBTP':'klaar'} — luister vóór/ná hieronder.</div>`+bus+waak+check;
   }catch(e){out.innerHTML=`<div class="line">⚠ ${e.message||e}</div>`;}
   btn.classList.remove('busy');btn.textContent='💎 MAAK DE MASTER';
 };
