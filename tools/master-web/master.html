@@ -35,7 +35,13 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <button class="uit" onclick="dice()">🎲 DICE</button>
 <button class="uit" id="bAan" onclick="zetAan(!P.aan)">AAN</button>
 <button class="uit" onclick="document.body.classList.toggle('licht')">◐</button>
+<button class="uit" id="bDemo" onclick="demo()">▶ probeer met demo-track</button>
 <span id="st">sleep een mix erin — hij doet de rest</span>
+</div>
+<div class="rij">
+<button class="uit" id="bDeel" onclick="deel()">🔗 kopieer deel-code</button>
+<input id="codeIn" placeholder="plak hier een G2B-code" style="background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:8px 10px;font-size:13px;width:210px">
+<button class="uit" onclick="plakCode()">✓ laad code</button>
 </div>
 <div id="pills"></div>
 <div class="rij">
@@ -47,7 +53,7 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 </div>
 <div id="balk"><div id="balkIn"></div></div>
 <div class="kaart" id="uit" hidden>
-<b>VÓÓR:</b><audio class="speler" id="prePlay" controls></audio>
+<b>VÓÓR</b> <span style="font-size:11px">(zelfde volume — hoor het échte verschil)</span>:<audio class="speler" id="prePlay" controls></audio>
 <b>NÁ:</b><audio class="speler" id="postPlay" controls></audio>
 <div style="margin-top:8px">⬇ <a class="dl" id="dlWav" download="G2B-master.wav">download je master (wav)</a> · <span id="info"></span></div>
 </div>
@@ -64,6 +70,47 @@ const DOEL=-6; // fDoel default uit de plugin
 let ctx=null,buf=null,inL=null,inR=null,sr=44100,seed=777>>>0;
 const $=id=>document.getElementById(id);
 function ac(){if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();if(ctx.state=='suspended')ctx.resume();return ctx}
+
+// demo-track: eigen synth-loop (geen bestand nodig) — kick+hat+bas, bewust wat vlak
+// zodat je hoort wat de master toevoegt. 2 maten @ 140 bpm.
+function demo(){
+ const SR=44100,BPM=140,stap=60/BPM/4,n=Math.floor(stap*16*2*SR); // 32 zestienden
+ inL=new Float32Array(n); inR=new Float32Array(n); sr=SR;
+ const nt=[55,0,0,55,0,0,65.41,0,55,0,0,55,0,49,0,58.27,55,0,0,55,0,0,65.41,0,55,0,73.42,0,65.41,0,49];
+ for(let i=0;i<n;i++){
+  const t=i/SR,pos=t/stap,st=Math.floor(pos),ph=(pos-st)*stap;
+  let s=0;
+  // kick op elke beat
+  const kp=t%(stap*4);
+  s+=Math.sin(2*Math.PI*(48+140*Math.exp(-kp*40))*kp)*Math.exp(-kp*18)*0.9;
+  // hat op de off-beats
+  const hp=t%(stap*2);
+  if(hp>stap)s+=(Math.random()*2-1)*Math.exp(-(hp-stap)*90)*0.12;
+  // bas-noot per zestiende (zaagtand door lage doorlaat)
+  const f=nt[st]; if(f>0)s+=(2*(t*f%1)-1)*Math.exp(-ph*7)*0.22;
+  inL[i]=s*0.62; inR[i]=s*0.60; // iets links/rechts verschil voor stereo
+ }
+ buf=null; $('st').textContent='✔ demo-track geladen ('+(n/SR).toFixed(1)+' s) — klik 🤖 AUTO of een genre-pill';
+ $('bMaster').disabled=false; $('bAuto').disabled=false;
+}
+
+// deel-code: G2BM1|genre|tilt|glue|warmte|luid — plakken zet de knoppen gelijk
+function deel(){
+ const c='G2BM1|'+P.genre+'|'+Math.round(P.tilt)+'|'+Math.round(P.glue)+'|'+Math.round(P.warmte)+'|'+Math.round(P.luid);
+ (navigator.clipboard?navigator.clipboard.writeText(c):Promise.reject()).then(
+  ()=>$('st').textContent='🔗 deel-code gekopieerd: '+c,
+  ()=>{$('codeIn').value=c;$('st').textContent='deel-code staat in het vak — kopieer hem zelf'});
+}
+function plakCode(){
+ const d=$('codeIn').value.trim().split('|');
+ if(d[0]!=='G2BM1'||d.length!==6){$('st').textContent='✖ geen geldige G2B-code';return}
+ const g=+d[1];
+ P.tilt=Math.max(-50,Math.min(50,+d[2]||0)); P.glue=Math.max(0,Math.min(100,+d[3]||0));
+ P.warmte=Math.max(0,Math.min(100,+d[4]||0)); P.luid=Math.max(0,Math.min(100,+d[5]||0));
+ P.genre=(g>=0&&g<=9)?g:-1;
+ document.querySelectorAll('.pill').forEach((b,j)=>b.classList.toggle('on',j===P.genre));
+ syncUI(); $('st').textContent='✔ code geladen — klik ⚡ MAAK MASTER';
+}
 
 function laad(file){
  $('st').textContent='laden: '+file.name+'…';
@@ -221,14 +268,20 @@ async function maakMaster(){
  $('st').textContent='masteren…';
  await render(uitL,uitR,f=>{$('balkIn').style.width=(f*100).toFixed(0)+'%'});
  const blob=wavBlob(uitL,uitR,sr);
- const preBlob=wavBlob(inL,inR,sr);
+ // slimme VÓÓR: speel het origineel af op hetzelfde volume als de master,
+ // zodat je het échte verschil hoort (niet alleen 'harder = beter')
+ let eIn=0,eUit=0;for(let i=0;i<n;i++){eIn+=inL[i]*inL[i]+inR[i]*inR[i];eUit+=uitL[i]*uitL[i]+uitR[i]*uitR[i];}
+ let g=Math.sqrt(eUit/(eIn+1e-9)); if(!(g>0.25))g=1; if(g>4)g=4;
+ const preL=new Float32Array(n),preR=new Float32Array(n);
+ for(let i=0;i<n;i++){preL[i]=inL[i]*g;preR[i]=inR[i]*g;}
+ const preBlob=wavBlob(preL,preR,sr);
  if(window._preURL)URL.revokeObjectURL(window._preURL);
  if(window._postURL)URL.revokeObjectURL(window._postURL);
  window._preURL=URL.createObjectURL(preBlob); window._postURL=URL.createObjectURL(blob);
  $('prePlay').src=window._preURL; $('postPlay').src=window._postURL;
  $('dlWav').href=window._postURL;
  let pk=0;for(let i=0;i<n;i++)pk=Math.max(pk,Math.abs(uitL[i]),Math.abs(uitR[i]));
- $('info').textContent='piek '+pk.toFixed(2)+' · '+(n/sr).toFixed(1)+' s · '+(blob.size/1048576).toFixed(1)+' MB';
+ $('info').textContent='piek '+pk.toFixed(2)+' · '+(n/sr).toFixed(1)+' s · '+(blob.size/1048576).toFixed(1)+' MB · VÓÓR speelt op zelfde volume (eerlijk vergelijk)';
  $('uit').hidden=false; $('balkIn').style.width='100%';
  $('st').textContent='✔ klaar — luister VÓÓR/NÁ en download je master';
  $('bMaster').disabled=false;
