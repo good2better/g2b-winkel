@@ -442,7 +442,30 @@ window.doMaster=async()=>{
     bl.sort((a,b)=>a-b);
     const lra=bl.length>6?dB(bl[Math.floor(bl.length*.95)])-dB(bl[Math.floor(bl.length*.1)]):0;
     const preDb=dB(rmsP(mixL)+rmsP(mixR));
-    let cfg=CFG[$('preset').value]||CFG.g2b,waak='';
+    let cfg=CFG[$('preset').value]||CFG.g2b,waak='',ruismelding='';
+    // ruis-check: hoog-ruisvloer (>6kHz) meten — bij sis in de mix wordt
+    // air/breedte/tape-glans alleen maar erger, dus die schroeven we terug
+    {
+      const a=1-Math.exp(-2*Math.PI*6000/target);let h=0;
+      const w=Math.round(target*0.5),v=[];
+      for(let i=0;i+w<mixL.length;i+=w){
+        let t=0;for(let j=i;j<i+w;j+=4){h+=a*(mixL[j]-h);t+=(mixL[j]-h)*(mixL[j]-h);}
+        v.push(Math.sqrt(t/(w/4)));}
+      v.sort((x,y)=>x-y);
+      const fl=v.length?v[Math.floor(v.length*0.15)]:0;
+      if(fl>0.004){
+        cfg={...cfg,
+          spectral:{airBand:{...cfg.spectral.airBand,
+            amount:(cfg.spectral.airBand?.amount||0.6)*0.3}},
+          stereo:{imager:{...cfg.stereo.imager,
+            width:Math.min(cfg.stereo.imager?.width||1.15,1.05)}},
+          saturation:cfg.saturation?{tape:{...cfg.saturation.tape,
+            enabled:true,
+            driveDb:Math.min(cfg.saturation.tape.driveDb||1,0.5),
+            saturation:Math.min(cfg.saturation.tape.saturation||0.5,0.15)}}:cfg.saturation};
+        ruismelding=`<div class="line">🧹 Je mix heeft een hoorbare ruisvloer (${dB(fl).toFixed(0)} dB) — ik zet air, breedte en tape-glans lager zodat de master geen extra sis krijgt.</div>`;
+      }
+    }
     if(preDb<-26&&lra>7&&cfg.loudness.targetLufs>-14){
       cfg={...cfg,loudness:{...cfg.loudness,targetLufs:Math.min(cfg.loudness.targetLufs,preDb+15)}};
       waak=`<div class="line">🌙 Je mix is rustig en levend (${lra.toFixed(0)} dB dynamiek) — ik houd 'm bewust zachter zodat de sfeer blijft. (stijl 'rustig' past hier ook)</div>`;
@@ -470,7 +493,7 @@ window.doMaster=async()=>{
       ?`<div class="line">📊 Controle: ${dPre.toFixed(1)} → ${dPost.toFixed(1)} dB (${dl}), piek ${peakDb.toFixed(1)} dBTP onder het plafond — de master is beter dan de mix. 👍</div>`
       :`<div class="line">⚠ Controle: ${dPre.toFixed(1)} → ${dPost.toFixed(1)} dB, piek ${peakDb.toFixed(1)} dBTP — luister A/B; is de master niet beter, gebruik dan de vóór-versie.</div>`;
     const bus=busMsgs.length?`<div class="line">🧠 MASTER-check: `+busMsgs.join(' ')+`</div>`:'';
-    out.innerHTML=`<div class="line">✅ Klaar! Je master is ${res.outputLufs!==undefined?res.outputLufs.toFixed(1)+' LUFS, piek '+res.outputTruePeakDbtp.toFixed(1)+' dBTP':'klaar'} — luister vóór/ná hieronder.</div>`+bus+waak+check;
+    out.innerHTML=`<div class="line">✅ Klaar! Je master is ${res.outputLufs!==undefined?res.outputLufs.toFixed(1)+' LUFS, piek '+res.outputTruePeakDbtp.toFixed(1)+' dBTP':'klaar'} — luister vóór/ná hieronder.</div>`+bus+ruismelding+waak+check;
   }catch(e){out.innerHTML=`<div class="line">⚠ ${e.message||e}</div>`;}
   btn.classList.remove('busy');btn.textContent='💎 MAAK DE MASTER';
 };
