@@ -442,7 +442,7 @@ window.doMaster=async()=>{
     bl.sort((a,b)=>a-b);
     const lra=bl.length>6?dB(bl[Math.floor(bl.length*.95)])-dB(bl[Math.floor(bl.length*.1)]):0;
     const preDb=dB(rmsP(mixL)+rmsP(mixR));
-    let cfg=CFG[$('preset').value]||CFG.g2b,waak='',ruismelding='';
+    let cfg=CFG[$('preset').value]||CFG.g2b,waak='',ruismelding='',hfFl=0;
     // ruis-check: hoog-ruisvloer (>6kHz) meten — bij sis in de mix wordt
     // air/breedte/tape-glans alleen maar erger, dus die schroeven we terug
     {
@@ -453,6 +453,7 @@ window.doMaster=async()=>{
         v.push(Math.sqrt(t/(w/4)));}
       v.sort((x,y)=>x-y);
       const fl=v.length?v[Math.floor(v.length*0.15)]:0;
+      hfFl=fl;
       if(fl>0.004){
         cfg={...cfg,
           spectral:{airBand:{...cfg.spectral.airBand,
@@ -472,9 +473,22 @@ window.doMaster=async()=>{
     }
     const res=S.masteringChainStereo(mixL,mixR,target,cfg);
     let OL,OR;
+    // sis-gate bij ruisige mix: dempt >6kHz tot 25% waar het hoog stil is
+    // (drempel = 3x de gemeten ruisvloer → alleen echt stille passages)
+    const hfGate=(X,Y,thr)=>{const a=1-Math.exp(-2*Math.PI*6000/target),ae=1-Math.exp(-1/(0.010*target));
+      let hL=0,hR=0,e=0;
+      for(let i=0;i<X.length;i++){
+        hL+=a*(X[i]-hL);hR+=a*(Y[i]-hR);
+        const hfL=X[i]-hL,hfR=Y[i]-hR;
+        e+=ae*((Math.abs(hfL)+Math.abs(hfR))-e);
+        const g=Math.min(1,Math.max(0.25,e/thr));
+        X[i]-=hfL*(1-g);Y[i]-=hfR*(1-g);}};
+    if(ruismelding){hfGate(mixL,mixR,hfFl*3);}
     if(res&&res.left&&res.right){OL=res.left;OR=res.right;}
     else if(res&&res.samples){OL=res.samples[0];OR=res.samples[1]||res.samples[0];}
     else{throw new Error('onbekend resultaat van de engine');}
+    // én ná de keten: ook door air/limiter omhooggetrokken sis wegdempen
+    if(ruismelding){hfGate(OL,OR,hfFl*3);}
     const preBlob=ab2wav(mixL,mixR,target),postBlob=ab2wav(OL,OR,target);
     $('prePlay').src=URL.createObjectURL(preBlob);
     $('postPlay').src=URL.createObjectURL(postBlob);
