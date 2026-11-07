@@ -40,7 +40,8 @@ input[type=range]{accent-color:#3DDC84;width:110px}
 <div class="sub">shot-stapelaar &times; smart dice — drop je one-shots, 🎲 gooit er 2-3 op elkaar · lock wat goed klinkt</div>
 
 <div class="card">
-  <div class="drop" id="drop">sleep hier je one-shots heen (wav/mp3/ogg) — of klik om te kiezen<input type="file" id="fi" accept="audio/*" multiple hidden></div>
+  <div class="drop" id="drop">sleep hier je one-shots of een HELE MAP heen (wav/mp3/ogg) — of klik om te kiezen<input type="file" id="fi" accept="audio/*" multiple hidden><input type="file" id="dir" webkitdirectory hidden></div>
+  <div class="row" style="margin-top:8px"><button class="btn b2" id="bMap" style="padding:8px 14px;font-size:12px">📁 MAP KIEZEN</button><span class="hint" style="margin:0">jouw versie: hele mappen tegelijk (max 60 shots)</span></div>
   <div class="samples" id="samples"></div>
   <div class="hint">minimaal 2 shots nodig. De machine meet per shot de toonhoogte (spectrale zwaartepunt) en geeft elke laag een rol: <b>laag</b> = sub/transient, <b>midden</b> = body, <b>hoog</b> = glans.</div>
 </div>
@@ -48,8 +49,16 @@ input[type=range]{accent-color:#3DDC84;width:110px}
 <div class="card">
   <div class="row">
     <button class="btn b1" id="bDice">🎲 STAPEL</button>
+    <button class="btn b2" id="bDice5">🎲 5x</button>
+    <button class="btn b2" id="bDice20">🎲 20x</button>
     <button class="btn b2" id="bDubbel">DUBBEL: AAN</button>
     <label>lagen<select id="nl" style="background:#16201A;color:#BFE8CE;border:1px solid #2C4A38;border-radius:6px;padding:6px;font-size:13px"><option value="0">auto</option><option>2</option><option>3</option></select></label>
+  </div>
+  <div class="row" style="border-top:1px solid #23352A;padding-top:12px">
+    <input id="libNaam" placeholder="naam van je library — bijv. dark kicks" style="flex:1;min-width:200px;background:#0D140F;border:1px solid #2C4A38;border-radius:8px;color:#BFE8CE;padding:10px;font-size:14px">
+    <input id="libN" type="number" value="30" min="2" max="200" style="width:70px;background:#0D140F;border:1px solid #2C4A38;border-radius:8px;color:#BFE8CE;padding:10px;font-size:14px">
+    <button class="btn b1" id="bLib">📚 MAAK LIBRARY</button>
+    <span class="hint" style="margin:0">hij dobbelt N stapels en levert één .zip met alles erin</span>
   </div>
   <div class="row" id="slots">
     <div class="slot" data-i="0"><h3>LAAG · sub</h3><div class="nm">—</div><div class="pr"></div><button class="lock" data-i="0">🔒 lock</button></div>
@@ -66,6 +75,7 @@ input[type=range]{accent-color:#3DDC84;width:110px}
     <span class="hint" id="resInfo"></span>
   </div>
   <audio id="au" controls style="margin-top:8px;width:100%"></audio>
+  <div id="lijst" style="margin-top:10px"></div>
 </div>
 
 <script>
@@ -129,11 +139,20 @@ function sumMix(layers){const n=Math.max(...layers.map(l=>l.y.length)),o=new Flo
 $('drop').onclick=()=>$('fi').click();
 $('drop').ondragover=e=>{e.preventDefault();$('drop').classList.add('over');};
 $('drop').ondragleave=()=>$('drop').classList.remove('over');
-$('drop').ondrop=e=>{e.preventDefault();$('drop').classList.remove('over');loadFiles(e.dataTransfer.files);};
+$('drop').ondrop=async e=>{e.preventDefault();$('drop').classList.remove('over');
+  const items=[...e.dataTransfer.items],files=[];
+  const walk=en=>new Promise(res=>{ if(en.isFile)en.file(f=>res(f));else if(en.isDirectory){
+    en.createReader().readEntries(async es=>{const out=[];for(const x of es)out.push(await walk(x));res(out);});} else res(null);});
+  for(const it of items){const en=it.webkitGetAsEntry&&it.webkitGetAsEntry();if(en){const r=await walk(en);files.push(...(Array.isArray(r)?r.flat(99):[r]).filter(Boolean));}}
+  loadFiles(files.length?files:e.dataTransfer.files);};
 $('fi').onchange=e=>loadFiles(e.target.files);
+$('bMap').onclick=e=>{e.stopPropagation();$('dir').click();};
+$('dir').onchange=e=>loadFiles(e.target.files);
+const MAXS=60;
 
 async function loadFiles(fs){ensureAC();
-  for(const f of fs){if(buffers.length>=12)break;
+  for(const f of fs){if(buffers.length>=MAXS)break;
+    if(!/\.(wav|mp3|ogg|flac|m4a|aiff?)$/i.test(f.name))continue;
     try{const ab=await f.arrayBuffer(),buf=await AC.decodeAudioData(ab);
       buffers.push({naam:f.name.replace(/\.[^.]+$/,''),y:mono(buf),c:0});
       buffers[buffers.length-1].c=centroid(buffers[buffers.length-1].y);
@@ -148,19 +167,40 @@ window.weg=i=>{buffers.splice(i,1);renderSamples();};
 
 /* ---------- stapel ---------- */
 const rolls=[null,null,null],locks=[false,false,false];
-const ROLES=['laag','midden','hoog'];
+let libCollect=null; // {naam,files:[[naam,ab]]}
 
-$('bDice').onclick=()=>{
+$('bDice').onclick=()=>rollOnce();
+$('bDice5').onclick=()=>diceN(5);
+$('bDice20').onclick=()=>diceN(20);
+function diceN(n){for(let i=0;i<n;i++){rollOnce();st(`🎲 ${i+1} van ${n} gestapeld`);}}
+$('bLib').onclick=()=>{
   if(buffers.length<2){st('eerst 2+ shots droppen');return;}
+  const nm=($('libNaam').value.trim()||'stapels').replace(/[^\w-]+/g,'_').slice(0,40);
+  const n=Math.max(2,Math.min(200,+$('libN').value||30));
+  // prompt-filter: woorden uit de naam die in shot-namen voorkomen kiezen de pool
+  const woorden=$('libNaam').value.toLowerCase().split(/[^\w-]+/).filter(w=>w.length>2);
+  const hits=woorden.length?buffers.filter(b=>woorden.some(w=>b.naam.toLowerCase().includes(w))):[];
+  const pool=hits.length>=2?hits:buffers;
+  if(hits.length>=2)st(`📚 "${nm}" → ${hits.length} passende shots gebruikt`);
+  libCollect={naam:`G2B-LIBRARY-${nm}`,files:[]};
+  for(let i=0;i<n;i++){rollOnce(pool);st(`📚 ${i+1} van ${n} voor ${nm}`);}
+  const ab=zipStore(libCollect.files);
+  const url=URL.createObjectURL(new Blob([ab],{type:'application/zip'}));
+  const a=document.createElement('a');a.href=url;a.download=libCollect.naam+'.zip';a.click();
+  st(`📚 ${libCollect.naam}.zip klaar — ${libCollect.files.length} stapels erin`);
+  libCollect=null;};
+function rollOnce(poolOverride){
+  const bron=poolOverride||buffers;
+  if(bron.length<2){st('eerst 2+ shots droppen');return;}
   ensureAC();
   const nl=+($('nl').value)||(Math.random()<0.5?2:3);
-  const k=Math.min(nl,buffers.length);
+  const k=Math.min(nl,bron.length);
   // rol per slot: niet-gelockte slots opnieuw
-  const pool=[...buffers].sort((a,b)=>a.c-b.c);
+  const pool=[...bron].sort((a,b)=>a.c-b.c);
   const band=i=>pool[Math.floor(i*pool.length/k)]===undefined?pool[0]:pool.slice(Math.floor(i*pool.length/k),Math.floor((i+1)*pool.length/k))||pool;
   for(let s=0;s<3;s++){
     if(s<k&&!locks[s]){
-      const b=band(Math.min(s,buffers.length===2?s*2:s)); // spreid over centroids
+      const b=band(Math.min(s,bron.length===2?s*2:s)); // spreid over centroids
       const pick=b[Math.floor(Math.random()*b.length)]||pool[Math.floor(Math.random()*pool.length)];
       const r={b:pick,gain:0.55+Math.random()*0.3,dubbel:null,semi:0,inv:false};
       rolls[s]=r;
@@ -200,24 +240,54 @@ function bouw(k){
   if(m>0){for(let i=0;i<n+d;i++){L[i]/=m/0.85;R[i]/=m/0.85;}}
   lastMix=out;
   // UI
-  document.querySelectorAll('.slot').forEach((el,s)=>{
+  document.querySelectorAll('#slots .slot').forEach((el,s)=>{
     if(s<k&&rolls[s]){el.style.display='';el.classList.toggle('on',locks[s]);
       el.querySelector('.nm').textContent=rolls[s].b.naam;
       el.querySelector('.pr').textContent=`gain ${Math.round(rolls[s].gain*100)}% · semi ${rolls[s].semi} ${layers[s].inv?'· fase ↻':''}`;
     }else el.style.display='none';});
   const naam=layers.map(l=>l.b.naam).join('+').replace(/[^\w+\-.]/g,'_').slice(0,60);
-  const url=URL.createObjectURL(new Blob([wavBytes(out)],{type:'audio/wav'}));
+  const wavAb=wavBytes(out);
+  if(libCollect){let ln=`${libCollect.naam}/${naam}.wav`,c=2;
+    while(libCollect.files.some(f=>f[0]===ln))ln=`${libCollect.naam}/${naam}-${c++}.wav`;
+    libCollect.files.push([ln,wavAb]);}
+  const url=URL.createObjectURL(new Blob([wavAb],{type:'audio/wav'}));
   $('au').src=url;$('dl').href=url;$('dl').download=naam+'.wav';$('dl').style.display='';
   $('resInfo').textContent=`${(n/SR).toFixed(2)}s · ${k} lagen · ${dubbel?'haas-dubbel':'mono'} · limiter 0.85`;
+  const card=document.createElement('div');card.className='slot';card.style.marginTop='8px';
+  card.innerHTML=`<div class=nm>${naam}.wav</div><audio controls src="${url}" style="width:100%;margin:6px 0"></audio><a class=dl href="${url}" download="${naam}.wav" style="display:inline-block;padding:8px 14px;font-size:12px">⬇ download</a>`;
+  $('lijst').prepend(card);
   st('🎲 gestapeld — luister en lock wat goed is, dobbel de rest opnieuw');
 }
 document.querySelectorAll('.lock').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;
   if(!rolls[i])return;locks[i]=!locks[i];
-  document.querySelector(`.slot[data-i="${i}"]`).classList.toggle('on',locks[i]);
+  document.querySelector(`#slots .slot[data-i="${i}"]`).classList.toggle('on',locks[i]);
   b.textContent=locks[i]?'🔒 gelocked':'🔒 lock';});
 $('bDubbel').onclick=()=>{const on=$('bDubbel').dataset.on!=='0';$('bDubbel').dataset.on=on?'0':'1';$('bDubbel').textContent='DUBBEL: '+(on?'UIT':'AAN');};
 $('bDubbel').dataset.on='1';
 $('bPlay').onclick=()=>{if(lastMix){ensureAC();const s=AC.createBufferSource();s.buffer=lastMix;s.connect(AC.destination);s.start();}};
+
+/* ---------- zip (store, geen compressie — wav is al dicht) ---------- */
+function crc32(buf){let t=crc32.t;if(!t){t=crc32.t=new Uint32Array(256);
+    for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c;}}
+  let c=0xFFFFFFFF;const d=new Uint8Array(buf);
+  for(let i=0;i<d.length;i++)c=t[(c^d[i])&0xFF]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+function zipStore(files){ // files=[[pad,ArrayBuffer]] → ArrayBuffer
+  const enc=new TextEncoder(),parts=[],cd=[];let off=0;
+  for(const [pad,ab] of files){const nm=enc.encode(pad),d=new Uint8Array(ab),crc=crc32(ab);
+    const lh=new DataView(new ArrayBuffer(30));lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);
+    lh.setUint32(14,crc,true);lh.setUint32(18,d.length,true);lh.setUint32(22,d.length,true);lh.setUint16(26,nm.length,true);
+    parts.push(lh.buffer,nm,d);cd.push({nm,crc,size:d.length,off});off+=30+nm.length+d.length;}
+  const cdStart=off;for(const e of cd){
+    const ch=new DataView(new ArrayBuffer(46));ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);
+    ch.setUint32(16,e.crc,true);ch.setUint32(20,e.size,true);ch.setUint32(24,e.size,true);
+    ch.setUint16(28,e.nm.length,true);ch.setUint32(42,e.off,true);
+    parts.push(ch.buffer,e.nm);off+=46+e.nm.length;}
+  const end=new DataView(new ArrayBuffer(22));end.setUint32(0,0x06054b50,true);
+  end.setUint16(8,cd.length,true);end.setUint16(10,cd.length,true);
+  end.setUint32(12,off-cdStart,true);end.setUint32(16,cdStart,true);parts.push(end.buffer);
+  const out=new Uint8Array(off+22);let p=0;
+  for(const x of parts){const b=x instanceof ArrayBuffer?new Uint8Array(x):x;out.set(b,p);p+=b.length;}
+  return out.buffer;}
 
 /* ---------- wav export ---------- */
 function wavBytes(buf){const n=buf.length,ch=buf.numberOfChannels,sr=buf.sampleRate;
