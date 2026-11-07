@@ -1,1410 +1,1424 @@
 {
- "producten": [
-  {
-   "id": "g2bdicesynth",
-   "titel": "G2B DICE-SYNTH — 1 klik = nieuwe sound",
-   "soort": "plugin",
-   "beschrijving": "DE SYNC-KANON: één klik op de DICE rolt een compleet nieuwe, altijd bruikbare sound — eindeloos en 100% van jou (eigen synth = sync-veilig licenseren). 5 INSTRUMENT-MODI: KEYS · PADS · TEXTURE · BASS · HIT, elk binnen eigen muzikale grenzen. CHORD: 1 toets = filmisch akkoord. STRUM: akkoord-noten tokkelen als een echte gitaar (exponentiële curve, om-en-om laag↔hoog). HUMAN: menselijke timing — zacht spelen = relaxter. SLOT-knoppen houden vast wat goed is; MUTATE varieert subtiel; TERUG/VOOR bladert door je laatste 24 sounds; DICE-morph laat de klank in 0,3s vloeiend overgaan. Akoestiek geborgd: micro-crossfades (geen tikjes) + mono-laag onder 150Hz (bas dooft nooit uit). VST3 + CLAP + standalone EXE.",
-   "prijs": "€ 34,95",
-   "links": {
-    "koop": "bestel.html?p=g2bdicesynth",
-    "download": "bedankt.html?k=g2bdicesynth"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/dicesynth-cover.png",
-   "download_dir": "d/g2bdicesynth",
-   "demo": "media/dicesynth-demo.mp4",
-   "video": "media/dicesynth-demo.mp4",
-   "uitleg": "media/dicesynth-uitleg.mp4",
-   "sub_nl": "media/dicesynth-uitleg.nl.vtt",
-   "sub_es": "media/dicesynth-uitleg.es.vtt"
-  },
-  {
-   "id": "g2bmaster",
-   "titel": "G2B MASTER — mastering in 4 knoppen + AUTO",
-   "soort": "plugin",
-   "beschrijving": "DE PAREL VOOR JE MIX-EINDE: zet hem op je master-track en je beat klinkt meteen luider, strakker en voller — zonder mix-kennis. 10 GENRE-PILLS (TRAP·DRILL·BOOMBAP·RNB·HOUSE·DEMBOW·KAWINA·LOFI·SOUL·POP) zetten de hele keten goed in 1 klik. AUTO-KNOP: druk → hij luistert 5 sec naar je beat → zet TILT/GLUE/WARMTE/LUID zelf af. 4 grote knoppen (TILT donker-helder · GLUE samenplakken · WARMTE analoge dikte · LUID hard), live LUFS-meter met -6 LUFS doelstreep, KRACHT dry/wet-slider, DICE, AAN/UIT-bypass, 8 skins. Ingebouwde -1dB limiter: clipt NOOIT. VST3 + CLAP + standalone EXE + handleiding-PDF.",
-   "prijs": "€ 29,95",
-   "links": {
-    "koop": "bestel.html?p=g2bmaster",
-    "download": "bedankt.html?k=g2bmaster"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/g2bmaster-cover.png",
-   "download_dir": "d/g2bmaster",
-   "demo": "media/g2bmaster-demo.mp4",
-   "video": "media/g2bmaster-demo.mp4",
-   "uitleg": "media/master-uitleg.mp4",
-   "sub_nl": "media/master-uitleg.nl.vtt",
-   "sub_es": "media/master-uitleg.es.vtt",
-   "preview": "media/g2bmaster-preview.mp3"
-  },
-  {
-   "id": "g2bmixer",
-   "titel": "G2B MIXER — slimme channel-strip die elk spoor klaarmaakt",
-   "soort": "plugin",
-   "beschrijving": "v2 — zet MIXER op ELKE spoor: ze luisteren naar elkaar via de BUS en maken zelf ruimte. MAAK MIX-KLAAR kalibreert je spoor én kiest je prioriteit. PRIO per spoor: HOOG dukit nooit, MIDDEN, LAAG wijkt voor alles. RUIMTE-slider: vechtende sporen maken plek — de verliezer vlucht naar de zijkant (M/S), mix blijft breed, zang houdt het midden. MASTER-link: staat er een G2B MASTER op je mix, dan duken LAAG/MIDDEN-sporen extra waar de mix te vol zit. TRIM · HP · TILT · GLUE · WARMTE · LUID, live LEVEL+GR, LUFS, KRACHT, DICE, AAN/UIT, 8 skins. VST3 + CLAP + EXE + handleiding.",
-   "prijs": "€ 24,95",
-   "links": {
-    "koop": "bestel.html?p=g2bmixer",
-    "download": "bedankt.html?k=g2bmixer"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/g2bmixer-cover.png",
-   "download_dir": "d/g2bmixer",
-   "demo": "media/g2bmixer-demo.mp4",
-   "video": "media/g2bmixer-demo.mp4",
-   "uitleg": "media/mixerv2-uitleg.mp4",
-   "sub_nl": "media/mixerv2-uitleg.nl.vtt",
-   "sub_es": "media/mixerv2-uitleg.es.vtt",
-   "preview": "media/g2bmixer-preview.mp3"
-  },
-  {
-   "id": "g2bgeluidmidi",
-   "titel": "G2B GELUID→MIDI — geluid in, MIDI uit",
-   "soort": "plugin",
-   "beschrijving": "ÉÉN PLUGIN IN PLAATS VAN DRIE (LUISTER+OPROEP+ANTWOORD in één): alles wat je hoort wordt MIDI. LUISTER-modus: speel een beat, loop of geluid erdoor en hij schrijft de MIDI-loops (kick/snare/hat/melodie apart). NEURIE-modus: zing of neurie je lijn ±8 sec → strakke melodie-MIDI in je toonsoort, AUTO-KEY corrigeert valse noten zachtjes mee. ANTWOORD-modus: speel 4 tellen en hij antwoordt de volgende 4 tellen in jouw stijl, toonsoort en swing. Elke MIDI is een ECHT .mid-bestand in Music\\G2B — sleep het in je DAW en verander elke noot. 10 GENRE-PILLS, KEY-DETECT met zekerheids-%, BPM-detect, REFINE voor de volgende variatie, MIDI-UIT naar andere plugins, DICE, 8 skins. Werkt volledig offline, 100% eigen DSP — geen AI, geen cloud. VST3 + CLAP + standalone EXE + handleiding-PDF.",
-   "prijs": "€ 34,95",
-   "links": {
-    "koop": "bestel.html?p=g2bgeluidmidi",
-    "download": "bedankt.html?k=g2bgeluidmidi"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW — 3 IN 1",
-   "cover": "media/g2bgeluidmidi-cover.png",
-   "download_dir": "d/g2bgeluidmidi",
-   "video": "media/g2bgeluidmidi-demo.mp4",
-   "demo": "media/g2bgeluidmidi-demo.mp4",
-   "uitleg": "media/geluidmidi-uitleg.mp4",
-   "sub_nl": "media/geluidmidi-uitleg.nl.vtt",
-   "sub_es": "media/geluidmidi-uitleg.es.vtt",
-   "preview": "media/g2bgeluidmidi-preview.mp3"
-  },
-  {
-   "id": "g2brefors",
-   "titel": "G2B REFORS — hoor je beat zoals kopers hem horen",
-   "soort": "plugin",
-   "beschrijving": "DE AUTO-TEST IN 1 KLIK: zet hem op je master-track en klik een ruimte — hoor meteen hoe je beat klinkt op een TELEFOON, in de AUTO, in de CLUB, op een FESTIVAL, AIRPODS, TV of goedkope TIENTJE-oordopjes. STUDIO-pill = plat referentie-geluid om eerlijk te vergelijken. 4 knoppen: AFSTAND (verder weg luisteren), KAMER (galm-sterkte), MENIGTE (publiekssfeer — uniek!), VOLUME. KRACHT dry/wet-slider, DICE, AAN/UIT-bypass, 8 skins, level-meter + scope. Verpest geen enkele upload meer door een mix die alleen op je eigen speakers goed klinkt. 100% eigen DSP. VST3 + CLAP + standalone EXE + handleiding-PDF.",
-   "prijs": "€ 29,95",
-   "links": {
-    "koop": "bestel.html?p=g2brefors",
-    "download": "bedankt.html?k=g2brefors"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/g2brefors-cover.png",
-   "download_dir": "d/g2brefors",
-   "demo": "media/g2brefors-demo.mp4",
-   "video": "media/g2brefors-demo.mp4",
-   "uitleg": "media/refors-uitleg.mp4",
-   "sub_nl": "media/refors-uitleg.nl.vtt",
-   "sub_es": "media/refors-uitleg.es.vtt",
-   "preview": "media/g2brefors-preview.mp3"
-  },
-  {
-   "id": "g2bprodsuite",
-   "titel": "G2B PRODUCER SUITE",
-   "soort": "6 plugins in één set",
-   "beschrijving": "De complete G2B-plugin-set in één download: MASTER (auto-mastering op je eindtrack), MIXER (elk spoor mix-klaar in 1 klik), REFORS (auto/club/telefoon-test), BAND (MIDI/drumloop erin → heel nummer eruit) en GELUID→MIDI (geluid/neuriën erin → MIDI eruit). Van idee naar af nummer — samen EUR155 los, als suite EUR79. Alle plugins VST3 + CLAP + standalone EXE, werkt offline, 100% eigen code.",
-   "prijs": 79.0,
-   "links": {
-    "koop": "bestel.html?p=g2bprodsuite",
-    "download": "d/g2bprodsuite/"
-   },
-   "groep": "plugins",
-   "badge": "DEAL",
-   "cover": "media/g2bprodsuite-cover.png",
-   "download_dir": "d/g2bprodsuite",
-   "demo": "media/g2bprodsuite-demo.mp4",
-   "video": "media/g2bprodsuite-demo.mp4",
-   "uitleg": "media/prodsuite-uitleg.mp4",
-   "sub_nl": "media/prodsuite-uitleg.nl.vtt",
-   "sub_es": "media/prodsuite-uitleg.es.vtt",
-   "preview": "media/g2bprodsuite-preview.mp3"
-  },
-  {
-   "id": "g2bband",
-   "titel": "G2B BAND — jouw MIDI of drumloop wordt een heel nummer",
-   "soort": "plugin",
-   "beschrijving": "ÉÉN PLUGIN IN PLAATS VAN VIER (DJEBU+CO-PRODUCER+TREIN+SONG in één): zet BAND op je spoor en kies je modus — SPEL: speel akkoorden op je keyboard en hij speelt live bass+drums mee in jouw genre. VERVOLG: druk LUISTER, speel je halve beat, druk GEN en hij schrijft de tweede helft. ARRANGEMENT: stuur je MIDI of drumloop erin en hij maakt een HEEL nummer met INTRO, BUILD, DROP, BREAK en OUTRO — als .mid klaar om te slepen naar je DAW-grid zodat je elke noot kan aanpassen. 10 GENRE-PILLS (TRAP·DRILL·BOOMBAP·RNB·HOUSE·DEMBOW·KAWINA·LOFI·SOUL·POP). Knoppen: VOLHEID·DURF·HEFT·MENS·SWING·LENGTE·VAR + ↓MID export + MIDI-UIT + DICE + 8 skins. Speelt hoorbaar (eigen synth) én schrijft MIDI uit. 100% eigen code — geen cloud, geen AI-abonnement. VST3 + CLAP + standalone EXE + handleiding-PDF.",
-   "prijs": "€ 34,95",
-   "links": {
-    "koop": "bestel.html?p=g2bband",
-    "download": "bedankt.html?k=g2bband"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW — 4 IN 1",
-   "cover": "media/g2bband-cover.png",
-   "download_dir": "d/g2bband",
-   "video": "media/g2bband-demo.mp4",
-   "demo": "media/g2bband-demo.mp4",
-   "uitleg": "media/band-uitleg.mp4",
-   "sub_nl": "media/band-uitleg.nl.vtt",
-   "sub_es": "media/band-uitleg.es.vtt",
-   "preview": "media/g2bband-preview.mp3"
-  },
-  {
-   "id": "g2bsmash",
-   "titel": "G2B SMASH",
-   "soort": "browser-tool (ZIP)",
-   "beschrijving": "Sleep je beat erin → promo-videoclip eruit. Kies formaat (verticaal TikTok/Shorts, vierkant of breed), look (spectrum/pulse) en kleur, typ je titel en druk RENDER: een echte .mp4 met bewegend beeld + jouw audio rolt eruit. 100% lokaal in je browser — niks installeren, werkt offline, je beat verlaat je pc niet. Ook GRATIS bij de G2B Producer Suite.",
-   "prijs": 19.95,
-   "links": {
-    "koop": "bestel.html?p=g2bsmash",
-    "download": "d/g2bsmash/"
-   },
-   "groep": "studio-tools",
-   "badge": "NIEUW",
-   "cover": "media/g2bsmash-cover.png",
-   "download_dir": "d/g2bsmash",
-   "demo": "media/g2bsmash-demo.mp4",
-   "video": "media/g2bsmash-demo.mp4",
-   "uitleg": "media/smash-uitleg.mp4",
-   "sub_nl": "media/smash-uitleg.nl.vtt",
-   "sub_es": "media/smash-uitleg.es.vtt",
-   "preview": "media/g2bsmash-preview.mp3"
-  },
-  {
-   "id": "g2bairdrums",
-   "titel": "G2B AIRDRUMS",
-   "soort": "Browser-tool (webcam-drummer)",
-   "beschrijving": "Drum in de lucht voor je webcam — 4 of 8 pads met eigen sounds, melodie- en effectmodus, metronoom, opname naar .mid voor je DAW. Werkt in Chrome/Edge, 100% lokaal.",
-   "prijs": 14.95,
-   "links": {
-    "koop": "bestel.html?p=g2bairdrums",
-    "download": "d/g2bairdrums/"
-   },
-   "groep": "studio-tools",
-   "badge": "NIEUW",
-   "cover": "media/g2bairdrums-cover.png",
-   "download_dir": "d/g2bairdrums/",
-   "demo": "media/g2bairdrums-demo.mp4",
-   "video": "media/g2bairdrums-demo.mp4",
-   "uitleg": "media/airdrums-uitleg.mp4",
-   "sub_nl": "media/airdrums-uitleg.nl.vtt",
-   "sub_es": "media/airdrums-uitleg.es.vtt",
-   "preview": "media/g2bairdrums-preview.mp3"
-  },
-  {
-   "id": "g2bsuite1",
-   "titel": "G2B SUITE — alle marketeer-tools",
-   "soort": "app",
-   "video": "media/g2bsuite-demo.mp4",
-   "beschrijving": "ALLES-IN-EEN: alle 9 G2B Fabrieken in één ZIP — Lead, Lijst, Sheet, Mail, Sequentie, CRM, Flow, Watcher én SEO-Fabriek. Eén pakket, negen licentiecodes erbij. Los bij elkaar EUR341 — als suite EUR99. Windows, 100% lokaal, eenmalig.",
-   "prijs": 99,
-   "links": {
-    "koop": "bestel.html?p=g2bsuite1",
-    "download": "bedankt.html?k=g2bsuite1"
-   },
-   "groep": "apps",
-   "badge": "ALLES-IN-1",
-   "download_dir": "d/g2bsuite1",
-   "uitleg": "media/suite1-uitleg.mp4",
-   "sub_nl": "media/suite1-uitleg.nl.vtt",
-   "sub_es": "media/suite1-uitleg.es.vtt"
-  },
-  {
-   "id": "seofabriek1",
-   "titel": "G2B SEO-Fabriek",
-   "prijs": 49,
-   "beschrijving": "Volledige SEO-site-audit in één klik. Crawlt ALLE pagina's: titels, meta descriptions, H1-structuur, alt-teksten, laadtijd, kapotte links, canonicals, og-tags, structured data, sitemap, robots. Score 0-100 + printbaar audit-rapport om zelf aan klanten te verkopen. Zelfde checks als tools van EUR30+/maand — bij jou eenmalig, onbeperkt, 100% lokaal. Windows.",
-   "download": "d/seofabriek1/",
-   "groep": "apps",
-   "badge": "NIEUW",
-   "video": "media/seofabriek-demo.mp4",
-   "video_en": "media/seofabriek-demo-en.mp4",
-   "video_es": "media/seofabriek-demo-es.mp4",
-   "links": {
-    "koop": "bestel.html?p=seofabriek1",
-    "download": "bedankt.html?k=seofabriek1"
-   },
-   "download_dir": "d/seofabriek1",
-   "uitleg": "media/seofabriek1-uitleg.mp4",
-   "sub_nl": "media/seofabriek1-uitleg.nl.vtt",
-   "sub_es": "media/seofabriek1-uitleg.es.vtt"
-  },
-  {
-   "id": "agency1",
-   "titel": "G2B AGENCY-LICENTIE",
-   "soort": "licentie",
-   "video": "media/g2bagency-demo.mp4",
-   "beschrijving": "Voor bureaus: gebruik de hele G2B Suite (alle 9 tools) voor max. 10 eigen klanten, 1 jaar. Inclusief alle Suite-downloads + codes per klant. €299/jaar.",
-   "prijs": 299,
-   "links": {
-    "koop": "bestel.html?p=agency1",
-    "download": "bedankt.html?k=agency1"
-   },
-   "groep": "apps",
-   "badge": "AGENCY",
-   "download_dir": "d/agency1",
-   "uitleg": "media/agency1-uitleg.mp4",
-   "sub_nl": "media/agency1-uitleg.nl.vtt",
-   "sub_es": "media/agency1-uitleg.es.vtt"
-  },
-  {
-   "id": "marketerbundel1",
-   "titel": "G2B MARKETER-BUNDEL",
-   "soort": "bundle",
-   "video": "media/g2bmarketer-demo.mp4",
-   "beschrijving": "De complete marketeer-set: Lijst-Fabriek (maak je e-maillijst schoon) + Lead-Fabriek (vind bedrijven + e-mails). Los samen €88 — in de bundel voor €69. 100% lokaal, onbeperkt, éénmalige koop.",
-   "prijs": 69,
-   "links": {
-    "koop": "bestel.html?p=marketerbundel1",
-    "download": "bedankt.html?k=marketerbundel1"
-   },
-   "groep": "apps",
-   "badge": "BUNDEL",
-   "download_dir": "d/marketerbundel1",
-   "uitleg": "media/marketerbundel1-uitleg.mp4",
-   "sub_nl": "media/marketerbundel1-uitleg.nl.vtt",
-   "sub_es": "media/marketerbundel1-uitleg.es.vtt"
-  },
-  {
-   "id": "mailfabriek1",
-   "titel": "G2B MAIL-FABRIEK",
-   "soort": "app",
-   "beschrijving": "Mail al je leads persoonlijk: CSV erin, {naam}/{bedrijf} wordt automatisch ingevuld per mail. Eigen SMTP (Gmail/business), wachttijd tussen mails, verzend-rapport + opvolglijst. Geen credits, geen abonnement.",
-   "prijs": 39,
-   "links": {
-    "koop": "bestel.html?p=mailfabriek1",
-    "download": "bedankt.html?k=mailfabriek1"
-   },
-   "groep": "apps",
-   "badge": "NIEUW",
-   "download_dir": "d/mailfabriek1",
-   "video": "media/mailfabriek-demo.mp4",
-   "video_en": "media/mailfabriek-demo-en.mp4",
-   "video_es": "media/mailfabriek-demo-es.mp4",
-   "uitleg": "media/mailfabriek1-uitleg.mp4",
-   "sub_nl": "media/mailfabriek1-uitleg.nl.vtt",
-   "sub_es": "media/mailfabriek1-uitleg.es.vtt"
-  },
-  {
-   "id": "sheetfabriek1",
-   "titel": "G2B SHEET-FABRIEK",
-   "soort": "app",
-   "beschrijving": "CSV bewerken zonder Excel: filteren, deduperen, sorteren, cellen schoonmaken, kolommen splitsen, bestanden samenvoegen — met live preview. Onbeperkt, 100% lokaal.",
-   "prijs": 29,
-   "links": {
-    "koop": "bestel.html?p=sheetfabriek1",
-    "download": "bedankt.html?k=sheetfabriek1"
-   },
-   "groep": "apps",
-   "badge": "NIEUW",
-   "download_dir": "d/sheetfabriek1",
-   "video": "media/sheetfabriek-demo.mp4",
-   "video_en": "media/sheetfabriek-demo-en.mp4",
-   "video_es": "media/sheetfabriek-demo-es.mp4",
-   "uitleg": "media/sheetfabriek1-uitleg.mp4",
-   "sub_nl": "media/sheetfabriek1-uitleg.nl.vtt",
-   "sub_es": "media/sheetfabriek1-uitleg.es.vtt"
-  },
-  {
-   "id": "sequentiefabriek1",
-   "titel": "G2B SEQUENTIE-FABRIEK",
-   "soort": "app",
-   "beschrijving": "Automatische follow-up: mail 1 → wacht X dagen → mail 2 → mail 3. De fabriek onthoudt per lead waar hij was en mailt door zolang hij draait. Eigen SMTP, geen abonnement.",
-   "prijs": 39,
-   "links": {
-    "koop": "bestel.html?p=sequentiefabriek1",
-    "download": "bedankt.html?k=sequentiefabriek1"
-   },
-   "groep": "apps",
-   "badge": "NIEUW",
-   "download_dir": "d/sequentiefabriek1",
-   "video": "media/sequentiefabriek-demo.mp4",
-   "video_en": "media/sequentiefabriek-demo-en.mp4",
-   "video_es": "media/sequentiefabriek-demo-es.mp4",
-   "uitleg": "media/sequentiefabriek1-uitleg.mp4",
-   "sub_nl": "media/sequentiefabriek1-uitleg.nl.vtt",
-   "sub_es": "media/sequentiefabriek1-uitleg.es.vtt"
-  },
-  {
-   "id": "crmfabriek1",
-   "titel": "G2B CRM-FABRIEK",
-   "soort": "app",
-   "beschrijving": "Je leads op een Kanban-bord: CSV erin → kaartjes slepen van Nieuw → Gecontacteerd → Verkocht. Notities per lead, export naar CSV. 100% lokaal.",
-   "prijs": 39,
-   "links": {
-    "koop": "bestel.html?p=crmfabriek1",
-    "download": "bedankt.html?k=crmfabriek1"
-   },
-   "groep": "apps",
-   "badge": "NIEUW",
-   "download_dir": "d/crmfabriek1",
-   "video": "media/crmfabriek-demo.mp4",
-   "video_en": "media/crmfabriek-demo-en.mp4",
-   "video_es": "media/crmfabriek-demo-es.mp4",
-   "uitleg": "media/crmfabriek1-uitleg.mp4",
-   "sub_nl": "media/crmfabriek1-uitleg.nl.vtt",
-   "sub_es": "media/crmfabriek1-uitleg.es.vtt"
-  },
-  {
-   "id": "watcherfabriek1",
-   "titel": "G2B WATCHER-FABRIEK",
-   "soort": "app",
-   "beschrijving": "Site- en prijs-alarm: volg elke URL (of alleen een prijs/tekst) en zie meteen wanneer iets verandert. Melding in de app + optioneel per mail. 100% lokaal.",
-   "prijs": 29,
-   "links": {
-    "koop": "bestel.html?p=watcherfabriek1",
-    "download": "bedankt.html?k=watcherfabriek1"
-   },
-   "groep": "apps",
-   "badge": "NIEUW",
-   "download_dir": "d/watcherfabriek1",
-   "video": "media/watcherfabriek-demo.mp4",
-   "video_en": "media/watcherfabriek-demo-en.mp4",
-   "video_es": "media/watcherfabriek-demo-es.mp4",
-   "uitleg": "media/watcherfabriek1-uitleg.mp4",
-   "sub_nl": "media/watcherfabriek1-uitleg.nl.vtt",
-   "sub_es": "media/watcherfabriek1-uitleg.es.vtt"
-  },
-  {
-   "id": "flowfabriek1",
-   "titel": "G2B FLOW-FABRIEK",
-   "soort": "app",
-   "beschrijving": "Jouw eigen Zapier, 100% lokaal: triggers (nieuw bestand, schema, webhook, handmatig) + acties (zip-backup, kopiëren, CSV-log, mail via eigen smtp, melding). Geen cloud, geen abonnement — Zapier kost €240+/jaar, dit is éénmalig.",
-   "prijs": 39,
-   "links": {
-    "koop": "bestel.html?p=flowfabriek1",
-    "download": "bedankt.html?k=flowfabriek1"
-   },
-   "groep": "apps",
-   "badge": "NIEUW",
-   "download_dir": "d/flowfabriek1",
-   "video": "media/flowfabriek-demo.mp4",
-   "video_en": "media/flowfabriek-demo-en.mp4",
-   "video_es": "media/flowfabriek-demo-es.mp4",
-   "uitleg": "media/flowfabriek1-uitleg.mp4",
-   "sub_nl": "media/flowfabriek1-uitleg.nl.vtt",
-   "sub_es": "media/flowfabriek1-uitleg.es.vtt"
-  },
-  {
-   "id": "kanaalfabriek1",
-   "titel": "G2B KANAAL-FABRIEK — complete video-studio",
-   "soort": "app",
-   "beschrijving": "Maak complete YouTube/TikTok-kanalen zonder camera: script erin → aflevering eruit met AI-stem in 14 talen (NL/EN/ES/DE/FR/IT/PT/PL/RU/ZH/TR/AR/SV + Sranan). SEIZOEN-FABRIEK maakt een hele serie in 1 klik, TAAL-FABRIEK vertaalt elke aflevering automatisch, VERTEL-MODUS maakt voorlees-video's, auto-shorts 9:16 voor Shorts/Reels/TikTok, greenscreen, karakter-pops, live-webcam-studio, intro-fabriek. 100% LOKAAL op je pc — geen abonnement, geen credits, geen cloud. 1-klik installer + handleiding + licentiecode per koper.",
-   "prijs": "€ 79,00",
-   "links": {
-    "koop": "bestel.html?p=kanaalfabriek1",
-    "download": "bedankt.html?k=kanaalfabriek1"
-   },
-   "groep": "apps",
-   "badge": "NIEUW",
-   "cover": "media/kanaalfabriek-cover.png",
-   "download_dir": "d/kanaalfabriek1",
-   "demo": "media/kanaalfabriek-demo.mp4",
-   "video": "media/kanaalfabriek-demo.mp4",
-   "uitleg": "media/kanaalfabriek1-uitleg.mp4",
-   "sub_nl": "media/kanaalfabriek1-uitleg.nl.vtt",
-   "sub_es": "media/kanaalfabriek1-uitleg.es.vtt"
-  },
-  {
-   "id": "leadfabriek1",
-   "titel": "G2B LEAD-FABRIEK",
-   "soort": "app",
-   "beschrijving": "Vind lokale bedrijven + hun e-mailadressen: vul plaats + categorie in (bijv. Rotterdam + kapper) en de app haalt naam, adres, website, telefoon én e-mailadressen eruit via gratis OpenStreetMap. 100% lokaal, onbeperkt — geen credits, geen abonnement. leads.csv eruit.",
-   "prijs": 49,
-   "links": {
-    "koop": "bestel.html?p=leadfabriek1",
-    "download": "bedankt.html?k=leadfabriek1"
-   },
-   "groep": "apps",
-   "badge": "NIEUW",
-   "download_dir": "d/leadfabriek1",
-   "video": "media/leadfabriek-demo.mp4",
-   "video_en": "media/leadfabriek-demo-en.mp4",
-   "video_es": "media/leadfabriek-demo-es.mp4",
-   "uitleg": "media/leadfabriek1-uitleg.mp4",
-   "sub_nl": "media/leadfabriek1-uitleg.nl.vtt",
-   "sub_es": "media/leadfabriek1-uitleg.es.vtt"
-  },
-  {
-   "id": "lijstfabriek1",
-   "titel": "G2B LIJST-FABRIEK",
-   "soort": "app",
-   "beschrijving": "Schone e-maillijsten in seconden: checkt syntax, mailserver (MX), wegwerp-adressen, rol-accounts en dubbelen. 100% lokaal op je pc — onbeperkt, geen credits, je lijst verlaat je computer nooit. CSV erin → schone lijst + rapport eruit.",
-   "prijs": 39,
-   "links": {
-    "koop": "bestel.html?p=lijstfabriek1",
-    "download": "bedankt.html?k=lijstfabriek1"
-   },
-   "groep": "apps",
-   "badge": "NIEUW",
-   "download_dir": "d/lijstfabriek1",
-   "video": "media/lijstfabriek-demo.mp4",
-   "video_en": "media/lijstfabriek-demo-en.mp4",
-   "video_es": "media/lijstfabriek-demo-es.mp4",
-   "uitleg": "media/lijstfabriek1-uitleg.mp4",
-   "sub_nl": "media/lijstfabriek1-uitleg.nl.vtt",
-   "sub_es": "media/lijstfabriek1-uitleg.es.vtt"
-  },
-  {
-   "id": "g2bvibe1",
-   "titel": "G2B VIBE — pomp + band in één",
-   "soort": "plugin",
-   "beschrijving": "TWEE KARAKTERS IN ÉÉN PLUGIN: POMP laat je mat automatisch op de beat wegduiken (sidechain zonder routing — POMP-diepte, 16 CURVE-vormen van strakke house tot lange zwel, RATE 1/4–1/16 sync op je DAW-tempo) plus een TAPE-sectie voor vintage band-karakter (WOW meedeinen, TAPE warmte, STOF kraakjes, ping-pong ECHO, DARK top-filter, AGE: 0 = gloednieuw tot 100 = band uit 1978). 16 presets: G2B CASSETTE VINYL BOOMBAP DUB JAREN-70 LOFI WALKMAN NACHT RADIO SOUL TRAP DRILL BOOM NEON WARM. VST3 + CLAP + standalone EXE + handleiding-PDF.",
-   "prijs": "€ 24,95",
-   "links": {
-    "koop": "bestel.html?p=g2bvibe1",
-    "download": "bedankt.html?k=g2bvibe1"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/g2bvibe-cover.png",
-   "download_dir": "d/g2bvibe1",
-   "demo": "media/g2bvibe-demo.mp4",
-   "video": "media/g2bvibe-demo.mp4",
-   "uitleg": "media/vibe1-uitleg.mp4",
-   "sub_nl": "media/vibe1-uitleg.nl.vtt",
-   "sub_es": "media/vibe1-uitleg.es.vtt",
-   "preview": "media/g2bvibe1-preview.mp3"
-  },
-  {
-   "id": "g2bbestof",
-   "titel": "G2B Best Of",
-   "soort": "plugin",
-   "beschrijving": "HET BESTE VAN ALLES IN ÉÉN PLUGIN: 21 top-instrumenten uit de hele G2B-collectie — vleugel-piano, DonderPiano, marimba, vibes, strijkers-ensemble, hoorn, pauken, hammond, steeldrum, kawina-fluit, nylon + Spaanse + elektrische gitaar, e-bas, schuivel-zouk bas & gitaar, mbira, dan tranh, darbuka + 2 pad-banken (SCHUIVEL & ZOUK). Plus 63 losse ONE-SHOT wav-samples erbij. Alle echte studio-opnames, 3 aanslag-lagen, ingebouwde limiter — nooit te hard. 100% CC0-bronnen, royaltyvrij commercieel gebruik. VST3 + CLAP + standalone EXE.",
-   "prijs": "€ 34,95",
-   "links": {
-    "koop": "bestel.html?p=g2bbestof",
-    "download": "bedankt.html?k=g2bbestof"
-   },
-   "groep": "plugins",
-   "badge": "TOPPER",
-   "cover": "media/bestof-cover.png",
-   "preview": "media/bestof-demo.mp3",
-   "download_dir": "d/g2bbestof",
-   "demo": "media/bestof-demo-v3.mp4",
-   "video": "media/bestof-demo-v3.mp4",
-   "uitleg": "media/bestof-uitleg.mp4",
-   "sub_nl": "media/bestof-uitleg.nl.vtt",
-   "sub_es": "media/bestof-uitleg.es.vtt"
-  },
-  {
-   "id": "g2b-oneshots",
-   "titel": "G2B ONE-SHOTS VOL1",
-   "soort": "pack",
-   "beschrijving": "Alle G2B one-shots in één pack: 200+ WAV's in drie mappen — DRUMS (kicks/snares/hats in 3 hardheden), MELODIE (stab/pluck/bass/sub808/logdrum/donderpiano in 4 toonhoogtes) en GRUIS-FX (155 rauwe FX + SFZ-kit). Schoon gerenderd, royalty-vrij, 100% eigen.",
-   "prijs": "€ 12,95",
-   "links": {
-    "koop": "bestel.html?p=g2b-oneshots",
-    "download": "bedankt.html?k=g2boneshots"
-   },
-   "groep": "soundpacks",
-   "badge": "NIEUW",
-   "cover": "media/g2b-oneshots-cover.png",
-   "preview": "media/g2b-oneshots-preview.mp3",
-   "demo": "media/oneshots-demo.mp4",
-   "video": "media/oneshots-demo.mp4",
-   "download_dir": "d/g2boneshots",
-   "eerst": true,
-   "uitleg": "media/oneshots-uitleg.mp4",
-   "sub_nl": "media/oneshots-uitleg.nl.vtt",
-   "sub_es": "media/oneshots-uitleg.es.vtt"
-  },
-  {
-   "id": "g2b-juridisch",
-   "titel": "G2B Juridisch",
-   "soort": "digitaal",
-   "beschrijving": "Jouw eigen Nederlandse wetboek op je pc: typ je probleem in gewone woorden → stappen + echte wetsartikelen + hulp-instanties + bewijs-pakket als PDF. Rechtbank-uitspraken importeren en doorzoeken. Werkt offline, 100% lokaal. Incl. handleiding-PDF en workflow-video.",
-   "prijs": "€ 19,95",
-   "prijzen": {},
-   "links": {
-    "koop": "bestel.html?p=g2b-juridisch"
-   },
-   "duur": 0,
-   "groep": "apps",
-   "cover": "media/g2b-juridisch-cover.png",
-   "download_dir": "d/12f11d0fe3c348",
-   "demo": "media/juridisch-demo.mp4",
-   "video": "media/juridisch-demo.mp4",
-   "video_en": "media/juridisch-demo-en.mp4",
-   "video_es": "media/juridisch-demo-es.mp4",
-   "uitleg": "media/juridisch-uitleg.mp4",
-   "sub_nl": "media/juridisch-uitleg.nl.vtt",
-   "sub_es": "media/juridisch-uitleg.es.vtt"
-  },
-  {
-   "id": "g2b-psychologie",
-   "titel": "G2B Psychologie",
-   "soort": "digitaal",
-   "beschrijving": "Begrijp wat er speelt en vind snel de juiste hulp: typ je situatie → uitleg + stappen + 29 echte NL-instanties met adres, telefoon en QR-code naar Maps. Spoed-detectie met 112/113 voorop, begrijp-lijst in gewone woorden en kant-en-klare brieven als PDF. Incl. handleiding-PDF en workflow-video.",
-   "prijs": "€ 14,95",
-   "prijzen": {},
-   "links": {
-    "koop": "bestel.html?p=g2b-psychologie"
-   },
-   "duur": 0,
-   "groep": "apps",
-   "cover": "media/g2b-psychologie-cover.png",
-   "download_dir": "d/eff2f763bada21",
-   "demo": "media/psychologie-demo.mp4",
-   "video": "media/psychologie-demo.mp4",
-   "video_en": "media/psychologie-demo-en.mp4",
-   "video_es": "media/psychologie-demo-es.mp4",
-   "uitleg": "media/psychologie-uitleg.mp4",
-   "sub_nl": "media/psychologie-uitleg.nl.vtt",
-   "sub_es": "media/psychologie-uitleg.es.vtt"
-  },
-  {
-   "id": "g2b-workstation",
-   "titel": "G2B Workstation",
-   "soort": "digitaal",
-   "groep": "apps",
-   "beschrijving": "Jouw eigen AI-muziekstudio — 100% lokaal op je eigen pc: beats en loops maken (MAAK + DICE), AI-BEAT / AI-REMIX / AI-VERLENG via de ingebakken AI-motor, sporen splitsen in drums/bas/gitaar/piano/vocal, masteren met polish + limiter, lyrics eruit (whisper), gespeelde noten als .mid eruit, voicetags, slice naar pack en verkoop-ZIPs. Geen abonnement, geen credits, geen cloud — werkt op een gewone pc; een GPU of RunPod-pod is alleen een versneller, nooit verplicht. Incl. installatie-PDF en workflow-video.",
-   "prijs": "€ 149,00",
-   "prijzen": {},
-   "links": {
-    "koop": "bestel.html?p=g2b-workstation",
-    "download": "bedankt.html?k=g2b-workstation"
-   },
-   "cover": "media/g2b-workstation-cover.png",
-   "video": "media/workstation-demo.mp4",
-   "video_en": "media/workstation-demo-en.mp4",
-   "video_es": "media/workstation-demo-es.mp4",
-   "badge": "100% LOKAAL — ook AI",
-   "eerst": true,
-   "download_dir": "d/g2b-workstation",
-   "uitleg": "media/workstation-uitleg.mp4",
-   "sub_nl": "media/workstation-uitleg.nl.vtt",
-   "sub_es": "media/workstation-uitleg.es.vtt"
-  },
-  {
-   "id": "cursus01",
-   "titel": "G2B Cursus — Beatmaker Basis",
-   "soort": "digitaal",
-   "video": "media/cursus-beatmaker-demo.mp4",
-   "beschrijving": "Leer beats maken in 7 lessen — in je browser, geen installatie: ritme & groove, drums patroon voor patroon, 808-subbas die met je kick meebeweegt, melodie in C-mineur, beat-structuur intro→hook→outro, mixen voor beginners, en je eigen stijl + beats afleveren. Met echte audio-voorbeelden per les (luisterknop in elke les), quiz met direct diploma, doe-opdrachten en veelgemaakte-fouten-lijsten. Download = 1 bestand, werkt offline voor altijd.",
-   "prijs": "€ 9,95",
-   "links": {
-    "koop": "bestel.html?p=cursus01",
-    "download": "bedankt.html?k=cursus01"
-   },
-   "groep": "apps",
-   "badge": "NIEUW",
-   "cover": "media/cursus-beatmaker-cover.png",
-   "download_dir": "d/cursus01",
-   "uitleg": "media/cursus01-uitleg.mp4",
-   "sub_nl": "media/cursus01-uitleg.nl.vtt",
-   "sub_es": "media/cursus01-uitleg.es.vtt"
-  },
-  {
-   "id": "g2b-bedrijfsmiddelen",
-   "titel": "G2B Bedrijfsmiddelen",
-   "soort": "digitaal",
-   "beschrijving": "Jouw complete zakelijke gereedschapskist: beat-contracten, ZZP-facturen met BTW en eigen nummering, algemene voorwaarden, merk-assets, kleurboeken, videoboeken, royalty-rapporten en winkel-pakketten. Alles als PDF/PNG/ZIP, jouw gegevens één keer instellen. Incl. handleiding-PDF en workflow-video.",
-   "prijs": "€ 29,95",
-   "prijzen": {},
-   "links": {
-    "koop": "bestel.html?p=g2b-bedrijfsmiddelen"
-   },
-   "duur": 0,
-   "groep": "apps",
-   "cover": "media/g2b-bedrijfsmiddelen-cover.png",
-   "download_dir": "d/f481c3d2e1e330",
-   "demo": "media/bedrijfsmiddelen-demo.mp4",
-   "video": "media/bedrijfsmiddelen-demo.mp4",
-   "video_en": "media/bedrijfsmiddelen-demo-en.mp4",
-   "video_es": "media/bedrijfsmiddelen-demo-es.mp4",
-   "uitleg": "media/bedrijfsmiddelen-uitleg.mp4",
-   "sub_nl": "media/bedrijfsmiddelen-uitleg.nl.vtt",
-   "sub_es": "media/bedrijfsmiddelen-uitleg.es.vtt"
-  },
-  {
-   "id": "2878e291",
-   "titel": "Cjfjff Houce",
-   "soort": "audio",
-   "beschrijving": "House beat. Eigen G2B-productie",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "bestel.html?p=2878e291",
-    "mp3": "bestel.html?p=2878e291&t=mp3",
-    "wav": "bestel.html?p=2878e291&t=wav",
-    "exclusief": "bestel.html?p=2878e291&t=exclusief",
-    "download": "bedankt.html?k=2878e291"
-   },
-   "duur": 133.3,
-   "groep": "house",
-   "cover": "media/2878e291-cover.png",
-   "preview": "media/2878e291-preview.mp3",
-   "download_dir": "d/2878e291",
-   "bpm": 124,
-   "moods": [
-    "energisch",
-    "club",
-    "vrolijk"
-   ],
-   "demo": "media/2878e291-preview.mp4",
-   "video": "media/2878e291-preview.mp4"
-  },
-  {
-   "id": "d9d479ab",
-   "titel": "Under",
-   "soort": "audio",
-   "beschrijving": "Drill beat — 152 BPM in G#m. Eigen G2B-productie",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "bestel.html?p=d9d479ab",
-    "mp3": "bestel.html?p=d9d479ab&t=mp3",
-    "wav": "bestel.html?p=d9d479ab&t=wav",
-    "exclusief": "bestel.html?p=d9d479ab&t=exclusief",
-    "download": "bedankt.html?k=d9d479ab"
-   },
-   "duur": 204.8,
-   "groep": "drill",
-   "cover": "media/d9d479ab-cover.png",
-   "preview": "media/d9d479ab-preview.mp3",
-   "download_dir": "d/d9d479ab",
-   "bpm": 152,
-   "moods": [
-    "donker",
-    "hard",
-    "spanning"
-   ],
-   "demo": "media/d9d479ab-preview.mp4",
-   "video": "media/d9d479ab-preview.mp4"
-  },
-  {
-   "id": "7fe03e5c",
-   "titel": "Us Both",
-   "soort": "audio",
-   "beschrijving": "Dembow beat — 133 BPM in C#m. Eigen G2B-productie",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "bestel.html?p=7fe03e5c",
-    "mp3": "bestel.html?p=7fe03e5c&t=mp3",
-    "wav": "bestel.html?p=7fe03e5c&t=wav",
-    "exclusief": "bestel.html?p=7fe03e5c&t=exclusief",
-    "download": "bedankt.html?k=7fe03e5c"
-   },
-   "duur": 202.2,
-   "groep": "dembow",
-   "cover": "media/7fe03e5c-cover.png",
-   "preview": "media/7fe03e5c-preview.mp3",
-   "download_dir": "d/7fe03e5c",
-   "bpm": 133,
-   "moods": [
-    "party",
-    "ritmisch",
-    "zomer"
-   ],
-   "demo": "media/7fe03e5c-preview.mp4",
-   "video": "media/7fe03e5c-preview.mp4"
-  },
-  {
-   "id": "0ef9a078",
-   "titel": "Love",
-   "soort": "audio",
-   "beschrijving": "Rnb beat — 133 BPM in Fm. Eigen G2B-productie",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "bestel.html?p=0ef9a078",
-    "mp3": "bestel.html?p=0ef9a078&t=mp3",
-    "wav": "bestel.html?p=0ef9a078&t=wav",
-    "exclusief": "bestel.html?p=0ef9a078&t=exclusief",
-    "download": "bedankt.html?k=0ef9a078"
-   },
-   "duur": 149.1,
-   "groep": "rnb",
-   "cover": "media/0ef9a078-cover.png",
-   "preview": "media/0ef9a078-preview.mp3",
-   "download_dir": "d/0ef9a078",
-   "bpm": 133,
-   "moods": [
-    "zacht",
-    "liefde",
-    "sensueel"
-   ],
-   "demo": "media/0ef9a078-preview.mp4",
-   "video": "media/0ef9a078-preview.mp4"
-  },
-  {
-   "id": "8171e455",
-   "titel": "Soldaat",
-   "soort": "audio",
-   "beschrijving": "G2b beat — 136 BPM in Cm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV)",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "bestel.html?p=8171e455",
-    "mp3": "bestel.html?p=8171e455&t=mp3",
-    "wav": "bestel.html?p=8171e455&t=wav",
-    "exclusief": "bestel.html?p=8171e455&t=exclusief",
-    "download": "bedankt.html?k=8171e455"
-   },
-   "duur": 157.3,
-   "groep": "g2b",
-   "cover": "media/8171e455-cover.png",
-   "preview": "media/8171e455-preview.mp3",
-   "download_dir": "d/8171e455",
-   "bpm": 136,
-   "moods": [
-    "episch",
-    "signature",
-    "eigen"
-   ],
-   "demo": "media/8171e455-preview.mp4",
-   "video": "media/8171e455-preview.mp4"
-  },
-  {
-   "id": "266054dc",
-   "titel": "Houce Trap",
-   "soort": "audio",
-   "beschrijving": "Trap beat — 126 BPM in Gm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV)",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "bestel.html?p=266054dc",
-    "mp3": "bestel.html?p=266054dc&t=mp3",
-    "wav": "bestel.html?p=266054dc&t=wav",
-    "exclusief": "bestel.html?p=266054dc&t=exclusief",
-    "download": "bedankt.html?k=266054dc"
-   },
-   "duur": 133.6,
-   "groep": "trap",
-   "cover": "media/266054dc-cover.png",
-   "preview": "media/266054dc-preview.mp3",
-   "download_dir": "d/266054dc",
-   "bpm": 126,
-   "moods": [
-    "hard",
-    "donker",
-    "energie"
-   ],
-   "demo": "media/266054dc-preview.mp4",
-   "video": "media/266054dc-preview.mp4"
-  },
-  {
-   "id": "53c9dc1f",
-   "titel": "Lala Dance",
-   "soort": "audio",
-   "beschrijving": "House beat — 136 BPM in Gm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV)",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "bestel.html?p=53c9dc1f",
-    "mp3": "bestel.html?p=53c9dc1f&t=mp3",
-    "wav": "bestel.html?p=53c9dc1f&t=wav",
-    "exclusief": "bestel.html?p=53c9dc1f&t=exclusief",
-    "download": "bedankt.html?k=53c9dc1f"
-   },
-   "duur": 141.1,
-   "groep": "house",
-   "cover": "media/53c9dc1f-cover.png",
-   "preview": "media/53c9dc1f-preview.mp3",
-   "download_dir": "d/53c9dc1f",
-   "bpm": 136,
-   "moods": [
-    "energisch",
-    "club",
-    "vrolijk"
-   ],
-   "demo": "media/53c9dc1f-preview.mp4",
-   "video": "media/53c9dc1f-preview.mp4"
-  },
-  {
-   "id": "054630ff",
-   "titel": "Exotic Riddim",
-   "soort": "audio",
-   "beschrijving": "Dancehall beat — 92 BPM in Fm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV)",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "bestel.html?p=054630ff",
-    "mp3": "bestel.html?p=054630ff&t=mp3",
-    "wav": "bestel.html?p=054630ff&t=wav",
-    "exclusief": "bestel.html?p=054630ff&t=exclusief",
-    "download": "bedankt.html?k=054630ff"
-   },
-   "duur": 147.0,
-   "groep": "dancehall",
-   "cover": "media/054630ff-cover.png",
-   "preview": "media/054630ff-preview.mp3",
-   "download_dir": "d/054630ff",
-   "bpm": 92,
-   "moods": [
-    "zomer",
-    "dans",
-    "caribisch"
-   ],
-   "demo": "media/054630ff-preview.mp4",
-   "video": "media/054630ff-preview.mp4"
-  },
-  {
-   "id": "3083f3d3",
-   "titel": "Khvckhvclv",
-   "soort": "audio",
-   "beschrijving": "Drill beat — 112 BPM in Am. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV)",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "bestel.html?p=3083f3d3",
-    "mp3": "bestel.html?p=3083f3d3&t=mp3",
-    "wav": "bestel.html?p=3083f3d3&t=wav",
-    "exclusief": "bestel.html?p=3083f3d3&t=exclusief",
-    "download": "bedankt.html?k=3083f3d3"
-   },
-   "duur": 124.9,
-   "groep": "drill",
-   "cover": "media/3083f3d3-cover.png",
-   "preview": "media/3083f3d3-preview.mp3",
-   "download_dir": "d/3083f3d3",
-   "bpm": 112,
-   "moods": [
-    "donker",
-    "hard",
-    "spanning"
-   ],
-   "demo": "media/3083f3d3-preview.mp4",
-   "video": "media/3083f3d3-preview.mp4"
-  },
-  {
-   "id": "600fb829",
-   "titel": "Midnight Dembow II",
-   "soort": "audio",
-   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV)",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "bestel.html?p=600fb829",
-    "mp3": "bestel.html?p=600fb829&t=mp3",
-    "wav": "bestel.html?p=600fb829&t=wav",
-    "exclusief": "bestel.html?p=600fb829&t=exclusief",
-    "download": "bedankt.html?k=600fb829"
-   },
-   "duur": 158.1,
-   "groep": "dembow",
-   "cover": "media/600fb829-cover.png",
-   "preview": "media/600fb829-preview.mp3",
-   "download_dir": "d/600fb829",
-   "bpm": 123,
-   "moods": [
-    "party",
-    "ritmisch",
-    "zomer"
-   ],
-   "demo": "media/600fb829-preview.mp4",
-   "video": "media/600fb829-preview.mp4"
-  },
-  {
-   "id": "f92b4951",
-   "titel": "Midnight Dembow III",
-   "soort": "audio",
-   "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95",
-    "exclusief": "€ 199,95"
-   },
-   "links": {
-    "koop": "bestel.html?p=f92b4951",
-    "mp3": "bestel.html?p=f92b4951&t=mp3",
-    "wav": "bestel.html?p=f92b4951&t=wav",
-    "exclusief": "bestel.html?p=f92b4951&t=exclusief",
-    "download": "bedankt.html?k=f92b4951"
-   },
-   "duur": 162.7,
-   "groep": "dembow",
-   "cover": "media/f92b4951-cover.png",
-   "preview": "media/f92b4951-preview.mp3",
-   "download_dir": "d/f92b4951",
-   "bpm": 123,
-   "moods": [
-    "party",
-    "ritmisch",
-    "zomer"
-   ],
-   "demo": "media/f92b4951-preview.mp4",
-   "video": "media/f92b4951-preview.mp4"
-  },
-  {
-   "id": "0b5647bf",
-   "titel": "Coolbreez",
-   "soort": "audio",
-   "beschrijving": "Afgeronde track · 152 BPM, phrygische sfeer. mp3 + wav + akkoorden + songkaart + licentie. 100% eigen G2B-productie.",
-   "prijs": "v.a. € 19,95",
-   "prijzen": {
-    "mp3": "€ 19,95",
-    "wav": "€ 49,95"
-   },
-   "links": {
-    "koop": "bestel.html?p=0b5647bf",
-    "mp3": "bestel.html?p=0b5647bf&t=mp3",
-    "wav": "bestel.html?p=0b5647bf&t=wav",
-    "download": "bedankt.html?k=0b5647bf"
-   },
-   "duur": 15,
-   "groep": "muziek",
-   "cover": "media/0b5647bf-cover.png",
-   "preview": "media/0b5647bf-preview.mp3",
-   "download_dir": "d/0b5647bf",
-   "bpm": 152,
-   "moods": [
-    "chill",
-    "luchtig",
-    "afgerond"
-   ],
-   "demo": "media/0b5647bf-preview.mp4",
-   "video": "media/0b5647bf-preview.mp4"
-  },
-  {
-   "id": "ritmosbundel",
-   "titel": "Ritmos Del Corazón + Beat Tape",
-   "soort": "digitaal",
-   "beschrijving": "Zijn Spaanse album (12 tracks, opnieuw gemasterd op streaming-niveau) + GRATIS G2B Beat Tape Vol. 1 (33 min doorlopende tape met 13 beats). Twee downloads, één prijs.",
-   "prijs": "€ 9,95",
-   "prijzen": {
-    "digitaal": "€ 9,95"
-   },
-   "links": {
-    "koop": "bestel.html?p=ritmosbundel",
-    "download": "bedankt.html?k=d74976fef7dfff6a"
-   },
-   "groep": "muziek",
-   "cover": "media/ritmosbundle-cover.png",
-   "preview": "media/ritmosalbum-preview.mp3",
-   "video": "media/ritmosbundle-promo.mp4",
-   "download_dir": "d/d74976fef7dfff6a",
-   "uitleg": "media/ritmosbundel-uitleg.mp4",
-   "sub_nl": "media/ritmosbundel-uitleg.nl.vtt",
-   "sub_es": "media/ritmosbundel-uitleg.es.vtt"
-  },
-  {
-   "id": "g2bfx1",
-   "titel": "G2B FX",
-   "soort": "plugin",
-   "beschrijving": "DE MENGER + ALLE EFFECTEN in één: 3-bands EQ (lo/mid/hi), SUB, POETS (vet), KNIP, GLANS (air), RUIMTE, OUTPUT + GALAXY 27-standen + LUFS-meter + luistert zelf en stelt in. Alles om je track klaar te maken. VST3 + CLAP + standalone.",
-   "prijs": "€ 24,95",
-   "links": {
-    "koop": "bestel.html?p=g2bfx1",
-    "download": "bedankt.html?k=g2bfx1"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/sat-cover.png",
-   "download_dir": "d/g2bfx1",
-   "video": "media/g2bfx-demo-v3.mp4",
-   "demo": "media/g2bfx-demo-v3.mp4",
-   "uitleg": "media/fx1-uitleg.mp4",
-   "sub_nl": "media/fx1-uitleg.nl.vtt",
-   "sub_es": "media/fx1-uitleg.es.vtt",
-   "preview": "media/g2bfx1-preview.mp3"
-  },
-  {
-   "id": "ocho01",
-   "titel": "G2B Ocho — Surinaamse one-shot machine",
-   "soort": "plugin",
-   "beschrijving": "SURINAAMSE ONE-SHOT MACHINE — simpel en echt goed: 16 ingebakken smaken (DONDER/kawina-sub, TRAP, DRILL, AFRO, DEMBOW, bangi, seki, surdo, timbal, klap), < > bladeren door de set, dobbelsteen voor verrassing, 808!-knop = perfecte 808-bas in 1 klik, SKIN met 8 uiterlijken (SRANANG-standaard), scope met Surinaamse vlag. Eigen .wav in Documenten\\G2B-SMAAK-SETS = eigen sets erbij. Setup.exe installeert VST3 + CLAP + standalone met nette uninstall — handleiding-PDF en demo-video inbegrepen. Windows, klaar voor Reason/FL/Ableton.",
-   "prijs": "€ 19,95",
-   "links": {
-    "koop": "bestel.html?p=ocho01",
-    "download": "bedankt.html?k=ocho01",
-    "handleiding": "media/G2B-Ocho-Handleiding.pdf"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/ocho-cover.png",
-   "download_dir": "d/ocho01",
-   "demo": "media/ocho-demo.mp4",
-   "video": "media/ocho-demo.mp4",
-   "uitleg": "media/ocho-uitleg.mp4",
-   "sub_nl": "media/ocho-uitleg.nl.vtt",
-   "sub_es": "media/ocho-uitleg.es.vtt",
-   "preview": "media/ocho01-preview.mp3"
-  },
-  {
-   "titel": "G2B Sleutel-Helper",
-   "prijs": "€ 19,95",
-   "cover": "media/g2b-sleutel-cover.png",
-   "beschrijving": "Speelt live mee met je MIDI en vertaalt wat je doet: speel noten → de pianorol kleurt meteen groen op de noten die passen in de toonsoort die hij herkent. Speel je een valse noot → hij laat zien welke noot wel klopt (BEDOEL JE DIT?). Bovenin staat welk akkoord je nu speelt (WAT SPEEL IK NU). Met de SPEEL-knop stuurt hij zijn suggestie als MIDI terug, zodat je hem direct kunt opnemen. FOCUS-knoppen (ALLES · BAS-808 · AKKOORDEN · MELODIE) richten de hints op waar je aan werkt, en hij wijst welke G2B-packs bij jouw toonsoort passen. Je eigen noten gaan gewoon door naar je instrument (MIDI-thru). VST3 + CLAP voor FL Studio.",
-   "type": "plugin",
-   "genre": "tool",
-   "tags": [
-    "vst",
-    "plugin",
-    "theorie",
-    "akkoorden",
-    "808",
-    "melodie",
-    "tool"
-   ],
-   "video": "media/sleutel-helper-demo.mp4",
-   "id": "sl3ut3",
-   "soort": "plugin",
-   "groep": "plugins",
-   "download_dir": "d/sl3ut3",
-   "links": {
-    "koop": "bestel.html?p=sl3ut3",
-    "download": "bedankt.html?k=sl3ut3"
-   },
-   "moods": [
-    "tool"
-   ],
-   "uitleg": "media/sl3ut3-uitleg.mp4",
-   "sub_nl": "media/sl3ut3-uitleg.nl.vtt",
-   "sub_es": "media/sl3ut3-uitleg.es.vtt"
-  },
-  {
-   "id": "g2b-brein",
-   "titel": "G2B Brein",
-   "soort": "digitaal",
-   "beschrijving": "Patroon-brein als plugin: 219 GELEERDE kits → echte MIDI-noten naar jouw instrumenten. Kies een genre (808/KAWINA/KEYS/MISC/TRAP), blader door kits met ◀ ▶, GENEREER voor nieuwe variaties, DICE voor verrassing. Drums op kanaal 10, melodie op kanaal 1 — routeer naar je eigen drum/keys-plugins of exporteer direct als .mid-bestand. BARS 1-16, SEED, KRACHT (velocity), SWING, DRUMS/MEL/MIDI-OUT schakelaars, playhead-grid, 8 skins. Windows VST3 + CLAP.",
-   "prijs": 19.95,
-   "links": {
-    "koop": "bestel.html?p=g2b-brein"
-   },
-   "groep": "plugins",
-   "cover": "media/g2b-brein-cover.png",
-   "download_dir": "d/f6da0caecdf195",
-   "demo": "media/g2b-brein-demo.mp4",
-   "video": "media/g2b-brein-demo.mp4",
-   "badge": "NIEUW",
-   "uitleg": "media/brein-uitleg.mp4",
-   "sub_nl": "media/brein-uitleg.nl.vtt",
-   "sub_es": "media/brein-uitleg.es.vtt",
-   "preview": "media/g2b-brein-preview.mp3"
-  },
-  {
-   "id": "prod01",
-   "titel": "G2B Producer",
-   "soort": "plugin",
-   "beschrijving": "DE DEUNTJES-MACHINE: 16 akkoord-progressies × 16 klanken in 6 soorten — SOORT→GELUID kiezer zoals echte VST's (KEYS/STRINGS/PLUCK/GITAAR/BAS/BELLS: E-Piano, Rhodes, Marimba, Nylon, Steel, Sub Bas, Bell...). AUTO speelt zelf, ZELF = alleen jouw keyboard. 🎲 GOOI = nieuwe combi. 12 keys, ladders, voicings, 27 DIMENSIES, 8 skins, XY-pad. VST3 + CLAP + standalone.",
-   "prijs": "€ 19,95",
-   "links": {
-    "koop": "bestel.html?p=prod01",
-    "download": "bedankt.html?k=prod01"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/sat-cover.png",
-   "download_dir": "d/prod01",
-   "video": "media/producer-demo.mp4",
-   "demo": "media/producer-demo.mp4",
-   "uitleg": "media/prod01-uitleg.mp4",
-   "sub_nl": "media/prod01-uitleg.nl.vtt",
-   "sub_es": "media/prod01-uitleg.es.vtt",
-   "preview": "media/prod01-preview.mp3"
-  },
-  {
-   "id": "sp00ky",
-   "titel": "G2B Spooky-SFX",
-   "soort": "pack",
-   "beschrijving": "14 horror/Halloween-geluidseffecten: kraakdeuren, geesten, heksen, hartklop, kerkklok, griezel-musicbox. 100% eigen engine, royalty-vrij. Perfect voor horror-beats, video's en games.",
-   "prijs": "€ 7,95",
-   "links": {
-    "koop": "bestel.html?p=sp00ky",
-    "download": "bedankt.html?k=sp00ky"
-   },
-   "groep": "soundpacks",
-   "badge": "HALLOWEEN",
-   "cover": "media/spooky-cover.png",
-   "preview": "media/spooky.mp3",
-   "download_dir": "d/sp00ky",
-   "eerst": true,
-   "demo": "media/sp00ky-preview.mp4",
-   "video": "media/sp00ky-preview.mp4",
-   "uitleg": "media/sp00ky-uitleg.mp4",
-   "sub_nl": "media/sp00ky-uitleg.nl.vtt",
-   "sub_es": "media/sp00ky-uitleg.es.vtt"
-  },
-  {
-   "id": "school1",
-   "titel": "G2B Schoolspelen — GRATIS (binnenkort €29)",
-   "soort": "digitaal",
-   "beschrijving": "Complete NL leer-app voor kinderen 4-12: adaptieve ladder groep 1 t/m genius, NL-stem leest alles voor, Helden-Quiz met echt diploma, beloningsclips. Werkt in elke browser — GRATIS tijdens de lancering, daarna €29. Download/spel NU! (gratis in je browser op good2better.com)",
-   "prijs": "GRATIS",
-   "prijzen": {
-    "gratis": "€ 0",
-    "binnenkort": "€ 29"
-   },
-   "links": {
-    "koop": "schoolspelen/index.html",
-    "download": "schoolspelen/index.html"
-   },
-   "groep": "gratis",
-   "badge": "GRATIS",
-   "uitleg": "media/school1-uitleg.mp4",
-   "sub_nl": "media/school1-uitleg.nl.vtt",
-   "sub_es": "media/school1-uitleg.es.vtt"
-  },
-  {
-   "id": "g2bbd1",
-   "titel": "G2B Bassdrum",
-   "soort": "plugin",
-   "beschrijving": "Jouw eigen kick-machine: 661 ECHTE G2B-kicks, verdeeld over 15 genre-banks x 16 pads (BOOMBAP, TRAP, DRILL, RNB, AFROBEAT, PHONK, LOFI, FUNK, EPIC, DROOM, POP, ROCKABILLY, SOUTHERN, CORPORATE, REGGAETON). Speel ze live op pads of MIDI-noten 36-51. TUNE/DECAY/LO/HI per hit, DIMENTIES ruimte, 8 skins. Deze kicks zijn uniek voor G2B — niemand anders heeft ze. VST3 + CLAP + standalone.",
-   "prijs": "€ 19,95",
-   "links": {
-    "koop": "bestel.html?p=g2bbd1",
-    "download": "bedankt.html?k=g2bbd1"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/g2bbd-cover.png",
-   "demo": "media/g2bbd-demo.mp4",
-   "video": "media/g2bbd-demo.mp4",
-   "download_dir": "d/g2bbd1",
-   "uitleg": "media/bd1-uitleg.mp4",
-   "sub_nl": "media/bd1-uitleg.nl.vtt",
-   "sub_es": "media/bd1-uitleg.es.vtt",
-   "preview": "media/g2bbd1-preview.mp3"
-  },
-  {
-   "id": "steun-3",
-   "titel": "STEUN G2B — € 3,-",
-   "soort": "steun",
-   "groep": "steun",
-   "verborgen": true,
-   "prijs": "€ 3,00",
-   "beschrijving": "Trakteer de maker — steun G2B met een bijdrage. Geen product-download; wij bedanken je met een mailtje.",
-   "links": {
-    "koop": "bestel.html?p=steun-3"
-   },
-   "uitleg": "media/steun3-uitleg.mp4",
-   "sub_nl": "media/steun3-uitleg.nl.vtt",
-   "sub_es": "media/steun3-uitleg.es.vtt"
-  },
-  {
-   "id": "steun-5",
-   "titel": "STEUN G2B — € 5,-",
-   "soort": "steun",
-   "groep": "steun",
-   "verborgen": true,
-   "prijs": "€ 5,00",
-   "beschrijving": "Trakteer de maker — steun G2B met een bijdrage. Geen product-download; wij bedanken je met een mailtje.",
-   "links": {
-    "koop": "bestel.html?p=steun-5"
-   },
-   "uitleg": "media/steun5-uitleg.mp4",
-   "sub_nl": "media/steun5-uitleg.nl.vtt",
-   "sub_es": "media/steun5-uitleg.es.vtt"
-  },
-  {
-   "id": "steun-10",
-   "titel": "STEUN G2B — € 10,-",
-   "soort": "steun",
-   "groep": "steun",
-   "verborgen": true,
-   "prijs": "€ 10,00",
-   "beschrijving": "Trakteer de maker — steun G2B met een bijdrage. Geen product-download; wij bedanken je met een mailtje.",
-   "links": {
-    "koop": "bestel.html?p=steun-10"
-   },
-   "uitleg": "media/steun10-uitleg.mp4",
-   "sub_nl": "media/steun10-uitleg.nl.vtt",
-   "sub_es": "media/steun10-uitleg.es.vtt"
-  },
-  {
-   "id": "femina-pil",
-   "titel": "EVEENINE Gummies — magnesium voor vrouwen (PRE-ORDER)",
-   "soort": "femina",
-   "beschrijving": "VOORVERKOOP — eerste batch komt binnen na de testrun (verwacht begin 2027). Je bestelt nu met introductievoordeel; betaal pas via Tikkie nadat wij je mail bevestigen. Levering zodra de batch binnen is, of je geld terug. 60 plantaardige gummies met kersensmaak: magnesiumcitraat — de goed opneembare vorm van het mineraal dat vrouwen al generaties gebruiken bij spierspanning en vermoeidheid rond hun cyclus. Magnesium draagt bij aan normale spierwerking en aan de vermindering van vermoeidheid. Vegan, glutenvrij, voor volwassen vrouwen. Luxe EVEENINE by FeminaSync label. Geen pillen — alleen gummies.",
-   "prijs": "€ 15,00",
-   "links": {
-    "koop": "bestel.html?p=femina-pil"
-   },
-   "groep": "femina",
-   "badge": "PRE-ORDER",
-   "cover": "feminasync/img/mockup_pil_vrouwen.png",
-   "verborgen": true,
-   "uitleg": "media/feminapil-uitleg.mp4",
-   "sub_nl": "media/feminapil-uitleg.nl.vtt",
-   "sub_es": "media/feminapil-uitleg.es.vtt"
-  },
-  {
-   "id": "femina-thee",
-   "titel": "FeminaSync Zacht Thee — cyclus-kruidenmix (PRE-ORDER)",
-   "soort": "femina",
-   "beschrijving": "VOORVERKOOP — eerste batch na de testrun (verwacht begin 2027). Betaal pas via Tikkie na onze bevestiging; levering of geld terug. Doosje losse thee (50g, ±20 koppen), eigen recept v2: framboosblad, gember, kamille, citroenmelisse, kaneel, venkel + Surinaamse Blaka Uma en citroengras — kruiden die generaties vrouwen gebruiken op moeilijke dagen. Zacht en veilig, ook voor meiden vanaf 9 jaar (onder begeleiding).",
-   "prijs": "€ 12,00",
-   "links": {
-    "koop": "bestel.html?p=femina-thee"
-   },
-   "groep": "femina",
-   "badge": "PRE-ORDER",
-   "cover": "feminasync/img/mockup_thee_meisjes.png",
-   "verborgen": true,
-   "uitleg": "media/feminathee-uitleg.mp4",
-   "sub_nl": "media/feminathee-uitleg.nl.vtt",
-   "sub_es": "media/feminathee-uitleg.es.vtt"
-  },
-  {
-   "id": "femina-zalf",
-   "titel": "FeminaSync Zacht Zalf — buik & rug (PRE-ORDER)",
-   "soort": "femina",
-   "beschrijving": "VOORVERKOOP — eerste batch na de testrun (verwacht begin 2027). Betaal pas via Tikkie na onze bevestiging; levering of geld terug. 50ml huidzalf v2: sheaboter met arnica (traditioneel huidkruid), lavendel, kamille, eucalyptus + Surinaamse Sneki Wiri en Blaka Uma. Wrijven op buik en onderrug bij kramp; ook voor meiden vanaf 9 jaar.",
-   "prijs": "€ 18,00",
-   "links": {
-    "koop": "bestel.html?p=femina-zalf"
-   },
-   "groep": "femina",
-   "badge": "PRE-ORDER",
-   "cover": "feminasync/img/stijl-meisjes.png",
-   "verborgen": true,
-   "uitleg": "media/feminazalf-uitleg.mp4",
-   "sub_nl": "media/feminazalf-uitleg.nl.vtt",
-   "sub_es": "media/feminazalf-uitleg.es.vtt"
-  },
-  {
-   "id": "femina-startpakket",
-   "titel": "FeminaSync Zacht Startpakket — thee + zalf (PRE-ORDER)",
-   "soort": "femina",
-   "beschrijving": "VOORVERKOOP — eerste batch na de testrun (verwacht begin 2027). Betaal pas via Tikkie na onze bevestiging; levering of geld terug. Het complete Zacht-setje: 50g losse cyclus-thee (framboosblad, gember, kamille, citroenmelisse, venkel, kaneel + Sneki Wiri en Blaka Uma) én 50ml huidzalf (sheaboter, arnica, lavendel, eucalyptus + dezelfde Surinaamse kruiden). €5 voordeliger dan los. Eigen recepten, voor meiden vanaf 9 jaar via de moeder.",
-   "prijs": "€ 25,00",
-   "links": {
-    "koop": "bestel.html?p=femina-startpakket"
-   },
-   "groep": "femina",
-   "badge": "PRE-ORDER",
-   "cover": "feminasync/img/stijl-meisjes.png",
-   "verborgen": true,
-   "uitleg": "media/feminastartpakket-uitleg.mp4",
-   "sub_nl": "media/feminastartpakket-uitleg.nl.vtt",
-   "sub_es": "media/feminastartpakket-uitleg.es.vtt"
-  },
-  {
-   "id": "femina-pil-zacht",
-   "titel": "FeminaSync Zacht Meiden-Gummies — milde vitamines (PRE-ORDER)",
-   "prijs": "€ 14,00",
-   "soort": "femina",
-   "groep": "femina",
-   "badge": "PRE-ORDER",
-   "cover": "feminasync/img/stijl-meisjes.png",
-   "beschrijving": "VOORVERKOOP — eerste batch na de testrun (verwacht begin 2027). Betaal pas via Tikkie na onze bevestiging; levering of geld terug. 60 plantaardige gummies (aardbei+sinaasappel, vegan) met 10 vitaminen en mineralen waaronder B-vitaminen — mild en gemaakt voor kinderen. Verkoop loopt via de moeder/verzorger. Geen sterke kruiden, geen medicijn.",
-   "links": {
-    "koop": "bestel.html?p=femina-pil-zacht"
-   },
-   "verborgen": true,
-   "uitleg": "media/feminapilzacht-uitleg.mp4",
-   "sub_nl": "media/feminapilzacht-uitleg.nl.vtt",
-   "sub_es": "media/feminapilzacht-uitleg.es.vtt"
-  },
-  {
-   "id": "gamefabriek1",
-   "titel": "G2B GAME-FABRIEK",
-   "soort": "app",
-   "beschrijving": "Maak complete browser-spelletjes zonder code: 15 spel-types (slang, memory, race, quiz, beat-spel, platformer, bowling, mini-golf...), 6 thema's, eigen foto's als karakter, eigen beat als muziek, multiplayer (2 spelers), levels + score + deel-knop. Elk spel = 1 bestand dat offline werkt. VERKOOP-pakket: ZIP met spel + cover + handleiding.",
-   "prijs": 39,
-   "links": {
-    "koop": "bestel.html?p=gamefabriek1",
-    "download": "bedankt.html?k=gamefabriek1"
-   },
-   "groep": "apps",
-   "badge": "NIEUW",
-   "download_dir": "d/gamefabriek1",
-   "video": "media/gamefabriek-demo.mp4",
-   "uitleg": "media/gamefabriek1-uitleg.mp4",
-   "sub_nl": "media/gamefabriek1-uitleg.nl.vtt",
-   "sub_es": "media/gamefabriek1-uitleg.es.vtt"
-  },
-  {
-   "id": "g2bdren",
-   "titel": "G2B DREN — de droom-radio die je bespeelt (320 afleveringen)",
-   "soort": "plugin",
-   "beschrijving": "DROOM-INSTRUMENT — elke aflevering is een andere wereld: 320 presets in 20 episodes (GOUD-UR, NACHT, WINTI, KAWI, DREN...). 3 lagen: droom-melodie (synth ↔ Kawai ↔ Steinway samples op TOON) + SUB + sfeer-bed, plus SPOOK-fragmenten (zachte spook-nootjes om je melodie). 8 macro's: TOON·WARM·DRIFT·WARP·RUW·ECHO·RUIMTE·MIX + SUB·SPOOK. ZAP = zappen naar een nieuw geluid. VST3 + CLAP + standalone EXE. 100% eigen code — geen cloud, geen abonnement. Ook gratis proberen: DREN LITE met 64 afleveringen.",
-   "prijs": "€ 34,95",
-   "links": {
-    "koop": "bestel.html?p=g2bdren",
-    "download": "bedankt.html?k=g2bdren"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW — 320 PRESETS",
-   "cover": "media/dren-cover.png",
-   "download_dir": "d/g2bdren",
-   "video": "media/g2bdren-demo.mp4",
-   "demo": "media/g2bdren-demo.mp4",
-   "uitleg": "media/dren-uitleg.mp4",
-   "sub_nl": "media/dren-uitleg.nl.vtt",
-   "sub_es": "media/dren-uitleg.es.vtt",
-   "preview": "media/g2bdren-preview.mp3"
-  },
-  {
-   "id": "drenlite",
-   "titel": "G2B DREN LITE — gratis droom-radio (64 afleveringen)",
-   "soort": "plugin",
-   "beschrijving": "GRATIS — de instap-DREN: 64 afleveringen (4 episodes × 16) van de droom-radio. Zelfde engine als de volle: 3 lagen + SPOOK-fragmenten + 8 macro's + ZAP. VST3 + CLAP + standalone EXE. Bevalt hij? De volle DREN heeft 320 afleveringen.",
-   "prijs": "GRATIS",
-   "links": {
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-DREN-LITE.zip",
-    "download": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-DREN-LITE.zip"
-   },
-   "groep": "plugins",
-   "badge": "GRATIS",
-   "cover": "media/drenlite-cover.png",
-   "video": "media/drenlite-demo.mp4",
-   "demo": "media/drenlite-demo.mp4",
-   "uitleg": "media/drenlite-uitleg.mp4",
-   "sub_nl": "media/drenlite-uitleg.nl.vtt",
-   "sub_es": "media/drenlite-uitleg.es.vtt",
-   "preview": "media/drenlite-preview.mp3"
-  },
-  {
-   "id": "ocholite",
-   "titel": "G2B OCHO LITE — gratis one-shot machine (4 smaken)",
-   "soort": "plugin",
-   "beschrijving": "GRATIS — de instap-OCHO: 4 ingebakken smaken (DONDER, KICKBAS, TRAP, BOOM) + eigen .wav-samples laden. Zelfde engine als de volle OCHO met 16 smaken + 8 skins. VST3 + CLAP + standalone EXE.",
-   "prijs": "GRATIS",
-   "links": {
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-OCHO-LITE.zip",
-    "download": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-OCHO-LITE.zip"
-   },
-   "groep": "plugins",
-   "badge": "GRATIS",
-   "cover": "media/ocholite-cover.png",
-   "video": "media/ocholite-demo.mp4",
-   "demo": "media/ocholite-demo.mp4",
-   "uitleg": "media/ocholite-uitleg.mp4",
-   "sub_nl": "media/ocholite-uitleg.nl.vtt",
-   "sub_es": "media/ocholite-uitleg.es.vtt",
-   "preview": "media/ocholite-preview.mp3"
-  }
- ]
+  "producten": [
+    {
+      "id": "g2bdicesynth",
+      "titel": "G2B DICE-SYNTH — 1 klik = nieuwe sound",
+      "soort": "plugin",
+      "beschrijving": "DE SYNC-KANON: één klik op de DICE rolt een compleet nieuwe, altijd bruikbare sound — eindeloos en 100% van jou (eigen synth = sync-veilig licenseren). 5 INSTRUMENT-MODI: KEYS · PADS · TEXTURE · BASS · HIT, elk binnen eigen muzikale grenzen. CHORD: 1 toets = filmisch akkoord. STRUM: akkoord-noten tokkelen als een echte gitaar (exponentiële curve, om-en-om laag↔hoog). HUMAN: menselijke timing — zacht spelen = relaxter. SLOT-knoppen houden vast wat goed is; MUTATE varieert subtiel; TERUG/VOOR bladert door je laatste 24 sounds; DICE-morph laat de klank in 0,3s vloeiend overgaan. Akoestiek geborgd: micro-crossfades (geen tikjes) + mono-laag onder 150Hz (bas dooft nooit uit). VST3 + CLAP + standalone EXE.",
+      "prijs": "€ 34,95",
+      "links": {
+        "koop": "bestel.html?p=g2bdicesynth",
+        "download": "bedankt.html?k=g2bdicesynth"
+      },
+      "groep": "plugins",
+      "badge": "NIEUW",
+      "cover": "media/dicesynth-cover.png",
+      "download_dir": "d/g2bdicesynth",
+      "demo": "media/dicesynth-demo.mp4",
+      "video": "media/dicesynth-demo.mp4",
+      "uitleg": "media/dicesynth-uitleg.mp4",
+      "sub_nl": "media/dicesynth-uitleg.nl.vtt",
+      "sub_es": "media/dicesynth-uitleg.es.vtt"
+    },
+    {
+      "id": "g2bmaster",
+      "titel": "G2B MASTER — mastering in 4 knoppen + AUTO",
+      "soort": "plugin",
+      "beschrijving": "DE PAREL VOOR JE MIX-EINDE: zet hem op je master-track en je beat klinkt meteen luider, strakker en voller — zonder mix-kennis. 10 GENRE-PILLS (TRAP·DRILL·BOOMBAP·RNB·HOUSE·DEMBOW·KAWINA·LOFI·SOUL·POP) zetten de hele keten goed in 1 klik. AUTO-KNOP: druk → hij luistert 5 sec naar je beat → zet TILT/GLUE/WARMTE/LUID zelf af. 4 grote knoppen (TILT donker-helder · GLUE samenplakken · WARMTE analoge dikte · LUID hard), live LUFS-meter met -6 LUFS doelstreep, KRACHT dry/wet-slider, DICE, AAN/UIT-bypass, 8 skins. Ingebouwde -1dB limiter: clipt NOOIT. VST3 + CLAP + standalone EXE + handleiding-PDF.",
+      "prijs": "€ 29,95",
+      "links": {
+        "koop": "bestel.html?p=g2bmaster",
+        "download": "bedankt.html?k=g2bmaster"
+      },
+      "groep": "plugins",
+      "badge": "NIEUW",
+      "cover": "media/g2bmaster-cover.png",
+      "download_dir": "d/g2bmaster",
+      "demo": "media/g2bmaster-demo.mp4",
+      "video": "media/g2bmaster-demo.mp4",
+      "uitleg": "media/master-uitleg.mp4",
+      "sub_nl": "media/master-uitleg.nl.vtt",
+      "sub_es": "media/master-uitleg.es.vtt",
+      "preview": "media/g2bmaster-preview.mp3"
+    },
+    {
+      "id": "g2bmixer",
+      "titel": "G2B MIXER — slimme channel-strip die elk spoor klaarmaakt",
+      "soort": "plugin",
+      "beschrijving": "v2 — zet MIXER op ELKE spoor: ze luisteren naar elkaar via de BUS en maken zelf ruimte. MAAK MIX-KLAAR kalibreert je spoor én kiest je prioriteit. PRIO per spoor: HOOG dukit nooit, MIDDEN, LAAG wijkt voor alles. RUIMTE-slider: vechtende sporen maken plek — de verliezer vlucht naar de zijkant (M/S), mix blijft breed, zang houdt het midden. MASTER-link: staat er een G2B MASTER op je mix, dan duken LAAG/MIDDEN-sporen extra waar de mix te vol zit. TRIM · HP · TILT · GLUE · WARMTE · LUID, live LEVEL+GR, LUFS, KRACHT, DICE, AAN/UIT, 8 skins. VST3 + CLAP + EXE + handleiding.",
+      "prijs": "€ 24,95",
+      "links": {
+        "koop": "bestel.html?p=g2bmixer",
+        "download": "bedankt.html?k=g2bmixer"
+      },
+      "groep": "plugins",
+      "badge": "NIEUW",
+      "cover": "media/g2bmixer-cover.png",
+      "download_dir": "d/g2bmixer",
+      "demo": "media/g2bmixer-demo.mp4",
+      "video": "media/g2bmixer-demo.mp4",
+      "uitleg": "media/mixerv2-uitleg.mp4",
+      "sub_nl": "media/mixerv2-uitleg.nl.vtt",
+      "sub_es": "media/mixerv2-uitleg.es.vtt",
+      "preview": "media/g2bmixer-preview.mp3"
+    },
+    {
+      "id": "g2bgeluidmidi",
+      "titel": "G2B GELUID→MIDI — geluid in, MIDI uit",
+      "soort": "plugin",
+      "beschrijving": "ÉÉN PLUGIN IN PLAATS VAN DRIE (LUISTER+OPROEP+ANTWOORD in één): alles wat je hoort wordt MIDI. LUISTER-modus: speel een beat, loop of geluid erdoor en hij schrijft de MIDI-loops (kick/snare/hat/melodie apart). NEURIE-modus: zing of neurie je lijn ±8 sec → strakke melodie-MIDI in je toonsoort, AUTO-KEY corrigeert valse noten zachtjes mee. ANTWOORD-modus: speel 4 tellen en hij antwoordt de volgende 4 tellen in jouw stijl, toonsoort en swing. Elke MIDI is een ECHT .mid-bestand in Music\\G2B — sleep het in je DAW en verander elke noot. 10 GENRE-PILLS, KEY-DETECT met zekerheids-%, BPM-detect, REFINE voor de volgende variatie, MIDI-UIT naar andere plugins, DICE, 8 skins. Werkt volledig offline, 100% eigen DSP — geen AI, geen cloud. VST3 + CLAP + standalone EXE + handleiding-PDF.",
+      "prijs": "€ 34,95",
+      "links": {
+        "koop": "bestel.html?p=g2bgeluidmidi",
+        "download": "bedankt.html?k=g2bgeluidmidi"
+      },
+      "groep": "plugins",
+      "badge": "NIEUW — 3 IN 1",
+      "cover": "media/g2bgeluidmidi-cover.png",
+      "download_dir": "d/g2bgeluidmidi",
+      "video": "media/g2bgeluidmidi-demo.mp4",
+      "demo": "media/g2bgeluidmidi-demo.mp4",
+      "uitleg": "media/geluidmidi-uitleg.mp4",
+      "sub_nl": "media/geluidmidi-uitleg.nl.vtt",
+      "sub_es": "media/geluidmidi-uitleg.es.vtt",
+      "preview": "media/g2bgeluidmidi-preview.mp3"
+    },
+    {
+      "id": "g2brefors",
+      "titel": "G2B REFORS — hoor je beat zoals kopers hem horen",
+      "soort": "plugin",
+      "beschrijving": "DE AUTO-TEST IN 1 KLIK: zet hem op je master-track en klik een ruimte — hoor meteen hoe je beat klinkt op een TELEFOON, in de AUTO, in de CLUB, op een FESTIVAL, AIRPODS, TV of goedkope TIENTJE-oordopjes. STUDIO-pill = plat referentie-geluid om eerlijk te vergelijken. 4 knoppen: AFSTAND (verder weg luisteren), KAMER (galm-sterkte), MENIGTE (publiekssfeer — uniek!), VOLUME. KRACHT dry/wet-slider, DICE, AAN/UIT-bypass, 8 skins, level-meter + scope. Verpest geen enkele upload meer door een mix die alleen op je eigen speakers goed klinkt. 100% eigen DSP. VST3 + CLAP + standalone EXE + handleiding-PDF.",
+      "prijs": "€ 29,95",
+      "links": {
+        "koop": "bestel.html?p=g2brefors",
+        "download": "bedankt.html?k=g2brefors"
+      },
+      "groep": "plugins",
+      "badge": "NIEUW",
+      "cover": "media/g2brefors-cover.png",
+      "download_dir": "d/g2brefors",
+      "demo": "media/g2brefors-demo.mp4",
+      "video": "media/g2brefors-demo.mp4",
+      "uitleg": "media/refors-uitleg.mp4",
+      "sub_nl": "media/refors-uitleg.nl.vtt",
+      "sub_es": "media/refors-uitleg.es.vtt",
+      "preview": "media/g2brefors-preview.mp3"
+    },
+    {
+      "id": "g2bprodsuite",
+      "titel": "G2B PRODUCER SUITE",
+      "soort": "6 plugins in één set",
+      "beschrijving": "De complete G2B-plugin-set in één download: MASTER (auto-mastering op je eindtrack), MIXER (elk spoor mix-klaar in 1 klik), REFORS (auto/club/telefoon-test), BAND (MIDI/drumloop erin → heel nummer eruit) en GELUID→MIDI (geluid/neuriën erin → MIDI eruit). Van idee naar af nummer — samen EUR155 los, als suite EUR79. Alle plugins VST3 + CLAP + standalone EXE, werkt offline, 100% eigen code.",
+      "prijs": 79.0,
+      "links": {
+        "koop": "bestel.html?p=g2bprodsuite",
+        "download": "d/g2bprodsuite/"
+      },
+      "groep": "plugins",
+      "badge": "DEAL",
+      "cover": "media/g2bprodsuite-cover.png",
+      "download_dir": "d/g2bprodsuite",
+      "demo": "media/g2bprodsuite-demo.mp4",
+      "video": "media/g2bprodsuite-demo.mp4",
+      "uitleg": "media/prodsuite-uitleg.mp4",
+      "sub_nl": "media/prodsuite-uitleg.nl.vtt",
+      "sub_es": "media/prodsuite-uitleg.es.vtt",
+      "preview": "media/g2bprodsuite-preview.mp3"
+    },
+    {
+      "id": "g2bband",
+      "titel": "G2B BAND — jouw MIDI of drumloop wordt een heel nummer",
+      "soort": "plugin",
+      "beschrijving": "ÉÉN PLUGIN IN PLAATS VAN VIER (DJEBU+CO-PRODUCER+TREIN+SONG in één): zet BAND op je spoor en kies je modus — SPEL: speel akkoorden op je keyboard en hij speelt live bass+drums mee in jouw genre. VERVOLG: druk LUISTER, speel je halve beat, druk GEN en hij schrijft de tweede helft. ARRANGEMENT: stuur je MIDI of drumloop erin en hij maakt een HEEL nummer met INTRO, BUILD, DROP, BREAK en OUTRO — als .mid klaar om te slepen naar je DAW-grid zodat je elke noot kan aanpassen. 10 GENRE-PILLS (TRAP·DRILL·BOOMBAP·RNB·HOUSE·DEMBOW·KAWINA·LOFI·SOUL·POP). Knoppen: VOLHEID·DURF·HEFT·MENS·SWING·LENGTE·VAR + ↓MID export + MIDI-UIT + DICE + 8 skins. Speelt hoorbaar (eigen synth) én schrijft MIDI uit. 100% eigen code — geen cloud, geen AI-abonnement. VST3 + CLAP + standalone EXE + handleiding-PDF.",
+      "prijs": "€ 34,95",
+      "links": {
+        "koop": "bestel.html?p=g2bband",
+        "download": "bedankt.html?k=g2bband"
+      },
+      "groep": "plugins",
+      "badge": "NIEUW — 4 IN 1",
+      "cover": "media/g2bband-cover.png",
+      "download_dir": "d/g2bband",
+      "video": "media/g2bband-demo.mp4",
+      "demo": "media/g2bband-demo.mp4",
+      "uitleg": "media/band-uitleg.mp4",
+      "sub_nl": "media/band-uitleg.nl.vtt",
+      "sub_es": "media/band-uitleg.es.vtt",
+      "preview": "media/g2bband-preview.mp3"
+    },
+    {
+      "id": "g2bsmash",
+      "titel": "G2B SMASH",
+      "soort": "browser-tool (ZIP)",
+      "beschrijving": "Sleep je beat erin → promo-videoclip eruit. Kies formaat (verticaal TikTok/Shorts, vierkant of breed), look (spectrum/pulse) en kleur, typ je titel en druk RENDER: een echte .mp4 met bewegend beeld + jouw audio rolt eruit. 100% lokaal in je browser — niks installeren, werkt offline, je beat verlaat je pc niet. Ook GRATIS bij de G2B Producer Suite.",
+      "prijs": 19.95,
+      "links": {
+        "koop": "bestel.html?p=g2bsmash",
+        "download": "d/g2bsmash/"
+      },
+      "groep": "studio-tools",
+      "badge": "NIEUW",
+      "cover": "media/g2bsmash-cover.png",
+      "download_dir": "d/g2bsmash",
+      "demo": "media/g2bsmash-demo.mp4",
+      "video": "media/g2bsmash-demo.mp4",
+      "uitleg": "media/smash-uitleg.mp4",
+      "sub_nl": "media/smash-uitleg.nl.vtt",
+      "sub_es": "media/smash-uitleg.es.vtt",
+      "preview": "media/g2bsmash-preview.mp3"
+    },
+    {
+      "id": "g2bairdrums",
+      "titel": "G2B AIRDRUMS",
+      "soort": "Browser-tool (webcam-drummer)",
+      "beschrijving": "Drum in de lucht voor je webcam — 4 of 8 pads met eigen sounds, melodie- en effectmodus, metronoom, opname naar .mid voor je DAW. Werkt in Chrome/Edge, 100% lokaal.",
+      "prijs": 14.95,
+      "links": {
+        "koop": "bestel.html?p=g2bairdrums",
+        "download": "d/g2bairdrums/"
+      },
+      "groep": "studio-tools",
+      "badge": "NIEUW",
+      "cover": "media/g2bairdrums-cover.png",
+      "download_dir": "d/g2bairdrums/",
+      "demo": "media/g2bairdrums-demo.mp4",
+      "video": "media/g2bairdrums-demo.mp4",
+      "uitleg": "media/airdrums-uitleg.mp4",
+      "sub_nl": "media/airdrums-uitleg.nl.vtt",
+      "sub_es": "media/airdrums-uitleg.es.vtt",
+      "preview": "media/g2bairdrums-preview.mp3"
+    },
+    {
+      "id": "g2bsuite1",
+      "titel": "G2B SUITE — alle marketeer-tools",
+      "soort": "app",
+      "video": "media/g2bsuite-demo.mp4",
+      "beschrijving": "ALLES-IN-EEN: alle 9 G2B Fabrieken in één ZIP — Lead, Lijst, Sheet, Mail, Sequentie, CRM, Flow, Watcher én SEO-Fabriek. Eén pakket, negen licentiecodes erbij. Los bij elkaar EUR341 — als suite EUR99. Windows, 100% lokaal, eenmalig.",
+      "prijs": 99,
+      "links": {
+        "koop": "bestel.html?p=g2bsuite1",
+        "download": "bedankt.html?k=g2bsuite1"
+      },
+      "groep": "apps",
+      "badge": "ALLES-IN-1",
+      "download_dir": "d/g2bsuite1",
+      "uitleg": "media/suite1-uitleg.mp4",
+      "sub_nl": "media/suite1-uitleg.nl.vtt",
+      "sub_es": "media/suite1-uitleg.es.vtt"
+    },
+    {
+      "id": "seofabriek1",
+      "titel": "G2B SEO-Fabriek",
+      "prijs": 49,
+      "beschrijving": "Volledige SEO-site-audit in één klik. Crawlt ALLE pagina's: titels, meta descriptions, H1-structuur, alt-teksten, laadtijd, kapotte links, canonicals, og-tags, structured data, sitemap, robots. Score 0-100 + printbaar audit-rapport om zelf aan klanten te verkopen. Zelfde checks als tools van EUR30+/maand — bij jou eenmalig, onbeperkt, 100% lokaal. Windows.",
+      "download": "d/seofabriek1/",
+      "groep": "apps",
+      "badge": "NIEUW",
+      "video": "media/seofabriek-demo.mp4",
+      "video_en": "media/seofabriek-demo-en.mp4",
+      "video_es": "media/seofabriek-demo-es.mp4",
+      "links": {
+        "koop": "bestel.html?p=seofabriek1",
+        "download": "bedankt.html?k=seofabriek1"
+      },
+      "download_dir": "d/seofabriek1",
+      "uitleg": "media/seofabriek1-uitleg.mp4",
+      "sub_nl": "media/seofabriek1-uitleg.nl.vtt",
+      "sub_es": "media/seofabriek1-uitleg.es.vtt"
+    },
+    {
+      "id": "agency1",
+      "titel": "G2B AGENCY-LICENTIE",
+      "soort": "licentie",
+      "video": "media/g2bagency-demo.mp4",
+      "beschrijving": "Voor bureaus: gebruik de hele G2B Suite (alle 9 tools) voor max. 10 eigen klanten, 1 jaar. Inclusief alle Suite-downloads + codes per klant. €299/jaar.",
+      "prijs": 299,
+      "links": {
+        "koop": "bestel.html?p=agency1",
+        "download": "bedankt.html?k=agency1"
+      },
+      "groep": "apps",
+      "badge": "AGENCY",
+      "download_dir": "d/agency1",
+      "uitleg": "media/agency1-uitleg.mp4",
+      "sub_nl": "media/agency1-uitleg.nl.vtt",
+      "sub_es": "media/agency1-uitleg.es.vtt"
+    },
+    {
+      "id": "marketerbundel1",
+      "titel": "G2B MARKETER-BUNDEL",
+      "soort": "bundle",
+      "video": "media/g2bmarketer-demo.mp4",
+      "beschrijving": "De complete marketeer-set: Lijst-Fabriek (maak je e-maillijst schoon) + Lead-Fabriek (vind bedrijven + e-mails). Los samen €88 — in de bundel voor €69. 100% lokaal, onbeperkt, éénmalige koop.",
+      "prijs": 69,
+      "links": {
+        "koop": "bestel.html?p=marketerbundel1",
+        "download": "bedankt.html?k=marketerbundel1"
+      },
+      "groep": "apps",
+      "badge": "BUNDEL",
+      "download_dir": "d/marketerbundel1",
+      "uitleg": "media/marketerbundel1-uitleg.mp4",
+      "sub_nl": "media/marketerbundel1-uitleg.nl.vtt",
+      "sub_es": "media/marketerbundel1-uitleg.es.vtt"
+    },
+    {
+      "id": "mailfabriek1",
+      "titel": "G2B MAIL-FABRIEK",
+      "soort": "app",
+      "beschrijving": "Mail al je leads persoonlijk: CSV erin, {naam}/{bedrijf} wordt automatisch ingevuld per mail. Eigen SMTP (Gmail/business), wachttijd tussen mails, verzend-rapport + opvolglijst. Geen credits, geen abonnement.",
+      "prijs": 39,
+      "links": {
+        "koop": "bestel.html?p=mailfabriek1",
+        "download": "bedankt.html?k=mailfabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/mailfabriek1",
+      "video": "media/mailfabriek-demo.mp4",
+      "video_en": "media/mailfabriek-demo-en.mp4",
+      "video_es": "media/mailfabriek-demo-es.mp4",
+      "uitleg": "media/mailfabriek1-uitleg.mp4",
+      "sub_nl": "media/mailfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/mailfabriek1-uitleg.es.vtt"
+    },
+    {
+      "id": "sheetfabriek1",
+      "titel": "G2B SHEET-FABRIEK",
+      "soort": "app",
+      "beschrijving": "CSV bewerken zonder Excel: filteren, deduperen, sorteren, cellen schoonmaken, kolommen splitsen, bestanden samenvoegen — met live preview. Onbeperkt, 100% lokaal.",
+      "prijs": 29,
+      "links": {
+        "koop": "bestel.html?p=sheetfabriek1",
+        "download": "bedankt.html?k=sheetfabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/sheetfabriek1",
+      "video": "media/sheetfabriek-demo.mp4",
+      "video_en": "media/sheetfabriek-demo-en.mp4",
+      "video_es": "media/sheetfabriek-demo-es.mp4",
+      "uitleg": "media/sheetfabriek1-uitleg.mp4",
+      "sub_nl": "media/sheetfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/sheetfabriek1-uitleg.es.vtt"
+    },
+    {
+      "id": "sequentiefabriek1",
+      "titel": "G2B SEQUENTIE-FABRIEK",
+      "soort": "app",
+      "beschrijving": "Automatische follow-up: mail 1 → wacht X dagen → mail 2 → mail 3. De fabriek onthoudt per lead waar hij was en mailt door zolang hij draait. Eigen SMTP, geen abonnement.",
+      "prijs": 39,
+      "links": {
+        "koop": "bestel.html?p=sequentiefabriek1",
+        "download": "bedankt.html?k=sequentiefabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/sequentiefabriek1",
+      "video": "media/sequentiefabriek-demo.mp4",
+      "video_en": "media/sequentiefabriek-demo-en.mp4",
+      "video_es": "media/sequentiefabriek-demo-es.mp4",
+      "uitleg": "media/sequentiefabriek1-uitleg.mp4",
+      "sub_nl": "media/sequentiefabriek1-uitleg.nl.vtt",
+      "sub_es": "media/sequentiefabriek1-uitleg.es.vtt"
+    },
+    {
+      "id": "crmfabriek1",
+      "titel": "G2B CRM-FABRIEK",
+      "soort": "app",
+      "beschrijving": "Je leads op een Kanban-bord: CSV erin → kaartjes slepen van Nieuw → Gecontacteerd → Verkocht. Notities per lead, export naar CSV. 100% lokaal.",
+      "prijs": 39,
+      "links": {
+        "koop": "bestel.html?p=crmfabriek1",
+        "download": "bedankt.html?k=crmfabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/crmfabriek1",
+      "video": "media/crmfabriek-demo.mp4",
+      "video_en": "media/crmfabriek-demo-en.mp4",
+      "video_es": "media/crmfabriek-demo-es.mp4",
+      "uitleg": "media/crmfabriek1-uitleg.mp4",
+      "sub_nl": "media/crmfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/crmfabriek1-uitleg.es.vtt"
+    },
+    {
+      "id": "watcherfabriek1",
+      "titel": "G2B WATCHER-FABRIEK",
+      "soort": "app",
+      "beschrijving": "Site- en prijs-alarm: volg elke URL (of alleen een prijs/tekst) en zie meteen wanneer iets verandert. Melding in de app + optioneel per mail. 100% lokaal.",
+      "prijs": 29,
+      "links": {
+        "koop": "bestel.html?p=watcherfabriek1",
+        "download": "bedankt.html?k=watcherfabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/watcherfabriek1",
+      "video": "media/watcherfabriek-demo.mp4",
+      "video_en": "media/watcherfabriek-demo-en.mp4",
+      "video_es": "media/watcherfabriek-demo-es.mp4",
+      "uitleg": "media/watcherfabriek1-uitleg.mp4",
+      "sub_nl": "media/watcherfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/watcherfabriek1-uitleg.es.vtt"
+    },
+    {
+      "id": "flowfabriek1",
+      "titel": "G2B FLOW-FABRIEK",
+      "soort": "app",
+      "beschrijving": "Jouw eigen Zapier, 100% lokaal: triggers (nieuw bestand, schema, webhook, handmatig) + acties (zip-backup, kopiëren, CSV-log, mail via eigen smtp, melding). Geen cloud, geen abonnement — Zapier kost €240+/jaar, dit is éénmalig.",
+      "prijs": 39,
+      "links": {
+        "koop": "bestel.html?p=flowfabriek1",
+        "download": "bedankt.html?k=flowfabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/flowfabriek1",
+      "video": "media/flowfabriek-demo.mp4",
+      "video_en": "media/flowfabriek-demo-en.mp4",
+      "video_es": "media/flowfabriek-demo-es.mp4",
+      "uitleg": "media/flowfabriek1-uitleg.mp4",
+      "sub_nl": "media/flowfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/flowfabriek1-uitleg.es.vtt"
+    },
+    {
+      "id": "kanaalfabriek1",
+      "titel": "G2B KANAAL-FABRIEK — complete video-studio",
+      "soort": "app",
+      "beschrijving": "Maak complete YouTube/TikTok-kanalen zonder camera: script erin → aflevering eruit met AI-stem in 14 talen (NL/EN/ES/DE/FR/IT/PT/PL/RU/ZH/TR/AR/SV + Sranan). SEIZOEN-FABRIEK maakt een hele serie in 1 klik, TAAL-FABRIEK vertaalt elke aflevering automatisch, VERTEL-MODUS maakt voorlees-video's, auto-shorts 9:16 voor Shorts/Reels/TikTok, greenscreen, karakter-pops, live-webcam-studio, intro-fabriek. 100% LOKAAL op je pc — geen abonnement, geen credits, geen cloud. 1-klik installer + handleiding + licentiecode per koper.",
+      "prijs": "€ 79,00",
+      "links": {
+        "koop": "bestel.html?p=kanaalfabriek1",
+        "download": "bedankt.html?k=kanaalfabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "cover": "media/kanaalfabriek-cover.png",
+      "download_dir": "d/kanaalfabriek1",
+      "demo": "media/kanaalfabriek-demo.mp4",
+      "video": "media/kanaalfabriek-demo.mp4",
+      "uitleg": "media/kanaalfabriek1-uitleg.mp4",
+      "sub_nl": "media/kanaalfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/kanaalfabriek1-uitleg.es.vtt"
+    },
+    {
+      "id": "leadfabriek1",
+      "titel": "G2B LEAD-FABRIEK",
+      "soort": "app",
+      "beschrijving": "Vind lokale bedrijven + hun e-mailadressen: vul plaats + categorie in (bijv. Rotterdam + kapper) en de app haalt naam, adres, website, telefoon én e-mailadressen eruit via gratis OpenStreetMap. 100% lokaal, onbeperkt — geen credits, geen abonnement. leads.csv eruit.",
+      "prijs": 49,
+      "links": {
+        "koop": "bestel.html?p=leadfabriek1",
+        "download": "bedankt.html?k=leadfabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/leadfabriek1",
+      "video": "media/leadfabriek-demo.mp4",
+      "video_en": "media/leadfabriek-demo-en.mp4",
+      "video_es": "media/leadfabriek-demo-es.mp4",
+      "uitleg": "media/leadfabriek1-uitleg.mp4",
+      "sub_nl": "media/leadfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/leadfabriek1-uitleg.es.vtt"
+    },
+    {
+      "id": "lijstfabriek1",
+      "titel": "G2B LIJST-FABRIEK",
+      "soort": "app",
+      "beschrijving": "Schone e-maillijsten in seconden: checkt syntax, mailserver (MX), wegwerp-adressen, rol-accounts en dubbelen. 100% lokaal op je pc — onbeperkt, geen credits, je lijst verlaat je computer nooit. CSV erin → schone lijst + rapport eruit.",
+      "prijs": 39,
+      "links": {
+        "koop": "bestel.html?p=lijstfabriek1",
+        "download": "bedankt.html?k=lijstfabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/lijstfabriek1",
+      "video": "media/lijstfabriek-demo.mp4",
+      "video_en": "media/lijstfabriek-demo-en.mp4",
+      "video_es": "media/lijstfabriek-demo-es.mp4",
+      "uitleg": "media/lijstfabriek1-uitleg.mp4",
+      "sub_nl": "media/lijstfabriek1-uitleg.nl.vtt",
+      "sub_es": "media/lijstfabriek1-uitleg.es.vtt"
+    },
+    {
+      "id": "g2bvibe1",
+      "titel": "G2B VIBE — pomp + band in één",
+      "soort": "plugin",
+      "beschrijving": "TWEE KARAKTERS IN ÉÉN PLUGIN: POMP laat je mat automatisch op de beat wegduiken (sidechain zonder routing — POMP-diepte, 16 CURVE-vormen van strakke house tot lange zwel, RATE 1/4–1/16 sync op je DAW-tempo) plus een TAPE-sectie voor vintage band-karakter (WOW meedeinen, TAPE warmte, STOF kraakjes, ping-pong ECHO, DARK top-filter, AGE: 0 = gloednieuw tot 100 = band uit 1978). 16 presets: G2B CASSETTE VINYL BOOMBAP DUB JAREN-70 LOFI WALKMAN NACHT RADIO SOUL TRAP DRILL BOOM NEON WARM. VST3 + CLAP + standalone EXE + handleiding-PDF.",
+      "prijs": "€ 24,95",
+      "links": {
+        "koop": "bestel.html?p=g2bvibe1",
+        "download": "bedankt.html?k=g2bvibe1"
+      },
+      "groep": "plugins",
+      "badge": "NIEUW",
+      "cover": "media/g2bvibe-cover.png",
+      "download_dir": "d/g2bvibe1",
+      "demo": "media/g2bvibe-demo.mp4",
+      "video": "media/g2bvibe-demo.mp4",
+      "uitleg": "media/vibe1-uitleg.mp4",
+      "sub_nl": "media/vibe1-uitleg.nl.vtt",
+      "sub_es": "media/vibe1-uitleg.es.vtt",
+      "preview": "media/g2bvibe1-preview.mp3"
+    },
+    {
+      "id": "g2bbestof",
+      "titel": "G2B Best Of",
+      "soort": "plugin",
+      "beschrijving": "HET BESTE VAN ALLES IN ÉÉN PLUGIN: 21 top-instrumenten uit de hele G2B-collectie — vleugel-piano, DonderPiano, marimba, vibes, strijkers-ensemble, hoorn, pauken, hammond, steeldrum, kawina-fluit, nylon + Spaanse + elektrische gitaar, e-bas, schuivel-zouk bas & gitaar, mbira, dan tranh, darbuka + 2 pad-banken (SCHUIVEL & ZOUK). Plus 63 losse ONE-SHOT wav-samples erbij. Alle echte studio-opnames, 3 aanslag-lagen, ingebouwde limiter — nooit te hard. 100% CC0-bronnen, royaltyvrij commercieel gebruik. VST3 + CLAP + standalone EXE.",
+      "prijs": "€ 34,95",
+      "links": {
+        "koop": "bestel.html?p=g2bbestof",
+        "download": "bedankt.html?k=g2bbestof"
+      },
+      "groep": "plugins",
+      "badge": "TOPPER",
+      "cover": "media/bestof-cover.png",
+      "preview": "media/bestof-demo.mp3",
+      "download_dir": "d/g2bbestof",
+      "demo": "media/bestof-demo-v3.mp4",
+      "video": "media/bestof-demo-v3.mp4",
+      "uitleg": "media/bestof-uitleg.mp4",
+      "sub_nl": "media/bestof-uitleg.nl.vtt",
+      "sub_es": "media/bestof-uitleg.es.vtt"
+    },
+    {
+      "id": "g2b-oneshots",
+      "titel": "G2B ONE-SHOTS VOL1",
+      "soort": "pack",
+      "beschrijving": "Alle G2B one-shots in één pack: 200+ WAV's in drie mappen — DRUMS (kicks/snares/hats in 3 hardheden), MELODIE (stab/pluck/bass/sub808/logdrum/donderpiano in 4 toonhoogtes) en GRUIS-FX (155 rauwe FX + SFZ-kit). Schoon gerenderd, royalty-vrij, 100% eigen.",
+      "prijs": "€ 12,95",
+      "links": {
+        "koop": "bestel.html?p=g2b-oneshots",
+        "download": "bedankt.html?k=g2boneshots"
+      },
+      "groep": "soundpacks",
+      "badge": "NIEUW",
+      "cover": "media/g2b-oneshots-cover.png",
+      "preview": "media/g2b-oneshots-preview.mp3",
+      "demo": "media/oneshots-demo.mp4",
+      "video": "media/oneshots-demo.mp4",
+      "download_dir": "d/g2boneshots",
+      "eerst": true,
+      "uitleg": "media/oneshots-uitleg.mp4",
+      "sub_nl": "media/oneshots-uitleg.nl.vtt",
+      "sub_es": "media/oneshots-uitleg.es.vtt"
+    },
+    {
+      "id": "g2b-juridisch",
+      "titel": "G2B Juridisch",
+      "soort": "digitaal",
+      "beschrijving": "Jouw eigen Nederlandse wetboek op je pc: typ je probleem in gewone woorden → stappen + echte wetsartikelen + hulp-instanties + bewijs-pakket als PDF. Rechtbank-uitspraken importeren en doorzoeken. Werkt offline, 100% lokaal. Incl. handleiding-PDF en workflow-video.",
+      "prijs": "€ 19,95",
+      "prijzen": {},
+      "links": {
+        "koop": "bestel.html?p=g2b-juridisch"
+      },
+      "duur": 0,
+      "groep": "apps",
+      "cover": "media/g2b-juridisch-cover.png",
+      "download_dir": "d/12f11d0fe3c348",
+      "demo": "media/juridisch-demo.mp4",
+      "video": "media/juridisch-demo.mp4",
+      "video_en": "media/juridisch-demo-en.mp4",
+      "video_es": "media/juridisch-demo-es.mp4",
+      "uitleg": "media/juridisch-uitleg.mp4",
+      "sub_nl": "media/juridisch-uitleg.nl.vtt",
+      "sub_es": "media/juridisch-uitleg.es.vtt"
+    },
+    {
+      "id": "g2b-psychologie",
+      "titel": "G2B Psychologie",
+      "soort": "digitaal",
+      "beschrijving": "Begrijp wat er speelt en vind snel de juiste hulp: typ je situatie → uitleg + stappen + 29 echte NL-instanties met adres, telefoon en QR-code naar Maps. Spoed-detectie met 112/113 voorop, begrijp-lijst in gewone woorden en kant-en-klare brieven als PDF. Incl. handleiding-PDF en workflow-video.",
+      "prijs": "€ 14,95",
+      "prijzen": {},
+      "links": {
+        "koop": "bestel.html?p=g2b-psychologie"
+      },
+      "duur": 0,
+      "groep": "apps",
+      "cover": "media/g2b-psychologie-cover.png",
+      "download_dir": "d/eff2f763bada21",
+      "demo": "media/psychologie-demo.mp4",
+      "video": "media/psychologie-demo.mp4",
+      "video_en": "media/psychologie-demo-en.mp4",
+      "video_es": "media/psychologie-demo-es.mp4",
+      "uitleg": "media/psychologie-uitleg.mp4",
+      "sub_nl": "media/psychologie-uitleg.nl.vtt",
+      "sub_es": "media/psychologie-uitleg.es.vtt"
+    },
+    {
+      "id": "g2b-workstation",
+      "titel": "G2B Workstation",
+      "soort": "digitaal",
+      "groep": "apps",
+      "beschrijving": "Jouw eigen AI-muziekstudio — 100% lokaal op je eigen pc: beats en loops maken (MAAK + DICE), AI-BEAT / AI-REMIX / AI-VERLENG via de ingebakken AI-motor, sporen splitsen in drums/bas/gitaar/piano/vocal, masteren met polish + limiter, lyrics eruit (whisper), gespeelde noten als .mid eruit, voicetags, slice naar pack en verkoop-ZIPs. Geen abonnement, geen credits, geen cloud — werkt op een gewone pc; een GPU of RunPod-pod is alleen een versneller, nooit verplicht. Incl. installatie-PDF en workflow-video.",
+      "prijs": "€ 149,00",
+      "prijzen": {},
+      "links": {
+        "koop": "bestel.html?p=g2b-workstation",
+        "download": "bedankt.html?k=g2b-workstation"
+      },
+      "cover": "media/g2b-workstation-cover.png",
+      "video": "media/workstation-demo.mp4",
+      "video_en": "media/workstation-demo-en.mp4",
+      "video_es": "media/workstation-demo-es.mp4",
+      "badge": "100% LOKAAL — ook AI",
+      "eerst": true,
+      "download_dir": "d/g2b-workstation",
+      "uitleg": "media/workstation-uitleg.mp4",
+      "sub_nl": "media/workstation-uitleg.nl.vtt",
+      "sub_es": "media/workstation-uitleg.es.vtt"
+    },
+    {
+      "id": "cursus01",
+      "titel": "G2B Cursus — Beatmaker Basis",
+      "soort": "digitaal",
+      "video": "media/cursus-beatmaker-demo.mp4",
+      "beschrijving": "Leer beats maken in 7 lessen — in je browser, geen installatie: ritme & groove, drums patroon voor patroon, 808-subbas die met je kick meebeweegt, melodie in C-mineur, beat-structuur intro→hook→outro, mixen voor beginners, en je eigen stijl + beats afleveren. Met echte audio-voorbeelden per les (luisterknop in elke les), quiz met direct diploma, doe-opdrachten en veelgemaakte-fouten-lijsten. Download = 1 bestand, werkt offline voor altijd.",
+      "prijs": "€ 9,95",
+      "links": {
+        "koop": "bestel.html?p=cursus01",
+        "download": "bedankt.html?k=cursus01"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "cover": "media/cursus-beatmaker-cover.png",
+      "download_dir": "d/cursus01",
+      "uitleg": "media/cursus01-uitleg.mp4",
+      "sub_nl": "media/cursus01-uitleg.nl.vtt",
+      "sub_es": "media/cursus01-uitleg.es.vtt"
+    },
+    {
+      "id": "g2b-bedrijfsmiddelen",
+      "titel": "G2B Bedrijfsmiddelen",
+      "soort": "digitaal",
+      "beschrijving": "Jouw complete zakelijke gereedschapskist: beat-contracten, ZZP-facturen met BTW en eigen nummering, algemene voorwaarden, merk-assets, kleurboeken, videoboeken, royalty-rapporten en winkel-pakketten. Alles als PDF/PNG/ZIP, jouw gegevens één keer instellen. Incl. handleiding-PDF en workflow-video.",
+      "prijs": "€ 29,95",
+      "prijzen": {},
+      "links": {
+        "koop": "bestel.html?p=g2b-bedrijfsmiddelen"
+      },
+      "duur": 0,
+      "groep": "apps",
+      "cover": "media/g2b-bedrijfsmiddelen-cover.png",
+      "download_dir": "d/f481c3d2e1e330",
+      "demo": "media/bedrijfsmiddelen-demo.mp4",
+      "video": "media/bedrijfsmiddelen-demo.mp4",
+      "video_en": "media/bedrijfsmiddelen-demo-en.mp4",
+      "video_es": "media/bedrijfsmiddelen-demo-es.mp4",
+      "uitleg": "media/bedrijfsmiddelen-uitleg.mp4",
+      "sub_nl": "media/bedrijfsmiddelen-uitleg.nl.vtt",
+      "sub_es": "media/bedrijfsmiddelen-uitleg.es.vtt"
+    },
+    {
+      "id": "2878e291",
+      "titel": "Cjfjff Houce",
+      "soort": "audio",
+      "beschrijving": "House beat. Eigen G2B-productie",
+      "prijs": "v.a. € 19,95",
+      "prijzen": {
+        "mp3": "€ 19,95",
+        "wav": "€ 49,95",
+        "exclusief": "€ 199,95"
+      },
+      "links": {
+        "koop": "bestel.html?p=2878e291",
+        "mp3": "bestel.html?p=2878e291&t=mp3",
+        "wav": "bestel.html?p=2878e291&t=wav",
+        "exclusief": "bestel.html?p=2878e291&t=exclusief",
+        "download": "bedankt.html?k=2878e291"
+      },
+      "duur": 133.3,
+      "groep": "house",
+      "cover": "media/2878e291-cover.png",
+      "preview": "media/2878e291-preview.mp3",
+      "download_dir": "d/2878e291",
+      "bpm": 124,
+      "moods": [
+        "energisch",
+        "club",
+        "vrolijk"
+      ],
+      "demo": "media/2878e291-preview.mp4",
+      "video": "media/2878e291-preview.mp4"
+    },
+    {
+      "id": "d9d479ab",
+      "titel": "Under",
+      "soort": "audio",
+      "beschrijving": "Drill beat — 152 BPM in G#m. Eigen G2B-productie",
+      "prijs": "v.a. € 19,95",
+      "prijzen": {
+        "mp3": "€ 19,95",
+        "wav": "€ 49,95",
+        "exclusief": "€ 199,95"
+      },
+      "links": {
+        "koop": "bestel.html?p=d9d479ab",
+        "mp3": "bestel.html?p=d9d479ab&t=mp3",
+        "wav": "bestel.html?p=d9d479ab&t=wav",
+        "exclusief": "bestel.html?p=d9d479ab&t=exclusief",
+        "download": "bedankt.html?k=d9d479ab"
+      },
+      "duur": 204.8,
+      "groep": "drill",
+      "cover": "media/d9d479ab-cover.png",
+      "preview": "media/d9d479ab-preview.mp3",
+      "download_dir": "d/d9d479ab",
+      "bpm": 152,
+      "moods": [
+        "donker",
+        "hard",
+        "spanning"
+      ],
+      "demo": "media/d9d479ab-preview.mp4",
+      "video": "media/d9d479ab-preview.mp4"
+    },
+    {
+      "id": "7fe03e5c",
+      "titel": "Us Both",
+      "soort": "audio",
+      "beschrijving": "Dembow beat — 133 BPM in C#m. Eigen G2B-productie",
+      "prijs": "v.a. € 19,95",
+      "prijzen": {
+        "mp3": "€ 19,95",
+        "wav": "€ 49,95",
+        "exclusief": "€ 199,95"
+      },
+      "links": {
+        "koop": "bestel.html?p=7fe03e5c",
+        "mp3": "bestel.html?p=7fe03e5c&t=mp3",
+        "wav": "bestel.html?p=7fe03e5c&t=wav",
+        "exclusief": "bestel.html?p=7fe03e5c&t=exclusief",
+        "download": "bedankt.html?k=7fe03e5c"
+      },
+      "duur": 202.2,
+      "groep": "dembow",
+      "cover": "media/7fe03e5c-cover.png",
+      "preview": "media/7fe03e5c-preview.mp3",
+      "download_dir": "d/7fe03e5c",
+      "bpm": 133,
+      "moods": [
+        "party",
+        "ritmisch",
+        "zomer"
+      ],
+      "demo": "media/7fe03e5c-preview.mp4",
+      "video": "media/7fe03e5c-preview.mp4"
+    },
+    {
+      "id": "0ef9a078",
+      "titel": "Love",
+      "soort": "audio",
+      "beschrijving": "Rnb beat — 133 BPM in Fm. Eigen G2B-productie",
+      "prijs": "v.a. € 19,95",
+      "prijzen": {
+        "mp3": "€ 19,95",
+        "wav": "€ 49,95",
+        "exclusief": "€ 199,95"
+      },
+      "links": {
+        "koop": "bestel.html?p=0ef9a078",
+        "mp3": "bestel.html?p=0ef9a078&t=mp3",
+        "wav": "bestel.html?p=0ef9a078&t=wav",
+        "exclusief": "bestel.html?p=0ef9a078&t=exclusief",
+        "download": "bedankt.html?k=0ef9a078"
+      },
+      "duur": 149.1,
+      "groep": "rnb",
+      "cover": "media/0ef9a078-cover.png",
+      "preview": "media/0ef9a078-preview.mp3",
+      "download_dir": "d/0ef9a078",
+      "bpm": 133,
+      "moods": [
+        "zacht",
+        "liefde",
+        "sensueel"
+      ],
+      "demo": "media/0ef9a078-preview.mp4",
+      "video": "media/0ef9a078-preview.mp4"
+    },
+    {
+      "id": "8171e455",
+      "titel": "Soldaat",
+      "soort": "audio",
+      "beschrijving": "G2b beat — 136 BPM in Cm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV)",
+      "prijs": "v.a. € 19,95",
+      "prijzen": {
+        "mp3": "€ 19,95",
+        "wav": "€ 49,95",
+        "exclusief": "€ 199,95"
+      },
+      "links": {
+        "koop": "bestel.html?p=8171e455",
+        "mp3": "bestel.html?p=8171e455&t=mp3",
+        "wav": "bestel.html?p=8171e455&t=wav",
+        "exclusief": "bestel.html?p=8171e455&t=exclusief",
+        "download": "bedankt.html?k=8171e455"
+      },
+      "duur": 157.3,
+      "groep": "g2b",
+      "cover": "media/8171e455-cover.png",
+      "preview": "media/8171e455-preview.mp3",
+      "download_dir": "d/8171e455",
+      "bpm": 136,
+      "moods": [
+        "episch",
+        "signature",
+        "eigen"
+      ],
+      "demo": "media/8171e455-preview.mp4",
+      "video": "media/8171e455-preview.mp4"
+    },
+    {
+      "id": "266054dc",
+      "titel": "Houce Trap",
+      "soort": "audio",
+      "beschrijving": "Trap beat — 126 BPM in Gm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV)",
+      "prijs": "v.a. € 19,95",
+      "prijzen": {
+        "mp3": "€ 19,95",
+        "wav": "€ 49,95",
+        "exclusief": "€ 199,95"
+      },
+      "links": {
+        "koop": "bestel.html?p=266054dc",
+        "mp3": "bestel.html?p=266054dc&t=mp3",
+        "wav": "bestel.html?p=266054dc&t=wav",
+        "exclusief": "bestel.html?p=266054dc&t=exclusief",
+        "download": "bedankt.html?k=266054dc"
+      },
+      "duur": 133.6,
+      "groep": "trap",
+      "cover": "media/266054dc-cover.png",
+      "preview": "media/266054dc-preview.mp3",
+      "download_dir": "d/266054dc",
+      "bpm": 126,
+      "moods": [
+        "hard",
+        "donker",
+        "energie"
+      ],
+      "demo": "media/266054dc-preview.mp4",
+      "video": "media/266054dc-preview.mp4"
+    },
+    {
+      "id": "53c9dc1f",
+      "titel": "Lala Dance",
+      "soort": "audio",
+      "beschrijving": "House beat — 136 BPM in Gm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV)",
+      "prijs": "v.a. € 19,95",
+      "prijzen": {
+        "mp3": "€ 19,95",
+        "wav": "€ 49,95",
+        "exclusief": "€ 199,95"
+      },
+      "links": {
+        "koop": "bestel.html?p=53c9dc1f",
+        "mp3": "bestel.html?p=53c9dc1f&t=mp3",
+        "wav": "bestel.html?p=53c9dc1f&t=wav",
+        "exclusief": "bestel.html?p=53c9dc1f&t=exclusief",
+        "download": "bedankt.html?k=53c9dc1f"
+      },
+      "duur": 141.1,
+      "groep": "house",
+      "cover": "media/53c9dc1f-cover.png",
+      "preview": "media/53c9dc1f-preview.mp3",
+      "download_dir": "d/53c9dc1f",
+      "bpm": 136,
+      "moods": [
+        "energisch",
+        "club",
+        "vrolijk"
+      ],
+      "demo": "media/53c9dc1f-preview.mp4",
+      "video": "media/53c9dc1f-preview.mp4"
+    },
+    {
+      "id": "054630ff",
+      "titel": "Exotic Riddim",
+      "soort": "audio",
+      "beschrijving": "Dancehall beat — 92 BPM in Fm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV)",
+      "prijs": "v.a. € 19,95",
+      "prijzen": {
+        "mp3": "€ 19,95",
+        "wav": "€ 49,95",
+        "exclusief": "€ 199,95"
+      },
+      "links": {
+        "koop": "bestel.html?p=054630ff",
+        "mp3": "bestel.html?p=054630ff&t=mp3",
+        "wav": "bestel.html?p=054630ff&t=wav",
+        "exclusief": "bestel.html?p=054630ff&t=exclusief",
+        "download": "bedankt.html?k=054630ff"
+      },
+      "duur": 147.0,
+      "groep": "dancehall",
+      "cover": "media/054630ff-cover.png",
+      "preview": "media/054630ff-preview.mp3",
+      "download_dir": "d/054630ff",
+      "bpm": 92,
+      "moods": [
+        "zomer",
+        "dans",
+        "caribisch"
+      ],
+      "demo": "media/054630ff-preview.mp4",
+      "video": "media/054630ff-preview.mp4"
+    },
+    {
+      "id": "3083f3d3",
+      "titel": "Khvckhvclv",
+      "soort": "audio",
+      "beschrijving": "Drill beat — 112 BPM in Am. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV)",
+      "prijs": "v.a. € 19,95",
+      "prijzen": {
+        "mp3": "€ 19,95",
+        "wav": "€ 49,95",
+        "exclusief": "€ 199,95"
+      },
+      "links": {
+        "koop": "bestel.html?p=3083f3d3",
+        "mp3": "bestel.html?p=3083f3d3&t=mp3",
+        "wav": "bestel.html?p=3083f3d3&t=wav",
+        "exclusief": "bestel.html?p=3083f3d3&t=exclusief",
+        "download": "bedankt.html?k=3083f3d3"
+      },
+      "duur": 124.9,
+      "groep": "drill",
+      "cover": "media/3083f3d3-cover.png",
+      "preview": "media/3083f3d3-preview.mp3",
+      "download_dir": "d/3083f3d3",
+      "bpm": 112,
+      "moods": [
+        "donker",
+        "hard",
+        "spanning"
+      ],
+      "demo": "media/3083f3d3-preview.mp4",
+      "video": "media/3083f3d3-preview.mp4"
+    },
+    {
+      "id": "600fb829",
+      "titel": "Midnight Dembow II",
+      "soort": "audio",
+      "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie — WAV & Exclusief incl. stems (WAV)",
+      "prijs": "v.a. € 19,95",
+      "prijzen": {
+        "mp3": "€ 19,95",
+        "wav": "€ 49,95",
+        "exclusief": "€ 199,95"
+      },
+      "links": {
+        "koop": "bestel.html?p=600fb829",
+        "mp3": "bestel.html?p=600fb829&t=mp3",
+        "wav": "bestel.html?p=600fb829&t=wav",
+        "exclusief": "bestel.html?p=600fb829&t=exclusief",
+        "download": "bedankt.html?k=600fb829"
+      },
+      "duur": 158.1,
+      "groep": "dembow",
+      "cover": "media/600fb829-cover.png",
+      "preview": "media/600fb829-preview.mp3",
+      "download_dir": "d/600fb829",
+      "bpm": 123,
+      "moods": [
+        "party",
+        "ritmisch",
+        "zomer"
+      ],
+      "demo": "media/600fb829-preview.mp4",
+      "video": "media/600fb829-preview.mp4"
+    },
+    {
+      "id": "f92b4951",
+      "titel": "Midnight Dembow III",
+      "soort": "audio",
+      "beschrijving": "Dembow beat — 123 BPM in Fm. Eigen G2B-productie",
+      "prijs": "v.a. € 19,95",
+      "prijzen": {
+        "mp3": "€ 19,95",
+        "wav": "€ 49,95",
+        "exclusief": "€ 199,95"
+      },
+      "links": {
+        "koop": "bestel.html?p=f92b4951",
+        "mp3": "bestel.html?p=f92b4951&t=mp3",
+        "wav": "bestel.html?p=f92b4951&t=wav",
+        "exclusief": "bestel.html?p=f92b4951&t=exclusief",
+        "download": "bedankt.html?k=f92b4951"
+      },
+      "duur": 162.7,
+      "groep": "dembow",
+      "cover": "media/f92b4951-cover.png",
+      "preview": "media/f92b4951-preview.mp3",
+      "download_dir": "d/f92b4951",
+      "bpm": 123,
+      "moods": [
+        "party",
+        "ritmisch",
+        "zomer"
+      ],
+      "demo": "media/f92b4951-preview.mp4",
+      "video": "media/f92b4951-preview.mp4"
+    },
+    {
+      "id": "0b5647bf",
+      "titel": "Coolbreez",
+      "soort": "audio",
+      "beschrijving": "Afgeronde track · 152 BPM, phrygische sfeer. mp3 + wav + akkoorden + songkaart + licentie. 100% eigen G2B-productie.",
+      "prijs": "v.a. € 19,95",
+      "prijzen": {
+        "mp3": "€ 19,95",
+        "wav": "€ 49,95"
+      },
+      "links": {
+        "koop": "bestel.html?p=0b5647bf",
+        "mp3": "bestel.html?p=0b5647bf&t=mp3",
+        "wav": "bestel.html?p=0b5647bf&t=wav",
+        "download": "bedankt.html?k=0b5647bf"
+      },
+      "duur": 15,
+      "groep": "muziek",
+      "cover": "media/0b5647bf-cover.png",
+      "preview": "media/0b5647bf-preview.mp3",
+      "download_dir": "d/0b5647bf",
+      "bpm": 152,
+      "moods": [
+        "chill",
+        "luchtig",
+        "afgerond"
+      ],
+      "demo": "media/0b5647bf-preview.mp4",
+      "video": "media/0b5647bf-preview.mp4"
+    },
+    {
+      "id": "ritmosbundel",
+      "titel": "Ritmos Del Corazón + Beat Tape",
+      "soort": "digitaal",
+      "beschrijving": "Zijn Spaanse album (12 tracks, opnieuw gemasterd op streaming-niveau) + GRATIS G2B Beat Tape Vol. 1 (33 min doorlopende tape met 13 beats). Twee downloads, één prijs.",
+      "prijs": "€ 9,95",
+      "prijzen": {
+        "digitaal": "€ 9,95"
+      },
+      "links": {
+        "koop": "bestel.html?p=ritmosbundel",
+        "download": "bedankt.html?k=d74976fef7dfff6a"
+      },
+      "groep": "muziek",
+      "cover": "media/ritmosbundle-cover.png",
+      "preview": "media/ritmosalbum-preview.mp3",
+      "video": "media/ritmosbundle-promo.mp4",
+      "download_dir": "d/d74976fef7dfff6a",
+      "uitleg": "media/ritmosbundel-uitleg.mp4",
+      "sub_nl": "media/ritmosbundel-uitleg.nl.vtt",
+      "sub_es": "media/ritmosbundel-uitleg.es.vtt"
+    },
+    {
+      "id": "g2bfx1",
+      "titel": "G2B FX",
+      "soort": "plugin",
+      "beschrijving": "DE MENGER + ALLE EFFECTEN in één: 3-bands EQ (lo/mid/hi), SUB, POETS (vet), KNIP, GLANS (air), RUIMTE, OUTPUT + GALAXY 27-standen + LUFS-meter + luistert zelf en stelt in. Alles om je track klaar te maken. VST3 + CLAP + standalone.",
+      "prijs": "€ 24,95",
+      "links": {
+        "koop": "bestel.html?p=g2bfx1",
+        "download": "bedankt.html?k=g2bfx1"
+      },
+      "groep": "plugins",
+      "badge": "NIEUW",
+      "cover": "media/sat-cover.png",
+      "download_dir": "d/g2bfx1",
+      "video": "media/g2bfx-demo-v3.mp4",
+      "demo": "media/g2bfx-demo-v3.mp4",
+      "uitleg": "media/fx1-uitleg.mp4",
+      "sub_nl": "media/fx1-uitleg.nl.vtt",
+      "sub_es": "media/fx1-uitleg.es.vtt",
+      "preview": "media/g2bfx1-preview.mp3"
+    },
+    {
+      "id": "ocho01",
+      "titel": "G2B Ocho — Surinaamse one-shot machine",
+      "soort": "plugin",
+      "beschrijving": "SURINAAMSE ONE-SHOT MACHINE — simpel en echt goed: 16 ingebakken smaken (DONDER/kawina-sub, TRAP, DRILL, AFRO, DEMBOW, bangi, seki, surdo, timbal, klap), < > bladeren door de set, dobbelsteen voor verrassing, 808!-knop = perfecte 808-bas in 1 klik, SKIN met 8 uiterlijken (SRANANG-standaard), scope met Surinaamse vlag. Eigen .wav in Documenten\\G2B-SMAAK-SETS = eigen sets erbij. Setup.exe installeert VST3 + CLAP + standalone met nette uninstall — handleiding-PDF en demo-video inbegrepen. Windows, klaar voor Reason/FL/Ableton.",
+      "prijs": "€ 19,95",
+      "links": {
+        "koop": "bestel.html?p=ocho01",
+        "download": "bedankt.html?k=ocho01",
+        "handleiding": "media/G2B-Ocho-Handleiding.pdf"
+      },
+      "groep": "plugins",
+      "badge": "NIEUW",
+      "cover": "media/ocho-cover.png",
+      "download_dir": "d/ocho01",
+      "demo": "media/ocho-demo.mp4",
+      "video": "media/ocho-demo.mp4",
+      "uitleg": "media/ocho-uitleg.mp4",
+      "sub_nl": "media/ocho-uitleg.nl.vtt",
+      "sub_es": "media/ocho-uitleg.es.vtt",
+      "preview": "media/ocho01-preview.mp3"
+    },
+    {
+      "titel": "G2B Sleutel-Helper",
+      "prijs": "€ 19,95",
+      "cover": "media/g2b-sleutel-cover.png",
+      "beschrijving": "Speelt live mee met je MIDI en vertaalt wat je doet: speel noten → de pianorol kleurt meteen groen op de noten die passen in de toonsoort die hij herkent. Speel je een valse noot → hij laat zien welke noot wel klopt (BEDOEL JE DIT?). Bovenin staat welk akkoord je nu speelt (WAT SPEEL IK NU). Met de SPEEL-knop stuurt hij zijn suggestie als MIDI terug, zodat je hem direct kunt opnemen. FOCUS-knoppen (ALLES · BAS-808 · AKKOORDEN · MELODIE) richten de hints op waar je aan werkt, en hij wijst welke G2B-packs bij jouw toonsoort passen. Je eigen noten gaan gewoon door naar je instrument (MIDI-thru). VST3 + CLAP voor FL Studio.",
+      "type": "plugin",
+      "genre": "tool",
+      "tags": [
+        "vst",
+        "plugin",
+        "theorie",
+        "akkoorden",
+        "808",
+        "melodie",
+        "tool"
+      ],
+      "video": "media/sleutel-helper-demo.mp4",
+      "id": "sl3ut3",
+      "soort": "plugin",
+      "groep": "plugins",
+      "download_dir": "d/sl3ut3",
+      "links": {
+        "koop": "bestel.html?p=sl3ut3",
+        "download": "bedankt.html?k=sl3ut3"
+      },
+      "moods": [
+        "tool"
+      ],
+      "uitleg": "media/sl3ut3-uitleg.mp4",
+      "sub_nl": "media/sl3ut3-uitleg.nl.vtt",
+      "sub_es": "media/sl3ut3-uitleg.es.vtt"
+    },
+    {
+      "id": "g2b-brein",
+      "titel": "G2B Brein",
+      "soort": "digitaal",
+      "beschrijving": "Patroon-brein als plugin: 219 GELEERDE kits → echte MIDI-noten naar jouw instrumenten. Kies een genre (808/KAWINA/KEYS/MISC/TRAP), blader door kits met ◀ ▶, GENEREER voor nieuwe variaties, DICE voor verrassing. Drums op kanaal 10, melodie op kanaal 1 — routeer naar je eigen drum/keys-plugins of exporteer direct als .mid-bestand. BARS 1-16, SEED, KRACHT (velocity), SWING, DRUMS/MEL/MIDI-OUT schakelaars, playhead-grid, 8 skins. Windows VST3 + CLAP.",
+      "prijs": 19.95,
+      "links": {
+        "koop": "bestel.html?p=g2b-brein"
+      },
+      "groep": "plugins",
+      "cover": "media/g2b-brein-cover.png",
+      "download_dir": "d/f6da0caecdf195",
+      "demo": "media/g2b-brein-demo.mp4",
+      "video": "media/g2b-brein-demo.mp4",
+      "badge": "NIEUW",
+      "uitleg": "media/brein-uitleg.mp4",
+      "sub_nl": "media/brein-uitleg.nl.vtt",
+      "sub_es": "media/brein-uitleg.es.vtt",
+      "preview": "media/g2b-brein-preview.mp3"
+    },
+    {
+      "id": "prod01",
+      "titel": "G2B Producer",
+      "soort": "plugin",
+      "beschrijving": "DE DEUNTJES-MACHINE: 16 akkoord-progressies × 16 klanken in 6 soorten — SOORT→GELUID kiezer zoals echte VST's (KEYS/STRINGS/PLUCK/GITAAR/BAS/BELLS: E-Piano, Rhodes, Marimba, Nylon, Steel, Sub Bas, Bell...). AUTO speelt zelf, ZELF = alleen jouw keyboard. 🎲 GOOI = nieuwe combi. 12 keys, ladders, voicings, 27 DIMENSIES, 8 skins, XY-pad. VST3 + CLAP + standalone.",
+      "prijs": "€ 19,95",
+      "links": {
+        "koop": "bestel.html?p=prod01",
+        "download": "bedankt.html?k=prod01"
+      },
+      "groep": "plugins",
+      "badge": "NIEUW",
+      "cover": "media/sat-cover.png",
+      "download_dir": "d/prod01",
+      "video": "media/producer-demo.mp4",
+      "demo": "media/producer-demo.mp4",
+      "uitleg": "media/prod01-uitleg.mp4",
+      "sub_nl": "media/prod01-uitleg.nl.vtt",
+      "sub_es": "media/prod01-uitleg.es.vtt",
+      "preview": "media/prod01-preview.mp3"
+    },
+    {
+      "id": "sp00ky",
+      "titel": "G2B Spooky-SFX",
+      "soort": "pack",
+      "beschrijving": "14 horror/Halloween-geluidseffecten: kraakdeuren, geesten, heksen, hartklop, kerkklok, griezel-musicbox. 100% eigen engine, royalty-vrij. Perfect voor horror-beats, video's en games.",
+      "prijs": "€ 7,95",
+      "links": {
+        "koop": "bestel.html?p=sp00ky",
+        "download": "bedankt.html?k=sp00ky"
+      },
+      "groep": "soundpacks",
+      "badge": "HALLOWEEN",
+      "cover": "media/spooky-cover.png",
+      "preview": "media/spooky.mp3",
+      "download_dir": "d/sp00ky",
+      "eerst": true,
+      "demo": "media/sp00ky-preview.mp4",
+      "video": "media/sp00ky-preview.mp4",
+      "uitleg": "media/sp00ky-uitleg.mp4",
+      "sub_nl": "media/sp00ky-uitleg.nl.vtt",
+      "sub_es": "media/sp00ky-uitleg.es.vtt"
+    },
+    {
+      "id": "school1",
+      "titel": "G2B Schoolspelen — GRATIS (binnenkort €29)",
+      "soort": "digitaal",
+      "beschrijving": "Complete NL leer-app voor kinderen 4-12: adaptieve ladder groep 1 t/m genius, NL-stem leest alles voor, Helden-Quiz met echt diploma, beloningsclips. Werkt in elke browser — GRATIS tijdens de lancering, daarna €29. Download/spel NU! (gratis in je browser op good2better.com)",
+      "prijs": "GRATIS",
+      "prijzen": {
+        "gratis": "€ 0",
+        "binnenkort": "€ 29"
+      },
+      "links": {
+        "koop": "schoolspelen/index.html",
+        "download": "schoolspelen/index.html"
+      },
+      "groep": "gratis",
+      "badge": "GRATIS",
+      "uitleg": "media/school1-uitleg.mp4",
+      "sub_nl": "media/school1-uitleg.nl.vtt",
+      "sub_es": "media/school1-uitleg.es.vtt"
+    },
+    {
+      "id": "g2bbd1",
+      "titel": "G2B Bassdrum",
+      "soort": "plugin",
+      "beschrijving": "Jouw eigen kick-machine: 661 ECHTE G2B-kicks, verdeeld over 15 genre-banks x 16 pads (BOOMBAP, TRAP, DRILL, RNB, AFROBEAT, PHONK, LOFI, FUNK, EPIC, DROOM, POP, ROCKABILLY, SOUTHERN, CORPORATE, REGGAETON). Speel ze live op pads of MIDI-noten 36-51. TUNE/DECAY/LO/HI per hit, DIMENTIES ruimte, 8 skins. Deze kicks zijn uniek voor G2B — niemand anders heeft ze. VST3 + CLAP + standalone.",
+      "prijs": "€ 19,95",
+      "links": {
+        "koop": "bestel.html?p=g2bbd1",
+        "download": "bedankt.html?k=g2bbd1"
+      },
+      "groep": "plugins",
+      "badge": "NIEUW",
+      "cover": "media/g2bbd-cover.png",
+      "demo": "media/g2bbd-demo.mp4",
+      "video": "media/g2bbd-demo.mp4",
+      "download_dir": "d/g2bbd1",
+      "uitleg": "media/bd1-uitleg.mp4",
+      "sub_nl": "media/bd1-uitleg.nl.vtt",
+      "sub_es": "media/bd1-uitleg.es.vtt",
+      "preview": "media/g2bbd1-preview.mp3"
+    },
+    {
+      "id": "steun-3",
+      "titel": "STEUN G2B — € 3,-",
+      "soort": "steun",
+      "groep": "steun",
+      "verborgen": true,
+      "prijs": "€ 3,00",
+      "beschrijving": "Trakteer de maker — steun G2B met een bijdrage. Geen product-download; wij bedanken je met een mailtje.",
+      "links": {
+        "koop": "bestel.html?p=steun-3"
+      },
+      "uitleg": "media/steun3-uitleg.mp4",
+      "sub_nl": "media/steun3-uitleg.nl.vtt",
+      "sub_es": "media/steun3-uitleg.es.vtt"
+    },
+    {
+      "id": "steun-5",
+      "titel": "STEUN G2B — € 5,-",
+      "soort": "steun",
+      "groep": "steun",
+      "verborgen": true,
+      "prijs": "€ 5,00",
+      "beschrijving": "Trakteer de maker — steun G2B met een bijdrage. Geen product-download; wij bedanken je met een mailtje.",
+      "links": {
+        "koop": "bestel.html?p=steun-5"
+      },
+      "uitleg": "media/steun5-uitleg.mp4",
+      "sub_nl": "media/steun5-uitleg.nl.vtt",
+      "sub_es": "media/steun5-uitleg.es.vtt"
+    },
+    {
+      "id": "steun-10",
+      "titel": "STEUN G2B — € 10,-",
+      "soort": "steun",
+      "groep": "steun",
+      "verborgen": true,
+      "prijs": "€ 10,00",
+      "beschrijving": "Trakteer de maker — steun G2B met een bijdrage. Geen product-download; wij bedanken je met een mailtje.",
+      "links": {
+        "koop": "bestel.html?p=steun-10"
+      },
+      "uitleg": "media/steun10-uitleg.mp4",
+      "sub_nl": "media/steun10-uitleg.nl.vtt",
+      "sub_es": "media/steun10-uitleg.es.vtt"
+    },
+    {
+      "id": "femina-pil",
+      "titel": "EVEENINE Gummies — magnesium voor vrouwen (PRE-ORDER)",
+      "soort": "femina",
+      "beschrijving": "VOORVERKOOP — eerste batch komt binnen na de testrun (verwacht begin 2027). Je bestelt nu met introductievoordeel; betaal pas via Tikkie nadat wij je mail bevestigen. Levering zodra de batch binnen is, of je geld terug. 60 plantaardige gummies met kersensmaak: magnesiumcitraat — de goed opneembare vorm van het mineraal dat vrouwen al generaties gebruiken bij spierspanning en vermoeidheid rond hun cyclus. Magnesium draagt bij aan normale spierwerking en aan de vermindering van vermoeidheid. Vegan, glutenvrij, voor volwassen vrouwen. Luxe EVEENINE by FeminaSync label. Geen pillen — alleen gummies.",
+      "prijs": "€ 15,00",
+      "links": {
+        "koop": "bestel.html?p=femina-pil"
+      },
+      "groep": "femina",
+      "badge": "PRE-ORDER",
+      "cover": "feminasync/img/mockup_pil_vrouwen.png",
+      "verborgen": true,
+      "uitleg": "media/feminapil-uitleg.mp4",
+      "sub_nl": "media/feminapil-uitleg.nl.vtt",
+      "sub_es": "media/feminapil-uitleg.es.vtt"
+    },
+    {
+      "id": "femina-thee",
+      "titel": "FeminaSync Zacht Thee — cyclus-kruidenmix (PRE-ORDER)",
+      "soort": "femina",
+      "beschrijving": "VOORVERKOOP — eerste batch na de testrun (verwacht begin 2027). Betaal pas via Tikkie na onze bevestiging; levering of geld terug. Doosje losse thee (50g, ±20 koppen), eigen recept v2: framboosblad, gember, kamille, citroenmelisse, kaneel, venkel + Surinaamse Blaka Uma en citroengras — kruiden die generaties vrouwen gebruiken op moeilijke dagen. Zacht en veilig, ook voor meiden vanaf 9 jaar (onder begeleiding).",
+      "prijs": "€ 12,00",
+      "links": {
+        "koop": "bestel.html?p=femina-thee"
+      },
+      "groep": "femina",
+      "badge": "PRE-ORDER",
+      "cover": "feminasync/img/mockup_thee_meisjes.png",
+      "verborgen": true,
+      "uitleg": "media/feminathee-uitleg.mp4",
+      "sub_nl": "media/feminathee-uitleg.nl.vtt",
+      "sub_es": "media/feminathee-uitleg.es.vtt"
+    },
+    {
+      "id": "femina-zalf",
+      "titel": "FeminaSync Zacht Zalf — buik & rug (PRE-ORDER)",
+      "soort": "femina",
+      "beschrijving": "VOORVERKOOP — eerste batch na de testrun (verwacht begin 2027). Betaal pas via Tikkie na onze bevestiging; levering of geld terug. 50ml huidzalf v2: sheaboter met arnica (traditioneel huidkruid), lavendel, kamille, eucalyptus + Surinaamse Sneki Wiri en Blaka Uma. Wrijven op buik en onderrug bij kramp; ook voor meiden vanaf 9 jaar.",
+      "prijs": "€ 18,00",
+      "links": {
+        "koop": "bestel.html?p=femina-zalf"
+      },
+      "groep": "femina",
+      "badge": "PRE-ORDER",
+      "cover": "feminasync/img/stijl-meisjes.png",
+      "verborgen": true,
+      "uitleg": "media/feminazalf-uitleg.mp4",
+      "sub_nl": "media/feminazalf-uitleg.nl.vtt",
+      "sub_es": "media/feminazalf-uitleg.es.vtt"
+    },
+    {
+      "id": "femina-startpakket",
+      "titel": "FeminaSync Zacht Startpakket — thee + zalf (PRE-ORDER)",
+      "soort": "femina",
+      "beschrijving": "VOORVERKOOP — eerste batch na de testrun (verwacht begin 2027). Betaal pas via Tikkie na onze bevestiging; levering of geld terug. Het complete Zacht-setje: 50g losse cyclus-thee (framboosblad, gember, kamille, citroenmelisse, venkel, kaneel + Sneki Wiri en Blaka Uma) én 50ml huidzalf (sheaboter, arnica, lavendel, eucalyptus + dezelfde Surinaamse kruiden). €5 voordeliger dan los. Eigen recepten, voor meiden vanaf 9 jaar via de moeder.",
+      "prijs": "€ 25,00",
+      "links": {
+        "koop": "bestel.html?p=femina-startpakket"
+      },
+      "groep": "femina",
+      "badge": "PRE-ORDER",
+      "cover": "feminasync/img/stijl-meisjes.png",
+      "verborgen": true,
+      "uitleg": "media/feminastartpakket-uitleg.mp4",
+      "sub_nl": "media/feminastartpakket-uitleg.nl.vtt",
+      "sub_es": "media/feminastartpakket-uitleg.es.vtt"
+    },
+    {
+      "id": "femina-pil-zacht",
+      "titel": "FeminaSync Zacht Meiden-Gummies — milde vitamines (PRE-ORDER)",
+      "prijs": "€ 14,00",
+      "soort": "femina",
+      "groep": "femina",
+      "badge": "PRE-ORDER",
+      "cover": "feminasync/img/stijl-meisjes.png",
+      "beschrijving": "VOORVERKOOP — eerste batch na de testrun (verwacht begin 2027). Betaal pas via Tikkie na onze bevestiging; levering of geld terug. 60 plantaardige gummies (aardbei+sinaasappel, vegan) met 10 vitaminen en mineralen waaronder B-vitaminen — mild en gemaakt voor kinderen. Verkoop loopt via de moeder/verzorger. Geen sterke kruiden, geen medicijn.",
+      "links": {
+        "koop": "bestel.html?p=femina-pil-zacht"
+      },
+      "verborgen": true,
+      "uitleg": "media/feminapilzacht-uitleg.mp4",
+      "sub_nl": "media/feminapilzacht-uitleg.nl.vtt",
+      "sub_es": "media/feminapilzacht-uitleg.es.vtt"
+    },
+    {
+      "id": "gamefabriek1",
+      "titel": "G2B GAME-FABRIEK",
+      "soort": "app",
+      "beschrijving": "Maak complete browser-spelletjes zonder code: 15 spel-types (slang, memory, race, quiz, beat-spel, platformer, bowling, mini-golf...), 6 thema's, eigen foto's als karakter, eigen beat als muziek, multiplayer (2 spelers), levels + score + deel-knop. Elk spel = 1 bestand dat offline werkt. VERKOOP-pakket: ZIP met spel + cover + handleiding.",
+      "prijs": 39,
+      "links": {
+        "koop": "bestel.html?p=gamefabriek1",
+        "download": "bedankt.html?k=gamefabriek1"
+      },
+      "groep": "apps",
+      "badge": "NIEUW",
+      "download_dir": "d/gamefabriek1",
+      "video": "media/gamefabriek-demo.mp4",
+      "uitleg": "media/gamefabriek1-uitleg.mp4",
+      "sub_nl": "media/gamefabriek1-uitleg.nl.vtt",
+      "sub_es": "media/gamefabriek1-uitleg.es.vtt"
+    },
+    {
+      "id": "g2bdren",
+      "titel": "G2B DREN — de droom-radio die je bespeelt (320 afleveringen)",
+      "soort": "plugin",
+      "beschrijving": "DROOM-INSTRUMENT — elke aflevering is een andere wereld: 320 presets in 20 episodes (GOUD-UR, NACHT, WINTI, KAWI, DREN...). 3 lagen: droom-melodie (synth ↔ Kawai ↔ Steinway samples op TOON) + SUB + sfeer-bed, plus SPOOK-fragmenten (zachte spook-nootjes om je melodie). 8 macro's: TOON·WARM·DRIFT·WARP·RUW·ECHO·RUIMTE·MIX + SUB·SPOOK. ZAP = zappen naar een nieuw geluid. VST3 + CLAP + standalone EXE. 100% eigen code — geen cloud, geen abonnement. Ook gratis proberen: DREN LITE met 64 afleveringen.",
+      "prijs": "€ 34,95",
+      "links": {
+        "koop": "bestel.html?p=g2bdren",
+        "download": "bedankt.html?k=g2bdren"
+      },
+      "groep": "plugins",
+      "badge": "NIEUW — 320 PRESETS",
+      "cover": "media/dren-cover.png",
+      "download_dir": "d/g2bdren",
+      "video": "media/g2bdren-demo.mp4",
+      "demo": "media/g2bdren-demo.mp4",
+      "uitleg": "media/dren-uitleg.mp4",
+      "sub_nl": "media/dren-uitleg.nl.vtt",
+      "sub_es": "media/dren-uitleg.es.vtt",
+      "preview": "media/g2bdren-preview.mp3"
+    },
+    {
+      "id": "drenlite",
+      "titel": "G2B DREN LITE — gratis droom-radio (64 afleveringen)",
+      "soort": "plugin",
+      "beschrijving": "GRATIS — de instap-DREN: 64 afleveringen (4 episodes × 16) van de droom-radio. Zelfde engine als de volle: 3 lagen + SPOOK-fragmenten + 8 macro's + ZAP. VST3 + CLAP + standalone EXE. Bevalt hij? De volle DREN heeft 320 afleveringen.",
+      "prijs": "GRATIS",
+      "links": {
+        "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-DREN-LITE.zip",
+        "download": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-DREN-LITE.zip"
+      },
+      "groep": "plugins",
+      "badge": "GRATIS",
+      "cover": "media/drenlite-cover.png",
+      "video": "media/drenlite-demo.mp4",
+      "demo": "media/drenlite-demo.mp4",
+      "uitleg": "media/drenlite-uitleg.mp4",
+      "sub_nl": "media/drenlite-uitleg.nl.vtt",
+      "sub_es": "media/drenlite-uitleg.es.vtt",
+      "preview": "media/drenlite-preview.mp3"
+    },
+    {
+      "id": "ocholite",
+      "titel": "G2B OCHO LITE — gratis one-shot machine (4 smaken)",
+      "soort": "plugin",
+      "beschrijving": "GRATIS — de instap-OCHO: 4 ingebakken smaken (DONDER, KICKBAS, TRAP, BOOM) + eigen .wav-samples laden. Zelfde engine als de volle OCHO met 16 smaken + 8 skins. VST3 + CLAP + standalone EXE.",
+      "prijs": "GRATIS",
+      "links": {
+        "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-OCHO-LITE.zip",
+        "download": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-OCHO-LITE.zip"
+      },
+      "groep": "plugins",
+      "badge": "GRATIS",
+      "cover": "media/ocholite-cover.png",
+      "video": "media/ocholite-demo.mp4",
+      "demo": "media/ocholite-demo.mp4",
+      "uitleg": "media/ocholite-uitleg.mp4",
+      "sub_nl": "media/ocholite-uitleg.nl.vtt",
+      "sub_es": "media/ocholite-uitleg.es.vtt",
+      "preview": "media/ocholite-preview.mp3"
+    },
+    {
+      "id": "stapeldice",
+      "titel": "G2B STAPEL-DICE — gratis shot-stapelaar (browser)",
+      "prijs": "GRATIS",
+      "badge": "GRATIS",
+      "groep": "gratis",
+      "soort": "digitaal",
+      "cover": "media/stapeldicelite-cover.png",
+      "beschrijving": "GRATIS — stapel je eigen one-shots tot nieuwe sounds, 100% in je browser. 6 starter-shots ingebakken: drop meer eigen shots (max 20), 🎲 STAPEL maakt er 2-3 lagen van (sub/body/glans) met automatische stemming, fase-fix en breedte-dubbel. 🔒 lock goede lagen, 🎲5x voor batches, elke stapel download je als .wav. Werkt offline, niets uploadt.",
+      "links": {
+        "koop": "stapeldice-lite.html",
+        "download": "stapeldice-lite.html"
+      }
+    }
+  ]
 }
