@@ -428,5 +428,12 @@
   "video": true,
   "url": "vb/sunny-verhalen/index.html",
   "cover": "vb/sunny-verhalen/cover.jpg"
+ },
+ {
+  "slug": "ruimte-reis",
+  "titel": "De Ruimte-Reis 🚀",
+  "video": true,
+  "url": "vb/ruimte-reis/index.html",
+  "cover": "vb/ruimte-reis/cover.jpg"
  }
 ]

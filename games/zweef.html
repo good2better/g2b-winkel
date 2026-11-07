@@ -70,7 +70,7 @@ const _rond=(i,x,y,s)=>{X.save();X.beginPath();X.arc(x,y,s/2,0,7);X.clip();X.dra
 const ok=i=>i&&i.complete&&i.naturalWidth;
 const held=(x,y,s)=>{if(ok(FHELD))_rond(FHELD,x,y,s);else emoji(T.held,x,y,s)};
 /* licht schijfje achter elk item — altijd duidelijk, óók als een emoji donker rendert */
-const itemX=(i,x,y,s)=>{const im=FITEMS.length?FITEMS[i%FITEMS.length]:null;if(ok(im))_rond(im,x,y,s);else{X.save();X.globalAlpha=.18;X.fillStyle='#fff';X.beginPath();X.arc(x,y,s*.62,0,7);X.fill();X.globalAlpha=1;emoji(T.items[i%T.items.length],x,y,s,'rgba(255,255,255,.75)');X.restore()}};
+const itemX=(i,x,y,s)=>{const im=FITEMS.length?FITEMS[i%FITEMS.length]:null;if(ok(im))_rond(im,x,y,s);else{X.save();X.globalAlpha=.34;X.fillStyle='#fff';X.beginPath();X.arc(x,y,s*.62,0,7);X.fill();X.globalAlpha=1;emoji(T.items[i%T.items.length],x,y,s,'rgba(255,255,255,1)');X.restore()}};
 /* 📷 eigen foto als karakter — wie het spel ook opent */
 const _fk='g2b_foto_'+document.title,_svF=localStorage.getItem(_fk);
 if(_svF)FHELD=_pi(_svF);
