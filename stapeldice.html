@@ -240,7 +240,7 @@ function bouw(k){
   if(m>0){for(let i=0;i<n+d;i++){L[i]/=m/0.85;R[i]/=m/0.85;}}
   lastMix=out;
   // UI
-  document.querySelectorAll('.slot').forEach((el,s)=>{
+  document.querySelectorAll('#slots .slot').forEach((el,s)=>{
     if(s<k&&rolls[s]){el.style.display='';el.classList.toggle('on',locks[s]);
       el.querySelector('.nm').textContent=rolls[s].b.naam;
       el.querySelector('.pr').textContent=`gain ${Math.round(rolls[s].gain*100)}% · semi ${rolls[s].semi} ${layers[s].inv?'· fase ↻':''}`;
@@ -260,7 +260,7 @@ function bouw(k){
 }
 document.querySelectorAll('.lock').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;
   if(!rolls[i])return;locks[i]=!locks[i];
-  document.querySelector(`.slot[data-i="${i}"]`).classList.toggle('on',locks[i]);
+  document.querySelector(`#slots .slot[data-i="${i}"]`).classList.toggle('on',locks[i]);
   b.textContent=locks[i]?'🔒 gelocked':'🔒 lock';});
 $('bDubbel').onclick=()=>{const on=$('bDubbel').dataset.on!=='0';$('bDubbel').dataset.on=on?'0':'1';$('bDubbel').textContent='DUBBEL: '+(on?'UIT':'AAN');};
 $('bDubbel').dataset.on='1';
