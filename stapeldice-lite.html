@@ -249,6 +249,8 @@ $('bPlay').onclick=()=>{if(lastMix){ensureAC();const s=AC.createBufferSource();s
 /* ---------- START-SET: 12 eigen gebouwde synth-shots (geen standaard bleepjes) ---------- */
 function mk(sec,fn){const n=Math.floor(sec*SR),y=new Float32Array(n);
   for(let i=0;i<n;i++)y[i]=fn(i/SR,sec);
+  // DC-blokker: centreer golfvorm op nul-lijn
+  let m=0;for(let i=0;i<n;i++)m+=y[i];m/=n;for(let i=0;i<n;i++)y[i]-=m;
   // minifade-out (5ms) tegen kliks
   const f=Math.min(220,n);for(let i=0;i<f;i++)y[n-1-i]*=(i+1)/f;
   return y;}
@@ -264,7 +266,7 @@ function ks(freq,sec,damp){const P=Math.max(2,Math.round(SR/freq)),ring=new Floa
   for(let i=0;i<n;i++){const a=ring[w],b=ring[(w+1)%P];
     ring[w]=(a+b)*0.5*damp;y[i]=a;w=(w+1)%P;}
   return y;}
-function softclip(y,d){for(let i=0;i<y.length;i++)y[i]=Math.tanh(y[i]*d)/Math.tanh(d);return y;}
+function softclip(y,d){for(let i=0;i<y.length;i++){const x=y[i]*d;y[i]=(x+0.12*x*x)/(1+Math.abs(x));}return y;}
 function nrm(y,g){let m=0;for(const v of y)m=Math.max(m,Math.abs(v));if(m>0)for(let i=0;i<y.length;i++)y[i]*=g/m;return y;}
 
 const STARTSET=[
@@ -295,9 +297,10 @@ const STARTSET=[
      for(const b of [0,0.011,0.023]){if(t>b)e+=Math.exp(-(t-b)*160);} 
      e+=Math.exp(-t*14)*0.4;                                 // staart
      return (nz(t)-nz(t-1/SR))*e*2.5;});return nrm(y,0.75);}],
- ['hat-metaal',()=>{ // inharmonische metaal-klanken + hp-ruis
-   const y=mk(0.09,(t)=>(Math.sin(2*Math.PI*5213*t)*0.5+Math.sin(2*Math.PI*7409*t)*0.3+Math.sin(2*Math.PI*8911*t)*0.2)*Math.exp(-t*110)
-     +(nz(t)-nz(t-1/SR))*Math.exp(-t*140)*1.6);return nrm(y,0.7);}],
+ ['hat-metaal',()=>{ // 6 gedetunede blokgolven (TR-808 truc) + hp-ruis
+   const FS=[4057,5128,6263,7791,8920,10330];
+   const y=mk(0.1,(t)=>{let s=0;for(const f of FS)s+=Math.sign(Math.sin(2*Math.PI*f*t));
+     return s*0.14*Math.exp(-t*95)+(nz(t)-nz(t-1/SR))*Math.exp(-t*130)*1.6;});return nrm(y,0.7);}],
  ['perc-kawina',()=>{ // houtig: pitch-drop + tick (kawina-smaak)
    const y=mk(0.16,(t)=>{const ph=620*t+90*(1-Math.exp(-t*60))/60;
      return Math.sin(2*Math.PI*ph)*Math.exp(-t*42)+nz(t)*Math.exp(-t*260)*0.4;});return nrm(y,0.75);}],
