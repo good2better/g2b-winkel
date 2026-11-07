@@ -6,52 +6,68 @@
 <title>G2B STAPEL-DICE PRO — stapel shots + dobbel synth-sounds</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#0A0E0B;color:#E8F0EA;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:18px}
-h1{font-size:22px;letter-spacing:2px;color:#3DDC84;margin-bottom:2px}
-.sub{color:#8AA;font-size:12px;margin-bottom:14px}
-.card{background:#121814;border:1px solid #23352A;border-radius:14px;padding:16px;width:min(880px,96vw);margin-bottom:14px}
+:root{--bg:#070A0F;--card:#0E141C;--card2:#111A24;--rand:#1F2D3D;--rand2:#2A3D52;--groen:#3DDC84;--groen2:#7CF5B0;--tekst:#E8F0EA;--zacht:#8AA0B5;--dim:#5B7086}
+body{background:radial-gradient(1200px 600px at 80% -10%,#12202E 0%,var(--bg) 55%),radial-gradient(900px 500px at -10% 30%,#0D1B14 0%,var(--bg) 60%);
+color:var(--tekst);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:22px 18px}
+h1{font-size:26px;letter-spacing:3px;color:var(--groen);margin-bottom:4px;text-shadow:0 0 24px rgba(61,220,132,.35)}
+h1 .badge{font-size:11px;vertical-align:super;background:linear-gradient(135deg,var(--groen),#1FAE62);color:#04120A;padding:3px 8px;border-radius:6px;letter-spacing:1px;margin-left:6px}
+.sub{color:var(--zacht);font-size:12.5px;margin-bottom:16px}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 40%),var(--card);
+border:1px solid var(--rand);border-radius:18px;padding:18px;width:min(920px,96vw);margin-bottom:14px;
+box-shadow:0 8px 32px rgba(0,0,0,.45)}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0}
-.btn{padding:12px 22px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:1px}
-.b1{background:#3DDC84;color:#06120B}.b2{background:#1D2B22;color:#9FE8BC;border:1px solid #2C4A38}
+.btn{padding:12px 22px;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:1px;transition:transform .08s,box-shadow .15s}
+.b1{background:linear-gradient(135deg,var(--groen),#25C46E);color:#06120B;box-shadow:0 4px 18px rgba(61,220,132,.35)}
+.b1:hover{box-shadow:0 6px 26px rgba(61,220,132,.5)}
+.b2{background:var(--card2);color:var(--groen2);border:1px solid var(--rand2)}
+.b2:hover{border-color:var(--groen)}
 .btn:active{transform:scale(.96)}
-.drop{border:2px dashed #2C4A38;border-radius:12px;padding:22px;text-align:center;color:#8AA;cursor:pointer;font-size:14px}
-.drop.over{border-color:#3DDC84;color:#BFE8CE}
+.drop{border:2px dashed var(--rand2);border-radius:14px;padding:24px;text-align:center;color:var(--zacht);cursor:pointer;font-size:14px;transition:.2s;background:rgba(61,220,132,.02)}
+.drop.over,.drop:hover{border-color:var(--groen);color:var(--groen2);background:rgba(61,220,132,.06)}
 .samples{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.samp{background:#16201A;border:1px solid #2C4A38;border-radius:8px;padding:8px 12px;font-size:12px;color:#BFE8CE;display:flex;gap:8px;align-items:center}
-.samp button{background:none;border:none;color:#6A8;cursor:pointer;font-size:13px}
-.slot{background:#0D140F;border:1px solid #23352A;border-radius:10px;padding:12px;flex:1;min-width:200px}
-.slot h3{font-size:13px;color:#3DDC84;letter-spacing:1px;margin-bottom:6px}
-.slot .nm{font-size:12px;color:#BFE8CE;font-weight:700;min-height:16px}
-.slot .pr{font-size:11px;color:#8AA;margin-top:4px;line-height:1.5}
-.slot .lock{margin-top:8px;width:100%;padding:8px;border-radius:8px;border:1px solid #2C4A38;background:#1D2B22;color:#9FE8BC;cursor:pointer;font-size:12px;font-weight:700}
-.slot.on{border-color:#3DDC84}
-.slot.on .lock{background:#3DDC84;color:#06120B}
-.status{background:#0D140F;border:1px solid #23352A;border-radius:8px;padding:10px 14px;font-size:13px;color:#BFE8CE;width:100%}
+.samp{background:var(--card2);border:1px solid var(--rand2);border-radius:9px;padding:8px 12px;font-size:12px;color:var(--groen2);display:flex;gap:8px;align-items:center}
+.samp button{background:none;border:none;color:var(--dim);cursor:pointer;font-size:13px}
+.samp button:hover{color:#F87171}
+.slot{background:linear-gradient(180deg,rgba(255,255,255,.02),transparent),#0B1218;border:1px solid var(--rand);border-radius:12px;padding:12px;flex:1;min-width:200px;transition:.15s}
+.slot h3{font-size:11.5px;color:var(--groen);letter-spacing:1.5px;margin-bottom:6px}
+.slot .nm{font-size:12px;color:var(--groen2);font-weight:700;min-height:16px}
+.slot .pr{font-size:11px;color:var(--zacht);margin-top:4px;line-height:1.5}
+.slot .lock{margin-top:8px;width:100%;padding:8px;border-radius:9px;border:1px solid var(--rand2);background:var(--card2);color:var(--groen2);cursor:pointer;font-size:12px;font-weight:700}
+.slot.on{border-color:var(--groen);box-shadow:0 0 0 1px var(--groen),0 0 18px rgba(61,220,132,.2)}
+.slot.on .lock{background:linear-gradient(135deg,var(--groen),#25C46E);color:#06120B}
+.status{background:#0B1218;border:1px solid var(--rand);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--groen2);width:100%}
 .res{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 audio{height:36px;max-width:320px}
-a.dl{background:#3DDC84;color:#06120B;padding:10px 18px;border-radius:10px;font-weight:700;font-size:13px;text-decoration:none}
-.hint{font-size:11px;color:#6A8;margin-top:8px}
-label{font-size:11px;color:#8AA;display:flex;flex-direction:column;gap:4px;min-width:110px}
-input[type=range]{accent-color:#3DDC84;width:110px}
-.tabs{display:flex;gap:8px;margin-bottom:14px}
-.tabbtn{padding:12px 26px;border-radius:10px;border:1px solid #2C4A38;background:#1D2B22;color:#9FE8BC;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer}
-.tabbtn.on{background:#3DDC84;color:#06120B;border-color:#3DDC84}
+a.dl{background:linear-gradient(135deg,var(--groen),#25C46E);color:#06120B;padding:10px 18px;border-radius:11px;font-weight:800;font-size:13px;text-decoration:none}
+.hint{font-size:11px;color:var(--dim);margin-top:8px}
+label{font-size:11px;color:var(--zacht);display:flex;flex-direction:column;gap:5px;min-width:110px}
+input[type=range]{accent-color:var(--groen);width:110px;height:4px;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{filter:drop-shadow(0 0 4px rgba(61,220,132,.6))}
+input[type=text],input[type=number],input:not([type]){background:#0B1218!important;border:1px solid var(--rand2)!important;border-radius:9px!important;color:var(--tekst)!important;padding:10px;font-size:14px;outline:none}
+input:focus{border-color:var(--groen)!important}
+.tabs{display:flex;gap:6px;margin-bottom:16px;background:var(--card);padding:5px;border-radius:14px;border:1px solid var(--rand)}
+.tabbtn{padding:12px 30px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--zacht);font-size:14px;font-weight:800;letter-spacing:1px;cursor:pointer;transition:.15s}
+.tabbtn.on{background:linear-gradient(135deg,var(--groen),#25C46E);color:#06120B;box-shadow:0 4px 16px rgba(61,220,132,.35)}
 .mrow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
-.mbtn{padding:9px 16px;border-radius:8px;border:1px solid #2C4A38;background:#16201A;color:#BFE8CE;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:1px}
-.mbtn.on{background:#3DDC84;color:#06120B;border-color:#3DDC84}
-.sgr{display:flex;gap:10px;flex-wrap:wrap;padding:10px;border:1px solid #23352A;border-radius:10px;margin-bottom:10px;background:#0D140F}
-.sgr h4{width:100%;font-size:11px;color:#3DDC84;letter-spacing:1.5px;margin:0 0 2px}
-.kbd{display:flex;gap:2px;margin:10px 0;user-select:none;flex-wrap:wrap}
-.key{width:44px;height:96px;border-radius:0 0 6px 6px;background:#E8F0EA;border:1px solid #23352A;cursor:pointer;position:relative}
-.key.black{width:30px;height:58px;background:#0A0E0B;border-color:#23352A;margin:0 -15px;z-index:2}
-.key.press{box-shadow:inset 0 0 0 3px #3DDC84}
+.mbtn{padding:9px 16px;border-radius:9px;border:1px solid var(--rand2);background:var(--card2);color:var(--groen2);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:.12s}
+.mbtn:hover{border-color:var(--groen)}
+.mbtn.on{background:linear-gradient(135deg,var(--groen),#25C46E);color:#06120B;border-color:var(--groen)}
+.sgr{display:flex;gap:10px;flex-wrap:wrap;padding:12px;border:1px solid var(--rand);border-radius:12px;margin-bottom:10px;background:#0B1218}
+.sgr h4{width:100%;font-size:10.5px;color:var(--groen);letter-spacing:2px;margin:0 0 2px}
+.kbd{display:flex;gap:2px;margin:12px 0;user-select:none;flex-wrap:wrap}
+.key{width:44px;height:96px;border-radius:0 0 7px 7px;background:linear-gradient(180deg,#F4F8F6,#CFD8D3);border:1px solid var(--rand);cursor:pointer;position:relative;transition:.06s}
+.key.black{width:30px;height:58px;background:linear-gradient(180deg,#1A2530,#0A0E0B);border-color:var(--rand);margin:0 -15px;z-index:2}
+.key.press{box-shadow:inset 0 0 0 3px var(--groen),0 0 14px rgba(61,220,132,.4)}
 .key span{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:9px;color:#4a6}
-.key.black span{color:#3DDC84}
-.pname{font-size:17px;font-weight:800;color:#3DDC84;letter-spacing:1px}
+.key.black span{color:var(--groen)}
+.pname{font-size:19px;font-weight:800;color:var(--groen);letter-spacing:1px;text-shadow:0 0 18px rgba(61,220,132,.3)}
+.viz{width:100%;height:64px;background:#0B1218;border:1px solid var(--rand);border-radius:10px;margin-top:10px;display:block}
+.octbtn{padding:8px 14px;border-radius:9px;border:1px solid var(--rand2);background:var(--card2);color:var(--groen2);font-weight:800;cursor:pointer}
+.octlab{font-size:12px;color:var(--zacht)}
 </style>
 </head>
 <body>
-<h1>G2B STAPEL-DICE <span style="color:#E8F0EA">PRO</span></h1>
+<h1>G2B STAPEL-DICE<span class="badge">PRO 2027</span></h1>
 <div class="sub">één tool, twee kanten — 🎲 stapel je one-shots · 🎹 dobbel synth-sounds en speel ze direct</div>
 
 <div class="tabs">
@@ -95,6 +111,7 @@ input[type=range]{accent-color:#3DDC84;width:110px}
     <a class="dl" id="dl" style="display:none" download="stapel.wav">⬇ DOWNLOAD WAV</a>
     <span class="hint" id="resInfo"></span>
   </div>
+  <canvas class="viz" id="viz" width="880" height="64"></canvas>
   <audio id="au" controls style="margin-top:8px;width:100%"></audio>
   <div id="lijst" style="margin-top:10px"></div>
 </div>
@@ -129,7 +146,8 @@ input[type=range]{accent-color:#3DDC84;width:110px}
   <div class="sgr"><h4>FILTER + LFO</h4><div id="sgrp2"></div></div>
   <div class="sgr"><h4>FX</h4><div id="sgrp3"></div></div>
   <div class="sgr"><h4>AKKOORD + GAIN</h4><div id="sgrp4"></div></div>
-  <div class="hint">speel met het keyboard hieronder of je computer-toetsen (A W S E D F T G Y H U J K)</div>
+  <div class="row"><button class="octbtn" id="octDown">◀ OCT</button><span class="octlab" id="octLab">oct C4–B5</span><button class="octbtn" id="octUp">OCT ▶</button>
+    <span class="hint" style="margin:0">speel met het keyboard of je toetsen (A W S E D F T G Y H U J K)</span></div>
   <div class="kbd" id="kbd"></div>
   <div class="res">
     <button class="btn b2" id="sWav">⬇ DOWNLOAD WAV</button>
@@ -320,6 +338,7 @@ function bouw(k){
   const url=URL.createObjectURL(new Blob([wavAb],{type:'audio/wav'}));
   $('au').src=url;$('dl').href=url;$('dl').download=naam+'.wav';$('dl').style.display='';
   $('resInfo').textContent=`${(n/SR).toFixed(2)}s · ${k} lagen · ${dubbel?'haas-dubbel':'mono'} · limiter 0.85`;
+  drawViz(out);
   const card=document.createElement('div');card.className='slot';card.style.marginTop='8px';
   card.innerHTML=`<div class=nm>${naam}.wav</div><audio controls src="${url}" style="width:100%;margin:6px 0"></audio><a class=dl href="${url}" download="${naam}.wav" style="display:inline-block;padding:8px 14px;font-size:12px">⬇ download</a>`;
   $('lijst').prepend(card);
@@ -662,6 +681,21 @@ $('sPack').onclick=()=>{ensureAC();
   const url=URL.createObjectURL(new Blob([ab],{type:'application/zip'}));
   const a=document.createElement('a');a.href=url;a.download=`G2B-PACK-${nm}.zip`;a.click();
   sStat(`📚 G2B-PACK-${nm}.zip — ${files.length} synth-sounds erin`);};
+
+/* waveform viz */
+function drawViz(buf){const cv=$('viz'),cx=cv.getContext('2d'),W=cv.width,H=cv.height;
+  cx.clearRect(0,0,W,H);cx.fillStyle='#0B1218';cx.fillRect(0,0,W,H);
+  const d=buf.getChannelData(0),step=Math.max(1,Math.floor(d.length/W));
+  cx.strokeStyle='#3DDC84';cx.lineWidth=1.4;cx.beginPath();
+  for(let x=0;x<W;x++){let mn=1,mx=-1;const o=x*step;
+    for(let i=o;i<o+step&&i<d.length;i+=4){if(d[i]<mn)mn=d[i];if(d[i]>mx)mx=d[i];}
+    cx.moveTo(x,H/2+mn*(H/2-3));cx.lineTo(x,H/2+mx*(H/2-3)+1);}
+  cx.stroke();
+  cx.strokeStyle='#1F2D3D';cx.beginPath();cx.moveTo(0,H/2);cx.lineTo(W,H/2);cx.stroke();}
+
+/* octave +- */
+$('octDown').onclick=()=>{octave=Math.max(24,octave-12);$('octLab').textContent='oct C'+((octave/12|0)-1)+'–'+NOTES[(octave+16)%12][0]+((octave+16)/12|0);};
+$('octUp').onclick=()=>{octave=Math.min(96,octave+12);$('octLab').textContent='oct C'+((octave/12|0)-1)+'–'+NOTES[(octave+16)%12][0]+((octave+16)/12|0);};
 
 /* tabs */
 $('tStapel').onclick=()=>{ $('tStapel').classList.add('on');$('tSynth').classList.remove('on');
