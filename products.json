@@ -15,7 +15,10 @@
    "cover": "media/dicesynth-cover.png",
    "download_dir": "d/g2bdicesynth",
    "demo": "media/dicesynth-demo.mp4",
-   "video": "media/dicesynth-demo.mp4"
+   "video": "media/dicesynth-demo.mp4",
+   "uitleg": "media/dicesynth-uitleg.mp4",
+   "sub_nl": "media/dicesynth-uitleg.nl.vtt",
+   "sub_es": "media/dicesynth-uitleg.es.vtt"
   },
   {
    "id": "g2bmaster",
