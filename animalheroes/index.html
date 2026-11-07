@@ -206,6 +206,22 @@ footer a{color:var(--geel)}
   </div>
 </section>
 
+<section id="speel">
+  <div class="kop"><h2>🧩 Speel met de helden</h2><div class="streep"></div><small>stel je vraag aan je favoriete held — interactief</small></div>
+  <div id="vraag-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px"></div>
+</section>
+<script>
+fetch('../gsbooks/vb/index.json').then(function(r){return r.ok?r.json():[]}).then(function(l){
+  var vraag=l.filter(function(v){return (v.slug||'').indexOf('vraag-het-aan')===0;});
+  if(!vraag.length){document.getElementById('speel').style.display='none';return;}
+  document.getElementById('vraag-grid').innerHTML=vraag.map(function(v){
+    return '<a href="../gsbooks/'+v.url+'" style="display:block;background:#fff;border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;box-shadow:0 4px 14px rgba(0,77,64,.12)">'+
+      '<img src="../gsbooks/'+v.cover+'" alt="" loading="lazy" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block">'+
+      '<div style="padding:8px 10px;font-size:.85rem"><b>'+v.titel+'</b><br><span style="color:#00796b">🧩 stel je vraag</span></div></a>';
+  }).join('');
+}).catch(function(){document.getElementById('speel').style.display='none';});
+</script>
+
 <div style="border-radius:18px;overflow:hidden;margin:8px 0;box-shadow:0 8px 24px rgba(0,77,64,.18)">
   <img src="img/ah-merk.jpg" alt="G.T.J. Sandvliet — Animal Heroes, Saving Lives Every Day" style="width:100%;display:block">
 </div>
