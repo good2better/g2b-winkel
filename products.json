@@ -111,7 +111,7 @@
    "id": "g2bprodsuite",
    "titel": "G2B PRODUCER SUITE",
    "soort": "6 plugins in één set",
-   "beschrijving": "De complete G2B-plugin-set in één download: MASTER (auto-mastering op je eindtrack), MIXER (elk spoor mix-klaar in 1 klik), REFORS (auto/club/telefoon-test), BAND (MIDI/drumloop erin → heel nummer eruit) en GELUID→MIDI (geluid/neuriën erin → MIDI eruit). Van idee naar af nummer — samen EUR155 los, als suite EUR79. Alle plugins VST3 + CLAP + standalone EXE, werkt offline, 100% eigen code.",
+   "beschrijving": "De complete G2B-plugin-set in één download: MASTER (auto-mastering op je eindtrack), MIXER (elk spoor mix-klaar in 1 klik), REFORS (auto/club/telefoon-test), BAND (MIDI/drumloop erin → heel nummer eruit) en GELUID→MIDI (geluid/neuriën erin → MIDI eruit). Van idee naar af nummer — samen EUR155 los, als suite EUR79. Alle plugins VST3 + CLAP + standalone EXE, werkt offline, 100% eigen code — nu met BUS-SYNC tussen GELUID->MIDI en BAND",
    "prijs": 79.0,
    "links": {
     "koop": "bestel.html?p=g2bprodsuite",
@@ -132,7 +132,7 @@
    "id": "g2bband",
    "titel": "G2B BAND — jouw MIDI of drumloop wordt een heel nummer",
    "soort": "plugin",
-   "beschrijving": "ÉÉN PLUGIN IN PLAATS VAN VIER (DJEBU+CO-PRODUCER+TREIN+SONG in één): zet BAND op je spoor en kies je modus — SPEL: speel akkoorden op je keyboard en hij speelt live bass+drums mee in jouw genre. VERVOLG: druk LUISTER, speel je halve beat, druk GEN en hij schrijft de tweede helft. ARRANGEMENT: stuur je MIDI of drumloop erin en hij maakt een HEEL nummer met INTRO, BUILD, DROP, BREAK en OUTRO — als .mid klaar om te slepen naar je DAW-grid zodat je elke noot kan aanpassen. 10 GENRE-PILLS (TRAP·DRILL·BOOMBAP·RNB·HOUSE·DEMBOW·KAWINA·LOFI·SOUL·POP). Knoppen: VOLHEID·DURF·HEFT·MENS·SWING·LENGTE·VAR + ↓MID export + MIDI-UIT + DICE + 8 skins. Speelt hoorbaar (eigen synth) én schrijft MIDI uit. 100% eigen code — geen cloud, geen AI-abonnement. VST3 + CLAP + standalone EXE + handleiding-PDF.",
+   "beschrijving": "ÉÉN PLUGIN IN PLAATS VAN VIER (DJEBU+CO-PRODUCER+TREIN+SONG in één): zet BAND op je spoor en kies je modus — SPEL: speel akkoorden op je keyboard en hij speelt live bass+drums mee in jouw genre. VERVOLG: druk LUISTER, speel je halve beat, druk GEN en hij schrijft de tweede helft. ARRANGEMENT: stuur je MIDI of drumloop erin en hij maakt een HEEL nummer met INTRO, BUILD, DROP, BREAK en OUTRO — als .mid klaar om te slepen naar je DAW-grid zodat je elke noot kan aanpassen. 10 GENRE-PILLS (TRAP·DRILL·BOOMBAP·RNB·HOUSE·DEMBOW·KAWINA·LOFI·SOUL·POP). Knoppen: VOLHEID·DURF·HEFT·MENS·SWING·LENGTE·VAR + ↓MID export + MIDI-UIT + DICE + 8 skins. Speelt hoorbaar (eigen synth) én schrijft MIDI uit. 100% eigen code — geen cloud, geen AI-abonnement. VST3 + CLAP + standalone EXE + handleiding-PDF. NIEUW: BUS-SYNC — leest automatisch het patroon+genre van G2B GELUID->MIDI, met KLOOF-KNIP (stilte voor de drop)",
    "prijs": "€ 34,95",
    "links": {
     "koop": "bestel.html?p=g2bband",
