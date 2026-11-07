@@ -435,5 +435,85 @@
   "video": true,
   "url": "vb/ruimte-reis/index.html",
   "cover": "vb/ruimte-reis/cover.jpg"
+ },
+ {
+  "slug": "vraag-het-aan-balto",
+  "titel": "Vraag het aan Balto",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-balto/index.html",
+  "cover": "vb/vraag-het-aan-balto/cover.jpg",
+  "interactief": true
+ },
+ {
+  "slug": "vraag-het-aan-mila",
+  "titel": "Vraag het aan Mila",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-mila/index.html",
+  "cover": "vb/vraag-het-aan-mila/cover.jpg",
+  "interactief": true
+ },
+ {
+  "slug": "vraag-het-aan-sam",
+  "titel": "Vraag het aan Sam",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-sam/index.html",
+  "cover": "vb/vraag-het-aan-sam/cover.jpg",
+  "interactief": true
+ },
+ {
+  "slug": "vraag-het-aan-kiki",
+  "titel": "Vraag het aan Kiki",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-kiki/index.html",
+  "cover": "vb/vraag-het-aan-kiki/cover.jpg",
+  "interactief": true
+ },
+ {
+  "slug": "vraag-het-aan-roos",
+  "titel": "Vraag het aan Roos",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-roos/index.html",
+  "cover": "vb/vraag-het-aan-roos/cover.jpg",
+  "interactief": true
+ },
+ {
+  "slug": "vraag-het-aan-boer",
+  "titel": "Vraag het aan Boer Boris",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-boer/index.html",
+  "cover": "vb/vraag-het-aan-boer/cover.jpg",
+  "interactief": true
+ },
+ {
+  "slug": "vraag-het-aan-tig",
+  "titel": "Vraag het aan Tig",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-tig/index.html",
+  "cover": "vb/vraag-het-aan-tig/cover.jpg",
+  "interactief": true
+ },
+ {
+  "slug": "vraag-het-aan-oli",
+  "titel": "Vraag het aan Oli de uil",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-oli/index.html",
+  "cover": "vb/vraag-het-aan-oli/cover.jpg",
+  "interactief": true
+ },
+ {
+  "slug": "vraag-het-aan-milo",
+  "titel": "Vraag het aan Milo",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-milo/index.html",
+  "cover": "vb/vraag-het-aan-milo/cover.jpg",
+  "interactief": true
+ },
+ {
+  "slug": "vraag-het-aan-helde",
+  "titel": "Vraag het aan de Dierenhelden",
+  "paginas": 5,
+  "url": "vb/vraag-het-aan-helde/index.html",
+  "cover": "vb/vraag-het-aan-helde/cover.jpg",
+  "interactief": true
  }
 ]
