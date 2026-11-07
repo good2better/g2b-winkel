@@ -232,5 +232,12 @@
   "cover": "vb/vraag-het-aan-sunny-sterren/cover.jpg",
   "interactief": true,
   "paginas": 2
+ },
+ {
+  "slug": "ruimte-reis",
+  "titel": "De Ruimte-Reis 🚀",
+  "video": true,
+  "url": "vb/ruimte-reis/index.html",
+  "cover": "vb/ruimte-reis/cover.jpg"
  }
 ]
