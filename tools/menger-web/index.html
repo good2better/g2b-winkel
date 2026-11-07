@@ -443,18 +443,20 @@ window.doMaster=async()=>{
     const lra=bl.length>6?dB(bl[Math.floor(bl.length*.95)])-dB(bl[Math.floor(bl.length*.1)]):0;
     const preDb=dB(rmsP(mixL)+rmsP(mixR));
     let cfg=CFG[$('preset').value]||CFG.g2b,waak='',ruismelding='',hfFl=0;
-    // ruisvloer-meter: 15e-percentiel van 0.5s-RMS van >6kHz residu, beide kanalen
+    // ruisvloer-meter: 15e-percentiel van 0.5s-RMS van >6kHz residu;
+    // per kanaal meten en de hoogste nemen (ruis kan in één kanaal zitten)
     const hfFloor=(X,Y)=>{
-      const a=1-Math.exp(-2*Math.PI*6000/target);let hL=0,hR=0;
-      const w=Math.round(target*0.5),v=[];
-      for(let i=0;i<X.length;i+=w){
-        let t=0,n=0;
-        for(let j=i;j<Math.min(i+w,X.length);j++){
-          hL+=a*(X[j]-hL);hR+=a*(Y[j]-hR);
-          const rL=X[j]-hL,rR=Y[j]-hR;t+=rL*rL+rR*rR;n+=2;}
-        if(n>0)v.push(Math.sqrt(t/n));}
-      v.sort((x,y)=>x-y);
-      return v.length?v[Math.floor(v.length*0.15)]:0;};
+      const a=1-Math.exp(-2*Math.PI*6000/target);
+      const w=Math.round(target*0.5),fl=[];
+      for(const Xc of [X,Y]){
+        let h=0;const v=[];
+        for(let i=0;i<Xc.length;i+=w){
+          let t=0,n=0;
+          for(let j=i;j<Math.min(i+w,Xc.length);j++){h+=a*(Xc[j]-h);const r=Xc[j]-h;t+=r*r;n++;}
+          if(n>0)v.push(Math.sqrt(t/n));}
+        v.sort((x,y)=>x-y);
+        if(v.length)fl.push(v[Math.floor(v.length*0.15)]);}
+      return fl.length?Math.max(...fl):0;};
     // sis-gate: dempt >6kHz tot 25% waar het hoog stil is; snelle attack (2ms)
     // zodat korte transiënten (hats/consonanten) hun aanzet houden
     const hfGate=(X,Y,thr)=>{
