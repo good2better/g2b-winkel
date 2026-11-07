@@ -318,7 +318,7 @@ $('cal').onclick=()=>{
   const ps=pads(),E=zoneEnergies(ps);
   if(E)for(let z=0;z<ps.length;z++)base[z]=E[z]*1.4;
 };
-setupMIDI();
+['pointerdown','keydown'].forEach(ev=>addEventListener(ev,function _mi(){setupMIDI()},{once:true}));
 // test-hooks
 window.__airTest=z=>{ensureAC();const k=PAD8SYNTH[z%8];SYN[k]?SYN[k](1):SYN.mel(1,60);return 'ok';};
 window.__airMidTest=()=>{recLog=[[0,36,100],[500,38,90]];return writeMid().size;};
