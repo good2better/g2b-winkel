@@ -31,6 +31,7 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <button class="uit stop" id="bStop" onclick="stop()" disabled>■ STOP</button>
 <button class="uit" id="bAan" onclick="zetAan(!P.aan)">AAN</button>
 <button class="uit" id="bDice" onclick="dice()">🎲 DICE</button>
+<button class="uit" id="bAuto" onclick="auto()" disabled>🤖 AUTO</button>
 <button class="uit" id="skin" onclick="document.body.classList.toggle('licht')">◐</button>
 <span id="st">nog geen track geladen</span>
 </div>
@@ -43,7 +44,7 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <label>KRACHT <b id="vKracht">100%</b><input type="range" id="kracht" min="0" max="100" value="100"></label>
 </div>
 <canvas id="meter" width="900" height="90"></canvas>
-<div class="info">Kies een ruimte: STUDIO = plat (referentie) · CLUB = grote PA + zaal · AUTO = basbult + cabine · TELEFOON = smal, mono, krakerig · AIRPODS = dun maar clean · FESTIVAL = buiten, top valt weg · TV = boxy midden · TIENTJE = goedkope oordopjes.<br>AFSTAND = verder weg (minder top, zachter, meer ruimte) · KAMER = hoeveel echo van de ruimte · MENIGTE = publiek-geruis · VOLUME = hoe hard de speaker staat · KRACHT = 0% je originele track, 100% volle simulatie. Alles draait in je browser — niks gaat naar internet.</div>
+<div class="info">Kies een ruimte: STUDIO = plat (referentie) · CLUB = grote PA + zaal · AUTO = basbult + cabine · TELEFOON = smal, mono, krakerig · AIRPODS = dun maar clean · FESTIVAL = buiten, top valt weg · TV = boxy midden · TIENTJE = goedkope oordopjes.<br>AFSTAND = verder weg (minder top, zachter, meer ruimte) · KAMER = hoeveel echo van de ruimte · MENIGTE = publiek-geruis · VOLUME = hoe hard de speaker staat · KRACHT = 0% je originele track, 100% volle simulatie · 🤖 AUTO meet je track en kiest zelf de slimste testruimte + afstand. Alles draait in je browser — niks gaat naar internet.</div>
 <script>
 // --- poort van ReforsPlugin.cpp ---
 const NAMEN=["STUDIO","CLUB","AUTO","TELEFOON","AIRPODS","FESTIVAL","TV","TIENTJE"];
@@ -147,7 +148,7 @@ function laad(file){
  $('st').textContent='laden: '+file.name+'…';
  file.arrayBuffer().then(ab=>ac().decodeAudioData(ab)).then(b=>{
   buf=b; $('st').textContent='✔ '+file.name+' · '+b.duration.toFixed(1)+' s · '+b.numberOfChannels+' kan.';
-  $('bPlay').disabled=false; if(src){stop();speel()}
+  $('bPlay').disabled=false; $('bAuto').disabled=false; if(src){stop();speel()}
  }).catch(e=>{$('st').textContent='✖ kan dit bestand niet lezen ('+e.message+')';console.warn(e)});
 }
 function speel(){
@@ -157,6 +158,58 @@ function speel(){
 }
 function stop(){if(src){try{src.stop()}catch(e){}src.disconnect();src=null}$('bPlay').disabled=!buf;$('bStop').disabled=true}
 function kiesRuimte(i){P.ruimte=i;document.querySelectorAll('.pill').forEach((b,j)=>b.classList.toggle('on',j===i));update()}
+
+// AUTO: meet je track (bas/hoog, dynamiek, helderheid) en kiest de testruimte
+// waar je het belangrijkste probleem het eerst hoort — plus passende afstand.
+function meet(){
+ const d=buf.getChannelData(0), d2=buf.getChannelData(buf.numberOfChannels>1?1:0);
+ const n=Math.min(d.length,Math.floor(buf.sampleRate*5)), sr=buf.sampleRate;
+ const hpA=1-Math.exp(-2*Math.PI*28/sr), tA=1-Math.exp(-2*Math.PI*700/sr);
+ let hpL=0,hpR=0,tpL=0,tpR=0,AElo=0,AEhi=0,AEall=0,APk=0;
+ for(let i=0;i<n;i++){
+  let L=d[i],R=d2[i];
+  hpL+=hpA*(L-hpL); hpR+=hpA*(R-hpR); L-=hpL; R-=hpR;
+  tpL+=tA*(L-tpL); tpR+=tA*(R-tpR);
+  const lo=(tpL+tpR)*0.5, hiL=L-tpL, hiR=R-tpR;
+  AElo+=lo*lo; AEhi+=(hiL*hiL+hiR*hiR)*0.5; AEall+=(L*L+R*R)*0.5;
+  const pk=Math.max(Math.abs(L),Math.abs(R)); if(pk>APk)APk=pk;
+ }
+ if(n<4410||AEall<1e-8)return null;
+ const rms=Math.sqrt(AEall/n);
+ return {d:10*Math.log10((AElo+1e-9)/(AEhi+1e-9)),
+         crest:20*Math.log10((APk+1e-9)/(rms+1e-9)),
+         hiShare:AEhi/(AElo+AEhi+1e-9)};
+}
+function auto(){
+ if(!buf)return;
+ $('st').textContent='AUTO luistert…';
+ setTimeout(()=>{
+  const m=meet();
+  if(!m){$('st').textContent='te weinig signaal om te meten';return}
+  let ruimte,afst,kamer,menigte,vol,waarom;
+  if(m.d>2.5){ // bas-zwaar → auto-cabine verraadt sub-problemen direct
+   ruimte=2; afst=15; kamer=60; menigte=0; vol=85;
+   waarom='bas-zwaar → AUTO (cabine): daar hoor je als eerste of je sub klopt';
+  }else if(m.d<-2.5){ // dun/fel → goedkope oordopjes laten gescharrel horen
+   ruimte=7; afst=0; kamer=40; menigte=0; vol=80;
+   waarom='dun/fel → TIENTJE-oordopjes: zo horen de meeste kopers je track';
+  }else if(m.crest<6){ // platgedrukt → telefoon is de zwaarste test
+   ruimte=3; afst=0; kamer=50; menigte=0; vol=90;
+   waarom='weinig dynamiek → TELEFOON: overleeft je track daar, dan overleeft hij overal';
+  }else if(m.crest>11){ // erg dynamisch → festival ruimte
+   ruimte=5; afst=30; kamer=70; menigte=25; vol=85;
+   waarom='veel dynamiek → FESTIVAL: hoor of je rustige delen niet wegvallen';
+  }else{ // gewone mix → club: zo klinkt-ie voor luisteraars in een ruimte
+   ruimte=1; afst=35; kamer=70; menigte=25; vol=85;
+   waarom='gemiddelde mix → CLUB op afstand: de echte-luisteraar test';
+  }
+  kiesRuimte(ruimte);
+  P.afst=afst;P.kamer=kamer;P.menigte=menigte;P.vol=vol;
+  for(const k of ['afst','kamer','menigte','vol'])$(k).value=Math.round(P[k]);
+  toonWaardes(); update();
+  $('st').textContent='🤖 '+waarom;
+ },30);
+}
 function zetAan(v){P.aan=v;$('bAan').textContent=v?'AAN':'UIT (bypass)';$('bAan').classList.toggle('go',v);update()}
 function dice(){
  let sd=seed=(Math.imul(seed,1664525)+1013904223)>>>0;
