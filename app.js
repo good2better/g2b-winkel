@@ -230,6 +230,9 @@ async function laden() {
           ? `<a class="koop" data-buy="${esc(p.id)}" target="_blank"
                rel="noopener" href="${esc(koopHref)}">${p.prijs === "GRATIS" ? T("download") : T("koop")}</a>`
           : `<span class="koop uit">${T("binnenkort")}</span>`}
+        ${links.browser
+          ? `<a class="koop browser" href="${esc(links.browser)}"
+               title="Gebruik 'm direct in je browser">🌐 browser</a>` : ""}
       </div>
     </div>`;
   }).join("");

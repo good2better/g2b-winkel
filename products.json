@@ -28,7 +28,8 @@
       "prijs": "€ 29,95",
       "links": {
         "koop": "bestel.html?p=g2bmaster",
-        "download": "bedankt.html?k=g2bmaster"
+        "download": "bedankt.html?k=g2bmaster",
+        "browser": "tools/master-web/master.html"
       },
       "groep": "plugins",
       "badge": "NIEUW",
@@ -49,7 +50,8 @@
       "prijs": "€ 24,95",
       "links": {
         "koop": "bestel.html?p=g2bmixer",
-        "download": "bedankt.html?k=g2bmixer"
+        "download": "bedankt.html?k=g2bmixer",
+        "browser": "mixer.html"
       },
       "groep": "plugins",
       "badge": "NIEUW",
@@ -91,7 +93,8 @@
       "prijs": "€ 29,95",
       "links": {
         "koop": "bestel.html?p=g2brefors",
-        "download": "bedankt.html?k=g2brefors"
+        "download": "bedankt.html?k=g2brefors",
+        "browser": "tools/refors-web/refors.html"
       },
       "groep": "plugins",
       "badge": "NIEUW",
