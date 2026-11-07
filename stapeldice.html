@@ -270,8 +270,13 @@ $('bPlay').onclick=()=>{if(lastMix){ensureAC();const s=AC.createBufferSource();s
 /* ---------- START-SET: 12 eigen gebouwde synth-shots (geen standaard bleepjes) ---------- */
 function mk(sec,fn){const n=Math.floor(sec*SR),y=new Float32Array(n);
   for(let i=0;i<n;i++)y[i]=fn(i/SR,sec);
+  // zelf-bewaking: NaN/rekenfout → 0 (voorkomt digitale tikken)
+  for(let i=0;i<n;i++)if(!Number.isFinite(y[i]))y[i]=0;
   // DC-blokker: centreer golfvorm op nul-lijn
   let m=0;for(let i=0;i<n;i++)m+=y[i];m/=n;for(let i=0;i<n;i++)y[i]-=m;
+  // clip-bewaking: piek >1 → terug op 0.98
+  let pk=0;for(let i=0;i<n;i++)pk=Math.max(pk,Math.abs(y[i]));
+  if(pk>1)for(let i=0;i<n;i++)y[i]*=0.98/pk;
   // minifade-out (5ms) tegen kliks
   const f=Math.min(220,n);for(let i=0;i<f;i++)y[n-1-i]*=(i+1)/f;
   return y;}
