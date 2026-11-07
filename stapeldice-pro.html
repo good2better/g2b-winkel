@@ -113,7 +113,7 @@ input:focus{border-color:var(--groen)!important}
   </div>
   <canvas class="viz" id="viz" width="880" height="64"></canvas>
   <audio id="au" controls style="margin-top:8px;width:100%"></audio>
-  <div id="lijst" style="margin-top:10px"></div>
+  
 </div>
 </div><!-- /tabStapel -->
 
@@ -153,6 +153,12 @@ input:focus{border-color:var(--groen)!important}
     <button class="btn b2" id="sWav">⬇ DOWNLOAD WAV</button>
     <span class="hint" id="sInfo">drukt een noot + release vast in een .wav — 4 sec</span>
   </div>
+  <div class="row" style="border-top:1px solid var(--rand);padding-top:12px">
+    <input id="pPrompt" placeholder="PROMPT-MAKER — typ je geluid: 'donkere techno kick', 'dusty piano pluck', 'zachte pad'" style="flex:1;min-width:220px">
+    <input id="pN" type="number" value="4" style="width:60px">
+    <button class="btn b1" id="pMaak">✨ MAAK</button>
+    <span class="hint">lokale vertaler: woorden → synth-settings → N kandidaten in de lijst. ✓ houden, ✗ weg, zip van de goeden.</span>
+  </div>
   <div class="row" style="border-top:1px solid #23352A;padding-top:12px">
     <input id="sPackNaam" placeholder="naam van je pack — bijv. dark pads" style="flex:1;min-width:180px;background:#0D140F;border:1px solid #2C4A38;border-radius:8px;color:#BFE8CE;padding:10px;font-size:14px">
     <input id="sPackN" type="number" value="20" min="2" max="100" style="width:70px;background:#0D140F;border:1px solid #2C4A38;border-radius:8px;color:#BFE8CE;padding:10px;font-size:14px">
@@ -162,6 +168,18 @@ input:focus{border-color:var(--groen)!important}
   <div class="status" id="sStatus">🎲 druk DICE voor een nieuwe sound</div>
 </div>
 </div><!-- /tabSynth -->
+
+<div class="card" id="lijstCard" style="display:none">
+  <h4 style="font-size:11px;color:var(--groen);letter-spacing:2px;margin-bottom:8px">RESULTATEN — vink ✓/✗ per sound</h4>
+  <div class="res" id="lijstBar">
+    <span class="hint" id="lijstInfo"></span>
+    <button class="mbtn" id="bDelX">🗑 gooi ✗ weg</button>
+    <button class="mbtn" id="bDelAll">🗑 alles wissen</button>
+    <button class="mbtn" id="bZipOk">📚 zip van de ✓</button>
+  </div>
+  <div id="lijst" style="margin-top:10px"></div>
+</div>
+
 
 <script>
 const SR=44100;
@@ -296,7 +314,7 @@ function rollOnce(poolOverride){
   for(let s=1;s<k;s++){const r=rolls[s],nt=fundamental(r.b.y);
     if(ref!==null&&nt!==null){const doel=Math.random()<0.7?ref:ref+7;r.semi=Math.max(-7,Math.min(7,Math.round(doel-nt)));}
     else r.semi=[-1,0,1][Math.floor(Math.random()*3)];}
-  bouw(k);
+  return bouw(k);
 };
 function bouw(k){
   const dubbel=$('bDubbel').dataset.on!=='0';
@@ -339,10 +357,9 @@ function bouw(k){
   $('au').src=url;$('dl').href=url;$('dl').download=naam+'.wav';$('dl').style.display='';
   $('resInfo').textContent=`${(n/SR).toFixed(2)}s · ${k} lagen · ${dubbel?'haas-dubbel':'mono'} · limiter 0.85`;
   drawViz(out);
-  const card=document.createElement('div');card.className='slot';card.style.marginTop='8px';
-  card.innerHTML=`<div class=nm>${naam}.wav</div><audio controls src="${url}" style="width:100%;margin:6px 0"></audio><a class=dl href="${url}" download="${naam}.wav" style="display:inline-block;padding:8px 14px;font-size:12px">⬇ download</a>`;
-  $('lijst').prepend(card);
+  const r=resCard(naam,wavAb,'stapel');
   st('🎲 gestapeld — luister en lock wat goed is, dobbel de rest opnieuw');
+  return {naam,ab:wavAb};
 }
 document.querySelectorAll('.lock').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;
   if(!rolls[i])return;locks[i]=!locks[i];
@@ -432,6 +449,105 @@ const STARTSET=[
 $('bStart').onclick=(e)=>{if(e)e.stopPropagation();ensureAC();
   for(const [nm,fn] of STARTSET){const y=fn();buffers.push({naam:'g2b-'+nm,y,c:centroid(y)});}
   renderSamples();st('🎛 START-SET erbij: '+STARTSET.length+' eigen synth-shots — druk 🎲 STAPEL');};
+
+/* ---------- resultaten-beheer: ✓/✗ per sound, groep-delete, zip-van-goeden ---------- */
+const RES=[]; // {naam,ab,url,kind:'stapel'|'synth',mode,state:0|1|2 (nog-niks/goed/slecht)}
+function resCard(naam,ab,kind,mode){const url=URL.createObjectURL(new Blob([ab],{type:'audio/wav'}));
+  const r={naam,ab,url,kind,mode:mode??null,state:0};RES.push(r);
+  // toonsoort-detectie: decode eerste kanaal uit wav (mono-voorstelling) en toon grondtoon
+  let toon='';try{const b=AC.createBuffer(1,(ab.byteLength-44)/2,SR),v=new DataView(ab),d=b.getChannelData(0);
+    for(let i=0;i<d.length;i++)d[i]=v.getInt16(44+i*2,true)/32768;
+    const f0=fundamental(d);if(f0!==null)toon=' · '+midiNote(Math.round(f0));}catch(e){}
+  const card=document.createElement('div');card.className='card';card.style.marginBottom='8px';card.dataset.ri=RES.length-1;
+  card.innerHTML=`<div class=nm style="font-size:12.5px;color:var(--groen2);font-weight:700">${naam}.wav<span style="color:var(--zacht);font-weight:400">${toon}</span></div>
+    <audio controls src="${url}" style="width:100%;margin:6px 0"></audio>
+    <div class=row style="margin:2px 0">
+      <button class="mbtn rk" data-a="1">✓ goed</button><button class="mbtn rx" data-a="2">✗ slecht</button>
+      <a class=dl href="${url}" download="${naam}.wav" style="padding:7px 13px;font-size:12px">⬇</a>
+      <button class="mbtn rnew">🔁 nieuwe</button><button class="mbtn rdel">✕</button></div>`;
+  card.querySelector('.rk').onclick=()=>{r.state=1;paintCard();};
+  card.querySelector('.rx').onclick=()=>{r.state=2;paintCard();};
+  card.querySelector('.rdel').onclick=()=>{RES.splice(RES.indexOf(r),1);card.remove();paintLijst();};
+  card.querySelector('.rnew').onclick=()=>redoOne(r,card);
+  function paintCard(){card.style.borderColor=r.state===1?'var(--groen)':r.state===2?'#7A2E2E':'var(--rand)';
+    card.style.opacity=r.state===2?'.55':'1';paintLijst();}
+  $('lijst').prepend(card);paintLijst();return r;}
+function paintLijst(){const g=RES.filter(r=>r.state===1).length,x=RES.filter(r=>r.state===2).length;
+  $('lijstCard').style.display=RES.length?'':'none';
+  $('lijstInfo').textContent=`${RES.length} sounds · ✓ ${g} goed · ✗ ${x} slecht`;}
+$('bDelX').onclick=()=>{for(let i=RES.length-1;i>=0;i--)if(RES[i].state===2){RES.splice(i,1);}
+  document.querySelectorAll('#lijst .card').forEach(c=>{const r=RES.find(r=>RES.indexOf(r)===+c.dataset.ri);});
+  // simpel: herbouw lijst
+  $('lijst').innerHTML='';const keep=[...RES];RES.length=0;for(const r of keep)resCard(r.naam,r.ab,r.kind,r.mode);paintLijst();};
+$('bDelAll').onclick=()=>{RES.length=0;$('lijst').innerHTML='';paintLijst();};
+$('bZipOk').onclick=()=>{const ok=RES.filter(r=>r.state===1);
+  if(!ok.length){st('✗ eerst sounds goedkeuren met ✓');return;}
+  const ab=zipStore(ok.map(r=>[`G2B-KEEP/${r.naam}.wav`,r.ab]));
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ab],{type:'application/zip'}));
+  a.download='G2B-KEEP.zip';a.click();st('📚 G2B-KEEP.zip — '+ok.length+' goedgekeurde sounds');};
+function redoOne(r,card){if(r.kind==='stapel'){if(buffers.length<2){st('eerst shots droppen');return;}
+    const n2=rollOnce();if(n2){r.naam=n2.naam;r.ab=n2.ab;URL.revokeObjectURL(r.url);r.url=URL.createObjectURL(new Blob([r.ab],{type:'audio/wav'}));r.state=0;
+      card.querySelector('audio').src=r.url;card.querySelector('.nm').textContent=r.naam+'.wav';
+      card.querySelector('.dl').href=r.url;card.querySelector('.dl').setAttribute('download',r.naam+'.wav');
+      card.style.borderColor='var(--rand)';card.style.opacity='1';paintLijst();}}
+  else{pushHist();S.fP[KP.Mode]=r.mode/4;sRoll(false);
+    const[L,R]=sRender([{t:0,nt:Math.round(r.mode)===3?45:60,vel:0.85}],4);polish(L,R);
+    const buf=AC.createBuffer(2,L.length,SR);buf.getChannelData(0).set(L);buf.getChannelData(1).set(R);
+    r.naam=(S.name||'sound').replace(/[^\w+\-. ]/g,'_');r.ab=wavBytes(buf);
+    URL.revokeObjectURL(r.url);r.url=URL.createObjectURL(new Blob([r.ab],{type:'audio/wav'}));r.state=0;
+    card.querySelector('audio').src=r.url;card.querySelector('.nm').textContent=r.naam+'.wav';
+    card.querySelector('.dl').href=r.url;card.querySelector('.dl').setAttribute('download',r.naam+'.wav');
+    card.style.borderColor='var(--rand)';card.style.opacity='1';paintLijst();}}
+
+function midiNote(m){const N=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];return N[m%12]+(Math.floor(m/12)-1);}
+
+/* ---------- DSP POLISH: punch + warmte + ruis-gate (gratis studiokwaliteit) ---------- */
+function polish(L,R){
+  const n=L.length;
+  // 1) LP ~18kHz: digitale shimmer weg (one-pole per kanaal)
+  const a=1-Math.exp(-2*Math.PI*18000/SR);let pl=0,pr=0;
+  for(let i=0;i<n;i++){pl+=a*(L[i]-pl);pr+=a*(R[i]-pr);L[i]=pl;R[i]=pr;}
+  // 2) multi-band transient-punch: split op 250Hz, boost alleen de HOGE attack (laag blijft strak)
+  const ac=1-Math.exp(-2*Math.PI*250/SR);let lo=0,ro=0;
+  const tp=Math.min(n,(0.015*SR)|0);
+  for(let i=0;i<tp;i++){lo+=ac*(L[i]-lo);ro+=ac*(R[i]-ro);
+    const g=1+0.5*(1-i/tp);
+    L[i]=lo+(L[i]-lo)*g;R[i]=ro+(R[i]-ro)*g;}
+  // 3) zachte saturatie (boventonen/warmte)
+  for(let i=0;i<n;i++){L[i]=Math.tanh(L[i]*1.15);R[i]=Math.tanh(R[i]*1.15);}
+  // 4) ruis-gate op staart: alles onder -70dB na laatste sterke sample → stil + fade
+  let last=0;for(let i=n-1;i>=0;i--){if(Math.abs(L[i])>0.0003||Math.abs(R[i])>0.0003){last=i;break;}}
+  const gate=Math.min(n-1,last+Math.floor(0.05*SR));
+  for(let i=gate;i<n;i++){const f=(n-i)/Math.max(1,n-gate);L[i]*=f;R[i]*=f;}
+  // 5) piek-normaliseren op 0.9
+  let m=0;for(let i=0;i<n;i++)m=Math.max(m,Math.abs(L[i]),Math.abs(R[i]));
+  if(m>0){const g=0.9/m;for(let i=0;i<n;i++){L[i]*=g;R[i]*=g;}}
+}
+/* ---------- PROMPT-MAKER: woorden → synth-settings, lokaal & gratis ---------- */
+const PROMPT_MAP=[
+ [/kick|bassdrum|donder/,4,'kick'],[/808|sub|bas(s|line)?\b/,3,'bass'],[/snare|clap|rim/,4,'snare'],
+ [/hat|tik|shaker/,4,'hat'],[/pad|zacht|soft|cloud|veil|warm|lush/,1,'pad'],
+ [/drone|ambient|atmos|textur|mist|sfeer|ruimte/,2,'texture'],
+ [/lead|arp|pluck|bell|piano|key|melodie/,0,'keys'],[/hit|impact|slam|riser|fx|effect|knock/,4,'hit']];
+const PROMPT_ADJ=[ // sfeer-woorden → param tweaks {cut,rev,drive,warm,atk}
+ [/donker|dark|duister/,{Cut:-0.15,Warm:0.2}],[/helder|bright|sparkl/,{Cut:0.2,Res:0.1}],
+ [/dusty|lofi|lo-fi|vintage|old/,{Cut:-0.2,Noise:0.12,Warm:0.25}],[/vet|fat|dik|heavy/,{Drive:0.3,O2Lvl:0.15}],
+ [/ruimtelijk|space|zaal|hall/,{Rev:0.3,Dly:0.2}],[/strak|tight|droog|dry/,{Rev:-0.25,Dly:-0.2,Rel:-0.2}],
+ [/agress|hard|ruw|raw|industrial|techno/,{Drive:0.35,Cut:0.1,Res:0.15}],[/zacht|soft|smooth|mellow/,{Atk:0.25,Drive:-0.2}]];
+$('pMaak').onclick=()=>{ensureAC();const raw=$('pPrompt').value.trim()||'synth';
+  const w=raw.toLowerCase();let mode=0,tag='keys';
+  for(const[rx,m,t]of PROMPT_MAP){if(rx.test(w)){mode=m;tag=t;break;}}
+  S.fP[KP.Mode]=mode/4;
+  const N=Math.max(1,Math.min(30,+$('pN').value||4));
+  const base=raw.replace(/[^\w-]+/g,'_').slice(0,30)||tag;
+  for(let i=0;i<N;i++){pushHist();sRoll(false);
+    for(const[rx,tw]of PROMPT_ADJ){if(rx.test(w))for(const k in tw){ // sfeer-tweaks per kandidaat, lichte random
+      const p=KP[k];if(p!==undefined)S.fP[p]=Math.max(0,Math.min(1,S.fP[p]+tw[k]*(0.7+sRnd()*0.6)));}}
+    const[L,R]=sRender([{t:0,nt:mode===3?45:60,vel:0.85}],4);polish(L,R);
+    const buf=AC.createBuffer(2,L.length,SR);buf.getChannelData(0).set(L);buf.getChannelData(1).set(R);
+    resCard(`${base}-${tag}-${i+1}`,wavBytes(buf),'synth',mode);
+    sStat(`✨ ${i+1}/${N} — ${S.name}`);}
+  sStat(`✨ ${N} kandidaten in de lijst — vink ✓/✗, 🔁 nieuwe, zip van de goeden`);};
 
 /* ---------- zip (store, geen compressie — wav is al dicht) ---------- */
 function crc32(buf){let t=crc32.t;if(!t){t=crc32.t=new Uint32Array(256);
