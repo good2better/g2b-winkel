@@ -153,11 +153,18 @@ input:focus{border-color:var(--groen)!important}
     <button class="btn b2" id="sWav">⬇ DOWNLOAD WAV</button>
     <span class="hint" id="sInfo">drukt een noot + release vast in een .wav — 4 sec</span>
   </div>
-  <div class="row" style="border-top:1px solid var(--rand);padding-top:12px">
-    <input id="pPrompt" placeholder="PROMPT-MAKER — typ je geluid: 'donkere techno kick', 'dusty piano pluck', 'zachte pad'" style="flex:1;min-width:220px">
+  <div class="row" style="border-top:1px solid var(--rand);padding-top:12px;position:relative">
+    <div style="flex:1;min-width:220px;position:relative">
+      <input id="pPrompt" autocomplete="off" placeholder="PROMPT-MAKER — typ je geluid: 'donkere techno kick', 'dusty piano pluck', 'zachte pad'" style="width:100%">
+      <div id="pSug" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:50;background:#0D140F;border:1px solid var(--rand);border-radius:10px;margin-top:4px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.6)"></div>
+    </div>
     <input id="pN" type="number" value="4" style="width:60px">
     <button class="btn b1" id="pMaak">✨ MAAK</button>
     <span class="hint">lokale vertaler: woorden → synth-settings → N kandidaten in de lijst. ✓ houden, ✗ weg, zip van de goeden.</span>
+  </div>
+  <div class="row" style="padding-top:0">
+    <span class="hint">💡 woorden die werken:</span>
+    <div id="pChips" style="display:flex;flex-wrap:wrap;gap:4px"></div>
   </div>
   <div class="row" style="border-top:1px solid #23352A;padding-top:12px">
     <input id="sPackNaam" placeholder="naam van je pack — bijv. dark pads" style="flex:1;min-width:180px;background:#0D140F;border:1px solid #2C4A38;border-radius:8px;color:#BFE8CE;padding:10px;font-size:14px">
@@ -549,7 +556,36 @@ $('pMaak').onclick=()=>{ensureAC();const raw=$('pPrompt').value.trim()||'synth';
     sStat(`✨ ${i+1}/${N} — ${S.name}`);}
   sStat(`✨ ${N} kandidaten in de lijst — vink ✓/✗, 🔁 nieuwe, zip van de goeden`);};
 
-/* ---------- zip (store, geen compressie — wav is al dicht) ---------- */
+/* ---- prompt-hulp: woorden-chips + suggestie-lijst terwijl je typt ---- */
+const PWORDS=['kick','808','snare','clap','hat','shaker','bass','sub','pad','zacht','warm','lush','drone','ambient','texture','sfeer','lead','arp','pluck','bell','piano','keys','hit','impact','riser','donker','helder','dusty','lofi','vintage','vet','fat','ruimtelijk','zaal','strak','droog','agressief','hard','ruw','techno','smooth','mellow'];
+const PROMPT_TIPS=[
+ 'donkere techno kick','harde industriële kick','strakke droge kick','vette sub 808','warme ronde bass',
+ 'donkere bass pluck','agressieve techno bass','dusty lofi snare','strakke clap','ruwe snare hit',
+ 'dusty hat tik','strakke shaker hat','zachte warme pad','lush veil pad','donkere mist pad',
+ 'ruimtelijke zaal pad','dromerige ambient texture','donkere drone sfeer','warme vintage texture',
+ 'heldere sparkle bell','dusty piano pluck','zachte mellow keys','heldere lead arp','donkere arp melodie',
+ 'harde impact hit','donkere riser fx','vet techno knock','ruimtelijke effect hit','lofi vinyl keys',
+ 'zachte smooth pad','agressieve industriële lead','warme analoge bass','heldere pluck arp'];
+{
+ const chipBox=$('pChips'),sug=$('pSug'),inp=$('pPrompt');
+ for(const w of PWORDS){const c=document.createElement('button');c.className='mbtn';c.style.padding='3px 8px';c.style.fontSize='11px';c.textContent=w;
+  c.onclick=()=>{const v=inp.value.trim();inp.value=v?v+' '+w:w;inp.focus();showSug();};chipBox.appendChild(c);}
+ function showSug(){
+  const t=inp.value.trim().toLowerCase();
+  const hits=PROMPT_TIPS.filter(p=>p.toLowerCase().includes(t)&&p.toLowerCase()!==t).slice(0,6);
+  if(!hits.length||!t){sug.style.display='none';return;}
+  sug.innerHTML='';
+  for(const p of hits){const d=document.createElement('div');
+   d.textContent='💡 '+p;d.style.cssText='padding:8px 12px;cursor:pointer;font-size:13px;color:#BFE8CE;border-bottom:1px solid #16241C';
+   d.onmouseenter=()=>d.style.background='#16241C';d.onmouseleave=()=>d.style.background='';
+   d.onmousedown=e=>{e.preventDefault();inp.value=p;sug.style.display='none';$('pMaak').click();};
+   sug.appendChild(d);}
+  sug.style.display='';}
+ inp.addEventListener('input',showSug);
+ inp.addEventListener('focus',showSug);
+ inp.addEventListener('blur',()=>setTimeout(()=>sug.style.display='none',150));
+ inp.addEventListener('keydown',e=>{if(e.key==='Enter'){$('pMaak').click();sug.style.display='none';}});
+}
 function crc32(buf){let t=crc32.t;if(!t){t=crc32.t=new Uint32Array(256);
     for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c;}}
   let c=0xFFFFFFFF;const d=new Uint8Array(buf);
