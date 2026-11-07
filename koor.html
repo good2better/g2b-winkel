@@ -218,9 +218,10 @@ async function loadKey(f){ensureAC();
     renderSamples();
     st(dk?`🎼 toonsoort van je track: ${dk.key} (zekerheid ${(dk.conf*100)|0}%)`:'🎼 kon toonsoort niet bepalen — gebruik keuzelijst');
   }catch(e){st('⚠ niet leesbaar: '+f.name);}}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function renderSamples(){$('samples').innerHTML=
-  (lead?`<div class=samp>🎤 ${lead.naam}<button onclick="wegL()">✕</button></div>`:'')+
-  (keyTrack?`<div class=samp>🎼 ${keyTrack.naam}<button onclick="wegK()">✕</button></div>`:'');}
+  (lead?`<div class=samp>🎤 ${esc(lead.naam)}<button onclick="wegL()">✕</button></div>`:'')+
+  (keyTrack?`<div class=samp>🎼 ${esc(keyTrack.naam)}<button onclick="wegK()">✕</button></div>`:'');}
 window.wegL=()=>{lead=null;renderSamples();};
 window.wegK=()=>{keyTrack=null;renderSamples();};
 $('drop').onclick=()=>$('fi').click();
@@ -238,7 +239,7 @@ $('fk').onchange=e=>{if(e.target.files[0])loadKey(e.target.files[0]);};
 {const sel=$('keySel');for(const n of NOTES){sel.add(new Option(n,''+n));sel.add(new Option(n+'m',n+'m'));}}
 
 /* ---------- wav + zip ---------- */
-function monoBuf(y){const b=new (window.AudioContext)({sampleRate:SR}).createBuffer(1,y.length,SR);b.getChannelData(0).set(y);return b;}
+function monoBuf(y){const b=AC.createBuffer(1,y.length,SR);b.getChannelData(0).set(y);return b;}
 function wavBytes(buf){const n=buf.length,ch=buf.numberOfChannels,sr=buf.sampleRate;
   const ab=new ArrayBuffer(44+n*ch*2),v=new DataView(ab),S=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
   S(0,'RIFF');v.setUint32(4,36+n*ch*2,true);S(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);

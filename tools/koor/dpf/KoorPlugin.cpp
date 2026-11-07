@@ -109,7 +109,7 @@ protected:
         // stem-rates + pan één keer per blok (goedkoper dan per-sample)
         float rates[4],pL[4],pR[4];
         for(int v=0;v<4;v++){
-            rates[v]=std::pow(2.f,(offs[v]+detCents_[v]*fDetune)/12.f);
+            rates[v]=std::pow(2.f,(offs[v]+detCents_[v]*fDetune/100.f)/12.f);
             const float a=(panBase_[v]*fBreed+1.f)*float(M_PI)/4.f;
             pL[v]=std::cos(a);pR[v]=std::sin(a);
         }

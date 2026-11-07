@@ -96,7 +96,7 @@ protected:
         }
         fontSize(9.f);fillColor(Color(80,100,88));
         textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
-        text(18.f,H-14.f,"tip: stuur MIDI van je track/piano naar deze plugin → hij leert de toonsoort zelf",nullptr);
+        text(18.f,H-14.f,"tip: klik op TOONSOORT om zelf te kiezen · stuur MIDI erin en hij leert 'm zelf",nullptr);
     }
 
     bool onMouse(const MouseEvent& ev) override {
@@ -112,6 +112,12 @@ protected:
             const float ax=getWidth()-70.f;
             if(ev.pos.getX()>=ax&&ev.pos.getX()<=ax+54.f&&ev.pos.getY()>=216.f&&ev.pos.getY()<=246.f){
                 fOn=!fOn;editParameter(P_ON,true);setParameterValue(P_ON,fOn?1.f:0.f);editParameter(P_ON,false);
+                repaint();return true;
+            }
+            // key-display klik: cycle AUTO→C→C#…→Bm→AUTO
+            const float nx=getWidth()-180.f;
+            if(ev.pos.getX()>=nx&&ev.pos.getX()<=nx+166.f&&ev.pos.getY()>=12.f&&ev.pos.getY()<=46.f){
+                fKey=(fKey+1)%25;editParameter(P_KEY,true);setParameterValue(P_KEY,(float)fKey);editParameter(P_KEY,false);
                 repaint();return true;
             }
             // knop-drag start
