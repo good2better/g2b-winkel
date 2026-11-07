@@ -535,8 +535,8 @@ function ab2wav(L,R,sr){
   v.setUint16(34,16,true);W(36,'data');v.setUint32(40,n*4,true);
   let o=44;
   for(let i=0;i<n;i++){
-    v.setInt16(o,Math.max(-1,Math.min(1,L[i]))*32767);o+=2;
-    v.setInt16(o,Math.max(-1,Math.min(1,R[i]))*32767);o+=2;
+    v.setInt16(o,Math.max(-1,Math.min(1,L[i]))*32767,true);o+=2;
+    v.setInt16(o,Math.max(-1,Math.min(1,R[i]))*32767,true);o+=2;
   }
   return new Blob([ab],{type:'audio/wav'});
 }
