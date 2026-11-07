@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>G2B PATROON-BREIN — MIDI-generator in je browser</title>
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>G2B BREIN — browser (lite)</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 :root{--bg:#0c0f0c;--kaart:#141a15;--rand:#223227;--groen:#19c37d;--tekst:#e8f0e9;--dim:#8fa395;--cyan:#4cc9f0}
@@ -27,7 +27,7 @@ a.dl{color:var(--groen);font-weight:700}
 .pill.on{background:var(--groen);color:#04130b;border-color:var(--groen)}
 body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#12231a;--dim:#5c6b61}
 </style></head><body>
-<h1>G2B PATROON-BREIN <small>16-staps MIDI-generator — nooit een valse noot</small></h1>
+<h1>G2B BREIN <small>16-staps MIDI-generator — gratis browser-versie</small></h1>
 <div class="rij">
 <button class="uit go" id="bPlay" onclick="speel()">▶ SPEEL</button>
 <button class="uit" onclick="genereer()">✨ GENEREER</button>
@@ -49,6 +49,7 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <div id="grid"></div>
 <div class="kaart" id="info"></div>
 <div class="kaart"><b>zo werkt-ie:</b> klik vakjes aan/uit · GENEREER muteert 1-2 stappen maar houdt je groove · DICE dobbelt alles opnieuw binnen je toonladder · .mid is klaar voor Reason/FL/Ableton (drums op kanaal 10, melodie op kanaal 1)</div>
+<div class="kaart"><b>meer power?</b> de <b>G2B BREIN plugin</b> (€19,95) heeft 219 geleerde kits, patronen tot 16 bars, SEED en je eigen midi-stijl — <a class="dl" href="../../index.html#g2b-brein">bekijk in de winkel</a></div>
 <script>
 'use strict';const $=id=>document.getElementById(id);
 // ============ KITS: drums op GM-noten + melodie als ladder-graden ============
