@@ -70,7 +70,7 @@ const _rond=(i,x,y,s)=>{X.save();X.beginPath();X.arc(x,y,s/2,0,7);X.clip();X.dra
 const ok=i=>i&&i.complete&&i.naturalWidth;
 const held=(x,y,s)=>{if(ok(FHELD))_rond(FHELD,x,y,s);else emoji(T.held,x,y,s)};
 /* licht schijfje achter elk item — altijd duidelijk, óók als een emoji donker rendert */
-const itemX=(i,x,y,s)=>{const im=FITEMS.length?FITEMS[i%FITEMS.length]:null;if(ok(im))_rond(im,x,y,s);else{X.save();X.globalAlpha=.18;X.fillStyle='#fff';X.beginPath();X.arc(x,y,s*.62,0,7);X.fill();X.globalAlpha=1;emoji(T.items[i%T.items.length],x,y,s,'rgba(255,255,255,.75)');X.restore()}};
+const itemX=(i,x,y,s)=>{const im=FITEMS.length?FITEMS[i%FITEMS.length]:null;if(ok(im))_rond(im,x,y,s);else{X.save();X.globalAlpha=.34;X.fillStyle='#fff';X.beginPath();X.arc(x,y,s*.62,0,7);X.fill();X.globalAlpha=1;emoji(T.items[i%T.items.length],x,y,s,'rgba(255,255,255,1)');X.restore()}};
 /* 📷 eigen foto als karakter — wie het spel ook opent */
 const _fk='g2b_foto_'+document.title,_svF=localStorage.getItem(_fk);
 if(_svF)FHELD=_pi(_svF);
@@ -115,7 +115,7 @@ C.addEventListener('pointermove',e=>{if(!t2)return;const nx=e.offsetX*W/C.client
 (function loop(){if(af)return;bg();
  p.x=Math.max(20,Math.min(W-20,p.x));p.y=Math.max(50,Math.min(Hh-30,p.y));
  vij.forEach(v=>{v.x+=v.vx;v.y+=v.vy;if(v.x<30||v.x>W-30)v.vx*=-1;if(v.y<50||v.y>Hh-80)v.vy*=-1;
-  emoji(T.vijand,v.x,v.y,36,'rgba(255,90,90,.85)');
+  emoji(T.vijand,v.x,v.y,36,'rgba(255,90,90,1)');
   if(Math.abs(v.x-p.x)<30*SB&&Math.abs(v.y-p.y)<30*SB){lev--;lvs();blip(120,.3,'sawtooth');p={x:W/2,y:Hh-60}}});
  dots.forEach((o,di)=>{itemX(di,o.x,o.y,28);
   if(Math.abs(o.x-p.x)<28*HB&&Math.abs(o.y-p.y)<28*HB){o.y=-99;punt(10,o.x,o.y);blip(700,.08,'triangle')}});
