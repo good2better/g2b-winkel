@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Voorlees-Live — GS Books</title>
+<link rel="icon" href="../../media/logo.png">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#FFF8EC;color:#22313f;font-family:"Segoe UI",system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+  header{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:2px solid #F0E3CE;background:rgba(255,248,236,.96)}
+  header img{height:34px}
+  header .brand{font-weight:800;letter-spacing:1px;color:#B25C00}
+  header nav{margin-left:auto;display:flex;gap:6px}
+  header nav a{text-decoration:none;color:#22313f;font-weight:600;font-size:14px;padding:8px 12px;border-radius:999px}
+  header nav a:hover{background:#F6E7C8}
+  main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+  h1{font-size:clamp(22px,4vw,36px);margin-bottom:8px;color:#B25C00}
+  .sub{color:#7a6a4d;margin-bottom:26px;max-width:560px}
+  .livebadge{display:none;align-items:center;gap:8px;background:#d32f2f;color:#fff;font-weight:700;padding:6px 16px;border-radius:20px;font-size:14px;letter-spacing:1px;margin-bottom:14px}
+  .livebadge .dot{width:10px;height:10px;border-radius:50%;background:#fff;animation:p 1.1s infinite}
+  @keyframes p{50%{opacity:.25}}
+  .count{display:flex;gap:14px;margin:10px 0 22px}
+  .count .u{background:#fff;border:2px solid #F0E3CE;border-radius:14px;padding:16px 12px;min-width:82px;box-shadow:0 3px 10px rgba(120,90,20,.08)}
+  .count .n{font-size:32px;font-weight:800;color:#B25C00;font-variant-numeric:tabular-nums}
+  .count .l{font-size:11px;color:#9c8a66;letter-spacing:1px;margin-top:4px}
+  .player{width:min(920px,94vw);aspect-ratio:16/9;background:#000;border:3px solid #F0E3CE;border-radius:18px;overflow:hidden;display:none;position:relative;box-shadow:0 8px 30px rgba(120,90,20,.15)}
+  .player video{width:100%;height:100%}
+  .choice{position:absolute;left:0;right:0;bottom:18%;display:none;justify-content:center;flex-wrap:wrap;gap:20px;padding:0 20px}
+  .choice button{background:rgba(255,179,0,.95);color:#4A3400;border:none;font-weight:800;font-size:clamp(15px,2.4vw,20px);padding:14px 28px;border-radius:14px;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.4);transition:transform .15s}
+  .choice button:hover{transform:scale(1.06)}
+  .choice .pick{color:#fff;font-size:13px;width:100%;text-align:center;margin-bottom:8px;letter-spacing:1px;text-shadow:0 1px 4px #000}
+  .note{margin-top:20px;color:#7a6a4d;font-size:15px;max-width:560px}
+  .ticket{display:inline-block;margin-top:14px;background:#FFB300;color:#4A3400;font-weight:800;padding:12px 24px;border-radius:10px;text-decoration:none}
+  .over{display:none;margin-top:18px;color:#B25C00;font-size:15px;font-weight:600}
+  footer{padding:14px;text-align:center;color:#9c8a66;font-size:12px;border-top:2px solid #F0E3CE}
+</style>
+</head>
+<body>
+<header>
+  <img src="../../media/logo.png" onerror="this.style.display='none'">
+  <span class="brand">GS BOOKS · VOORLEES-LIVE</span>
+  <nav>
+    <a href="../index.html">📚 Boeken</a>
+    <a href="../index.html#videoboek">🎬 Videoboeken</a>
+    <a href="../index.html#spel">🎮 Spel</a>
+  </nav>
+</header>
+<main>
+  <div class="livebadge" id="live"><span class="dot"></span>LIVE</div>
+  <h1 id="title">Voorlees-Live</h1>
+  <p class="sub" id="when"></p>
+  <div class="count" id="count">
+    <div class="u"><div class="n" id="d">0</div><div class="l">DAGEN</div></div>
+    <div class="u"><div class="n" id="h">00</div><div class="l">UREN</div></div>
+    <div class="u"><div class="n" id="m">00</div><div class="l">MIN</div></div>
+    <div class="u"><div class="n" id="s">00</div><div class="l">SEC</div></div>
+  </div>
+  <div class="player" id="playerbox"><video id="vid" controls playsinline></video>
+    <div class="choice" id="choice">
+      <div class="pick">WAT GEEBURT ER NU? KIES:</div>
+      <button id="ca" onclick="pick(0)"></button>
+      <button id="cb" onclick="pick(1)"></button>
+    </div>
+  </div>
+  <p class="note" id="note"></p>
+  <a class="ticket" id="vragen" target="_blank" style="display:none;background:#fff;border:2px solid #FFB300;color:#8A6B1E">✉️ STEL JE VRAAG</a>
+  <a class="ticket" id="boeken" href="../index.html" style="display:inline-block;margin-top:10px">📚 NAAR DE BOEKENWINKEL</a>
+  <p class="over" id="over">Deze voorlees-sessie is afgelopen — bekijk de videoboeken in de winkel!</p>
+</main>
+<footer>GS BOOKS / GOOD2BETTER · eigen voorlees-platform · veilig, geen reclame</footer>
+<script>
+let cfg, startT, vid;
+fetch('live.json').then(r=>r.json()).then(c=>{
+  cfg=c;
+  document.getElementById('title').textContent=c.title||'Voorlees-Live';
+  document.getElementById('note').textContent=c.note||'';
+  const v=document.getElementById('vragen');
+  v.href='mailto:'+(c.questions||'g.sandvliet88@gmail.com')+'?subject='+encodeURIComponent('Vraag — '+(c.title||'Voorlees-Live'));
+  v.style.display='inline-block';
+  if(c.recurring && c.recurring.enabled){
+    const n=new Date(); let t=new Date(n);
+    t.setDate(n.getDate()+((c.recurring.weekday-n.getDay()+7)%7));
+    t.setHours(c.recurring.hour,0,0,0);
+    if(t.getTime()<=n.getTime())t.setDate(t.getDate()+7);
+    c.start=t.toISOString();
+  }
+  if(c.start){
+    startT=new Date(c.start).getTime();
+    const d=new Date(startT);
+    document.getElementById('when').textContent='Start: '+d.toLocaleString('nl-NL',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})+' — kom je later binnen? Dan stap je midden in het verhaal, zoals echt live.';
+    vid=document.getElementById('vid');
+    tick(); setInterval(tick,1000);
+  } else {
+    document.getElementById('count').style.display='none';
+    document.getElementById('when').textContent='Eerste voorlees-sessie volgt snel — houd deze link bij.';
+  }
+}).catch(()=>{document.getElementById('when').textContent='Geen sessie gepland — check later opnieuw.'});
+
+function tick(){
+  const now=Date.now(), diff=startT-now;
+  if(diff>0){
+    const dd=Math.floor(diff/864e5), hh=Math.floor(diff%864e5/36e5),
+          mm=Math.floor(diff%36e5/6e4), ss=Math.floor(diff%6e4/1e3);
+    d.textContent=dd; h.textContent=String(hh).padStart(2,'0');
+    m.textContent=String(mm).padStart(2,'0'); s.textContent=String(ss).padStart(2,'0');
+  } else { goLive(); }
+}
+
+let started=false, shownChoices={};
+function goLive(){
+  if(started)return; started=true;
+  document.getElementById('count').style.display='none';
+  document.getElementById('live').style.display='inline-flex';
+  if(!cfg.video){document.getElementById('over').style.display='block';document.getElementById('over').textContent='De sessie is gestart — video-link volgt zo.';return}
+  document.getElementById('playerbox').style.display='block';
+  vid.src=cfg.video;
+  const off=(Date.now()-startT)/1000;
+  vid.addEventListener('loadedmetadata',()=>{ if(off<vid.duration){vid.currentTime=off}else{vid.currentTime=0} });
+  vid.play().catch(()=>{});
+  vid.addEventListener('timeupdate',checkChoices);
+  vid.addEventListener('ended',()=>{
+    document.getElementById('live').style.display='none';
+    document.getElementById('choice').style.display='none';
+    document.getElementById('over').style.display='block';
+  });
+}
+
+function checkChoices(){
+  if(!cfg.choices||!cfg.choices.length)return;
+  for(let i=0;i<cfg.choices.length;i++){
+    const c=cfg.choices[i];
+    if(!shownChoices[i] && vid.currentTime>=c.at && vid.currentTime<c.at+8){
+      shownChoices[i]=true;
+      currentChoice=c;
+      document.getElementById('ca').textContent=c.a.label;
+      document.getElementById('cb').textContent=c.b.label;
+      document.getElementById('choice').style.display='flex';
+      vid.pause();
+      choiceTimer=setTimeout(()=>{pick(0)},(c.timeout||10)*1000);
+      return;
+    }
+  }
+}
+
+let currentChoice=null,choiceTimer=null;
+function pick(n){
+  if(!currentChoice)return;
+  const c=n===0?currentChoice.a:currentChoice.b;
+  if(choiceTimer){clearTimeout(choiceTimer);choiceTimer=null}
+  document.getElementById('choice').style.display='none';
+  currentChoice=null;
+  if(c.video && c.video!==vid.src){
+    vid.src=c.video;
+    vid.currentTime=c.skip||0;
+  }
+  vid.play().catch(()=>{});
+}
+</script>
+</body>
+</html>
