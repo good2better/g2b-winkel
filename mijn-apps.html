@@ -65,6 +65,7 @@ a.app.lokaal{opacity:.75;border-style:dashed}
 <a class="app" href="geluidmidi.html"><img src="apps-img/geluidmidi.jpg" alt="" loading="lazy"><span class="ic">🎙</span><span class="nm">G2B GELUID→MIDI <span class="tag prive">PRIVÉ</span></span><div class="in">Neuri of fluit → MIDI-noten eruit + ANTWOORD-melodie → download .mid</div></a>
 <a class="app" href="mixer.html"><img src="apps-img/mixer.jpg" alt="" loading="lazy"><span class="ic">🎚️</span><span class="nm">G2B MIXER v2 <span class="tag prive">PRIVÉ</span></span><div class="in">Stems erin → hij luistert, maakt ruimte tussen sporen + master → schone mix.wav eruit</div></a>
 <a class="app" href="stapeldice.html"><img src="apps-img/stapeldice.jpg" alt="" loading="lazy"><span class="ic">🎲</span><span class="nm">G2B STAPEL-DICE <span class="tag prive">PRIVÉ</span></span><div class="in">One-shots erin → 🎲 stapelt 2-3 op elkaar (sub/body/glans + stemming + dubbel) → lock wat goed is → .wav eruit</div></a>
+<a class="app" href="stapeldice-pro.html"><span class="ic">🎲</span><span class="nm">STAPEL-DICE PRO <span class="tag prive">PRIVÉ</span></span><div class="in">2-in-1: 🎲 stapel je shots én 🎹 dobbel synth-sounds (5 modi, slotjes, mutate, undo) → speel op keyboard → .wav eruit</div></a>
 <a class="app" href="koor.html"><img src="apps-img/koor.jpg" alt="" loading="lazy"><span class="ic">🎤</span><span class="nm">G2B KOOR+KEY <span class="tag prive">PRIVÉ</span></span><div class="in">Vocal erin → hoort zelf de toonsoort → heel koor eruit (terts/kwint/octaaf, podium-breedte) → koor.wav + stems .zip</div></a>
 
 <a class="app" href="airdrums.html"><img src="apps-img/airdrums.jpg" alt="" loading="lazy"><span class="ic">🥁</span><span class="nm">G2B AIRDRUMS <span class="tag prive">PRIVÉ</span></span><div class="in">Drum in de lucht — webcam-vakken → sounds + MIDI naar Reason</div></a>
@@ -170,50 +171,4 @@ a.app.lokaal{opacity:.75;border-style:dashed}
 <a class="app lokaal"><span class="ic">🧱</span><span class="nm">Shot-Stapelaar <span class="tag">lokaal</span></span><div class="in">One-shots stapelen tot nieuwe sounds</div></a>
 <a class="app lokaal"><span class="ic">🎯</span><span class="nm">Hitmaker <span class="tag">lokaal</span></span><div class="in">De complete hit-fabriek</div></a>
 <a class="app lokaal"><span class="ic">🤖</span><span class="nm">Auto-Beat <span class="tag">lokaal</span></span><div class="in">Stijl + aantal → batch beats</div></a>
-<a class="app lokaal"><span class="ic">🎼</span><span class="nm">AutoScore <span class="tag">lokaal</span></span><div class="in">Film/underscore engine</div></a>
-<a class="app lokaal"><span class="ic">📖</span><span class="nm">Kinderboek-Studio <span class="tag">lokaal</span></span><div class="in">Naam + foto → eigen boek</div></a>
-<a class="app lokaal"><span class="ic">📺</span><span class="nm">YT-Fabriek <span class="tag">lokaal</span></span><div class="in">1 klik = branded beat-video</div></a>
-<a class="app lokaal"><span class="ic">🎬</span><span class="nm">Sync-Fabriek <span class="tag">lokaal</span></span><div class="in">Brief → streambare catalog-track</div></a>
-</div>
-
-<p class="foot">💾 Niets installeren — alles hierboven opent in je browser. Favoriet zetten: Ctrl+D</p>
-</div>
-
-<script>
-function _g2b_sha256(ascii){
- function rr(v,a){return (v>>>a)|(v<<(32-a))}
- var mp=Math.pow,mx=mp(2,32),ln=ascii.length*8,result='',words=[];
- var hash=[0x6A09E667,0xBB67AE85,0x3C6EF372,0xA54FF53A,0x510E527F,0x9B05688C,0x1F83D9AB,0x5BE0CD19];
- var k=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
- ascii+='\x80';
- while(ascii.length%64-56)ascii+='\x00';
- for(var i=0;i<ascii.length;i++){var j=ascii.charCodeAt(i);words[i>>2]|=j<<((3-i)%4)*8}
- words[words.length]=((ln/mx)|0);words[words.length]=(ln);
- for(var j=0;j<words.length;){
-  var w=words.slice(j,j+=16),o=hash;hash=hash.slice(0,8);
-  for(var i=0;i<64;i++){
-   var w15=w[i-15],w2=w[i-2];
-   var a=hash[0],e=hash[4];
-   var t1=hash[7]+(rr(e,6)^rr(e,11)^rr(e,25))+((e&hash[5])^(~e&hash[6]))+k[i]
-    +(w[i]=i<16?w[i]:(w[i-16]+(rr(w15,7)^rr(w15,18)^(w15>>>3))+w[i-7]+(rr(w2,17)^rr(w2,19)^(w2>>>10)))|0);
-   var t2=(rr(a,2)^rr(a,13)^rr(a,22))+((a&hash[1])^(a&hash[2])^(hash[1]&hash[2]));
-   hash=[(t1+t2)|0].concat(hash);hash[4]=(hash[4]+t1)|0;
-  }
-  for(var i=0;i<8;i++)hash[i]=(hash[i]+o[i])|0;
- }
- for(var i=0;i<8;i++)for(var j=3;j+1;j--){var b=(hash[i]>>(j*8))&255;result+=((b<16)?0:'')+b.toString(16)}
- return result;
-}
-async function _g2b_hex(s){if(crypto.subtle&&crypto.subtle.digest){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}return _g2b_sha256(s)}
-const HASH='a6027a131916280eab4a9f091cf28b36eb1dc59285023ce8c2403a76f24ff982';
-async function unlock(){
-  const v=document.getElementById('code').value.trim().toLowerCase();
-  const hex=await _g2b_hex(v);
-  if(hex===HASH){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';sessionStorage.g2bmijn='1';}
-  else document.getElementById('err').style.display='block';
-}
-if(sessionStorage.g2bmijn==='1'){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';}
-document.getElementById('code').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
-</script>
-</body>
-</html>
+<a class="app lokaa
