@@ -135,6 +135,12 @@ input[type=range]{accent-color:#3DDC84;width:110px}
     <button class="btn b2" id="sWav">⬇ DOWNLOAD WAV</button>
     <span class="hint" id="sInfo">drukt een noot + release vast in een .wav — 4 sec</span>
   </div>
+  <div class="row" style="border-top:1px solid #23352A;padding-top:12px">
+    <input id="sPackNaam" placeholder="naam van je pack — bijv. dark pads" style="flex:1;min-width:180px;background:#0D140F;border:1px solid #2C4A38;border-radius:8px;color:#BFE8CE;padding:10px;font-size:14px">
+    <input id="sPackN" type="number" value="20" min="2" max="100" style="width:70px;background:#0D140F;border:1px solid #2C4A38;border-radius:8px;color:#BFE8CE;padding:10px;font-size:14px">
+    <button class="btn b1" id="sPack">📚 MAAK SYNTH-PACK</button>
+    <span class="hint" style="margin:0">dobbelt N sounds in de gekozen modus → één .zip</span>
+  </div>
   <div class="status" id="sStatus">🎲 druk DICE voor een nieuwe sound</div>
 </div>
 </div><!-- /tabSynth -->
@@ -635,6 +641,27 @@ $('sWav').onclick=()=>{ensureAC();
   const ab=wavBytes(buf),url=URL.createObjectURL(new Blob([ab],{type:'audio/wav'}));
   const a=document.createElement('a');a.href=url;a.download=(S.name||'dicesynth').replace(/\s+/g,'-')+'.wav';a.click();
   sStat('⬇ '+(S.name||'sound')+'.wav gedownload');};
+$('sPack').onclick=()=>{ensureAC();
+  const raw=$('sPackNaam').value.trim();
+  const nm=(raw||'synth-pack').replace(/[^\w-]+/g,'_').slice(0,40);
+  // style-woorden in de naam kiezen de modus: "bass/sub/808"→BASS, "pad"→PADS, "texture/ambient/drone"→TEXTURE, "hit/drum/perc"→HIT, "keys/lead/arp/pluck"→KEYS
+  const w=raw.toLowerCase();
+  const styleMap=[['bass|sub|808|low',3],['pad|cloud|veil|lush',1],['textur|ambient|drone|atmos|mist',2],['hit|drum|perc|impact|slam|knock',4],['key|lead|arp|pluck|bell|piano',0]];
+  for(const[rx,m]of styleMap){if(new RegExp(rx).test(w)){S.fP[KP.Mode]=m/4;paintSliders();break;}}
+  const N=Math.max(2,Math.min(100,+$('sPackN').value||20));
+  const note=Math.round(S.fP[KP.Mode]*4)===3?45:60;
+  const files=[];
+  for(let i=0;i<N;i++){pushHist();sRoll(false);
+    const[L,R]=sRender([{t:0,nt:note,vel:0.85}],4);
+    const buf=AC.createBuffer(2,L.length,SR);buf.getChannelData(0).set(L);buf.getChannelData(1).set(R);
+    let fn=`G2B-PACK-${nm}/${S.name.replace(/[^\w+\-. ]/g,'_')}.wav`,c=2;
+    while(files.some(f=>f[0]===fn))fn=`G2B-PACK-${nm}/${S.name.replace(/[^\w+\-. ]/g,'_')}-${c++}.wav`;
+    files.push([fn,wavBytes(buf)]);
+    sStat(`📚 ${i+1} van ${N} — ${S.name}`);}
+  const ab=zipStore(files);
+  const url=URL.createObjectURL(new Blob([ab],{type:'application/zip'}));
+  const a=document.createElement('a');a.href=url;a.download=`G2B-PACK-${nm}.zip`;a.click();
+  sStat(`📚 G2B-PACK-${nm}.zip — ${files.length} synth-sounds erin`);};
 
 /* tabs */
 $('tStapel').onclick=()=>{ $('tStapel').classList.add('on');$('tSynth').classList.remove('on');
