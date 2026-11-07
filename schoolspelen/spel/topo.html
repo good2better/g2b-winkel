@@ -69,7 +69,7 @@ h1 { font-size:22px; margin-bottom:10px; }
 .piece.sel { border-color:#818cf8; box-shadow:0 0 0 2px #818cf8; }
 .piece.ok { border-color:#34d399; }
 .hint { color:#94a3b8; font-size:12px; margin-top:8px; }
-footer { text-align:center; margin-top:20px; font-size:11px; color:#64748b; }
+footer { text-align:center; margin-top:20px; font-size:11px; color:#94a3b8; }
 @media(max-width:640px){ .grid{grid-template-columns:repeat(4,1fr);} .mem{grid-template-columns:repeat(4,1fr);} }
 </style>
 </head>
@@ -141,7 +141,7 @@ function renderBoard(){
        + '<div class="card plist" style="min-width:190px">'
        + players.map(function(p,i){
            return '<div class="'+(i===turn&&!winner?'cur':'')+'"><span class="pion" style="background:'+p.color+'"></span>'
-                + p.name+' <span style="color:#64748b;font-size:11px;margin-left:auto">'
+                + p.name+' <span style="color:#94a3b8;font-size:11px;margin-left:auto">'
                 + (p.pos>=0?'vak '+(p.pos+1):'start')+'</span></div>';}).join('')
        + (players.length<6&&phase==='idle'&&players.every(function(p){return p.pos===-1;})
            ? '<div style="margin-top:6px"><button class="btn" id="btnAdd" style="font-size:12px">+ speler</button></div>':'')
