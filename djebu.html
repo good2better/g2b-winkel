@@ -231,10 +231,10 @@ for(const n of NOTES){const black=BLACKS.includes(n%12);
  const off=e=>{e.preventDefault();k.classList.remove('down');noteOff(n);};
  k.onmousedown=on;k.onmouseup=off;k.onmouseleave=off;
  k.ontouchstart=on;k.ontouchend=off;piano.appendChild(k);}
-if(navigator.requestMIDIAccess)navigator.requestMIDIAccess().then(m=>{
+if(navigator.requestMIDIAccess){const _mi=()=>{navigator.requestMIDIAccess().then(m=>{
  for(const inp of m.inputs.values())inp.onmidimessage=ev=>{
   const[st,n,v]=ev.data;if(st===0x90&&v>0)noteOn(n,v);
-  else if(st===0x80||(st===0x90&&v===0))noteOff(n);};}).catch(()=>{});
+  else if(st===0x80||(st===0x90&&v===0))noteOff(n);};}).catch(()=>{})};['pointerdown','keydown'].forEach(ev=>addEventListener(ev,_mi,{once:true}));}
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 </body>
