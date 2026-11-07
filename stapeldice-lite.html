@@ -40,7 +40,7 @@ input[type=range]{accent-color:#3DDC84;width:110px}
 <div class="sub">shot-stapelaar &times; smart dice — drop je one-shots, 🎲 gooit er 2-3 op elkaar · lock wat goed klinkt</div>
 
 <div class="card">
-  <div class="drop" id="drop">sleep hier je one-shots heen (wav/mp3/ogg) — of klik om te kiezen<input type="file" id="fi" accept="audio/*" multiple hidden></div>
+  <div class="drop" id="drop">sleep hier je one-shots heen (wav/mp3/ogg) — of klik om te kiezen<input type="file" id="fi" accept="audio/*" multiple hidden> <button class="btn b2" id="bStart" style="padding:8px 14px;font-size:12px;margin-top:8px">🎛 START-SET (12 eigen shots)</button></div>
   <div class="samples" id="samples"></div>
   <div class="hint">minimaal 2 shots nodig. De machine meet per shot de toonhoogte (spectrale zwaartepunt) en geeft elke laag een rol: <b>laag</b> = sub/transient, <b>midden</b> = body, <b>hoog</b> = glans.</div>
 </div>
@@ -244,6 +244,79 @@ document.querySelectorAll('.lock').forEach(b=>b.onclick=()=>{const i=+b.dataset.
 $('bDubbel').onclick=()=>{const on=$('bDubbel').dataset.on!=='0';$('bDubbel').dataset.on=on?'0':'1';$('bDubbel').textContent='DUBBEL: '+(on?'UIT':'AAN');};
 $('bDubbel').dataset.on='1';
 $('bPlay').onclick=()=>{if(lastMix){ensureAC();const s=AC.createBufferSource();s.buffer=lastMix;s.connect(AC.destination);s.start();}};
+
+
+/* ---------- START-SET: 12 eigen gebouwde synth-shots (geen standaard bleepjes) ---------- */
+function mk(sec,fn){const n=Math.floor(sec*SR),y=new Float32Array(n);
+  for(let i=0;i<n;i++)y[i]=fn(i/SR,sec);
+  // minifade-out (5ms) tegen kliks
+  const f=Math.min(220,n);for(let i=0;i<f;i++)y[n-1-i]*=(i+1)/f;
+  return y;}
+let _noise=null;
+function noise(){if(!_noise){_noise=new Float32Array(Math.floor(1.2*SR));for(let i=0;i<_noise.length;i++)_noise[i]=Math.random()*2-1;}return _noise;}
+function nz(t){const N=noise(),i=(t*SR)|0;return N[i%N.length];}
+// one-pole LP op functie-waarde (voor ruis-vorming)
+function lpv(fc,prev,x){const a=Math.exp(-2*Math.PI*fc/SR);return prev*a+x*(1-a);}
+// Karplus-Strong geplukte snaar
+function ks(freq,sec,damp){const P=Math.max(2,Math.round(SR/freq)),ring=new Float32Array(P);
+  for(let i=0;i<P;i++)ring[i]=Math.random()*2-1;
+  const n=Math.floor(sec*SR),y=new Float32Array(n);let w=0;
+  for(let i=0;i<n;i++){const a=ring[w],b=ring[(w+1)%P];
+    ring[w]=(a+b)*0.5*damp;y[i]=a;w=(w+1)%P;}
+  return y;}
+function softclip(y,d){for(let i=0;i<y.length;i++)y[i]=Math.tanh(y[i]*d)/Math.tanh(d);return y;}
+function nrm(y,g){let m=0;for(const v of y)m=Math.max(m,Math.abs(v));if(m>0)for(let i=0;i<y.length;i++)y[i]*=g/m;return y;}
+
+const STARTSET=[
+ ['kick-donder',()=>{ // click + body met exp-pitch-drop + sub-tail + lichte drive
+   const y=mk(0.55,(t)=>{const dr=32,ph=42*t+100*(1-Math.exp(-t*dr))/dr;
+     let s=Math.sin(2*Math.PI*ph)*Math.exp(-t*7);           // body
+     s+=Math.sin(2*Math.PI*32*t)*Math.exp(-t*2.2)*0.8;      // sub-tail
+     s+=nz(t)*Math.exp(-t*300)*0.5;                          // click
+     s+=Math.sin(2*Math.PI*2800*t)*Math.exp(-t*380)*0.3;
+     return s;});return nrm(softclip(y,1.6),0.8);}],
+ ['kick-room',()=>{ // boomiger, met ruimte-slap
+   const y=mk(0.7,(t)=>{const ph=52*t+70*(1-Math.exp(-t*22))/22;
+     let s=Math.sin(2*Math.PI*ph)*Math.exp(-t*4.5);
+     if(t>0.045)s+=Math.sin(2*Math.PI*52*t)*Math.exp(-(t-0.045)*10)*0.25; // slap
+     s+=nz(t)*Math.exp(-t*220)*0.35;return s;});return nrm(y,0.8);}],
+ ['ocho808-donker',()=>{ // sub + bend + drive-rand
+   const y=mk(0.95,(t)=>{const ph=(50-9*(1-Math.exp(-t*7)))*t;
+     let s=Math.sin(2*Math.PI*ph)*Math.exp(-t*3.6)+Math.sin(4*Math.PI*ph)*0.12*Math.exp(-t*6);
+     return s;});return nrm(softclip(y,2.2),0.8);}],
+ ['snare-crack',()=>{ // crack-transient + body + noise-band
+   const y=mk(0.28,(t)=>{let s=Math.sin(2*Math.PI*195*t)*Math.exp(-t*16)*0.7;
+     s+=nz(t)*Math.exp(-t*180)*0.9;                          // crack
+     let p=0; // loop-filtered ruis staat niet per-sample bij; benader via 2-punts diff
+     s+=(nz(t)-nz(t-1/SR))*Math.exp(-t*26)*2.2;              // band-achtige ruis
+     return s;});return nrm(y,0.8);}],
+ ['clap-zaal',()=>{ // 3 bursts + zaal-staart
+   const y=mk(0.3,(t)=>{let e=0;
+     for(const b of [0,0.011,0.023]){if(t>b)e+=Math.exp(-(t-b)*160);} 
+     e+=Math.exp(-t*14)*0.4;                                 // staart
+     return (nz(t)-nz(t-1/SR))*e*2.5;});return nrm(y,0.75);}],
+ ['hat-metaal',()=>{ // inharmonische metaal-klanken + hp-ruis
+   const y=mk(0.09,(t)=>(Math.sin(2*Math.PI*5213*t)*0.5+Math.sin(2*Math.PI*7409*t)*0.3+Math.sin(2*Math.PI*8911*t)*0.2)*Math.exp(-t*110)
+     +(nz(t)-nz(t-1/SR))*Math.exp(-t*140)*1.6);return nrm(y,0.7);}],
+ ['perc-kawina',()=>{ // houtig: pitch-drop + tick (kawina-smaak)
+   const y=mk(0.16,(t)=>{const ph=620*t+90*(1-Math.exp(-t*60))/60;
+     return Math.sin(2*Math.PI*ph)*Math.exp(-t*42)+nz(t)*Math.exp(-t*260)*0.4;});return nrm(y,0.75);}],
+ ['snaar-pluk',()=>{ // Karplus-Strong geplukte snaar A2
+   const y=ks(110,0.7,0.996);return nrm(y,0.75);}],
+ ['snaar-bel',()=>{ // hogere snaar, bel-achtig door lichtere demping
+   const y=ks(220,0.6,0.998);for(let i=0;i<y.length;i++)y[i]+=ks(330,0.3,0.995)[Math.min(i,Math.floor(0.3*SR)-1)]*0.3;return nrm(y,0.7);}],
+ ['rim-slap',()=>{ // rimshot: scherpe rand + houtige body
+   const y=mk(0.11,(t)=>Math.sin(2*Math.PI*1150*t)*Math.exp(-t*85)*0.7
+     +Math.sin(2*Math.PI*400*t)*Math.exp(-t*60)*0.5+nz(t)*Math.exp(-t*400)*0.5);return nrm(y,0.75);}],
+ ['shaker-ritme',()=>{ // dubbele pols: tik + echo
+   const y=mk(0.2,(t)=>{let e=Math.exp(-t*55);if(t>0.075)e+=Math.exp(-(t-0.075)*45)*0.6;
+     return nz(t)*e*(0.7+0.3*Math.sin(2*Math.PI*38*t));});return nrm(y,0.6);}],
+ ['blip-fm',()=>{ // FM-blip voor glans
+   const y=mk(0.14,(t)=>Math.sin(2*Math.PI*880*t+3*Math.exp(-t*30)*Math.sin(2*Math.PI*880*2.7*t))*Math.exp(-t*32));return nrm(y,0.6);}],
+];
+$('bStart').onclick=(e)=>{if(e)e.stopPropagation();ensureAC();
+  for(const [nm,fn] of STARTSET){const y=fn();buffers.push({naam:'g2b-'+nm,y,c:centroid(y)});}
+  renderSamples();st('🎛 START-SET erbij: '+STARTSET.length+' eigen synth-shots — druk 🎲 STAPEL');};
 
 /* ---------- zip (store, geen compressie — wav is al dicht) ---------- */
 function crc32(buf){let t=crc32.t;if(!t){t=crc32.t=new Uint32Array(256);
