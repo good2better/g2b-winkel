@@ -40,7 +40,8 @@ input[type=range]{accent-color:#3DDC84;width:110px}
 <div class="sub">shot-stapelaar &times; smart dice — drop je one-shots, 🎲 gooit er 2-3 op elkaar · lock wat goed klinkt</div>
 
 <div class="card">
-  <div class="drop" id="drop">sleep hier je one-shots heen (wav/mp3/ogg) — of klik om te kiezen<input type="file" id="fi" accept="audio/*" multiple hidden></div>
+  <div class="drop" id="drop">sleep hier je one-shots of een HELE MAP heen (wav/mp3/ogg) — of klik om te kiezen<input type="file" id="fi" accept="audio/*" multiple hidden><input type="file" id="dir" webkitdirectory hidden></div>
+  <div class="row" style="margin-top:8px"><button class="btn b2" id="bMap" style="padding:8px 14px;font-size:12px">📁 MAP KIEZEN</button><span class="hint" style="margin:0">jouw versie: hele mappen tegelijk (max 60 shots)</span></div>
   <div class="samples" id="samples"></div>
   <div class="hint">minimaal 2 shots nodig. De machine meet per shot de toonhoogte (spectrale zwaartepunt) en geeft elke laag een rol: <b>laag</b> = sub/transient, <b>midden</b> = body, <b>hoog</b> = glans.</div>
 </div>
@@ -49,6 +50,7 @@ input[type=range]{accent-color:#3DDC84;width:110px}
   <div class="row">
     <button class="btn b1" id="bDice">🎲 STAPEL</button>
     <button class="btn b2" id="bDice5">🎲 5x</button>
+    <button class="btn b2" id="bDice20">🎲 20x</button>
     <button class="btn b2" id="bDubbel">DUBBEL: AAN</button>
     <label>lagen<select id="nl" style="background:#16201A;color:#BFE8CE;border:1px solid #2C4A38;border-radius:6px;padding:6px;font-size:13px"><option value="0">auto</option><option>2</option><option>3</option></select></label>
   </div>
@@ -131,11 +133,20 @@ function sumMix(layers){const n=Math.max(...layers.map(l=>l.y.length)),o=new Flo
 $('drop').onclick=()=>$('fi').click();
 $('drop').ondragover=e=>{e.preventDefault();$('drop').classList.add('over');};
 $('drop').ondragleave=()=>$('drop').classList.remove('over');
-$('drop').ondrop=e=>{e.preventDefault();$('drop').classList.remove('over');loadFiles(e.dataTransfer.files);};
+$('drop').ondrop=async e=>{e.preventDefault();$('drop').classList.remove('over');
+  const items=[...e.dataTransfer.items],files=[];
+  const walk=en=>new Promise(res=>{ if(en.isFile)en.file(f=>res(f));else if(en.isDirectory){
+    en.createReader().readEntries(async es=>{const out=[];for(const x of es)out.push(await walk(x));res(out);});} else res(null);});
+  for(const it of items){const en=it.webkitGetAsEntry&&it.webkitGetAsEntry();if(en){const r=await walk(en);files.push(...(Array.isArray(r)?r.flat(99):[r]).filter(Boolean));}}
+  loadFiles(files.length?files:e.dataTransfer.files);};
 $('fi').onchange=e=>loadFiles(e.target.files);
+$('bMap').onclick=e=>{e.stopPropagation();$('dir').click();};
+$('dir').onchange=e=>loadFiles(e.target.files);
+const MAXS=60;
 
 async function loadFiles(fs){ensureAC();
-  for(const f of fs){if(buffers.length>=12)break;
+  for(const f of fs){if(buffers.length>=MAXS)break;
+    if(!/\.(wav|mp3|ogg|flac|m4a|aiff?)$/i.test(f.name))continue;
     try{const ab=await f.arrayBuffer(),buf=await AC.decodeAudioData(ab);
       buffers.push({naam:f.name.replace(/\.[^.]+$/,''),y:mono(buf),c:0});
       buffers[buffers.length-1].c=centroid(buffers[buffers.length-1].y);
@@ -153,7 +164,9 @@ const rolls=[null,null,null],locks=[false,false,false];
 const ROLES=['laag','midden','hoog'];
 
 $('bDice').onclick=()=>rollOnce();
-$('bDice5').onclick=()=>{for(let i=0;i<5;i++){rollOnce();st(`🎲 ${i+1} van 5 gestapeld`);}};
+$('bDice5').onclick=()=>diceN(5);
+$('bDice20').onclick=()=>diceN(20);
+function diceN(n){for(let i=0;i<n;i++){rollOnce();st(`🎲 ${i+1} van ${n} gestapeld`);}}
 function rollOnce(){
   if(buffers.length<2){st('eerst 2+ shots droppen');return;}
   ensureAC();
