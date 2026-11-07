@@ -48,6 +48,7 @@ input[type=range]{accent-color:#3DDC84;width:110px}
 <div class="card">
   <div class="row">
     <button class="btn b1" id="bDice">🎲 STAPEL</button>
+    <button class="btn b2" id="bDice5">🎲 5x</button>
     <button class="btn b2" id="bDubbel">DUBBEL: AAN</button>
     <label>lagen<select id="nl" style="background:#16201A;color:#BFE8CE;border:1px solid #2C4A38;border-radius:6px;padding:6px;font-size:13px"><option value="0">auto</option><option>2</option><option>3</option></select></label>
   </div>
@@ -66,6 +67,7 @@ input[type=range]{accent-color:#3DDC84;width:110px}
     <span class="hint" id="resInfo"></span>
   </div>
   <audio id="au" controls style="margin-top:8px;width:100%"></audio>
+  <div id="lijst" style="margin-top:10px"></div>
 </div>
 
 <script>
@@ -150,7 +152,9 @@ window.weg=i=>{buffers.splice(i,1);renderSamples();};
 const rolls=[null,null,null],locks=[false,false,false];
 const ROLES=['laag','midden','hoog'];
 
-$('bDice').onclick=()=>{
+$('bDice').onclick=()=>rollOnce();
+$('bDice5').onclick=()=>{for(let i=0;i<5;i++){rollOnce();st(`🎲 ${i+1} van 5 gestapeld`);}};
+function rollOnce(){
   if(buffers.length<2){st('eerst 2+ shots droppen');return;}
   ensureAC();
   const nl=+($('nl').value)||(Math.random()<0.5?2:3);
@@ -209,6 +213,9 @@ function bouw(k){
   const url=URL.createObjectURL(new Blob([wavBytes(out)],{type:'audio/wav'}));
   $('au').src=url;$('dl').href=url;$('dl').download=naam+'.wav';$('dl').style.display='';
   $('resInfo').textContent=`${(n/SR).toFixed(2)}s · ${k} lagen · ${dubbel?'haas-dubbel':'mono'} · limiter 0.85`;
+  const card=document.createElement('div');card.className='slot';card.style.marginTop='8px';
+  card.innerHTML=`<div class=nm>${naam}.wav</div><audio controls src="${url}" style="width:100%;margin:6px 0"></audio><a class=dl href="${url}" download="${naam}.wav" style="display:inline-block;padding:8px 14px;font-size:12px">⬇ download</a>`;
+  $('lijst').prepend(card);
   st('🎲 gestapeld — luister en lock wat goed is, dobbel de rest opnieuw');
 }
 document.querySelectorAll('.lock').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;
