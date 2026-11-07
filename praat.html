@@ -86,4 +86,5 @@ function renderSnips(){const box=document.getElementById('snipBtns');box.innerHT
 (document.getElementById('snips').value||"").split("\n").map(s=>s.trim()).filter(Boolean).slice(0,8).forEach(s=>{const b=document.createElement('button');b.textContent=s.length>40?s.slice(0,40)+"…":s;b.onclick=()=>{out.value+=(out.value&&!out.value.endsWith(" ")?" ":"")+s};box.appendChild(b)})}
 function saveHist(t){if(!t)return;const h=(ls.getItem('g2b_hist')||"").split("\n").filter(Boolean);h.unshift(t);ls.setItem('g2b_hist',h.slice(0,15).join("\n"))}
 renderSnips();
-</script></body></html>
+</script><footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
+</body></html>
