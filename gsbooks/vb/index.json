@@ -234,6 +234,202 @@
   "paginas": 2
  },
  {
+  "slug": "balto-held",
+  "titel": "Balto de Sneeuwheld 🐺",
+  "video": true,
+  "url": "vb/balto-held/index.html",
+  "cover": "vb/balto-held/cover.jpg"
+ },
+ {
+  "slug": "moed-mila",
+  "titel": "Moedige Mila 🦁",
+  "video": true,
+  "url": "vb/moed-mila/index.html",
+  "cover": "vb/moed-mila/cover.jpg"
+ },
+ {
+  "slug": "dierenhelden-helden",
+  "titel": "Dieren Superhelden 🦸",
+  "video": true,
+  "url": "vb/dierenhelden-helden/index.html",
+  "cover": "vb/dierenhelden-helden/cover.jpg"
+ },
+ {
+  "slug": "kiki-gevoelens",
+  "titel": "Kiki Voelt Alles 🐨",
+  "video": true,
+  "url": "vb/kiki-gevoelens/index.html",
+  "cover": "vb/kiki-gevoelens/cover.jpg"
+ },
+ {
+  "slug": "milo-weekdagen",
+  "titel": "De Zeven Dagen van Milo 🐭",
+  "video": true,
+  "url": "vb/milo-weekdagen/index.html",
+  "cover": "vb/milo-weekdagen/cover.jpg"
+ },
+ {
+  "slug": "tig-tellen",
+  "titel": "Tellen met Tig 🐯",
+  "video": true,
+  "url": "vb/tig-tellen/index.html",
+  "cover": "vb/tig-tellen/cover.jpg"
+ },
+ {
+  "slug": "vier-seizoenen",
+  "titel": "De Vier Seizoenen 🌷",
+  "video": true,
+  "url": "vb/vier-seizoenen/index.html",
+  "cover": "vb/vier-seizoenen/cover.jpg"
+ },
+ {
+  "slug": "vormen-safari",
+  "titel": "De Vormen-Safari 🦊",
+  "video": true,
+  "url": "vb/vormen-safari/index.html",
+  "cover": "vb/vormen-safari/cover.jpg"
+ },
+ {
+  "slug": "verkeer-mila",
+  "titel": "Verkeer met Mila 🚲",
+  "video": true,
+  "url": "vb/verkeer-mila/index.html",
+  "cover": "vb/verkeer-mila/cover.jpg"
+ },
+ {
+  "slug": "klas-roos",
+  "titel": "In de Klas met Juf Roos 🏫",
+  "video": true,
+  "url": "vb/klas-roos/index.html",
+  "cover": "vb/klas-roos/cover.jpg"
+ },
+ {
+  "slug": "kleuren-winkel",
+  "titel": "De Kleurenwinkel 🦎",
+  "video": true,
+  "url": "vb/kleuren-winkel/index.html",
+  "cover": "vb/kleuren-winkel/cover.jpg"
+ },
+ {
+  "slug": "boer-boerderij",
+  "titel": "Boerderij van Boer Bob 🚜",
+  "video": true,
+  "url": "vb/boer-boerderij/index.html",
+  "cover": "vb/boer-boerderij/cover.jpg"
+ },
+ {
+  "slug": "wereld-topo",
+  "titel": "De Wereld en Nederland 🌍",
+  "video": true,
+  "url": "vb/wereld-topo/index.html",
+  "cover": "vb/wereld-topo/cover.jpg"
+ },
+ {
+  "slug": "oli-alfabet",
+  "titel": "Het Alfabet van Oli 🦉",
+  "video": true,
+  "url": "vb/oli-alfabet/index.html",
+  "cover": "vb/oli-alfabet/cover.jpg"
+ },
+ {
+  "slug": "keesje-avontuur",
+  "titel": "De Avonturen van Keesje 🐰",
+  "video": true,
+  "url": "vb/keesje-avontuur/index.html",
+  "cover": "vb/keesje-avontuur/cover.jpg"
+ },
+ {
+  "slug": "moed-deel2",
+  "titel": "Moedige Mila Deel 2 🦁",
+  "video": true,
+  "url": "vb/moed-deel2/index.html",
+  "cover": "vb/moed-deel2/cover.jpg"
+ },
+ {
+  "slug": "sam-sterk",
+  "titel": "Samen Sterk — Sam 🦸",
+  "video": true,
+  "url": "vb/sam-sterk/index.html",
+  "cover": "vb/sam-sterk/cover.jpg"
+ },
+ {
+  "slug": "helden-vb",
+  "titel": "De Helden 🦸",
+  "video": true,
+  "url": "vb/helden-vb/index.html",
+  "cover": "vb/helden-vb/cover.jpg"
+ },
+ {
+  "slug": "econ-kids",
+  "titel": "Economie voor Kids 💰",
+  "video": true,
+  "url": "vb/econ-kids/index.html",
+  "cover": "vb/econ-kids/cover.jpg"
+ },
+ {
+  "slug": "geld-boek",
+  "titel": "Het Geld-Boek 🪙",
+  "video": true,
+  "url": "vb/geld-boek/index.html",
+  "cover": "vb/geld-boek/cover.jpg"
+ },
+ {
+  "slug": "taal-boek",
+  "titel": "Het Taal-Boek 📖",
+  "video": true,
+  "url": "vb/taal-boek/index.html",
+  "cover": "vb/taal-boek/cover.jpg"
+ },
+ {
+  "slug": "recht-boek",
+  "titel": "Het Recht-Boek ⚖️",
+  "video": true,
+  "url": "vb/recht-boek/index.html",
+  "cover": "vb/recht-boek/cover.jpg"
+ },
+ {
+  "slug": "wet-boek",
+  "titel": "Het Wet-Boek 📜",
+  "video": true,
+  "url": "vb/wet-boek/index.html",
+  "cover": "vb/wet-boek/cover.jpg"
+ },
+ {
+  "slug": "rekenen-8",
+  "titel": "Rekenen Groep 8 🔢",
+  "video": true,
+  "url": "vb/rekenen-8/index.html",
+  "cover": "vb/rekenen-8/cover.jpg"
+ },
+ {
+  "slug": "koreaans-vb",
+  "titel": "Mijn Eerste Koreaans 🇰🇷",
+  "video": true,
+  "url": "vb/koreaans-vb/index.html",
+  "cover": "vb/koreaans-vb/cover.jpg"
+ },
+ {
+  "slug": "ziggy-verhaal",
+  "titel": "Ziggy Zebra 🦓",
+  "video": true,
+  "url": "vb/ziggy-verhaal/index.html",
+  "cover": "vb/ziggy-verhaal/cover.jpg"
+ },
+ {
+  "slug": "kokos-verhaal",
+  "titel": "Kokos 🐢",
+  "video": true,
+  "url": "vb/kokos-verhaal/index.html",
+  "cover": "vb/kokos-verhaal/cover.jpg"
+ },
+ {
+  "slug": "sunny-verhalen",
+  "titel": "Sunny’s Avonturen 🐘",
+  "video": true,
+  "url": "vb/sunny-verhalen/index.html",
+  "cover": "vb/sunny-verhalen/cover.jpg"
+ },
+ {
   "slug": "ruimte-reis",
   "titel": "De Ruimte-Reis 🚀",
   "video": true,
