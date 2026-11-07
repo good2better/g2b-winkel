@@ -52,7 +52,7 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <div style="margin-top:8px">⬇ <a class="dl" id="dlWav" download="G2B-master.wav">download je master (wav)</a> · <span id="info"></span></div>
 </div>
 <div class="kaart">TILT = donker ↔ helder · GLUE = hoe strak alles samenplakt · WARMTE = analoge volheid · LUID = hoe hard (limiter plafond -1 dB) · KRACHT = 0% origineel, 100% volle bewerking.<br>
-AUTO luistert naar je track en zet de 4 knoppen zelf goed · genre-pills = kant-en-klare start per stijl · alles draait in je browser — niks gaat naar internet.</div>
+AUTO luistert naar je track en zet de 4 knoppen zelf goed · klik je een genre-pill met je track erin, dan stelt AUTO de pill meteen bij op jouw track (smaak + meting) · alles draait in je browser — niks gaat naar internet.</div>
 <script>
 // ==== exacte poort van g2b_master/MasterPlugin.cpp (zelfde wiskunde per sample) ====
 const GENRES=["TRAP","DRILL","BOOMBAP","RNB","HOUSE","DEMBOW","KAWINA","LOFI","SOUL","POP"];
@@ -79,7 +79,8 @@ function laad(file){
 }
 
 // AUTO: analyseer eerste 5 s — zelfde meting als de plugin (HP→tiltLp split op 700 Hz)
-function analyseer(){
+// geeft de 4 auto-knopwaardes terug (of null bij te weinig signaal)
+function meetAuto(){
  const n=Math.min(inL.length,Math.floor(sr*5));
  let hpL=0,hpR=0,tpL=0,tpR=0,AElo=0,AEhi=0,AEall=0,APk=0;
  const hpA=1-Math.exp(-2*Math.PI*28/sr), tiltA=1-Math.exp(-2*Math.PI*700/sr);
@@ -91,23 +92,27 @@ function analyseer(){
   AElo+=lo*lo; AEhi+=(hiL*hiL+hiR*hiR)*0.5; AEall+=(L*L+R*R)*0.5;
   const pk=Math.max(Math.abs(L),Math.abs(R)); if(pk>APk)APk=pk;
  }
- if(n<4410||AEall<1e-8)return false;
+ if(n<4410||AEall<1e-8)return null;
  const rms=Math.sqrt(AEall/n), lufs=20*Math.log10(rms+1e-9);
  const d=10*Math.log10((AElo+1e-9)/(AEhi+1e-9));
- P.tilt=Math.max(-50,Math.min(50,d*4));
+ const tilt=Math.max(-50,Math.min(50,d*4));
  const crest=20*Math.log10((APk+1e-9)/(rms+1e-9));
- P.glue=Math.max(30,Math.min(90,40+(crest-6)*8));
+ const glue=Math.max(30,Math.min(90,40+(crest-6)*8));
  const hiShare=AEhi/(AElo+AEhi+1e-9);
- P.warmte=Math.max(15,Math.min(80,60-hiShare*400));
- P.luid=Math.max(10,Math.min(100,(DOEL-lufs)/9*100));
- syncUI(); return true;
+ const warmte=Math.max(15,Math.min(80,60-hiShare*400));
+ const luid=Math.max(10,Math.min(100,(DOEL-lufs)/9*100));
+ return {tilt,glue,warmte,luid};
+}
+function zetKnoppen(v){
+ P.tilt=v.tilt;P.glue=v.glue;P.warmte=v.warmte;P.luid=v.luid;syncUI();
 }
 function autoKnobs(){
  if(!inL)return;
  $('st').textContent='AUTO luistert…';
  setTimeout(()=>{
-  const ok=analyseer();
-  $('st').textContent=ok?'🤖 AUTO heeft de knoppen gezet — klik MAAK MASTER':'te weinig signaal om te meten';
+  const v=meetAuto();
+  if(v){zetKnoppen(v);$('st').textContent='🤖 AUTO heeft de knoppen gezet — klik MAAK MASTER'}
+  else $('st').textContent='te weinig signaal om te meten';
  },30);
 }
 function dice(){
@@ -121,6 +126,18 @@ function kiesGenre(i){
  P.genre=i; [P.tilt,P.glue,P.warmte,P.luid]=GP[i];
  document.querySelectorAll('.pill').forEach((b,j)=>b.classList.toggle('on',j===i));
  syncUI();
+ // pill = smaak → AUTO stelt daarna bij op jouw track (blend 50/50)
+ if(inL){
+  $('st').textContent=GENRES[i]+' — AUTO stelt bij op jouw track…';
+  setTimeout(()=>{
+   const v=meetAuto();
+   if(v){ // halverwege genre-smaak en track-meting
+    zetKnoppen({tilt:(GP[i][0]+v.tilt)/2, glue:(GP[i][1]+v.glue)/2,
+                warmte:(GP[i][2]+v.warmte)/2, luid:(GP[i][3]+v.luid)/2});
+    $('st').textContent=GENRES[i]+' + AUTO — knoppen staan op jouw track';
+   }else $('st').textContent=GENRES[i]+' — te weinig signaal voor AUTO';
+  },30);
+ }
 }
 function zetAan(v){P.aan=v;$('bAan').textContent=v?'AAN':'UIT (bypass)';$('bAan').classList.toggle('go',v)}
 function syncUI(){
