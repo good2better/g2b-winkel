@@ -177,7 +177,7 @@ input:focus{border-color:var(--groen)!important}
 </div><!-- /tabSynth -->
 
 <div class="card" id="lijstCard" style="display:none">
-  <h4 style="font-size:11px;color:var(--groen);letter-spacing:2px;margin-bottom:8px">RESULTATEN — vink ✓/✗ per sound</h4>
+  <h4 style="font-size:11px;color:var(--groen);letter-spacing:2px;margin-bottom:8px">RESULTATEN — vink ✓/✗ per sound · ⚗ morph = twee mengen · blijft bewaard</h4>
   <div class="res" id="lijstBar">
     <span class="hint" id="lijstInfo"></span>
     <button class="mbtn" id="bDelX">🗑 gooi ✗ weg</button>
@@ -458,35 +458,62 @@ $('bStart').onclick=(e)=>{if(e)e.stopPropagation();ensureAC();
   renderSamples();st('🎛 START-SET erbij: '+STARTSET.length+' eigen synth-shots — druk 🎲 STAPEL');};
 
 /* ---------- resultaten-beheer: ✓/✗ per sound, groep-delete, zip-van-goeden ---------- */
-const RES=[]; // {naam,ab,url,kind:'stapel'|'synth',mode,state:0|1|2 (nog-niks/goed/slecht)}
-function resCard(naam,ab,kind,mode){const url=URL.createObjectURL(new Blob([ab],{type:'audio/wav'}));
-  const r={naam,ab,url,kind,mode:mode??null,state:0};RES.push(r);
+const RES=[]; // {id,naam,ab,url,kind:'stapel'|'synth',mode,state:0|1|2,el}
+let _seq=Date.now(),_db=null,MORPHA=null;
+function idb(){return new Promise(res=>{if(_db)return res(_db);
+  const q=indexedDB.open('g2b-sdp',1);
+  q.onupgradeneeded=()=>q.result.createObjectStore('res',{keyPath:'id'});
+  q.onsuccess=()=>{_db=q.result;res(_db)};q.onerror=()=>res(null);});}
+async function idbPut(r){const d=await idb();if(!d)return;
+  d.transaction('res','readwrite').objectStore('res').put({id:r.id,naam:r.naam,ab:r.ab,kind:r.kind,mode:r.mode,state:r.state});}
+async function idbDel(id){const d=await idb();if(!d)return;
+  d.transaction('res','readwrite').objectStore('res').delete(id);}
+async function idbClear(){const d=await idb();if(!d)return;
+  d.transaction('res','readwrite').objectStore('res').clear();}
+async function restoreRes(){const d=await idb();if(!d)return;
+  const all=await new Promise(res=>{const q=d.transaction('res').objectStore('res').getAll();
+    q.onsuccess=()=>res(q.result||[]);q.onerror=()=>res([]);});
+  all.sort((a,b)=>a.id-b.id);
+  for(const e of all){const r={id:e.id,naam:e.naam,ab:e.ab,
+    url:URL.createObjectURL(new Blob([e.ab],{type:'audio/wav'})),kind:e.kind,mode:e.mode,state:e.state};
+    RES.push(r);buildCard(r);}
+  if(all.length)_seq=Math.max(_seq,...all.map(e=>e.id))+1;paintLijst();}
+function prune(){while(RES.length>80){const i=RES.findIndex(r=>r.state!==1);const j=i<0?0:i;
+  const r=RES[j];idbDel(r.id);URL.revokeObjectURL(r.url);if(r.el)r.el.remove();RES.splice(j,1);}}
+function resCard(naam,ab,kind,mode){
+  const r={id:_seq++,naam,ab,url:URL.createObjectURL(new Blob([ab],{type:'audio/wav'})),kind,mode:mode??null,state:0};
+  RES.push(r);buildCard(r);idbPut(r);prune();return r;}
+function buildCard(r){const naam=r.naam,ab=r.ab,url=r.url;
   // toonsoort-detectie: decode eerste kanaal uit wav (mono-voorstelling) en toon grondtoon
   let toon='';try{const b=AC.createBuffer(1,(ab.byteLength-44)/2,SR),v=new DataView(ab),d=b.getChannelData(0);
     for(let i=0;i<d.length;i++)d[i]=v.getInt16(44+i*2,true)/32768;
     const f0=fundamental(d);if(f0!==null)toon=' · '+midiNote(Math.round(f0));}catch(e){}
-  const card=document.createElement('div');card.className='card';card.style.marginBottom='8px';card.dataset.ri=RES.length-1;
+  const card=document.createElement('div');card.className='card';card.style.marginBottom='8px';r.el=card;
   card.innerHTML=`<div class=nm style="font-size:12.5px;color:var(--groen2);font-weight:700">${naam}.wav<span style="color:var(--zacht);font-weight:400">${toon}</span></div>
     <audio controls src="${url}" style="width:100%;margin:6px 0"></audio>
     <div class=row style="margin:2px 0">
       <button class="mbtn rk" data-a="1">✓ goed</button><button class="mbtn rx" data-a="2">✗ slecht</button>
       <a class=dl href="${url}" download="${naam}.wav" style="padding:7px 13px;font-size:12px">⬇</a>
-      <button class="mbtn rnew">🔁 nieuwe</button><button class="mbtn rdel">✕</button></div>`;
-  card.querySelector('.rk').onclick=()=>{r.state=1;paintCard();};
-  card.querySelector('.rx').onclick=()=>{r.state=2;paintCard();};
-  card.querySelector('.rdel').onclick=()=>{RES.splice(RES.indexOf(r),1);card.remove();paintLijst();};
+      <button class="mbtn rmor">⚗ morph</button><button class="mbtn rnew">🔁 nieuwe</button><button class="mbtn rdel">✕</button></div>`;
+  card.querySelector('.rk').onclick=()=>{r.state=1;paintCard();idbPut(r);};
+  card.querySelector('.rx').onclick=()=>{r.state=2;paintCard();idbPut(r);};
+  card.querySelector('.rdel').onclick=()=>{idbDel(r.id);URL.revokeObjectURL(r.url);RES.splice(RES.indexOf(r),1);card.remove();paintLijst();};
   card.querySelector('.rnew').onclick=()=>redoOne(r,card);
+  card.querySelector('.rmor').onclick=()=>{if(!MORPHA||MORPHA===r){MORPHA=r;card.style.outline='2px solid #B48CFF';
+      st('⚗ morph-bron gekozen — klik nu ⚗ morph op een tweede sound');return;}
+    const a=MORPHA,b=r;MORPHA=null;
+    document.querySelectorAll('#lijst .card').forEach(c=>c.style.outline='');doMorph(a,b);};
   function paintCard(){card.style.borderColor=r.state===1?'var(--groen)':r.state===2?'#7A2E2E':'var(--rand)';
     card.style.opacity=r.state===2?'.55':'1';paintLijst();}
+  paintCard();
   $('lijst').prepend(card);paintLijst();return r;}
 function paintLijst(){const g=RES.filter(r=>r.state===1).length,x=RES.filter(r=>r.state===2).length;
   $('lijstCard').style.display=RES.length?'':'none';
   $('lijstInfo').textContent=`${RES.length} sounds · ✓ ${g} goed · ✗ ${x} slecht`;}
-$('bDelX').onclick=()=>{for(let i=RES.length-1;i>=0;i--)if(RES[i].state===2){RES.splice(i,1);}
-  document.querySelectorAll('#lijst .card').forEach(c=>{const r=RES.find(r=>RES.indexOf(r)===+c.dataset.ri);});
-  // simpel: herbouw lijst
-  $('lijst').innerHTML='';const keep=[...RES];RES.length=0;for(const r of keep)resCard(r.naam,r.ab,r.kind,r.mode);paintLijst();};
-$('bDelAll').onclick=()=>{RES.length=0;$('lijst').innerHTML='';paintLijst();};
+$('bDelX').onclick=()=>{for(let i=RES.length-1;i>=0;i--)if(RES[i].state===2){
+    const r=RES[i];idbDel(r.id);URL.revokeObjectURL(r.url);if(r.el)r.el.remove();RES.splice(i,1);}paintLijst();};
+$('bDelAll').onclick=()=>{for(const r of RES)URL.revokeObjectURL(r.url);
+  RES.length=0;$('lijst').innerHTML='';idbClear();paintLijst();};
 $('bZipOk').onclick=()=>{const ok=RES.filter(r=>r.state===1);
   if(!ok.length){st('✗ eerst sounds goedkeuren met ✓');return;}
   const ab=zipStore(ok.map(r=>[`G2B-KEEP/${r.naam}.wav`,r.ab]));
@@ -496,7 +523,7 @@ function redoOne(r,card){if(r.kind==='stapel'){if(buffers.length<2){st('eerst sh
     const n2=rollOnce();if(n2){r.naam=n2.naam;r.ab=n2.ab;URL.revokeObjectURL(r.url);r.url=URL.createObjectURL(new Blob([r.ab],{type:'audio/wav'}));r.state=0;
       card.querySelector('audio').src=r.url;card.querySelector('.nm').textContent=r.naam+'.wav';
       card.querySelector('.dl').href=r.url;card.querySelector('.dl').setAttribute('download',r.naam+'.wav');
-      card.style.borderColor='var(--rand)';card.style.opacity='1';paintLijst();}}
+      card.style.borderColor='var(--rand)';card.style.opacity='1';paintLijst();idbPut(r);}}
   else{pushHist();S.fP[KP.Mode]=r.mode/4;sRoll(false);
     const[L,R]=sRender([{t:0,nt:Math.round(r.mode)===3?45:60,vel:0.85}],4);polish(L,R);
     const buf=AC.createBuffer(2,L.length,SR);buf.getChannelData(0).set(L);buf.getChannelData(1).set(R);
@@ -504,7 +531,20 @@ function redoOne(r,card){if(r.kind==='stapel'){if(buffers.length<2){st('eerst sh
     URL.revokeObjectURL(r.url);r.url=URL.createObjectURL(new Blob([r.ab],{type:'audio/wav'}));r.state=0;
     card.querySelector('audio').src=r.url;card.querySelector('.nm').textContent=r.naam+'.wav';
     card.querySelector('.dl').href=r.url;card.querySelector('.dl').setAttribute('download',r.naam+'.wav');
-    card.style.borderColor='var(--rand)';card.style.opacity='1';paintLijst();}}
+    card.style.borderColor='var(--rand)';card.style.opacity='1';paintLijst();idbPut(r);}}
+
+/* ---------- MORPH: twee sounds mengen — start klinkt als A, eindigt als B ---------- */
+function wavChans(ab){const v=new DataView(ab),n=(ab.byteLength-44)/4,L=new Float32Array(n),R=new Float32Array(n);
+  for(let i=0;i<n;i++){L[i]=v.getInt16(44+i*4,true)/32768;R[i]=v.getInt16(46+i*4,true)/32768;}return [L,R];}
+function doMorph(a,b){ensureAC();
+  const[aL,aR]=wavChans(a.ab),[bL,bR]=wavChans(b.ab),n=Math.min(aL.length,bL.length);
+  const L=new Float32Array(n),R=new Float32Array(n);
+  for(let i=0;i<n;i++){const w=i/(n-1); // 0→1: A morpht vloeiend naar B
+    const ease=w*w*(3-2*w);L[i]=aL[i]*(1-ease)+bL[i]*ease;R[i]=aR[i]*(1-ease)+bR[i]*ease;}
+  polish(L,R);
+  const buf=AC.createBuffer(2,n,SR);buf.getChannelData(0).set(L);buf.getChannelData(1).set(R);
+  resCard(`morph-${a.naam.split('-')[0]}-${b.naam.split('-')[0]}`,wavBytes(buf),'synth',a.mode??0);
+  st(`⚗ morph klaar: ${a.naam} → ${b.naam}`);}
 
 function midiNote(m){const N=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];return N[m%12]+(Math.floor(m/12)-1);}
 
@@ -856,6 +896,7 @@ $('tSynth').onclick=()=>{ $('tSynth').classList.add('on');$('tStapel').classList
   $('tabSynth').style.display='';$('tabStapel').style.display='none';
   if(!S.name){pushHist();sRoll(false);paintSliders();}};
 paintSliders();
+restoreRes();
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 </body>
