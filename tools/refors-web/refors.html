@@ -186,28 +186,33 @@ function auto(){
  setTimeout(()=>{
   const m=meet();
   if(!m){$('st').textContent='te weinig signaal om te meten';return}
-  let ruimte,afst,kamer,menigte,vol,waarom;
+  let ruimte,afst,kamer,menigte,vol,waarom,tip;
   if(m.d>2.5){ // bas-zwaar → auto-cabine verraadt sub-problemen direct
    ruimte=2; afst=15; kamer=60; menigte=0; vol=85;
    waarom='bas-zwaar → AUTO (cabine): daar hoor je als eerste of je sub klopt';
+   tip='Rammelt je sub? In G2B MASTER zet de TRAP-pill hem strak.';
   }else if(m.d<-2.5){ // dun/fel → goedkope oordopjes laten gescharrel horen
    ruimte=7; afst=0; kamer=40; menigte=0; vol=80;
    waarom='dun/fel → TIENTJE-oordopjes: zo horen de meeste kopers je track';
+   tip='Te dun? De LOFI- of POP-pill in G2B MASTER geeft direct warmte.';
   }else if(m.crest<6){ // platgedrukt → telefoon is de zwaarste test
    ruimte=3; afst=0; kamer=50; menigte=0; vol=90;
    waarom='weinig dynamiek → TELEFOON: overleeft je track daar, dan overleeft hij overal';
+   tip='Te plat? In G2B MASTER haalt minder GLUE je transiënten terug.';
   }else if(m.crest>11){ // erg dynamisch → festival ruimte
    ruimte=5; afst=30; kamer=70; menigte=25; vol=85;
    waarom='veel dynamiek → FESTIVAL: hoor of je rustige delen niet wegvallen';
+   tip='Mooi dynamisch! MASTER houdt dat vast en maakt-ie toch luid.';
   }else{ // gewone mix → club: zo klinkt-ie voor luisteraars in een ruimte
    ruimte=1; afst=35; kamer=70; menigte=25; vol=85;
    waarom='gemiddelde mix → CLUB op afstand: de echte-luisteraar test';
+   tip='Club-ready? Maak je track verkoopklaar in G2B MASTER.';
   }
   kiesRuimte(ruimte);
   P.afst=afst;P.kamer=kamer;P.menigte=menigte;P.vol=vol;
   for(const k of ['afst','kamer','menigte','vol'])$(k).value=Math.round(P[k]);
   toonWaardes(); update();
-  $('st').textContent='🤖 '+waarom;
+  $('st').textContent='🤖 '+waarom+' — '+tip;
  },30);
 }
 function zetAan(v){P.aan=v;$('bAan').textContent=v?'AAN':'UIT (bypass)';$('bAan').classList.toggle('go',v);update()}
