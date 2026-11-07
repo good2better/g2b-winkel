@@ -1422,6 +1422,21 @@
         "koop": "stapeldice-lite.html",
         "download": "stapeldice-lite.html"
       }
+    },
+    {
+      "id": "g2bpillpack",
+      "titel": "G2B PILL-PACK PRO — 5 premium genre-pills voor MASTER",
+      "soort": "plugin",
+      "beschrijving": "5 EXTRA SMAAK-PILLS voor je G2B MASTER: TECHNO (donker, club-punch) · DRUM&BASS (helder, snel, strak) · FILM (breed, cinematisch) · REGGAETON (warme dembow-punch) · AFRO (afrobeats/amapiano, percussief). Elke pill = plak-code voor de browser-tool + knopwaardes voor de VST — plakken en de knoppen staan gelijk goed. Werkt met AUTO: daarna stelt hij de pill fijn af op jouw track. PDF met alle codes + waardes.",
+      "prijs": "€ 9,95",
+      "links": {
+        "koop": "bestel.html?p=g2bpillpack",
+        "download": "bedankt.html?k=g2bpillpack"
+      },
+      "groep": "plugins",
+      "badge": "NIEUW",
+      "cover": "media/g2bpillpack-cover.png",
+      "download_dir": "d/g2bpillpack"
     }
   ]
 }
