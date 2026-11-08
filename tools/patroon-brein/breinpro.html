@@ -25,6 +25,11 @@ input[type=range]{width:110px;accent-color:var(--groen)}
 .lt{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer}
 .lt.muted{background:#4a1c1c;border-color:#a04040;color:#ffb0b0;opacity:.8}
 .lt.lockt{border-color:#e8c35a;color:#e8c35a}
+#as{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.aslaag{background:#1d2b1d;border:1px solid #3f5f3f;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:12px}
+.aslaag:hover{border-color:#7fd37f}
+.aslaag span{opacity:.7;margin-left:8px}
+.aslaag em{display:block;font-size:10px;opacity:.5;font-style:normal}
 .lt.only{background:var(--cyan);color:#04130b;border-color:var(--cyan)}
 .lgnm{color:var(--dim);font-size:11px;letter-spacing:1px;margin-right:2px}
 .kaart{background:var(--kaart);border:1px solid var(--rand);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13px;color:var(--dim)}
@@ -43,6 +48,7 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <button class="uit go" id="bPlay" onclick="speel()">▶ SPEEL</button>
 <button class="uit" onclick="genereer()">✨ GENEREER</button>
 <button class="uit" onclick="dice()">🎲 DICE</button>
+<button class="uit go" onclick="autoScore()">🤖 AUTO</button>
 <button class="uit" onclick="exportMid()">📥 exporteer .mid</button>
 <button class="uit" onclick="bounce()">🔊 bounce WAV</button>
 <button class="uit" onclick="document.body.classList.toggle('licht')">◐</button>
@@ -60,8 +66,10 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <div id="kitnav"><button class="uit" onclick="kitNav(-1)">◀</button><span class="naam" id="kitnaam">…</span><button class="uit" onclick="kitNav(1)">▶</button><span class="tel" id="kittel"></span></div>
 <div id="lagen"></div>
 <div id="grid"></div>
+<div class="kaart" id="raster2" hidden><b>BOUWVELD (raster 2)</b> — AUTO-SCORE vriest elke voltooide laag hier vast · klik een laag = solo horen:
+<div id="as"></div></div>
 <div class="kaart" id="info"></div>
-<div class="kaart"><b>zo werkt-ie:</b> kies een genre-pil → blader met ◀▶ door de kits die de app heeft geleerd · klik vakjes aan/uit · GENEREER muteert 1-2 stappen maar houdt je groove · DICE dobbelt alles opnieuw binnen je toonladder · <b>LAGEN:</b> klik laagnaam = mute, 🔒 = blijft staan bij GENEREER/DICE · SNARE/HAT/OHAT starten op mute (stabiel fundament) · ⚡ SLAG ONLY = juist alléén die drie · .mid is klaar voor je DAW (drums kanaal 10, melodie kanaal 1)</div>
+<div class="kaart"><b>zo werkt-ie:</b> kies een genre-pil → blader met ◀▶ door de kits die de app heeft geleerd · klik vakjes aan/uit · GENEREER muteert 1-2 stappen maar houdt je groove · DICE dobbelt alles opnieuw binnen je toonladder · <b>LAGEN:</b> klik laagnaam = mute, 🔒 = blijft staan bij GENEREER/DICE · SNARE/HAT/OHAT starten op mute (stabiel fundament) · ⚡ SLAG ONLY = juist alléén die drie · 🤖 AUTO = de auto-score: bouwt zelf in 3 fases een complete beat (melodie-basis → slag-laag) op het bouwveld · .mid is klaar voor je DAW (drums kanaal 10, melodie kanaal 1)</div>
 <div class="kaart"><b>verschillen:</b> de browser-versie blijft <b>gratis</b> — deze PRO combineert de app's geleerde kits met het browser-grid</div>
 <script>
 'use strict';const $=id=>document.getElementById(id);
@@ -254,6 +262,42 @@ function bounce(){ // render 1 maat offline met dezelfde mini-synth
   ri[i]=Math.max(-32768,Math.min(32767,Math.round(R[i]*32767)));}
  dl(wavBlob(li,ri,sr),'g2b-breinpro-loop.wav');
  $('st').textContent='🔊 WAV-loop gedownload — '+bpm+' bpm, naadloos loopbaar';}
+// ---------- AUTO-SCORE (bouwveld raster 2) ----------
+// fases zoals de blueprint: 1 melodie-basis zonder slag → vast op raster 2 →
+// 2 SLAG ONLY percussie → vast op raster 2 → 3 alles open = complete beat.
+let AS=[];
+function bouwRaster2(){
+ const el=$('raster2'),bx=$('as');if(!AS.length){el.hidden=true;return}
+ el.hidden=false;
+ bx.innerHTML=AS.map((l,i)=>`<div class="aslaag" onclick="asSolo(${i})"><b>${l.naam}</b><span>${l.n} noten</span><em>klik = solo hoor</em></div>`).join('');}
+function asSolo(i){
+ const l=AS[i],oudeM={...MUTE},oudeO=ONLY;
+ if(l.type==='mel'){ONLY=false;MUTE={SNARE:true,HAT:true,OHAT:true};}
+ else{ONLY=false;MUTE={KICK:true,MEL:true,SNARE:false,HAT:false,OHAT:false};for(const r of['SNARE','HAT','OHAT'])MUTE[r]=false;}
+ bouwLagen();bouwRaster();
+ if(!playing)speel();
+ const bpm=+$('bpm').value;
+ setTimeout(()=>{MUTE=oudeM;ONLY=oudeO;bouwLagen();bouwRaster();},60000/bpm*16+400);}
+function autoScore(){
+ if(playing)stopSpel();
+ $('st').textContent='🤖 AUTO fase 1/3 — melodie-basis zonder slag…';
+ MUTE={SNARE:true,HAT:true,OHAT:true};ONLY=false;LOCK={};
+ dice();
+ const basis={type:'mel',naam:'🎵 BASIS · kick + melodie',
+  n:G.mel.length+G.drums.KICK.reduce((a,b)=>a+b,0)};
+ AS=[basis];bouwRaster2();bouwLagen();bouwRaster();
+ setTimeout(()=>{
+  $('st').textContent='🤖 AUTO fase 2/3 — SLAG ONLY dobbelt percussie…';
+  ONLY=true;LOCK={KICK:true,MEL:true};dice();LOCK={};
+  const slag={type:'slag',naam:'🥁 SLAG · snare + hat + open-hat',
+   n:G.drums.SNARE.reduce((a,b)=>a+b,0)+G.drums.HAT.reduce((a,b)=>a+b,0)+G.drums.OHAT.reduce((a,b)=>a+b,0)};
+  AS.push(slag);bouwRaster2();bouwLagen();bouwRaster();
+  setTimeout(()=>{
+   ONLY=false;MUTE={};bouwLagen();bouwRaster();
+   $('st').textContent='🤖 AUTO klaar — complete beat op het bouwveld ↓ speelt nu';
+   if(!playing)speel();
+  },700);
+ },700);}
 function dl(b,name){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();}
 fetch('breinpro-kits.json').then(r=>r.json()).then(k=>{KITS=k;bouwUI();kiesGenre(Object.keys(k).find(g=>k[g].length));});
 </script></body></html>
