@@ -112,6 +112,7 @@
       <span>📞 <b id="roomcode">—</b></span>
       <span class="code" id="codetile" title="klik om link te kopieren">DEEL LINK</span>
       <span id="who" style="font-size:12px;opacity:.8"></span>
+      <button id="mutebtn" title="muziek aan/uit">🔊</button>
       <button id="leave">Verlaten</button>
     </div>
     <div class="grid" id="grid"></div>
@@ -196,6 +197,7 @@ let stream=null;
 function code(n=4){const c="ABCDEFGHJKMNPQRSTUVWXYZ23456789";let s="";for(let i=0;i<n;i++)s+=c[Math.floor(Math.random()*c.length)];return s}
 $("mk").onclick=()=>{state.naam=$("naam").value.trim()||"Speler";state.room=code();openPeer(HOSTP+state.room,true)};
 $("jn").onclick=()=>{state.naam=$("naam").value.trim()||"Speler";const c=$("code").value.trim().toUpperCase();if(c.length<3){toast("vul een kamer-code in");return}state.room=c;openPeer(null,false)};
+{const k=new URLSearchParams(location.search).get("k");if(k){$("code").value=k.toUpperCase();toast("deel-link gevonden — vul je naam in en klik Deelnemen")}}
 $("codetile").onclick=()=>{const u=location.origin+location.pathname+"?k="+state.room;navigator.clipboard?.writeText(u).then(()=>toast("link gekopieerd — stuur 'm naar je groep"))};
 async function openPeer(hostId,asHost){
   const aud={echoCancellation:true,noiseSuppression:true,autoGainControl:true};
@@ -203,7 +205,7 @@ async function openPeer(hostId,asHost){
   try{state.wakelock=await navigator.wakeLock.request("screen")}catch(e){}
   if(stream)$("me").srcObject=stream;
   state.isHost=asHost;
-  state.peer=new Peer(hostId||undefined,{debug:0});
+  state.peer=new Peer(hostId||undefined,{debug:0,config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"}]}});
   state.peer.on("open",id=>{state.myId=id;
     if(asHost){enterRoom()}
     else{state.hostConn=state.peer.connect(HOSTP+state.room,{reliable:true});
@@ -219,8 +221,13 @@ async function openPeer(hostId,asHost){
   document.addEventListener("visibilitychange",async()=>{if(document.visibilityState==="visible")try{state.wakelock=await navigator.wakeLock.request("screen")}catch(e){}});
 }
 document.querySelectorAll(".gcard:not(.dis)").forEach(c=>c.onclick=()=>{document.querySelectorAll(".gcard").forEach(x=>x.classList.remove("sel"));c.classList.add("sel");state.selGame=c.dataset.g});
+const lobbyMus=new Audio("belspel-lobby.mp3");lobbyMus.loop=true;lobbyMus.volume=.15;
+function fadeMus(to){const step=()=>{const v=lobbyMus.volume;if(Math.abs(v-to)>.02){lobbyMus.volume=Math.min(1,Math.max(0,v+(to>v?.02:-.02)));requestAnimationFrame(step)}else lobbyMus.volume=to};step()}
+$("mutebtn").onclick=()=>{lobbyMus.muted=!lobbyMus.muted;$("mutebtn").textContent=lobbyMus.muted?"🔇":"🔊"};
+function winChime(){try{const ac=new (window.AudioContext||window.webkitAudioContext)();[523,659,784].forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.type="triangle";g.gain.setValueAtTime(.14,ac.currentTime+i*.09);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+i*.09+.5);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+i*.09);o.stop(ac.currentTime+i*.09+.5)})}catch(e){}}
 function enterRoom(){
   $("home").classList.remove("on");$("room").classList.add("on");
+  lobbyMus.play().catch(()=>{});
   $("gamesel").value=state.selGame||"kaart";
   $("roomcode").textContent="kamer "+state.room;
   addTile(state.myId,state.naam+" (jij)",true,stream);
@@ -343,6 +350,7 @@ function startRound(){
 }
 function applyGame(d){
   if(d.act==="start"){
+    fadeMus(0);
     state.playing=true;state.spot=d.spot;state.game=d.game||"spot";state.card=d.card||null;state.woord=d.woord||"";state.lastStart=d;
     const g=state.game,card=state.card;
     const isRed=g==="kaart"&&card.type==="rood";
@@ -400,7 +408,8 @@ function applyGame(d){
     if(d.win)addMsg("","*** 🎉 "+(state.peers[d.win]?state.peers[d.win].name:"?")+" raadde het!"+(rev?(" Het was: "+rev):"")+" ***",false);
     else addMsg("","*** ⏱️ tijd om!"+(rev?(" Het was: "+rev):"")+" ***",false);
     showWin(d.win?(state.peers[d.win]?state.peers[d.win].name:"?")+" raadde het!":"⏱️ tijd om!",rev);
-    if(d.win)confetti();
+    if(d.win){confetti();winChime()}
+    fadeMus(.15);
   }
 }
 function endRound(winId){
