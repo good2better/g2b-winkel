@@ -1006,9 +1006,9 @@
       },
       "links": {
         "koop": "bestel.html?p=7fe03e5c",
-        "mp3": "bestel.html?p=7fe03e5c&t=mp3",
-        "wav": "bestel.html?p=7fe03e5c&t=wav",
-        "exclusief": "bestel.html?p=7fe03e5c&t=exclusief",
+        "mp3": "https://buy.stripe.com/aFafZhdba2HVcI72pL5J62L",
+        "wav": "https://buy.stripe.com/4gM28rdba6Yb7nN5BX5J62M",
+        "exclusief": "https://buy.stripe.com/6oU6oH5II4Q38rR4xT5J62N",
         "download": "bedankt.html?k=7fe03e5c"
       },
       "duur": 202.2,
