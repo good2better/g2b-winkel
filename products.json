@@ -42,7 +42,11 @@
       "video": "media/stapeldice-demo.mp4",
       "sub_nl": "media/stapeldice-demo.nl.vtt",
       "sub_es": "media/stapeldice-demo.es.vtt",
-      "uitgelicht": false
+      "uitgelicht": false,
+      "upsell": [
+        "stapeldicefull",
+        "g2bclub"
+      ]
     },
     {
       "id": "stapeldicefull",
@@ -1520,7 +1524,10 @@
       "badge": "GRATIS",
       "uitleg": "media/school1-uitleg.mp4",
       "sub_nl": "media/school1-uitleg.nl.vtt",
-      "sub_es": "media/school1-uitleg.es.vtt"
+      "sub_es": "media/school1-uitleg.es.vtt",
+      "upsell": [
+        "g2bclub"
+      ]
     },
     {
       "id": "g2bbd1",
@@ -1748,7 +1755,10 @@
       "uitleg": "media/drenlite-uitleg.mp4",
       "sub_nl": "media/drenlite-uitleg.nl.vtt",
       "sub_es": "media/drenlite-uitleg.es.vtt",
-      "preview": "media/drenlite-preview.mp3"
+      "preview": "media/drenlite-preview.mp3",
+      "upsell": [
+        "g2bdren"
+      ]
     },
     {
       "id": "ocholite",
@@ -1768,7 +1778,10 @@
       "uitleg": "media/ocholite-uitleg.mp4",
       "sub_nl": "media/ocholite-uitleg.nl.vtt",
       "sub_es": "media/ocholite-uitleg.es.vtt",
-      "preview": "media/ocholite-preview.mp3"
+      "preview": "media/ocholite-preview.mp3",
+      "upsell": [
+        "ocho01"
+      ]
     }
   ]
 }
