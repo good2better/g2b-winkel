@@ -1,0 +1,423 @@
+/*
+ * G2B Knip — UI (NanoVG): 5 draaiknoppen + preset-rij + live scope.
+ * Sleep = draaien, scroll = fijn, klik preset = knoppen goed zetten.
+ */
+
+#include "DistrhoUI.hpp"
+#include <cmath>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+
+// G2B skins (8 thema's): bg,pn,tx,gy,ed,GR,DG
+static const float G2BSK[8][7][3]={
+    {{13,15,14},{23,26,25},{232,236,234},{100,110,103},{42,47,45},{47,191,113},{29,122,72}},
+    {{14,14,22},{22,22,34},{230,232,255},{110,110,150},{40,40,58},{120,110,255},{70,60,170}},
+    {{10,20,22},{16,30,32},{225,245,245},{95,130,130},{30,55,55},{40,200,210},{20,120,130}},
+    {{24,14,20},{34,20,28},{250,230,240},{150,105,125},{60,38,50},{255,110,180},{180,60,120}},
+    {{228,230,232},{240,242,244},{30,34,38},{105,112,118},{205,210,214},{40,140,100},{20,100,70}},
+    {{18,10,10},{28,16,16},{240,225,220},{140,100,95},{55,35,32},{200,80,60},{130,45,35}},
+    {{14,14,10},{22,22,16},{245,240,220},{120,115,95},{50,48,35},{230,190,80},{160,125,45}},
+    {{12,14,20},{20,24,32},{235,240,250},{105,115,135},{36,44,58},{80,160,255},{45,110,200}}};
+static const char* G2BSKN[8]={"MELIOR","SPECTRUM","LAGOON","CANDY","GHOST","MAROON","GOLD","STUDIO"};
+static inline Color g2bsk(int sk,int r){if(sk<0)sk=0;if(sk>7)sk=7;const float*c=G2BSK[sk][r];return Color((int)c[0],(int)c[1],(int)c[2]);}
+
+START_NAMESPACE_DISTRHO
+
+static const int kNumPrograms = 17;
+static const char* kProgramNames[kNumPrograms] = {
+    "G2B","DEMBOW","DRILL","RNB","HOUSE","AFRO","TRAP","BOOM","UKG","JERSEY","BOUNCE","SOUL","LOFI","FUNK","REGGAE","DANCE","KAW"
+};
+
+// spiegel van kPresetParams uit de DSP — UI pusht de knopwaarden zelf
+// (JACK-standalone heeft geen DSP->UI terugweg)
+static const float kUiPresetParams[17][7] = {
+    {0.f,0.f,0.f,+1.f, 1.1f,0.15f,0.f},   // G2B
+    {+1.f,+1.f,0.f,+0.5f, 1.0f,0.20f,0.f},// DEMBOW
+    {+2.f,0.f,-0.5f,+1.f, 1.0f,0.25f,0.f},// DRILL
+    {0.f,+0.5f,+1.f,+1.f, 1.15f,0.10f,0.f},// RNB
+    {0.f,-0.5f,+1.f,+1.5f,1.2f,0.15f,0.f},// HOUSE
+    {+1.f,0.f,+0.5f,+1.f, 1.1f,0.20f,0.f},// AFRO
+    {+2.f,0.f,-0.5f,+0.5f,1.0f,0.30f,0.f}, // TRAP
+    {0.f,+1.f,+0.5f,+1.f, 1.05f,0.18f,0.f},// BOOM
+    {0.f,-0.5f,+1.f,+1.5f,1.25f,0.15f,0.f},// UKG
+    {+1.f,0.f,+0.5f,+1.f, 1.15f,0.20f,0.f},// JERSEY
+    {0.f,+0.5f,+1.f,+1.f, 1.15f,0.18f,0.f},// BOUNCE
+    {0.f,+1.f,+0.5f,+1.5f,1.1f,0.10f,0.f}, // SOUL
+    {0.f,+0.5f,0.f,+0.5f, 0.95f,0.22f,0.f},// LOFI
+    {+0.5f,0.f,+1.f,+1.f, 1.1f,0.20f,0.f}, // FUNK
+    {+1.f,+0.5f,+0.5f,+1.f,1.05f,0.15f,0.f},// REGGAE
+    {0.f,-0.5f,+1.f,+2.f, 1.25f,0.15f,0.f},// DANCE
+    {+1.f,0.f,+0.5f,+1.f, 1.1f,0.18f,0.f} // KAWINA
+};
+// slimme dobbelsteen: producer-ranges + slotjes om knoppen vast te zetten
+static const int kDiceN = 6;
+static const float kDiceLo[kDiceN] = {-1.6f,-2.f,-2.f,-1.6f,0.6f,0.f};
+static const float kDiceHi[kDiceN] = { 2.4f, 2.f, 2.f, 2.4f,1.4f,0.5f};
+
+class BandenUI : public UI
+{
+public:
+    BandenUI() : UI(DISTRHO_UI_DEFAULT_WIDTH, DISTRHO_UI_DEFAULT_HEIGHT)
+    {
+        loadSharedResources();
+        static const float mins[9]  = {-12,-12,-12,-12,0,0,-24,0,0};
+        static const float maxs[9]  = {12,12,12,12,2,1,12,26,100};
+        static const float defs[9]  = {0,0,0,0,1.0f,0.15f,0,9,100};
+        static const char* lbl[9]   = {"SUB","LAAG","MID","AIR","WIDTH","DRIVE","OUTPUT","GALAXY","KRACHT"};
+        static const char* unt[9]   = {"dB","dB","dB","dB","x","%","dB","","%"};
+        std::memcpy(fMin, mins, sizeof(mins));
+        std::memcpy(fMax, maxs, sizeof(maxs));
+        std::memcpy(fValue, defs, sizeof(defs));
+        std::memcpy(fLabel, lbl, sizeof(lbl));
+        std::memcpy(fUnit, unt, sizeof(unt));
+        std::memset(fScope, 0, sizeof(fScope));
+        fScopePos = 0; fDrag = -1; fLastY = 0.0f; fProg = -1;
+    }
+
+protected:
+    void parameterChanged(uint32_t index, float value) override
+    {
+        if (index < 7) fValue[index] = value;
+        else if (index == 7) fListenState = value;
+        else if (index == 8) fValue[7] = value;   // GALAXY
+        else if (index == 10) { fProg = (int)(value + 0.5f); if (fProg<0) fProg=0; if (fProg>16) fProg=16; for (int p = 0; p < 7; ++p) fValue[p] = kUiPresetParams[fProg][p]; }
+        else if (index == 11) fOn = value;         // AAN/UIT
+        else if (index == 12) fValue[8] = value;   // KRACHT
+        repaint();
+    }
+
+    void stateChanged(const char* key, const char* value) override
+    {
+        if (std::strcmp(key, "scope") == 0)
+        {
+            const char* p = value;
+            while (*p != '\0')
+            {
+                char* end = nullptr;
+                const float v = std::strtof(p, &end);
+                if (end == p) break;
+                fScope[fScopePos] = v;
+                fScopePos = (fScopePos + 1) % kScopeSize;
+                p = (*end == ';') ? end + 1 : end;
+            }
+            repaint();
+        }
+    }
+
+    void onNanoDisplay() override
+    {
+        const float W = getWidth(), H = getHeight();
+        beginPath(); rect(0, 0, W, H); fillColor(g2bsk(fLight,0)); fill();
+
+        fontSize(20.0f); textAlign(ALIGN_LEFT | ALIGN_MIDDLE);
+        fillColor(47, 191, 113);
+        text(18.0f, 22.0f, "G2B BANDEN", nullptr);
+        fontSize(10.0f); fillColor(143, 160, 152);
+        text(76.0f, 53.0f, "sub/laag/mid/air + breedte + drive — één draai per band", nullptr);
+
+        // preset-knoppen (2 rijen rechtsboven — alle 17 zichtbaar)
+        for (int i = 0; i < kNumPrograms; ++i)
+        {
+            const int row = i < 9 ? 0 : 1, col = i < 9 ? i : i - 9;
+            const int nin = row == 0 ? 9 : 8;
+            const float bw = 52.0f, bh = 15.0f, gap = 4.0f;
+            const float rowW = nin * bw + (nin - 1) * gap;
+            const float bx = W - 14.0f - rowW + col * (bw + gap);
+            const float by = row == 0 ? 12.0f : 31.0f;
+            const bool on = (i == fProg);
+            beginPath(); roundedRect(bx, by, bw, bh, 4.0f);
+            if (on) { fillColor(29, 122, 72); fill(); }
+            strokeColor(42, 47, 45); strokeWidth(1.0f); stroke();
+            fontSize(10.0f); textAlign(ALIGN_CENTER | ALIGN_MIDDLE);
+            fillColor(on ? Color(232, 236, 234) : Color(143, 160, 152));
+            text(bx + bw * 0.5f, by + bh * 0.5f, kProgramNames[i], nullptr);
+        }
+
+        // scope (onder presets)
+        const float sx = 18.0f, sy = 58.0f, sw = W - 36.0f, sh = 44.0f;
+        beginPath(); rect(sx, sy, sw, sh);
+        fillColor(8, 10, 9); fill();
+        strokeColor(42, 47, 45); strokeWidth(1.0f); stroke();
+        beginPath();
+        const float mid = sy + sh * 0.5f;
+        for (int i = 0; i < kScopeSize - 1; ++i)
+        {
+            const int i0 = (fScopePos + i) % kScopeSize;
+            const int i1 = (fScopePos + i + 1) % kScopeSize;
+            const float x0 = sx + (float)i / (kScopeSize - 1) * sw;
+            const float x1 = sx + (float)(i + 1) / (kScopeSize - 1) * sw;
+            float y0 = mid - fScope[i0] * sh * 0.45f;
+            float y1 = mid - fScope[i1] * sh * 0.45f;
+            if (y0 < sy + 1) y0 = sy + 1; if (y0 > sy + sh - 1) y0 = sy + sh - 1;
+            if (y1 < sy + 1) y1 = sy + 1; if (y1 > sy + sh - 1) y1 = sy + sh - 1;
+            if (i == 0) moveTo(x0, y0); else lineTo(x0, y0);
+            lineTo(x1, y1);
+        }
+        strokeColor(47, 191, 113); strokeWidth(1.5f); stroke();
+
+        // 5 knoppen
+        const int n = 9;
+        const float step = (W - 40.0f) / n;
+        for (int i = 0; i < n; ++i)
+        {
+            const float cx = 20.0f + step * (i + 0.5f);
+            const float cy = 175.0f;
+            const float R  = 24.0f;
+            const float norm = (fValue[i] - fMin[i]) / (fMax[i] - fMin[i]);
+            const float ang = -2.4f + norm * 4.8f;
+
+            beginPath(); circle(cx, cy, R);
+            fillColor(30, 34, 33); fill();
+            strokeColor(42, 47, 45); strokeWidth(2.0f); stroke();
+
+            static const unsigned char kCol[9][3] = {
+                {226,80,80},   // SUB    — rood
+                {242,155,42},  // LAAG   — oranje
+                {47,191,113},  // MID    — groen
+                {66,135,245},  // AIR    — blauw
+                {150,90,230},  // WIDTH  — paars
+                {235,205,60},  // DRIVE  — amber
+                {160,170,164}, // OUTPUT — grijs
+                {120,220,235}, // GALAXY — cyaan
+                {245,120,160}  // KRACHT — roze
+            };
+            beginPath();
+            arc(cx, cy, R - 4.0f, -2.4f - 1.5708f, ang - 1.5708f, CW);
+            strokeColor(kCol[i][0], kCol[i][1], kCol[i][2]); strokeWidth(3.0f); stroke();
+
+            beginPath();
+            moveTo(cx, cy);
+            lineTo(cx + std::sin(ang) * (R - 8.0f),
+                   cy - std::cos(ang) * (R - 8.0f));
+            strokeColor(232, 236, 234); strokeWidth(3.0f); stroke();
+
+            fontSize(10.5f); fillColor(kCol[i][0], kCol[i][1], kCol[i][2]);
+            textAlign(ALIGN_CENTER | ALIGN_TOP);
+            text(cx, cy + R + 8.0f, fLabel[i], nullptr);
+            fontSize(12.0f); fillColor(232, 236, 234);
+            char buf[24];
+            std::snprintf(buf, sizeof(buf), "%.1f %s", fValue[i], fUnit[i]);
+            text(cx, cy + R + 23.0f, buf, nullptr);
+
+            // slotje: zet deze knop vast zodat de dobbelsteen hem overslaat
+            if (i <= 6)
+            {
+                beginPath(); rect(cx + R - 7.0f, cy - R - 3.0f, 9.0f, 9.0f);
+                fillColor(fLocked[i] ? Color(0, 220, 255) : Color(85, 92, 88));
+                fill();
+            }
+        }
+
+        fontSize(10.5f); fillColor(90, 100, 94);
+        textAlign(ALIGN_CENTER | ALIGN_BOTTOM);
+        text(W * 0.5f, H - 8.0f,
+             "klik een preset = knoppen staan gelijk goed — sleep = draaien", nullptr);
+
+        {
+            float bx2 = 14.0f;
+            beginPath(); roundedRect(bx2, 48.0f, 26.0f, 17.0f, 4.0f);
+            fillColor(g2bsk(fLight,1)); fill();
+            strokeColor(42,47,45); strokeWidth(1.0f); stroke();
+            fontSize(11.0f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            fillColor(g2bsk(fLight,2));
+            text(bx2+13.0f, 56.5f, "\xF0\x9F\x8E\xB2", nullptr);
+            beginPath(); roundedRect(44.0f, 48.0f, 34.0f, 17.0f, 4.0f);
+            fillColor(g2bsk(fLight,1)); fill();
+            strokeColor(42,47,45); strokeWidth(1.0f); stroke();
+            fontSize(10.0f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            fillColor(g2bsk(fLight,fLight==4?2:5));
+            text(61.0f, 56.5f, "\xF0\x9F\xA7\xA0", nullptr);
+            {   // status-dot: groen=AL GOED · wit=aangepast · amber=heet-signaal
+                float st=fListenState;
+                if(st>0.2f){
+                    if(st>0.6f) fillColor(235,205,60);       // heet
+                    else if(st<0.4f) fillColor(232,236,234); // aangepast
+                    else fillColor(47,191,113);              // AL GOED
+                    beginPath(); arc(75.0f, 52.5f, 3.0f, 0.f, 6.2832f, CW); fill();
+                }
+            }
+            const float tx = W - 40.0f;
+            beginPath(); roundedRect(tx, 34.0f, 26.0f, 17.0f, 4.0f);
+            fillColor(g2bsk(fLight,1)); fill();
+            strokeColor(42,47,45); strokeWidth(1.0f); stroke();
+            fontSize(10.0f);
+            text(tx+13.0f, 42.5f, fLight>0 ? "\xF0\x9F\x8C\x99" : "\xE2\x98\x80", nullptr);
+        }
+
+        // AAN/UIT-knop (rechtsboven, naast thema-knop)
+        {
+            const bool aan = fOn > 0.5f;
+            beginPath(); roundedRect(W - 96.0f, 33.0f, 52.0f, 18.0f, 9.0f);
+            fillColor(aan ? g2bsk(fLight,5) : g2bsk(fLight,1)); fill();
+            strokeColor(42,47,45); strokeWidth(1.0f); stroke();
+            fontSize(10.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            fillColor(aan ? g2bsk(fLight,0) : g2bsk(fLight,2));
+            text(W - 70.0f, 42.0f, aan ? "AAN" : "UIT", nullptr);
+        }
+    }
+
+    bool onMouse(const MouseEvent& ev) override
+    {
+        if (ev.button != 1) return false;
+        const float W = getWidth();
+        // preset-klik?
+        if (ev.press)
+        {
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= W-96.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-44.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 33.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
+            { fOn = fOn>0.5f?0.f:1.f; spv(11, fOn); repaint(); return true; }
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 40.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 48.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 65.0f)
+            { rollUiDice(); return true; }
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= 44.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 78.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 48.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 65.0f)
+            { spv(7, 1.0f); repaint(); return true; }
+            if ((float)(ev.pos.getX()/getScaleFactor()) >= W-40.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-14.0f &&
+                (float)(ev.pos.getY()/getScaleFactor()) >= 34.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
+            { fLight = (fLight+1)%8; repaint(); return true; }
+
+            {
+                for (int i = 0; i < kNumPrograms; ++i)
+                {
+                    const int row = i < 9 ? 0 : 1, col = i < 9 ? i : i - 9;
+                    const int nin = row == 0 ? 9 : 8;
+                    const float bw = 52.0f, bh = 15.0f, gap = 4.0f;
+                    const float rowW = nin * bw + (nin - 1) * gap;
+                    const float bx = W - 14.0f - rowW + col * (bw + gap);
+                    const float by = row == 0 ? 12.0f : 31.0f;
+                    if ((float)(ev.pos.getX()/getScaleFactor()) >= bx && (float)(ev.pos.getX()/getScaleFactor()) <= bx + bw &&
+                        (float)(ev.pos.getY()/getScaleFactor()) >= by && (float)(ev.pos.getY()/getScaleFactor()) <= by + bh)
+                    {
+                        for (int p = 0; p < 7; ++p) spv(p, kUiPresetParams[i][p]);
+                        spv(10, (float)i);
+                        fProg = i;
+                        repaint();
+                        return true;
+                    }
+                }
+            }
+        }
+        // slotjes eerst: klik op het blauwe/grijze vierkantje = knop vastzetten
+        if (ev.press)
+        {
+            const float stepl = (W - 40.0f) / 9;
+            for (int i = 0; i <= 6; ++i)
+            {
+                const float cx = 20.0f + stepl * (i + 0.5f);
+                const float lx = cx + 24.0f - 9.0f, ly = 175.0f - 24.0f - 5.0f;
+                const float ex = (float)(ev.pos.getX()/getScaleFactor());
+                const float ey = (float)(ev.pos.getY()/getScaleFactor());
+                if (ex >= lx && ex <= lx + 12.0f && ey >= ly && ey <= ly + 12.0f)
+                { fLocked[i] = !fLocked[i]; repaint(); return true; }
+            }
+        }
+        const float step = (W - 40.0f) / 9;
+        if (ev.press)
+        {
+            for (int i = 0; i < 9; ++i)
+            {
+                const float cx = 20.0f + step * (i + 0.5f);
+                const float cy = 175.0f;
+                const float dx = (float)(ev.pos.getX()/getScaleFactor()) - cx;
+                const float dy = (float)(ev.pos.getY()/getScaleFactor()) - cy;
+                if (dx*dx + dy*dy <= 28.0f*28.0f + 80.0f)
+                {
+                    fDrag = i; fLastY = (float)(ev.pos.getY()/getScaleFactor());
+                    editParameter(i < 7 ? i : (i == 7 ? 8 : 12), true);
+                    return true;
+                }
+            }
+        }
+        else if (fDrag >= 0)
+        {
+            editParameter(fDrag < 7 ? fDrag : (fDrag == 7 ? 8 : 12), false);
+            fDrag = -1;
+        }
+        return true;
+    }
+
+    bool onMotion(const MotionEvent& ev) override
+    {
+        if (fDrag < 0) return false;
+        const float dy = fLastY - (float)(ev.pos.getY()/getScaleFactor());
+        fLastY = (float)(ev.pos.getY()/getScaleFactor());
+        const float range = fMax[fDrag] - fMin[fDrag];
+        float v = fValue[fDrag] + dy * range / 200.0f;
+        if (v < fMin[fDrag]) v = fMin[fDrag];
+        if (v > fMax[fDrag]) v = fMax[fDrag];
+        fValue[fDrag] = v;
+        spv(fDrag < 7 ? fDrag : (fDrag == 7 ? 8 : 12), v);
+        repaint();
+        return true;
+    }
+
+    bool onScroll(const ScrollEvent& ev) override
+    {
+        const float W = getWidth();
+        const float step = (W - 40.0f) / 9;
+        for (int i = 0; i < 9; ++i)
+        {
+            const float cx = 20.0f + step * (i + 0.5f);
+            const float cy = 175.0f;
+            const float dx = (float)(ev.pos.getX()/getScaleFactor()) - cx;
+            const float dy = (float)(ev.pos.getY()/getScaleFactor()) - cy;
+            if (dx*dx + dy*dy <= 28.0f*28.0f + 80.0f)
+            {
+                const float range = fMax[i] - fMin[i];
+                float v = fValue[i] + ev.delta.getY() * range / 100.0f;
+                if (v < fMin[i]) v = fMin[i];
+                if (v > fMax[i]) v = fMax[i];
+                fValue[i] = v;
+                editParameter(i < 7 ? i : (i == 7 ? 8 : 12), true);
+                spv(i < 7 ? i : (i == 7 ? 8 : 12), v);
+                editParameter(i < 7 ? i : (i == 7 ? 8 : 12), false);
+                repaint();
+                return true;
+            }
+        }
+        return true;
+    }
+
+private:
+    static const int kScopeSize = 256;
+    float fValue[9], fMin[9], fMax[9];
+    const char* fLabel[9]; float fListenState=0;
+    const char* fUnit[9];
+    float fOn = 1.f;
+    float fScope[kScopeSize];
+    int fScopePos;
+    int fDrag;
+    float fLastY;
+    int fProg;
+    int fLight = 0;
+    bool fLocked[16] = {};
+    unsigned fRndUi = 0x2b7e1516u;
+
+    // slimme dobbelsteen: muzikale ranges, gelockte knoppen overslaan,
+    // DRIVE omhoog -> OUTPUT automatisch wat omlaag (compensatie)
+    void rollUiDice()
+    {
+        for (int p = 0; p < kDiceN; ++p)
+        {
+            if (fLocked[p]) continue;
+            fRndUi = fRndUi * 1664525u + 1013904223u;
+            const float v = kDiceLo[p] + ((fRndUi >> 8) % 1000) / 1000.0f * (kDiceHi[p] - kDiceLo[p]);
+            fValue[p] = v;
+            spv(p, v);
+        }
+        if (!fLocked[6])
+        {
+            fValue[6] = -(fValue[5] * 6.0f);
+            spv(6, fValue[6]);
+        }
+        repaint();
+    }
+
+    void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
+    DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BandenUI)
+};
+
+UI* createUI() { return new BandenUI(); }
+
+END_NAMESPACE_DISTRHO
