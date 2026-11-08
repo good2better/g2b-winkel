@@ -231,13 +231,13 @@
   },
   {
    "id": "g2bclub",
-   "titel": "G2B CLUB — alle browser-tools, voor altijd",
-   "prijs": "€ 49",
-   "badge": "NIEUW",
+   "titel": "G2B CLUB — abonnement: alle browser-tools volledig",
+   "prijs": "€ 4,95/mnd",
+   "badge": "ABONNEMENT",
    "groep": "apps",
    "soort": "digitaal",
    "cover": "apps-img/winkel.jpg",
-   "beschrijving": "Eénmalig lid, voor altijd. Krijg je eigen toegangscode voor de G2B CLUB leden-pagina: alle browser-tools in één overzicht — Beat Maker, GAW MINI, OCHO, BEST-OF, BAND, GELUID→MIDI, MIXER v2, STAPEL-DICE, GAME-FABRIEK MINI, alle spellen en apps. Werkt 100% in je browser, niks installeren, en elke nieuwe tool die eraan komt krijg je er gratis bij.",
+   "beschrijving": "CLUB-ABONNEMENT — alle browser-tools volledig + exports: Beat Maker PRO, BREIN PRO, GIM BASSI, GAW MINI, MIXER, MASTER, MENGER, REFORS en meer. Nieuwe tools komen er automatisch bij. Exclusief VST-downloads en Giorgio's privé- en GIO-versies. Maandelijks opzegbaar.",
    "links": {
     "stripe": "https://buy.stripe.com/5kQ9AT5II96jazZd4p5J61C",
     "download": "bedankt.html?k=g2bclub",
