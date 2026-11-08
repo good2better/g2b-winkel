@@ -38,6 +38,25 @@
    "video": "media/stapeldice-demo.mp4",
    "sub_nl": "media/stapeldice-demo.nl.vtt",
    "sub_es": "media/stapeldice-demo.es.vtt",
+   "uitgelicht": false
+  },
+  {
+   "id": "stapeldicefull",
+   "titel": "G2B STAPEL-DICE — stapel shots + dobbel synth-sounds",
+   "prijs": "€ 14,95",
+   "badge": "NIEUW",
+   "groep": "apps",
+   "soort": "digitaal",
+   "cover": "media/stapeldicelite-cover.png",
+   "beschrijving": "2-in-1 browsertool (werkt offline): 🎲 STAPEL laagt je one-shots tot nieuwe sounds (stemming, fase-fix, dubbel, lock, 🎲5x batch, wav-export) én 🎹 DICE-SYNTH — dobbel synth-sounds in 5 modi met slotjes, mutate en undo, speel op je keyboard, alles download je als .wav. PROMPT-MAKER: typ je geluid ('donkere techno kick') en hij dobbelt de juiste synth-setting.",
+   "links": {
+    "stripe": "https://buy.stripe.com/cNi7sL0ooberfUj8O95J61w",
+    "download": "bedankt.html?k=stapeldicefull",
+    "browser": "stapeldice-koop.html"
+   },
+   "video": "media/stapeldice-demo.mp4",
+   "sub_nl": "media/stapeldice-demo.nl.vtt",
+   "sub_es": "media/stapeldice-demo.es.vtt",
    "uitgelicht": true
   },
   {
