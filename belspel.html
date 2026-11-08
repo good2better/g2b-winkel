@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G2B BEL+SPEL — bellen en spelen met je groep</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>
+  :root{--grn:#075E54;--grn2:#128C7E;--grn3:#25D366;--lgt:#DCF8C6;--bg:#ECE5DD;--ink:#111;}
+  *{box-sizing:border-box;margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif}
+  body{background:var(--bg);color:var(--ink);height:100vh;overflow:hidden}
+  .scr{display:none;height:100vh;flex-direction:column}
+  .scr.on{display:flex}
+  header{background:var(--grn);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px}
+  header h1{font-size:19px;font-weight:600}
+  .logo{width:34px;height:34px;border-radius:50%;background:var(--grn3);display:flex;align-items:center;justify-content:center;font-size:18px}
+  #home .box{margin:auto;max-width:420px;width:92%;background:#fff;border-radius:14px;padding:26px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+  #home h2{color:var(--grn);font-size:20px;margin-bottom:6px}
+  #home p.sub{color:#667;font-size:13px;margin-bottom:18px}
+  input[type=text]{width:100%;padding:12px 14px;border:2px solid #ddd;border-radius:10px;font-size:15px;margin-bottom:12px;outline:none}
+  input[type=text]:focus{border-color:var(--grn2)}
+  .btn{display:block;width:100%;padding:13px;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;transition:.15s}
+  .btn-g{background:var(--grn3);color:#fff}.btn-g:hover{background:#1fba55}
+  .btn-o{background:#fff;color:var(--grn);border:2px solid var(--grn2)}
+  .btn-o:hover{background:#f0faf5}
+  .btn:disabled{opacity:.4;cursor:default}
+  .deli{display:flex;gap:8px;align-items:center;color:#999;font-size:12px;margin:6px 0 12px}
+  .deli hr{flex:1;border:none;border-top:1px solid #e5e5e5}
+  #room{flex-direction:row}
+  .stage{flex:1;display:flex;flex-direction:column;min-width:0;background:#0b141a}
+  .topbar{background:var(--grn);color:#fff;padding:10px 14px;display:flex;align-items:center;gap:12px;font-size:14px}
+  .topbar .code{background:rgba(255,255,255,.15);padding:3px 10px;border-radius:8px;font-weight:700;letter-spacing:2px;cursor:pointer}
+  .topbar button{margin-left:auto;background:rgba(255,255,255,.18);border:none;color:#fff;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px}
+  .grid{flex:1;display:grid;gap:10px;padding:12px;overflow:auto;align-content:center;justify-items:center;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .tile{position:relative;width:100%;max-width:420px;aspect-ratio:4/3;background:#1c2833;border-radius:12px;overflow:hidden;border:3px solid transparent}
+  .tile video{width:100%;height:100%;object-fit:cover;background:#000}
+  .tile .nm{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.55);color:#fff;font-size:12px;padding:3px 9px;border-radius:8px}
+  .tile .scr3{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);color:#ffd54a;font-size:12px;padding:3px 9px;border-radius:8px;font-weight:700}
+  .tile.spot{border-color:#ffd54a;box-shadow:0 0 22px #ffd54a;animation:puls 1.2s infinite}
+  @keyframes puls{50%{box-shadow:0 0 34px #ffe98a}}
+  .tile .blind{position:absolute;inset:0;background:rgba(11,20,26,.92);display:flex;align-items:center;justify-content:center;color:#ffd54a;font-size:15px;font-weight:700;text-align:center;padding:12px}
+  .gbar{background:#111b21;padding:12px 14px;display:flex;align-items:center;gap:12px;color:#fff;flex-wrap:wrap}
+  .woord{background:var(--lgt);color:#111;font-size:17px;font-weight:700;padding:8px 16px;border-radius:10px}
+  .geheim{background:#2a3942;color:#8aa;padding:8px 16px;border-radius:10px;font-size:13px}
+  .timer{flex:1;min-width:120px;height:8px;background:#2a3942;border-radius:6px;overflow:hidden}
+  .timer i{display:block;height:100%;background:var(--grn3);width:100%;transition:width .5s linear}
+  .gbar .btn{width:auto;margin:0;padding:9px 16px;font-size:14px}
+  .btn-y{background:#ffd54a;color:#111}
+  aside{width:320px;background:#fff;display:flex;flex-direction:column;border-left:1px solid #ddd}
+  aside h3{background:var(--grn2);color:#fff;padding:10px 14px;font-size:14px}
+  #chatlog{flex:1;overflow:auto;padding:10px;display:flex;flex-direction:column;gap:6px}
+  .msg{max-width:82%;padding:7px 11px;border-radius:9px;font-size:13px;line-height:1.35;word-break:break-word}
+  .msg.me{align-self:flex-end;background:var(--lgt);border-bottom-right-radius:2px}
+  .msg.ot{align-self:flex-start;background:#f1f1f1;border-bottom-left-radius:2px}
+  .msg .w{display:block;font-size:10px;color:#888;margin-bottom:2px;font-weight:700}
+  .msg.sys{align-self:center;background:#fdf3c0;color:#6b5d0f;font-size:11px;border-radius:12px;padding:4px 12px}
+  .msg.gold{background:#ffd54a;font-weight:700;align-self:center;border-radius:12px;padding:8px 14px;font-size:13px}
+  .chatin{display:flex;padding:8px;gap:8px;border-top:1px solid #eee}
+  .chatin input{flex:1;margin:0;padding:10px 12px;border-radius:20px;border:1px solid #ddd}
+  .chatin button{background:var(--grn3);border:none;color:#fff;width:42px;border-radius:50%;cursor:pointer;font-size:17px}
+  @media(max-width:760px){aside{position:fixed;right:0;top:0;bottom:0;width:82%;z-index:5;transform:translateX(100%);transition:.2s}aside.open{transform:none}}
+  .fab{display:none;position:fixed;right:14px;bottom:14px;background:var(--grn3);color:#fff;border:none;width:52px;height:52px;border-radius:50%;font-size:22px;z-index:6;cursor:pointer}
+  @media(max-width:760px){.fab{display:block}}
+  .toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;z-index:9;opacity:0;transition:.3s;pointer-events:none}
+  .toast.on{opacity:.94}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<section id="home" class="scr on">
+  <header><div class="logo">📞</div><h1>G2B BEL+SPEL</h1></header>
+  <div class="box">
+    <h2>Bellen en spelen met je groep</h2>
+    <p class="sub">Gratis · geen account · video + chat + het spel <b>SPOTLIGHT!</b> erin. Deel de link, speel direct.</p>
+    <input type="text" id="naam" placeholder="Jouw naam" maxlength="20">
+    <button class="btn btn-g" id="mk">▶ Nieuwe kamer starten</button>
+    <div class="deli"><hr>of<hr></div>
+    <input type="text" id="code" placeholder="Kamer-code (bijv. ABCD)" maxlength="6" style="text-transform:uppercase">
+    <button class="btn btn-o" id="jn">Deelnemen aan kamer</button>
+  </div>
+</section>
+<section id="room" class="scr">
+  <div class="stage">
+    <div class="topbar">
+      <span>📞 <b id="roomcode">—</b></span>
+      <span class="code" id="codetile" title="klik om link te kopieren">DEEL LINK</span>
+      <span id="who" style="font-size:12px;opacity:.8"></span>
+      <button id="leave">Verlaten</button>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="gbar">
+      <span style="font-size:13px;color:#8aa">🎯 SPOTLIGHT!</span>
+      <span id="woordbox" class="geheim">druk START om te spelen</span>
+      <div class="timer"><i id="tbar"></i></div>
+      <button class="btn btn-g" id="startbtn">▶ START</button>
+      <button class="btn btn-y" id="goedbtn" disabled>✔ GOED GERADEN</button>
+    </div>
+  </div>
+  <aside id="chatside">
+    <h3>💬 Chat</h3>
+    <div id="chatlog"></div>
+    <div class="chatin"><input type="text" id="chatin" placeholder="Typ een bericht…" maxlength="300"><button id="chatsend">➤</button></div>
+  </aside>
+  <button class="fab" id="chatfab">💬</button>
+</section>
+<video id="me" autoplay muted playsinline style="display:none"></video>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const toast=t=>{const e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),2400)};
+const HOSTP="g2b-belspel-v1-";
+const WOORDEN=["een dansende aap","robot die pizza bakt","Sinterklaas op een surfplank","een muis die karate doet","oma op de skateboard","een kip die dirigeert","elfje dat belasting invult","piraat met angst voor water","penguin in pak","draak met verkoudheid","tovenaar die zijn staf kwijt is","clown op de fiets","viking in de keuken","astronaut op de boerderij","zombie op school","een kat die taxichauffeur is","superheld die zijn cape verliest","robot op vakantie","sneeuwpop in de sauna","cowboy op een zebrapad","een beer die borduurt","koning zonder kroon","ballerina op het ijs","spook dat zich verstopt","reus in een miniatuurhuis","hond die koffie drinkt","papegaai die nieuws leest","giraf in een auto","wolf met een slaapmasker","alien die friet bestelt","danser op een trampoline","tovenaar met pech","ridder op een step","visser in de woestijn","muzikant zonder instrument","chef die alles verbrandt","baby als baas","duiker in de badkuip","slang met een hoed","hamster op marathon","spin die web designer is","vampier met tandpijn","prinses op de bouwplaats","tijger die verstopt speelt","olifant in een lift","agent die ijs uitdeelt","heks op de scooter","marsmannetje in de supermarkt","goochelaar die zichzelf verdwijnt"];
+const state={peer:null,myId:null,naam:"",room:"",isHost:false,conns:{},calls:{},peers:{},spot:null,woord:"",tLeft:0,tInt:null,scores:{},playing:false};
+let stream=null;
+function code(n=4){const c="ABCDEFGHJKMNPQRSTUVWXYZ23456789";let s="";for(let i=0;i<n;i++)s+=c[Math.floor(Math.random()*c.length)];return s}
+$("mk").onclick=()=>{state.naam=$("naam").value.trim()||"Speler";state.room=code();openPeer(HOSTP+state.room,true)};
+$("jn").onclick=()=>{state.naam=$("naam").value.trim()||"Speler";const c=$("code").value.trim().toUpperCase();if(c.length<3){toast("vul een kamer-code in");return}state.room=c;openPeer(null,false)};
+$("codetile").onclick=()=>{const u=location.origin+location.pathname+"?k="+state.room;navigator.clipboard?.writeText(u).then(()=>toast("link gekopieerd — stuur 'm naar je groep"))};
+async function openPeer(hostId,asHost){
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:640}},audio:true})}catch(e){try{stream=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e2){stream=null;toast("geen camera/mic — je kijkt en chat mee")}}
+  if(stream)$("me").srcObject=stream;
+  state.isHost=asHost;
+  state.peer=new Peer(hostId||undefined,{debug:0});
+  state.peer.on("open",id=>{state.myId=id;
+    if(asHost){enterRoom()}
+    else{state.hostConn=state.peer.connect(HOSTP+state.room,{reliable:true});
+      state.hostConn.on("open",()=>{enterRoom();sendHost({t:"join",name:state.naam})});
+      state.hostConn.on("data",d=>handleData(state.hostConn,d));
+      state.hostConn.on("close",()=>{toast("host heeft de kamer verlaten");leaveRoom()});
+      setTimeout(()=>{if(!state.hostConn.open)toast("kamer niet gevonden — check de code")},6000);
+    }});
+  state.peer.on("connection",c=>{wireConn(c)});
+  state.peer.on("call",call=>{call.answer(stream);wireCall(call)});
+  state.peer.on("error",e=>{if(e.type==="peer-unavailable")toast("kamer bestaat niet");else if(e.type==="unavailable-id")toast("kamer-netwerk hikt — probeer opnieuw");else console.warn(e)});
+}
+function enterRoom(){
+  $("home").classList.remove("on");$("room").classList.add("on");
+  $("roomcode").textContent="kamer "+state.room;
+  addTile(state.myId,state.naam+" (jij)",true,stream);
+  if(state.isHost){state.peers[state.myId]={name:state.naam};state.scores[state.myId]=0;
+    state.hostConn={send:()=>{},open:true,peer:state.myId};
+    sys("jij bent de host — deel de link")}
+}
+function wireConn(c){
+  state.conns[c.peer]=c;
+  c.on("data",d=>handleData(c,d));
+  c.on("close",()=>{dropPeer(c.peer)});
+}
+function wireCall(call){
+  call.on("stream",rs=>{const info=state.peers[call.peer];addTile(call.peer,info?info.name:"…",false,rs)});
+  call.on("close",()=>{dropPeer(call.peer)});
+  call.on("error",()=>{});
+}
+function sendHost(d){if(state.isHost)hostRelay(null,d);else if(state.hostConn&&state.hostConn.open)state.hostConn.send(d)}
+function bcast(d,except){for(const id in state.conns){const c=state.conns[id];if(c.open&&id!==except)c.send(d)}}
+function dropPeer(id){
+  if(state.isHost)delete state.conns[id];
+  delete state.peers[id];delete state.scores[id];delete state.calls[id];
+  const t=document.getElementById("t-"+id);if(t)t.remove();
+  if(state.isHost)bcast({t:"leave",id});
+  updWho();
+}
+function addTile(id,name,me,ms){
+  if(document.getElementById("t-"+id))return;
+  const el=document.createElement("div");el.className="tile";el.id="t-"+id;
+  const v=document.createElement("video");v.autoplay=true;v.playsInline=true;if(me)v.muted=true;
+  el.appendChild(v);
+  const nm=document.createElement("div");nm.className="nm";nm.textContent=name;el.appendChild(nm);
+  const sc=document.createElement("div");sc.className="scr3";sc.textContent="0";sc.id="sc-"+id;el.appendChild(sc);
+  const bl=document.createElement("div");bl.className="blind";bl.style.display="none";bl.textContent="🎯 JIJ BENT DE SPOTLIGHT — raad het woord!";el.appendChild(bl);
+  $("grid").appendChild(el);
+  if(ms)v.srcObject=ms;
+  updWho();
+}
+function updWho(){const n=Object.keys(state.peers).length;$("who").textContent=n+" speler"+(n==1?"":"s")}
+function handleData(c,d){
+  if(state.isHost&&c.peer!==state.myId)return hostRelay(c.peer,d);
+  switch(d.t){
+    case "roster":{
+      for(const p of d.peers){if(!state.peers[p.id]){state.peers[p.id]={name:p.name};if(p.id!==state.myId)callPeer(p.id)}}
+      for(const id in d.scores)state.scores[id]=d.scores[id];refreshScores();updWho();break}
+    case "chat":{addMsg(d.name,d.txt,d.pid===state.myId);break}
+    case "game":{applyGame(d);break}
+    case "leave":{delete state.peers[d.id];const t=document.getElementById("t-"+d.id);if(t)t.remove();updWho();break}
+  }
+}
+function callPeer(id){
+  if(id===state.myId||state.calls[id])return;
+  const call=state.peer.call(id,stream);state.calls[id]=call;wireCall(call);
+}
+function hostRelay(fromId,d){
+  switch(d.t){
+    case "join":{
+      state.peers[fromId]={name:d.name||"speler"};state.scores[fromId]=0;
+      bcast({t:"roster",peers:roster(),scores:state.scores});
+      sys((d.name||"speler")+" is erbij");
+      const call=state.peer.call(fromId,stream);state.calls[fromId]=call;wireCall(call);
+      updWho();refreshScores();break}
+    case "chat":{d.pid=fromId;bcast(d);addMsg(d.name,d.txt,false);break}
+    case "goed":{if(state.playing)endRound(state.spot);break}
+  }
+}
+function roster(){return Object.keys(state.peers).map(id=>({id,name:state.peers[id].name}))}
+function addMsg(name,txt,me){
+  const l=$("chatlog"),e=document.createElement("div");
+  if(/^\*\*\*/.test(txt)){e.className="msg gold";e.textContent=txt.replace(/\*\*\*/g,"")}
+  else{e.className="msg "+(me?"me":"ot");e.innerHTML=(me?"":`<span class="w">${esc(name)}</span>`)+esc(txt)}
+  l.appendChild(e);l.scrollTop=l.scrollHeight;
+}
+function sys(t){const l=$("chatlog"),e=document.createElement("div");e.className="msg sys";e.textContent=t;l.appendChild(e);l.scrollTop=l.scrollHeight}
+function esc(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML}
+$("chatsend").onclick=sendChat;$("chatin").addEventListener("keydown",e=>{if(e.key==="Enter")sendChat()});
+function sendChat(){const v=$("chatin").value.trim();if(!v)return;$("chatin").value="";addMsg(state.naam,v,true);sendHost({t:"chat",name:state.naam,txt:v})}
+$("chatfab").onclick=()=>$("chatside").classList.toggle("open");
+$("startbtn").onclick=()=>{if(state.isHost)startRound();else toast("alleen de host kan starten")};
+$("goedbtn").onclick=()=>{sendHost({t:"goed"})};
+function startRound(){
+  const ids=Object.keys(state.peers);if(ids.length<2){toast("minstens 2 spelers nodig");return}
+  const spot=ids[Math.floor(Math.random()*ids.length)];
+  const w=WOORDEN[Math.floor(Math.random()*WOORDEN.length)];
+  const pack={t:"game",act:"start",spot,woord:w,secs:60};
+  applyGame(pack);bcast(pack);
+}
+function applyGame(d){
+  if(d.act==="start"){
+    state.playing=true;state.spot=d.spot;state.woord=d.woord;
+    $("startbtn").disabled=true;$("goedbtn").disabled=(d.spot===state.myId);
+    document.querySelectorAll(".tile").forEach(t=>t.classList.remove("spot"));
+    document.querySelectorAll(".tile .blind").forEach(b=>b.style.display="none");
+    const st=document.getElementById("t-"+d.spot);
+    if(st){st.classList.add("spot");if(d.spot===state.myId)st.querySelector(".blind").style.display="flex"}
+    const wb=$("woordbox");
+    if(d.spot===state.myId){wb.className="geheim";wb.textContent="🤫 jij raadt…"}
+    else{wb.className="woord";wb.textContent="«"+d.woord+"»"}
+    sys("SPOTLIGHT op "+(state.peers[d.spot]?state.peers[d.spot].name:"?")+" — 60 seconden!");
+    runTimer(d.secs);
+  }
+  if(d.act==="end"){
+    state.playing=false;$("startbtn").disabled=false;$("goedbtn").disabled=true;
+    document.querySelectorAll(".tile").forEach(t=>t.classList.remove("spot"));
+    document.querySelectorAll(".tile .blind").forEach(b=>b.style.display="none");
+    $("woordbox").className="geheim";$("woordbox").textContent="ronde klaar — START voor de volgende";
+    clearInterval(state.tInt);$("tbar").style.width="100%";
+    for(const id in d.scores)state.scores[id]=d.scores[id];refreshScores();
+    if(d.win)addMsg("","*** 🎉 "+(state.peers[d.win]?state.peers[d.win].name:"?")+" raadde het! Het woord was: "+d.woord+" ***",false);
+    else addMsg("","*** ⏱️ tijd om! Het woord was: "+d.woord+" ***",false);
+  }
+}
+function endRound(winId){
+  if(winId&&state.scores[winId]!=null)state.scores[winId]++;
+  const pack={t:"game",act:"end",scores:state.scores,woord:state.woord,win:winId||null};
+  applyGame(pack);bcast(pack);
+}
+function runTimer(secs){
+  clearInterval(state.tInt);state.tLeft=secs;
+  state.tInt=setInterval(()=>{state.tLeft--;$("tbar").style.width=Math.max(0,state.tLeft/secs*100)+"%";
+    if(state.tLeft<=0){clearInterval(state.tInt);if(state.isHost)endRound(null)}},1000);
+}
+function refreshScores(){for(const id in state.scores){const e=document.getElementById("sc-"+id);if(e)e.textContent=state.scores[id]}}
+$("leave").onclick=leaveRoom;
+function leaveRoom(){try{state.peer&&state.peer.destroy()}catch(e){}try{stream&&stream.getTracks().forEach(t=>t.stop())}catch(e){}location.href=location.pathname}
+(function(){const q=new URLSearchParams(location.search),k=q.get("k");if(k){$("code").value=k.toUpperCase();toast("code ingevuld — naam kiezen en deelnemen!")}})();
+</script>
+</body>
+</html>
