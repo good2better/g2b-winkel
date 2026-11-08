@@ -202,7 +202,64 @@ function tab(i,el){document.querySelectorAll('.pane').forEach((p,j)=>p.classList
 const LATIN=[
  ['01','A Dónde Están'],['02','Hace Tiempo No Nos Vemos'],['03','Hay Bailoteo'],['04','Hoy Vamos a Salir'],['05','Imposible Borrarte'],['06','Llorame'],['07','No Hay Nadi Como Tú'],['08','Otra Noche Más'],['09','Si Pudiera Volver al Pasado'],['10','Sigue en Mi Cabeza'],['11','Tu Eres Todo Lo Que Necesito'],['12','Ya Gané Como Si Nada'],['13','Libertad y Placer']];
 const INSTR=[['14','Si Pudiera Volver al Pasado (Instrumental)','14 - Si Pudiera Volver al Pasado (Instrumental)'],['15','Libertad y Placer (Instrumental)','15 - Libertad y Placer (Instrumental)'],['16','Ya Gané Como Si Nada (Instrumental)','16 - Ya Gané Como Si Nada (Instrumental)'],['17','Otra Noche Más (Instrumental)','17 - Otra Noche Más (Instrumental)'],['18','G2B Reggaeton Instrumental','19 - G2B Reggaeton Instrumental'],['19','No Hay Nadi Como Tú (Instrumental)','20 - No Hay Nadi Como Tú (Instrumental)'],['20','Llorame (Instrumental)','22 - Llorame (Instrumental)'],['21','Hoy Vamos a Salir (Instrumental)','23 - Hoy Vamos a Salir (Instrumental)'],['22','Imposible Borrarte (Instrumental)','25 - Imposible Borrarte (Instrumental)'],['23','Hay Bailoteo (Instrumental)','28 - Hay Bailoteo (Instrumental)'],['24','Hace Tiempo No Nos Vemos (Instrumental)','29 - Hace Tiempo No Nos Vemos (Instrumental)'],['25','A Dónde Están (Instrumental)','32 - A Dónde Están (Instrumental)']];
-const CAT=['Ik Ben Onderweg','Ik Ben Onderweg (Instrumental)','Meisje Luister','Meisje Luister (Instrumental)','G2B-MidnightZouk'];
+const CAT=['Ik Ben Onderweg','Ik Ben Onderweg (Instrumental)','Meisje Luister','Meisje Luister (Instrumental)','G2B-MidnightZouk','Cjfjff Houce 2026','Coolbreez','Exotic Riddim','G2B-ArenaDrive','G2B-BubbleNights','G2B-CorporateClimb','G2B-DembowNight','G2B-FolkTrail','G2B-FunkStrut','G2B-KasekoGold','G2B-LoFiRain','G2B-RockabillyRacer','G2B-SocaRun','G2B-SouthernRodeo','G2B-WintiSpirit','Houce Trap','KAY9','Khvckhvclv','Lala Dance','Love','Love (Instrumental)','Midnight Dembow II','Midnight Dembow III','Soldaat','Under','Under (Instrumental)'];
+const META={
+'A Dónde Están':'latin urban · longing · drama/ads · 103 BPM',
+'Hace Tiempo No Nos Vemos':'latin pop · nostalgic reunion · film/TV drama · 99 BPM',
+'Hay Bailoteo':'dembow/reggaeton · party energy · club/sports/ads · 105 BPM',
+'Hoy Vamos a Salir':'latin urban · night-out anthem · ads/club scenes · 88 BPM',
+'Imposible Borrarte':'latin urban ballad · heartbreak · film/TV drama · 103 BPM',
+'Llorame':'reggaeton romántico · longing · drama · 94 BPM',
+'No Hay Nadi Como Tú':'latin pop · love & celebration · romcom/ads · 110 BPM',
+'Otra Noche Más':'latin urban · nightlife · club scenes · 99 BPM',
+'Si Pudiera Volver al Pasado':'latin ballad · nostalgic · film/drama · 115 BPM',
+'Sigue en Mi Cabeza':'latin pop · catchy earworm · ads/TV · 112 BPM',
+'Tu Eres Todo Lo Que Necesito':'latin pop · romantic/uplifting · ads · 99 BPM',
+'Ya Gané Como Si Nada':'latin urban · triumphant · sports/ads · 81 BPM',
+'Libertad y Placer':'latin · freedom & joy · travel/lifestyle ads · 86 BPM',
+'Si Pudiera Volver al Pasado (Instrumental)':'latin ballad · instrumental · film/drama · 115 BPM',
+'Libertad y Placer (Instrumental)':'latin · instrumental · freedom/joy · 86 BPM',
+'Ya Gané Como Si Nada (Instrumental)':'latin urban · instrumental · sports/ads · 81 BPM',
+'Otra Noche Más (Instrumental)':'latin urban · instrumental · nightlife · 99 BPM',
+'G2B Reggaeton Instrumental':'reggaeton instrumental · club pulse · sports/ads · 99 BPM',
+'No Hay Nadi Como Tú (Instrumental)':'latin pop · instrumental · love/ads · 110 BPM',
+'Llorame (Instrumental)':'reggaeton · instrumental · drama · 94 BPM',
+'Hoy Vamos a Salir (Instrumental)':'latin urban · instrumental · night-out · 88 BPM',
+'Imposible Borrarte (Instrumental)':'latin ballad · instrumental · drama · 101 BPM',
+'Hay Bailoteo (Instrumental)':'dembow · instrumental · party/sports · 105 BPM',
+'Hace Tiempo No Nos Vemos (Instrumental)':'latin pop · instrumental · drama · 99 BPM',
+'A Dónde Están (Instrumental)':'latin urban · instrumental · drama/ads · 103 BPM',
+'Ik Ben Onderweg':'dutch urban · road anthem · ads/film (NL) · 76 BPM',
+'Ik Ben Onderweg (Instrumental)':'dutch urban · instrumental · ads (NL) · 76 BPM',
+'Meisje Luister':'dutch urban · sassy call-out · ads (NL) · 76 BPM',
+'Meisje Luister (Instrumental)':'dutch urban · instrumental · ads (NL) · 76 BPM',
+'G2B-MidnightZouk':'zouk (Caribbean) · smooth night · ads/film · 92 BPM',
+'Cjfjff Houce 2026':'house · driving groove · club/ads · 123 BPM',
+'Coolbreez':'chill pop · laid-back · lifestyle/ads · 99 BPM',
+'Exotic Riddim':'world riddim · exotic · travel/ads · 92 BPM',
+'G2B-ArenaDrive':'big-room EDM · high energy · sports/ads · 133 BPM',
+'G2B-BubbleNights':'dance-pop · night sparkle · club/ads · 123 BPM',
+'G2B-CorporateClimb':'corporate upbeat · motivation · business ads · 120 BPM',
+'G2B-DembowNight':'dembow · latin club · nightlife · 96 BPM',
+'G2B-FolkTrail':'folk acoustic · warm journey · travel/docs · 112 BPM',
+'G2B-FunkStrut':'funk · confident strut · ads/comedy · 83 BPM',
+'G2B-KasekoGold':'kaseko (Surinamese) · festive energy · carnival/docs · 140 BPM',
+'G2B-LoFiRain':'lo-fi · calm focus · study/lifestyle · 103 BPM',
+'G2B-RockabillyRacer':'rockabilly · retro racer · comedy/ads · 86 BPM',
+'G2B-SocaRun':'soca · carnival rush · sports/ads · 92 BPM',
+'G2B-SouthernRodeo':'country/southern · dusty road · ads/docs · 112 BPM',
+'G2B-WintiSpirit':'winti (Surinamese) · spiritual ritual · docs/film · 117 BPM',
+'Houce Trap':'trap-house · dark bounce · urban/ads · 123 BPM',
+'KAY9':'hip-hop · gritty bounce · urban/ads · 89 BPM',
+'Khvckhvclv':'experimental urban · edgy texture · film/ads · 94 BPM',
+'Lala Dance':'dance · euphoric peak · club/ads · 136 BPM',
+'Love':'pop · uplifting love · ads/romcom · 129 BPM',
+'Love (Instrumental)':'pop · instrumental · uplifting · 129 BPM',
+'Midnight Dembow II':'dembow · night pulse · club · 92 BPM',
+'Midnight Dembow III':'dembow · deeper night · club · 92 BPM',
+'Soldaat':'dutch hip-hop · soldier march · urban/film · 92 BPM',
+'Under':'urban · moody undertone · film/ads · 99 BPM',
+'Under (Instrumental)':'urban · instrumental · moody · 99 BPM'};
 // ISRC's zoals bij Sena geregistreerd (export 17-10-2026)
 const ISRC={'A Dónde Están':'NL-5R7-25-00001','Imposible Borrarte':'NL-5R7-25-00002','Llorame':'NL-5R7-25-00003','Si Pudiera Volver al Pasado':'NL-5R7-25-00004','Hace Tiempo No Nos Vemos':'NL-5R7-25-00005','No Hay Nadi Como Tú':'NL-5R7-25-00006','Hay Bailoteo':'NL-5R7-25-00007','Otra Noche Más':'NL-5R7-25-00008','Hoy Vamos a Salir':'NL-5R7-25-00009','Sigue en Mi Cabeza':'NL-5R7-25-00010','Ya Gané Como Si Nada':'NL-5R7-25-00011','Tu Eres Todo Lo Que Necesito':'NL-5R7-25-00012','Libertad y Placer':'NL-5R7-25-00013'};
 const ISRC_XTRA=[['NL-5R7-25-00034','Coolbreez'],['NL-5R7-25-00035','Love'],['NL-5R7-25-00036','Love Hurts'],['NL-5R7-26-00001','Ik Ben Onderweg'],['NL-5R7-26-00002','Meisje Luister'],['NL-5R7-26-00014','Cjfjff Houce 2026'],['NL-5R7-26-00015','Exotic Riddim'],['NL-5R7-26-00016','Houce Trap'],['NL-5R7-26-00017','Us Both'],['NL-5R7-26-00018','Khvckhvclv'],['NL-5R7-26-00019','Lala Dance'],['NL-5R7-26-00020','Midnight Dembow II'],['NL-5R7-26-00021','Midnight Dembow III'],['NL-5R7-26-00022','Soldaat'],['NL-5R7-26-00023','Under']];
@@ -211,7 +268,7 @@ function lic(t,buy){
   const m=(kind)=>`mailto:g.sandvliet88@gmail.com?subject=${encodeURIComponent(kind+': '+t)}&body=${encodeURIComponent('Hi Giorgio,\n\nI would like a '+kind.toLowerCase()+' for "'+t+'".\nProject: \nUsage (film/TV/ads/game/social): \nTerritory + term: \n\nBest,')}`;
   return `<div class="lic"><a href="${m('Sync license')}">LICENSE</a>${buy?`<a class="buy" href="${m('Buy-out')}">BUY-OUT</a>`:''}</div>`;
 }
-function row(n,t,file,cls,tag,buy){return `<div class="track ${cls||''}"><div class="num">${n}</div><div class="info"><div class="t">${t}</div><div class="k">${tag||'GOOD2BETTER · 100% owned'}</div></div><audio controls preload="none" src="${file}"></audio>${lic(t,buy)}</div>`;}
+function row(n,t,file,cls,tag,buy){const m=META[t];return `<div class="track ${cls||''}"><div class="num">${n}</div><div class="info"><div class="t">${t}</div><div class="k">${m?m+' · ':''}${tag||'GOOD2BETTER · 100% owned'}</div></div><audio controls preload="none" src="${file}"></audio>${lic(t,buy)}</div>`;}
 document.getElementById('voc').innerHTML=LATIN.map(([n,t])=>row(n,t,`media/latin/${n} - ${encodeURIComponent(t)}.mp3`)).join('');
 document.getElementById('ins').innerHTML=INSTR.map(([n,t,f])=>row(n,t,`media/latin/${encodeURIComponent(f)}.mp3`,'instr')).join('');
 const BUYOUT=new Set(['G2B-MidnightZouk']);
