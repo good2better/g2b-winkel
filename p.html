@@ -36,7 +36,9 @@ main{max-width:940px;margin:0 auto;padding:14px 16px 70px}
   vertical-align:middle;margin-left:8px}
 .prijs{color:var(--accent);font-weight:800;font-size:22px;margin:8px 0 2px}
 .prijs small{color:var(--dim);font-weight:400;font-size:13px}
-.beschr{color:var(--dim);margin:10px 0 16px;max-width:60ch}
+.beschr{color:var(--dim);margin:10px 0 6px;max-width:60ch;font-size:14px;
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.voorwaarden{color:var(--dim);font-size:12px;margin-top:10px}
 .koopblok{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .koop{display:inline-block;background:linear-gradient(90deg,var(--accent),var(--accent2));
   color:#07110b;font-weight:800;text-decoration:none;padding:12px 26px;
@@ -55,10 +57,6 @@ main{max-width:940px;margin:0 auto;padding:14px 16px 70px}
   padding:10px}
 .vid .lbl{font-size:12px;color:var(--dim);font-weight:700;margin:0 0 6px 4px}
 video{width:100%;border-radius:10px;display:block;background:#000}
-.punten{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.punten li{background:var(--panel);border:1px solid var(--line);border-radius:12px;
-  padding:10px 14px;font-size:13px}
-.punten li::before{content:"✓ ";color:var(--accent);font-weight:800}
 .advies{display:flex;gap:14px;align-items:center;justify-content:space-between;
   background:linear-gradient(90deg,rgba(47,191,113,.10),transparent);
   border:1px solid var(--accent2);border-radius:14px;padding:14px 18px}
@@ -70,7 +68,6 @@ video{width:100%;border-radius:10px;display:block;background:#000}
   .hero{flex-direction:column}
   .cover{width:100%;height:auto;aspect-ratio:1}
   .video{grid-template-columns:1fr}
-  .punten{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -98,13 +95,9 @@ async function main(){
   const vids=[];
   if(p.video) vids.push({lbl:"▶ demo — hoort hoe het klinkt",src:p.video,subs:p});
   if(p.uitleg) vids.push({lbl:"▶ uitleg — EN stem, NL/ES ondertiteling",src:p.uitleg,uitleg:true,subs:p});
-  const punten=[];
-  if(gratis) punten.push("Gratis download — geen account nodig");
-  else punten.push("Directe download na betaling");
-  punten.push("Gebruiksrecht — eigenaar blijft Good2Better High Quality Media");
-  punten.push("Nederlands recht van toepassing");
-  if(licenties.includes("exclusief")) punten.push("EXCLUSIEF = exclusief gebruiksrecht, geen buy-out");
-  if(links.browser) punten.push("Ook direct te gebruiken in je browser");
+  const vw=(gratis?"Gratis download":"Directe download na betaling")
+    +" · gebruiksrecht — G2B blijft eigenaar · Nederlands recht"
+    +(licenties.includes("exclusief")?" · EXCLUSIEF = geen buy-out":"");
   app.innerHTML=`
   <section class="hero">
     ${p.cover?`<img class="cover" src="${esc(p.cover)}" alt="">`:""}
@@ -117,6 +110,7 @@ async function main(){
         ${koopHref?`<a class="koop" id="koop" target="_blank" rel="noopener" href="${esc(koopHref)}">${gratis?"⬇ Download":"Koop nu"}</a>`:`<span class="koop uit">Binnenkort</span>`}
         ${links.browser?`<a class="koop zwart" href="${esc(links.browser)}">🌐 Open in browser</a>`:""}
       </div>
+      <div class="voorwaarden">${esc(vw)}</div>
     </div>
   </section>
   ${p.preview?`<section class="sectie"><h2>Beluister</h2>
@@ -128,9 +122,6 @@ async function main(){
         ${v.uitleg&&p.sub_es?`<track kind="subtitles" srclang="es" label="Español" src="${esc(p.sub_es)}">`:""}
       </video></div>`).join("")}
   </div></section>`:""}
-  <section class="sectie"><h2>Wat je krijgt</h2><ul class="punten">
-    ${punten.map(x=>`<li>${esc(x)}</li>`).join("")}
-  </ul></section>
   ${advies?`<section class="sectie"><h2>Advies</h2>
     <div class="advies"><div><b>Past bij: ${esc(advies.titel)}</b><br><span>${esc(advies.beschrijving||"").slice(0,140)}</span></div>
       <a class="koop zwart" href="p.html?id=${esc(advies.id)}">${esc(advies.prijs||"")}</a></div>
