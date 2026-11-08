@@ -39,7 +39,7 @@ select{background:#16201A;color:#BFE8CE;border:1px solid #2C4A38;border-radius:6
   <table id="tracks"><tr><th>SPOOR</th><th>ROL (wie gaat vooraan?)</th><th>HOORT</th><th>AANPASSING</th></tr></table>
   <div class="row">
     <button class="btn b1" id="bMix" disabled>▶ LUISTER + MAAK MIX</button>
-    <button class="btn b2" id="bDl" disabled>↓ DOWNLOAD mix.wav</button>
+    <button class="btn b2" id="bDl" disabled>🔒 DOWNLOAD = CLUB</button>
     <button class="btn b2" id="bPlay" disabled>▶ BELUISTER</button>
   </div>
   <div class="status" id="status">drop je stems — hij luistert dan naar elk spoor én naar elkaar</div>
@@ -211,8 +211,7 @@ function toWav(buf){
   let s=Math.max(-1,Math.min(1,buf.getChannelData(c)[i]));
   v.setInt16(off,s*32767,true);off+=2;}
  return new Blob([ab],{type:'audio/wav'});}
-$('bDl').onclick=()=>{const a=document.createElement('a');
- a.href=URL.createObjectURL(toWav(mixed));a.download='G2B-mix-'+Date.now()+'.wav';a.click();};
+$('bDl').onclick=()=>{location.href='/p.html?id=g2bclub'};
 $('bPlay').onclick=()=>{const c=new AudioContext(),s=c.createBufferSource();
  s.buffer=mixed;s.connect(c.destination);s.start();};
 </script>

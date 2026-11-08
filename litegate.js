@@ -50,6 +50,8 @@
     setTimeout(function(){modal.querySelector('#lgNaam').focus();},50);
   }
   function sluit(){if(modal){modal.remove();modal=null;}}
+  // g2bGate(cb,bron): dezelfde modal voor in-tool exports — na gegevens roept cb() het echte download
+  window.g2bGate=function(cb,bron){toon('',bron||'export','');pending.cb=cb;};
   function go(){
     var em=(modal.querySelector('#lgMail').value||'').trim().toLowerCase();
     if(!em||em.indexOf('@')<1){modal.querySelector('#lgErr').style.display='block';return;}
@@ -63,6 +65,8 @@
           extra:{naam:naam,land:land,rol:rol,product:pid}})});
     }catch(e){}
     sluit();
+    var cb=pending&&pending.cb;
+    if(cb){cb();return;}
     // echte download starten na de gate
     var a=document.createElement('a');a.href=href;a.target='_blank';a.rel='noopener';
     document.body.appendChild(a);a.click();a.remove();

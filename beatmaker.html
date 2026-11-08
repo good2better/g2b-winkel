@@ -461,7 +461,7 @@ function laagUI(){
   dwn.title='klik = download · SLEEP deze knop naar je desktop/DAW-map om de .mid daar neer te zetten (Chrome)';
   dwn.draggable=true;
   dwn.ondragstart=e=>midiDrag(e,k);
-  dwn.onclick=()=>melDownload(k);ri.appendChild(dwn);d.appendChild(ri);
+  dwn.onclick=()=>window.g2bGate(()=>melDownload(k),'beatmaker-lite');ri.appendChild(dwn);d.appendChild(ri);
   const mn=document.createElement('div');mn.className='melnotes';
   const cap=A.noten.slice(0,140);
   for(const n of cap){const c=document.createElement('span');c.className='mnoot';
@@ -531,8 +531,8 @@ document.getElementById('exp').ondragstart=e=>{
  if(!lastWav){e.preventDefault();return}
  e.dataTransfer.setData('DownloadURL','application/octet-stream:'+lastWav.nm+':'+lastWav.url);
  e.dataTransfer.effectAllowed='copy'};
-document.getElementById('exp').onclick=async function(){
- this.disabled=true;this.textContent='⏳ renderen...';
+async function expExport(){const btn=document.getElementById('exp');
+ btn.disabled=true;btn.textContent='⏳ renderen...';
  try{
   if(!ac)ac=new (window.AudioContext||window.webkitAudioContext)();
   if(!NB)NB=noiseBuf(ac);
@@ -554,11 +554,12 @@ document.getElementById('exp').onclick=async function(){
   const rendered=await oc.startRendering();ac=savAc;NB=savNB;
   const url=URL.createObjectURL(wavBlob(rendered)),a=document.createElement('a');
   a.href=url;a.download=`G2B-${cur}-${bpm}bpm-${nBars}bar.wav`;a.click();
-  lastWav={url,nm:a.download};this.draggable=true;
-  this.title='SLEEP deze knop naar je desktop/DAW-map om de .wav daar neer te zetten (Chrome)';
+  lastWav={url,nm:a.download};btn.draggable=true;
+  btn.title='SLEEP deze knop naar je desktop/DAW-map om de .wav daar neer te zetten (Chrome)';
  }catch(e){console.error(e)}
- this.disabled=false;this.textContent='⬇ EXPORT';
-};
+ btn.disabled=false;btn.textContent='⬇ EXPORT';
+}
+document.getElementById('exp').onclick=function(){window.g2bGate(function(){expExport()},'beatmaker-lite');};
 // ---- EIGEN ONE-SHOTS: drop eigen kick/snare/hat/perc → spelen in elke rij (winnen van genre-sounds)
 const OWN={}; // rij → AudioBuffer
 function eigenRij(name,buf){
@@ -947,6 +948,7 @@ evForm.addEventListener('submit',async e=>{
   }catch(_){ evMsg.textContent=''; evMail.style.display='inline-block'; }
 });
 </script>
+<script src="litegate.js"></script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 </body>
 </html>

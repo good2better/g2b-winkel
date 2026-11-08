@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B MIXER v2 — browser</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0A0E0B;color:#E8F0EA;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:18px}
+h1{font-size:22px;letter-spacing:2px;color:#3DDC84;margin-bottom:2px}
+.sub{color:#8AA;font-size:12px;margin-bottom:14px}
+.card{background:#121814;border:1px solid #23352A;border-radius:14px;padding:16px;width:min(860px,96vw);margin-bottom:14px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.btn{padding:12px 22px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:1px}
+.b1{background:#3DDC84;color:#06120B}.b2{background:#1D2B22;color:#9FE8BC;border:1px solid #2C4A38}.b3{background:#E8A020;color:#241500}
+.btn:disabled{opacity:.4;cursor:default}
+.drop{border:2px dashed #2C4A38;border-radius:10px;padding:26px;text-align:center;color:#8AA;cursor:pointer}
+.drop.over{border-color:#3DDC84;background:#16201A}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:7px 8px;text-align:left;border-bottom:1px solid #1D2B22}
+th{color:#8AA;font-size:11px;font-weight:400}
+select{background:#16201A;color:#BFE8CE;border:1px solid #2C4A38;border-radius:6px;padding:5px}
+.status{background:#0D140F;border:1px solid #23352A;border-radius:8px;padding:10px;font-size:13px;color:#BFE8CE}
+.bars{display:flex;gap:4px;align-items:flex-end;height:44px;margin-top:6px}
+.bars div{flex:1;background:#23352A;border-radius:2px 2px 0 0;transition:height .3s}
+.bars div.hi{background:#3DDC84}
+.log{font-size:11px;color:#6A8;max-height:130px;overflow:auto;white-space:pre-line;margin-top:8px}
+.pill{padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700}
+.p1{background:#3DDC84;color:#06120B}.p2{background:#E8A020;color:#241500}.p3{background:#5A7;color:#031}
+</style>
+</head>
+<body>
+<h1>G2B MIXER v2</h1>
+<div class="sub">sporen luisteren naar élkaar — PRIO + M/S-ontmaskering → MASTER → schone mix.wav eruit</div>
+
+<div class="card">
+  <div class="drop" id="drop">🎚️ Sleep hier je stems (wav/mp3) — elke file = 1 spoor<br><small>kies daarna per spoor zijn rol</small>
+    <input type="file" id="file" multiple accept="audio/*" style="display:none"></div>
+  <table id="tracks"><tr><th>SPOOR</th><th>ROL (wie gaat vooraan?)</th><th>HOORT</th><th>AANPASSING</th></tr></table>
+  <div class="row">
+    <button class="btn b1" id="bMix" disabled>▶ LUISTER + MAAK MIX</button>
+    <button class="btn b2" id="bDl" disabled>↓ DOWNLOAD mix.wav</button>
+    <button class="btn b2" id="bPlay" disabled>▶ BELUISTER</button>
+  </div>
+  <div class="status" id="status">drop je stems — hij luistert dan naar elk spoor én naar elkaar</div>
+  <div class="bars" id="bars"></div>
+  <div class="log" id="log"></div>
+</div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const ROLS=[["HOOG — dukit nooit (zang/leid)",0],["MIDDEN (gitaren/keys/drums)",1],["BAS/808",1.2],["LAAG — wijkt voor alles (pads/fx)",2]];
+const BANDS=[60,120,250,500,1000,2000,4000,8000];
+let tracks=[],mixed=null;
+
+/* kleine FFT (radix-2) voor spectrum-analyse */
+function fft(re,im){const n=re.length;
+ for(let i=1,j=0;i<n;i++){let b=n>>1;for(;j&b;b>>=1)j^=b;j^=b;
+  if(i<j){[re[i],re[j]]=[re[j],re[i]];[im[i],im[j]]=[im[j],im[i]];}}
+ for(let len=2;len<=n;len*=2){const a=-2*Math.PI/len;
+  const wr=Math.cos(a),wi=Math.sin(a),h=len>>1;
+  for(let i=0;i<n;i+=len){let cr=1,ci=0;
+   for(let j=0;j<h;j++){const k=i+j,l=k+h;
+    const tr=re[l]*cr-im[l]*ci,ti=re[l]*ci+im[l]*cr;
+    re[l]=re[k]-tr;im[l]=im[k]-ti;re[k]+=tr;im[k]+=ti;
+    const t2=cr*wr-ci*wi;ci=cr*wi+ci*wr;cr=t2;}}}}
+function spectrum(buf,sr){
+ const N=2048,mag=new Float64Array(8);
+ const step=Math.max(N,Math.floor(buf.length/20));
+ const bins=[0,90,180,375,750,1500,3000,6000,12000].map(hz=>Math.round(hz*N/sr));
+ for(let off=0;off+N<=buf.length;off+=step){
+  const re=new Float64Array(N),im=new Float64Array(N);
+  for(let i=0;i<N;i++){const w=.5-.5*Math.cos(2*Math.PI*i/N);re[i]=buf[off+i]*w;}
+  fft(re,im);
+  for(let b=0;b<8;b++){let s=0;
+   for(let k=bins[b];k<bins[b+1];k++)s+=Math.hypot(re[k],im[k]);
+   mag[b]+=s/(bins[b+1]-bins[b]);}}
+ return mag;}
+
+const drop=$('drop'),file=$('file');
+drop.onclick=()=>file.click();
+drop.ondragover=e=>{e.preventDefault();drop.classList.add('over');};
+drop.ondragleave=()=>drop.classList.remove('over');
+drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');load(e.dataTransfer.files);};
+file.onchange=()=>load(file.files);
+
+function log(s){$('log').textContent+=s+"\n";$('log').scrollTop=1e6;}
+async function load(files){
+ const AC=new AudioContext();
+ for(const f of files){
+  try{
+   const ab=await f.arrayBuffer();
+   const buf=await AC.decodeAudioData(ab);
+   tracks.push({name:f.name.replace(/\.[^.]+$/,''),buf,rol:1,spec:null,red:null});
+  }catch(e){log('✗ '+f.name+' kon niet gelezen worden');}}
+ renderTable();
+ $('bMix').disabled=tracks.length<2;
+ $('status').textContent=tracks.length+' sporen — kies rollen, druk LUISTER + MAAK MIX';}
+function renderTable(){
+ const t=$('tracks');
+ t.innerHTML='<tr><th>SPOOR</th><th>ROL (wie gaat vooraan?)</th><th>HOORT</th><th>AANPASSING</th></tr>';
+ tracks.forEach((tr,i)=>{
+  const r=t.insertRow();
+  r.insertCell().textContent=tr.name;
+  const sel=document.createElement('select');
+  ROLS.forEach(([nm,v])=>{const o=document.createElement('option');
+   o.value=v;o.textContent=nm;if(v===1)o.selected=true;sel.appendChild(o);});
+  sel.onchange=()=>{tr.rol=+sel.value;};
+  r.insertCell().appendChild(sel);
+  r.insertCell().innerHTML='<span class="pill p'+Math.min(3,Math.ceil(tr.rol))+'">—</span>';
+  r.insertCell().textContent='—';});}
+
+$('bMix').onclick=async()=>{
+ $('bMix').disabled=true;$('status').textContent='LUISTEREN… elk spoor wordt gemeten';
+ // 1) spectrum per spoor
+ for(const tr of tracks){
+  const mono=tr.buf.getChannelData(0);
+  tr.spec=spectrum(mono,tr.buf.sampleRate);
+  const tot=tr.spec.reduce((a,b)=>a+b,0);
+  tr.rel=tr.spec.map(v=>v/(tot||1));
+  log('♪ '+tr.name+': laag '+(100*tr.rel.slice(0,2).reduce((a,b)=>a+b,0)).toFixed(0)+'% · midden '+(100*tr.rel.slice(2,5).reduce((a,b)=>a+b,0)).toFixed(0)+'% · hoog '+(100*tr.rel.slice(5).reduce((a,b)=>a+b,0)).toFixed(0)+'%');}
+ // 2) ontmasker: ik duk alleen voor sporen met een HOGERE prioriteit (lagere rol-waarde)
+ for(const tr of tracks){
+  tr.red=new Float64Array(8);
+  for(const hi of tracks){if(hi===tr||hi.rol>=tr.rol)continue;
+   for(let b=0;b<8;b++){
+    const over=hi.rel[b]-tr.rel[b]*0.6;
+    if(over>0.02)tr.red[b]=Math.min(6,over*40);}}}
+ // 3) render via OfflineAudioContext — spoor-bus → master-comp → limiter → out
+ const dur=Math.max(...tracks.map(t=>t.buf.duration));
+ const sr=44100,ctx=new OfflineAudioContext(2,sr*dur+sr,sr);
+ const bus=ctx.createGain();
+ const comp=ctx.createDynamicsCompressor();
+ comp.threshold.value=-14;comp.knee.value=8;comp.ratio.value=3;
+ comp.attack.value=.01;comp.release.value=.16;
+ const lim=ctx.createDynamicsCompressor();
+ lim.threshold.value=-2;lim.knee.value=0;lim.ratio.value=20;
+ lim.attack.value=.002;lim.release.value=.1;
+ bus.connect(comp);comp.connect(lim);lim.connect(ctx.destination);
+ let totCut=0;
+ for(const tr of tracks){
+  const src=ctx.createBufferSource();src.buffer=tr.buf;
+  const lines=[];
+  // M/S-splitsing: midden dipt waar een belangrijker spoor zit,
+  // zijkant krijgt 0.35× de boost -> spoor vlucht naar de zijkant, blijft breed
+  const split=ctx.createChannelSplitter(2);
+  src.connect(split);
+  // MID = 0.5L + 0.5R
+  const midSum=ctx.createGain();midSum.gain.value=1;
+  const mL=ctx.createGain();mL.gain.value=0.5;split.connect(mL,0);mL.connect(midSum);
+  const mR=ctx.createGain();mR.gain.value=0.5;split.connect(mR,1);mR.connect(midSum);
+  let midNode=midSum;
+  // SIDE = 0.5L - 0.5R
+  const sideSum=ctx.createGain();sideSum.gain.value=1;
+  const sL=ctx.createGain();sL.gain.value=0.5;split.connect(sL,0);sL.connect(sideSum);
+  const sR=ctx.createGain();sR.gain.value=-0.5;split.connect(sR,1);sR.connect(sideSum);
+  let sideNode=sideSum;
+  BANDS.forEach((hz,b)=>{
+   const dip=tr.red[b]; if(dip<=0.3)return;
+   const fM=ctx.createBiquadFilter();fM.type='peaking';
+   fM.frequency.value=hz;fM.Q.value=1.2;fM.gain.value=-dip;
+   midNode.connect(fM);midNode=fM;
+   const fS=ctx.createBiquadFilter();fS.type='peaking';
+   fS.frequency.value=hz;fS.Q.value=1.2;fS.gain.value=dip*0.35;
+   sideNode.connect(fS);sideNode=fS;
+   lines.push(hz+'Hz '+dip.toFixed(1)+'dB → zijkant');totCut+=dip;});
+  // terug naar stereo: L = mid+side, R = mid-side
+  const merge=ctx.createChannelMerger(2);
+  midNode.connect(merge,0,0);midNode.connect(merge,0,1);
+  const sPos=ctx.createGain();sPos.gain.value=1;sideNode.connect(sPos);sPos.connect(merge,0,0);
+  const sNeg=ctx.createGain();sNeg.gain.value=-1;sideNode.connect(sNeg);sNeg.connect(merge,0,1);
+  const g=ctx.createGain();
+  g.gain.value=tr.rol>=2?.8:(tr.rol>=1?.9:1.0);
+  merge.connect(g);g.connect(bus);src.start();
+  const row=$('tracks').rows[tracks.indexOf(tr)+1];
+  row.cells[2].innerHTML='<span class="pill p'+Math.min(3,Math.ceil(tr.rol))+'">'+(lines.length?lines.length+' bands':'schoon')+'</span>';
+  row.cells[3].textContent=lines.join(' · ')||'past al goed';
+  row.cells[2].innerHTML='<span class="pill p'+Math.min(3,Math.ceil(tr.rol)+1)+'">'+(tr.rol==0?'HOOG':tr.rol<2?'MIDDEN':'LAAG')+'</span>';
+  log('→ '+tr.name+': '+(lines.join(' · ')||'geen dip nodig'));}
+ $('status').textContent='MASTEREN… limiter + balans';
+ mixed=await ctx.startRendering();
+ // normaliseer naar ~-1dBFS
+ let pk=0;for(let c=0;c<mixed.numberOfChannels;c++){const d=mixed.getChannelData(c);
+  for(let i=0;i<d.length;i++)if(Math.abs(d[i])>pk)pk=Math.abs(d[i]);}
+ const gn=pk>0?.891/pk:1;
+ for(let c=0;c<mixed.numberOfChannels;c++){const d=mixed.getChannelData(c);
+  for(let i=0;i<d.length;i++)d[i]*=gn;}
+ // bars tonen: totale dip visual
+ const bars=$('bars');bars.innerHTML='';
+ const tr_max=Math.max(...tracks.map(t=>Math.max(...t.red)))||1;
+ for(let b=0;b<8;b++){const d=document.createElement('div');
+  const v=Math.max(...tracks.map(t=>t.red[b]))/tr_max;
+  d.style.height=Math.max(4,v*44)+'px';if(v>.4)d.classList.add('hi');
+  d.title=BANDS[b]+' Hz';bars.appendChild(d);}
+ $('bDl').disabled=false;$('bPlay').disabled=false;
+ $('status').textContent='KLAAR — '+totCut.toFixed(1)+' dB ruimte gemaakt (naar de zijkant!) + genormaliseerd naar -1dB';
+ log('✓ mix klaar — '+mixed.duration.toFixed(1)+'s, '+tracks.length+' sporen');};
+
+function toWav(buf){
+ const nc=Math.min(2,buf.numberOfChannels),len=buf.length*nc*2,
+  ab=new ArrayBuffer(44+len),v=new DataView(ab);
+ const ws=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i));};
+ ws(0,'RIFF');v.setUint32(4,36+len,true);ws(8,'WAVEfmt ');
+ v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,nc,true);
+ v.setUint32(24,buf.sampleRate,true);v.setUint32(28,buf.sampleRate*nc*2,true);
+ v.setUint16(32,nc*2,true);v.setUint16(34,16,true);
+ ws(36,'data');v.setUint32(40,len,true);
+ let off=44;
+ for(let i=0;i<buf.length;i++)for(let c=0;c<nc;c++){
+  let s=Math.max(-1,Math.min(1,buf.getChannelData(c)[i]));
+  v.setInt16(off,s*32767,true);off+=2;}
+ return new Blob([ab],{type:'audio/wav'});}
+$('bDl').onclick=()=>{const a=document.createElement('a');
+ a.href=URL.createObjectURL(toWav(mixed));a.download='G2B-mix-'+Date.now()+'.wav';a.click();};
+$('bPlay').onclick=()=>{const c=new AudioContext(),s=c.createBufferSource();
+ s.buffer=mixed;s.connect(c.destination);s.start();};
+</script>
+<footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
+</body>
+</html>

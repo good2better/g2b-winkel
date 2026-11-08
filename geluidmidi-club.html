@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B GELUID→MIDI — browser</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0A0E0B;color:#E8F0EA;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:18px}
+h1{font-size:22px;letter-spacing:2px;color:#3DDC84;margin-bottom:2px}
+.sub{color:#8AA;font-size:12px;margin-bottom:14px}
+.card{background:#121814;border:1px solid #23352A;border-radius:14px;padding:16px;width:min(820px,96vw);margin-bottom:14px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.btn{padding:12px 22px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:1px}
+.b1{background:#3DDC84;color:#06120B}.b2{background:#1D2B22;color:#9FE8BC;border:1px solid #2C4A38}.b3{background:#E8A020;color:#241500}
+.btn:active{transform:scale(.96)}
+.status{background:#0D140F;border:1px solid #23352A;border-radius:8px;padding:8px 12px;font-size:13px;color:#BFE8CE;flex:1;min-width:220px}
+canvas{width:100%;height:120px;background:#0D140F;border:1px solid #23352A;border-radius:8px;margin-top:8px}
+.noterow{display:flex;gap:2px;margin-top:8px;flex-wrap:wrap}
+.nb{background:#1D2B22;border-radius:4px;padding:4px 7px;font-size:11px;color:#9FE8BC}
+label{font-size:11px;color:#8AA;display:flex;flex-direction:column;gap:4px;min-width:110px}
+input[type=range]{accent-color:#3DDC84;width:110px}
+.hint{font-size:11px;color:#6A8;margin-top:6px}
+#noteNow{font-size:26px;font-weight:800;color:#E8A020;min-width:80px}
+</style>
+</head>
+<body>
+<h1>G2B GELUID→MIDI</h1>
+<div class="sub">neuri of fluit → MIDI-noten eruit · browser-versie van de super-plugin</div>
+
+<div class="card">
+  <div class="row">
+    <button class="btn b1" id="bMic">🎙 NEURI NU</button>
+    <button class="btn b2" id="bStop" disabled>■ STOP</button>
+    <button class="btn b3" id="bAns">ANTWOORD</button>
+    <button class="btn b2" id="bPlay">▶ SPEEL</button>
+    <button class="btn b2" id="bMid">↓MID</button>
+  </div>
+  <div class="row">
+    <div id="noteNow">—</div>
+    <div class="status" id="status">druk NEURI NU en neuri een melodie — ik schrijf de noten op</div>
+  </div>
+  <div class="row">
+    <label>GEVOELIG — stilte-drempel<input type="range" id="sens" min="2" max="30" value="9"><span id="sensv">9</span></label>
+    <label>QUANTIZE — rooster<input type="range" id="quant" min="0" max="3" value="1" step="1"><span id="quantv">1/8</span></label>
+    <label>VOLUME<input type="range" id="vol" min="0" max="100" value="80"></label>
+  </div>
+  <canvas id="cv" width="780" height="120"></canvas>
+  <div class="noterow" id="notes"></div>
+  <div class="hint">ANTWOORD = ik schrijf een tegen-melodie als antwoord op jouw frase (het "call and response" trucje uit de plugin) · ↓MID = download als .mid-bestand voor je DAW</div>
+</div>
+
+<script>
+// ---------- audio context ----------
+let AC=null, an=null, stream=null, src=null, proc=null, rec=false;
+const CV=document.getElementById('cv'), C2=CV.getContext('2d');
+const ST=document.getElementById('status'), NN=document.getElementById('noteNow'), NR=document.getElementById('notes');
+const NNAMES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const f2n=f=>Math.round(69+12*Math.log2(f/440));
+const n2f=n=>440*Math.pow(2,(n-69)/12);
+const nname=n=>NNAMES[n%12]+(Math.floor(n/12)-1);
+
+// ---------- pitch detect (autocorrelatie, zelfde idee als de VST) ----------
+const BUF=2048, buf=new Float32Array(BUF);
+function pitch(sr){
+  let rms=0; for(let i=0;i<BUF;i++) rms+=buf[i]*buf[i]; rms=Math.sqrt(rms/BUF);
+  if(rms<0.004*(+document.getElementById('sens').value)) return -1;
+  let best=-1,bestC=0;
+  for(let lag=Math.floor(sr/1000);lag<Math.floor(sr/60);lag++){
+    let c=0; for(let i=0;i<BUF-lag;i++) c+=buf[i]*buf[i+lag];
+    if(c>bestC){bestC=c;best=lag;}
+  }
+  return best>0?sr/best:-1;
+}
+
+// ---------- opname → noten ----------
+let notes=[]; // {n,t0,t1}
+let curN=-1,curT=0,silT=0,t0=0,lastT=0;
+function onBuf(e,sr){
+  const inp=e.inputBuffer.getChannelData(0); buf.set(inp.subarray(0,BUF));
+  const f=pitch(sr), t=(performance.now()-t0)/1000;
+  if(f>0){
+    const n=f2n(f);
+    if(n!==curN){ if(curN>=0&&t-curT>0.06) notes.push({n:curN,t0:curT,t1:t,ans:false}); curN=n;curT=t; }
+    silT=0;
+    NN.textContent=nname(n);
+  } else {
+    silT+=BUF/sr;
+    if(curN>=0&&silT>0.12){ notes.push({n:curN,t0:curT,t1:t,ans:false}); curN=-1; NN.textContent='—'; }
+  }
+  lastT=t; draw(f);
+}
+function draw(f){
+  C2.clearRect(0,0,CV.width,CV.height);
+  C2.strokeStyle='#23352A';C2.beginPath();
+  for(let i=0;i<12;i++){C2.moveTo(0,i*10);C2.lineTo(CV.width,i*10);}C2.stroke();
+  const s=CV.width/Math.max(4,lastT), base=90;
+  for(const nt of notes){
+    const x=nt.t0*s,w=Math.max(3,(nt.t1-nt.t0)*s),y=base-((nt.n-48)*3.4);
+    C2.fillStyle=nt.ans?'#E8A020':'#3DDC84';C2.fillRect(x,y,w,5);
+  }
+  if(f>0){C2.fillStyle='#fff';C2.fillRect(CV.width-30,base-((f2n(f)-48)*3.4),8,5);}
+  NR.innerHTML=notes.slice(-40).map(n=>`<span class="nb" ${n.ans?'style="background:#3a2c10;color:#E8A020"':''}>${nname(n.n)}</span>`).join('');
+}
+
+// ---------- mic ----------
+document.getElementById('bMic').onclick=async()=>{
+  AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+  stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  src=AC.createMediaStreamSource(stream);an=AC.createAnalyser();an.fftSize=BUF;
+  proc=AC.createScriptProcessor(BUF,1,1);
+  src.connect(proc);proc.connect(AC.destination);
+  notes=[];curN=-1;t0=performance.now();rec=true;
+  proc.onaudioprocess=e=>onBuf(e,AC.sampleRate);
+  document.getElementById('bStop').disabled=false;
+  ST.textContent='luistert… neuri een melodie';
+};
+document.getElementById('bStop').onclick=()=>{
+  rec=false;if(proc)proc.onaudioprocess=null;if(stream)stream.getTracks().forEach(t=>t.stop());
+  if(curN>=0)notes.push({n:curN,t0:curT,t1:lastT,ans:false});curN=-1;
+  document.getElementById('bStop').disabled=true;
+  ST.textContent=`klaar — ${notes.filter(n=>!n.ans).length} noten · druk ANTWOORD / SPEEL / ↓MID`;
+};
+
+// ---------- ANTWOORD: tegen-melodie genereren ----------
+document.getElementById('bAns').onclick=()=>{
+  const own=notes.filter(n=>!n.ans);if(!own.length){ST.textContent='eerst neuriën!';return;}
+  const scale=[0,2,3,5,7,8,10],root=own[0].n%12;let n=own[own.length-1].n;
+  for(let i=0;i<8;i++){
+    n+=((Math.random()*7|0)-3);const deg=((n%12)-root+12)%12;
+    if(!scale.includes(deg))n+=scale.some(d=>d===deg+1)?1:-1;
+    n=Math.max(50,Math.min(84,n));
+    const t=lastT+0.6+i*0.35;
+    notes.push({n,t0:t,t1:t+0.3,ans:true});
+  }
+  ST.textContent='antwoord toegevoegd (goud) — SPEEL of ↓MID';
+};
+
+// ---------- afspelen ----------
+function playMidi(ns){
+  AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+  const v=+document.getElementById('vol').value/100;
+  const tStart=AC.currentTime+0.15,first=ns[0]?ns[0].t0:0;
+  for(const nt of ns){
+    const o=AC.createOscillator(),g=AC.createGain();
+    o.type='triangle';o.frequency.value=n2f(nt.n);
+    const s=tStart+(nt.t0-first),d=Math.max(0.08,nt.t1-nt.t0);
+    g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(0.4*v,s+0.01);
+    g.gain.linearRampToValueAtTime(0.0001,s+d);
+    o.connect(g).connect(AC.destination);o.start(s);o.stop(s+d+0.05);
+  }
+}
+document.getElementById('bPlay').onclick=()=>{if(notes.length)playMidi(notes);else ST.textContent='niks om te spelen — neuri eerst';};
+
+// ---------- .mid export (type 0, tempo 120) ----------
+function midiBytes(ns){
+  const tpq=480,bpm=120,sec2tick=s=>Math.round(s*2*tpq);
+  const ev=[];for(const nt of ns){ev.push({t:sec2tick(nt.t0),b:[0x90,nt.n,90]});ev.push({t:sec2tick(nt.t1),b:[0x80,nt.n,0]});}
+  ev.sort((a,b)=>a.t-b.t);const bytes=[0x00,0xFF,0x51,0x03,0x07,0xA1,0x20];
+  let prev=0;const vl=v=>{const o=[v&0x7F];for(v>>=7;v;v>>=7)o.unshift((v&0x7F)|0x80);return o;};
+  for(const e of ev){bytes.push(...vl(e.t-prev),...e.b);prev=e.t;}
+  bytes.push(0x00,0xFF,0x2F,0x00);
+  const hdr=[0x4D,0x54,0x68,0x64,0,0,0,6,0,0,0,1,tpq>>8,tpq&0xFF,0x4D,0x54,0x72,0x6B,
+    (bytes.length>>24)&0xFF,(bytes.length>>16)&0xFF,(bytes.length>>8)&0xFF,bytes.length&0xFF];
+  return new Uint8Array([...hdr,...bytes]);
+}
+document.getElementById('bMid').onclick=()=>{
+  if(!notes.length){ST.textContent='niks om te exporteren — neuri eerst';return;}
+  const b=midiBytes(notes),a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([b],{type:'audio/midi'}));a.download='g2b-geluid.mid';a.click();
+  ST.textContent='g2b-geluid.mid gedownload — sleep hem in je DAW';
+};
+
+document.getElementById('sens').oninput=e=>document.getElementById('sensv').textContent=e.target.value;
+document.getElementById('quant').oninput=e=>document.getElementById('quantv').textContent=['vrij','1/8','1/16','1/4'][e.target.value];
+</script>
+<footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
+</body>
+</html>

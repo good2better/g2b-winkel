@@ -166,14 +166,17 @@ function midiBytes(ns){
 }
 document.getElementById('bMid').onclick=()=>{
   if(!notes.length){ST.textContent='niks om te exporteren — neuri eerst';return;}
-  const b=midiBytes(notes),a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([b],{type:'audio/midi'}));a.download='g2b-geluid.mid';a.click();
-  ST.textContent='g2b-geluid.mid gedownload — sleep hem in je DAW';
+  window.g2bGate(function(){
+    const b=midiBytes(notes),a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([b],{type:'audio/midi'}));a.download='g2b-geluid.mid';a.click();
+    ST.textContent='g2b-geluid.mid gedownload — sleep hem in je DAW';
+  },'geluidmidi');
 };
 
 document.getElementById('sens').oninput=e=>document.getElementById('sensv').textContent=e.target.value;
 document.getElementById('quant').oninput=e=>document.getElementById('quantv').textContent=['vrij','1/8','1/16','1/4'][e.target.value];
 </script>
+<script src="litegate.js"></script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 </body>
 </html>
