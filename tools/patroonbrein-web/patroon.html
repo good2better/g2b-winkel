@@ -39,8 +39,8 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <button class="uit go" id="bPlay" onclick="speel()">▶ SPEEL</button>
 <button class="uit" onclick="genereer()">✨ GENEREER</button>
 <button class="uit" onclick="dice()">🎲 DICE</button>
-<button class="uit" onclick="exportMid()">📥 exporteer .mid</button>
-<button class="uit" onclick="bounce()">🔊 bounce WAV</button>
+<button class="uit" onclick="slot('.mid')">🔒 .mid</button>
+<button class="uit" onclick="slot('WAV')">🔒 WAV</button>
 <button class="uit" onclick="document.body.classList.toggle('licht')">◐</button>
 <span id="st">klik in het grid, of kies een kit hieronder</span>
 </div>
@@ -214,6 +214,7 @@ function toon(t,midi,len,v){const o=ac.createOscillator(),g=ac.createGain(),f=ac
  o.connect(f).connect(g).connect(ac.destination);o.start(t);o.stop(t+len+0.05);}
 // ---------- .mid export (SMF type 0, 960 PPQ) ----------
 function vlq(x){const b=[x&127];while(x>>=7)b.unshift((x&127)|128);return b}
+function slot(wat){$('st').textContent='🔒 '+wat+'-download zit in de CLUB / PRO — zie link hieronder';}
 function exportMid(){const bpm=+$('bpm').value,nt=ladNoten();
  const ev=[]; // [tick,status,data1,data2]
  const tempo=Math.round(60000000/bpm);
