@@ -128,6 +128,30 @@ async function laden() {
     ((a.eerst ? 0 : 1) - (b.eerst ? 0 : 1)) ||
     (a.titel || "").localeCompare(b.titel || ""));
   window._prods = prods;
+
+  // UITGELICHT: nieuwste + beste producten als horizontale rij boven de lijst
+  const uitgEl = document.getElementById("uitg");
+  const uitg = prods.filter(p => p.uitgelicht);
+  if (uitgEl && uitg.length) {
+    uitgEl.innerHTML =
+      `<div class="uitg-kop">⭐ UITGELICHT — nieuw &amp; best</div><div class="uitg-rij">` +
+      uitg.map(p => `<button class="uitg-card" data-uitg="${esc(p.id)}">
+        ${p.cover ? `<img src="${esc(p.cover)}" alt="" loading="lazy">` : `<div class="uitg-noimg"></div>`}
+        <span class="uitg-t">${esc(p._titel)}</span>
+        ${p.prijs ? `<span class="uitg-p">${esc(p.prijs)}</span>` : ""}
+      </button>`).join("") + `</div>`;
+    uitgEl.addEventListener("click", e => {
+      const knop = e.target.closest(".uitg-card");
+      if (!knop) return;
+      document.getElementById("zoek").value = "";
+      actieveCat = "";
+      document.querySelectorAll("#cats .groepbtn").forEach(b =>
+        b.classList.toggle("alles", !b.dataset.cat));
+      pasFilterToe();
+      document.querySelector(`.card[data-id="${knop.dataset.uitg}"]`)
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
   if (!prods.length) {
     lijst.innerHTML = `<div class="leeg">${T("binnenkort_leeg")}</div>`;
     return;

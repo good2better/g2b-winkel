@@ -137,6 +137,18 @@ main{max-width:900px;margin:0 auto;padding:26px 16px 60px}
   color:#04120a;
   border-color:var(--accent)}
 .groepbtn.alles:hover{color:#04120a;filter:brightness(1.1)}
+#uitg{margin:2px auto 6px;max-width:980px}
+.uitg-kop{color:var(--accent);font-weight:800;font-size:13px;letter-spacing:.1em;margin:2px 6px 8px}
+.uitg-rij{display:flex;gap:10px;overflow-x:auto;padding:2px 4px 12px;scrollbar-width:thin}
+.uitg-card{flex:0 0 148px;background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:8px;cursor:pointer;text-align:left;color:var(--txt);
+  font-family:inherit;transition:border-color .15s,transform .15s}
+.uitg-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.uitg-card img{width:100%;height:84px;object-fit:cover;border-radius:8px;display:block}
+.uitg-noimg{height:84px;border-radius:8px;background:#16211b}
+.uitg-t{display:block;font-size:11px;font-weight:700;margin-top:6px;line-height:1.3;min-height:28px}
+.uitg-p{display:block;color:var(--accent);font-weight:800;font-size:12px;margin-top:3px}
+
 .sectie{margin:30px 0 14px;padding:0 0 10px 12px;
   border-bottom:1px solid var(--line);border-left:4px solid var(--accent)}
 .sectie:first-of-type{margin-top:6px}
@@ -203,6 +215,7 @@ footer b{color:var(--accent)}
   <div id="cats" class="groepen"></div>
   <div id="groepen" class="groepen" style="display:none"></div>
   </div>
+  <div id="uitg"></div>
   <div id="lijst"><div class="leeg" data-i18n="laden">Winkel wordt geladen…</div></div>
 </main>
 <div id="steun" style="max-width:520px;margin:0 auto 24px;text-align:center;border:1px solid var(--line);border-radius:14px;padding:18px">

@@ -18,7 +18,8 @@
    "video": "media/dicesynth-demo.mp4",
    "uitleg": "media/dicesynth-uitleg.mp4",
    "sub_nl": "media/dicesynth-uitleg.nl.vtt",
-   "sub_es": "media/dicesynth-uitleg.es.vtt"
+   "sub_es": "media/dicesynth-uitleg.es.vtt",
+   "uitgelicht": true
   },
   {
    "id": "stapeldice",
@@ -35,7 +36,8 @@
    },
    "video": "media/stapeldice-demo.mp4",
    "sub_nl": "media/stapeldice-demo.nl.vtt",
-   "sub_es": "media/stapeldice-demo.es.vtt"
+   "sub_es": "media/stapeldice-demo.es.vtt",
+   "uitgelicht": true
   },
   {
    "id": "g2bmaster",
@@ -57,7 +59,8 @@
    "uitleg": "media/master-uitleg.mp4",
    "sub_nl": "media/master-uitleg.nl.vtt",
    "sub_es": "media/master-uitleg.es.vtt",
-   "preview": "media/g2bmaster-preview.mp3"
+   "preview": "media/g2bmaster-preview.mp3",
+   "uitgelicht": true
   },
   {
    "id": "g2bpillpack",
@@ -75,7 +78,8 @@
    "download_dir": "d/g2bpillpack",
    "video": "media/pillpack-demo.mp4",
    "sub_nl": "media/pillpack-demo.nl.vtt",
-   "sub_es": "media/pillpack-demo.es.vtt"
+   "sub_es": "media/pillpack-demo.es.vtt",
+   "uitgelicht": true
   },
   {
    "id": "g2bmixer",
@@ -161,7 +165,8 @@
    "uitleg": "media/prodsuite-uitleg.mp4",
    "sub_nl": "media/prodsuite-uitleg.nl.vtt",
    "sub_es": "media/prodsuite-uitleg.es.vtt",
-   "preview": "media/g2bprodsuite-preview.mp3"
+   "preview": "media/g2bprodsuite-preview.mp3",
+   "uitgelicht": true
   },
   {
    "id": "g2bband",
@@ -1150,7 +1155,8 @@
    "uitleg": "media/brein-uitleg.mp4",
    "sub_nl": "media/brein-uitleg.nl.vtt",
    "sub_es": "media/brein-uitleg.es.vtt",
-   "preview": "media/g2b-brein-preview.mp3"
+   "preview": "media/g2b-brein-preview.mp3",
+   "uitgelicht": true
   },
   {
    "id": "prod01",
@@ -1382,7 +1388,8 @@
    "video": "media/gamefabriek-demo.mp4",
    "uitleg": "media/gamefabriek1-uitleg.mp4",
    "sub_nl": "media/gamefabriek1-uitleg.nl.vtt",
-   "sub_es": "media/gamefabriek1-uitleg.es.vtt"
+   "sub_es": "media/gamefabriek1-uitleg.es.vtt",
+   "uitgelicht": true
   },
   {
    "id": "g2bdren",
@@ -1403,7 +1410,8 @@
    "uitleg": "media/dren-uitleg.mp4",
    "sub_nl": "media/dren-uitleg.nl.vtt",
    "sub_es": "media/dren-uitleg.es.vtt",
-   "preview": "media/g2bdren-preview.mp3"
+   "preview": "media/g2bdren-preview.mp3",
+   "uitgelicht": true
   },
   {
    "id": "drenlite",
