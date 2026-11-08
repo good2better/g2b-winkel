@@ -19,6 +19,13 @@ input[type=range]{width:130px;accent-color:var(--groen)}
 .cel.aan{background:var(--groen);border-color:var(--groen)}
 .cel.speelt{outline:2px solid var(--cyan);outline-offset:-2px}
 .cel.tel{border-left-color:#3a5244}
+.cel.gemute{opacity:.25}
+#lagen{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0;align-items:center}
+.lt{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer}
+.lt.muted{background:#4a1c1c;border-color:#a04040;color:#ffb0b0;opacity:.8}
+.lt.lockt{border-color:#e8c35a;color:#e8c35a}
+.lt.only{background:var(--cyan);color:#04130b;border-color:var(--cyan)}
+.lgnm{color:var(--dim);font-size:11px;letter-spacing:1px;margin-right:2px}
 .kaart{background:var(--kaart);border:1px solid var(--rand);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13px;color:var(--dim)}
 .kaart b{color:var(--tekst)}
 a.dl{color:var(--groen);font-weight:700}
@@ -46,9 +53,10 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <label><b>SWING <span id="vSwing">20</span>%</b><input type="range" id="swing" min="0" max="60" value="20" oninput="vSwing.textContent=this.value"></label>
 </div>
 <div id="pills"></div>
+<div id="lagen"></div>
 <div id="grid"></div>
 <div class="kaart" id="info"></div>
-<div class="kaart"><b>zo werkt-ie:</b> klik vakjes aan/uit · GENEREER muteert 1-2 stappen maar houdt je groove · DICE dobbelt alles opnieuw binnen je toonladder · .mid is klaar voor Reason/FL/Ableton (drums op kanaal 10, melodie op kanaal 1)</div>
+<div class="kaart"><b>zo werkt-ie:</b> klik vakjes aan/uit · GENEREER muteert 1-2 stappen maar houdt je groove · DICE dobbelt alles opnieuw binnen je toonladder · .mid is klaar voor Reason/FL/Ableton (drums op kanaal 10, melodie op kanaal 1) · <b>LAGEN:</b> klik een laagnaam = mute aan/uit, 🔒 = laag blijft staan bij GENEREER/DICE · SNARE/HAT/OHAT starten op mute voor een stabiel fundament — ⚡ SLAG ONLY speelt juist alléén die drie</div>
 <div class="kaart"><b>meer power?</b> de <b>G2B BREIN plugin</b> (€19,95) heeft 219 geleerde kits, patronen tot 16 bars, SEED en je eigen midi-stijl — <a class="dl" href="../../index.html#g2b-brein">bekijk in de winkel</a></div>
 <script>
 'use strict';const $=id=>document.getElementById(id);
@@ -77,6 +85,26 @@ const LADDERS={mineur:[0,2,3,5,7,8,10],pentatonisch:[0,3,5,7,10],majeur:[0,2,4,5
 const NOTEN=['A','A#','B','C','C#','D','D#','E','F','F#','G','G#'];
 const DRUMN={KICK:36,SNARE:38,HAT:42,OHAT:46};
 let G={kit:'TRAP',root:9,ladder:'mineur',drums:null,mel:[],seed:1};
+// lagen-regels (zijn les): SNARE/HAT/OHAT starten op MUTE = stabiel;
+// LOCK houdt een laag vast bij GENEREER/DICE; SLAG ONLY speelt juist
+// alléén snare/hat/ohat en mute de rest.
+let MUTE={SNARE:true,HAT:true,OHAT:true},LOCK={},ONLY=false;
+const SLAG=new Set(['SNARE','HAT','OHAT']);
+function actief(r){return ONLY?SLAG.has(r):!MUTE[r];}
+function bouwLagen(){const el=$('lagen');el.innerHTML='<span class="lgnm">LAGEN:</span>';
+ for(const r of Object.keys(G.drums).concat(['MEL'])){
+  const isMute=ONLY?!SLAG.has(r):!!MUTE[r];
+  const m=document.createElement('button');m.className='lt'+(isMute?' muted':'');m.textContent=r;
+  m.title='klik = mute aan/uit';m.onclick=()=>{MUTE[r]=!MUTE[r];bouwLagen();bouwRaster();};
+  const l=document.createElement('button');l.className='lt'+(LOCK[r]?' lockt':'');l.textContent='🔒';
+  l.title='lock: deze laag blijft staan bij GENEREER/DICE';
+  l.onclick=()=>{LOCK[r]=!LOCK[r];bouwLagen();};
+  el.appendChild(m);el.appendChild(l);
+ }
+ const o=document.createElement('button');o.className='lt'+(ONLY?' only':'');
+ o.textContent='⚡ SLAG ONLY';o.title='alleen snare/hat/ohat — de rest gemute';
+ o.onclick=()=>{ONLY=!ONLY;bouwLagen();bouwRaster();};
+ el.appendChild(o);}
 let ac=null,playing=false,stap=0,timer=null;
 // ---------- UI ----------
 function bouwKits(){$('kit').innerHTML=Object.keys(KITS).map(k=>`<option>${k}</option>`).join('');
@@ -95,11 +123,12 @@ function bouwRaster(){G.root=+$('root').value;G.ladder=$('ladder').value;
  const nt=ladNoten();
  const rijen=[...Object.keys(G.drums).map(r=>({lbl:r,drum:r})),...nt.slice().reverse().map((n,j)=>({lbl:NOTEN[n%12]+(Math.floor(n/12)-1),note:n,deg:nt.length-1-j}))];
  let h='<div></div>'+Array.from({length:16},(_,i)=>`<div class="rlbl" style="justify-content:center">${i+1}</div>`).join('');
- for(const r of rijen){h+=`<div class="rlbl">${r.lbl}</div>`;
+ for(const r of rijen){const gem=r.drum?!actief(r.drum):!actief('MEL');
+  h+=`<div class="rlbl">${r.lbl}</div>`;
   for(let s=0;s<16;s++){let aan=0;
    if(r.drum)aan=G.drums[r.drum][s];
    else aan=G.mel.some(m=>s>=m.s&&s<m.s+m.l&&m.d===r.deg)?1:0;
-   h+=`<div class="cel${aan?' aan':''}${s%4===0?' tel':''}" data-s="${s}" data-r="${r.drum||'n'+r.deg}" onclick="klik(this)"></div>`;}}
+   h+=`<div class="cel${aan?' aan':''}${s%4===0?' tel':''}${gem?' gemute':''}" data-s="${s}" data-r="${r.drum||'n'+r.deg}" onclick="klik(this)"></div>`;}}
  $('grid').style.gridTemplateColumns=`70px repeat(16,1fr)`;
  $('grid').innerHTML=h;
  $('info').innerHTML=`<b>${G.kit}</b> · ${NOTEN[G.root]}-${G.ladder} · ${G.mel.length} melodie-noten · <span id="midInfo">sleep .mid naar je DAW</span>`;}
@@ -114,23 +143,26 @@ function klik(c){const s=+c.dataset.s,r=c.dataset.r;
 // ---------- GENEREER / DICE ----------
 function rng(){G.seed=Math.imul(G.seed,1664525)+1013904223>>>0;let s=G.seed;s^=s<<13;s>>>=0;s^=s>>>17;s^=s<<5;s>>>=0;return (s&0xFFFF)/65536}
 function genereer(){ // mutatie: verplaats 1-2 drum-hits of 1 melodie-noot, ritmisch DNA blijft
- for(let k=0;k<2;k++){
-  const rij=Object.keys(G.drums)[Math.floor(rng()*4)],a=G.drums[rij];
+ const vrije=Object.keys(G.drums).filter(r=>!LOCK[r]); // 🔒-lagen blijven
+ for(let k=0;k<2&&vrije.length;k++){
+  const rij=vrije[Math.floor(rng()*vrije.length)],a=G.drums[rij];
   const aan=a.map((v,i)=>v?i:-1).filter(i=>i>=0);
   if(aan.length&&rng()<0.5){a[aan[Math.floor(rng()*aan.length)]]=0;}
   else a[Math.floor(rng()*16)]=1;
  }
- if(G.mel.length&&rng()<0.7){const m=G.mel[Math.floor(rng()*G.mel.length)];
-  const sc=LADDERS[G.ladder].length;m.d=Math.max(0,Math.min(sc-1,m.d+(rng()<0.5?-1:1)));
- }else if(G.mel.length)G.mel.splice(Math.floor(rng()*G.mel.length),1);
+ if(!LOCK.MEL){
+  if(G.mel.length&&rng()<0.7){const m=G.mel[Math.floor(rng()*G.mel.length)];
+   const sc=LADDERS[G.ladder].length;m.d=Math.max(0,Math.min(sc-1,m.d+(rng()<0.5?-1:1)));
+  }else if(G.mel.length)G.mel.splice(Math.floor(rng()*G.mel.length),1);}
  bouwRaster();$('st').textContent='✨ gemuteerd — groove behouden';}
 function dice(){G.seed=(Math.imul(G.seed,48271)+Date.now())>>>0;
  const dens=0.25+rng()*0.45;
- for(const r in G.drums){const a=G.drums[r];
+ for(const r in G.drums){if(LOCK[r])continue; // 🔒-lagen blijven
+  const a=G.drums[r];
   for(let s=0;s<16;s++)a[s]=rng()<(r==='KICK'?dens*0.6:r==='SNARE'?0.10:dens);
   a[0]=r==='KICK'?1:a[0];} // kick altijd op 1
- G.mel=[];const nm=2+Math.floor(rng()*4),sc=LADDERS[G.ladder].length;
- for(let k=0;k<nm;k++)G.mel.push({s:Math.floor(rng()*16),d:Math.floor(rng()*sc),l:1+Math.floor(rng()*3)});
+ if(!LOCK.MEL){G.mel=[];const nm=2+Math.floor(rng()*4),sc=LADDERS[G.ladder].length;
+  for(let k=0;k<nm;k++)G.mel.push({s:Math.floor(rng()*16),d:Math.floor(rng()*sc),l:1+Math.floor(rng()*3)});}
  bouwRaster();$('st').textContent='🎲 gedobbeld — alles binnen de ladder';}
 // ---------- velocity + timing ----------
 function vel(s){const k=+$('kracht').value/100;
@@ -149,11 +181,11 @@ function speel(){if(playing){stopSpel();return}
   const ct=ac.currentTime;
   while(stap<16&&stapT(stap)<ct+0.06){
    const s=stap;
-   if(G.drums.KICK[s])kick(stapT(s),vel(s));
-   if(G.drums.SNARE[s])snare(stapT(s),vel(s));
-   if(G.drums.HAT[s])hat(stapT(s),vel(s),false);
-   if(G.drums.OHAT[s])hat(stapT(s),vel(s),true);
-   for(const m of G.mel)if(m.s===s)toon(stapT(s),nt[m.d],m.l*spb,vel(s));
+   if(actief('KICK')&&G.drums.KICK[s])kick(stapT(s),vel(s));
+   if(actief('SNARE')&&G.drums.SNARE[s])snare(stapT(s),vel(s));
+   if(actief('HAT')&&G.drums.HAT[s])hat(stapT(s),vel(s),false);
+   if(actief('OHAT')&&G.drums.OHAT[s])hat(stapT(s),vel(s),true);
+   if(actief('MEL'))for(const m of G.mel)if(m.s===s)toon(stapT(s),nt[m.d],m.l*spb,vel(s));
    setTimeout(rr=>highlight(rr),Math.max(0,(stapT(s)-ac.currentTime)*1000),s);
    stap++;}
   if(stap>=16&&ct>t0+16*spb){stap=0;t0=ct+0.05;}
@@ -185,9 +217,10 @@ function vlq(x){const b=[x&127];while(x>>=7)b.unshift((x&127)|128);return b}
 function exportMid(){const bpm=+$('bpm').value,nt=ladNoten();
  const ev=[]; // [tick,status,data1,data2]
  const tempo=Math.round(60000000/bpm);
- for(const r in G.drums)for(let s=0;s<16;s++)if(G.drums[r][s])
-  ev.push([tickVan(s),0x99,DRUMN[r],vel(s)],[tickVan(s)+110,0x89,DRUMN[r],0]);
- for(const m of G.mel){const e=s=>tickVan(s);
+ for(const r in G.drums){if(!actief(r))continue; // gemute lagen niet mee
+  for(let s=0;s<16;s++)if(G.drums[r][s])
+   ev.push([tickVan(s),0x99,DRUMN[r],vel(s)],[tickVan(s)+110,0x89,DRUMN[r],0]);}
+ if(actief('MEL'))for(const m of G.mel){const e=s=>tickVan(s);
   ev.push([e(m.s),0x90,nt[m.d],vel(m.s)],[e(m.s+m.l),0x80,nt[m.d],0]);}
  ev.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
  const trk=[0,0xFF,0x51,3,(tempo>>16)&255,(tempo>>8)&255,tempo&255];
@@ -215,11 +248,11 @@ function bounce(){ // render 1 maat offline met dezelfde mini-synth (CPU, geen r
    L[i]+=s*v;R[i]+=s*v;}};
  const tijd=s=>s*spb+((s%2===1)?spb*(+$('swing').value/100)*0.45:0);
  for(let s=0;s<16;s++){const t=tijd(s),v=vel(s)/127;
-  if(G.drums.KICK[s])pl(0,t,v*0.95,0.4,0);
-  if(G.drums.SNARE[s])pl(0,t,v*0.55,0.2,1);
-  if(G.drums.HAT[s])pl(0,t,v*0.28,0.06,2);
-  if(G.drums.OHAT[s])pl(0,t,v*0.28,0.25,2);
-  for(const m of G.mel)if(m.s===s)pl(0,t,v*0.22,Math.max(0.12,m.l*spb*0.9),440*Math.pow(2,(nt[m.d]-69)/12));}
+  if(actief('KICK')&&G.drums.KICK[s])pl(0,t,v*0.95,0.4,0);
+  if(actief('SNARE')&&G.drums.SNARE[s])pl(0,t,v*0.55,0.2,1);
+  if(actief('HAT')&&G.drums.HAT[s])pl(0,t,v*0.28,0.06,2);
+  if(actief('OHAT')&&G.drums.OHAT[s])pl(0,t,v*0.28,0.25,2);
+  if(actief('MEL'))for(const m of G.mel)if(m.s===s)pl(0,t,v*0.22,Math.max(0.12,m.l*spb*0.9),440*Math.pow(2,(nt[m.d]-69)/12));}
  let mx=0;for(let i=0;i<n;i++)mx=Math.max(mx,Math.abs(L[i]),Math.abs(R[i]));
  if(mx>0){const g=0.89/mx;for(let i=0;i<n;i++){L[i]*=g;R[i]*=g;}}
  const li=new Int16Array(n),ri=new Int16Array(n);
@@ -228,5 +261,5 @@ function bounce(){ // render 1 maat offline met dezelfde mini-synth (CPU, geen r
  dl(wavBlob(li,ri,sr),'g2b-loop-'+G.kit.toLowerCase()+'.wav');
  $('st').textContent='🔊 WAV-loop gedownload — '+bpm+' bpm, naadloos loopbaar';}
 function dl(b,name){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();}
-bouwKits();kiesKit('TRAP');
+bouwKits();kiesKit('TRAP');bouwLagen();
 </script></body></html>
