@@ -188,7 +188,7 @@ function _g2b_sha256(ascii){
  return result;
 }
 async function _g2b_hex(s){if(crypto.subtle&&crypto.subtle.digest){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}return _g2b_sha256(s)}
-const HASH='5ce2341720b4ea3b7de86d9e0de7a60eccb28028d85c47f1388f5eb16d3582b8';
+const HASH='f6070b2ae6edadc5d67aa0d4110858c6565c1e3016e532e21d9e7b5a494e222c';
 async function unlock(){
   const v=document.getElementById('code').value.trim().toLowerCase();
   const hex=await _g2b_hex(v);
