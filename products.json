@@ -1423,7 +1423,9 @@
     "koop": "stapeldice-lite.html",
     "download": "stapeldice-lite.html"
    },
-   "video": "media/stapeldice-demo.mp4"
+   "video": "media/stapeldice-demo.mp4",
+   "sub_nl": "media/stapeldice-demo.nl.vtt",
+   "sub_es": "media/stapeldice-demo.es.vtt"
   },
   {
    "id": "g2bpillpack",
@@ -1439,7 +1441,9 @@
    "badge": "NIEUW",
    "cover": "media/g2bpillpack-cover.png",
    "download_dir": "d/g2bpillpack",
-   "video": "media/pillpack-demo.mp4"
+   "video": "media/pillpack-demo.mp4",
+   "sub_nl": "media/pillpack-demo.nl.vtt",
+   "sub_es": "media/pillpack-demo.es.vtt"
   }
  ]
 }
