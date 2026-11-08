@@ -67,6 +67,11 @@ input:focus{border-color:var(--groen)!important}
 </style>
 </head>
 <body>
+<div id="demoBalk" style="width:min(920px,96vw);margin-bottom:12px;padding:12px 18px;border:1px solid var(--groen);border-radius:12px;background:rgba(61,220,132,.08);font-size:13.5px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+  <b style="color:var(--groen)">DEMO-VERSIE</b>
+  <span style="color:var(--zacht)">Alles werkt — beluister en voel hoe goed het is. Downloads (wav/zip) staan uit in de demo. Koop voor de volle versie.</span>
+  <a href="https://buy.stripe.com/cNi7sL0ooberfUj8O95J61w" style="margin-left:auto;color:var(--groen);font-weight:800;text-decoration:none">KOOP NU →</a>
+</div>
 <h1>G2B STAPEL-DICE<span class="badge">PRO 2027</span></h1>
 <div class="sub">één tool, twee kanten — 🎲 stapel je one-shots · 🎹 dobbel synth-sounds en speel ze direct</div>
 
@@ -899,5 +904,31 @@ paintSliders();
 restoreRes();
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
+<script>
+/* DEMO-gate: alles werkt, wav/zip-downloads geblokkeerd tot koop.
+   Vangt zowel gebruiker-kliks op download-links als programmatische
+   a.click() op anchors met download-attribuut (alle export-paden). */
+(function(){
+  var KOOP='https://buy.stripe.com/cNi7sL0ooberfUj8O95J61w';
+  function meld(){
+    var t=document.getElementById('demoToast');
+    if(!t){t=document.createElement('div');t.id='demoToast';
+      t.style.cssText='position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#0E141C;border:1px solid #3DDC84;color:#E8F0EA;padding:12px 20px;border-radius:12px;font-size:14px;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,.6);display:none';
+      t.innerHTML='🔒 Downloads zitten in de volle versie — <a href="'+KOOP+'" style="color:#3DDC84;font-weight:800;text-decoration:none">KOOP NU →</a>';
+      document.body.appendChild(t);}
+    t.style.display='';
+    clearTimeout(t._h);t._h=setTimeout(function(){t.style.display='none';},4000);
+  }
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[download]');
+    if(a){e.preventDefault();e.stopPropagation();meld();}
+  },true);
+  var oc=HTMLAnchorElement.prototype.click;
+  HTMLAnchorElement.prototype.click=function(){
+    if(this.hasAttribute&&this.hasAttribute('download')){meld();return;}
+    return oc.apply(this,arguments);
+  };
+})();
+</script>
 </body>
 </html>
