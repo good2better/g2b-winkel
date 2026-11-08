@@ -17,6 +17,19 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <vector>
+#include <thread>
+#include <atomic>
+#include <fstream>
+#ifdef _WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+#include <direct.h>
+#else
+#include <sys/stat.h>
+#endif
 
 START_NAMESPACE_DISTRHO
 
@@ -94,7 +107,7 @@ public:
         kMix,        // dry/wet van de lagen
         kLevel,      // output dB
         kKey, kScale, kDice, kPreset, kOn, kGalaxy, kSfeer,
-        kNumParams
+        kZapBack, kTijd, kCatch, kLocks, kNumParams
     };
 
     DrenPlugin() : Plugin(kNumParams, 0, 2) { applyPreset(0); }
@@ -146,6 +159,14 @@ protected:
                       p.ranges.min=0.f; p.ranges.max=26.f; p.ranges.def=9.f; break;
         case kSfeer:  p.name="Sfeer";  p.symbol="sfeer"; p.hints|=kParameterIsInteger;
                       p.ranges.min=0.f; p.ranges.max=2.f; p.ranges.def=1.f; break;
+        case kZapBack:p.name="ZAP TERUG";p.symbol="zapback";p.hints|=kParameterIsBoolean;
+                      p.ranges.min=0.f; p.ranges.max=1.f; p.ranges.def=0.f; break;
+        case kTijd:   p.name="TIJDREIS";p.symbol="tijd";
+                      p.ranges.min=0.f; p.ranges.max=1.f; p.ranges.def=0.f; break;
+        case kCatch:  p.name="DREAM CATCH";p.symbol="catch";p.hints|=kParameterIsBoolean;
+                      p.ranges.min=0.f; p.ranges.max=1.f; p.ranges.def=0.f; break;
+        case kLocks:  p.name="LOCKS";    p.symbol="locks"; p.hints|=kParameterIsInteger;
+                      p.ranges.min=0.f; p.ranges.max=1023.f; p.ranges.def=0.f; break;
         }
     }
 
@@ -164,7 +185,7 @@ protected:
         case kSpook:return fSpook;case kMix:return fMix;case kLevel:return fLevel;
         case kKey:return fKey;case kScale:return fScale;case kDice:return fDice;
         case kPreset:return fPreset;case kOn:return fOn;case kGalaxy:return fGalaxyV;
-        case kSfeer:return fSfeerV;
+        case kSfeer:return fSfeerV;case kTijd:return fTijd;case kLocks:return fLocks;
         }
         return 0.f;
     }
@@ -181,6 +202,10 @@ protected:
         case kOn:fOn=v;break;
         case kGalaxy:fGalaxyV=v;fGal.setPos((int)(v+0.5f));break;
         case kSfeer:fSfeerV=v;fSf.setMode((int)(v+0.5f));break;
+        case kZapBack:if(v>0.5f)zapBack_();break;
+        case kTijd:fTijd=v;break;
+        case kCatch:if(v>0.5f)dumpCatch_();break;
+        case kLocks:fLocks=v;break;
         }
     }
 
@@ -193,6 +218,9 @@ protected:
         for (int a = 0; a < 2; ++a) std::memset(fAp[a], 0, sizeof(fAp[a]));
         fApPos[0] = fApPos[1] = 0;
         fNoise = 12345u;
+        fTrLp[0] = fTrLp[1] = fTrHp[0] = fTrHp[1] = 0.f;
+        if (fRingL.size() != kRingLen) { fRingL.assign(kRingLen, 0.f); fRingR.assign(kRingLen, 0.f); }
+        fRingPos = 0; fHistP = 0; fHistN = 0; fRestoring = false;
     }
 
     void run(const float**, float** out, uint32_t frames,
@@ -308,8 +336,33 @@ protected:
                 float sigR = (s * (1.f - mixW * 0.5f) + (wet + wetR) * mixW) * outG;
                 sigL = std::tanh(sigL * 0.7f) * 1.2f;
                 sigR = std::tanh(sigR * 0.7f) * 1.2f;
+                // TIJDREIS: 0 = nu (clean) · 0.5 = 1950 (bandpass+warm) · 1 = 1920 (kraak)
+                if (fTijd > 0.01f) {
+                    const float t = fTijd;
+                    const float lpA = 0.60f - 0.45f * t;
+                    fTrLp[0] += lpA * (sigL - fTrLp[0]); fTrLp[1] += lpA * (sigR - fTrLp[1]);
+                    sigL = fTrLp[0]; sigR = fTrLp[1];
+                    const float hpA = 0.28f * t;
+                    fTrHp[0] += hpA * (sigL - fTrHp[0]); sigL -= fTrHp[0];
+                    fTrHp[1] += hpA * (sigR - fTrHp[1]); sigR -= fTrHp[1];
+                    const float dr = 1.f + 3.f * t;
+                    sigL = std::tanh(sigL * dr); sigR = std::tanh(sigR * dr);
+                    if (t > 0.55f) {
+                        fNoise = fNoise * 1103515245u + 12345u;
+                        if ((fNoise & 0xFFFFFu) < 240u) { sigL += 0.30f * t; sigR += 0.30f * t; }
+                    }
+                    const float g = 1.f - 0.22f * t; sigL *= g; sigR *= g;
+                }
+                // hard plafond: nooit boven 0.98 (brickwall)
+                if (sigL > 0.98f) sigL = 0.98f; else if (sigL < -0.98f) sigL = -0.98f;
+                if (sigR > 0.98f) sigR = 0.98f; else if (sigR < -0.98f) sigR = -0.98f;
                 out[0][pos] = sigL;
                 out[1][pos] = sigR;
+                // DREAM CATCHER: altijd laatste ~30s bijhouden
+                if (fRingL.size() == kRingLen) {
+                    fRingL[fRingPos] = sigL; fRingR[fRingPos] = sigR;
+                    fRingPos = (fRingPos + 1) % kRingLen;
+                }
 
                 if (++fDecim >= 3) { fDecim = 0; if (fScopeN < 40) fScope[fScopeN++] = s; }
                 ++pos;
@@ -392,31 +445,113 @@ private:
 
     void applyPreset(int i) {
         if (i < 0) i = 0; if (i >= kNumPres) i = kNumPres - 1;
+        if (!fRestoring) {
+            fHist[fHistP].p = (int)fPreset;
+            float* m = fHist[fHistP].m;
+            m[0]=fToon;m[1]=fWarm;m[2]=fDrift;m[3]=fWarp;m[4]=fRuw;
+            m[5]=fEcho;m[6]=fRuimte;m[7]=fSub;m[8]=fDecay;m[9]=fSpook;
+            fHistP = (fHistP + 1) % 20; if (fHistN < 20) ++fHistN;
+        }
         fPreset = (float)i;
         const int ep = i / kNumVar, va = i % kNumVar;
         // variant verschuift subtiel: drift/warp/echo/spook groeien per variant,
         // toon wisselt om en om — elke aflevering is net anders
         const float vsh = (float)va / (kNumVar - 1);
-        fToon   = kEp[ep][0] + ((va & 1) ? 0.06f : -0.06f) * vsh;
-        fWarm   = kEp[ep][1];
-        fDrift  = std::min(1.f, kEp[ep][2] + vsh * 0.15f);
-        fWarp   = std::min(1.f, kEp[ep][3] + vsh * 0.20f);
-        fRuw    = kEp[ep][4];
-        fEcho   = std::min(1.f, kEp[ep][5] + vsh * 0.10f);
-        fRuimte = std::min(1.f, kEp[ep][6] + vsh * 0.10f);
-        fSub    = kEp[ep][7];
-        fDecay  = kEp[ep][8];
-        fSpook  = std::min(1.f, kEp[ep][9] + vsh * 0.20f);
-        fMix    = 0.55f;
+        const int lk = (int)(fLocks + 0.5f);
+        if (!(lk & 1))   fToon   = kEp[ep][0] + ((va & 1) ? 0.06f : -0.06f) * vsh;
+        if (!(lk & 2))   fWarm   = kEp[ep][1];
+        if (!(lk & 4))   fDrift  = std::min(1.f, kEp[ep][2] + vsh * 0.15f);
+        if (!(lk & 8))   fWarp   = std::min(1.f, kEp[ep][3] + vsh * 0.20f);
+        if (!(lk & 16))  fRuw    = kEp[ep][4];
+        if (!(lk & 32))  fEcho   = std::min(1.f, kEp[ep][5] + vsh * 0.10f);
+        if (!(lk & 64))  fRuimte = std::min(1.f, kEp[ep][6] + vsh * 0.10f);
+        if (!(lk & 128)) fSub    = kEp[ep][7];
+        if (!(lk & 256)) fDecay  = kEp[ep][8];
+        if (!(lk & 512)) fSpook  = std::min(1.f, kEp[ep][9] + vsh * 0.20f);
+        if (!fRestoring) fMix    = 0.55f;
         // naam naar de UI
         char nb[24]; std::snprintf(nb, sizeof(nb), "%s-%02d", kEpNames[ep], va + 1);
         setState("presetname", nb);
+    }
+
+    // ZAP-TERUG: geschiedenis van laatste 20 afleveringen + macro-standen
+    struct ZapSnap { int p; float m[10]; };
+    void zapBack_() {
+        if (fHistN <= 0) return;
+        fHistP = (fHistP + 19) % 20; --fHistN;
+        const ZapSnap& s = fHist[fHistP];
+        fRestoring = true;
+        applyPreset(s.p);
+        fToon=s.m[0];fWarm=s.m[1];fDrift=s.m[2];fWarp=s.m[3];fRuw=s.m[4];
+        fEcho=s.m[5];fRuimte=s.m[6];fSub=s.m[7];fDecay=s.m[8];fSpook=s.m[9];
+        fRestoring = false;
+    }
+    // DREAM CATCHER: bewaar de laatste ~30 seconden als .wav
+    void dumpCatch_() {
+        if (fDumpBusy.exchange(true)) return;
+        CatchJob* j = new CatchJob{this, fRingL, fRingR, fRingPos,
+            getSampleRate() > 0 ? getSampleRate() : 44100.0};
+    #ifdef _WIN32
+        CreateThread(nullptr, 0, catchThread_, j, 0, nullptr);
+    #else
+        std::thread(catchThread_, j).detach();
+    #endif
+    }
+    struct CatchJob { DrenPlugin* self; std::vector<float> L, R; uint32_t pos; double sr; };
+#ifdef _WIN32
+    static DWORD WINAPI catchThread_(LPVOID arg) {
+#else
+    static void catchThread_(void* arg) {
+#endif
+        CatchJob* j = (CatchJob*)arg;
+        j->self->writeCatchWav_(j->L, j->R, j->pos, j->sr);
+        j->self->fDumpBusy = false;
+        delete j;
+    #ifdef _WIN32
+        return 0;
+    #endif
+    }
+    void writeCatchWav_(const std::vector<float>& L, const std::vector<float>& R,
+                        uint32_t pos, double sr) {
+        const uint32_t n = kRingLen;
+        char dir[512];
+    #ifdef _WIN32
+        std::snprintf(dir, sizeof(dir), "%s\\Music\\G2B", std::getenv("USERPROFILE") ? std::getenv("USERPROFILE") : ".");
+        _mkdir(dir);
+    #else
+        std::snprintf(dir, sizeof(dir), "%s/Music/G2B", std::getenv("HOME") ? std::getenv("HOME") : ".");
+        mkdir(dir, 0755);
+    #endif
+        char path[600]; std::snprintf(path, sizeof(path), "%s/DREN-CATCH.wav", dir);
+        std::ofstream f(path, std::ios::binary);
+        if (!f.good()) return;
+        const uint32_t dataN = n * 4;
+        const int sri = (int)sr;
+        f.write("RIFF", 4); { uint32_t v = 36 + dataN; f.write((char*)&v, 4); }
+        f.write("WAVEfmt ", 8); { uint32_t v = 16; f.write((char*)&v, 4);
+            uint16_t fmt = 1, ch = 2; f.write((char*)&fmt, 2); f.write((char*)&ch, 2); }
+        f.write((char*)&sri, 4); { uint32_t br = sri * 4, ba = 4; uint16_t bb = 16;
+            f.write((char*)&br, 4); f.write((char*)&ba, 2); f.write((char*)&bb, 2); }
+        f.write("data", 4); f.write((char*)&dataN, 4);
+        for (uint32_t i = 0; i < n; ++i) {
+            const uint32_t k = (pos + i) % n;
+            int16_t a = (int16_t)(std::max(-1.f, std::min(1.f, L[k])) * 32767.f);
+            int16_t b = (int16_t)(std::max(-1.f, std::min(1.f, R[k])) * 32767.f);
+            f.write((char*)&a, 2); f.write((char*)&b, 2);
+        }
     }
 
     DVoice fV[kMaxVoices];
     float fToon = .2f, fWarm = .5f, fDrift = .15f, fWarp = .3f, fRuw = 0.f;
     float fEcho = .35f, fRuimte = .55f, fSub = .25f, fDecay = .7f, fSpook = .2f;
     float fMix = .55f, fLevel = 0.f;
+    float fTijd = 0.f, fLocks = 0.f;
+    float fTrLp[2] = {}, fTrHp[2] = {};
+    static const uint32_t kRingLen = 48000 * 30;
+    std::vector<float> fRingL, fRingR;
+    uint32_t fRingPos = 0;
+    ZapSnap fHist[20] = {}; int fHistP = 0, fHistN = 0; bool fRestoring = false;
+    std::atomic<bool> fDumpBusy{false};
     float fKey = 9.f, fScale = 0.f, fDice = 0.f, fPreset = 0.f;
     float fOn = 1.f, fGalaxyV = 9.f, fSfeerV = 1.f;
     unsigned fRnd = 424242, fGcount = 0, fNoise = 12345u;

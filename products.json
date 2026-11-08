@@ -1723,7 +1723,7 @@
    "id": "g2bdren",
    "titel": "G2B DREN — de droom-radio die je bespeelt (320 afleveringen)",
    "soort": "plugin",
-   "beschrijving": "DROOM-INSTRUMENT — elke aflevering is een andere wereld: 320 presets in 20 episodes (GOUD-UR, NACHT, WINTI, KAWI, DREN...). 3 lagen: droom-melodie (synth ↔ Kawai ↔ Steinway samples op TOON) + SUB + sfeer-bed, plus SPOOK-fragmenten (zachte spook-nootjes om je melodie). 8 macro's: TOON·WARM·DRIFT·WARP·RUW·ECHO·RUIMTE·MIX + SUB·SPOOK. ZAP = zappen naar een nieuw geluid. VST3 + CLAP + standalone EXE. 100% eigen code — geen cloud, geen abonnement. Ook gratis proberen: DREN LITE met 64 afleveringen.",
+   "beschrijving": "DROOM-INSTRUMENT v2 — 320 presets in 20 episodes. NIEUW: ZAP<- (terug naar vorige aflevering), CATCH (bewaart laatste 30s als .wav), TIJDREIS (nu→1950→1920 vintage), werkende LOCK-slotjes per macro, anti-clip plafond. 3 lagen: droom-melodie (synth↔Kawai↔Steinway) + SUB + sfeer-bed + SPOOK-fragmenten. 8 macro's + KEY/SCALE + ZAP. VST3+CLAP+standalone EXE. Geen DAW nodig — werkt ook los; host het gratis in MorningDAW. 100% eigen code.",
    "prijs": "€ 34,95",
    "links": {
     "koop": "bestel.html?p=g2bdren",
@@ -1750,7 +1750,7 @@
    "id": "drenlite",
    "titel": "G2B DREN LITE — gratis droom-radio (64 afleveringen)",
    "soort": "plugin",
-   "beschrijving": "GRATIS — de instap-DREN: 64 afleveringen (4 episodes × 16) van de droom-radio. Zelfde engine als de volle: 3 lagen + SPOOK-fragmenten + 8 macro's + ZAP. VST3 + CLAP + standalone EXE. Bevalt hij? De volle DREN heeft 320 afleveringen.",
+   "beschrijving": "GRATIS — de instap-DREN v2: 64 afleveringen (4 episodes × 16). Zelfde engine als de volle: 3 lagen + SPOOK + 8 macro's + ZAP<- + CATCH + TIJDREIS. NIEUW: KOOP VOLLE-knop in de app (256 extra afleveringen, €34,95). VST3 + CLAP + standalone EXE — werkt los of gratis in MorningDAW.",
    "prijs": "GRATIS",
    "links": {
     "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-DREN-LITE.zip",

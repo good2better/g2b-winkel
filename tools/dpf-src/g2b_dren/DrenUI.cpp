@@ -28,7 +28,7 @@ START_NAMESPACE_DISTRHO
 // param-indexen (zie DrenPlugin.cpp)
 enum { P_TOON, P_WARM, P_DRIFT, P_WARP, P_RUW, P_ECHO, P_RUIMTE, P_SUB,
        P_DECAY, P_SPOOK, P_MIX, P_LEVEL, P_KEY, P_SCALE, P_DICE, P_PRESET,
-       P_ON, P_GALAXY, P_SFEER };
+       P_ON, P_GALAXY, P_SFEER, P_ZAPBACK, P_TIJD, P_CATCH, P_LOCKS };
 #ifdef DREN_LITE
 static const int kNumPres = 64;
 #define DREN_TITLE "G2B DREN LITE"
@@ -52,6 +52,7 @@ public:
         std::memset(fScope, 0, sizeof(fScope));
         std::memset(fLocked, 0, sizeof(fLocked));
         fScopePos = 0; fDrag = -1; fLastY = 0.0f;
+        fTijd = 0.f; fTijdDrag = false;
         std::strcpy(fPName, "GOUD-UR-01");
     }
 
@@ -72,6 +73,9 @@ protected:
         else if (index == P_LEVEL) { fLv = value; repaint(); }
         else if (index == P_GALAXY) { fDm = value; repaint(); }
         else if (index == P_PRESET) { fProg = (int)(value + 0.5f); repaint(); }
+        else if (index == P_TIJD) { fTijd = value; repaint(); }
+        else if (index == P_LOCKS) { int m = (int)(value + 0.5f);
+            for (int j = 0; j < 10; ++j) fLocked[j] = (m >> j) & 1; repaint(); }
     }
 
     void stateChanged(const char* key, const char* value) override
@@ -237,7 +241,7 @@ protected:
 
         fontSize(10.0f); fillColor(90, 100, 94);
         textAlign(ALIGN_CENTER | ALIGN_BOTTOM);
-        text(W * 0.5f, H - 6.0f, "< > = aflevering · ZAP = zappen · sleep = draaien", nullptr);
+        text(W * 0.5f, H - 6.0f, "< > = aflevering · ZAP <- = terug · CATCH = bewaar 30s · slotjes = lock", nullptr);
     }
 
     bool onMouse(const MouseEvent& ev) override
@@ -249,6 +253,27 @@ protected:
             // ZAP
             if (ev.pos.getX() >= 14 && ev.pos.getX() <= 54 && ev.pos.getY() >= 46 && ev.pos.getY() <= 62)
             { editParameter(P_DICE, true); spv(P_DICE, 1.f); editParameter(P_DICE, false); return true; }
+            // ZAP-TERUG
+            if (ev.pos.getX() >= 58 && ev.pos.getX() <= 84 && ev.pos.getY() >= 46 && ev.pos.getY() <= 62)
+            { spv(P_ZAPBACK, 1.f); repaint(); return true; }
+            // DREAM CATCHER
+            if (ev.pos.getX() >= 88 && ev.pos.getX() <= 132 && ev.pos.getY() >= 46 && ev.pos.getY() <= 62)
+            { spv(P_CATCH, 1.f); repaint(); return true; }
+            // TIJDREIS strip
+            if (ev.pos.getX() >= 136 && ev.pos.getX() <= 220 && ev.pos.getY() >= 46 && ev.pos.getY() <= 62)
+            { fTijdDrag = true; tijdSet(ev.pos.getX()); return true; }
+#ifdef DREN_LITE
+            // upsell-knop
+            if (ev.pos.getX() >= 224 && ev.pos.getX() <= 344 && ev.pos.getY() >= 46 && ev.pos.getY() <= 62)
+            {
+#ifdef _WIN32
+                std::system("start \"\" \"https://good2better.com/p.html?id=g2bdren&utm_source=dren_lite\"");
+#else
+                std::system("xdg-open 'https://good2better.com/p.html?id=g2bdren&utm_source=dren_lite' &");
+#endif
+                return true;
+            }
+#endif
             // aflevering ‹ ›
             const float nx = W - 150.0f - 60.0f, ny = 12.0f, nw = 150.0f;
             if (ev.pos.getY() >= ny && ev.pos.getY() <= ny + 34.0f)
@@ -277,10 +302,13 @@ protected:
                 const float cy = 150.0f + row * 66.0f;
                 const float lx = cx + 21.0f - 9.0f, ly = cy - 21.0f - 3.0f;
                 if (ev.pos.getX() >= lx && ev.pos.getX() <= lx + 9 && ev.pos.getY() >= ly && ev.pos.getY() <= ly + 9)
-                { fLocked[i] = !fLocked[i]; repaint(); return true; }
+                { fLocked[i] = !fLocked[i];
+                int m = 0; for (int j = 0; j < 10; ++j) if (fLocked[j]) m |= (1 << j);
+                spv(P_LOCKS, (float)m); repaint(); return true; }
             }
         }
         else if (fXYdrag) { fXYdrag = false; return true; }
+        else if (fTijdDrag) { fTijdDrag = false; return true; }
 
         if (ev.press)
         {
@@ -312,9 +340,19 @@ protected:
         repaint();
     }
 
+    void tijdSet(double mx)
+    {
+        float t = (float)((mx - 136.0) / 84.0);
+        if (t < 0.f) t = 0.f; if (t > 1.f) t = 1.f;
+        fTijd = t;
+        spv(P_TIJD, t);
+        repaint();
+    }
+
     bool onMotion(const MotionEvent& ev) override
     {
         if (fXYdrag) { xySet(ev.pos.getX(), ev.pos.getY()); return true; }
+        if (fTijdDrag) { tijdSet(ev.pos.getX()); return true; }
         if (fDrag < 0) return false;
         const float dy = fLastY - (float)ev.pos.getY();
         fLastY = (float)ev.pos.getY();
@@ -367,6 +405,8 @@ private:
     bool  fXYdrag = false;
     float fXX = 18.0f, fXY_ = 296.0f, fXW = 524.0f, fXH = 56.0f;
     char  fPName[24];
+    float fTijd = 0.f;
+    bool  fTijdDrag = false;
 
     void spv(uint32_t i,float v){setParameterValue(i,v);parameterChanged(i,v);}
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DrenUI)
