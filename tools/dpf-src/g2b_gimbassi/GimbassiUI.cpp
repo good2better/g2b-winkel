@@ -27,8 +27,8 @@ public:
     GimbassiUI() : UI(DISTRHO_UI_DEFAULT_WIDTH, DISTRHO_UI_DEFAULT_HEIGHT) {
         loadSharedResources();
         static const float mn[kN]={40,0,0,0,0,0};
-        static const float mx[kN]={200,100,100,1,1,100};
-        static const float df[kN]={120,15,85,1,0,100};
+        static const float mx[kN]={200,100,100,100,1,100};
+        static const float df[kN]={120,15,85,100,0,100};
         static const char* lb[kN]={"FILT","GATE","DUCK","QUANT","MODE","MIX"};
         std::memcpy(fMin,mn,sizeof(mn));std::memcpy(fMax,mx,sizeof(mx));
         std::memcpy(fVal,df,sizeof(df));std::memcpy(fDef,df,sizeof(df));
@@ -36,7 +36,7 @@ public:
     }
 protected:
     void parameterChanged(uint32_t i,float v) override {
-        if(i<kN)fVal[i]=v;else if(i==kN+1)fMeter=v;repaint();
+        if(i<kN)fVal[i]=v;else if(i==6)fMidi=v;else if(i==8)fMeter=v;else if(i==9)fLink=v;repaint();
     }
     void onNanoDisplay() override {
         const float W=getWidth(),H=getHeight();
@@ -47,17 +47,25 @@ protected:
         text(18.f,38.f,"bas + kick eruit — live op je track",nullptr);
         fontSize(13.f);fillColor(Color(232,182,76));
         textAlign(ALIGN_RIGHT|ALIGN_MIDDLE);text(W-18.f,20.f,"PRO",nullptr);
-        // slag-lamp
-        const float lx=W-26.f,ly=46.f;
-        beginPath();circle(lx,ly,7.f);
+        // slag-lamp + link-lamp + MIDI-pill rechts
+        const float lx=W-26.f,ly=44.f;
+        beginPath();circle(lx,ly,6.f);
         fillColor(fMeter>0.05f?g2bsk(0,5):g2bsk(0,4));fill();
         fontSize(8.f);fillColor(g2bsk(0,3));textAlign(ALIGN_RIGHT|ALIGN_MIDDLE);
-        text(lx-11.f,ly,"SLAG",nullptr);
+        text(lx-10.f,ly,"SLAG",nullptr);
+        beginPath();circle(lx,ly+20.f,6.f);
+        fillColor(fLink>0.5f?Color(232,182,76):g2bsk(0,4));fill();
+        fillColor(g2bsk(0,3));text(lx-10.f,ly+20.f,"LINK",nullptr);
+        // MIDI pill
+        beginPath();roundedRect(lx-64.f,ly+32.f,62.f,16.f,8.f);
+        fillColor(fMidi>0.5f?g2bsk(0,5):g2bsk(0,4));fill();
+        fontSize(9.f);fillColor(fMidi>0.5f?g2bsk(0,0):g2bsk(0,2));
+        textAlign(ALIGN_CENTER|ALIGN_MIDDLE);text(lx-33.f,ly+40.f,"MIDI",nullptr);
         // 6 knoppen
         const float cy=H*0.52f,gap=W/6.f;
         for(int i=0;i<kN;i++){
             const float cx=gap*(i+0.5f),kr=34.f;
-            const bool tgl=(i==3||i==4);
+            const bool tgl=(i==4);
             beginPath();circle(cx,cy,kr);fillColor(g2bsk(0,1));fill();
             beginPath();circle(cx,cy,kr);strokeColor(g2bsk(0,4));strokeWidth(2.f);stroke();
             const float norm=(fVal[i]-fMin[i])/(fMax[i]-fMin[i]);
@@ -73,13 +81,13 @@ protected:
             fontSize(10.f);fillColor(g2bsk(0,3));textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
             text(cx,cy+kr+16.f,fLbl[i],nullptr);
             char buf[24];
-            if(tgl)std::snprintf(buf,sizeof(buf),"%s",i==3?(fVal[i]>0.5f?"AAN":"UIT"):(fVal[i]>0.5f?"SPLIT":"MIX"));
+            if(tgl)std::snprintf(buf,sizeof(buf),"%s",fVal[i]>0.5f?"SPLIT":"MIX");
             else if(i==0)std::snprintf(buf,sizeof(buf),"%.0f Hz",fVal[i]);
             else std::snprintf(buf,sizeof(buf),"%.0f%%",fVal[i]);
             fontSize(11.f);fillColor(g2bsk(0,5));text(cx,cy+kr+30.f,buf,nullptr);
         }
         fontSize(8.5f);fillColor(g2bsk(0,3));textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
-        text(W/2.f,H-10.f,"SPLIT: links = bas · rechts = kick · QUANT volgt je DAW-tempo",nullptr);
+        text(W/2.f,H-10.f,"SPLIT: L=bas R=kick · QUANT% volgt DAW-tempo · MIDI=bas-noten uit",nullptr);
     }
     bool onMouse(const MouseEvent& ev) override {
         const float W=getWidth(),H=getHeight(),cy=H*0.52f,gap=W/6.f;
@@ -87,8 +95,12 @@ protected:
             for(int i=0;i<kN;i++){const float cx=gap*(i+0.5f);
                 if(std::hypot(ev.pos.getX()-cx,ev.pos.getY()-cy)<38.f){
                     fDrag=i;fLastY=ev.pos.getY();
-                    if(i>=3&&i<=4){fVal[i]=fVal[i]>0.5f?0.f:1.f;setParameterValue(i,fVal[i]);fDrag=-1;repaint();}
+                    if(i==4){fVal[i]=fVal[i]>0.5f?0.f:1.f;setParameterValue(i,fVal[i]);fDrag=-1;repaint();}
                     return true;}}
+            // MIDI-pill rechts
+            const float lx=W-26.f,ly=44.f;
+            if(ev.pos.getX()>lx-64.f&&ev.pos.getX()<lx-2.f&&ev.pos.getY()>ly+32.f&&ev.pos.getY()<ly+48.f){
+                fMidi=fMidi>0.5f?0.f:1.f;setParameterValue(6,fMidi);repaint();return true;}
             return false;
         }
         if(fDrag>=0&&ev.button==kMouseButtonLeft&&!ev.press){
@@ -103,7 +115,7 @@ protected:
 private:
     static const int kN=6;
     float fMin[kN],fMax[kN],fVal[kN],fDef[kN];const char* fLbl[kN];
-    float fMeter=0.f;int fDrag=-1;float fLastY=0.f;
+    float fMeter=0.f,fLink=0.f,fMidi=1.f;int fDrag=-1;float fLastY=0.f;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GimbassiUI)
 };
 
