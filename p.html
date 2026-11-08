@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B Winkel — product</title>
+<meta name="theme-color" content="#0d0f0e">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230D0F0E'/><text x='50' y='68' font-size='52' font-weight='bold' text-anchor='middle' fill='%232FBF71' font-family='sans-serif'>G2</text></svg>">
+<style>
+:root{
+  --bg:#0a0c0b; --panel:#141816; --panel2:#1c221e; --line:#26302a;
+  --txt:#eef4f0; --dim:#93a69b; --accent:#2fbf71; --accent2:#1d7a48;
+  --glow:rgba(47,191,113,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:
+  radial-gradient(1200px 500px at 50% -200px, var(--glow), transparent 70%),
+  var(--bg);
+  color:var(--txt);
+  font:15px/1.6 'Segoe UI',system-ui,sans-serif;min-height:100vh}
+a{color:var(--accent)}
+.top{max-width:940px;margin:0 auto;padding:18px 16px 0}
+.terug{color:var(--dim);text-decoration:none;font-size:13px}
+.terug:hover{color:var(--accent)}
+main{max-width:940px;margin:0 auto;padding:14px 16px 70px}
+.hero{display:flex;gap:22px;align-items:flex-start;
+  background:linear-gradient(180deg,var(--panel2) 0%,var(--panel) 100%);
+  border:1px solid var(--line);border-radius:18px;padding:22px;
+  box-shadow:0 10px 34px rgba(0,0,0,.35)}
+.cover{width:150px;height:150px;border-radius:14px;object-fit:cover;
+  background:#000;flex:none;border:1px solid var(--line)}
+.info{flex:1;min-width:0}
+.titel{font-size:24px;font-weight:800;line-height:1.25}
+.badge{display:inline-block;background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#111;font-size:11px;font-weight:800;padding:2px 10px;border-radius:20px;
+  vertical-align:middle;margin-left:8px}
+.prijs{color:var(--accent);font-weight:800;font-size:22px;margin:8px 0 2px}
+.prijs small{color:var(--dim);font-weight:400;font-size:13px}
+.beschr{color:var(--dim);margin:10px 0 16px;max-width:60ch}
+.koopblok{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.koop{display:inline-block;background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#07110b;font-weight:800;text-decoration:none;padding:12px 26px;
+  border-radius:12px;font-size:15px}
+.koop:hover{filter:brightness(1.08)}
+.koop.zwart{background:transparent;color:var(--txt);border:1px solid var(--line)}
+.koop.uit{opacity:.5;pointer-events:none}
+.licentie{background:var(--panel2);border:1px solid var(--line);color:var(--txt);
+  border-radius:10px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer}
+.licentie.on{border-color:var(--accent);color:var(--accent)}
+.sectie{margin-top:26px}
+.sectie h2{font-size:15px;font-weight:800;letter-spacing:.4px;
+  color:var(--dim);text-transform:uppercase;margin-bottom:10px}
+.video{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.vid{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:10px}
+.vid .lbl{font-size:12px;color:var(--dim);font-weight:700;margin:0 0 6px 4px}
+video{width:100%;border-radius:10px;display:block;background:#000}
+.punten{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.punten li{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:10px 14px;font-size:13px}
+.punten li::before{content:"✓ ";color:var(--accent);font-weight:800}
+.advies{display:flex;gap:14px;align-items:center;justify-content:space-between;
+  background:linear-gradient(90deg,rgba(47,191,113,.10),transparent);
+  border:1px solid var(--accent2);border-radius:14px;padding:14px 18px}
+.advies b{color:var(--txt)}
+.advies span{color:var(--dim);font-size:13px}
+.fout{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:30px;text-align:center;color:var(--dim)}
+@media(max-width:640px){
+  .hero{flex-direction:column}
+  .cover{width:100%;height:auto;aspect-ratio:1}
+  .video{grid-template-columns:1fr}
+  .punten{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="top"><a class="terug" href="index.html">← terug naar de winkel</a></div>
+<main id="app"><div class="fout">laden…</div></main>
+<script src="cookie.js" defer></script>
+<script>
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+const NAMEN={mp3:"MP3",wav:"WAV",exclusief:"EXCLUSIEF"};
+async function main(){
+  const id=new URLSearchParams(location.search).get("id");
+  const r=await fetch("products.json");const d=await r.json();
+  const lijst=d.producten||[];
+  const p=lijst.find(x=>x.id===id);
+  const app=document.getElementById("app");
+  if(!p){app.innerHTML=`<div class="fout">Dit product bestaat niet (meer). <a href="index.html">Naar de winkel →</a></div>`;return}
+  document.title="G2B — "+p.titel;
+  const links=p.links||{};
+  const licenties=["mp3","wav","exclusief"].filter(k=>links[k]);
+  const koopHref=licenties.length?links[licenties[0]]:(links.stripe||links.koop||"");
+  const gratis=p.prijs==="GRATIS";
+  // advies: eerste upsell die bestaat
+  const advies=(p.upsell||[]).map(u=>lijst.find(q=>q.id===u)).find(Boolean);
+  const vids=[];
+  if(p.video) vids.push({lbl:"▶ demo — hoort hoe het klinkt",src:p.video,subs:p});
+  if(p.uitleg) vids.push({lbl:"▶ uitleg — EN stem, NL/ES ondertiteling",src:p.uitleg,uitleg:true,subs:p});
+  const punten=[];
+  if(gratis) punten.push("Gratis download — geen account nodig");
+  else punten.push("Directe download na betaling");
+  punten.push("Gebruiksrecht — eigenaar blijft Good2Better High Quality Media");
+  punten.push("Nederlands recht van toepassing");
+  if(licenties.includes("exclusief")) punten.push("EXCLUSIEF = exclusief gebruiksrecht, geen buy-out");
+  if(links.browser) punten.push("Ook direct te gebruiken in je browser");
+  app.innerHTML=`
+  <section class="hero">
+    ${p.cover?`<img class="cover" src="${esc(p.cover)}" alt="">`:""}
+    <div class="info">
+      <div class="titel">${esc(p.titel)}${p.badge?`<span class="badge">${esc(p.badge)}</span>`:""}</div>
+      ${p.prijs?`<div class="prijs">${esc(p.prijs)} <small>${gratis?"":"eenmalig · geen abonnement"}</small></div>`:""}
+      ${p.beschrijving?`<div class="beschr">${esc(p.beschrijving)}</div>`:""}
+      <div class="koopblok">
+        ${licenties.map((k,i)=>`<button class="licentie${i===0?" on":""}" data-lic="${k}">${NAMEN[k]}${p.prijzen&&p.prijzen[k]?" · "+esc(p.prijzen[k]):""}</button>`).join("")}
+        ${koopHref?`<a class="koop" id="koop" target="_blank" rel="noopener" href="${esc(koopHref)}">${gratis?"⬇ Download":"Koop nu"}</a>`:`<span class="koop uit">Binnenkort</span>`}
+        ${links.browser?`<a class="koop zwart" href="${esc(links.browser)}">🌐 Open in browser</a>`:""}
+      </div>
+    </div>
+  </section>
+  ${p.preview?`<section class="sectie"><h2>Beluister</h2>
+    <audio controls preload="none" style="width:100%" src="${esc(p.preview)}"></audio></section>`:""}
+  ${vids.length?`<section class="sectie"><h2>Video${vids.length>1?"'s":""}</h2><div class="video">
+    ${vids.map(v=>`<div class="vid"><div class="lbl">${v.lbl}</div>
+      <video controls playsinline preload="none" ${p.cover?`poster="${esc(p.cover)}"`:""} src="${esc(v.src)}">
+        ${v.uitleg&&p.sub_nl?`<track kind="subtitles" srclang="nl" label="Nederlands" src="${esc(p.sub_nl)}" default>`:""}
+        ${v.uitleg&&p.sub_es?`<track kind="subtitles" srclang="es" label="Español" src="${esc(p.sub_es)}">`:""}
+      </video></div>`).join("")}
+  </div></section>`:""}
+  <section class="sectie"><h2>Wat je krijgt</h2><ul class="punten">
+    ${punten.map(x=>`<li>${esc(x)}</li>`).join("")}
+  </ul></section>
+  ${advies?`<section class="sectie"><h2>Advies</h2>
+    <div class="advies"><div><b>Past bij: ${esc(advies.titel)}</b><br><span>${esc(advies.beschrijving||"").slice(0,140)}</span></div>
+      <a class="koop zwart" href="p.html?id=${esc(advies.id)}">${esc(advies.prijs||"")}</a></div>
+  </section>`:""}`;
+  // licentie-keuze → koopknop wisselt
+  document.querySelectorAll(".licentie").forEach(b=>b.addEventListener("click",()=>{
+    document.querySelectorAll(".licentie").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    const k=b.dataset.lic;document.getElementById("koop").href=links[k];
+  }));
+}
+main();
+</script>
+</body>
+</html>

@@ -204,7 +204,7 @@ async function laden() {
           ? `<img class="cover" src="${esc(p.cover)}" alt="">`
           : ""}
         <div class="info">
-          <div class="titel">${esc(p._titel)}
+          <div class="titel"><a href="p.html?id=${esc(p.id)}" style="color:inherit;text-decoration:none">${esc(p._titel)}</a>
             ${p._badge ? ` <span style="display:inline-block;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#111;font-size:11px;font-weight:800;padding:2px 8px;border-radius:20px;vertical-align:middle">${esc(p._badge)}</span>` : ""}</div>
           ${p.prijs ? `<div class="prijs">${esc(p.prijs)}</div>` : ""}
         </div>
