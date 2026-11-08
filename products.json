@@ -1805,6 +1805,21 @@
    "groep": "plugins",
    "badge": "GRATIS",
    "cover": "media/gimbassilite-cover.png"
+  },
+  {
+   "id": "gimbassipro",
+   "titel": "G2B GIM BASSI PRO — bas+kick extractor VST",
+   "soort": "plugin",
+   "beschrijving": "Sleep een beat of song in je track en GIM BASSI haalt er alleen de bas (sub/808) en de kick uit, live — schoon, op de maat. PRO-functies: SPLIT-modus (L=bas R=kick), QUANT 0-100% (jouw groove of strak op de grid, met 15ms lookahead en PDC), DUCK op sub <90Hz (kick blijft doorboren), bas→MIDI (schrijf de baslijn als noten naar je DAW), Phase-Lock (tweede instantie flipt fase + zoekt de sterkste kick — LINK-lamp). Soft-limit = nooit clip, geen gruis. VST3 + CLAP + standalone EXE, NL-handleiding met plaatjes. 100% eigen code — geen cloud, geen abonnement.",
+   "prijs": "€ 24,95",
+   "links": {
+    "koop": "bestel.html?p=gimbassipro",
+    "download": "bedankt.html?k=gimbassipro",
+    "browser": "tools/gimbassi/gimbassi.html"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/gimbassilite-cover.png"
   }
  ]
 }
