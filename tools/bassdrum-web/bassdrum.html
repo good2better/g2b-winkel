@@ -73,12 +73,12 @@ function build(){
 }
 function setSet(i){cur=i;build();load(i)}
 const voices={};
-function speel(i){
+function speel(i,semi){
  const b=buffers[i];if(!b)return;
  const a=ac(),t=a.currentTime;
  if(voices[i]){try{voices[i].stop()}catch(e){}}
  const s=a.createBufferSource();s.buffer=b;
- s.playbackRate.value=Math.pow(2,(+document.getElementById('pitch').value)/12);
+ s.playbackRate.value=Math.pow(2,(+document.getElementById('pitch').value+(semi||0))/12);
  const f=+document.getElementById('filt').value;
  let node=s;
  if(f>0){const lp=a.createBiquadFilter();lp.type='lowpass';lp.frequency.value=f;s.connect(lp);node=lp}
@@ -102,6 +102,6 @@ document.addEventListener('keydown',e=>{
 });
 
 </script>
-<script src="midi.js"></script><footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
+<script src="midi.js"></script><script src="keyboardmode.js"></script><footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 </body>
 </html>
