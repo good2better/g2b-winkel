@@ -112,7 +112,8 @@
    "links": {
     "koop": "bestel.html?p=g2bmixer",
     "download": "bedankt.html?k=g2bmixer",
-    "browser": "mixer.html"
+    "browser": "mixer.html",
+    "stripe": "https://buy.stripe.com/fZu3cv1ssber4bBfcx5J61x"
    },
    "groep": "plugins",
    "badge": "NIEUW",
@@ -133,7 +134,8 @@
    "prijs": "€ 34,95",
    "links": {
     "koop": "bestel.html?p=g2bgeluidmidi",
-    "download": "bedankt.html?k=g2bgeluidmidi"
+    "download": "bedankt.html?k=g2bgeluidmidi",
+    "stripe": "https://buy.stripe.com/cNidR9gnm1DRazZ0hD5J61z"
    },
    "groep": "plugins",
    "badge": "NIEUW — 3 IN 1",
@@ -155,7 +157,8 @@
    "links": {
     "koop": "bestel.html?p=g2brefors",
     "download": "bedankt.html?k=g2brefors",
-    "browser": "tools/refors-web/refors.html"
+    "browser": "tools/refors-web/refors.html",
+    "stripe": "https://buy.stripe.com/bJe5kD3AAciv37xfcx5J61y"
    },
    "groep": "plugins",
    "badge": "NIEUW",
@@ -176,7 +179,8 @@
    "prijs": 79.0,
    "links": {
     "koop": "bestel.html?p=g2bprodsuite",
-    "download": "d/g2bprodsuite/"
+    "download": "d/g2bprodsuite/",
+    "stripe": "https://buy.stripe.com/28EdR98UUdmzeQfggB5J61B"
    },
    "groep": "plugins",
    "badge": "DEAL",
@@ -198,7 +202,8 @@
    "prijs": "€ 34,95",
    "links": {
     "koop": "bestel.html?p=g2bband",
-    "download": "bedankt.html?k=g2bband"
+    "download": "bedankt.html?k=g2bband",
+    "stripe": "https://buy.stripe.com/00wfZhc762HVazZe8t5J61A"
    },
    "groep": "plugins",
    "badge": "NIEUW — 4 IN 1",
