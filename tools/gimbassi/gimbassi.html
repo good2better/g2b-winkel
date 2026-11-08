@@ -37,6 +37,10 @@ canvas.wave{width:100%;height:54px;background:#0a0d0a;border:1px solid var(--ran
 </style></head><body>
 <h1>G2B GIM BASSI <small>beat/song erin → bass (sub/808) + kick eruit</small></h1>
 <div class="sub">Drop een beat of song. Hij zoekt de kick-slagen, quantized ze op het grid en geeft je KICK en BASS apart terug — zonder de rest.</div>
+<div id="demoBalk" style="width:min(920px,96vw);margin-bottom:12px;padding:12px 18px;border:1px solid var(--groen,#3ddc84);border-radius:12px;background:rgba(61,220,132,.08);font-size:13.5px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+  <span>Alles werkt — beluister en voel hoe goed het is. <b>Downloads staan uit</b> in de demo. Koop de PRO voor wav-downloads + alle extra's.</span>
+  <a href="/p.html?id=gimbassi-pro" style="margin-left:auto;color:var(--groen,#3ddc84);font-weight:800;text-decoration:none">KOOP NU →</a>
+</div>
 <div id="insts"></div>
 <button class="plus" onclick="maakInst()" title="nog een GIM BASSI — lagen maken">+</button>
 <div class="kaart"><b>zo werkt-ie:</b> bestand erin → BASSI zoekt zelf het tempo + de kick-slagen in het lage deel · <b>QUANTIZE</b> zet de slagen netjes op het 16e-raster (zoals beatmaker) · <b>KICK</b> = alleen die slagen · <b>BASS</b> = de sub/808 eronder, kicks eruit gedimd · plus-knop = nog een voor lagen</div>
@@ -160,7 +164,7 @@ function bassiDing(id){
   uit(id,'BASS',bs,I.sr,'sub/808 onderlaag, kicks eruit gedimd');
   const samen=new Float32Array(bs.length);for(let i=0;i<bs.length;i++)samen[i]=bs[i]+kd[i];
   uit(id,'BASS+KICK',samen,I.sr,'alles samen — de rest is weg');
-  st.textContent=kicks.length+' slagen · '+(bpm?bpm+' bpm':'? bpm')+' — klaar, luister of download';
+  st.textContent=kicks.length+' slagen · '+(bpm?bpm+' bpm':'? bpm')+' — klaar, luister (download = PRO)';
  },30);
 }
 function uit(id,naam,data,sr,info){
@@ -169,7 +173,7 @@ function uit(id,naam,data,sr,info){
  const g=mx>0?0.89/mx:0,out=new Int16Array(data.length);
  for(let i=0;i<data.length;i++)out[i]=Math.max(-32768,Math.min(32767,Math.round(data[i]*g*32767)));
  const d=document.createElement('div');d.className='stem';
- d.innerHTML=`<b>${naam}</b><div>${info}</div><div class="mini"><button class="p">▶</button><button class="d">⬇ wav</button></div>`;
+ d.innerHTML=`<b>${naam}</b><div>${info}</div><div class="mini"><button class="p">▶</button><button class="d" title="demo — koop PRO voor downloads">🔒 wav</button></div>`;
  let src=null;
  d.querySelector('.p').onclick=e=>{
   if(!uit.ac)uit.ac=new(window.AudioContext||window.webkitAudioContext)();
@@ -179,13 +183,7 @@ function uit(id,naam,data,sr,info){
   src=uit.ac.createBufferSource();src.buffer=b;src.connect(uit.ac.destination);src.start();
   e.target.textContent='■';setTimeout(()=>e.target.textContent='▶',b.duration*1000);};
  d.querySelector('.d').onclick=()=>{
-  const b=new ArrayBuffer(44+out.length*2),v=new DataView(b),w=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};
-  w(0,'RIFF');v.setUint32(4,36+out.length*2,true);w(8,'WAVE');w(12,'fmt ');
-  v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);
-  v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,out.length*2,true);
-  for(let i=0;i<out.length;i++)v.setInt16(44+i*2,out[i],true);
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([b],{type:'audio/wav'}));
-  a.download='gimbassi-'+naam.toLowerCase().replace('+','-')+'.wav';a.click();};
+  window.location.href='/p.html?id=gimbassi-pro';};
  $(id+'-res').appendChild(d);
 }
 maakInst();
