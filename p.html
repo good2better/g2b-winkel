@@ -114,7 +114,7 @@ async function main(){
       ${p.beschrijving?`<div class="beschr">${esc(p.beschrijving)}</div>`:""}
       <div class="koopblok">
         ${licenties.map((k,i)=>`<button class="licentie${i===0?" on":""}" data-lic="${k}">${NAMEN[k]}${p.prijzen&&p.prijzen[k]?" · "+esc(p.prijzen[k]):""}</button>`).join("")}
-        ${koopHref?`<a class="koop" id="koop" target="_blank" rel="noopener" href="${esc(koopHref)}">${gratis?"⬇ Download":"Koop nu"}</a>`:`<span class="koop uit">Binnenkort</span>`}
+        ${koopHref?`<a class="koop" id="koop" ${gratis?'data-gate="1"':""} target="_blank" rel="noopener" href="${esc(koopHref)}">${gratis?"⬇ Download":"Koop nu"}</a>`:`<span class="koop uit">Binnenkort</span>`}
         ${links.browser?`<a class="koop zwart" href="${esc(links.browser)}">🌐 Open in browser</a>`:""}
       </div>
     </div>
@@ -144,5 +144,6 @@ async function main(){
 }
 main();
 </script>
+<script src="litegate.js"></script>
 </body>
 </html>
