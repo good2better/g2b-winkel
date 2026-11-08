@@ -63,7 +63,7 @@ input[type=range]{accent-color:#3DDC84;width:110px}
 <div class="card">
   <div class="res">
     <button class="btn b2" id="bPlay">▶ LUISTER</button>
-    <a class="dl" id="dl" style="display:none" download="stapel.wav">⬇ DOWNLOAD WAV</a>
+    <a class="dl" id="dl" style="display:none" href="stapeldice-pro.html">🔒 DOWNLOAD = PRO</a>
     <span class="hint" id="resInfo"></span>
   </div>
   <audio id="au" controls style="margin-top:8px;width:100%"></audio>
@@ -230,7 +230,7 @@ function bouw(k){
     while(libCollect.files.some(f=>f[0]===ln))ln=`${libCollect.naam}/${naam}-${c++}.wav`;
     libCollect.files.push([ln,wavAb]);}
   const url=URL.createObjectURL(new Blob([wavAb],{type:'audio/wav'}));
-  $('au').src=url;$('dl').href=url;$('dl').download=naam+'.wav';$('dl').style.display='';
+  $('au').src=url;$('dl').style.display='';
   $('resInfo').textContent=`${(n/SR).toFixed(2)}s · ${k} lagen · ${dubbel?'haas-dubbel':'mono'} · limiter 0.85`;
   const card=document.createElement('div');card.className='slot';card.style.marginTop='8px';
   card.innerHTML=`<div class=nm>${naam}.wav</div><audio controls src="${url}" style="width:100%;margin:6px 0"></audio><a class=dl href="${url}" download="${naam}.wav" style="display:inline-block;padding:8px 14px;font-size:12px">⬇ download</a>`;
