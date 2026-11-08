@@ -98,6 +98,7 @@ async function main(){
   const vids=[];
   if(p.video) vids.push({lbl:"▶ demo — hoort hoe het klinkt",src:p.video,subs:p});
   if(p.uitleg) vids.push({lbl:"▶ uitleg — EN stem, NL/ES ondertiteling",src:p.uitleg,uitleg:true,subs:p});
+  (p.video_extra||[]).forEach((x,i)=>vids.push({lbl:"▶ "+(p.video_extra_lbls?.[i]||"extra versie"),src:x,subs:p}));
   const punten=[];
   if(gratis) punten.push("Gratis download — geen account nodig");
   else punten.push("Directe download na betaling");

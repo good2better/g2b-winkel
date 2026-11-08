@@ -1452,6 +1452,14 @@
       "upsell": [
         "beatmakerpro",
         "g2balles"
+      ],
+      "video_extra": [
+        "media/brein-browser.mp4",
+        "media/brein-pro.mp4"
+      ],
+      "video_extra_lbls": [
+        "BREIN browser (gratis) — grid + mute/lock/only",
+        "BREIN PRO — 90 geleerde kits × grid"
       ]
     },
     {
