@@ -197,7 +197,7 @@ async function laden() {
     const links = p.links || {};
     const licenties = ["mp3", "wav", "exclusief"]
       .filter(k => links[k]);
-    const koopHref = licenties.length ? links[licenties[0]] : (links.koop || "");
+    const koopHref = licenties.length ? links[licenties[0]] : (links.stripe || links.koop || "");
     return `${kop}<div class="card" data-id="${esc(p.id)}" data-cat="${CAT(p)}">
       <div class="top">
         ${p.cover

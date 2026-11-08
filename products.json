@@ -8,7 +8,8 @@
    "prijs": "€ 34,95",
    "links": {
     "koop": "bestel.html?p=g2bdicesynth",
-    "download": "bedankt.html?k=g2bdicesynth"
+    "download": "bedankt.html?k=g2bdicesynth",
+    "stripe": "https://buy.stripe.com/8x2cN5c76dmz5fF5BX5J61v"
    },
    "groep": "plugins",
    "badge": "NIEUW",
@@ -48,7 +49,8 @@
    "links": {
     "koop": "bestel.html?p=g2bmaster",
     "download": "bedankt.html?k=g2bmaster",
-    "browser": "tools/master-web/master.html"
+    "browser": "tools/master-web/master.html",
+    "stripe": "https://buy.stripe.com/bJe3cv5II6Yb5fFaWh5J61u"
    },
    "groep": "plugins",
    "badge": "NIEUW",
@@ -70,7 +72,8 @@
    "prijs": "€ 9,95",
    "links": {
     "koop": "bestel.html?p=g2bpillpack",
-    "download": "bedankt.html?k=g2bpillpack"
+    "download": "bedankt.html?k=g2bpillpack",
+    "stripe": "https://buy.stripe.com/bJedR98UU5U74bB4xT5J61t"
    },
    "groep": "plugins",
    "badge": "NIEUW",
