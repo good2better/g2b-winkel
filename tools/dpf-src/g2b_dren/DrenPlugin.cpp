@@ -339,7 +339,7 @@ protected:
                 // TIJDREIS: 0 = nu (clean) · 0.5 = 1950 (bandpass+warm) · 1 = 1920 (kraak)
                 if (fTijd > 0.01f) {
                     const float t = fTijd;
-                    const float lpA = 0.60f - 0.45f * t;
+                    const float lpA = 0.62f - 0.34f * t;
                     fTrLp[0] += lpA * (sigL - fTrLp[0]); fTrLp[1] += lpA * (sigR - fTrLp[1]);
                     sigL = fTrLp[0]; sigR = fTrLp[1];
                     const float hpA = 0.28f * t;
@@ -347,11 +347,7 @@ protected:
                     fTrHp[1] += hpA * (sigR - fTrHp[1]); sigR -= fTrHp[1];
                     const float dr = 1.f + 3.f * t;
                     sigL = std::tanh(sigL * dr); sigR = std::tanh(sigR * dr);
-                    if (t > 0.55f) {
-                        fNoise = fNoise * 1103515245u + 12345u;
-                        if ((fNoise & 0xFFFFFu) < 240u) { sigL += 0.30f * t; sigR += 0.30f * t; }
-                    }
-                    const float g = 1.f - 0.22f * t; sigL *= g; sigR *= g;
+                    const float g = 1.f - 0.15f * t; sigL *= g; sigR *= g;
                 }
                 // hard plafond: nooit boven 0.98 (brickwall)
                 if (sigL > 0.98f) sigL = 0.98f; else if (sigL < -0.98f) sigL = -0.98f;
