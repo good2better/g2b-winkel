@@ -76,6 +76,14 @@
   #drawtools button{border:none;border-radius:6px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;background:#eee}
   .tile .pts{position:absolute;top:30%;left:50%;color:#25d366;font-size:36px;font-weight:800;text-shadow:0 2px 8px #000;animation:rise 1.5s forwards;pointer-events:none;z-index:5}
   @keyframes rise{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-80px)}}
+  .tile.tA{border-color:#2196f3}
+  .tile.tB{border-color:#e53935}
+  .winov{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;z-index:7;pointer-events:none}
+  .winov .card{background:rgba(11,20,26,.95);border:3px solid var(--grn3);border-radius:18px;padding:26px 40px;text-align:center;color:#fff;box-shadow:0 0 50px rgba(37,211,102,.4)}
+  .winov .big{font-size:26px;font-weight:800;margin-bottom:6px}
+  .winov .w2{font-size:17px;color:#ffd54a;font-weight:700}
+  .cf{position:absolute;width:10px;height:16px;top:-20px;animation:cfall 2.6s ease-in forwards;border-radius:2px}
+  @keyframes cfall{to{transform:translateY(110vh) rotate(720deg);opacity:.7}}
 </style>
 </head>
 <body>
@@ -121,6 +129,7 @@
         <canvas id="drawcv" width="640" height="430" style="display:block;border-radius:8px;background:#fff;touch-action:none;max-width:78vw;cursor:crosshair"></canvas>
       </div>
     </div>
+    <div class="winov" id="winov"><div class="card"><div class="big"></div><div class="w2"></div></div></div>
     <div class="gbar">
       <select id="gamesel" style="background:#1c2833;color:#fff;border:1px solid #2a3942;border-radius:8px;padding:8px;font-size:13px;font-weight:700">
         <option value="kaart">🃏 30S ACTIE & KAARTEN</option>
@@ -189,7 +198,9 @@ $("mk").onclick=()=>{state.naam=$("naam").value.trim()||"Speler";state.room=code
 $("jn").onclick=()=>{state.naam=$("naam").value.trim()||"Speler";const c=$("code").value.trim().toUpperCase();if(c.length<3){toast("vul een kamer-code in");return}state.room=c;openPeer(null,false)};
 $("codetile").onclick=()=>{const u=location.origin+location.pathname+"?k="+state.room;navigator.clipboard?.writeText(u).then(()=>toast("link gekopieerd — stuur 'm naar je groep"))};
 async function openPeer(hostId,asHost){
-  try{stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:640}},audio:true})}catch(e){try{stream=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e2){stream=null;toast("geen camera/mic — je kijkt en chat mee")}}
+  const aud={echoCancellation:true,noiseSuppression:true,autoGainControl:true};
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:640}},audio:aud})}catch(e){try{stream=await navigator.mediaDevices.getUserMedia({audio:aud})}catch(e2){stream=null;toast("geen camera/mic — je kijkt en chat mee")}}
+  try{state.wakelock=await navigator.wakeLock.request("screen")}catch(e){}
   if(stream)$("me").srcObject=stream;
   state.isHost=asHost;
   state.peer=new Peer(hostId||undefined,{debug:0});
@@ -204,6 +215,8 @@ async function openPeer(hostId,asHost){
   state.peer.on("connection",c=>{wireConn(c)});
   state.peer.on("call",call=>{call.answer(stream);wireCall(call)});
   state.peer.on("error",e=>{if(e.type==="peer-unavailable")toast("kamer bestaat niet");else if(e.type==="unavailable-id")toast("kamer-netwerk hikt — probeer opnieuw");else console.warn(e)});
+  state.peer.on("disconnected",()=>{toast("verbinding hikt — herverbinden…");try{state.peer.reconnect()}catch(e){}});
+  document.addEventListener("visibilitychange",async()=>{if(document.visibilityState==="visible")try{state.wakelock=await navigator.wakeLock.request("screen")}catch(e){}});
 }
 document.querySelectorAll(".gcard:not(.dis)").forEach(c=>c.onclick=()=>{document.querySelectorAll(".gcard").forEach(x=>x.classList.remove("sel"));c.classList.add("sel");state.selGame=c.dataset.g});
 function enterRoom(){
@@ -247,6 +260,7 @@ function addTile(id,name,me,ms){
   updWho();
 }
 function updWho(){const n=Object.keys(state.peers).length;$("who").textContent=n+" speler"+(n==1?"":"s")}
+function teamTiles(){for(const id in state.peers){const t=document.getElementById("t-"+id);if(t){t.classList.remove("tA","tB");const tm=state.peers[id].team;if(tm)t.classList.add("t"+tm)}}}
 function handleData(c,d){
   if(state.isHost&&c.peer!==state.myId)return hostRelay(c.peer,d);
   switch(d.t){
@@ -301,7 +315,11 @@ function sendChat(){const v=$("chatin").value.trim();if(!v)return;$("chatin").va
   if(state.isHost&&state.playing&&state.game==="teken"&&state.spot!==state.myId&&matchWoord(v)){endRound(state.myId);return}
   addMsg(state.naam,v,true);sendHost({t:"chat",name:state.naam,txt:v})}
 function mask(w){return w.split("").map(c=>c===" "?"  ":"_ ").join("").trim()}
-function matchWoord(txt){return state.woord&&txt.toLowerCase().includes(state.woord.toLowerCase())}
+function lev(a,b){const m=a.length,n=b.length;if(Math.abs(m-n)>2)return 9;const d=[];for(let i=0;i<=m;i++)d[i]=[i];for(let j=1;j<=n;j++)d[0][j]=j;
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[m][n]}
+function matchWoord(txt){if(!state.woord)return false;const w=state.woord.toLowerCase(),t=txt.toLowerCase();
+  if(t.includes(w))return true;
+  return t.split(/\s+/).some(x=>x.length>3&&lev(x,w)<=Math.max(1,Math.floor(w.length/5)))}
 $("chatfab").onclick=()=>$("chatside").classList.toggle("open");
 $("startbtn").onclick=()=>{if(state.isHost)startRound();else toast("alleen de host kan starten")};
 $("goedbtn").onclick=()=>{sendHost({t:"goed"})};
@@ -381,6 +399,8 @@ function applyGame(d){
     const rev=d.woord||"";
     if(d.win)addMsg("","*** 🎉 "+(state.peers[d.win]?state.peers[d.win].name:"?")+" raadde het!"+(rev?(" Het was: "+rev):"")+" ***",false);
     else addMsg("","*** ⏱️ tijd om!"+(rev?(" Het was: "+rev):"")+" ***",false);
+    showWin(d.win?(state.peers[d.win]?state.peers[d.win].name:"?")+" raadde het!":"⏱️ tijd om!",rev);
+    if(d.win)confetti();
   }
 }
 function endRound(winId){
@@ -389,12 +409,15 @@ function endRound(winId){
   const pack={t:"game",act:"end",scores:state.scores,tscores:state.tscores,woord:rev,win:winId||null};
   applyGame(pack);bcast(pack);
 }
-function refreshTeams(){const e=$("teamscore");if(e)e.textContent="🔵 A: "+(state.tscores.A||0)+"  ·  🔴 B: "+(state.tscores.B||0)}
+function refreshTeams(){const e=$("teamscore");if(e)e.textContent="🔵 A: "+(state.tscores.A||0)+"  ·  🔴 B: "+(state.tscores.B||0);teamTiles()}
 function runTimer(secs){
   clearInterval(state.tInt);state.tLeft=secs;
   state.tInt=setInterval(()=>{state.tLeft--;$("tbar").style.width=Math.max(0,state.tLeft/secs*100)+"%";
     if(state.tLeft<=0){clearInterval(state.tInt);if(state.isHost)endRound(null)}},1000);
 }
+function showWin(t,w){const o=$("winov");o.style.display="flex";o.querySelector(".big").textContent="🎉 "+t;o.querySelector(".w2").textContent=w?("het was: "+w):"";clearTimeout(o._t);o._t=setTimeout(()=>o.style.display="none",3500)}
+function confetti(){const o=$("winov"),cols=["#25d366","#ffd54a","#2196f3","#e53935","#ff8ac2"];
+  for(let i=0;i<40;i++){const c=document.createElement("div");c.className="cf";c.style.left=(Math.random()*100)+"%";c.style.background=cols[i%5];c.style.animationDelay=(Math.random()*.8)+"s";c.style.transform="rotate("+(Math.random()*360)+"deg)";o.appendChild(c);setTimeout(()=>c.remove(),3400)}}
 function refreshScores(){for(const id in state.scores){const e=document.getElementById("sc-"+id);if(e)e.textContent=state.scores[id]+(state.peers[id]&&state.peers[id].team?("·"+state.peers[id].team):"")}refreshTeams()}
 /* --- TEKEN! --- */
 const cv=document.getElementById("drawcv"),cx2=cv.getContext("2d");
@@ -418,13 +441,10 @@ function dn(e){if(!myDraw)return;e.preventDefault();drawing=true;const p=cvPos(e
 function mv(e){if(!drawing||!myDraw)return;e.preventDefault();const p=cvPos(e);curSeg.p.push(p);segDraw({c:curSeg.c,w:curSeg.w,p:[curSeg.p[curSeg.p.length-2],p]})}
 function up(){if(!drawing)return;drawing=false;if(curSeg&&curSeg.p.length>0){sendHost({t:"draw",seg:curSeg})}curSeg=null}
 cv.addEventListener("mousedown",dn);cv.addEventListener("mousemove",mv);window.addEventListener("mouseup",up);
-cv.addEventListener("touchstart",dn,{passive:false});cv.addEventListener("touchmove",mv,{passive:false});cv.addEventListener("touchend",up);
-document.querySelectorAll(".pen").forEach(b=>b.onclick=()=>{document.querySelectorAll(".pen").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");pen=b.dataset.c;penW=5});
-$("gum").onclick=()=>{pen="#ffffff";penW=22};
-$("clearcv").onclick=()=>{const seg={c:"CLR",w:0,p:[]};applyDraw(seg);sendHost({t:"draw",seg})};
-$("leave").onclick=leaveRoom;
-function leaveRoom(){try{state.peer&&state.peer.destroy()}catch(e){}try{stream&&stream.getTracks().forEach(t=>t.stop())}catch(e){}location.href=location.pathname}
-(function(){const q=new URLSearchParams(location.search),k=q.get("k");if(k){$("code").value=k.toUpperCase();toast("code ingevuld — naam kiezen en deelnemen!")}})();
+cv.addEventListener("touchstart",dn,{passive:false});cv.addEventListener("touchmove",mv,{passive:false});window.addEventListener("touchend",up);
+document.querySelectorAll(".pen").forEach(b=>b.onclick=()=>{document.querySelectorAll(".pen").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");pen=b.dataset.c;penW=4});
+$("gum").onclick=()=>{pen="#fff";penW=18;document.querySelectorAll(".pen").forEach(x=>x.classList.remove("sel"))};
+$("clearcv").onclick=()=>{if(myDraw)sendHost({t:"draw",seg:{c:"CLR"}})};
 </script>
 </body>
 </html>
