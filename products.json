@@ -195,6 +195,22 @@
    "uitgelicht": true
   },
   {
+   "id": "g2bclub",
+   "titel": "G2B CLUB — alle browser-tools, voor altijd",
+   "prijs": "€ 49",
+   "badge": "NIEUW",
+   "groep": "apps",
+   "soort": "digitaal",
+   "cover": "apps-img/winkel.jpg",
+   "beschrijving": "Eénmalig lid, voor altijd. Krijg je eigen toegangscode voor de G2B CLUB leden-pagina: alle browser-tools in één overzicht — Beat Maker, GAW MINI, OCHO, BEST-OF, BAND, GELUID→MIDI, MIXER v2, STAPEL-DICE, GAME-FABRIEK MINI, alle spellen en apps. Werkt 100% in je browser, niks installeren, en elke nieuwe tool die eraan komt krijg je er gratis bij.",
+   "links": {
+    "stripe": "https://buy.stripe.com/5kQ9AT5II96jazZd4p5J61C",
+    "download": "bedankt.html?k=g2bclub",
+    "browser": "club-apps.html"
+   },
+   "uitgelicht": true
+  },
+  {
    "id": "g2bband",
    "titel": "G2B BAND — jouw MIDI of drumloop wordt een heel nummer",
    "soort": "plugin",
