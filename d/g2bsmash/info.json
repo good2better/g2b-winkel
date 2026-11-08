@@ -1,1 +1,10 @@
-{"versie":"1.0","bestand":"releases/download/downloads-v1/G2B-SMASH.zip"}
+{
+  "titel": "G2B SMASH — beat→promo in 1 klik",
+  "licentie": "G2B EULA — persoonlijk + commercieel gebruik",
+  "bestanden": [
+    {
+      "naam": "G2B-SMASH.zip — video-maker + handleiding + licentie",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-SMASH.zip"
+    }
+  ]
+}

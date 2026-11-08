@@ -301,7 +301,8 @@
       "prijs": 19.95,
       "links": {
         "koop": "bestel.html?p=g2bsmash",
-        "download": "d/g2bsmash/"
+        "download": "d/g2bsmash/",
+        "stripe": "https://buy.stripe.com/eVq4gz2ww6YbeQf1lH5J61R"
       },
       "groep": "studio-tools",
       "badge": "NIEUW",
@@ -322,7 +323,8 @@
       "prijs": 14.95,
       "links": {
         "koop": "bestel.html?p=g2bairdrums",
-        "download": "d/g2bairdrums/"
+        "download": "d/g2bairdrums/",
+        "stripe": "https://buy.stripe.com/eVq14n0oo1DR6jJfcx5J61S"
       },
       "groep": "studio-tools",
       "badge": "NIEUW",
@@ -344,7 +346,8 @@
       "prijs": 99,
       "links": {
         "koop": "bestel.html?p=g2bsuite1",
-        "download": "bedankt.html?k=g2bsuite1"
+        "download": "bedankt.html?k=g2bsuite1",
+        "stripe": "https://buy.stripe.com/9B67sLefegyL9vV3tP5J61T"
       },
       "groep": "apps",
       "badge": "ALLES-IN-1",
@@ -366,7 +369,8 @@
       "video_es": "media/seofabriek-demo-es.mp4",
       "links": {
         "koop": "bestel.html?p=seofabriek1",
-        "download": "bedankt.html?k=seofabriek1"
+        "download": "bedankt.html?k=seofabriek1",
+        "stripe": "https://buy.stripe.com/bJedR9efefuHdMbggB5J61U"
       },
       "download_dir": "d/seofabriek1",
       "uitleg": "media/seofabriek1-uitleg.mp4",
@@ -382,7 +386,8 @@
       "prijs": 299,
       "links": {
         "koop": "bestel.html?p=agency1",
-        "download": "bedankt.html?k=agency1"
+        "download": "bedankt.html?k=agency1",
+        "stripe": "https://buy.stripe.com/bJe00j4EEgyL0Zp6G15J61V"
       },
       "groep": "apps",
       "badge": "AGENCY",
@@ -400,7 +405,8 @@
       "prijs": 69,
       "links": {
         "koop": "bestel.html?p=marketerbundel1",
-        "download": "bedankt.html?k=marketerbundel1"
+        "download": "bedankt.html?k=marketerbundel1",
+        "stripe": "https://buy.stripe.com/5kQaEX2ww0zN37x6G15J61W"
       },
       "groep": "apps",
       "badge": "BUNDEL",
@@ -417,7 +423,8 @@
       "prijs": 39,
       "links": {
         "koop": "bestel.html?p=mailfabriek1",
-        "download": "bedankt.html?k=mailfabriek1"
+        "download": "bedankt.html?k=mailfabriek1",
+        "stripe": "https://buy.stripe.com/8x24gzc762HVgYn2pL5J61X"
       },
       "groep": "apps",
       "badge": "NIEUW",
@@ -437,7 +444,8 @@
       "prijs": 29,
       "links": {
         "koop": "bestel.html?p=sheetfabriek1",
-        "download": "bedankt.html?k=sheetfabriek1"
+        "download": "bedankt.html?k=sheetfabriek1",
+        "stripe": "https://buy.stripe.com/fZu3cv0oogyLazZd4p5J61Y"
       },
       "groep": "apps",
       "badge": "NIEUW",
@@ -457,7 +465,8 @@
       "prijs": 39,
       "links": {
         "koop": "bestel.html?p=sequentiefabriek1",
-        "download": "bedankt.html?k=sequentiefabriek1"
+        "download": "bedankt.html?k=sequentiefabriek1",
+        "stripe": "https://buy.stripe.com/cNibJ11ss4Q34bBggB5J61Z"
       },
       "groep": "apps",
       "badge": "NIEUW",
@@ -477,7 +486,8 @@
       "prijs": 39,
       "links": {
         "koop": "bestel.html?p=crmfabriek1",
-        "download": "bedankt.html?k=crmfabriek1"
+        "download": "bedankt.html?k=crmfabriek1",
+        "stripe": "https://buy.stripe.com/cNiaEX1ss5U7azZ9Sd5J620"
       },
       "groep": "apps",
       "badge": "NIEUW",
@@ -497,7 +507,8 @@
       "prijs": 29,
       "links": {
         "koop": "bestel.html?p=watcherfabriek1",
-        "download": "bedankt.html?k=watcherfabriek1"
+        "download": "bedankt.html?k=watcherfabriek1",
+        "stripe": "https://buy.stripe.com/28EfZh8UUciveQf3tP5J621"
       },
       "groep": "apps",
       "badge": "NIEUW",
@@ -517,7 +528,8 @@
       "prijs": 39,
       "links": {
         "koop": "bestel.html?p=flowfabriek1",
-        "download": "bedankt.html?k=flowfabriek1"
+        "download": "bedankt.html?k=flowfabriek1",
+        "stripe": "https://buy.stripe.com/bJe14n7QQber0Zp4xT5J622"
       },
       "groep": "apps",
       "badge": "NIEUW",
@@ -537,7 +549,8 @@
       "prijs": "€ 79,00",
       "links": {
         "koop": "bestel.html?p=kanaalfabriek1",
-        "download": "bedankt.html?k=kanaalfabriek1"
+        "download": "bedankt.html?k=kanaalfabriek1",
+        "stripe": "https://buy.stripe.com/9B6eVd5IIaanfUjfcx5J623"
       },
       "groep": "apps",
       "badge": "NIEUW",
@@ -557,7 +570,8 @@
       "prijs": 49,
       "links": {
         "koop": "bestel.html?p=leadfabriek1",
-        "download": "bedankt.html?k=leadfabriek1"
+        "download": "bedankt.html?k=leadfabriek1",
+        "stripe": "https://buy.stripe.com/3cI14ndba96j9vV3tP5J624"
       },
       "groep": "apps",
       "badge": "NIEUW",
@@ -577,7 +591,8 @@
       "prijs": 39,
       "links": {
         "koop": "bestel.html?p=lijstfabriek1",
-        "download": "bedankt.html?k=lijstfabriek1"
+        "download": "bedankt.html?k=lijstfabriek1",
+        "stripe": "https://buy.stripe.com/eVq00j9YY1DR4bB6G15J625"
       },
       "groep": "apps",
       "badge": "NIEUW",
@@ -664,7 +679,8 @@
       "prijs": "€ 19,95",
       "prijzen": {},
       "links": {
-        "koop": "bestel.html?p=g2b-juridisch"
+        "koop": "bestel.html?p=g2b-juridisch",
+        "stripe": "https://buy.stripe.com/aFa00jgnm96jazZ7K55J626"
       },
       "duur": 0,
       "groep": "apps",
@@ -686,7 +702,8 @@
       "prijs": "€ 14,95",
       "prijzen": {},
       "links": {
-        "koop": "bestel.html?p=g2b-psychologie"
+        "koop": "bestel.html?p=g2b-psychologie",
+        "stripe": "https://buy.stripe.com/eVqbJ16MMdmzdMb3tP5J627"
       },
       "duur": 0,
       "groep": "apps",
@@ -710,7 +727,8 @@
       "prijzen": {},
       "links": {
         "koop": "bestel.html?p=g2b-workstation",
-        "download": "bedankt.html?k=g2b-workstation"
+        "download": "bedankt.html?k=g2b-workstation",
+        "stripe": "https://buy.stripe.com/7sYdR9fji2HVcI74xT5J628"
       },
       "cover": "media/g2b-workstation-cover.png",
       "video": "media/workstation-demo.mp4",
@@ -732,7 +750,8 @@
       "prijs": "€ 9,95",
       "links": {
         "koop": "bestel.html?p=cursus01",
-        "download": "bedankt.html?k=cursus01"
+        "download": "bedankt.html?k=cursus01",
+        "stripe": "https://buy.stripe.com/aFaaEXc762HVdMb7K55J629"
       },
       "groep": "apps",
       "badge": "NIEUW",
@@ -750,7 +769,8 @@
       "prijs": "€ 29,95",
       "prijzen": {},
       "links": {
-        "koop": "bestel.html?p=g2b-bedrijfsmiddelen"
+        "koop": "bestel.html?p=g2b-bedrijfsmiddelen",
+        "stripe": "https://buy.stripe.com/5kQ9ATb32eqDeQf8O95J62a"
       },
       "duur": 0,
       "groep": "apps",
@@ -1157,7 +1177,8 @@
       },
       "links": {
         "koop": "bestel.html?p=ritmosbundel",
-        "download": "bedankt.html?k=d74976fef7dfff6a"
+        "download": "bedankt.html?k=d74976fef7dfff6a",
+        "stripe": "https://buy.stripe.com/bJe00j8UU4Q36jJ9Sd5J62c"
       },
       "groep": "muziek",
       "cover": "media/ritmosbundle-cover.png",
@@ -1236,7 +1257,8 @@
       "download_dir": "d/sl3ut3",
       "links": {
         "koop": "bestel.html?p=sl3ut3",
-        "download": "bedankt.html?k=sl3ut3"
+        "download": "bedankt.html?k=sl3ut3",
+        "stripe": "https://buy.stripe.com/9B600jb322HVfUjaWh5J62d"
       },
       "moods": [
         "tool"
@@ -1493,7 +1515,8 @@
       "prijs": 39,
       "links": {
         "koop": "bestel.html?p=gamefabriek1",
-        "download": "bedankt.html?k=gamefabriek1"
+        "download": "bedankt.html?k=gamefabriek1",
+        "stripe": "https://buy.stripe.com/28E7sLb325U70ZpggB5J62b"
       },
       "groep": "apps",
       "badge": "NIEUW",
