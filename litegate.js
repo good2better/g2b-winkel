@@ -79,6 +79,9 @@
       gratis=p&&(p.prijs==='GRATIS');
     }
     if(!gratis)return;
+    // alleen echte bestands-downloads gaten — een link naar een .html pagina is geen download
+    var href=a.href||'';
+    if(/\.html?(\?|#|$)/i.test(href))return;
     e.preventDefault();e.stopPropagation();
     var t=a.textContent||'';
     toon(a.href,pid,t);
