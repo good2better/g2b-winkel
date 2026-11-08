@@ -1,0 +1,340 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>G2B MASTER — browser</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#0c0f0c;--kaart:#141a15;--rand:#223227;--groen:#19c37d;--tekst:#e8f0e9;--dim:#8fa395;--cyan:#4cc9f0}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui;margin:0;padding:14px;max-width:980px}
+h1{font-size:20px;margin:4px 0 10px}h1 small{color:var(--groen);font-size:.55em}
+.rij{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+button.uit{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}
+button.uit:hover{border-color:var(--groen)}
+button.go{background:var(--groen);color:#04130b;border:0;font-weight:700}
+button:disabled{opacity:.45;cursor:default}
+label{font-size:12px;color:var(--dim);display:flex;flex-direction:column;gap:2px}
+label b{color:var(--tekst);font-weight:600}
+input[type=range]{width:140px;accent-color:var(--groen)}
+#st{color:var(--dim);font-size:13px}
+#drop{border:2px dashed var(--rand);border-radius:12px;padding:22px;text-align:center;color:var(--dim);cursor:pointer;margin-bottom:12px;background:var(--kaart)}
+#drop.over,#drop:hover{border-color:var(--groen);color:var(--tekst)}
+#pills{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}
+.pill{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:999px;padding:10px 6px;font-size:13px;font-weight:700;cursor:pointer}
+.pill:hover{border-color:var(--groen)}
+.pill.on{background:var(--groen);color:#04130b;border-color:var(--groen)}
+#balk{width:100%;height:14px;background:var(--kaart);border:1px solid var(--rand);border-radius:99px;overflow:hidden;margin:8px 0}
+#balkIn{height:100%;width:0%;background:var(--groen);transition:width .15s}
+.speler{width:100%;margin-top:6px}
+.kaart{background:var(--kaart);border:1px solid var(--rand);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13px;color:var(--dim)}
+.kaart b{color:var(--tekst)}
+a.dl{color:var(--groen);font-weight:700}
+body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#12231a;--dim:#5c6b61}
+</style></head><body>
+<h1>G2B MASTER <small>jouw track → klaar voor verkoop · browser-versie van de VST</small></h1>
+<div id="drop">🎛 Sleep je mix hierheen of klik om te kiezen (wav/mp3/ogg/flac)<input type="file" id="file" accept="audio/*" hidden></div>
+<div class="rij">
+<button class="uit go" id="bMaster" onclick="maakMaster()" disabled>⚡ MAAK MASTER</button>
+<button class="uit" id="bAuto" onclick="autoKnobs()" disabled>🤖 AUTO</button>
+<button class="uit" onclick="dice()">🎲 DICE</button>
+<button class="uit" id="bAan" onclick="zetAan(!P.aan)">AAN</button>
+<button class="uit" onclick="document.body.classList.toggle('licht')">◐</button>
+<button class="uit" id="bDemo" onclick="demo()">▶ probeer met demo-track</button>
+<span id="st">sleep een mix erin — hij doet de rest</span>
+</div>
+<div class="rij">
+<button class="uit" id="bDeel" onclick="deel()">🔗 kopieer deel-code</button>
+<input id="codeIn" placeholder="plak hier een G2B-code" style="background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:8px 10px;font-size:13px;width:210px">
+<button class="uit" onclick="plakCode()">✓ laad code</button>
+</div>
+<div id="pills"></div>
+<div class="rij">
+<label>TILT <b id="vTilt">0</b><input type="range" id="tilt" min="-50" max="50" value="0"></label>
+<label>GLUE <b id="vGlue">50%</b><input type="range" id="glue" min="0" max="100" value="50"></label>
+<label>WARMTE <b id="vWarmte">30%</b><input type="range" id="warmte" min="0" max="100" value="30"></label>
+<label>LUID <b id="vLuid">60%</b><input type="range" id="luid" min="0" max="100" value="60"></label>
+<label>KRACHT <b id="vKracht">100%</b><input type="range" id="kracht" min="0" max="100" value="100"></label>
+</div>
+<div id="balk"><div id="balkIn"></div></div>
+<div class="kaart" id="uit" hidden>
+<b>VÓÓR</b> <span style="font-size:11px">(zelfde volume — hoor het échte verschil)</span>:<audio class="speler" id="prePlay" controls></audio>
+<b>NÁ:</b><audio class="speler" id="postPlay" controls></audio>
+<div style="margin-top:8px">⬇ <a class="dl" id="dlWav" download="G2B-master.wav">download je master (wav)</a> · <span id="info"></span></div>
+</div>
+<div class="kaart">TILT = donker ↔ helder · GLUE = hoe strak alles samenplakt · WARMTE = analoge volheid · LUID = hoe hard (limiter plafond -1 dB) · KRACHT = 0% origineel, 100% volle bewerking.<br>
+AUTO luistert naar je track en zet de 4 knoppen zelf goed · klik je een genre-pill met je track erin, dan stelt AUTO de pill meteen bij op jouw track (smaak + meting) · alles draait in je browser — niks gaat naar internet.</div>
+<script>
+// ==== exacte poort van g2b_master/MasterPlugin.cpp (zelfde wiskunde per sample) ====
+const GENRES=["TRAP","DRILL","BOOMBAP","RNB","HOUSE","DEMBOW","KAWINA","LOFI","SOUL","POP"];
+// per genre: TILT(-50..50) GLUE WARMTE LUID — zelfde tabel als de VST
+const GP=[[-10,65,40,85],[-5,70,45,85],[-15,55,55,75],[5,50,30,70],[10,60,30,80],
+          [0,65,35,80],[5,55,30,75],[-20,40,70,55],[-5,45,50,65],[10,65,25,85]];
+const P={tilt:0,glue:50,warmte:30,luid:60,kracht:100,genre:-1,aan:true};
+const DOEL=-6; // fDoel default uit de plugin
+let ctx=null,buf=null,inL=null,inR=null,sr=44100,seed=777>>>0;
+const $=id=>document.getElementById(id);
+function ac(){if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();if(ctx.state=='suspended')ctx.resume();return ctx}
+
+// demo-track: eigen synth-loop (geen bestand nodig) — kick+hat+bas, bewust wat vlak
+// zodat je hoort wat de master toevoegt. 2 maten @ 140 bpm.
+function demo(){
+ const SR=44100,BPM=140,stap=60/BPM/4,n=Math.floor(stap*16*2*SR); // 32 zestienden
+ inL=new Float32Array(n); inR=new Float32Array(n); sr=SR;
+ const nt=[55,0,0,55,0,0,65.41,0,55,0,0,55,0,49,0,58.27,55,0,0,55,0,0,65.41,0,55,0,73.42,0,65.41,0,49];
+ for(let i=0;i<n;i++){
+  const t=i/SR,pos=t/stap,st=Math.floor(pos),ph=(pos-st)*stap;
+  let s=0;
+  // kick op elke beat
+  const kp=t%(stap*4);
+  s+=Math.sin(2*Math.PI*(48+140*Math.exp(-kp*40))*kp)*Math.exp(-kp*18)*0.9;
+  // hat op de off-beats
+  const hp=t%(stap*2);
+  if(hp>stap)s+=(Math.random()*2-1)*Math.exp(-(hp-stap)*90)*0.12;
+  // bas-noot per zestiende (zaagtand door lage doorlaat)
+  const f=nt[st]; if(f>0)s+=(2*(t*f%1)-1)*Math.exp(-ph*7)*0.22;
+  inL[i]=s*0.62; inR[i]=s*0.60; // iets links/rechts verschil voor stereo
+ }
+ buf=null; $('st').textContent='✔ demo-track geladen ('+(n/SR).toFixed(1)+' s) — klik 🤖 AUTO of een genre-pill';
+ $('bMaster').disabled=false; $('bAuto').disabled=false;
+}
+
+// deel-code: G2BM1|genre|tilt|glue|warmte|luid — plakken zet de knoppen gelijk
+function deel(){
+ const c='G2BM1|'+P.genre+'|'+Math.round(P.tilt)+'|'+Math.round(P.glue)+'|'+Math.round(P.warmte)+'|'+Math.round(P.luid);
+ (navigator.clipboard?navigator.clipboard.writeText(c):Promise.reject()).then(
+  ()=>$('st').textContent='🔗 deel-code gekopieerd: '+c,
+  ()=>{$('codeIn').value=c;$('st').textContent='deel-code staat in het vak — kopieer hem zelf'});
+}
+function plakCode(){
+ const d=$('codeIn').value.trim().split('|');
+ if(d[0]!=='G2BM1'||d.length!==6){$('st').textContent='✖ geen geldige G2B-code';return}
+ const g=+d[1];
+ P.tilt=Math.max(-50,Math.min(50,+d[2]||0)); P.glue=Math.max(0,Math.min(100,+d[3]||0));
+ P.warmte=Math.max(0,Math.min(100,+d[4]||0)); P.luid=Math.max(0,Math.min(100,+d[5]||0));
+ P.genre=(g>=0&&g<=9)?g:-1;
+ document.querySelectorAll('.pill').forEach((b,j)=>b.classList.toggle('on',j===P.genre));
+ syncUI(); $('st').textContent='✔ code geladen — klik ⚡ MAAK MASTER';
+}
+
+function laad(file){
+ $('st').textContent='laden: '+file.name+'…';
+ file.arrayBuffer().then(ab=>ac().decodeAudioData(ab)).then(b=>{
+  buf=b; sr=b.sampleRate;
+  // naar stereo Float32Arrays
+  inL=new Float32Array(b.length); inR=new Float32Array(b.length);
+  inL.set(b.getChannelData(0));
+  inR.set(b.getChannelData(b.numberOfChannels>1?1:0));
+  $('st').textContent='✔ '+file.name+' · '+b.duration.toFixed(1)+' s · '+sr+' Hz';
+  $('bMaster').disabled=false; $('bAuto').disabled=false;
+ }).catch(e=>{$('st').textContent='✖ kan dit bestand niet lezen ('+e.message+')'});
+}
+
+// AUTO: analyseer eerste 5 s — zelfde meting als de plugin (HP→tiltLp split op 700 Hz)
+// geeft de 4 auto-knopwaardes terug (of null bij te weinig signaal)
+function meetAuto(){ // brein v2 — 7 sensoren
+ const n=Math.min(inL.length,Math.floor(sr*5));
+ let hpL=0,hpR=0,tpL=0,tpR=0,AElo=0,AEhi=0,AEall=0,APk=0,AEmid=0;
+ const hpA=1-Math.exp(-2*Math.PI*28/sr), tiltA=1-Math.exp(-2*Math.PI*700/sr);
+ const lp8A=1-Math.exp(-2*Math.PI*800/sr), lp35A=1-Math.exp(-2*Math.PI*3500/sr);
+ let lp8L=0,lp8R=0,lp35L=0,lp35R=0;
+ for(let i=0;i<n;i++){
+  let L=inL[i],R=inR[i];
+  lp8L+=lp8A*(L-lp8L); lp8R+=lp8A*(R-lp8R);
+  lp35L+=lp35A*(L-lp35L); lp35R+=lp35A*(R-lp35R);
+  const bL=lp35L-lp8L, bR=lp35R-lp8R; // stem-band 800-3500 Hz
+  AEmid+=(bL*bL+bR*bR)*0.5;
+  hpL+=hpA*(L-hpL); hpR+=hpA*(R-hpR); L-=hpL; R-=hpR;
+  tpL+=tiltA*(L-tpL); tpR+=tiltA*(R-tpR);
+  const lo=(tpL+tpR)*0.5, hiL=L-tpL, hiR=R-tpR;
+  AElo+=lo*lo; AEhi+=(hiL*hiL+hiR*hiR)*0.5; AEall+=(L*L+R*R)*0.5;
+  const pk=Math.max(Math.abs(L),Math.abs(R)); if(pk>APk)APk=pk;
+ }
+ if(n<4410||AEall<1e-8)return null;
+ const rms=Math.sqrt(AEall/n), lufs=20*Math.log10(rms+1e-9);
+ const d=10*Math.log10((AElo+1e-9)/(AEhi+1e-9));
+ const tilt=Math.max(-50,Math.min(50,d*4));
+ const crest=20*Math.log10((APk+1e-9)/(rms+1e-9));
+ let glue=Math.max(30,Math.min(90,40+(crest-6)*8));
+ const hiShare=AEhi/(AElo+AEhi+1e-9);
+ let warmte=Math.max(15,Math.min(80,60-hiShare*400));
+ const luid=Math.max(10,Math.min(100,(DOEL-lufs)/9*100));
+ // nieuwe sensoren: ritme-drukte, stem-band, stereo-breedte
+ const thr2=9*rms*rms; let tr=0,sLR=0;
+ for(let i=0;i<n;i++){
+  const L=inL[i],R=inR[i];
+  if(L*L+R*R>thr2*2)tr++; // |x|² > 9·rms² ≈ piek 9.5dB boven rms (mono-som)
+  sLR+=L*R;
+ }
+ const trRate=tr/(n/sr), vocal=AEmid/(AEall+1e-9), phase=sLR/(AEall+1e-9);
+ if(trRate>4)glue-=4; else if(trRate<0.5)glue+=3; // druk ritme → transiënten vrijhouden
+ if(vocal>0.30){warmte-=5;glue-=3;} // stem aanwezig → middengebied openhouden
+ glue=Math.max(30,Math.min(90,glue)); warmte=Math.max(15,Math.min(80,warmte));
+ return {tilt,glue,warmte,luid,trRate,vocal,phase};
+}
+const GPM=[ // pill-mindset [luidMax, glueBias, warmteBias] — hoe AUTO per genre denkt
+ [95,5,0],   // TRAP: strak + luid
+ [90,5,0],   // DRILL
+ [80,0,5],   // BOOMBAP: warm
+ [75,0,5],   // RNB: zacht + warm
+ [90,0,0],   // HOUSE
+ [85,3,0],   // DEMBOW
+ [80,0,3],   // KAWINA
+ [55,-15,5], // LOFI: dynamiek heilig — zacht limiteren, nooit luid forceren
+ [70,-5,8],  // SOUL
+ [90,0,0],   // POP
+];
+function zetKnoppen(v){
+ P.tilt=v.tilt;P.glue=v.glue;P.warmte=v.warmte;P.luid=v.luid;syncUI();
+}
+function autoKnobs(){
+ if(!inL)return;
+ $('st').textContent='AUTO luistert…';
+ setTimeout(()=>{
+  const v=meetAuto();
+  if(v){zetKnoppen(v);$('st').textContent='🤖 AUTO heeft de knoppen gezet'+watHoorde(v)+' — klik MAAK MASTER'}
+  else $('st').textContent='te weinig signaal om te meten';
+ },30);
+}
+function watHoorde(v){ // wat AUTO in je track hoorde (voor in de status)
+ const w=[];
+ if(v.trRate>4)w.push('druk ritme');else if(v.trRate<0.5)w.push('rustig ritme');
+ if(v.vocal>0.30)w.push('zang');
+ if(v.phase<0.25)w.push('wijd stereo');
+ return w.length?' ('+w.join(' · ')+')':'';
+}
+function dice(){
+ let sd=seed=(Math.imul(seed,1664525)+1013904223)>>>0;
+ const rng=()=>{sd^=sd<<13;sd>>>=0;sd^=sd>>>17;sd^=sd<<5;sd>>>=0;return (sd&0xFFFF)/65536};
+ P.tilt=(rng()*100-50)*0.6; P.glue=30+rng()*60; P.warmte=10+rng()*70; P.luid=40+rng()*60;
+ P.genre=-1; document.querySelectorAll('.pill').forEach(b=>b.classList.remove('on'));
+ syncUI();
+}
+function kiesGenre(i){
+ P.genre=i; [P.tilt,P.glue,P.warmte,P.luid]=GP[i];
+ document.querySelectorAll('.pill').forEach((b,j)=>b.classList.toggle('on',j===i));
+ syncUI();
+ // pill = smaak → AUTO stelt daarna bij op jouw track (blend 50/50)
+ if(inL){
+  $('st').textContent=GENRES[i]+' — AUTO stelt bij op jouw track…';
+  setTimeout(()=>{
+   const v=meetAuto();
+   if(v){ // halverwege genre-smaak en track-meting + pill-mindset
+    const M=GPM[i];
+    let g=(GP[i][1]+v.glue)/2+M[1], w=(GP[i][2]+v.warmte)/2+M[2], l=(GP[i][3]+v.luid)/2;
+    g=Math.max(0,Math.min(100,g)); w=Math.max(0,Math.min(100,w));
+    l=Math.max(0,Math.min(M[0],l)); // luid-cap van het genre
+    zetKnoppen({tilt:(GP[i][0]+v.tilt)/2, glue:g, warmte:w, luid:l});
+    $('st').textContent=GENRES[i]+' + AUTO — knoppen staan op jouw track'+watHoorde(v);
+   }else $('st').textContent=GENRES[i]+' — te weinig signaal voor AUTO';
+  },30);
+ }
+}
+function zetAan(v){P.aan=v;$('bAan').textContent=v?'AAN':'UIT (bypass)';$('bAan').classList.toggle('go',v)}
+function syncUI(){
+ $('tilt').value=Math.round(P.tilt); $('glue').value=Math.round(P.glue);
+ $('warmte').value=Math.round(P.warmte); $('luid').value=Math.round(P.luid); $('kracht').value=Math.round(P.kracht);
+ toonWaardes();
+}
+function toonWaardes(){
+ $('vTilt').textContent=Math.round(P.tilt); $('vGlue').textContent=Math.round(P.glue)+'%';
+ $('vWarmte').textContent=Math.round(P.warmte)+'%'; $('vLuid').textContent=Math.round(P.luid)+'%';
+ $('vKracht').textContent=Math.round(P.kracht)+'%';
+}
+
+// de DSP-keten — 1-op-1 uit run(): HP → TILT → GLUE → WARMTE → LUID → KRACHT
+async function render(uitL,uitR,prog){
+ const n=inL.length, srInv=1/sr;
+ const hpA=1-Math.exp(-2*Math.PI*28*srInv), tiltA=1-Math.exp(-2*Math.PI*700*srInv);
+ const t=P.tilt/50, gLoT=Math.pow(10,(t*7)*0.05), gHiT=Math.pow(10,(-t*7)*0.05);
+ const thr=0.126, ratio=1+(P.glue/100)*3;
+ const cAtt=1-Math.exp(-1/(0.010*sr)), cRel=1-Math.exp(-1/(0.160*sr));
+ const gAtt=1-Math.exp(-1/(0.004*sr)), gRel=1-Math.exp(-1/(0.200*sr));
+ const drv=1+(P.warmte/100)*4, satMix=P.warmte/100*0.6, satLpA=1-Math.exp(-2*Math.PI*8000*srInv);
+ const preG=Math.pow(10,(P.luid/100)*9*0.05), ceil=0.891, limRel=Math.exp(-1/(0.050*sr));
+ let fHpL=0,fHpR=0,fTiltLpL=0,fTiltLpR=0,fEnv=1e-6,fGain=1,fSatLpL=0,fSatLpR=0,fLimEnv=0;
+ const CH=1<<16;
+ for(let base=0;base<n;base+=CH){
+  const end=Math.min(base+CH,n);
+  for(let i=base;i<end;i++){
+   let L=inL[i],R=inR[i];
+   fHpL+=hpA*(L-fHpL); fHpR+=hpA*(R-fHpR); L-=fHpL; R-=fHpR;
+   fTiltLpL+=tiltA*(L-fTiltLpL); fTiltLpR+=tiltA*(R-fTiltLpR);
+   {const loL=fTiltLpL,loR=fTiltLpR,hiL=L-loL,hiR=R-loR;
+    L=loL*gLoT+hiL*gHiT; R=loR*gLoT+hiR*gHiT;}
+   const m2=(L*L+R*R)*0.5, dc=1e-5;
+   fEnv+=((m2>fEnv)?cAtt:cRel)*(m2+dc-fEnv);
+   {const rms=Math.sqrt(fEnv);
+    if(rms>thr){const target=Math.pow(rms/thr,-(1-1/ratio));
+     fGain+=((target<fGain)?gAtt:gRel)*(target-fGain);
+    }else fGain+=gRel*(1-fGain);
+    L*=fGain;R*=fGain;}
+   {const sL=Math.tanh(L*drv),sR=Math.tanh(R*drv);
+    fSatLpL+=satLpA*(sL-fSatLpL); fSatLpR+=satLpA*(sR-fSatLpR);
+    L=L*(1-satMix)+fSatLpL*satMix; R=R*(1-satMix)+fSatLpR*satMix;}
+   L*=preG;R*=preG;
+   {const pk=Math.max(Math.abs(L),Math.abs(R));
+    fLimEnv=Math.max(pk,fLimEnv*limRel);
+    const g=(fLimEnv>ceil)?ceil/fLimEnv:1;
+    L*=g;R*=g;}
+   uitL[i]=L;uitR[i]=R;
+  }
+  if(prog)prog(end/n);
+  if(end<n)await new Promise(r=>setTimeout(r,0));
+ }
+ // KRACHT dry/wet
+ const k=P.aan?P.kracht/100:0;
+ if(k<0.999){const d=1-k;
+  for(let i=0;i<n;i++){uitL[i]=inL[i]*d+uitL[i]*k; uitR[i]=inR[i]*d+uitR[i]*k;}}
+}
+
+// WAV-schrijver: header little-endian + PCM via Int16Array (native LE — de ruis-bug-les)
+function wavBlob(L,R,sr){
+ const n=L.length,ab=new ArrayBuffer(44+n*4),v=new DataView(ab);
+ const W=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+ W(0,'RIFF');v.setUint32(4,36+n*4,true);W(8,'WAVE');W(12,'fmt ');
+ v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,2,true);
+ v.setUint32(24,sr,true);v.setUint32(28,sr*4,true);v.setUint16(32,4,true);v.setUint16(34,16,true);
+ W(36,'data');v.setUint32(40,n*4,true);
+ // PCM rechtstreeks als Int16Array op dezelfde buffer — altijd juiste byte-volgorde
+ const pcm=new Int16Array(ab,44);
+ for(let i=0;i<n;i++){
+  pcm[i*2]=Math.max(-1,Math.min(1,L[i]))*32767;
+  pcm[i*2+1]=Math.max(-1,Math.min(1,R[i]))*32767;
+ }
+ return new Blob([ab],{type:'audio/wav'});
+}
+
+async function maakMaster(){
+ if(!inL)return;
+ $('bMaster').disabled=true;
+ const n=inL.length,uitL=new Float32Array(n),uitR=new Float32Array(n);
+ $('st').textContent='masteren…';
+ await render(uitL,uitR,f=>{$('balkIn').style.width=(f*100).toFixed(0)+'%'});
+ const blob=wavBlob(uitL,uitR,sr);
+ // slimme VÓÓR: speel het origineel af op hetzelfde volume als de master,
+ // zodat je het échte verschil hoort (niet alleen 'harder = beter')
+ let eIn=0,eUit=0;for(let i=0;i<n;i++){eIn+=inL[i]*inL[i]+inR[i]*inR[i];eUit+=uitL[i]*uitL[i]+uitR[i]*uitR[i];}
+ let g=Math.sqrt(eUit/(eIn+1e-9)); if(!(g>0.25))g=1; if(g>4)g=4;
+ const preL=new Float32Array(n),preR=new Float32Array(n);
+ for(let i=0;i<n;i++){preL[i]=inL[i]*g;preR[i]=inR[i]*g;}
+ const preBlob=wavBlob(preL,preR,sr);
+ if(window._preURL)URL.revokeObjectURL(window._preURL);
+ if(window._postURL)URL.revokeObjectURL(window._postURL);
+ window._preURL=URL.createObjectURL(preBlob); window._postURL=URL.createObjectURL(blob);
+ $('prePlay').src=window._preURL; $('postPlay').src=window._postURL;
+ $('dlWav').href=window._postURL;
+ let pk=0;for(let i=0;i<n;i++)pk=Math.max(pk,Math.abs(uitL[i]),Math.abs(uitR[i]));
+ $('info').textContent='piek '+pk.toFixed(2)+' · '+(n/sr).toFixed(1)+' s · '+(blob.size/1048576).toFixed(1)+' MB · VÓÓR speelt op zelfde volume (eerlijk vergelijk)';
+ $('uit').hidden=false; $('balkIn').style.width='100%';
+ $('st').textContent='✔ klaar — luister VÓÓR/NÁ en download je master';
+ $('bMaster').disabled=false;
+}
+
+GENRES.forEach((g,i)=>{const b=document.createElement('button');b.className='pill';b.textContent=g;
+ b.onclick=()=>kiesGenre(i);$('pills').appendChild(b)});
+for(const k of ['tilt','glue','warmte','luid','kracht'])$(k).oninput=e=>{P[k]=+e.target.value;P.genre=-1;
+ document.querySelectorAll('.pill').forEach(b=>b.classList.remove('on'));toonWaardes()};
+const drop=$('drop');
+drop.onclick=()=>$('file').click();$('file').onchange=e=>{if(e.target.files[0])laad(e.target.files[0])};
+drop.ondragover=e=>{e.preventDefault();drop.classList.add('over')};drop.ondragleave=()=>drop.classList.remove('over');
+drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');const f=e.dataTransfer.files[0];if(f)laad(f)};
+zetAan(true);syncUI();
+</script>
+<footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
+</body></html>

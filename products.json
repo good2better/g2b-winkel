@@ -60,7 +60,7 @@
    "links": {
     "stripe": "https://buy.stripe.com/cNi7sL0ooberfUj8O95J61w",
     "download": "bedankt.html?k=stapeldicefull",
-    "browser": "stapeldice-koop.html"
+    "browser": "stapeldice-lite.html"
    },
    "video": "media/stapeldice-demo.mp4",
    "sub_nl": "media/stapeldice-demo.nl.vtt",
@@ -315,7 +315,7 @@
    "links": {
     "stripe": "https://buy.stripe.com/4gM3cv5II96j9vVc0l5J61D",
     "download": "bedankt.html?k=beatmakerpro",
-    "browser": "tools/beatmaker-pro/app/index.html"
+    "browser": "beatmaker.html"
    },
    "uitgelicht": true,
    "upsell": [
