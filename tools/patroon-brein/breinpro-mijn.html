@@ -1,0 +1,330 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>G2B BREIN PRO — 90 geleerde kits</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#0c0f0c;--kaart:#141a15;--rand:#223227;--groen:#19c37d;--tekst:#e8f0e9;--dim:#8fa395;--cyan:#4cc9f0}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui;margin:0;padding:14px;max-width:980px}
+h1{font-size:20px;margin:4px 0 10px}h1 small{color:var(--groen);font-size:.55em}
+.rij{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+button.uit{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}
+button.uit:hover{border-color:var(--groen)}
+button.go{background:var(--groen);color:#04130b;border:0;font-weight:700}
+select,input[type=number]{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:7px;font-size:13px}
+input[type=number]{width:66px}
+label{font-size:12px;color:var(--dim);display:flex;flex-direction:column;gap:2px}
+label b{color:var(--tekst);font-weight:600}
+input[type=range]{width:110px;accent-color:var(--groen)}
+#st{color:var(--dim);font-size:13px}
+#grid{display:grid;gap:2px;margin:10px 0;user-select:none}
+.rlbl{font-size:11px;color:var(--dim);display:flex;align-items:center;justify-content:flex-end;padding-right:6px;white-space:nowrap}
+.cel{aspect-ratio:1;background:var(--kaart);border:1px solid var(--rand);border-radius:3px;cursor:pointer;min-width:14px}
+.cel.aan{background:var(--groen);border-color:var(--groen)}
+.cel.speelt{outline:2px solid var(--cyan);outline-offset:-2px}
+.cel.tel{border-left-color:#3a5244}
+.cel.gemute{opacity:.25}
+#lagen{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0;align-items:center}
+.lt{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer}
+.lt.muted{background:#4a1c1c;border-color:#a04040;color:#ffb0b0;opacity:.8}
+.lt.lockt{border-color:#e8c35a;color:#e8c35a}
+#as{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.aslaag{background:#1d2b1d;border:1px solid #3f5f3f;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:12px}
+.aslaag:hover{border-color:#7fd37f}
+.aslaag span{opacity:.7;margin-left:8px}
+.aslaag em{display:block;font-size:10px;opacity:.5;font-style:normal}
+.lt.only{background:var(--cyan);color:#04130b;border-color:var(--cyan)}
+.lgnm{color:var(--dim);font-size:11px;letter-spacing:1px;margin-right:2px}
+.kaart{background:var(--kaart);border:1px solid var(--rand);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13px;color:var(--dim)}
+.kaart b{color:var(--tekst)}
+a.dl{color:var(--groen);font-weight:700}
+#pills{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.pill{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:999px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer}
+.pill.on{background:var(--groen);color:#04130b;border-color:var(--groen)}
+#kitnav{display:flex;gap:8px;align-items:center;margin:6px 0;font-size:14px}
+#kitnav .naam{min-width:260px;color:var(--groen);font-weight:700}
+#kitnav .tel{color:var(--dim);font-size:11px}
+body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#12231a;--dim:#5c6b61}
+</style></head><body>
+<h1>G2B BREIN MIJN <small>privé — auto-score bouwt beats: basis → bouwveld → slag → SONG-arrangement</small></h1>
+<div class="rij">
+<button class="uit go" id="bPlay" onclick="speel()">▶ SPEEL</button>
+<button class="uit" onclick="genereer()">✨ GENEREER</button>
+<button class="uit" onclick="dice()">🎲 DICE</button>
+<button class="uit go" onclick="autoScore()">🤖 AUTO</button>
+<button class="uit" onclick="exportSong()">📀 SONG .mid</button>
+<button class="uit" onclick="exportMid()">📥 exporteer .mid</button>
+<button class="uit" onclick="bounce()">🔊 bounce WAV</button>
+<button class="uit" onclick="document.body.classList.toggle('licht')">◐</button>
+<span id="st">laden…</span>
+</div>
+<div class="rij">
+<label><b>TOONSOORT</b><select id="root" onchange="bouwRaster()"></select></label>
+<label><b>LADDER</b><select id="ladder" onchange="bouwRaster()"></select></label>
+<label><b>TEMPO <span id="vBpm">140</span> bpm</b><input type="range" id="bpm" min="70" max="180" value="140" oninput="vBpm.textContent=this.value"></label>
+<label><b>KRACHT <span id="vKracht">70</span>%</b><input type="range" id="kracht" min="0" max="100" value="70" oninput="vKracht.textContent=this.value"></label>
+<label><b>SWING <span id="vSwing">20</span>%</b><input type="range" id="swing" min="0" max="60" value="20" oninput="vSwing.textContent=this.value"></label>
+<label><b>SEED</b><input type="number" id="seed" value="1" min="0" oninput="G.seed=+this.value||1"></label>
+</div>
+<div id="pills"></div>
+<div id="kitnav"><button class="uit" onclick="kitNav(-1)">◀</button><span class="naam" id="kitnaam">…</span><button class="uit" onclick="kitNav(1)">▶</button><span class="tel" id="kittel"></span></div>
+<div id="lagen"></div>
+<div id="grid"></div>
+<div class="kaart" id="raster2" hidden><b>BOUWVELD (raster 2)</b> — AUTO-SCORE vriest elke voltooide laag hier vast · klik een laag = solo horen:
+<div id="as"></div></div>
+<div class="kaart" id="info"></div>
+<div class="kaart"><b>zo werkt-ie:</b> kies een genre-pil → blader met ◀▶ door de kits die de app heeft geleerd · klik vakjes aan/uit · GENEREER muteert 1-2 stappen maar houdt je groove · DICE dobbelt alles opnieuw binnen je toonladder · <b>LAGEN:</b> klik laagnaam = mute, 🔒 = blijft staan bij GENEREER/DICE · SNARE/HAT/OHAT starten op mute (stabiel fundament) · ⚡ SLAG ONLY = juist alléén die drie · 🤖 AUTO = de auto-score: bouwt zelf in 3 fases een complete beat (melodie-basis → slag-laag) op het bouwveld · .mid is klaar voor je DAW (drums kanaal 10, melodie kanaal 1)</div>
+<div class="kaart"><b>verschillen:</b> de browser-versie blijft <b>gratis</b> — deze PRO combineert de app's geleerde kits met het browser-grid</div>
+<script>
+'use strict';const $=id=>document.getElementById(id);
+// ladders: intervallen vanaf de grondnoot
+const LADDERS={mineur:[0,2,3,5,7,8,10],pentatonisch:[0,3,5,7,10],majeur:[0,2,4,5,7,9,11],lydisch:[0,2,4,6,7,9,11]};
+const NOTEN=['A','A#','B','C','C#','D','D#','E','F','F#','G','G#'];
+const DRUMN={KICK:36,SNARE:38,HAT:42,OHAT:46};
+let KITS={}; // genre -> [kit]
+let G={genre:'',ki:0,root:9,ladder:'mineur',drums:null,mel:[],seed:1};
+let ac=null,playing=false,stap=0,timer=null;
+// lagen-regels (zijn les): SNARE/HAT/OHAT starten op MUTE = stabiel;
+// LOCK houdt een laag vast bij GENEREER/DICE; SLAG ONLY speelt juist
+// alléén snare/hat/ohat en mute de rest.
+let MUTE={SNARE:true,HAT:true,OHAT:true},LOCK={},ONLY=false;
+const SLAG=new Set(['SNARE','HAT','OHAT']);
+function actief(r){return ONLY?SLAG.has(r):!MUTE[r];}
+function bouwLagen(){const el=$('lagen');el.innerHTML='<span class="lgnm">LAGEN:</span>';
+ for(const r of Object.keys(G.drums).concat(['MEL'])){
+  const isMute=ONLY?!SLAG.has(r):!!MUTE[r];
+  const m=document.createElement('button');m.className='lt'+(isMute?' muted':'');m.textContent=r;
+  m.title='klik = mute aan/uit';m.onclick=()=>{MUTE[r]=!MUTE[r];bouwLagen();bouwRaster();};
+  const l=document.createElement('button');l.className='lt'+(LOCK[r]?' lockt':'');l.textContent='🔒';
+  l.title='lock: deze laag blijft staan bij GENEREER/DICE';
+  l.onclick=()=>{LOCK[r]=!LOCK[r];bouwLagen();};
+  el.appendChild(m);el.appendChild(l);
+ }
+ const o=document.createElement('button');o.className='lt'+(ONLY?' only':'');
+ o.textContent='⚡ SLAG ONLY';o.title='alleen snare/hat/ohat — de rest gemute';
+ o.onclick=()=>{ONLY=!ONLY;bouwLagen();bouwRaster();};
+ el.appendChild(o);}
+// ---------- UI ----------
+function bouwUI(){
+ $('root').innerHTML=NOTEN.map((n,i)=>`<option value="${i}">${n}</option>`).join('');
+ $('ladder').innerHTML=Object.keys(LADDERS).map(l=>`<option>${l}</option>`).join('');
+ $('root').value=G.root;$('ladder').value=G.ladder;
+ $('pills').innerHTML=Object.keys(KITS).filter(g=>KITS[g].length)
+  .map(g=>`<button class="pill" data-g="${g}" onclick="kiesGenre('${g}')">${g} <small>${KITS[g].length}</small></button>`).join('');}
+function ladNoten(){const sc=LADDERS[$('ladder').value],r=+$('root').value;return sc.map(i=>r+45+i)}
+function kiesGenre(g){G.genre=g;G.ki=0;
+ document.querySelectorAll('.pill').forEach(b=>b.classList.toggle('on',b.dataset.g===g));
+ laadKit();}
+function kitNav(d){const n=KITS[G.genre].length;G.ki=(G.ki+d+n)%n;laadKit();}
+function laadKit(){const k=KITS[G.genre][G.ki];
+ G.drums={};for(const r in k.drums)G.drums[r]=k.drums[r].slice();
+ G.mel=k.mel.map(n=>({s:n.s,d:n.d,l:n.l}));
+ if(k.bpm){$('bpm').value=k.bpm;$('vBpm').textContent=k.bpm;}
+ $('kitnaam').textContent=k.name;
+ $('kittel').textContent='kit '+(G.ki+1)+'/'+KITS[G.genre].length+(k.bpm?' · geleerd op '+k.bpm+' bpm':'');
+ bouwLagen();bouwRaster();
+ $('st').textContent=G.genre+'/'+k.name+' geladen — pas aan of druk GENEREER';}
+function bouwRaster(){G.root=+$('root').value;G.ladder=$('ladder').value;G.seed=+$('seed').value||G.seed;
+ if(!G.drums)return;
+ const nt=ladNoten();
+ const rijen=[...Object.keys(G.drums).map(r=>({lbl:r,drum:r})),...nt.slice().reverse().map((n,j)=>({lbl:NOTEN[n%12]+(Math.floor(n/12)-1),note:n,deg:nt.length-1-j}))];
+ let h='<div></div>'+Array.from({length:16},(_,i)=>`<div class="rlbl" style="justify-content:center">${i+1}</div>`).join('');
+ for(const r of rijen){const gem=r.drum?!actief(r.drum):!actief('MEL');
+  h+=`<div class="rlbl">${r.lbl}</div>`;
+  for(let s=0;s<16;s++){let aan=0;
+   if(r.drum)aan=G.drums[r.drum][s];
+   else aan=G.mel.some(m=>s>=m.s&&s<m.s+m.l&&m.d===r.deg)?1:0;
+   h+=`<div class="cel${aan?' aan':''}${s%4===0?' tel':''}${gem?' gemute':''}" data-s="${s}" data-r="${r.drum||'n'+r.deg}" onclick="klik(this)"></div>`;}}
+ $('grid').style.gridTemplateColumns=`70px repeat(16,1fr)`;
+ $('grid').innerHTML=h;
+ $('info').innerHTML=`<b>${G.genre} / ${KITS[G.genre][G.ki].name}</b> · ${NOTEN[G.root]}-${G.ladder} · ${G.mel.length} melodie-noten · <span id="midInfo">sleep .mid naar je DAW</span>`;}
+function klik(c){const s=+c.dataset.s,r=c.dataset.r;
+ if(r.startsWith('n')){const deg=+r.slice(1);
+  const i=G.mel.findIndex(m=>s>=m.s&&s<m.s+m.l&&m.d===deg);
+  if(i>=0)G.mel.splice(i,1);else G.mel.push({s,d:deg,l:2});
+ }else G.drums[r][s]^=1;
+ c.classList.toggle('aan');
+ const tot=Object.values(G.drums).flat().reduce((a,b)=>a+b,0)+G.mel.length;
+ $('info').querySelector('#midInfo').textContent=tot+' noten actief';}
+// ---------- GENEREER / DICE ----------
+function rng(){G.seed=Math.imul(G.seed,1664525)+1013904223>>>0;let s=G.seed;s^=s<<13;s>>>=0;s^=s>>>17;s^=s<<5;s>>>=0;return (s&0xFFFF)/65536}
+function genereer(){ // mutatie: verplaats 1-2 drum-hits of 1 melodie-noot, ritmisch DNA blijft
+ const vrije=Object.keys(G.drums).filter(r=>!LOCK[r]); // 🔒-lagen blijven
+ for(let k=0;k<2&&vrije.length;k++){
+  const rij=vrije[Math.floor(rng()*vrije.length)],a=G.drums[rij];
+  const aan=a.map((v,i)=>v?i:-1).filter(i=>i>=0);
+  if(aan.length&&rng()<0.5){a[aan[Math.floor(rng()*aan.length)]]=0;}
+  else a[Math.floor(rng()*16)]=1;
+ }
+ if(!LOCK.MEL){
+  if(G.mel.length&&rng()<0.7){const m=G.mel[Math.floor(rng()*G.mel.length)];
+   const sc=LADDERS[G.ladder].length;m.d=Math.max(0,Math.min(sc-1,m.d+(rng()<0.5?-1:1)));
+  }else if(G.mel.length)G.mel.splice(Math.floor(rng()*G.mel.length),1);}
+ bouwRaster();$('st').textContent='✨ gemuteerd — groove behouden';}
+function dice(){G.seed=(Math.imul(G.seed,48271)+Date.now())>>>0;
+ const dens=0.25+rng()*0.45;
+ for(const r in G.drums){if(LOCK[r])continue; // 🔒-lagen blijven
+  const a=G.drums[r];
+  for(let s=0;s<16;s++)a[s]=rng()<(r==='KICK'?dens*0.6:r==='SNARE'?0.10:dens);
+  a[0]=r==='KICK'?1:a[0];} // kick altijd op 1
+ if(!LOCK.MEL){G.mel=[];const nm=2+Math.floor(rng()*4),sc=LADDERS[G.ladder].length;
+  for(let k=0;k<nm;k++)G.mel.push({s:Math.floor(rng()*16),d:Math.floor(rng()*sc),l:1+Math.floor(rng()*3)});}
+ bouwRaster();$('st').textContent='🎲 gedobbeld — alles binnen de ladder';}
+// ---------- velocity + timing ----------
+function vel(s){const k=+$('kracht').value/100;
+ const basis=70+k*30,accent=(s%4===0)?15+k*15:0,rnd=(rng()-0.5)*14;
+ return Math.max(40,Math.min(127,Math.round(basis+accent+rnd)));}
+function tickVan(s){const sw=+$('swing').value/100;
+ return s*240+((s%2===1)?Math.round(240*0.45*sw):0);} // even stappen later = swing
+// ---------- SPEEL ----------
+function speel(){if(playing){stopSpel();return}
+ if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();
+ playing=true;$('bPlay').textContent='■ STOP';stap=0;
+ const spb=60/(+$('bpm').value)/4;let t0=ac.currentTime+0.08;
+ const nt=ladNoten();
+ const stapT=s=>t0+s*spb+((s%2===1)?spb*(+$('swing').value/100)*0.45:0);
+ timer=setInterval(()=>{
+  const ct=ac.currentTime;
+  while(stap<16&&stapT(stap)<ct+0.06){
+   const s=stap;
+   if(actief('KICK')&&G.drums.KICK[s])kick(stapT(s),vel(s));
+   if(actief('SNARE')&&G.drums.SNARE[s])snare(stapT(s),vel(s));
+   if(actief('HAT')&&G.drums.HAT[s])hat(stapT(s),vel(s),false);
+   if(actief('OHAT')&&G.drums.OHAT[s])hat(stapT(s),vel(s),true);
+   if(actief('MEL'))for(const m of G.mel)if(m.s===s)toon(stapT(s),nt[m.d],m.l*spb,vel(s));
+   setTimeout(rr=>highlight(rr),Math.max(0,(stapT(s)-ac.currentTime)*1000),s);
+   stap++;}
+  if(stap>=16&&ct>t0+16*spb){stap=0;t0=ct+0.05;}
+ },25);}
+function stopSpel(){playing=false;clearInterval(timer);$('bPlay').textContent='▶ SPEEL';highlight(-1);}
+function highlight(s){document.querySelectorAll('.cel.speelt').forEach(c=>c.classList.remove('speelt'));
+ if(s>=0)document.querySelectorAll(`.cel[data-s="${s}"]`).forEach(c=>c.classList.add('speelt'));}
+// ---------- mini-synth ----------
+function kick(t,v){const o=ac.createOscillator(),g=ac.createGain();o.type='sine';
+ o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(45,t+0.12);
+ g.gain.setValueAtTime(v/127*0.9,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.4);
+ o.connect(g).connect(ac.destination);o.start(t);o.stop(t+0.42);}
+function snare(t,v){const n=ac.createBufferSource(),b=ac.createBuffer(1,ac.sampleRate*0.2,ac.sampleRate),d=b.getChannelData(0);
+ for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/2200);
+ n.buffer=b;const f=ac.createBiquadFilter();f.type='bandpass';f.frequency.value=1800;
+ const g=ac.createGain();g.gain.value=v/127*0.5;n.connect(f).connect(g).connect(ac.destination);n.start(t);}
+function hat(t,v,open){const n=ac.createBufferSource(),du=open?0.25:0.06,b=ac.createBuffer(1,ac.sampleRate*du,ac.sampleRate),d=b.getChannelData(0);
+ for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(open?4000:900));
+ n.buffer=b;const f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=7000;
+ const g=ac.createGain();g.gain.value=v/127*0.25;n.connect(f).connect(g).connect(ac.destination);n.start(t);}
+function toon(t,midi,len,v){const o=ac.createOscillator(),g=ac.createGain(),f=ac.createBiquadFilter();
+ o.type='sawtooth';o.frequency.value=440*Math.pow(2,(midi-69)/12);
+ f.type='lowpass';f.frequency.value=1600;
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v/127*0.22,t+0.01);
+ g.gain.exponentialRampToValueAtTime(0.001,t+Math.max(0.12,len*0.9));
+ o.connect(f).connect(g).connect(ac.destination);o.start(t);o.stop(t+len+0.05);}
+// ---------- .mid export (SMF type 0, 960 PPQ) ----------
+function vlq(x){const b=[x&127];while(x>>=7)b.unshift((x&127)|128);return b}
+function exportMid(){const bpm=+$('bpm').value,nt=ladNoten();
+ const ev=[]; // [tick,status,data1,data2]
+ const tempo=Math.round(60000000/bpm);
+ for(const r in G.drums){if(!actief(r))continue; // gemute lagen niet mee
+  for(let s=0;s<16;s++)if(G.drums[r][s])
+   ev.push([tickVan(s),0x99,DRUMN[r],vel(s)],[tickVan(s)+110,0x89,DRUMN[r],0]);}
+ if(actief('MEL'))for(const m of G.mel){const e=s=>tickVan(s);
+  ev.push([e(m.s),0x90,nt[m.d],vel(m.s)],[e(m.s+m.l),0x80,nt[m.d],0]);}
+ ev.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+ const trk=[0,0xFF,0x51,3,(tempo>>16)&255,(tempo>>8)&255,tempo&255];
+ let last=0;for(const e of ev){trk.push(...vlq(e[0]-last),e[1],e[2],e[3]);last=e[0];}
+ trk.push(0,0xFF,0x2F,0);
+ const hdr=[0x4D,0x54,0x68,0x64,0,0,0,6,0,0,0,1,0x03,0xC0,
+  0x4D,0x54,0x72,0x6B,(trk.length>>24)&255,(trk.length>>16)&255,(trk.length>>8)&255,trk.length&255];
+ dl(new Blob([new Uint8Array(hdr),new Uint8Array(trk)],{type:'audio/midi'}),'g2b-breinpro-'+KITS[G.genre][G.ki].name+'.mid');
+ $('st').textContent='📥 .mid gedownload — drums kanaal 10 · melodie kanaal 1';}
+// ---------- WAV bounce ----------
+function wavBlob(l,r,sr){const n=l.length,b=new ArrayBuffer(44+n*4),v=new DataView(b),s=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};
+ s(0,'RIFF');v.setUint32(4,36+n*4,true);s(8,'WAVE');s(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);
+ v.setUint16(22,2,true);v.setUint32(24,sr,true);v.setUint32(28,sr*4,true);v.setUint16(32,4,true);v.setUint16(34,16,true);
+ s(36,'data');v.setUint32(40,n*4,true);const L=new Int16Array(b,44),R=new Int16Array(b,44+n*2);
+ for(let i=0;i<n;i++){L[i]=l[i];R[i]=r[i];}return new Blob([b],{type:'audio/wav'})}
+function bounce(){ // render 1 maat offline met dezelfde mini-synth
+ const bpm=+$('bpm').value,spb=60/bpm/4,sr=44100,n=Math.ceil(sr*16*spb)+sr*0.4|0;
+ const L=new Float32Array(n),R=new Float32Array(n),nt=ladNoten();
+ const pl=(x,t,v,du,fr)=>{const i0=Math.floor(t*sr),e=Math.min(n,i0+Math.floor(du*sr));
+  for(let i=i0;i<e;i++){const ph=(i-i0)/sr;
+   let s;if(fr===0)s=Math.sin(2*Math.PI*(150*Math.exp(-ph*28)+45)*ph)*Math.exp(-ph*10); // kick
+   else if(fr===1)s=(Math.random()*2-1)*Math.exp(-ph*30); // snare noise
+   else if(fr===2)s=(Math.random()*2-1)*Math.exp(-ph*90); // hat
+   else s=(2*((ph*fr)%1)-1)*Math.exp(-ph*(3/du))*Math.min(1,ph*80); // zaag-toon
+   L[i]+=s*v;R[i]+=s*v;}};
+ const tijd=s=>s*spb+((s%2===1)?spb*(+$('swing').value/100)*0.45:0);
+ for(let s=0;s<16;s++){const t=tijd(s),v=vel(s)/127;
+  if(actief('KICK')&&G.drums.KICK[s])pl(0,t,v*0.95,0.4,0);
+  if(actief('SNARE')&&G.drums.SNARE[s])pl(0,t,v*0.55,0.2,1);
+  if(actief('HAT')&&G.drums.HAT[s])pl(0,t,v*0.28,0.06,2);
+  if(actief('OHAT')&&G.drums.OHAT[s])pl(0,t,v*0.28,0.25,2);
+  if(actief('MEL'))for(const m of G.mel)if(m.s===s)pl(0,t,v*0.22,Math.max(0.12,m.l*spb*0.9),440*Math.pow(2,(nt[m.d]-69)/12));}
+ let mx=0;for(let i=0;i<n;i++)mx=Math.max(mx,Math.abs(L[i]),Math.abs(R[i]));
+ if(mx>0){const g=0.89/mx;for(let i=0;i<n;i++){L[i]*=g;R[i]*=g;}}
+ const li=new Int16Array(n),ri=new Int16Array(n);
+ for(let i=0;i<n;i++){li[i]=Math.max(-32768,Math.min(32767,Math.round(L[i]*32767)));
+  ri[i]=Math.max(-32768,Math.min(32767,Math.round(R[i]*32767)));}
+ dl(wavBlob(li,ri,sr),'g2b-breinpro-loop.wav');
+ $('st').textContent='🔊 WAV-loop gedownload — '+bpm+' bpm, naadloos loopbaar';}
+// ---------- AUTO-SCORE (bouwveld raster 2) ----------
+// fases zoals de blueprint: 1 melodie-basis zonder slag → vast op raster 2 →
+// 2 SLAG ONLY percussie → vast op raster 2 → 3 alles open = complete beat.
+let AS=[],BPM_LOCK=0;
+function bouwRaster2(){
+ const el=$('raster2'),bx=$('as');if(!AS.length){el.hidden=true;return}
+ el.hidden=false;
+ bx.innerHTML=AS.map((l,i)=>`<div class="aslaag" onclick="asSolo(${i})"><b>${l.naam}</b><span>${l.n} noten</span><em>klik = solo hoor</em></div>`).join('');}
+function asSolo(i){
+ const l=AS[i],oudeM={...MUTE},oudeO=ONLY;
+ if(l.type==='mel'){ONLY=false;MUTE={SNARE:true,HAT:true,OHAT:true};}
+ else{ONLY=false;MUTE={KICK:true,MEL:true,SNARE:false,HAT:false,OHAT:false};for(const r of['SNARE','HAT','OHAT'])MUTE[r]=false;}
+ bouwLagen();bouwRaster();
+ if(!playing)speel();
+ const bpm=+$('bpm').value;
+ setTimeout(()=>{MUTE=oudeM;ONLY=oudeO;bouwLagen();bouwRaster();},60000/bpm*16+400);}
+function autoScore(){
+ if(playing)stopSpel();
+ $('st').textContent='🤖 AUTO fase 1/3 — melodie-basis zonder slag…';
+ MUTE={SNARE:true,HAT:true,OHAT:true};ONLY=false;LOCK={};
+ BPM_LOCK=+$('bpm').value; // master-tempo: elke fase blijft op deze bpm
+ dice();
+ const basis={type:'mel',naam:'🎵 BASIS · kick + melodie',
+  n:G.mel.length+G.drums.KICK.reduce((a,b)=>a+b,0)};
+ AS=[basis];bouwRaster2();bouwLagen();bouwRaster();
+ setTimeout(()=>{
+  $('st').textContent='🤖 AUTO fase 2/3 — SLAG ONLY dobbelt percussie…';
+  ONLY=true;LOCK={KICK:true,MEL:true};dice();LOCK={};
+  const slag={type:'slag',naam:'🥁 SLAG · snare + hat + open-hat',
+   n:G.drums.SNARE.reduce((a,b)=>a+b,0)+G.drums.HAT.reduce((a,b)=>a+b,0)+G.drums.OHAT.reduce((a,b)=>a+b,0)};
+  AS.push(slag);bouwRaster2();bouwLagen();bouwRaster();
+  setTimeout(()=>{
+   ONLY=false;MUTE={};bouwLagen();bouwRaster();
+   $('st').textContent='🤖 AUTO klaar — beat op bouwveld · 📀 SONG maakt er een arrangement (intro→verse→refrein) van · speelt nu';
+   if(!playing)speel();
+  },700);
+ },700);}
+// ---------- SONG: arrangement-export (intro → verse → refrein) ----------
+// bouwt op wat AUTO op raster 2 heeft vastgelegd: intro alleen melodie,
+// verse melodie+kick+hat, refrein alles open. Zelfde .mid-formaat als exportMid.
+function exportSong(){
+ if(!AS.length){$('st').textContent='⚠️ eerst 🤖 AUTO — dan bouwt SONG van je basis+slag een arrangement';return}
+ const bpm=BPM_LOCK||+$('bpm').value,nt=ladNoten(),ev=[],tempo=Math.round(60000000/bpm);
+ const sect=[[4,['MEL']],[8,['MEL','KICK','HAT']],[8,['MEL','KICK','SNARE','HAT','OHAT']]];
+ let barOff=0;
+ for(const[nb,rows]of sect){
+  for(let b=0;b<nb;b++)for(let s=0;s<16;s++){
+   const t=tickVan(s)+barOff*3840;
+   for(const r in G.drums){if(!rows.includes(r))continue;
+    if(G.drums[r][s])ev.push([t,0x99,DRUMN[r],vel(s)],[t+110,0x89,DRUMN[r],0]);}
+   if(rows.includes('MEL'))for(const m of G.mel)if(m.s===s)
+    ev.push([t,0x90,nt[m.d],vel(m.s)],[tickVan(m.s+m.l)+barOff*3840,0x80,nt[m.d],0]);
+  }
+  barOff+=nb;}
+ ev.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+ const trk=[0,0xFF,0x51,3,(tempo>>16)&255,(tempo>>8)&255,tempo&255];
+ let last=0;for(const e of ev){trk.push(...vlq(e[0]-last),e[1],e[2],e[3]);last=e[0];}
+ trk.push(0,0xFF,0x2F,0);
+ const hdr=[0x4D,0x54,0x68,0x64,0,0,0,6,0,0,0,1,0x03,0xC0,
+  0x4D,0x54,0x72,0x6B,(trk.length>>24)&255,(trk.length>>16)&255,(trk.length>>8)&255,trk.length&255];
+ dl(new Blob([new Uint8Array(hdr),new Uint8Array(trk)],{type:'audio/midi'}),'g2b-brein-SONG-'+KITS[G.genre][G.ki].name+'.mid');
+ $('st').textContent='📀 SONG gedownload — 20 maten: intro (4·melodie) → verse (8·+kick+hat) → refrein (8·alles) · '+bpm+' bpm';}
+function dl(b,name){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();}
+fetch('breinpro-kits.json').then(r=>r.json()).then(k=>{KITS=k;bouwUI();kiesGenre(Object.keys(k).find(g=>k[g].length));});
+</script></body></html>
