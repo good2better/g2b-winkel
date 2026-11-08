@@ -37,7 +37,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 const BRON={
  'OCHO':{dir:'ocho-web',sets:['OCHO','SUB808'],load:async s=>{const n=[['DONDER','KICKBAS','TRAP','BOOM','AFRO','DEMBOW','DRILL','SUB808','SKRATJI','BANGI','KOTI','AGOGO','SEKI','SURDO','TIMBAL','KLAP'],['SUB-ORIG','SUB-KORT','SUB-LANG','SUB-GLAF','SUB-GLOP','SUB-VIES','SUB-DONK','SUB-HELD','SUB-DEMB','SUB-PNCH','SUB-WOBB','SUB-ROLL','SUB-MUTE','SUB-WARM','SUB-REES','SUB-DIST']];return{namen:n[s],files:n[s].map(x=>x.toLowerCase())}}},
  'PADS':{dir:'pads-web',meta:1},'SURI':{dir:'suri-web',meta:1},'BASSDRUM':{dir:'bassdrum-web',meta:1},
- 'MELODIE':{dir:'melodie-web',meta:1},'FUSION':{dir:'fusion-web',meta:1},'KEYS':{dir:'keys-web',meta:1},'AKKOORD':{dir:'akkoord-web',meta:1},
+ 'MELODIE':{dir:'melodie-web',meta:1},'KEYS':{dir:'keys-web',meta:1},'AKKOORD':{dir:'akkoord-web',meta:1},
  'DRUMS':{dir:'drums-web',load:async()=>{const m=await(await fetch('/tools/drums-web/meta.json')).json();return{namen:m.names,files:m.files}}},
  'BAS':{dir:'bas-web',load:async()=>{const m=await(await fetch('/tools/bas-web/meta.json')).json();return{namen:m.names,files:m.files}}}
 };
