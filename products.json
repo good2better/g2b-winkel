@@ -20,7 +20,11 @@
       "uitleg": "media/dicesynth-uitleg.mp4",
       "sub_nl": "media/dicesynth-uitleg.nl.vtt",
       "sub_es": "media/dicesynth-uitleg.es.vtt",
-      "uitgelicht": true
+      "uitgelicht": true,
+      "upsell": [
+        "g2bbestof",
+        "g2balles"
+      ]
     },
     {
       "id": "stapeldice",
@@ -57,7 +61,11 @@
       "video": "media/stapeldice-demo.mp4",
       "sub_nl": "media/stapeldice-demo.nl.vtt",
       "sub_es": "media/stapeldice-demo.es.vtt",
-      "uitgelicht": true
+      "uitgelicht": true,
+      "upsell": [
+        "beatmakerpro",
+        "g2bstarter"
+      ]
     },
     {
       "id": "g2bmaster",
@@ -81,7 +89,11 @@
       "sub_nl": "media/master-uitleg.nl.vtt",
       "sub_es": "media/master-uitleg.es.vtt",
       "preview": "media/g2bmaster-preview.mp3",
-      "uitgelicht": true
+      "uitgelicht": true,
+      "upsell": [
+        "g2bpillpack",
+        "g2bstarter"
+      ]
     },
     {
       "id": "g2bpillpack",
@@ -101,7 +113,11 @@
       "video": "media/pillpack-demo.mp4",
       "sub_nl": "media/pillpack-demo.nl.vtt",
       "sub_es": "media/pillpack-demo.es.vtt",
-      "uitgelicht": true
+      "uitgelicht": true,
+      "upsell": [
+        "g2bmaster",
+        "g2bstarter"
+      ]
     },
     {
       "id": "g2bmixer",
@@ -124,7 +140,11 @@
       "uitleg": "media/mixerv2-uitleg.mp4",
       "sub_nl": "media/mixerv2-uitleg.nl.vtt",
       "sub_es": "media/mixerv2-uitleg.es.vtt",
-      "preview": "media/g2bmixer-preview.mp3"
+      "preview": "media/g2bmixer-preview.mp3",
+      "upsell": [
+        "g2brefors",
+        "g2bstudio"
+      ]
     },
     {
       "id": "g2bgeluidmidi",
@@ -146,7 +166,11 @@
       "uitleg": "media/geluidmidi-uitleg.mp4",
       "sub_nl": "media/geluidmidi-uitleg.nl.vtt",
       "sub_es": "media/geluidmidi-uitleg.es.vtt",
-      "preview": "media/g2bgeluidmidi-preview.mp3"
+      "preview": "media/g2bgeluidmidi-preview.mp3",
+      "upsell": [
+        "g2bband",
+        "g2bstudio"
+      ]
     },
     {
       "id": "g2brefors",
@@ -169,7 +193,11 @@
       "uitleg": "media/refors-uitleg.mp4",
       "sub_nl": "media/refors-uitleg.nl.vtt",
       "sub_es": "media/refors-uitleg.es.vtt",
-      "preview": "media/g2brefors-preview.mp3"
+      "preview": "media/g2brefors-preview.mp3",
+      "upsell": [
+        "g2bmixer",
+        "g2bstudio"
+      ]
     },
     {
       "id": "g2bprodsuite",
@@ -192,7 +220,10 @@
       "sub_nl": "media/prodsuite-uitleg.nl.vtt",
       "sub_es": "media/prodsuite-uitleg.es.vtt",
       "preview": "media/g2bprodsuite-preview.mp3",
-      "uitgelicht": true
+      "uitgelicht": true,
+      "upsell": [
+        "g2balles"
+      ]
     },
     {
       "id": "g2bclub",
@@ -208,7 +239,10 @@
         "download": "bedankt.html?k=g2bclub",
         "browser": "club-apps.html"
       },
-      "uitgelicht": true
+      "uitgelicht": true,
+      "upsell": [
+        "g2balles"
+      ]
     },
     {
       "id": "g2bstarter",
@@ -223,7 +257,11 @@
       "links": {
         "download": "bedankt.html?k=g2bstarter",
         "stripe": "https://buy.stripe.com/14A28r5II5U7azZ3tP5J61H"
-      }
+      },
+      "upsell": [
+        "g2bstudio",
+        "g2balles"
+      ]
     },
     {
       "id": "g2bstudio",
@@ -238,7 +276,10 @@
       "links": {
         "download": "bedankt.html?k=g2bstudio",
         "stripe": "https://buy.stripe.com/aFacN58UUeqD7nN7K55J61I"
-      }
+      },
+      "upsell": [
+        "g2balles"
+      ]
     },
     {
       "id": "g2balles",
@@ -253,7 +294,10 @@
       "links": {
         "download": "bedankt.html?k=g2balles",
         "stripe": "https://buy.stripe.com/00w8wP7QQ5U77nN3tP5J61J"
-      }
+      },
+      "upsell": [
+        "g2bclub"
+      ]
     },
     {
       "id": "beatmakerpro",
@@ -269,7 +313,11 @@
         "download": "bedankt.html?k=beatmakerpro",
         "browser": "tools/beatmaker-pro/app/index.html"
       },
-      "uitgelicht": true
+      "uitgelicht": true,
+      "upsell": [
+        "g2bclub",
+        "g2balles"
+      ]
     },
     {
       "id": "g2bband",
@@ -291,7 +339,11 @@
       "uitleg": "media/band-uitleg.mp4",
       "sub_nl": "media/band-uitleg.nl.vtt",
       "sub_es": "media/band-uitleg.es.vtt",
-      "preview": "media/g2bband-preview.mp3"
+      "preview": "media/g2bband-preview.mp3",
+      "upsell": [
+        "prod01",
+        "g2bstudio"
+      ]
     },
     {
       "id": "g2bsmash",
@@ -313,7 +365,11 @@
       "uitleg": "media/smash-uitleg.mp4",
       "sub_nl": "media/smash-uitleg.nl.vtt",
       "sub_es": "media/smash-uitleg.es.vtt",
-      "preview": "media/g2bsmash-preview.mp3"
+      "preview": "media/g2bsmash-preview.mp3",
+      "upsell": [
+        "g2bairdrums",
+        "g2b-workstation"
+      ]
     },
     {
       "id": "g2bairdrums",
@@ -335,7 +391,11 @@
       "uitleg": "media/airdrums-uitleg.mp4",
       "sub_nl": "media/airdrums-uitleg.nl.vtt",
       "sub_es": "media/airdrums-uitleg.es.vtt",
-      "preview": "media/g2bairdrums-preview.mp3"
+      "preview": "media/g2bairdrums-preview.mp3",
+      "upsell": [
+        "g2bsmash",
+        "g2balles"
+      ]
     },
     {
       "id": "g2bsuite1",
@@ -354,7 +414,10 @@
       "download_dir": "d/g2bsuite1",
       "uitleg": "media/suite1-uitleg.mp4",
       "sub_nl": "media/suite1-uitleg.nl.vtt",
-      "sub_es": "media/suite1-uitleg.es.vtt"
+      "sub_es": "media/suite1-uitleg.es.vtt",
+      "upsell": [
+        "g2b-workstation"
+      ]
     },
     {
       "id": "seofabriek1",
@@ -375,7 +438,11 @@
       "download_dir": "d/seofabriek1",
       "uitleg": "media/seofabriek1-uitleg.mp4",
       "sub_nl": "media/seofabriek1-uitleg.nl.vtt",
-      "sub_es": "media/seofabriek1-uitleg.es.vtt"
+      "sub_es": "media/seofabriek1-uitleg.es.vtt",
+      "upsell": [
+        "marketerbundel1",
+        "g2bsuite1"
+      ]
     },
     {
       "id": "agency1",
@@ -394,7 +461,10 @@
       "download_dir": "d/agency1",
       "uitleg": "media/agency1-uitleg.mp4",
       "sub_nl": "media/agency1-uitleg.nl.vtt",
-      "sub_es": "media/agency1-uitleg.es.vtt"
+      "sub_es": "media/agency1-uitleg.es.vtt",
+      "upsell": [
+        "g2bsuite1"
+      ]
     },
     {
       "id": "marketerbundel1",
@@ -413,7 +483,10 @@
       "download_dir": "d/marketerbundel1",
       "uitleg": "media/marketerbundel1-uitleg.mp4",
       "sub_nl": "media/marketerbundel1-uitleg.nl.vtt",
-      "sub_es": "media/marketerbundel1-uitleg.es.vtt"
+      "sub_es": "media/marketerbundel1-uitleg.es.vtt",
+      "upsell": [
+        "g2bsuite1"
+      ]
     },
     {
       "id": "mailfabriek1",
@@ -434,7 +507,11 @@
       "video_es": "media/mailfabriek-demo-es.mp4",
       "uitleg": "media/mailfabriek1-uitleg.mp4",
       "sub_nl": "media/mailfabriek1-uitleg.nl.vtt",
-      "sub_es": "media/mailfabriek1-uitleg.es.vtt"
+      "sub_es": "media/mailfabriek1-uitleg.es.vtt",
+      "upsell": [
+        "leadfabriek1",
+        "g2bsuite1"
+      ]
     },
     {
       "id": "sheetfabriek1",
@@ -455,7 +532,11 @@
       "video_es": "media/sheetfabriek-demo-es.mp4",
       "uitleg": "media/sheetfabriek1-uitleg.mp4",
       "sub_nl": "media/sheetfabriek1-uitleg.nl.vtt",
-      "sub_es": "media/sheetfabriek1-uitleg.es.vtt"
+      "sub_es": "media/sheetfabriek1-uitleg.es.vtt",
+      "upsell": [
+        "sequentiefabriek1",
+        "g2bsuite1"
+      ]
     },
     {
       "id": "sequentiefabriek1",
@@ -476,7 +557,11 @@
       "video_es": "media/sequentiefabriek-demo-es.mp4",
       "uitleg": "media/sequentiefabriek1-uitleg.mp4",
       "sub_nl": "media/sequentiefabriek1-uitleg.nl.vtt",
-      "sub_es": "media/sequentiefabriek1-uitleg.es.vtt"
+      "sub_es": "media/sequentiefabriek1-uitleg.es.vtt",
+      "upsell": [
+        "sheetfabriek1",
+        "g2bsuite1"
+      ]
     },
     {
       "id": "crmfabriek1",
@@ -497,7 +582,11 @@
       "video_es": "media/crmfabriek-demo-es.mp4",
       "uitleg": "media/crmfabriek1-uitleg.mp4",
       "sub_nl": "media/crmfabriek1-uitleg.nl.vtt",
-      "sub_es": "media/crmfabriek1-uitleg.es.vtt"
+      "sub_es": "media/crmfabriek1-uitleg.es.vtt",
+      "upsell": [
+        "leadfabriek1",
+        "g2bsuite1"
+      ]
     },
     {
       "id": "watcherfabriek1",
@@ -518,7 +607,11 @@
       "video_es": "media/watcherfabriek-demo-es.mp4",
       "uitleg": "media/watcherfabriek1-uitleg.mp4",
       "sub_nl": "media/watcherfabriek1-uitleg.nl.vtt",
-      "sub_es": "media/watcherfabriek1-uitleg.es.vtt"
+      "sub_es": "media/watcherfabriek1-uitleg.es.vtt",
+      "upsell": [
+        "flowfabriek1",
+        "g2bsuite1"
+      ]
     },
     {
       "id": "flowfabriek1",
@@ -539,7 +632,11 @@
       "video_es": "media/flowfabriek-demo-es.mp4",
       "uitleg": "media/flowfabriek1-uitleg.mp4",
       "sub_nl": "media/flowfabriek1-uitleg.nl.vtt",
-      "sub_es": "media/flowfabriek1-uitleg.es.vtt"
+      "sub_es": "media/flowfabriek1-uitleg.es.vtt",
+      "upsell": [
+        "watcherfabriek1",
+        "g2bsuite1"
+      ]
     },
     {
       "id": "kanaalfabriek1",
@@ -560,7 +657,11 @@
       "video": "media/kanaalfabriek-demo.mp4",
       "uitleg": "media/kanaalfabriek1-uitleg.mp4",
       "sub_nl": "media/kanaalfabriek1-uitleg.nl.vtt",
-      "sub_es": "media/kanaalfabriek1-uitleg.es.vtt"
+      "sub_es": "media/kanaalfabriek1-uitleg.es.vtt",
+      "upsell": [
+        "leadfabriek1",
+        "g2bsuite1"
+      ]
     },
     {
       "id": "leadfabriek1",
@@ -581,7 +682,11 @@
       "video_es": "media/leadfabriek-demo-es.mp4",
       "uitleg": "media/leadfabriek1-uitleg.mp4",
       "sub_nl": "media/leadfabriek1-uitleg.nl.vtt",
-      "sub_es": "media/leadfabriek1-uitleg.es.vtt"
+      "sub_es": "media/leadfabriek1-uitleg.es.vtt",
+      "upsell": [
+        "lijstfabriek1",
+        "g2bsuite1"
+      ]
     },
     {
       "id": "lijstfabriek1",
@@ -602,7 +707,11 @@
       "video_es": "media/lijstfabriek-demo-es.mp4",
       "uitleg": "media/lijstfabriek1-uitleg.mp4",
       "sub_nl": "media/lijstfabriek1-uitleg.nl.vtt",
-      "sub_es": "media/lijstfabriek1-uitleg.es.vtt"
+      "sub_es": "media/lijstfabriek1-uitleg.es.vtt",
+      "upsell": [
+        "crmfabriek1",
+        "g2bsuite1"
+      ]
     },
     {
       "id": "g2bvibe1",
@@ -624,7 +733,11 @@
       "uitleg": "media/vibe1-uitleg.mp4",
       "sub_nl": "media/vibe1-uitleg.nl.vtt",
       "sub_es": "media/vibe1-uitleg.es.vtt",
-      "preview": "media/g2bvibe1-preview.mp3"
+      "preview": "media/g2bvibe1-preview.mp3",
+      "upsell": [
+        "g2bfx1",
+        "g2balles"
+      ]
     },
     {
       "id": "g2bbestof",
@@ -646,7 +759,11 @@
       "video": "media/bestof-demo-v3.mp4",
       "uitleg": "media/bestof-uitleg.mp4",
       "sub_nl": "media/bestof-uitleg.nl.vtt",
-      "sub_es": "media/bestof-uitleg.es.vtt"
+      "sub_es": "media/bestof-uitleg.es.vtt",
+      "upsell": [
+        "g2b-oneshots",
+        "g2balles"
+      ]
     },
     {
       "id": "g2b-oneshots",
@@ -669,7 +786,11 @@
       "eerst": true,
       "uitleg": "media/oneshots-uitleg.mp4",
       "sub_nl": "media/oneshots-uitleg.nl.vtt",
-      "sub_es": "media/oneshots-uitleg.es.vtt"
+      "sub_es": "media/oneshots-uitleg.es.vtt",
+      "upsell": [
+        "g2bbd1",
+        "g2balles"
+      ]
     },
     {
       "id": "g2b-juridisch",
@@ -692,7 +813,11 @@
       "video_es": "media/juridisch-demo-es.mp4",
       "uitleg": "media/juridisch-uitleg.mp4",
       "sub_nl": "media/juridisch-uitleg.nl.vtt",
-      "sub_es": "media/juridisch-uitleg.es.vtt"
+      "sub_es": "media/juridisch-uitleg.es.vtt",
+      "upsell": [
+        "g2b-psychologie",
+        "g2b-bedrijfsmiddelen"
+      ]
     },
     {
       "id": "g2b-psychologie",
@@ -715,7 +840,11 @@
       "video_es": "media/psychologie-demo-es.mp4",
       "uitleg": "media/psychologie-uitleg.mp4",
       "sub_nl": "media/psychologie-uitleg.nl.vtt",
-      "sub_es": "media/psychologie-uitleg.es.vtt"
+      "sub_es": "media/psychologie-uitleg.es.vtt",
+      "upsell": [
+        "g2b-juridisch",
+        "g2b-bedrijfsmiddelen"
+      ]
     },
     {
       "id": "g2b-workstation",
@@ -739,7 +868,11 @@
       "download_dir": "d/g2b-workstation",
       "uitleg": "media/workstation-uitleg.mp4",
       "sub_nl": "media/workstation-uitleg.nl.vtt",
-      "sub_es": "media/workstation-uitleg.es.vtt"
+      "sub_es": "media/workstation-uitleg.es.vtt",
+      "upsell": [
+        "g2bsuite1",
+        "g2balles"
+      ]
     },
     {
       "id": "cursus01",
@@ -759,7 +892,11 @@
       "download_dir": "d/cursus01",
       "uitleg": "media/cursus01-uitleg.mp4",
       "sub_nl": "media/cursus01-uitleg.nl.vtt",
-      "sub_es": "media/cursus01-uitleg.es.vtt"
+      "sub_es": "media/cursus01-uitleg.es.vtt",
+      "upsell": [
+        "prod01",
+        "g2b-brein"
+      ]
     },
     {
       "id": "g2b-bedrijfsmiddelen",
@@ -782,7 +919,11 @@
       "video_es": "media/bedrijfsmiddelen-demo-es.mp4",
       "uitleg": "media/bedrijfsmiddelen-uitleg.mp4",
       "sub_nl": "media/bedrijfsmiddelen-uitleg.nl.vtt",
-      "sub_es": "media/bedrijfsmiddelen-uitleg.es.vtt"
+      "sub_es": "media/bedrijfsmiddelen-uitleg.es.vtt",
+      "upsell": [
+        "g2b-juridisch",
+        "cursus01"
+      ]
     },
     {
       "id": "2878e291",
@@ -1187,7 +1328,10 @@
       "download_dir": "d/d74976fef7dfff6a",
       "uitleg": "media/ritmosbundel-uitleg.mp4",
       "sub_nl": "media/ritmosbundel-uitleg.nl.vtt",
-      "sub_es": "media/ritmosbundel-uitleg.es.vtt"
+      "sub_es": "media/ritmosbundel-uitleg.es.vtt",
+      "upsell": [
+        "g2b-oneshots"
+      ]
     },
     {
       "id": "g2bfx1",
@@ -1209,7 +1353,11 @@
       "uitleg": "media/fx1-uitleg.mp4",
       "sub_nl": "media/fx1-uitleg.nl.vtt",
       "sub_es": "media/fx1-uitleg.es.vtt",
-      "preview": "media/g2bfx1-preview.mp3"
+      "preview": "media/g2bfx1-preview.mp3",
+      "upsell": [
+        "g2bvibe1",
+        "g2balles"
+      ]
     },
     {
       "id": "ocho01",
@@ -1232,7 +1380,11 @@
       "uitleg": "media/ocho-uitleg.mp4",
       "sub_nl": "media/ocho-uitleg.nl.vtt",
       "sub_es": "media/ocho-uitleg.es.vtt",
-      "preview": "media/ocho01-preview.mp3"
+      "preview": "media/ocho01-preview.mp3",
+      "upsell": [
+        "g2b-oneshots",
+        "g2balles"
+      ]
     },
     {
       "titel": "G2B Sleutel-Helper",
@@ -1265,7 +1417,10 @@
       ],
       "uitleg": "media/sl3ut3-uitleg.mp4",
       "sub_nl": "media/sl3ut3-uitleg.nl.vtt",
-      "sub_es": "media/sl3ut3-uitleg.es.vtt"
+      "sub_es": "media/sl3ut3-uitleg.es.vtt",
+      "upsell": [
+        "g2b-juridisch"
+      ]
     },
     {
       "id": "g2b-brein",
@@ -1288,7 +1443,11 @@
       "sub_nl": "media/brein-uitleg.nl.vtt",
       "sub_es": "media/brein-uitleg.es.vtt",
       "preview": "media/g2b-brein-preview.mp3",
-      "uitgelicht": true
+      "uitgelicht": true,
+      "upsell": [
+        "beatmakerpro",
+        "g2balles"
+      ]
     },
     {
       "id": "prod01",
@@ -1310,7 +1469,11 @@
       "uitleg": "media/prod01-uitleg.mp4",
       "sub_nl": "media/prod01-uitleg.nl.vtt",
       "sub_es": "media/prod01-uitleg.es.vtt",
-      "preview": "media/prod01-preview.mp3"
+      "preview": "media/prod01-preview.mp3",
+      "upsell": [
+        "g2bband",
+        "g2balles"
+      ]
     },
     {
       "id": "sp00ky",
@@ -1333,7 +1496,11 @@
       "video": "media/sp00ky-preview.mp4",
       "uitleg": "media/sp00ky-uitleg.mp4",
       "sub_nl": "media/sp00ky-uitleg.nl.vtt",
-      "sub_es": "media/sp00ky-uitleg.es.vtt"
+      "sub_es": "media/sp00ky-uitleg.es.vtt",
+      "upsell": [
+        "g2b-oneshots",
+        "g2balles"
+      ]
     },
     {
       "id": "school1",
@@ -1375,7 +1542,11 @@
       "uitleg": "media/bd1-uitleg.mp4",
       "sub_nl": "media/bd1-uitleg.nl.vtt",
       "sub_es": "media/bd1-uitleg.es.vtt",
-      "preview": "media/g2bbd1-preview.mp3"
+      "preview": "media/g2bbd1-preview.mp3",
+      "upsell": [
+        "g2b-oneshots",
+        "g2balles"
+      ]
     },
     {
       "id": "steun-3",
@@ -1526,7 +1697,11 @@
       "sub_nl": "media/gamefabriek1-uitleg.nl.vtt",
       "sub_es": "media/gamefabriek1-uitleg.es.vtt",
       "uitgelicht": true,
-      "cover": "apps-img/gamefabriek.jpg"
+      "cover": "apps-img/gamefabriek.jpg",
+      "upsell": [
+        "g2bclub",
+        "g2balles"
+      ]
     },
     {
       "id": "g2bdren",
@@ -1549,7 +1724,11 @@
       "sub_nl": "media/dren-uitleg.nl.vtt",
       "sub_es": "media/dren-uitleg.es.vtt",
       "preview": "media/g2bdren-preview.mp3",
-      "uitgelicht": true
+      "uitgelicht": true,
+      "upsell": [
+        "g2bbestof",
+        "g2balles"
+      ]
     },
     {
       "id": "drenlite",

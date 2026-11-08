@@ -42,6 +42,13 @@ h1{font-size:22px;margin-bottom:6px}
 .knop:hover{filter:brightness(1.12)}
 .klein{color:var(--dim);font-size:12px;margin-top:18px}
 .klein a{color:var(--accent)}
+.meer-t{margin-top:26px;font-size:13px;font-weight:800;color:var(--accent)}
+.ups-kaart{display:flex;align-items:center;gap:10px;margin-top:8px;padding:8px;
+  border:1px solid var(--line);border-radius:10px;text-decoration:none;color:inherit}
+.ups-kaart:hover{border-color:var(--accent)}
+.ups-kaart img{width:46px;height:46px;object-fit:cover;border-radius:8px}
+.ups-t{flex:1;font-size:13px;font-weight:700;text-align:left}
+.ups-p{font-size:13px;font-weight:800;color:var(--accent);white-space:nowrap}
 .langset{position:absolute;top:16px;right:16px;display:flex;gap:6px;z-index:5}
 .langb{background:var(--panel2);border:1px solid var(--line);color:var(--dim);
   border-radius:14px;padding:4px 11px;font-size:11px;font-weight:800;
@@ -132,7 +139,25 @@ async function laden() {
     </div>
     ${knoppen}
     <div class="klein">${T("dl_klein")}
-      <br><a href="index.html">${T("terug")}</a></div>`;
+      <br><a href="index.html">${T("terug")}</a></div>
+    <div id="upsell"></div>`;
+  // kopers kochten ook: lees upsell-ids uit products.json
+  try {
+    const pr = await fetch("products.json", { cache: "no-store" });
+    const pd = await pr.json();
+    const prod = (pd.producten || pd).find(x => x.id === k);
+    const ups = (prod?.upsell || [])
+      .map(u => (pd.producten || pd).find(x => x.id === u))
+      .filter(x => x && !x.verborgen && x.links?.stripe);
+    if (ups.length) {
+      document.getElementById("upsell").innerHTML = `
+        <div class="meer-t">💡 kopers kochten ook:</div>
+        ${ups.map(q => `<a class="ups-kaart" href="${esc(q.links.stripe)}" target="_blank" rel="noopener">
+          ${q.cover ? `<img src="${esc(q.cover)}" alt="">` : ""}
+          <span class="ups-t">${esc(q.titel)}</span>
+          <span class="ups-p">${esc(q.prijs||"")}</span></a>`).join("")}`;
+    }
+  } catch {}
   document.getElementById("doc_t").textContent =
     `${T("bedankt_t")} — ${info.titel || "G2B"}`;
 }

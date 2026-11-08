@@ -258,12 +258,28 @@ async function laden() {
           ? `<a class="koop browser" href="${esc(links.browser)}"
                title="Gebruik 'm direct in je browser">🌐 browser</a>` : ""}
       </div>
+      ${(p.upsell||[]).map(u => {
+        const q = productenById(u);
+        return q ? `<a class="upsell" href="#" data-uitg="${esc(u)}">💡 past bij: <b>${esc(q._titel||q.titel)}</b> — ${esc(q.prijs||"")}</a>` : "";
+      }).join("")}
     </div>`;
   }).join("");
 }
 
 // licentie-keuze → koopknop wisselt
 lijst.addEventListener("click", e => {
+  const up = e.target.closest(".upsell");
+  if (up) {
+    e.preventDefault();
+    document.getElementById("zoek").value = "";
+    actieveCat = "";
+    document.querySelectorAll("#cats .groepbtn").forEach(b =>
+      b.classList.toggle("alles", !b.dataset.cat));
+    pasFilterToe();
+    document.querySelector(`.card[data-id="${up.dataset.uitg}"]`)
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
   const lic = e.target.closest(".licentie");
   if (lic) {
     const card = lic.closest(".card");
