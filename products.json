@@ -21,6 +21,23 @@
    "sub_es": "media/dicesynth-uitleg.es.vtt"
   },
   {
+   "id": "stapeldice",
+   "titel": "G2B STAPEL-DICE — gratis shot-stapelaar (browser)",
+   "prijs": "GRATIS",
+   "badge": "GRATIS",
+   "groep": "gratis",
+   "soort": "digitaal",
+   "cover": "media/stapeldicelite-cover.png",
+   "beschrijving": "GRATIS — stapel je eigen one-shots tot nieuwe sounds, 100% in je browser. 6 starter-shots ingebakken: drop meer eigen shots (max 20), 🎲 STAPEL maakt er 2-3 lagen van (sub/body/glans) met automatische stemming, fase-fix en breedte-dubbel. 🔒 lock goede lagen, 🎲5x voor batches, elke stapel download je als .wav. Werkt offline, niets uploadt.",
+   "links": {
+    "koop": "stapeldice-lite.html",
+    "download": "stapeldice-lite.html"
+   },
+   "video": "media/stapeldice-demo.mp4",
+   "sub_nl": "media/stapeldice-demo.nl.vtt",
+   "sub_es": "media/stapeldice-demo.es.vtt"
+  },
+  {
    "id": "g2bmaster",
    "titel": "G2B MASTER — mastering in 4 knoppen + AUTO",
    "soort": "plugin",
@@ -41,6 +58,24 @@
    "sub_nl": "media/master-uitleg.nl.vtt",
    "sub_es": "media/master-uitleg.es.vtt",
    "preview": "media/g2bmaster-preview.mp3"
+  },
+  {
+   "id": "g2bpillpack",
+   "titel": "G2B PILL-PACK PRO — 5 premium genre-pills voor MASTER",
+   "soort": "plugin",
+   "beschrijving": "5 EXTRA SMAAK-PILLS voor je G2B MASTER: TECHNO (donker, club-punch) · DRUM&BASS (helder, snel, strak) · FILM (breed, cinematisch) · REGGAETON (warme dembow-punch) · AFRO (afrobeats/amapiano, percussief). Elke pill = plak-code voor de browser-tool + knopwaardes voor de VST — plakken en de knoppen staan gelijk goed. Werkt met AUTO: daarna stelt hij de pill fijn af op jouw track. PDF met alle codes + waardes.",
+   "prijs": "€ 9,95",
+   "links": {
+    "koop": "bestel.html?p=g2bpillpack",
+    "download": "bedankt.html?k=g2bpillpack"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/g2bpillpack-cover.png",
+   "download_dir": "d/g2bpillpack",
+   "video": "media/pillpack-demo.mp4",
+   "sub_nl": "media/pillpack-demo.nl.vtt",
+   "sub_es": "media/pillpack-demo.es.vtt"
   },
   {
    "id": "g2bmixer",
@@ -1409,41 +1444,6 @@
    "sub_nl": "media/ocholite-uitleg.nl.vtt",
    "sub_es": "media/ocholite-uitleg.es.vtt",
    "preview": "media/ocholite-preview.mp3"
-  },
-  {
-   "id": "stapeldice",
-   "titel": "G2B STAPEL-DICE — gratis shot-stapelaar (browser)",
-   "prijs": "GRATIS",
-   "badge": "GRATIS",
-   "groep": "gratis",
-   "soort": "digitaal",
-   "cover": "media/stapeldicelite-cover.png",
-   "beschrijving": "GRATIS — stapel je eigen one-shots tot nieuwe sounds, 100% in je browser. 6 starter-shots ingebakken: drop meer eigen shots (max 20), 🎲 STAPEL maakt er 2-3 lagen van (sub/body/glans) met automatische stemming, fase-fix en breedte-dubbel. 🔒 lock goede lagen, 🎲5x voor batches, elke stapel download je als .wav. Werkt offline, niets uploadt.",
-   "links": {
-    "koop": "stapeldice-lite.html",
-    "download": "stapeldice-lite.html"
-   },
-   "video": "media/stapeldice-demo.mp4",
-   "sub_nl": "media/stapeldice-demo.nl.vtt",
-   "sub_es": "media/stapeldice-demo.es.vtt"
-  },
-  {
-   "id": "g2bpillpack",
-   "titel": "G2B PILL-PACK PRO — 5 premium genre-pills voor MASTER",
-   "soort": "plugin",
-   "beschrijving": "5 EXTRA SMAAK-PILLS voor je G2B MASTER: TECHNO (donker, club-punch) · DRUM&BASS (helder, snel, strak) · FILM (breed, cinematisch) · REGGAETON (warme dembow-punch) · AFRO (afrobeats/amapiano, percussief). Elke pill = plak-code voor de browser-tool + knopwaardes voor de VST — plakken en de knoppen staan gelijk goed. Werkt met AUTO: daarna stelt hij de pill fijn af op jouw track. PDF met alle codes + waardes.",
-   "prijs": "€ 9,95",
-   "links": {
-    "koop": "bestel.html?p=g2bpillpack",
-    "download": "bedankt.html?k=g2bpillpack"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/g2bpillpack-cover.png",
-   "download_dir": "d/g2bpillpack",
-   "video": "media/pillpack-demo.mp4",
-   "sub_nl": "media/pillpack-demo.nl.vtt",
-   "sub_es": "media/pillpack-demo.es.vtt"
   }
  ]
 }
