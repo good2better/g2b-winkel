@@ -641,7 +641,8 @@
       "prijs": "€ 12,95",
       "links": {
         "koop": "bestel.html?p=g2b-oneshots",
-        "download": "bedankt.html?k=g2boneshots"
+        "download": "bedankt.html?k=g2boneshots",
+        "stripe": "https://buy.stripe.com/dRmbJ1efefuH9vVggB5J61P"
       },
       "groep": "soundpacks",
       "badge": "NIEUW",
@@ -1198,7 +1199,8 @@
       "links": {
         "koop": "bestel.html?p=ocho01",
         "download": "bedankt.html?k=ocho01",
-        "handleiding": "media/G2B-Ocho-Handleiding.pdf"
+        "handleiding": "media/G2B-Ocho-Handleiding.pdf",
+        "stripe": "https://buy.stripe.com/4gMfZh1ss0zN5fF6G15J61K"
       },
       "groep": "plugins",
       "badge": "NIEUW",
@@ -1251,7 +1253,8 @@
       "prijs": 19.95,
       "links": {
         "koop": "bestel.html?p=g2b-brein",
-        "browser": "tools/patroonbrein-web/patroon.html"
+        "browser": "tools/patroonbrein-web/patroon.html",
+        "stripe": "https://buy.stripe.com/5kQ5kD0oofuH23t8O95J61N"
       },
       "groep": "plugins",
       "cover": "media/g2b-brein-cover.png",
@@ -1273,7 +1276,8 @@
       "prijs": "€ 19,95",
       "links": {
         "koop": "bestel.html?p=prod01",
-        "download": "bedankt.html?k=prod01"
+        "download": "bedankt.html?k=prod01",
+        "stripe": "https://buy.stripe.com/5kQbJ10oo96jcI7d4p5J61L"
       },
       "groep": "plugins",
       "badge": "NIEUW",
@@ -1294,7 +1298,8 @@
       "prijs": "€ 7,95",
       "links": {
         "koop": "bestel.html?p=sp00ky",
-        "download": "bedankt.html?k=sp00ky"
+        "download": "bedankt.html?k=sp00ky",
+        "stripe": "https://buy.stripe.com/aFa6oH7QQdmz23t6G15J61Q"
       },
       "groep": "soundpacks",
       "badge": "HALLOWEEN",
@@ -1336,7 +1341,8 @@
       "prijs": "€ 19,95",
       "links": {
         "koop": "bestel.html?p=g2bbd1",
-        "download": "bedankt.html?k=g2bbd1"
+        "download": "bedankt.html?k=g2bbd1",
+        "stripe": "https://buy.stripe.com/00w8wP8UU1DR4bBfcx5J61M"
       },
       "groep": "plugins",
       "badge": "NIEUW",
@@ -1507,7 +1513,8 @@
       "prijs": "€ 34,95",
       "links": {
         "koop": "bestel.html?p=g2bdren",
-        "download": "bedankt.html?k=g2bdren"
+        "download": "bedankt.html?k=g2bdren",
+        "stripe": "https://buy.stripe.com/aFadR96MMeqDgYn4xT5J61O"
       },
       "groep": "plugins",
       "badge": "NIEUW — 320 PRESETS",
