@@ -239,7 +239,7 @@
    "cover": "apps-img/winkel.jpg",
    "beschrijving": "CLUB-ABONNEMENT — alle browser-tools volledig + exports: Beat Maker PRO, BREIN PRO, GIM BASSI, GAW MINI, MIXER, MASTER, MENGER, REFORS en meer. Nieuwe tools komen er automatisch bij. Exclusief VST-downloads en Giorgio's privé- en GIO-versies. Maandelijks opzegbaar.",
    "links": {
-    "stripe": "https://buy.stripe.com/5kQ9AT5II96jazZd4p5J61C",
+    "stripe": "https://buy.stripe.com/3cIeVd5IIeqDcI76G15J62O",
     "download": "bedankt.html?k=g2bclub",
     "browser": "club-apps.html"
    },
@@ -1815,7 +1815,8 @@
    "links": {
     "koop": "bestel.html?p=gimbassipro",
     "download": "bedankt.html?k=gimbassipro",
-    "browser": "tools/gimbassi/gimbassi.html"
+    "browser": "tools/gimbassi/gimbassi.html",
+    "stripe": "https://buy.stripe.com/bJe9AT2wwaan5fFc0l5J62P"
    },
    "groep": "plugins",
    "badge": "NIEUW",
