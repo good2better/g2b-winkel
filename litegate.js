@@ -34,13 +34,13 @@
       +'<div class="lgBox">'
       +'  <h2>GRATIS DOWNLOAD</h2>'
       +'  <div class="sub">'+(titel?('<b style="color:#E8F0EA">'+titel+'</b> — '):'')
-      +'  Vul je gegevens in en de download start direct. Geen account, geen kosten.</div>'
+      +'  Vul je gegevens in — de downloadlink komt in je inbox. Geen account, geen kosten.</div>'
       +'  <label>Naam</label><input id="lgNaam" type="text" autocomplete="name">'
       +'  <label>Land</label><input id="lgLand" type="text" autocomplete="country-name">'
       +'  <label>E-mail</label><input id="lgMail" type="email" autocomplete="email" placeholder="jij@voorbeeld.com">'
       +'  <label>Ik ben een…</label><select id="lgRol">'+ROLLEN.map(function(r){return '<option>'+r+'</option>';}).join('')+'</select>'
       +'  <div class="lgErr" id="lgErr">Vul je e-mailadres in (met een @ erin).</div>'
-      +'  <button class="go" id="lgGo">⬇ START DOWNLOAD</button>'
+      +'  <button class="go" id="lgGo">✉ STUUR MIJ DE LINK</button>'
       +'  <span class="annuleer" id="lgX">annuleren</span>'
       +'</div>';
     document.body.appendChild(modal);
@@ -61,15 +61,18 @@
     var href=pending.href,pid=pending.id;
     try{
       fetch(EV_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
-        body:JSON.stringify({email:em,bron:'lite-'+pid,tijd:new Date().toISOString(),
+        body:JSON.stringify({email:em,bron:'lite-'+pid,tijd:new Date().toISOString(),link:href,
           extra:{naam:naam,land:land,rol:rol,product:pid}})});
     }catch(e){}
-    sluit();
     var cb=pending&&pending.cb;
-    if(cb){cb();return;}
-    // echte download starten na de gate
-    var a=document.createElement('a');a.href=href;a.target='_blank';a.rel='noopener';
-    document.body.appendChild(a);a.click();a.remove();
+    if(cb){sluit();cb();return;}
+    // bestands-downloads: link gaat via de mail (echte verificatie — nep-mail = geen file)
+    modal.querySelector('.lgBox').innerHTML=''
+      +'<h2>✅ LINK ONDERWEG</h2>'
+      +'<div class="sub">Je downloadlink is verstuurd naar <b style="color:#E8F0EA">'+em+'</b>.'
+      +' Check je inbox (én spam). Geen mail binnen 5 min? Vul dan opnieuw in.</div>'
+      +'<button class="go" id="lgOk">OK</button>';
+    modal.querySelector('#lgOk').onclick=sluit;
   }
 
   document.addEventListener('click',function(e){
