@@ -137,7 +137,7 @@ function _g2b_sha256(ascii){
 }
 async function _g2b_hex(s){if(crypto.subtle&&crypto.subtle.digest){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}return _g2b_sha256(s)}
 const HASHES=['cff60c87705041c98f762c822d780d4a2076f2c747240a62e1f71f340fca3b34','95b714bba3b80d76c800206ade5dfe20e189ef16d5313ec59d54672fa1efc7cf','22985a253e7a7ca83f454c7c5e4f5ace779b007fe333c70d13a9cf4c007b22d6','9233b46e6bdc591cee681f100d0e360ba9062ec04c16946d62c723bd95a7334d']; // g2bclub01 · g2bclub02 · g2bclub-reserve · g2bclub-lid (kopers €49) — codes per lid toe te voegen/verwijderen
-const G2BLOG='https://script.google.com/macros/s/AKfycbzKWU72wn2xxXiNy040qfP4NOqz-CzmOYHrRXMK_DH-LzBEqLjwtiwTyKJAyx7MTf0/exec';
+const G2BLOG='https://script.google.com/macros/s/AKfycbwbGZ-zxrQgxEFJbUhv2-HJ7yNP1yXb66W2wo4tEWtXyx7PcDsFiGdh619QT-6LlTXC/exec';
 function _g2b_log(code,ok){try{fetch(G2BLOG,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({email:code+'@login',bron:'club-'+(ok?'ok':'fout'),tijd:new Date().toISOString(),apparaat:navigator.userAgent.slice(0,120)})})}catch(_){}}
 async function unlock(){
   const v=document.getElementById('code').value.trim().toLowerCase();

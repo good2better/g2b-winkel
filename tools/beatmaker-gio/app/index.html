@@ -698,7 +698,7 @@ async function analyseer(file){
 }
 laad('house');
 // E-mailvanger: POST naar Google Apps Script (zodra URL hieronder staat), anders mailto-fallback
-const EV_SCRIPT_URL='https://script.google.com/macros/s/AKfycbzKWU72wn2xxXiNy040qfP4NOqz-CzmOYHrRXMK_DH-LzBEqLjwtiwTyKJAyx7MTf0/exec'; // <- Giorgio: plak hier je Apps Script /exec URL
+const EV_SCRIPT_URL='https://script.google.com/macros/s/AKfycbwbGZ-zxrQgxEFJbUhv2-HJ7yNP1yXb66W2wo4tEWtXyx7PcDsFiGdh619QT-6LlTXC/exec'; // <- Giorgio: plak hier je Apps Script /exec URL
 const evForm=document.getElementById('emailvanger'),evMsg=document.getElementById('ev-msg'),evMail=document.getElementById('mailknop');
 evMail.href='mailto:g.sandvliet88@gmail.com?subject='+encodeURIComponent('G2B: houd me op de hoogte (nieuwe packs)')+'&body='+encodeURIComponent('Hoi! Houd me op de hoogte van nieuwe G2B packs. Mijn e-mail:');
 if(!EV_SCRIPT_URL){ evForm.style.display='none'; evMail.style.display='inline-block'; }
