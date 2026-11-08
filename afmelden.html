@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B — uitschrijven</title>
+<meta name="theme-color" content="#0d0f0e">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230D0F0E'/><text x='50' y='68' font-size='52' font-weight='bold' text-anchor='middle' fill='%232FBF71' font-family='sans-serif'>G2</text></svg>">
+<style>
+:root{--bg:#0a0c0b;--panel:#141816;--panel2:#1c221e;--line:#26302a;
+  --txt:#eef4f0;--dim:#93a69b;--accent:#2fbf71;--accent2:#1d7a48;--glow:rgba(47,191,113,.14)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(1200px 500px at 50% -200px,var(--glow),transparent 70%),var(--bg);
+  color:var(--txt);font:15px/1.6 'Segoe UI',system-ui,sans-serif;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;padding:20px}
+.box{max-width:440px;width:100%;background:linear-gradient(180deg,var(--panel2),var(--panel));
+  border:1px solid var(--line);border-radius:18px;padding:34px;text-align:center;
+  box-shadow:0 10px 40px rgba(0,0,0,.4)}
+h1{font-size:22px;font-weight:800;margin-bottom:8px}
+p{color:var(--dim);font-size:14px;margin-bottom:20px}
+input{width:100%;padding:14px;border-radius:10px;border:1px solid var(--line);
+  background:var(--bg);color:var(--txt);font-size:15px;text-align:center;margin-bottom:12px}
+button{width:100%;padding:14px;border:none;border-radius:10px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#07110b;font-weight:800;font-size:15px;cursor:pointer}
+button:hover{filter:brightness(1.08)}
+.msg{margin-top:14px;font-size:13px;color:var(--accent);min-height:1.2em}
+.terug{display:inline-block;margin-top:20px;color:var(--dim);font-size:13px;text-decoration:none}
+.terug:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>Uitschrijven</h1>
+  <p>Vul het e-mailadres in dat je wilt afmelden voor G2B-mails. Je wordt dan van de lijst gehaald — geen mails meer.</p>
+  <form id="uit-form">
+    <input id="uit-email" type="email" placeholder="jouw e-mailadres" required autocomplete="email">
+    <button type="submit">Afmelden</button>
+  </form>
+  <div class="msg" id="uit-msg"></div>
+  <a class="terug" href="index.html">← terug naar de winkel</a>
+</div>
+<script src="cookie.js" defer></script>
+<script>
+const EV_SCRIPT_URL='https://script.google.com/macros/s/AKfycbzKWU72wn2xxXiNy040qfP4NOqz-CzmOYHrRXMK_DH-LzBEqLjwtiwTyKJAyx7MTf0/exec';
+const f=document.getElementById('uit-form'),m=document.getElementById('uit-msg');
+f.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const em=document.getElementById('uit-email').value.trim();
+  if(!em)return;
+  m.textContent='Bezig…';
+  try{
+    await fetch(EV_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({email:em,bron:'uitschrijving',tijd:new Date().toISOString()})});
+    m.textContent='✅ Aanvraag ontvangen — je adres wordt van de lijst gehaald.';
+    f.reset();
+  }catch(_){m.textContent='Even niet gelukt — mail ons via g.sandvliet88@gmail.com.';}
+});
+</script>
+</body>
+</html>
