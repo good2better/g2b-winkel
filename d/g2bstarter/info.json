@@ -1,0 +1,18 @@
+{
+  "titel": "G2B STARTER-BUNDEL — PILL-PACK + STAPEL-DICE PRO + MASTER",
+  "licentie": "G2B EULA — persoonlijk + commercieel gebruik",
+  "bestanden": [
+    {
+      "naam": "G2B-Pill-Pack-PRO.zip — PDF met 5 pill-codes + knopwaardes (TECHNO · DRUM&BASS · FILM · REGGAETON · AFRO)",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Pill-Pack-PRO.zip"
+    },
+    {
+      "naam": "G2B STAPEL-DICE openen — werkt offline in je browser (bookmark deze link)",
+      "url": "https://good2better.com/stapeldice-koop.html"
+    },
+    {
+      "naam": "G2B-Master.zip — VST3 + CLAP + standalone + handleiding + licentie",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Master.zip"
+    }
+  ]
+}

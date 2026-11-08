@@ -1,1 +1,10 @@
-{"versie": "1.0", "bestand": "releases/download/downloads-v1/G2B-Producer-Suite.zip"}
+{
+  "titel": "G2B PRODUCER SUITE — alle producer-plugins in één bundel",
+  "bestanden": [
+    {
+      "naam": "G2B-Producer-Suite.zip — alle VST3+CLAP+standalone + handleidingen + licentie",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Producer-Suite.zip"
+    }
+  ],
+  "licentie": "G2B EULA — persoonlijk + commercieel gebruik"
+}
