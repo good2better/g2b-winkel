@@ -211,6 +211,22 @@
    "uitgelicht": true
   },
   {
+   "id": "beatmakerpro",
+   "titel": "G2B Beat Maker PRO — beats maken in je browser",
+   "prijs": "€ 29,95",
+   "badge": "NIEUW",
+   "groep": "apps",
+   "soort": "digitaal",
+   "cover": "apps-img/beatmaker.jpg",
+   "beschrijving": "De volle Beat Maker in je browser (werkt offline): 19 genre-smaaksets met echte drum-wavs, melodie-laag met 9 instrumenten, stems-zip export, melodie-.mid, SYNC-export pakket (wav+stems+licentie+midi) en project opslaan/laden. Gratis versie blijft; PRO is de CLUB-build.",
+   "links": {
+    "stripe": "https://buy.stripe.com/4gM3cv5II96j9vVc0l5J61D",
+    "download": "bedankt.html?k=beatmakerpro",
+    "browser": "tools/beatmaker-pro/app/index.html"
+   },
+   "uitgelicht": true
+  },
+  {
    "id": "g2bband",
    "titel": "G2B BAND — jouw MIDI of drumloop wordt een heel nummer",
    "soort": "plugin",
