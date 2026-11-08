@@ -22,7 +22,7 @@ START_NAMESPACE_DISTRHO
 class BreinPlugin : public Plugin
 {
 public:
-    BreinPlugin() : Plugin(23, 0, 0) { regen_(); }
+    BreinPlugin() : Plugin(26, 0, 0) { regen_(); }
 
 protected:
     const char* getLabel() const override { return "G2B Brein GIORGIO"; }
@@ -41,7 +41,8 @@ protected:
 
     enum { kGenre, kKit, kBars, kSeed, kKracht, kSwing,
            kDrums, kMel, kMidi, kPlay, kGen, kDice, kExport, kLight,
-           kOn, kDim, kLeerMode, kGenN, kQuant, kFill, kHum, kVar, kAll, kUndo };
+           kOn, kDim, kLeerMode, kGenN, kQuant, kFill, kHum, kVar, kAll, kUndo,
+           kAuto, kSong };
 
     void initParameter(uint32_t i, Parameter& p) override {
         p.hints = kParameterIsAutomatable;
@@ -70,6 +71,8 @@ protected:
         case kVar:    p.name="VARIANT"; p.symbol="var";  p.ranges.min=0; p.ranges.max=7;   p.ranges.def=0;    p.hints|=kParameterIsInteger; break;
         case kAll:    p.name="ALL 8 → MAP";p.symbol="all";p.ranges.min=0;p.ranges.max=1;   p.hints|=kParameterIsBoolean; break;
         case kUndo:   p.name="TERUG";  p.symbol="undo"; p.ranges.min=0;p.ranges.max=1;   p.hints|=kParameterIsBoolean; break;
+        case kAuto:   p.name="AUTO-SCORE";p.symbol="auto";p.ranges.min=0;p.ranges.max=1;   p.hints|=kParameterIsBoolean; break;
+        case kSong:   p.name="SONG";   p.symbol="song";  p.ranges.min=0;p.ranges.max=1;   p.hints|=kParameterIsBoolean; break;
         }
     }
 
@@ -81,7 +84,8 @@ protected:
                   case kExport:return 0;case kLight:return fLight;
                   case kOn:return fOn;case kDim:return fDim;case kLeerMode:return fLeer;
                   case kGenN:return 0;case kQuant:return fQuant;case kFill:return fFill;
-                  case kHum:return fHum;case kVar:return (float)fVarSel;case kAll:return 0;case kUndo:return 0;}return 0.f;
+                  case kHum:return fHum;case kVar:return (float)fVarSel;case kAll:return 0;case kUndo:return 0;
+                  case kAuto:return 0;case kSong:return 0;}return 0.f;
     }
 
     void setParameterValue(uint32_t i, float v) override {
@@ -110,6 +114,8 @@ protected:
         case kVar:   pickVar_((int)v); break;
         case kAll:   if(v>0.5f)writeBatch_(); break;
         case kUndo:  if(v>0.5f)undo_(); break;
+        case kAuto:  if(v>0.5f)autoScore_(); break;
+        case kSong:  if(v>0.5f)songExport_(); break;
         }
     }
 
@@ -191,6 +197,7 @@ private:
         v->t=0; v->on=true;
     }
     std::vector<BNote> gen_; int ni_=0; int genN_=0;
+    std::vector<BNote> basis_,slag_; bool hasAuto_=false; // AUTO-SCORE bouwveld-lagen
     double fPhase=0,fpt_=1.0,fBpm=100.0; int fStep=-1; uint64_t fAbs=0;
     bool wasPlaying_=false;
 
@@ -257,6 +264,92 @@ private:
         updateStateValue("kit",nb);
     }
 
+    // ---- AUTO-SCORE: 3-fase — fase1 basis (mel+kick) → fase2 slag-only → merge ----
+    // BPM_LOCK: één fBpm stuurt álle lagen — slag kan nooit afwijken.
+    void autoScore_(){
+        genN_++; regen_();
+        basis_.clear();
+        for(const BNote&n:gen_) if(n.ch==0||n.note<=36) basis_.push_back(n); // mel + kick/sub
+        genN_++; regen_();
+        slag_.clear();
+        for(const BNote&n:gen_) if(n.ch==9&&n.note>36) slag_.push_back(n);   // snare/hat/ohat/perc
+        hasAuto_=true;
+        gen_=basis_; gen_.insert(gen_.end(),slag_.begin(),slag_.end());
+        for(size_t i=1;i<gen_.size();i++){BNote x=gen_[i];size_t j=i;
+            while(j&&gen_[j-1].t>x.t){gen_[j]=gen_[j-1];j--;}gen_[j]=x;}
+        ni_=0; fStep=-1; fPhase=0;
+        char m[96];std::snprintf(m,sizeof(m),"AUTO-SCORE · basis %d + slag %d noten",(int)basis_.size(),(int)slag_.size());
+        updateStateValue("kit",m);
+    }
+    // ---- SONG: arrangement-export intro→verse→refrein uit de AUTO-lagen ----
+    void songExport_(){
+        if(gen_.empty()){ updateStateValue("midifile","SONG: eerst AUTO of GENEREER"); return; }
+        const int srcBars=clampi(fBars,1,16);
+        struct Sec{int n;bool mel,kick,hat,slag;};
+        const Sec sec[]={{4,true,false,false,false},{8,true,true,true,false},{8,true,true,true,true}};
+        std::vector<BNote> out; int barOff=0;
+        for(const Sec&s:sec){
+            for(int b=0;b<s.n;b++){
+                const int srcBar=b%srcBars;
+                for(const BNote&n:gen_){
+                    if(n.t<srcBar*1920||n.t>=(srcBar+1)*1920)continue;
+                    bool keep=false;
+                    if(n.ch==0)keep=s.mel;
+                    else if(n.ch==9){ if(n.note<=36)keep=s.kick;
+                        else if(n.note==42||n.note==44||n.note==46)keep=s.hat;
+                        else keep=s.slag; }
+                    if(keep){ BNote m=n; m.t=n.t-srcBar*1920+(barOff+b)*1920; out.push_back(m); }
+                }
+            }
+            barOff+=s.n;
+        }
+        // .mid + .wav wegschrijven (zelfde map als writeMid_)
+        const char* home=std::getenv("USERPROFILE");
+        if(!home||!*home)home=std::getenv("HOME");
+        char dir[520],path[600];
+#ifdef _WIN32
+        if(home&&*home)std::snprintf(dir,sizeof(dir),"%s\\Music\\G2B",home);
+        else std::snprintf(dir,sizeof(dir),".");
+        _mkdir(dir);
+#else
+        char dir2[560];
+        if(home&&*home){std::snprintf(dir2,sizeof(dir2),"%s/Music/G2B",home);
+            std::snprintf(dir,sizeof(dir),"%s/Music/G2B",home);}
+        else {std::snprintf(dir,sizeof(dir),".");std::snprintf(dir2,sizeof(dir2),".");}
+        mkdir(dir2,0755); mkdir(dir,0755);
+#endif
+        smf::MidiFile mf; mf.setTicksPerQuarterNote(480);
+        int seq=0;
+        for(const BNote&n:out){
+            int v=(int)(n.vel*fKracht); v=v<20?20:(v>127?127:v);
+            smf::MidiEvent on(0x90|n.ch,n.note,v); on.tick=n.t; on.seq=seq++;
+            smf::MidiEvent off(0x80|n.ch,n.note,0); off.tick=n.t+n.dur; off.seq=seq++;
+            mf[0].push_back(on); mf[0].push_back(off);
+        }
+        mf.sortTracks();
+        std::snprintf(path,sizeof(path),"%s%cG2B-Brein-SONG_%s.mid",dir,
+#ifdef _WIN32
+            '\\',
+#else
+            '/',
+#endif
+            stamp_());
+        if(mf.write(path)){
+            char wpath[600];std::snprintf(wpath,sizeof(wpath),"%s%cG2B-Brein-SONG_%s.wav",dir,
+#ifdef _WIN32
+                '\\',
+#else
+                '/',
+#endif
+                stamp_());
+            writeWav_(out,fBpm,wpath);
+            updateStateValue("midifile","SONG .mid + .wav opgeslagen: 20 maten intro→verse→refrein");
+#ifdef _WIN32
+            char cmd[700]; std::snprintf(cmd,sizeof(cmd),"explorer \"%s\"",dir);
+            std::system(cmd);
+#endif
+        } else updateStateValue("midifile","SONG NIET gelukt — map niet schrijfbaar");
+    }
     void dice_(){
         fSeed=(float)(rand()%256);
         fGenre=(float)(rand()%kNGenres);

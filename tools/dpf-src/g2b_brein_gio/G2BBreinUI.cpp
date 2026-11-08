@@ -135,6 +135,15 @@ protected:
         strokeColor(ed[0],ed[1],ed[2]); strokeWidth(1.f); stroke();
         fontSize(8.0f); fillColor(tx[0],tx[1],tx[2]);
         text(313,92.5f,"TERUG",nullptr);
+        // AUTO-SCORE (3-fase: basis→slag→beat) + SONG (arrangement-export)
+        beginPath(); roundedRect(342,84,50,17,4); fillColor(DG[0],DG[1],DG[2]); fill();
+        strokeColor(GR[0],GR[1],GR[2]); strokeWidth(1.5f); stroke();
+        fontSize(8.0f); fillColor(tx[0],tx[1],tx[2]);
+        text(367,92.5f,"AUTO",nullptr);
+        beginPath(); roundedRect(396,84,50,17,4); fillColor(pn[0],pn[1],pn[2]); fill();
+        strokeColor(ed[0],ed[1],ed[2]); strokeWidth(1.f); stroke();
+        fontSize(8.0f); fillColor(tx[0],tx[1],tx[2]);
+        text(421,92.5f,"SONG",nullptr);
         // V1-V8 variant-kiezers + ALL → map (preview-rij onder knoppen)
         for(int i=0;i<8;i++){
             float px=14.f+i*34.f;
@@ -284,6 +293,12 @@ protected:
             // TERUG → undo laatste genereer-stap
             if((float)(ev.pos.getX()/getScaleFactor())>=290&&(float)(ev.pos.getX()/getScaleFactor())<=336&&(float)(ev.pos.getY()/getScaleFactor())>=84&&(float)(ev.pos.getY()/getScaleFactor())<=101){
                 spv(23,1.f);return true;}
+            // AUTO → 3-fase auto-score (basis→slag→beat)
+            if((float)(ev.pos.getX()/getScaleFactor())>=342&&(float)(ev.pos.getX()/getScaleFactor())<=392&&(float)(ev.pos.getY()/getScaleFactor())>=84&&(float)(ev.pos.getY()/getScaleFactor())<=101){
+                spv(24,1.f);return true;}
+            // SONG → arrangement-export intro→verse→refrein (.mid + .wav)
+            if((float)(ev.pos.getX()/getScaleFactor())>=396&&(float)(ev.pos.getX()/getScaleFactor())<=446&&(float)(ev.pos.getY()/getScaleFactor())>=84&&(float)(ev.pos.getY()/getScaleFactor())<=101){
+                spv(25,1.f);return true;}
             // V1-V8 kiezer
             if((float)(ev.pos.getY()/getScaleFactor())>=104&&(float)(ev.pos.getY()/getScaleFactor())<=115){
                 for(int i=0;i<8;i++){
