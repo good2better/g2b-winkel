@@ -1389,7 +1389,8 @@
    "uitleg": "media/gamefabriek1-uitleg.mp4",
    "sub_nl": "media/gamefabriek1-uitleg.nl.vtt",
    "sub_es": "media/gamefabriek1-uitleg.es.vtt",
-   "uitgelicht": true
+   "uitgelicht": true,
+   "cover": "apps-img/gamefabriek.jpg"
   },
   {
    "id": "g2bdren",
