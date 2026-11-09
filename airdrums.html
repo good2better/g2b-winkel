@@ -59,7 +59,7 @@ select,input[type=range]{accent-color:#35d07f}
   <a id="dl" href="#">⬇ DOWNLOAD JE OPNAME (.mid)</a>
   <div class="rij" style="margin-top:12px" id="meters"></div>
 </div>
-<p class="tip">GM-drums kanaal 10 · MELODIE: laag=lage noot, hoog=hoge noot · EFFECT: X=filter (CC74) Y=expressie (CC11) · OPNEEM schrijft .mid die je in Reason sleept</p>
+<p class="tip">GM-drums kanaal 10 · MELODIE: laag=lage noot, hoog=hoge noot · EFFECT: X=filter (CC74) Y=expressie (CC11) · OPNEEM schrijft .mid die je in Reason sleept · DUO: MIDI-keyboard speelt pads mee terwijl de ander de camera/effecten doet</p>
 
 <script>
 const $=id=>document.getElementById(id);
@@ -108,6 +108,16 @@ async function setupMIDI(){
     if(sel.options.length>1)sel.selectedIndex=1;
     sel.onchange=()=>{midiOut=sel.value?m.outputs.get(sel.value):null};
     sel.onchange();
+    // MIDI-IN: USB-keyboard van speler 2 speelt de pads mee (duo-modus)
+    for(const inp of m.inputs.values()){
+      inp.onmidimessage=ev=>{
+        const [st,n,v]=ev.data;
+        if((st&0xF0)===0x90&&v>0){
+          const ps=pads(),z=ps.findIndex(p=>p.note===n);
+          if(z>=0){ensureAC();padHit(z,Math.max(.3,v/127));}
+        }
+      };
+    }
   }catch(e){}
 }
 function noteOn(n,v){if(midiOut){midiOut.send([0x99,n,v]);midiOut.send([0x89,n,0],performance.now()+120);}}
