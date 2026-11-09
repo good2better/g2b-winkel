@@ -92,6 +92,8 @@ function maakInst(){
     <label><b>808-TOON</b><select id="${id}-groot">${['A1','A#1','B1','C2','C#2','D2','D#2','E2','F2','F#2','G2','G#2'].map((n,i)=>`<option value="${33+i}"${i===5?' selected':''}>${n}</option>`).join('')}</select></label>
     <button class="uit" id="${id}-gmid">📥 .mid</button>
     <button class="uit" id="${id}-gleeg">🧹 leeg</button>
+    <button class="uit" id="${id}-gdice">🎲 DICE</button>
+    <button class="uit" id="${id}-gwav">📥 .wav</button>
    </div>
    <div class="rij" style="margin-top:6px"><span style="font-size:10px;color:var(--dim);align-self:center">voorbeelden:</span>
     <button class="uit" style="padding:3px 8px;font-size:11px" onclick="groovePreset('${id}','zouk')">ZOUK</button>
@@ -137,6 +139,8 @@ function maakInst(){
  $(id+'-gplay').onclick=()=>speelGroove(id);
  $(id+'-gleeg').onclick=()=>{INST[id].kick.fill(0);INST[id].sub.fill(0);paintGrid(id);};
  $(id+'-gmid').onclick=()=>{window.location.href='/p.html?id=gimbassipro';};
+ $(id+'-gdice').onclick=()=>diceGroove(id);
+ $(id+'-gwav').onclick=()=>{window.location.href='/p.html?id=gimbassipro';};
 }
 function setCut(id,v){const s=$(id+'-cut');s.value=v;$(id+'-vlc').textContent=v;}
 const INST={}; // id -> {buf,mono,sr,kicks,bpm}
@@ -252,11 +256,13 @@ function uit(id,naam,data,sr,info){
 // ---------- 808-GRID: speel eigen kick+sub groove ----------
 
 let gac=null;
-function kik(t,v){const o=gac.createOscillator(),g=gac.createGain();o.type='sine';
+function kik(t,v){kikC(gac,gac.destination,t,v)}
+function kikC(ctx,dst,t,v){const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';
  o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(45,t+0.12);
  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.4);
- o.connect(g).connect(gac.destination);o.start(t);o.stop(t+0.42);}
-function bas808(t,f,v,len){const o=gac.createOscillator(),g=gac.createGain();o.type='sine';
+ o.connect(g).connect(dst);o.start(t);o.stop(t+0.42);}
+function bas808(t,f,v,len){bas808C(gac,gac.destination,t,f,v,len)}
+function bas808C(ctx,dst,t,f,v,len){const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';
  o.frequency.setValueAtTime(f*2,t);o.frequency.exponentialRampToValueAtTime(f,t+0.08);
  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+0.008);
  g.gain.exponentialRampToValueAtTime(0.001,t+len);
@@ -322,6 +328,19 @@ function groovePreset(id,naam){const I=INST[id],g=GROOVES[naam];if(!g)return;
  if($(id+'-grid'))$(id+'-grid').value='16';
  setCut(id,{zouk:190,schuivel:190,boombap:140,rnb:140,reggaeton:140,dancehall:140}[naam]||120);
  $(id+'-st').textContent='🎛 '+naam.toUpperCase()+'-groove geladen — sub klikt door toon-varianten (grond/kwint/oktaaf)';}
+const RATIO={zouk:[.7,.2,.1],schuivel:[.8,.15,.05],kawina:[.65,.25,.1],drill:[.6,.1,.3],trap:[.6,.15,.25],boombap:[.8,.15,.05],reggaeton:[.7,.25,.05],dancehall:[.75,.2,.05],afro:[.65,.25,.1],house:[.7,.2,.1],rnb:[.7,.2,.1]};
+function diceGroove(id){const I=INST[id];
+ if(!I.kick.some(v=>v))I.kick[0]=I.kick[4]=I.kick[8]=I.kick[12]=1;
+ I.sub.fill(0);
+ const r=RATIO[I.lastGenre||'zouk']||RATIO.zouk;
+ const vrij=[];for(let s=0;s<16;s++)if(!I.kick[s])vrij.push(s);
+ for(let i=vrij.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[vrij[i],vrij[j]]=[vrij[j],vrij[i]];}
+ const n=Math.min(vrij.length,6+Math.floor(Math.random()*3));
+ for(let i=0;i<n;i++){const s=vrij[i],x=Math.random();
+  I.sub[s]=x<r[0]?1:(x<r[0]+r[1]?2:3);}
+ paintGrid(id);
+ $(id+'-st').textContent='🎲 baslijn gedobbeld — klik SUB-vakjes voor toon (blauw/paars/goud)';}
+const _gp=groovePreset;groovePreset=function(id,naam){if(INST[id])INST[id].lastGenre=naam;return _gp(id,naam);};
 // ---------- .mid staat op slot in de demo ----------
 function exportMid(id){window.location.href='/p.html?id=gimbassipro';}
 maakInst();

@@ -86,6 +86,8 @@ function maakInst(){
     <label><b>808-TOON</b><select id="${id}-groot">${['A1','A#1','B1','C2','C#2','D2','D#2','E2','F2','F#2','G2','G#2'].map((n,i)=>`<option value="${33+i}"${i===5?' selected':''}>${n}</option>`).join('')}</select></label>
     <button class="uit" id="${id}-gmid">📥 .mid</button>
     <button class="uit" id="${id}-gleeg">🧹 leeg</button>
+    <button class="uit" id="${id}-gdice">🎲 DICE</button>
+    <button class="uit" id="${id}-gwav">📥 .wav</button>
    </div>
    <div class="rij" style="margin-top:6px"><span style="font-size:10px;color:var(--dim);align-self:center">voorbeelden:</span>
     <button class="uit" style="padding:3px 8px;font-size:11px" onclick="groovePreset('${id}','zouk')">ZOUK</button>
@@ -131,6 +133,8 @@ function maakInst(){
  $(id+'-gplay').onclick=()=>speelGroove(id);
  $(id+'-gleeg').onclick=()=>{INST[id].kick.fill(0);INST[id].sub.fill(0);paintGrid(id);};
  $(id+'-gmid').onclick=()=>exportMid(id);
+ $(id+'-gdice').onclick=()=>diceGroove(id);
+ $(id+'-gwav').onclick=()=>exportWav(id);
 }
 function setCut(id,v){const s=$(id+'-cut');s.value=v;$(id+'-vlc').textContent=v;}
 const INST={}; // id -> {buf,mono,sr,kicks,bpm}
@@ -251,11 +255,13 @@ function uit(id,naam,data,sr,info){
 }
 // ---------- 808-GRID: speel eigen kick+sub groove ----------
 let gac=null;
-function kik(t,v){const o=gac.createOscillator(),g=gac.createGain();o.type='sine';
+function kik(t,v){kikC(gac,gac.destination,t,v)}
+function kikC(ctx,dst,t,v){const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';
  o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(45,t+0.12);
  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.4);
- o.connect(g).connect(gac.destination);o.start(t);o.stop(t+0.42);}
-function bas808(t,f,v,len){const o=gac.createOscillator(),g=gac.createGain();o.type='sine';
+ o.connect(g).connect(dst);o.start(t);o.stop(t+0.42);}
+function bas808(t,f,v,len){bas808C(gac,gac.destination,t,f,v,len)}
+function bas808C(ctx,dst,t,f,v,len){const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';
  o.frequency.setValueAtTime(f*2,t);o.frequency.exponentialRampToValueAtTime(f,t+0.08);
  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+0.008);
  g.gain.exponentialRampToValueAtTime(0.001,t+len);
@@ -321,6 +327,39 @@ function groovePreset(id,naam){const I=INST[id],g=GROOVES[naam];if(!g)return;
  setCut(id,{zouk:190,schuivel:190,boombap:140,rnb:140,reggaeton:140,dancehall:140}[naam]||120);
  paintGrid(id);
  $(id+'-st').textContent='🎛 '+naam.toUpperCase()+'-groove geladen — sub klikt door toon-varianten (grond/kwint/oktaaf)';}
+const RATIO={zouk:[.7,.2,.1],schuivel:[.8,.15,.05],kawina:[.65,.25,.1],drill:[.6,.1,.3],trap:[.6,.15,.25],boombap:[.8,.15,.05],reggaeton:[.7,.25,.05],dancehall:[.75,.2,.05],afro:[.65,.25,.1],house:[.7,.2,.1],rnb:[.7,.2,.1]};
+function diceGroove(id){const I=INST[id];
+ // kick: hou bestaande, of fallback 4-kwarts
+ if(!I.kick.some(v=>v))I.kick[0]=I.kick[4]=I.kick[8]=I.kick[12]=1;
+ I.sub.fill(0);
+ const r=RATIO[I.lastGenre||'zouk']||RATIO.zouk;
+ const vrij=[];for(let s=0;s<16;s++)if(!I.kick[s])vrij.push(s);
+ // shuffle vrij, pak ~6-8 stappen
+ for(let i=vrij.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[vrij[i],vrij[j]]=[vrij[j],vrij[i]];}
+ const n=Math.min(vrij.length,6+Math.floor(Math.random()*3));
+ for(let i=0;i<n;i++){const s=vrij[i],x=Math.random();
+  I.sub[s]=x<r[0]?1:(x<r[0]+r[1]?2:3);}
+ // anker: eerste vrije stap na kick 0 blijft grondtoon
+ paintGrid(id);
+ $(id+'-st').textContent='🎲 baslijn gedobbeld — klik SUB-vakjes voor toon (blauw/paars/goud)';}
+// bewaar laatst gekozen genre voor DICE-verhouding
+const _gp=groovePreset;groovePreset=function(id,naam){if(INST[id])INST[id].lastGenre=naam;return _gp(id,naam);};
+function buf2wav(buf){const n=buf.length,d=buf.getChannelData(0),ab=new ArrayBuffer(44+n*2),v=new DataView(ab);
+ const w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i));};
+ w(0,'RIFF');v.setUint32(4,36+n*2,true);w(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
+ v.setUint32(24,44100,true);v.setUint32(28,88200,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n*2,true);
+ for(let i=0;i<n;i++){const s=Math.max(-1,Math.min(1,d[i]));v.setInt16(44+i*2,s<0?s*32768:s*32767,true);}
+ return new Blob([ab],{type:'audio/wav'});}
+async function exportWav(id){const I=INST[id],bpm=+$(id+'-bpm').value||I.bpm||140,spb=60/bpm/4;
+ const root=+$(id+'-groot').value,f=440*Math.pow(2,(root-69)/12);
+ const bars=4,sr=44100,ctx=new OfflineAudioContext(1,Math.ceil(sr*spb*16*bars),sr);
+ for(let b=0;b<bars;b++)for(let s=0;s<16;s++){const t=b*16*spb+s*spb;
+  if(I.kick[s])kikC(ctx,ctx.destination,t,0.95);
+  if(I.sub[s]){let nx=16;for(let k=s+1;k<16;k++)if(I.sub[k]){nx=k;break}
+   bas808C(ctx,ctx.destination,t,f*Math.pow(2,[0,7,12][I.sub[s]-1]/12),I.kick[s]?0.34:0.5,(nx-s)*spb*0.95);}}
+ const buf=await ctx.startRendering(),blob=buf2wav(buf),u=URL.createObjectURL(blob);
+ const a=document.createElement('a');a.href=u;a.download='gimbassi-baslijn-'+bpm+'bpm.wav';a.click();URL.revokeObjectURL(u);
+ $(id+'-st').textContent='📥 .wav loop geëxporteerd ('+bars+' maten, '+bpm+'bpm)';}
 // ---------- .mid export (SMF type 0, 960 PPQ): kick + 808-sub ----------
 function exportMid(id){const I=INST[id],bpm=+$(id+'-bpm').value||I.bpm||140;
  const root=+$(id+'-groot').value,tempo=Math.round(60000000/bpm),ev=[];
