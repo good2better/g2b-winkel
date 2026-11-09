@@ -22,6 +22,7 @@ select,input[type=range]{accent-color:#35d07f}
 .met{width:56px;text-align:center;font-size:10px;color:#b9a97f}
 .met .b{height:40px;background:#122;border-radius:4px;overflow:hidden;display:flex;align-items:flex-end}
 .met .f{width:100%;background:#35d07f}
+#stat{margin-top:8px;font-weight:800;font-size:14px;color:#35d07f;min-height:18px}
 #dl{display:none;color:#35d07f;font-weight:800;font-size:15px;margin-top:6px}
 </style></head><body>
 <h1>G2B <b>AIRDRUMS</b></h1>
@@ -54,6 +55,7 @@ select,input[type=range]{accent-color:#35d07f}
     <input type="file" id="ownf" accept="audio/*" multiple hidden>
   </div>
   <div class="tip" id="ownlist">Eigen one-shots (wav/mp3) → klik EIGEN SOUNDS, kies bestanden in padvolgorde (kick, snare, hat, clap…). Zonder bestanden = ingebouwde synth.</div>
+  <div id="stat"></div>
   <a id="dl" href="#">⬇ DOWNLOAD JE OPNAME (.mid)</a>
   <div class="rij" style="margin-top:12px" id="meters"></div>
 </div>
@@ -113,9 +115,19 @@ function sendCC(cc,v){if(midiOut)midiOut.send([0xB9,cc,Math.max(0,Math.min(127,M
 
 // --- opname → .mid ---
 let recOn=false;
-$('rec').onclick=()=>{recOn=!recOn;$('rec').classList.toggle('on',recOn);
- if(recOn){recLog=[];recT0=performance.now();$('dl').style.display='none';}
- else if(recLog.length){const b=writeMid();$('dl').href=URL.createObjectURL(b);$('dl').download='G2B-AIRDRUMS.mid';$('dl').style.display='inline';}};
+let recCnt=false;
+function startRec(){recOn=true;$('rec').classList.add('on');$('stat').textContent='● OPNAME LOOPT';recLog=[];recT0=performance.now();$('dl').style.display='none';}
+$('rec').onclick=()=>{
+ if(recOn){recOn=false;$('rec').classList.remove('on');$('stat').textContent='';
+  if(recLog.length){const b=writeMid();$('dl').href=URL.createObjectURL(b);$('dl').download='G2B-AIRDRUMS.mid';$('dl').style.display='inline';}
+  return;}
+ if(recCnt){return;} // dubbelklik tijdens aftellen = negeren
+ recCnt=true;ensureAC();let n=3;
+ const iv=setInterval(()=>{
+   if(n>0){$('stat').textContent='OPNAME START IN '+n+'…';const t=ac.currentTime;sn(t,1200,0,.06,.5);n--;}
+   else{clearInterval(iv);recCnt=false;const t=ac.currentTime;sn(t,1800,0,.1,.6);startRec();}
+ },60000/(+$('bpm').value||120)/2);
+};
 function logNote(n,v){if(recOn){
   let ms=performance.now()-recT0;
   if($('quant').value==='16'){const q=60000/(+$('bpm').value)/4;ms=Math.round(ms/q)*q;}
@@ -189,7 +201,7 @@ function teken(){
       const hit=performance.now()-fl[z]<150;
       ctx.strokeStyle=p.col;ctx.lineWidth=hit?5:2;
       ctx.fillStyle=p.col+(hit?'66':'22');
-      ctx.beginPath();ctx.roundRect(x,y,pw,ph,14);ctx.fill();ctx.stroke();
+      ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,pw,ph,14);else ctx.rect(x,y,pw,ph);ctx.fill();ctx.stroke();
       ctx.fillStyle=hit?'#fff':p.col;ctx.font='bold '+(ps.length===8?14:18)+'px system-ui';ctx.textAlign='center';
       ctx.fillText(p.n,x+pw/2,y+ph/2+6);
     });
@@ -223,8 +235,19 @@ $('mode').onchange=buildMeters;$('npads').onchange=()=>{buildMeters();buildPadCf
 
 // --- hoofdloop ---
 async function start(){
-  const s=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480}});
-  $('cam').srcObject=s;run=true;ensureAC();requestAnimationFrame(tick);
+  const st=$('stat');
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){st.textContent='Geen camera-ondersteuning in deze browser — gebruik Chrome/Edge.';return;}
+    st.textContent='Camera opstarten…';$('start').disabled=true;
+    const s=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480}});
+    $('cam').srcObject=s;run=true;ensureAC();requestAnimationFrame(tick);
+    st.textContent='✓ Camera aan — beweeg voor de pads!';$('start').textContent='⏹ STOP';
+    $('start').onclick=()=>{s.getTracks().forEach(t=>t.stop());run=false;$('start').textContent='▶ START CAMERA';$('start').onclick=start;st.textContent='Camera uit.';$('start').disabled=false;};
+    $('start').disabled=false;
+  }catch(e){
+    $('start').disabled=false;
+    st.textContent=e.name==='NotAllowedError'?'✗ Camera geblokkeerd — klik op het slotje in de adresbalk en sta camera toe.':e.name==='NotFoundError'?'✗ Geen camera gevonden.':'✗ Camera-fout: '+e.message;
+  }
 }
 function tick(){
   if(!run)return;
