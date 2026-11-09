@@ -294,7 +294,8 @@ function vulGrid(id){ // gevonden slagen → 16-staps grid (1 maat)
   for(let i=2;i<I.low.length-hop;i+=hop){
    let e0=0,e1=0;for(let j=0;j<hop;j++){e0+=Math.abs(I.low[i-hop+j]);e1+=Math.abs(I.low[i+j]);}
    if(e1>e0*2.2&&e1>0.02&&!kickT.has(Math.round(i/hop))){const s=Math.round(((i*0.005)%maat)/maat*16);if(s<16)cand.push({s,e:e1});}}
-  cand.sort((a,b)=>b.e-a.e);cand.slice(0,8).forEach(c=>I.sub[c.s]=1);}
+  cand.sort((a,b)=>b.e-a.e);
+  cand.slice(0,8).forEach(c=>{I.sub[c.s]=c.s>=13?3:(c.s%4===3?2:1);});} // goud=maateinde, paars=offbeat, blauw=basis
  paintGrid(id);}
 // voorbeeld-grooves: [kick-stappen, sub-stappen] op het 16e-raster
 const GROOVES={
