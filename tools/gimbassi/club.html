@@ -84,6 +84,7 @@ function maakInst(){
    <div class="rij" style="margin-top:0">
     <button class="uit go" id="${id}-gplay">▶ SPEEL</button>
     <label><b>808-TOON</b><select id="${id}-groot">${['A1','A#1','B1','C2','C#2','D2','D#2','E2','F2','F#2','G2','G#2'].map((n,i)=>`<option value="${33+i}"${i===5?' selected':''}>${n}</option>`).join('')}</select></label>
+    <label><b>SOUND</b><select id="${id}-snd"><option value="sub">808-sub</option><option value="reese">reese-zaag</option><option value="pluk">pluk</option><option value="donker">donker</option></select></label>
     <button class="uit" id="${id}-gmid">📥 .mid</button>
     <button class="uit" id="${id}-gleeg">🧹 leeg</button>
     <button class="uit" id="${id}-gdice">🎲 DICE</button>
@@ -140,7 +141,7 @@ function maakInst(){
  $(id+'-gwav').onclick=()=>exportWav(id);
 }
 function setCut(id,v){const s=$(id+'-cut');s.value=v;$(id+'-vlc').textContent=v;}
-const INST={}; // id -> {buf,mono,sr,kicks,bpm}
+const INST={};let CURID=null; // id -> {buf,mono,sr,kicks,bpm}
 // --- lagen-buur: machines delen hun patroon zodat DICE slim laagt ---
 const LBC='BroadcastChannel' in window?new BroadcastChannel('g2b-lagen'):null;
 const ANDER={};let MYID=Math.random().toString(36).slice(2);
@@ -284,12 +285,24 @@ function kikC(ctx,dst,t,v){const o=ctx.createOscillator(),g=ctx.createGain();o.t
  o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(45,t+0.12);
  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.4);
  o.connect(g).connect(dst);o.start(t);o.stop(t+0.42);}
-function bas808(t,f,v,len,tier){bas808C(gac,gac.destination,t,f,v,len,tier)}
-function bas808C(ctx,dst,t,f,v,len,tier){tier=tier||1;const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';
- o.frequency.setValueAtTime(f*2,t);o.frequency.exponentialRampToValueAtTime(f,t+0.08);
- g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+0.008);
+function bas808(t,f,v,len,tier){const kl=(CURID&&$(CURID+'-snd'))?$(CURID+'-snd').value:'sub';
+ bas808C(gac,gac.destination,t,f,v,len,tier,kl)}
+function bas808C(ctx,dst,t,f,v,len,tier,kl){tier=tier||1;kl=kl||'sub';
+ const o=ctx.createOscillator(),g=ctx.createGain(),o2b=[];
+ if(kl==='reese'){ // twee detunede zagen + lowpass
+  o.type='sawtooth';o.frequency.value=f;o.detune.value=7;
+  const ob=ctx.createOscillator();ob.type='sawtooth';ob.frequency.value=f;ob.detune.value=-7;o2b.push(ob);
+  const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=f*8;
+  o.connect(g);ob.connect(g);g.connect(lp).connect(dst);}
+ else{
+  if(kl==='pluk'){o.type='triangle';o.frequency.value=f*4;len=Math.max(0.12,len*0.35);o.connect(g).connect(dst);}
+  else if(kl==='donker'){o.frequency.value=f;
+   const lp2=ctx.createBiquadFilter();lp2.type='lowpass';lp2.frequency.value=f*3;
+   o.connect(g);g.connect(lp2).connect(dst);}
+  else{o.frequency.setValueAtTime(f*2,t);o.frequency.exponentialRampToValueAtTime(f,t+0.08);o.connect(g).connect(dst);}}
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v*(kl==='reese'?0.7:1),t+0.008);
  g.gain.exponentialRampToValueAtTime(0.001,t+len);
- o.connect(g).connect(dst);o.start(t);o.stop(t+len+0.05);
+ o.start(t);o.stop(t+len+0.05);o2b.forEach(x=>{x.start(t);x.stop(t+len+0.05)});
  const o2=ctx.createOscillator(),g2=ctx.createGain();o2.type='triangle';o2.frequency.value=f*4;
  g2.gain.setValueAtTime(v*[0.10,0.22,0.32][tier-1],t);g2.gain.exponentialRampToValueAtTime(0.001,t+len*0.5);
  o2.connect(g2);
@@ -309,7 +322,7 @@ function speelGroove(id){const I=INST[id];
    const s=I.gstap,t=t0+s*spb;
    if(I.kick[s])kik(t,0.95);
    if(I.sub[s]){let nx=16;for(let k=s+1;k<16;k++)if(I.sub[k]){nx=k;break}
-    bas808(t,f*Math.pow(2,[0,7,12][I.sub[s]-1]/12),I.kick[s]?0.34:0.5,(nx-s)*spb*0.95,I.sub[s]);}
+    CURID=id;bas808(t,f*Math.pow(2,[0,7,12][I.sub[s]-1]/12),I.kick[s]?0.34:0.5,(nx-s)*spb*0.95,I.sub[s]);}
    setTimeout(ss=>gHighlight(id,ss),Math.max(0,(t-gac.currentTime)*1000),s);
    I.gstap++;}
   if(I.gstap>=16&&ct>t0+16*spb){I.gstap=0;t0=ct+0.05;}
@@ -390,7 +403,7 @@ async function exportWav(id){const I=INST[id],bpm=+$(id+'-bpm').value||I.bpm||14
  for(let b=0;b<bars;b++)for(let s=0;s<16;s++){const t=b*16*spb+s*spb;
   if(I.kick[s])kikC(ctx,ctx.destination,t,0.95);
   if(I.sub[s]){let nx=16;for(let k=s+1;k<16;k++)if(I.sub[k]){nx=k;break}
-   bas808C(ctx,ctx.destination,t,f*Math.pow(2,[0,7,12][I.sub[s]-1]/12),I.kick[s]?0.34:0.5,(nx-s)*spb*0.95,I.sub[s]);}}
+   bas808C(ctx,ctx.destination,t,f*Math.pow(2,[0,7,12][I.sub[s]-1]/12),I.kick[s]?0.34:0.5,(nx-s)*spb*0.95,I.sub[s],$(id+'-snd')?$(id+'-snd').value:'sub');}}
  const buf=await ctx.startRendering(),blob=buf2wav(buf),u=URL.createObjectURL(blob);
  const a=document.createElement('a');a.href=u;a.download='gimbassi-baslijn-'+bpm+'bpm.wav';a.click();URL.revokeObjectURL(u);
  $(id+'-st').textContent='📥 .wav loop geëxporteerd ('+bars+' maten, '+bpm+'bpm)';}
