@@ -111,7 +111,7 @@ function laadKit(){const k=KITS[G.genre][G.ki];
  G.drums={};for(const r in k.drums){const a=k.drums[r];G.drums[r]=((r==='HAT'||r==='OHAT')&&a.length===16)?a.flatMap(v=>[v,0]):a.slice();}
  G.mel=k.mel.map(n=>({s:n.s,d:n.d,l:n.l}));
  if(k.bpm){$('bpm').value=k.bpm;$('vBpm').textContent=k.bpm;}
- $('kitnaam').textContent=k.name;
+ $('kitnaam').textContent=G.genre+' · '+(G.genre==='KAWINA'?k.name.replace(/^rythem(\d+)(?:_bpm\d+)?/i,'kawina-ritme $1'):k.name);
  $('kittel').textContent='kit '+(G.ki+1)+'/'+KITS[G.genre].length+(k.bpm?' · geleerd op '+k.bpm+' bpm':'');
  bouwLagen();bouwRaster();
  $('st').textContent=G.genre+'/'+k.name+' geladen — pas aan of druk GENEREER';}
