@@ -119,6 +119,7 @@ async function main(){
         ${koopHref?`<a class="koop" id="koop" ${gratis?'data-gate="1"':""} target="_blank" rel="noopener" href="${esc(koopHref)}">${gratis?"⬇ Download":"Koop nu"}</a>`:`<span class="koop uit">Binnenkort</span>`}
         ${links.browser?`<a class="koop zwart" href="${esc(links.browser)}">🌐 Open in browser</a>`:""}
       </div>
+      ${!gratis?`<div style="color:var(--dim);font-size:12px;margin-top:8px">Directe digitale levering na betaling — bij aankoop ga je akkoord met de <a href="licentie.html" style="color:var(--accent)">voorwaarden</a> en dat het herroepingsrecht vervalt.</div>`:""}
     </div>
   </section>
   ${p.preview?`<section class="sectie"><h2>Beluister</h2>

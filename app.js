@@ -259,6 +259,9 @@ async function laden() {
           ? `<a class="koop browser" href="${esc(links.browser)}"
                title="Gebruik 'm direct in je browser">🌐 browser</a>` : ""}
       </div>
+      ${p.prijs && p.prijs !== "GRATIS" && p.soort !== "steun"
+        ? `<div class="conditie">Directe digitale levering — bij aankoop ga je akkoord met de <a href="licentie.html">voorwaarden</a> en dat het herroepingsrecht vervalt.</div>`
+        : ""}
       ${(p.upsell||[]).map(u => {
         const q = productenById(u);
         return q ? `<a class="upsell" href="#" data-uitg="${esc(u)}">💡 past bij: <b>${esc(q._titel||q.titel)}</b> — ${esc(q.prijs||"")}</a>` : "";

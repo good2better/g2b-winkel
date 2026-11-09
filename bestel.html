@@ -160,6 +160,7 @@ kaart.innerHTML = `
     <div class="stap"><div class="n">2</div><div>${T("stap2")}</div></div>
     <div class="stap"><div class="n">3</div><div>${stap3}</div></div>
   </div>
+  ${!isSteun ? `<div class="klein" style="margin:10px 0 0">Directe digitale levering na betaling — door te bestellen ga je akkoord met de <a href="licentie.html" style="color:var(--accent)">voorwaarden</a> en dat het herroepingsrecht vervalt.</div>` : ""}
   <a class="knop" href="${mailto}">${T("knop_stuur")}</a>
   <button class="knop ander" id="kopie">${T("knop_kopieer")}</button>
   <div class="klein">${T("klein_mail_pre")}
