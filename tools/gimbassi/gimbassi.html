@@ -339,11 +339,16 @@ function diceGroove(id){const I=INST[id];
  if(!I.kick.some(v=>v))I.kick[0]=I.kick[4]=I.kick[8]=I.kick[12]=1;
  I.sub.fill(0);
  const r=RATIO[I.lastGenre||'zouk']||RATIO.zouk;
- const vrij=[];for(let s=0;s<16;s++)if(!I.kick[s])vrij.push(s);
- for(let i=vrij.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[vrij[i],vrij[j]]=[vrij[j],vrij[i]];}
- const n=Math.min(vrij.length,6+Math.floor(Math.random()*3));
- for(let i=0;i<n;i++){const s=vrij[i],x=Math.random();
-  I.sub[s]=x<r[0]?1:(x<r[0]+r[1]?2:3);}
+ // plaats noten in zingende groepjes van 1-3 aaneengesloten stappen
+ const vrij=s=>s<16&&!I.kick[s]&&!I.sub[s];
+ let n=6+Math.floor(Math.random()*3),tries=0;
+ while(n>0&&tries++<50){
+  let s=Math.floor(Math.random()*16);
+  if(!vrij(s))continue;
+  const len=1+Math.floor(Math.random()*3);
+  for(let k=0;k<len&&vrij(s+k)&&n>0;k++,n--){
+   const x=Math.random();
+   I.sub[s+k]=(s+k>0&&I.kick[s+k-1])?1:(x<r[0]?1:(x<r[0]+r[1]?2:3));}}
  paintGrid(id);
  $(id+'-st').textContent='🎲 baslijn gedobbeld — klik SUB-vakjes voor toon (blauw/paars/goud)';}
 const _gp=groovePreset;groovePreset=function(id,naam){if(INST[id])INST[id].lastGenre=naam;return _gp(id,naam);};
