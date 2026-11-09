@@ -176,11 +176,15 @@ function dice(){G.seed=(Math.imul(G.seed,48271)+Date.now())>>>0;
   const a=G.drums[r];
   for(let s=0;s<a.length;s++)a[s]=rng()<(r==='KICK'?dens*0.6:r==='SNARE'?0.10:dens);
   a[0]=r==='KICK'?1:a[0];} // kick altijd op 1
- if(!LOCK.MEL){G.mel=[]; // baslijn-motor: lage graden, stapsgewijs (±1), wortel op tel 1+9
+ if(!LOCK.MEL){G.mel=[]; // baslijn-motor: grondtoon bij kicks, kwint-offbeat, oktaaf zeldzaam (kleur-regel)
+  const sc=LADDERS[G.ladder].length,kick=G.drums.KICK;
   const bas=[0,4,6,8,10,12,14].filter(()=>rng()<0.8);
   if(!bas.includes(0))bas.unshift(0);bas.sort((a,b)=>a-b);let d=0;
   for(const s of bas){
-   if(s===0||s===8)d=0;else d=Math.max(0,Math.min(3,d+[-1,0,0,1][Math.floor(rng()*4)]));
+   if(kick[s]&&s!==0&&s!==8&&rng()<0.7)continue; // anti-clash: sub niet op de kick
+   if(s===0||s===8)d=0;
+   else if(s>=12&&rng()<0.2)d=Math.min(sc-1,5); // oktaaf-sprong op maateinde
+   else d=Math.max(0,Math.min(3,d+[-1,0,0,1][Math.floor(rng()*4)]));
    G.mel.push({s,d,l:1+Math.floor(rng()*2)});}}
  bouwRaster();$('st').textContent='🎲 gedobbeld — alles binnen de ladder';}
 // ---------- velocity + timing ----------
