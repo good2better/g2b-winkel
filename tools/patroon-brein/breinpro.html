@@ -46,6 +46,7 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <button class="uit go" id="bPlay" onclick="speel()">▶ SPEEL</button>
 <button class="uit" onclick="genereer()">✨ GENEREER</button>
 <button class="uit" onclick="dice()">🎲 DICE</button>
+<button class="uit" id="bGlide" onclick="toggleGlide()">〰️ GLIDE: aan</button>
 <button class="uit" onclick="exportMid()">📥 exporteer .mid</button>
 <button class="uit" onclick="bounce()">🔊 bounce WAV</button>
 <button class="uit" onclick="document.body.classList.toggle('licht')">◐</button>
@@ -53,7 +54,7 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 </div>
 <div class="rij">
 <label><b>TOONSOORT</b><select id="root" onchange="bouwRaster()"></select></label>
-<label><b>LADDER</b><select id="ladder" onchange="bouwRaster()"></select></label>
+<label><b>SFEER</b><select id="ladder" onchange="bouwRaster()"></select></label>
 <label><b>TEMPO <span id="vBpm">140</span> bpm</b><input type="range" id="bpm" min="70" max="180" value="140" oninput="vBpm.textContent=this.value"></label>
 <label><b>KRACHT <span id="vKracht">70</span>%</b><input type="range" id="kracht" min="0" max="100" value="70" oninput="vKracht.textContent=this.value"></label>
 <label><b>SWING <span id="vSwing">20</span>%</b><input type="range" id="swing" min="0" max="60" value="20" oninput="vSwing.textContent=this.value"></label>
@@ -64,17 +65,18 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <div id="lagen"></div>
 <div id="grid"></div>
 <div class="kaart" id="info"></div>
-<div class="kaart"><b>zo werkt-ie:</b> kies een genre-pil → blader met ◀▶ door de kits die de app heeft geleerd · klik vakjes aan/uit · GENEREER muteert 1-2 stappen maar houdt je groove · DICE dobbelt alles opnieuw binnen je toonladder · <b>LAGEN:</b> klik laagnaam = mute, 🔒 = blijft staan bij GENEREER/DICE · SNARE/HAT/OHAT starten op mute (stabiel fundament) · ⚡ SLAG ONLY · HAT/OHAT = 32 stappen — klik de halve vakjes (1/32, voor snelle drill-rolls) = juist alléén die drie · .mid is klaar voor je DAW (drums kanaal 10, melodie kanaal 1)</div>
+<div class="kaart"><b>zo werkt-ie:</b> <b>SFEER</b> = kies je gevoel (Donker/Drill, Emotioneel/Zouk…) — elke noot die je klikt of genereert klinkt goed · <b>〰️ GLIDE</b> = overlappende basnoten glijden vanzelf (808-slides) · KAWINA-kits krijgen automatisch menselijke swing · de kick dimt een beetje als de sub speelt → schone low-end · kies een genre-pil → blader met ◀▶ door de kits die de app heeft geleerd · klik vakjes aan/uit · GENEREER muteert 1-2 stappen maar houdt je groove · DICE dobbelt alles opnieuw binnen je toonladder · <b>LAGEN:</b> klik laagnaam = mute, 🔒 = blijft staan bij GENEREER/DICE · SNARE/HAT/OHAT starten op mute (stabiel fundament) · ⚡ SLAG ONLY · HAT/OHAT = 32 stappen — klik de halve vakjes (1/32, voor snelle drill-rolls) = juist alléén die drie · .mid is klaar voor je DAW (drums kanaal 10, melodie kanaal 1)</div>
 <div class="kaart"><b>verschillen:</b> de browser-versie blijft <b>gratis</b> — deze PRO combineert de app's geleerde kits met het browser-grid</div>
 <script>
 'use strict';const $=id=>document.getElementById(id);
 // ladders: intervallen vanaf de grondnoot
 const LADDERS={mineur:[0,2,3,5,7,8,10],pentatonisch:[0,3,5,7,10],majeur:[0,2,4,5,7,9,11],lydisch:[0,2,4,6,7,9,11]};
+const SFEREN={mineur:'Donker / Drill',pentatonisch:'Emotioneel / Zouk',majeur:'Vrolijk / Licht',lydisch:'Dromerig'};
 const NOTEN=['A','A#','B','C','C#','D','D#','E','F','F#','G','G#'];
 const DRUMN={KICK:36,SNARE:38,HAT:42,OHAT:46};
 let KITS={}; // genre -> [kit]
 let G={genre:'',ki:0,root:9,ladder:'mineur',drums:null,mel:[],seed:1};
-let ac=null,playing=false,stap=0,timer=null;
+let ac=null,playing=false,stap=0,timer=null,GLIDE=true,laatsteToon=null;
 // lagen-regels (zijn les): SNARE/HAT/OHAT starten op MUTE = stabiel;
 // LOCK houdt een laag vast bij GENEREER/DICE; SLAG ONLY speelt juist
 // alléén snare/hat/ohat en mute de rest.
@@ -98,7 +100,7 @@ function bouwLagen(){const el=$('lagen');el.innerHTML='<span class="lgnm">LAGEN:
 // ---------- UI ----------
 function bouwUI(){
  $('root').innerHTML=NOTEN.map((n,i)=>`<option value="${i}">${n}</option>`).join('');
- $('ladder').innerHTML=Object.keys(LADDERS).map(l=>`<option>${l}</option>`).join('');
+ $('ladder').innerHTML=Object.keys(LADDERS).map(l=>`<option value="${l}">${SFEREN[l]}</option>`).join('');
  $('root').value=G.root;$('ladder').value=G.ladder;
  $('pills').innerHTML=Object.keys(KITS).filter(g=>KITS[g].length)
   .map(g=>`<button class="pill" data-g="${g}" onclick="kiesGenre('${g}')">${g} <small>${KITS[g].length}</small></button>`).join('');}
@@ -180,7 +182,7 @@ function tickVan(s){const sw=+$('swing').value/100;
 // ---------- SPEEL ----------
 function speel(){if(playing){stopSpel();return}
  if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();
- playing=true;$('bPlay').textContent='■ STOP';stap=0;
+ playing=true;$('bPlay').textContent='■ STOP';stap=0;laatsteToon=null;
  const spb=60/(+$('bpm').value)/4;let t0=ac.currentTime+0.08;
  const nt=ladNoten();
  const stapT=s=>t0+s*spb+((s%2===1)?spb*(+$('swing').value/100)*0.45:0);
@@ -188,18 +190,22 @@ function speel(){if(playing){stopSpel();return}
   const ct=ac.currentTime;
   while(stap<16&&stapT(stap)<ct+0.06){
    const s=stap;
-   if(actief('KICK')&&G.drums.KICK[s])kick(stapT(s),vel(s));
-   if(actief('SNARE')&&G.drums.SNARE[s])snare(stapT(s),vel(s));
-   if(actief('HAT')){if(G.drums.HAT[s*2])hat(stapT(s),vel(s),false);
-    if(G.drums.HAT[s*2+1])hat(stapT(s)+spb*0.5,vel(s)*0.85,false);}
-   if(actief('OHAT')){if(G.drums.OHAT[s*2])hat(stapT(s),vel(s),true);
-    if(G.drums.OHAT[s*2+1])hat(stapT(s)+spb*0.5,vel(s)*0.85,true);}
+   const hum=G.genre==='KAWINA',subOp=actief('MEL')&&G.mel.some(m=>s>=m.s&&s<m.s+m.l);
+   const hT=r=>stapT(s)+(hum?(rng()-0.5)*(r==='KICK'?0.008:0.016):0);
+   const hV=(r,v)=>hum?v*(0.88+rng()*0.24):v;
+   if(actief('KICK')&&G.drums.KICK[s])kick(hT('KICK'),hV('KICK',vel(s)*(subOp?0.7:1)));
+   if(actief('SNARE')&&G.drums.SNARE[s])snare(hT('SNARE'),hV('SNARE',vel(s)));
+   if(actief('HAT')){if(G.drums.HAT[s*2])hat(hT('HAT'),hV('HAT',vel(s)),false);
+    if(G.drums.HAT[s*2+1])hat(hT('HAT')+spb*0.5,hV('HAT',vel(s))*0.85,false);}
+   if(actief('OHAT')){if(G.drums.OHAT[s*2])hat(hT('OHAT'),hV('OHAT',vel(s)),true);
+    if(G.drums.OHAT[s*2+1])hat(hT('OHAT')+spb*0.5,hV('OHAT',vel(s))*0.85,true);}
    if(actief('MEL'))for(const m of G.mel)if(m.s===s)toon(stapT(s),nt[m.d],m.l*spb,vel(s));
    setTimeout(rr=>highlight(rr),Math.max(0,(stapT(s)-ac.currentTime)*1000),s);
    stap++;}
   if(stap>=16&&ct>t0+16*spb){stap=0;t0=ct+0.05;}
  },25);}
-function stopSpel(){playing=false;clearInterval(timer);$('bPlay').textContent='▶ SPEEL';highlight(-1);}
+function stopSpel(){playing=false;clearInterval(timer);laatsteToon=null;$('bPlay').textContent='▶ SPEEL';highlight(-1);}
+function toggleGlide(){GLIDE=!GLIDE;laatsteToon=null;$('bGlide').textContent='〰️ GLIDE: '+(GLIDE?'aan':'uit');}
 function highlight(s){document.querySelectorAll('.cel.speelt').forEach(c=>c.classList.remove('speelt'));
  if(s>=0)document.querySelectorAll(`.cel[data-s="${s}"]`).forEach(c=>c.classList.add('speelt'));}
 // ---------- mini-synth ----------
@@ -216,7 +222,12 @@ function hat(t,v,open){const n=ac.createBufferSource(),du=open?0.25:0.06,b=ac.cr
  n.buffer=b;const f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=7000;
  const g=ac.createGain();g.gain.value=v/127*0.25;n.connect(f).connect(g).connect(ac.destination);n.start(t);}
 function toon(t,midi,len,v){const o=ac.createOscillator(),g=ac.createGain(),f=ac.createBiquadFilter();
- o.type='sawtooth';o.frequency.value=440*Math.pow(2,(midi-69)/12);
+ const f0=440*Math.pow(2,(midi-69)/12);
+ o.type='sawtooth';
+ if(GLIDE&&laatsteToon&&t<laatsteToon.eind-0.004){ // overlappende noot → 808-slide
+  o.frequency.setValueAtTime(laatsteToon.f,t);o.frequency.exponentialRampToValueAtTime(f0,t+0.06);v*=0.9;
+ }else o.frequency.value=f0;
+ laatsteToon={f:f0,eind:t+len};
  f.type='lowpass';f.frequency.value=1600;
  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v/127*0.22,t+0.01);
  g.gain.exponentialRampToValueAtTime(0.001,t+Math.max(0.12,len*0.9));
@@ -249,20 +260,24 @@ function wavBlob(l,r,sr){const n=l.length,b=new ArrayBuffer(44+n*4),v=new DataVi
 function bounce(){ // render 1 maat offline met dezelfde mini-synth
  const bpm=+$('bpm').value,spb=60/bpm/4,sr=44100,n=Math.ceil(sr*16*spb)+sr*0.4|0;
  const L=new Float32Array(n),R=new Float32Array(n),nt=ladNoten();
- const pl=(x,t,v,du,fr)=>{const i0=Math.floor(t*sr),e=Math.min(n,i0+Math.floor(du*sr));
+ const pl=(x,t,v,du,fr,f0)=>{f0=f0||fr;const i0=Math.floor(t*sr),e=Math.min(n,i0+Math.floor(du*sr));
   for(let i=i0;i<e;i++){const ph=(i-i0)/sr;
    let s;if(fr===0)s=Math.sin(2*Math.PI*(150*Math.exp(-ph*28)+45)*ph)*Math.exp(-ph*10); // kick
    else if(fr===1)s=(Math.random()*2-1)*Math.exp(-ph*30); // snare noise
    else if(fr===2)s=(Math.random()*2-1)*Math.exp(-ph*90); // hat
-   else s=(2*((ph*fr)%1)-1)*Math.exp(-ph*(3/du))*Math.min(1,ph*80); // zaag-toon
+   else{const cf=ph<0.06?f0*Math.pow(fr/f0,ph/0.06):fr;s=(2*((ph*cf)%1)-1)*Math.exp(-ph*(3/du))*Math.min(1,ph*80);} // zaag-toon (+glide)
    L[i]+=s*v;R[i]+=s*v;}};
  const tijd=s=>s*spb+((s%2===1)?spb*(+$('swing').value/100)*0.45:0);
+ const hum=G.genre==='KAWINA';let prevF=null,prevEind=0;
  for(let s=0;s<16;s++){const t=tijd(s),v=vel(s)/127;
-  if(actief('KICK')&&G.drums.KICK[s])pl(0,t,v*0.95,0.4,0);
-  if(actief('SNARE')&&G.drums.SNARE[s])pl(0,t,v*0.55,0.2,1);
-  if(actief('HAT')){if(G.drums.HAT[s*2])pl(0,t,v*0.28,0.06,2);if(G.drums.HAT[s*2+1])pl(0,t+spb*0.5,v*0.24,0.05,2);}
-  if(actief('OHAT')){if(G.drums.OHAT[s*2])pl(0,t,v*0.28,0.25,2);if(G.drums.OHAT[s*2+1])pl(0,t+spb*0.5,v*0.24,0.22,2);}
-  if(actief('MEL'))for(const m of G.mel)if(m.s===s)pl(0,t,v*0.22,Math.max(0.12,m.l*spb*0.9),440*Math.pow(2,(nt[m.d]-69)/12));}
+  const tj=r=>t+(hum?(rng()-0.5)*(r==='KICK'?0.008:0.016):0);
+  const sub2=actief('MEL')&&G.mel.some(m=>s>=m.s&&s<m.s+m.l);
+  if(actief('KICK')&&G.drums.KICK[s])pl(0,tj('KICK'),v*(sub2?0.72:1)*0.95,0.4,0);
+  if(actief('SNARE')&&G.drums.SNARE[s])pl(0,tj('SNARE'),v*0.55,0.2,1);
+  if(actief('HAT')){if(G.drums.HAT[s*2])pl(0,tj('H'),v*0.28,0.06,2);if(G.drums.HAT[s*2+1])pl(0,tj('H')+spb*0.5,v*0.24,0.05,2);}
+  if(actief('OHAT')){if(G.drums.OHAT[s*2])pl(0,tj('O'),v*0.28,0.25,2);if(G.drums.OHAT[s*2+1])pl(0,tj('O')+spb*0.5,v*0.24,0.22,2);}
+  if(actief('MEL'))for(const m of G.mel)if(m.s===s){const fr=440*Math.pow(2,(nt[m.d]-69)/12);
+   const g0=(GLIDE&&prevF&&t<prevEind)?prevF:fr;pl(0,t,v*0.22,Math.max(0.12,m.l*spb*0.9),fr,g0);prevF=fr;prevEind=t+m.l*spb;}}
  let mx=0;for(let i=0;i<n;i++)mx=Math.max(mx,Math.abs(L[i]),Math.abs(R[i]));
  if(mx>0){const g=0.89/mx;for(let i=0;i<n;i++){L[i]*=g;R[i]*=g;}}
  const li=new Int16Array(n),ri=new Int16Array(n);
