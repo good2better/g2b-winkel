@@ -34,6 +34,16 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 .kaart{background:#0f1410;border:1px solid var(--rand);border-radius:10px;padding:10px 12px;margin-top:14px;font-size:12px;color:var(--dim)}
 .kaart b{color:var(--tekst)}
 canvas.wave{width:100%;height:54px;background:#0a0d0a;border:1px solid var(--rand);border-radius:8px;margin-top:8px}
+.groove{margin-top:12px;background:#0f1410;border:1px solid var(--rand);border-radius:10px;padding:10px 12px}
+.groove .gt{font-size:12px;color:var(--groen);font-weight:800;margin-bottom:6px}
+.grij{display:grid;grid-template-columns:52px repeat(16,1fr);gap:2px}
+.glbl{font-size:10px;color:var(--dim);display:flex;align-items:center;justify-content:flex-end;padding-right:5px}
+.gc{aspect-ratio:1;background:var(--kaart);border:1px solid var(--rand);border-radius:3px;cursor:pointer;min-width:12px}
+.gc.aan{background:var(--groen);border-color:var(--groen)}
+.gc.sub.aan{background:var(--cyan);border-color:var(--cyan)}
+.gc.speelt{outline:2px solid #fff;outline-offset:-2px}
+.grij .t{justify-content:center;font-size:9px}
+
 </style></head><body>
 <h1>G2B GIM BASSI <small>beat/song erin → bass (sub/808) + kick eruit</small></h1>
 <div class="sub">Drop een beat of song. Hij zoekt de kick-slagen, quantized ze op het grid en geeft je KICK en BASS apart terug — zonder de rest.</div>
@@ -44,6 +54,7 @@ canvas.wave{width:100%;height:54px;background:#0a0d0a;border:1px solid var(--ran
 <div id="insts"></div>
 <button class="plus" onclick="maakInst()" title="nog een GIM BASSI — lagen maken">+</button>
 <div class="kaart"><b>zo werkt-ie:</b> bestand erin → BASSI zoekt zelf het tempo + de kick-slagen in het lage deel · <b>QUANTIZE</b> zet de slagen netjes op het 16e-raster (zoals beatmaker) · <b>KICK</b> = alleen die slagen · <b>BASS</b> = de sub/808 eronder, kicks eruit gedimd · plus-knop = nog een voor lagen</div>
+<div class="kaart"><b>🎛 808-GRID:</b> na ⚡ BASSI DING staan de gevonden kick + sub als vakjes — klik aan/uit, kies de 808-toon, ▶ SPEEL loopt 'm als échte 808 · <b>voorbeelden</b> (ZOUK/SCHUIVEL/DRILL/TRAP) vullen 'm direct · 📥 .mid = PRO</div>
 <div class="kaart"><b>LOW-CUT kiezen:</b> <b>808-sub (120)</b> = trap/drill met diepe sub · <b>standaard (140)</b> = werkt bijna altijd · <b>basgitaar (190)</b> = warme bas/boombap, mist anders noten · klinkt je BASS te leeg → hoger · rommel of modder erin → lager</div>
 <script>
 'use strict';const $=id=>document.getElementById(id);
@@ -71,6 +82,23 @@ function maakInst(){
    <button class="uit go" id="${id}-go">⚡ BASSI DING</button>
   </div>
   <div class="res" id="${id}-res"></div>
+ </div>
+ <div class="groove" id="${id}-gr">
+   <div class="gt">🎛 808-GRID — kick + sub als vakjes: zelf bouwen of gevuld door je song · klik aan/uit · meespelen · .mid eruit</div>
+   <div class="rij" style="margin-top:0">
+    <button class="uit go" id="${id}-gplay">▶ SPEEL</button>
+    <label><b>808-TOON</b><select id="${id}-groot">${['A1','A#1','B1','C2','C#2','D2','D#2','E2','F2','F#2','G2','G#2'].map((n,i)=>`<option value="${33+i}"${i===5?' selected':''}>${n}</option>`).join('')}</select></label>
+    <button class="uit" id="${id}-gmid">📥 .mid</button>
+    <button class="uit" id="${id}-gleeg">🧹 leeg</button>
+   </div>
+   <div class="rij" style="margin-top:6px"><span style="font-size:10px;color:var(--dim);align-self:center">voorbeelden:</span>
+    <button class="uit" style="padding:3px 8px;font-size:11px" onclick="groovePreset('${id}','zouk')">ZOUK</button>
+    <button class="uit" style="padding:3px 8px;font-size:11px" onclick="groovePreset('${id}','schuivel')">SCHUIVEL</button>
+    <button class="uit" style="padding:3px 8px;font-size:11px" onclick="groovePreset('${id}','drill')">DRILL</button>
+    <button class="uit" style="padding:3px 8px;font-size:11px" onclick="groovePreset('${id}','trap')">TRAP</button>
+   </div>
+   <div class="grij" id="${id}-grij"></div>
+  </div>
   <div id="${id}-st"></div>
  </div>`;
  $('insts').appendChild(d);
@@ -85,6 +113,18 @@ function maakInst(){
  $(id+'-bpm').oninput=e=>$(id+'-vbpm').textContent=e.target.value||'auto';
  $(id+'-q').onclick=e=>e.target.classList.toggle('on');
  $(id+'-go').onclick=()=>bassiDing(id);
+ // 808-grid: KICK-rij + SUB-rij, 16 stappen, klik = toggle
+ INST[id]={kick:new Array(16).fill(0),sub:new Array(16).fill(0),gplaying:false,gtimer:null,gstap:0};
+ const g=$(id+'-grij');let gh='<div></div>'+Array.from({length:16},(_,i)=>`<div class="glbl t">${i+1}</div>`).join('');
+ for(const [r,cls] of [['KICK',''],['SUB',' sub']]){
+  gh+=`<div class="glbl">${r}</div>`;
+  for(let s=0;s<16;s++)gh+=`<div class="gc${cls}" data-r="${r.toLowerCase()}" data-s="${s}"></div>`;}
+ g.innerHTML=gh;
+ g.onclick=e=>{const c=e.target.closest('.gc');if(!c)return;
+  const r=c.dataset.r,s=+c.dataset.s;INST[id][r][s]^=1;c.classList.toggle('aan',!!INST[id][r][s]);};
+ $(id+'-gplay').onclick=()=>speelGroove(id);
+ $(id+'-gleeg').onclick=()=>{INST[id].kick.fill(0);INST[id].sub.fill(0);g.querySelectorAll('.gc').forEach(c=>c.classList.remove('aan'));};
+ $(id+'-gmid').onclick=()=>{window.location.href='/p.html?id=gimbassipro';};
 }
 function setCut(id,v){const s=$(id+'-cut');s.value=v;$(id+'-vlc').textContent=v;}
 const INST={}; // id -> {buf,mono,sr,kicks,bpm}
@@ -97,7 +137,7 @@ async function laad(id,f){
   // mono mixdown
   const n=buf.length,sr=buf.sampleRate,mono=new Float32Array(n);
   for(let ch=0;ch<buf.numberOfChannels;ch++){const d=buf.getChannelData(ch);for(let i=0;i<n;i++)mono[i]+=d[i]/buf.numberOfChannels;}
-  INST[id]={mono,sr,kicks:null,bpm:null};
+  Object.assign(INST[id]||={},{mono,sr,kicks:null,bpm:null,low:null});
   tekenGolf(id,mono,sr);
   st.textContent=f.name+' — '+(n/sr).toFixed(1)+'s · '+sr+' Hz · druk ⚡ BASSI DING';
  }catch(e){st.textContent='kan niet lezen: '+e.message}
@@ -171,7 +211,8 @@ function bassiDing(id){
   uit(id,'BASS',bs,I.sr,'sub/808 onderlaag, kicks eruit gedimd');
   const samen=new Float32Array(bs.length);for(let i=0;i<bs.length;i++)samen[i]=bs[i]+kd[i];
   uit(id,'BASS+KICK',samen,I.sr,'alles samen — de rest is weg');
-  st.textContent=kicks.length+' slagen · '+(bpm?bpm+' bpm':'? bpm')+' — klaar, luister (download = PRO)';
+  vulGrid(id);
+  st.textContent=kicks.length+' slagen · '+(bpm?bpm+' bpm':'? bpm')+' — klaar: 808-GRID gevuld, pas aan en speel (.mid = PRO)';
  },30);
 }
 function uit(id,naam,data,sr,info){
@@ -193,5 +234,61 @@ function uit(id,naam,data,sr,info){
   window.location.href='/p.html?id=gimbassipro';};
  $(id+'-res').appendChild(d);
 }
+// ---------- 808-GRID: speel eigen kick+sub groove ----------
+
+let gac=null;
+function kik(t,v){const o=gac.createOscillator(),g=gac.createGain();o.type='sine';
+ o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(45,t+0.12);
+ g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.4);
+ o.connect(g).connect(gac.destination);o.start(t);o.stop(t+0.42);}
+function bas808(t,f,v,len){const o=gac.createOscillator(),g=gac.createGain();o.type='sine';
+ o.frequency.setValueAtTime(f*2,t);o.frequency.exponentialRampToValueAtTime(f,t+0.08);
+ g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+0.008);
+ g.gain.exponentialRampToValueAtTime(0.001,t+len);
+ o.connect(g).connect(gac.destination);o.start(t);o.stop(t+len+0.05);}
+function speelGroove(id){const I=INST[id];
+ if(I.gplaying){clearInterval(I.gtimer);I.gplaying=false;$(id+'-gplay').textContent='▶ SPEEL';gHighlight(id,-1);return;}
+ if(!gac)gac=new(window.AudioContext||window.webkitAudioContext)();
+ const bpm=+$(id+'-bpm').value||I.bpm||140,spb=60/bpm/4;
+ const root=+$(id+'-groot').value,f=440*Math.pow(2,(root-69)/12);
+ I.gplaying=true;$(id+'-gplay').textContent='■ STOP';I.gstap=0;
+ let t0=gac.currentTime+0.08;
+ I.gtimer=setInterval(()=>{
+  const ct=gac.currentTime;
+  while(I.gstap<16&&t0+I.gstap*spb<ct+0.06){
+   const s=I.gstap,t=t0+s*spb;
+   if(I.kick[s])kik(t,0.95);
+   if(I.sub[s])bas808(t,f,0.5,spb*1.9);
+   setTimeout(ss=>gHighlight(id,ss),Math.max(0,(t-gac.currentTime)*1000),s);
+   I.gstap++;}
+  if(I.gstap>=16&&ct>t0+16*spb){I.gstap=0;t0=ct+0.05;}
+ },25);}
+function gHighlight(id,s){const g=$(id+'-grij');if(!g)return;
+ g.querySelectorAll('.gc.speelt').forEach(c=>c.classList.remove('speelt'));
+ if(s>=0)g.querySelectorAll(`.gc[data-s="${s}"]`).forEach(c=>c.classList.add('speelt'));}
+function vulGrid(id){ // gevonden slagen → 16-staps grid (1 maat)
+ const I=INST[id];if(!I.kicks||!I.bpm)return;
+ const maat=60/I.bpm*4;
+ I.kick.fill(0);I.sub.fill(0);
+ for(const t of I.kicks){const s=Math.round((t%maat)/maat*16);if(s<16)I.kick[s]=1;}
+ // sub-pieken: lage-band energie stijging buiten kick-momenten
+ if(I.low){const sr=I.sr,hop=Math.floor(sr*0.005),kickT=new Set(I.kicks.map(t=>Math.round(t/0.005)));
+  for(let i=2;i<I.low.length-hop;i+=hop){
+   let e0=0,e1=0;for(let j=0;j<hop;j++){e0+=Math.abs(I.low[i-hop+j]);e1+=Math.abs(I.low[i+j]);}
+   if(e1>e0*2.2&&e1>0.02&&!kickT.has(Math.round(i/hop))){const s=Math.round(((i*0.005)%maat)/maat*16);if(s<16)I.sub[s]=1;}}}
+ $(id+'-grij').querySelectorAll('.gc').forEach(c=>{const r=c.dataset.r,s=+c.dataset.s;c.classList.toggle('aan',!!INST[id][r][s]);});}
+// voorbeeld-grooves: [kick-stappen, sub-stappen] op het 16e-raster
+const GROOVES={
+ zouk:{kick:[0,8,10],sub:[0,4,7,8,12,14]},            // heartbeat-kick + zwoeglopende sub
+ schuivel:{kick:[0,4,7,12],sub:[0,3,6,8,10,14]},      // schuivende bewegende bas
+ drill:{kick:[0,6,10],sub:[0,2,6,8,10,14]},           // glijdende 808-feel
+ trap:{kick:[0,7,10],sub:[0,7,10,12]}};               // sub volgt de kick-slagen
+function groovePreset(id,naam){const I=INST[id],g=GROOVES[naam];if(!g)return;
+ I.kick.fill(0);I.sub.fill(0);
+ g.kick.forEach(s=>I.kick[s]=1);g.sub.forEach(s=>I.sub[s]=1);
+ $(id+'-grij').querySelectorAll('.gc').forEach(c=>{const r=c.dataset.r,s=+c.dataset.s;c.classList.toggle('aan',!!I[r][s]);});
+ $(id+'-st').textContent='🎛 '+naam.toUpperCase()+'-groove geladen — pas aan of speel af';}
+// ---------- .mid staat op slot in de demo ----------
+function exportMid(id){window.location.href='/p.html?id=gimbassipro';}
 maakInst();
 </script></body></html>
