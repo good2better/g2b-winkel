@@ -95,10 +95,12 @@ function maakInst(){
     <button class="uit" id="${id}-gdice">🎲 DICE</button>
     <button class="uit" id="${id}-gwav">📥 .wav</button>
    </div>
+   <div class="rij" style="margin-top:4px"><span style="font-size:10px;color:var(--dim)">SUB-kleuren: <b style="color:#4da3ff">blauw</b>=grondtoon · <b style="color:#b48cfa">paars</b>=kwint · <b style="color:#ffd166">goud</b>=oktaaf — klik een vakje om te wisselen</span></div>
    <div class="rij" style="margin-top:6px"><span style="font-size:10px;color:var(--dim);align-self:center">voorbeelden:</span>
     <button class="uit" style="padding:3px 8px;font-size:11px" onclick="groovePreset('${id}','zouk')">ZOUK</button>
     <button class="uit" style="padding:3px 8px;font-size:11px" onclick="groovePreset('${id}','schuivel')">SCHUIVEL</button>
     <button class="uit" style="padding:3px 8px;font-size:11px" onclick="groovePreset('${id}','kawina')">KAWINA</button>
+    <button class="uit" style="padding:3px 8px;font-size:11px" onclick="groovePreset('${id}','kaseko')">KASEKO</button>
     <button class="uit" style="padding:3px 8px;font-size:11px" onclick="groovePreset('${id}','drill')">DRILL</button>
     <button class="uit" style="padding:3px 8px;font-size:11px" onclick="groovePreset('${id}','trap')">TRAP</button>
     <button class="uit" style="padding:3px 8px;font-size:11px" onclick="groovePreset('${id}','boombap')">BOOMBAP</button>
@@ -309,17 +311,18 @@ function vulGrid(id){ // gevonden slagen → 16-staps grid (1 maat)
  paintGrid(id);}
 // voorbeeld-grooves: [kick-stappen, sub-stappen] op het 16e-raster
 const GROOVES={
- zouk:{kick:[0,4,8,12],sub:[2,3,6,7,10,11,14,15],v5:[6,11],v12:[14]},     // 4-kwarts kick + wiegende sub (70/20/10)
+ zouk:{kick:[0,4,8,12],sub:[2,3,6,7,10,11,14,15],v5:[3,11,15],v12:[7]},   // Zouk Wieg: paars op offbeats, goud midden (70/20/10)
  schuivel:{kick:[0,4,7,12],sub:[2,5,7,10,13,15],v5:[7,13],v12:[15]},      // schuivende bewegende bas (80/15/5)
- kawina:{kick:[0,4,8,12],sub:[2,6,9,11,14],v5:[6,11],v12:[14]},           // surinaamse syncope (65/25/10)
- drill:{kick:[0,6,11],sub:[2,3,8,13,14],v5:[13],v12:[2,14]},              // hinkende kick + goud-slides (60/10/30)
+ kawina:{kick:[0,6,8,14],sub:[1,3,4,7,9,11,12,15],v5:[3,4,11],v12:[12]},  // Kawina Rol: hinkende kick, rollende offbeat-sub (65/25/10)
+ kaseko:{kick:[0,4,8,12],sub:[1,2,5,6,7,9,10,13,14,15],v5:[1,5,9,13],v12:[7,15]}, // Kaseko Pomp: energiek, veel kwinten + octaaf-einden (50/35/15)
+ drill:{kick:[0,7,11],sub:[1,2,5,6,9,12,13,14],v5:[9],v12:[6,13,14]},    // Drill Slide: opeenvolgende subs + goud-cluster (60/10/30)
  trap:{kick:[0,7,10],sub:[2,7,10,12,14],v5:[12],v12:[14]},
  boombap:{kick:[0,7,10],sub:[2,6,10,13],v5:[6],v12:[]},
  reggaeton:{kick:[0,4,8,12],sub:[3,7,11,15],v5:[7],v12:[]},
  dancehall:{kick:[0,8],sub:[2,6,10,14],v5:[6],v12:[]},
  afro:{kick:[0,5,8,11],sub:[2,3,5,8,10,13],v5:[3,10],v12:[13]},
  house:{kick:[0,4,8,12],sub:[2,6,10,14],v5:[6],v12:[]},
- rnb:{kick:[0,7,11],sub:[2,5,7,10,14],v5:[5],v12:[14]}};             // smooth weinig-slagen bas
+ rnb:{kick:[0,8],sub:[1,4,6,9,12,14],v5:[6],v12:[14]}};                // Slepende Soul/R&B deken: lang zingen, weinig kicks
 const SEMI=[0,7,12];
 function groovePreset(id,naam){const I=INST[id],g=GROOVES[naam];if(!g)return;
  I.kick.fill(0);I.sub.fill(0);
@@ -331,7 +334,7 @@ function groovePreset(id,naam){const I=INST[id],g=GROOVES[naam];if(!g)return;
  if($(id+'-grid'))$(id+'-grid').value='16';
  setCut(id,{zouk:190,schuivel:190,boombap:140,rnb:140,reggaeton:140,dancehall:140}[naam]||120);
  $(id+'-st').textContent='🎛 '+naam.toUpperCase()+'-groove geladen — sub klikt door toon-varianten (grond/kwint/oktaaf)';}
-const RATIO={zouk:[.7,.2,.1],schuivel:[.8,.15,.05],kawina:[.65,.25,.1],drill:[.6,.1,.3],trap:[.6,.15,.25],boombap:[.8,.15,.05],reggaeton:[.7,.25,.05],dancehall:[.75,.2,.05],afro:[.65,.25,.1],house:[.7,.2,.1],rnb:[.7,.2,.1]};
+const RATIO={zouk:[.7,.2,.1],schuivel:[.8,.15,.05],kawina:[.65,.25,.1],kaseko:[.5,.35,.15],antilliaans:[.75,.2,.05],drill:[.6,.1,.3],trap:[.6,.15,.25],boombap:[.8,.15,.05],reggaeton:[.7,.25,.05],dancehall:[.75,.2,.05],afro:[.65,.25,.1],house:[.7,.2,.1],rnb:[.7,.2,.1]};
 function diceGroove(id){const I=INST[id];
  if(!I.kick.some(v=>v))I.kick[0]=I.kick[4]=I.kick[8]=I.kick[12]=1;
  I.sub.fill(0);
