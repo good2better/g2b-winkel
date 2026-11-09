@@ -113,22 +113,33 @@ async function setupMIDI(){
     for(const inp of m.inputs.values()){
       inp.onmidimessage=ev=>{
         const [st,n,v]=ev.data;
-        if((st&0xF0)===0x90&&v>0){
+        const typ=st&0xF0;
+        if(typ===0x90&&v>0){
           ensureAC();
           const ps=pads(),z=ps.findIndex(p=>p.note===n);
           if(z>=0){padHit(z,Math.max(.3,v/127));}
-          else{ // melodie-instrumenten (gitaar/bas/blaas): speel de melodie-synth + neem mee op
-            const vv=Math.max(.25,v/127);
-            if($('snd').value==='aan')SYN.mel(vv,n);
-            const vel=Math.min(127,40+Math.round(v*.7));noteOn(n,vel);logNote(n,vel);
+          else{ // melodie-instrumenten (gitaar/bas/blaas) → kanaal 1 + scale-lock
+            const nn=snap(n),vv=Math.max(.25,v/127);
+            if($('snd').value==='aan')SYN.mel(vv,nn);
+            const vel=Math.min(127,40+Math.round(v*.7));noteOn(nn,vel,0);logNote(nn,vel,0);
           }
+        }else if(typ===0x80||(typ===0x90&&v===0)){
+          const ps=pads();if(!ps.find(p=>p.note===n))noteOff(snap(n),0); // echte note-off voor melodie
         }
       };
     }
   }catch(e){}
 }
-function noteOn(n,v){if(midiOut){midiOut.send([0x99,n,v]);midiOut.send([0x89,n,0],performance.now()+120);}}
-function sendCC(cc,v){if(midiOut)midiOut.send([0xB9,cc,Math.max(0,Math.min(127,Math.round(v)))]);}
+// kanalen: ch10=drums (status 0x9x|9), ch1=melodie (0x9x|0), ch2=pitch-audio (0x9x|1)
+function noteOn(n,v,ch){if(midiOut){midiOut.send([0x90|(ch===undefined?9:ch),n,v]);if(ch===undefined||ch===9)midiOut.send([0x89,n,0],performance.now()+120);}}
+function noteOff(n,ch){if(midiOut)midiOut.send([0x80|(ch===undefined?0:ch),n,0]);}
+function sendCC(cc,v,ch){if(midiOut)midiOut.send([0xB0|(ch===undefined?9:ch),cc,Math.max(0,Math.min(127,Math.round(v)))]);}
+// scale-lock: snap melodie-noot naar dichtstbijzijnde toon uit de gekozen toonsoort
+function snap(n){
+  const sc=SCALES[$('toon').value|0],pcs=sc.map(s=>s%12);
+  for(let d=0;d<=5;d++){if(pcs.includes((n-d)%12))return n-d;if(pcs.includes((n+d)%12))return n+d;}
+  return n;
+}
 
 // --- opname → .mid ---
 let recOn=false;
@@ -145,19 +156,19 @@ $('rec').onclick=()=>{
    else{clearInterval(iv);recCnt=false;const t=ac.currentTime;sn(t,1800,0,.1,.6);startRec();}
  },60000/(+$('bpm').value||120)/2);
 };
-function logNote(n,v){if(recOn){
+function logNote(n,v,ch){if(recOn){
   let ms=performance.now()-recT0;
   if($('quant').value==='16'){const q=60000/(+$('bpm').value)/4;ms=Math.round(ms/q)*q;}
-  recLog.push([ms,n,v]);}}
+  recLog.push([ms,n,v,ch===undefined?9:ch]);}}
 function vlq(a,v){do{let b=v&127;v>>=7;if(v)b|=128;a.push(b);}while(v);}
 function writeMid(){
   const t=[];const tpq=480,mpq=Math.round(60000000/(+$('bpm').value||120));
   recLog.sort((a,b)=>a[0]-b[0]);
   let last=0;
   const evs=[];
-  for(const[ms,n,v]of recLog){
+  for(const[ms,n,v,ch]of recLog){
     const tk=Math.round(ms/1000*(+$('bpm').value||120)/60*tpq);
-    evs.push([tk,0x90,n,v]);evs.push([tk+Math.round(tpq/4),0x80,n,0]);
+    evs.push([tk,0x90|ch,n,v]);evs.push([tk+Math.round(tpq/4),0x80|ch,n,0]);
   }
   evs.sort((a,b)=>a[0]-b[0]);
   const b=[];
@@ -267,14 +278,32 @@ async function gtrSetup(){
     $('stat').textContent='✓ GITAAR aan — hand/muis: X=wah-filter, Y=volume';
   }catch(e){$('stat').textContent='✗ Geen audio-ingang — sluit gitaar/mic aan (line-in).';}
 }
-function gtrCtl(x,y){ // x,y 0..1: stuur wah + volume
+function gtrCtl(x,y){ // x,y 0..1: stuur wah + volume + CC naar Reason (ch1)
   if(!gtrFil)return;
   const t=ac.currentTime;
   gtrFil.frequency.setTargetAtTime(150+Math.pow(x,2)*8000,t,.02); // exponentieel wah
   gtrGain.gain.setTargetAtTime(Math.max(0,1-y),t,.03);
+  sendCC(74,x*127,0);sendCC(11,y*127,0); // pedaal-CC's op melodie-kanaal → Reason
 }
 // --- pitch-modus: mic/gitaar-audio → live MIDI-noten (audio→MIDI) ---
-let pitchSrc=null,pitchAn=null,pitchNote=-1;
+let pitchSrc=null,pitchAn=null,pitchNote=-1,pitchCand=-1,pitchCandN=0;
+function pitchStep(){ // shared door camera-loop en eigen loop
+  const f=detectPitch();
+  if(f>0){
+    let n=snap(Math.round(69+12*Math.log2(f/440))); // scale-lock op de toonsoort
+    if(n===pitchCand)pitchCandN++;else{pitchCand=n;pitchCandN=1;}
+    if(pitchCandN>=2&&n!==pitchNote){ // debounce: 2 stabiele frames
+      if(pitchNote>=0)noteOff(pitchNote,1);
+      pitchNote=n;
+      const vel=85;if($('snd').value==='aan')SYN.mel(.6,n);noteOn(n,vel,1);logNote(n,vel,1);
+      const bars=$('#meters .f')[0];if(bars)bars.style.height='80%';
+    }
+  }else{
+    pitchCand=-1;pitchCandN=0;
+    if(pitchNote>=0){noteOff(pitchNote,1);pitchNote=-1;} // note-off bij stilte — geen hangers
+    const bars=$('#meters .f')[0];if(bars)bars.style.height='0%';
+  }
+}
 async function pitchSetup(){
   try{
     ensureAC();
@@ -393,17 +422,7 @@ function tick(){
     if(!gtrSrc)gtrSetup();
     else{const c=centroid();if(c&&c.e>.005){gtrCtl(c.x,c.y);const bars=$('#meters .f')[0];if(bars)bars.style.height=c.e*400+'%';}}
   }else if(mode==='pitch'){
-    if(!pitchSrc){pitchSetup();}
-    else{
-      const f=detectPitch();
-      if(f>0){
-        const n=Math.round(69+12*Math.log2(f/440));
-        if(n!==pitchNote){pitchNote=n;
-          const vel=80;if($('snd').value==='aan')SYN.mel(.6,n);noteOn(n,vel);logNote(n,vel);
-          const bars=$('#meters .f')[0];if(bars)bars.style.height='80%';
-        }
-      }else pitchNote=-1;
-    }
+    if(!pitchSrc){pitchSetup();}else pitchStep();
   }else{
     const c=centroid();
     if(c&&c.e>.008&&now-fxCool>40){
@@ -463,7 +482,7 @@ $('cal').onclick=()=>{
 // altijd pads tekenen als de camera (nog) niet loopt — zo zie je waar je drukt
 (function drawLoop(){try{const m=$('mode').value;if(m!=='mel'&&!run)teken();}catch(e){}requestAnimationFrame(drawLoop);})();
 // pitch-modus draait ook zonder camera: eigen interval
-(function pitchLoop(){try{if($('mode').value==='pitch'&&pitchSrc&&!run){const f=detectPitch();if(f>0){const n=Math.round(69+12*Math.log2(f/440));if(n!==pitchNote){pitchNote=n;const vel=80;if($('snd').value==='aan')SYN.mel(.6,n);noteOn(n,vel);logNote(n,vel);}}else pitchNote=-1;}}catch(e){}setTimeout(pitchLoop,60);})();
+(function pitchLoop(){try{if($('mode').value==='pitch'&&pitchSrc&&!run)pitchStep();}catch(e){}setTimeout(pitchLoop,60);})();
 
 // test-hooks
 window.__airTest=z=>{ensureAC();const k=PAD8SYNTH[z%8];SYN[k]?SYN[k](1):SYN.mel(1,60);return 'ok';};
