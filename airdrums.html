@@ -25,12 +25,12 @@ select,input[type=range]{accent-color:#35d07f}
 #stat{margin-top:8px;font-weight:800;font-size:14px;color:#35d07f;min-height:18px}
 #dl{display:none;color:#35d07f;font-weight:800;font-size:15px;margin-top:6px}
 </style></head><body>
-<h1>G2B <b>AIRDRUMS</b></h1>
+<h1>G2B <b>AIRDRUMS PRO</b></h1>
 <p class="sub">Drum, speel melodie of stuur effecten — met je handen in de lucht. MIDI naar Reason.</p>
 <div id="stage"><video id="cam" autoplay playsinline muted></video><canvas id="cv"></canvas></div>
 <div id="hud">
   <div class="rij">
-    <div><label>Modus</label><select id="mode"><option value="drums">DRUMS</option><option value="mel">MELODIE</option><option value="fx">EFFECT</option><option value="gtr">GITAAR-PEDAAL</option><option value="muis">MUIS (zonder camera)</option></select></div>
+    <div><label>Modus</label><select id="mode"><option value="drums">DRUMS</option><option value="mel">MELODIE</option><option value="fx">EFFECT</option><option value="gtr">GITAAR-PEDAAL</option><option value="pitch">PITCH (audio→MIDI)</option><option value="muis">MUIS (zonder camera)</option></select></div>
     <div><label>Pads</label><select id="npads"><option value="4">4 pads</option><option value="8">8 pads</option></select></div>
     <div><label>Sounds</label><select id="snd"><option value="aan">aan</option><option value="uit">uit (alleen MIDI)</option></select></div>
   </div>
@@ -245,11 +245,11 @@ function teken(){
 function buildMeters(){
   const el=$('meters');el.innerHTML='';
   const mode=$('mode').value;
-    const labels=mode==='drums'?pads().map(p=>p.n):mode==='mel'?['TOON']:['XY']; // gtr gebruikt ook XY
+    const labels=mode==='drums'?pads().map(p=>p.n):mode==='mel'?['TOON']:mode==='pitch'?['NOOT']:['XY']; // gtr gebruikt ook XY
   labels.forEach(n=>{const d=document.createElement('div');d.className='met';
     d.innerHTML='<div class="b"><div class="f" style="height:0%"></div></div>'+n;el.appendChild(d);});
 }
-$('mode').onchange=()=>{buildMeters();const m=$('mode').value;$('stat').textContent=m==='muis'?'MUIS-modus: klik + sleep over de pads — geen camera nodig.':m==='gtr'?'GITAAR-modus: klik in het vak → sluit gitaar/mic aan, beweeg X=wah Y=volume (camera of muis).':'';};$('npads').onchange=()=>{buildMeters();buildPadCfg();};buildMeters();
+$('mode').onchange=()=>{buildMeters();const m=$('mode').value;$('stat').textContent=m==='muis'?'MUIS-modus: klik + sleep over de pads — geen camera nodig.':m==='gtr'?'GITAAR-modus: klik in het vak → sluit gitaar/mic aan, beweeg X=wah Y=volume (camera of muis).':m==='pitch'?'PITCH-modus: klik in het vak → zing/speel in je mic — noten gaan naar MIDI + opname.':'';};$('npads').onchange=()=>{buildMeters();buildPadCfg();};buildMeters();
 
 // trigger-tempo: hits op een ritmisch grid (1/4..1/32 van je BPM), 'vrij' = ongeremd
 function gateMs(){const g=$('gate').value;if(g==='uit')return 0;return 60000/(+$('bpm').value||120)*(4/ +g);}
@@ -273,6 +273,32 @@ function gtrCtl(x,y){ // x,y 0..1: stuur wah + volume
   gtrFil.frequency.setTargetAtTime(150+Math.pow(x,2)*8000,t,.02); // exponentieel wah
   gtrGain.gain.setTargetAtTime(Math.max(0,1-y),t,.03);
 }
+// --- pitch-modus: mic/gitaar-audio → live MIDI-noten (audio→MIDI) ---
+let pitchSrc=null,pitchAn=null,pitchNote=-1;
+async function pitchSetup(){
+  try{
+    ensureAC();
+    const s=await navigator.mediaDevices.getUserMedia({audio:true});
+    pitchSrc=ac.createMediaStreamSource(s);
+    pitchAn=ac.createAnalyser();pitchAn.fftSize=2048;
+    pitchSrc.connect(pitchAn); // alleen luisteren, geen output — geen feedback
+    $('stat').textContent='✓ PITCH aan — zing of speel, noten gaan naar MIDI-uit';
+  }catch(e){$('stat').textContent='✗ Geen audio-ingang voor PITCH.';}
+}
+const pitchBuf=new Float32Array(2048);
+function detectPitch(){ // autocorrelatie → fundamentfrequentie
+  pitchAn.getFloatTimeDomainData(pitchBuf);
+  let rms=0;for(const v of pitchBuf)rms+=v*v;rms=Math.sqrt(rms/pitchBuf.length);
+  if(rms<.012)return 0;
+  const sr=ac.sampleRate,N=pitchBuf.length;
+  let best=-1,bestC=0;
+  const lag0=Math.floor(sr/1000),lag1=Math.min(N-1,Math.floor(sr/70));
+  for(let lag=lag0;lag<lag1;lag++){
+    let s=0;for(let i=0;i<N-lag;i++)s+=pitchBuf[i]*pitchBuf[i+lag];
+    if(s>bestC){bestC=s;best=lag;}
+  }
+  return best>0?sr/best:0;
+}
 // --- muis-modus: zonder camera ---
 let muisDown=false;
 function padHit(z,v){ // gedeelde pad-trigger (muis + toetsenbord + midi-in)
@@ -292,7 +318,7 @@ function muisHit(e){
     if(mx>=x&&mx<=x+pw&&my>=y&&my<=y+ph)padHit(z,.5+my/r.height*.5);
   });
 }
-cv.addEventListener('pointerdown',e=>{const m=$('mode').value;const r=cv.getBoundingClientRect();mouseP={x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};if(m==='gtr'){ensureAC();if(!gtrSrc)gtrSetup();else gtrCtl(mouseP.x,mouseP.y);return;}if(m!=='muis')return;ensureAC();muisDown=true;muisHit(e);});
+cv.addEventListener('pointerdown',e=>{const m=$('mode').value;const r=cv.getBoundingClientRect();mouseP={x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};if(m==='gtr'){ensureAC();if(!gtrSrc)gtrSetup();else gtrCtl(mouseP.x,mouseP.y);return;}if(m==='pitch'){ensureAC();if(!pitchSrc)pitchSetup();return;}if(m!=='muis')return;ensureAC();muisDown=true;muisHit(e);});
 cv.addEventListener('pointermove',e=>{const m=$('mode').value;const r=cv.getBoundingClientRect();mouseP={x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};if(m==='gtr'){if(gtrSrc)gtrCtl(mouseP.x,mouseP.y);return;}if(m!=='muis'||!muisDown)return;muisHit(e);});
 addEventListener('pointerup',()=>muisDown=false);
 // toetsenbord-pads: A S D F (4 pads) of A S D F J K L ; (8 pads)
@@ -366,6 +392,18 @@ function tick(){
   }else if(mode==='gtr'){
     if(!gtrSrc)gtrSetup();
     else{const c=centroid();if(c&&c.e>.005){gtrCtl(c.x,c.y);const bars=$('#meters .f')[0];if(bars)bars.style.height=c.e*400+'%';}}
+  }else if(mode==='pitch'){
+    if(!pitchSrc){pitchSetup();}
+    else{
+      const f=detectPitch();
+      if(f>0){
+        const n=Math.round(69+12*Math.log2(f/440));
+        if(n!==pitchNote){pitchNote=n;
+          const vel=80;if($('snd').value==='aan')SYN.mel(.6,n);noteOn(n,vel);logNote(n,vel);
+          const bars=$('#meters .f')[0];if(bars)bars.style.height='80%';
+        }
+      }else pitchNote=-1;
+    }
   }else{
     const c=centroid();
     if(c&&c.e>.008&&now-fxCool>40){
@@ -424,6 +462,8 @@ $('cal').onclick=()=>{
 // altijd pads tekenen in muis-modus, ook zonder camera
 // altijd pads tekenen als de camera (nog) niet loopt — zo zie je waar je drukt
 (function drawLoop(){try{const m=$('mode').value;if(m!=='mel'&&!run)teken();}catch(e){}requestAnimationFrame(drawLoop);})();
+// pitch-modus draait ook zonder camera: eigen interval
+(function pitchLoop(){try{if($('mode').value==='pitch'&&pitchSrc&&!run){const f=detectPitch();if(f>0){const n=Math.round(69+12*Math.log2(f/440));if(n!==pitchNote){pitchNote=n;const vel=80;if($('snd').value==='aan')SYN.mel(.6,n);noteOn(n,vel);logNote(n,vel);}}else pitchNote=-1;}}catch(e){}setTimeout(pitchLoop,60);})();
 
 // test-hooks
 window.__airTest=z=>{ensureAC();const k=PAD8SYNTH[z%8];SYN[k]?SYN[k](1):SYN.mel(1,60);return 'ok';};
