@@ -44,7 +44,7 @@ select,input[type=range]{accent-color:#35d07f}
     <div><label>BPM</label><input type="range" id="bpm" min="60" max="180" value="120" style="width:90px"><span id="bpmv" style="font-size:12px;color:#35d07f">120</span></div>
     <div><label>Opname-kwantisering</label><select id="quant"><option value="16">16e noten</option><option value="uit">uit</option></select></div>
   </div>
-  <div class="tip">Klik op een pad hieronder om daar je eigen sound te laden:</div>
+  <div class="tip">Klik op een pad hieronder om daar je eigen sound te laden — toetsenbord A S D F (of J K L ; voor 8) speelt de pads ook:</div>
   <div class="rij" id="padcfg"></div>
   <input type="file" id="padf" accept="audio/*" hidden>
   <div class="rij" style="margin-top:14px">
@@ -236,22 +236,34 @@ $('mode').onchange=()=>{buildMeters();$('stat').textContent=$('mode').value==='m
 
 // --- muis-modus: zonder camera ---
 let muisDown=false;
+function padHit(z,v){ // gedeelde pad-trigger (muis + toetsenbord)
+  const ps=pads();if(z>=ps.length)return;
+  if($('snd').value==='aan'){
+    if(ownSamp[z]){const b=ac.createBufferSource();b.buffer=ownSamp[z];const g=ac.createGain();g.gain.value=v;b.connect(g).connect(ac.destination);b.start();}
+    else{const synth=ps.length===8?PAD8SYNTH[z]:PAD4SYNTH[z];SYN[synth](v);}}
+  const vel=Math.min(127,Math.round(40+v*80));noteOn(ps[z].note,vel);logNote(ps[z].note,vel);fl[z]=performance.now();
+  const bars=$('#meters .f')[z];if(bars)bars.style.height=v*100+'%';
+}
 function muisHit(e){
   const r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
   const ps=pads(),pw=(ps.length===8?PW8:PW4)*r.width,ph=(ps.length===8?PH8:PH4)*r.height;
   ps.forEach((p,z)=>{
     const x=(1-p.x)*r.width-pw/2,y=p.y*r.height-ph/2;
-    if(mx>=x&&mx<=x+pw&&my>=y&&my<=y+ph){
-      const v=.5+my/r.height*.5;
-      if($('snd').value==='aan'){
-        if(ownSamp[z]){const b=ac.createBufferSource();b.buffer=ownSamp[z];const g=ac.createGain();g.gain.value=v;b.connect(g).connect(ac.destination);b.start();}
-        else{const synth=ps.length===8?PAD8SYNTH[z]:PAD4SYNTH[z];SYN[synth](v);}}
-      const vel=Math.min(127,Math.round(40+v*80));noteOn(ps[z].note,vel);logNote(ps[z].note,vel);fl[z]=performance.now();
-    }});
+    if(mx>=x&&mx<=x+pw&&my>=y&&my<=y+ph)padHit(z,.5+my/r.height*.5);
+  });
 }
 cv.addEventListener('pointerdown',e=>{if($('mode').value!=='muis')return;ensureAC();muisDown=true;muisHit(e);});
 cv.addEventListener('pointermove',e=>{if($('mode').value!=='muis'||!muisDown)return;muisHit(e);});
 addEventListener('pointerup',()=>muisDown=false);
+// toetsenbord-pads: A S D F (4 pads) of A S D F J K L ; (8 pads)
+const KEYS='asdfjkl;';let keyCool=new Float64Array(8);
+addEventListener('keydown',e=>{
+  if(e.repeat||e.target.tagName==='SELECT'||e.target.tagName==='INPUT')return;
+  const m=$('mode').value;if(m!=='muis'&&m!=='drums')return;
+  const z=KEYS.indexOf(e.key.toLowerCase());if(z<0)return;
+  const now=performance.now();if(now-keyCool[z]<80)return;keyCool[z]=now;
+  ensureAC();padHit(z,.9);
+});
 
 // --- hoofdloop ---
 async function start(){
@@ -264,6 +276,8 @@ async function start(){
     try{s=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480}});}
     catch(e){s=await navigator.mediaDevices.getUserMedia({video:true});}
     $('cam').srcObject=s;run=true;ensureAC();requestAnimationFrame(tick);
+    // auto-kalibratie: na ~1.5s rustig neemt hij de achtergrond-ruis als basis
+    setTimeout(()=>{if(run){const ps=pads(),E=zoneEnergies(ps);if(E)for(let z=0;z<ps.length;z++)base[z]=E[z]*1.4;}},1500);
     st.textContent='✓ Camera aan — beweeg voor de pads!';$('start').textContent='⏹ STOP';
     $('start').onclick=()=>{s.getTracks().forEach(t=>t.stop());run=false;$('start').textContent='▶ START CAMERA';$('start').onclick=start;st.textContent='Camera uit.';$('start').disabled=false;};
     $('start').disabled=false;
@@ -366,7 +380,8 @@ $('cal').onclick=()=>{
 };
 ['pointerdown','keydown'].forEach(ev=>addEventListener(ev,function _mi(){setupMIDI()},{once:true}));
 // altijd pads tekenen in muis-modus, ook zonder camera
-(function drawLoop(){try{if($('mode').value==='muis'&&!run)teken();}catch(e){}requestAnimationFrame(drawLoop);})();
+// altijd pads tekenen als de camera (nog) niet loopt — zo zie je waar je drukt
+(function drawLoop(){try{const m=$('mode').value;if((m==='muis'||m==='drums')&&!run)teken();}catch(e){}requestAnimationFrame(drawLoop);})();
 
 // test-hooks
 window.__airTest=z=>{ensureAC();const k=PAD8SYNTH[z%8];SYN[k]?SYN[k](1):SYN.mel(1,60);return 'ok';};
