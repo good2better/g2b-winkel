@@ -43,6 +43,7 @@ select,input[type=range]{accent-color:#35d07f}
     <div><label>Metronoom</label><select id="metr"><option value="uit">uit</option><option value="aan">aan</option></select></div>
     <div><label>BPM</label><input type="range" id="bpm" min="60" max="180" value="120" style="width:90px"><span id="bpmv" style="font-size:12px;color:#35d07f">120</span></div>
     <div><label>Opname-kwantisering</label><select id="quant"><option value="16">16e noten</option><option value="uit">uit</option></select></div>
+    <div><label>Trigger-tempo</label><select id="gate"><option value="4">1/4 noot</option><option value="8">1/8 noot</option><option value="16" selected>1/16 noot</option><option value="32">1/32 noot</option><option value="uit">vrij</option></select></div>
   </div>
   <div class="tip">Klik op een pad hieronder om daar je eigen sound te laden — toetsenbord A S D F (of J K L ; voor 8) speelt de pads ook:</div>
   <div class="rij" id="padcfg"></div>
@@ -244,6 +245,9 @@ function buildMeters(){
 }
 $('mode').onchange=()=>{buildMeters();const m=$('mode').value;$('stat').textContent=m==='muis'?'MUIS-modus: klik + sleep over de pads — geen camera nodig.':m==='gtr'?'GITAAR-modus: klik in het vak → sluit gitaar/mic aan, beweeg X=wah Y=volume (camera of muis).':'';};$('npads').onchange=()=>{buildMeters();buildPadCfg();};buildMeters();
 
+// trigger-tempo: hits op een ritmisch grid (1/4..1/32 van je BPM), 'vrij' = ongeremd
+function gateMs(){const g=$('gate').value;if(g==='uit')return 0;return 60000/(+$('bpm').value||120)*(4/ +g);}
+
 // --- gitaar-pedaal: audio in → filter/wah + volume, gestuurd door camera of muis ---
 let gtrSrc=null,gtrFil=null,gtrGain=null,mouseP={x:.5,y:.5};
 async function gtrSetup(){
@@ -265,8 +269,9 @@ function gtrCtl(x,y){ // x,y 0..1: stuur wah + volume
 }
 // --- muis-modus: zonder camera ---
 let muisDown=false;
-function padHit(z,v){ // gedeelde pad-trigger (muis + toetsenbord)
+function padHit(z,v){ // gedeelde pad-trigger (muis + toetsenbord + midi-in)
   const ps=pads();if(z>=ps.length)return;
+  const g=gateMs(),now=performance.now();if(g&&now-cool[z]<g)return;cool[z]=now;
   if($('snd').value==='aan'){
     if(ownSamp[z]){const b=ac.createBufferSource();b.buffer=ownSamp[z];const g=ac.createGain();g.gain.value=v;b.connect(g).connect(ac.destination);b.start();}
     else{const synth=ps.length===8?PAD8SYNTH[z]:PAD4SYNTH[z];SYN[synth](v);}}
@@ -285,12 +290,11 @@ cv.addEventListener('pointerdown',e=>{const m=$('mode').value;const r=cv.getBoun
 cv.addEventListener('pointermove',e=>{const m=$('mode').value;const r=cv.getBoundingClientRect();mouseP={x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};if(m==='gtr'){if(gtrSrc)gtrCtl(mouseP.x,mouseP.y);return;}if(m!=='muis'||!muisDown)return;muisHit(e);});
 addEventListener('pointerup',()=>muisDown=false);
 // toetsenbord-pads: A S D F (4 pads) of A S D F J K L ; (8 pads)
-const KEYS='asdfjkl;';let keyCool=new Float64Array(8);
+const KEYS='asdfjkl;';
 addEventListener('keydown',e=>{
   if(e.repeat||e.target.tagName==='SELECT'||e.target.tagName==='INPUT')return;
   const m=$('mode').value;if(m!=='muis'&&m!=='drums')return;
   const z=KEYS.indexOf(e.key.toLowerCase());if(z<0)return;
-  const now=performance.now();if(now-keyCool[z]<80)return;keyCool[z]=now;
   ensureAC();padHit(z,.9);
 });
 
@@ -325,7 +329,7 @@ function tick(){
       for(let z=0;z<ps.length;z++){
         const v=E[z]-base[z];
         const bars=$('#meters .f')[z];if(bars)bars.style.height=Math.min(100,Math.max(0,v)*300)+'%';
-        if(v>th&&now-cool[z]>140){
+        if(v>th&&now-cool[z]>Math.max(gateMs(),60)){
           cool[z]=now;
           // choke: open hat doodt closed hat (echte drum-regel)
           if(ps[z].note===46&&midiOut)midiOut.send([0x89,42,0]);
