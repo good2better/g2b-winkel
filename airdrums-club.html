@@ -1,0 +1,516 @@
+<!doctype html><html lang="nl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B AIRDRUMS — drum in de lucht</title>
+<style>
+body{background:#0a0e0d;color:#f5e9c8;font-family:system-ui;margin:0;padding:26px;display:flex;flex-direction:column;align-items:center}
+h1{font-size:26px;margin:0 0 4px}h1 b{color:#35d07f}
+p.sub{margin:0 0 16px;color:#b9a97f;font-size:14px}
+#stage{position:relative;width:min(92vw,900px);aspect-ratio:4/3;background:#000;border:2px solid #2a4638;border-radius:14px;overflow:hidden}
+video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+#hud{margin-top:12px;width:min(92vw,900px);display:flex;flex-direction:column;gap:10px;align-items:center}
+.rij{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center}
+label{font-size:12px;color:#b9a97f;display:block;margin-bottom:2px}
+button{background:#35d07f;color:#062b1a;border:0;border-radius:10px;padding:10px 18px;font-weight:800;cursor:pointer;font-size:14px}
+button.sec{background:#143626;color:#35d07f;border:1px solid #35d07f55}
+button.rec{background:#7f1d1d;color:#ffd166}
+button.rec.on{background:#ef4444;color:#fff;animation:knip 1s infinite}
+@keyframes knip{50%{opacity:.5}}
+select,input[type=range]{accent-color:#35d07f}
+.tip{color:#8a8a7a;font-size:12px;max-width:700px;text-align:center}
+#meters{display:flex;gap:8px}
+.met{width:56px;text-align:center;font-size:10px;color:#b9a97f}
+.met .b{height:40px;background:#122;border-radius:4px;overflow:hidden;display:flex;align-items:flex-end}
+.met .f{width:100%;background:#35d07f}
+#stat{margin-top:8px;font-weight:800;font-size:14px;color:#35d07f;min-height:18px}
+#dl{display:none;color:#35d07f;font-weight:800;font-size:15px;margin-top:6px}
+</style></head><body>
+<h1>G2B <b>AIRDRUMS PRO</b></h1>
+<p class="sub">Drum, speel melodie of stuur effecten — met je handen in de lucht. MIDI naar Reason.</p>
+<div id="stage"><video id="cam" autoplay playsinline muted></video><canvas id="cv"></canvas></div>
+<div id="hud">
+  <div class="rij">
+    <div><label>Modus</label><select id="mode"><option value="drums">DRUMS</option><option value="mel">MELODIE</option><option value="fx">EFFECT</option><option value="gtr">GITAAR-PEDAAL</option><option value="pitch">PITCH (audio→MIDI)</option><option value="muis">MUIS (zonder camera)</option></select></div>
+    <div><label>Pads</label><select id="npads"><option value="4">4 pads</option><option value="8">8 pads</option></select></div>
+    <div><label>Sounds</label><select id="snd"><option value="aan">aan</option><option value="uit">uit (alleen MIDI)</option></select></div>
+  </div>
+  <div class="rij">
+    <div><label>Gevoeligheid</label><input type="range" id="sens" min="4" max="40" value="14"></div>
+    <div><label>Toonsoort (melodie)</label><select id="toon"><option value="0">A mineur penta</option><option value="1">C majeur</option><option value="2">F# mineur penta</option></select></div>
+    <div><label>MIDI-uitgang</label><select id="midi"><option value="">— geen —</option></select></div>
+  </div>
+  <div class="rij">
+    <div><label>Metronoom</label><select id="metr"><option value="uit">uit</option><option value="aan">aan</option></select></div>
+    <div><label>BPM</label><input type="range" id="bpm" min="60" max="180" value="120" style="width:90px"><span id="bpmv" style="font-size:12px;color:#35d07f">120</span></div>
+    <div><label>Opname-kwantisering</label><select id="quant"><option value="16">16e noten</option><option value="uit">uit</option></select></div>
+    <div><label>Trigger-tempo</label><select id="gate"><option value="4">1/4 noot</option><option value="8">1/8 noot</option><option value="16" selected>1/16 noot</option><option value="32">1/32 noot</option><option value="uit">vrij</option></select></div>
+    <div><label>Akkoorden</label><select id="chord"><option value="uit">uit</option><option value="aan">CHORD (1 noot = akkoord)</option></select></div>
+  </div>
+  <div class="tip">Klik op een pad hieronder om daar je eigen sound te laden — toetsenbord A S D F (of J K L ; voor 8) speelt de pads ook:</div>
+  <div class="rij" id="padcfg"></div>
+  <input type="file" id="padf" accept="audio/*" hidden>
+  <div class="rij" style="margin-top:14px">
+    <button id="start">▶ START CAMERA</button>
+    <button class="sec" id="cal">KALIBREER (2s stil)</button>
+    <button class="rec" id="rec">● OPNEEM</button>
+    <button class="sec" id="own">🎧 EIGEN SOUNDS</button>
+    <input type="file" id="ownf" accept="audio/*" multiple hidden>
+  </div>
+  <div class="tip" id="ownlist">Eigen one-shots (wav/mp3) → klik EIGEN SOUNDS, kies bestanden in padvolgorde (kick, snare, hat, clap…). Zonder bestanden = ingebouwde synth.</div>
+  <div id="stat"></div>
+  <a id="dl" href="#">⬇ DOWNLOAD JE OPNAME (.mid)</a>
+  <div class="rij" style="margin-top:12px" id="meters"></div>
+</div>
+<p class="tip">GM-drums kanaal 10 · MELODIE: laag=lage noot, hoog=hoge noot · EFFECT: X=filter (CC74) Y=expressie (CC11) · OPNEEM schrijft .mid die je in Reason sleept · DUO: MIDI-keyboard speelt pads mee terwijl de ander de camera/effecten doet</p>
+
+<script>
+const $=id=>document.getElementById(id);
+const PAD4=[
+ {n:'KICK', x:.25,y:.75,note:36,col:'#35d07f'},{n:'SNARE',x:.75,y:.75,note:38,col:'#ff9a3c'},
+ {n:'HAT',  x:.25,y:.28,note:42,col:'#b98cff'},{n:'CLAP', x:.75,y:.28,note:39,col:'#f5e9c8'}];
+const PAD8=[
+ {n:'HAT', x:.14,y:.3,note:42,col:'#b98cff'},{n:'OHAT',x:.38,y:.3,note:46,col:'#9a7fd0'},
+ {n:'CYM', x:.62,y:.3,note:49,col:'#f5e9c8'},{n:'CLAP',x:.86,y:.3,note:39,col:'#ffd166'},
+ {n:'KICK',x:.14,y:.78,note:36,col:'#35d07f'},{n:'SNARE',x:.38,y:.78,note:38,col:'#ff9a3c'},
+ {n:'TOM', x:.62,y:.78,note:47,col:'#ef8354'},{n:'PERC',x:.86,y:.78,note:70,col:'#8ecae6'}];
+const PAD4SYNTH=['kick','snare','hat','clap'],PAD8SYNTH=['hat','hat','cym','clap','kick','snare','tom','perc'];
+const PW4=.30,PH4=.34,PW8=.19,PH8=.30;
+const SCALES=[[45,48,50,52,55,57,60,62,64,67,69],[48,50,52,53,55,57,59,60,62,64,65,67],[42,45,47,49,52,54,57,59,61,64,66]];
+let ac=null,midiOut=null,prev=null,base=new Float32Array(8),cool=new Float64Array(8),run=false;
+let ownSamp=[]; // eigen one-shots per pad
+let padPick=-1, metrIv=null, beatN=0;
+let lastNote=-1,recT0=0,recLog=[],fxCool=0;
+const LW=160,LH=120;
+const off=document.createElement('canvas');off.width=LW;off.height=LH;
+const octx=off.getContext('2d',{willReadFrequently:true});
+
+// --- eigen synth ---
+function ensureAC(){if(!ac)ac=new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();}
+function noiseBuf(){if(!noiseBuf.b){const b=ac.createBuffer(1,ac.sampleRate,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;noiseBuf.b=b;}return noiseBuf.b;}
+function g(t,v,dur){const g=ac.createGain();g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);return g;}
+function nz(t,v,dur,fq,type,q){const n=ac.createBufferSource();n.buffer=noiseBuf();const f=ac.createBiquadFilter();f.type=type;f.frequency.value=fq;f.Q.value=q||1;n.connect(f).connect(g(t,v,dur)).connect(ac.destination);n.start(t);n.stop(t+dur+.02);}
+function sn(t,f0,f1,dur,v){const o=ac.createOscillator();o.frequency.setValueAtTime(f0,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur*.6);o.connect(g(t,v,dur)).connect(ac.destination);o.start(t);o.stop(t+dur+.02);}
+const SYN={
+ kick:v=>{const t=ac.currentTime;sn(t,150,48,.3,v);nz(t,v*.4,.02,4000,'highpass');},
+ snare:v=>{const t=ac.currentTime;nz(t,v*.8,.16,1800,'bandpass',.8);sn(t,190,0,.09,v*.5);},
+ hat:v=>nz(ac.currentTime,v*.5,.05,8000,'highpass'),
+ clap:v=>{const t=ac.currentTime;for(let i=0;i<3;i++)nz(t+i*.012,v*.6,.09,1400,'bandpass',1.5);},
+ cym:v=>nz(ac.currentTime,v*.5,.5,6000,'highpass'),
+ tom:v=>{const t=ac.currentTime;sn(t,120,80,.25,v);},
+ perc:v=>{const t=ac.currentTime;sn(t,900,600,.05,v*.7);},
+ mel:(v,note)=>{const t=ac.currentTime,fq=440*Math.pow(2,(note-69)/12);sn(t,fq,fq,.25,v*.6);nz(t,v*.2,.03,5000,'highpass');}
+};
+
+// --- MIDI ---
+async function setupMIDI(){
+  try{
+    const m=await navigator.requestMIDIAccess();
+    const sel=$('midi');sel.innerHTML='<option value="">— geen —</option>';
+    for(const o of m.outputs.values()){const op=document.createElement('option');op.value=o.id;op.textContent=o.name;sel.appendChild(op);}
+    if(sel.options.length>1)sel.selectedIndex=1;
+    sel.onchange=()=>{midiOut=sel.value?m.outputs.get(sel.value):null};
+    sel.onchange();
+    // MIDI-IN: USB-keyboard van speler 2 speelt de pads mee (duo-modus)
+    for(const inp of m.inputs.values()){
+      inp.onmidimessage=ev=>{
+        const [st,n,v]=ev.data;
+        const typ=st&0xF0;
+        if(typ===0x90&&v>0){
+          ensureAC();
+          const ps=pads(),z=ps.findIndex(p=>p.note===n);
+          if(z>=0){padHit(z,Math.max(.3,v/127));}
+          else{ // melodie-instrumenten (gitaar/bas/blaas) → kanaal 1 + scale-lock + akkoord
+            const vv=Math.max(.25,v/127),vel=Math.min(127,40+Math.round(v*.7)+Math.round((Math.random()-.5)*10));
+            const chord=$('chord').value==='aan'?chordNotes(n):[snap(n)];
+            for(const nn of chord){if($('snd').value==='aan')SYN.mel(vv,nn);noteOn(nn,vel,0);logNote(nn,vel,0);}
+          }
+        }else if(typ===0x80||(typ===0x90&&v===0)){
+          const ps=pads();if(!ps.find(p=>p.note===n))noteOff(snap(n),0); // echte note-off voor melodie
+        }
+      };
+    }
+  }catch(e){}
+}
+// kanalen: ch10=drums (status 0x9x|9), ch1=melodie (0x9x|0), ch2=pitch-audio (0x9x|1)
+function noteOn(n,v,ch){if(midiOut){midiOut.send([0x90|(ch===undefined?9:ch),n,v]);if(ch===undefined||ch===9)midiOut.send([0x89,n,0],performance.now()+120);}}
+function noteOff(n,ch){if(midiOut)midiOut.send([0x80|(ch===undefined?0:ch),n,0]);}
+function sendCC(cc,v,ch){if(midiOut)midiOut.send([0xB0|(ch===undefined?9:ch),cc,Math.max(0,Math.min(127,Math.round(v)))]);}
+// scale-lock: snap melodie-noot naar dichtstbijzijnde toon uit de gekozen toonsoort
+function snap(n){
+  const sc=SCALES[$('toon').value|0],pcs=sc.map(s=>s%12);
+  for(let d=0;d<=5;d++){if(pcs.includes((n-d)%12))return n-d;if(pcs.includes((n+d)%12))return n+d;}
+  return n;
+}
+// chord-trigger: grondtoon → 3 noot-akkoord op de toonsoort (1 noot speelt akkoord)
+function chordNotes(root){
+  const sc=SCALES[$('toon').value|0].slice().sort((a,b)=>a-b);
+  const i=sc.reduce((b,_,j)=>Math.abs(sc[j]-root)<Math.abs(sc[b]-root)?j:b,0);
+  return [sc[i],sc[(i+2)%sc.length]+(i+2>=sc.length?12:0),sc[(i+4)%sc.length]+(i+4>=sc.length?12:0)];
+}
+function human(v){return Math.max(1,Math.min(127,v+Math.round((Math.random()-.5)*12)));} // lichte velocity-variatie
+
+// --- opname → .mid ---
+let recOn=false;
+let recCnt=false;
+function startRec(){recOn=true;$('rec').classList.add('on');$('stat').textContent='● OPNAME LOOPT';recLog=[];recT0=performance.now();$('dl').style.display='none';}
+$('rec').onclick=()=>{
+ if(recOn){recOn=false;$('rec').classList.remove('on');$('stat').textContent='';
+  if(recLog.length){const b=writeMid();$('dl').href=URL.createObjectURL(b);$('dl').download='G2B-AIRDRUMS.mid';$('dl').style.display='inline';}
+  return;}
+ if(recCnt){return;} // dubbelklik tijdens aftellen = negeren
+ recCnt=true;ensureAC();let n=3;
+ const iv=setInterval(()=>{
+   if(n>0){$('stat').textContent='OPNAME START IN '+n+'…';const t=ac.currentTime;sn(t,1200,0,.06,.5);n--;}
+   else{clearInterval(iv);recCnt=false;const t=ac.currentTime;sn(t,1800,0,.1,.6);startRec();}
+ },60000/(+$('bpm').value||120)/2);
+};
+function logNote(n,v,ch){if(recOn){
+  let ms=performance.now()-recT0;
+  if($('quant').value==='16'){const q=60000/(+$('bpm').value)/4;ms=Math.round(ms/q)*q;}
+  recLog.push([ms,n,v,ch===undefined?9:ch]);}}
+function vlq(a,v){do{let b=v&127;v>>=7;if(v)b|=128;a.push(b);}while(v);}
+// Type-1 multi-track .mid: tempo-track + drums(ch10) + melodie(ch1) + pitch(ch2) als aparte sporen
+function writeMid(){
+  const tpq=480,mpq=Math.round(60000000/(+$('bpm').value||120)),bpm=+$('bpm').value||120;
+  recLog.sort((a,b)=>a[0]-b[0]);
+  const byCh=[[],[],[]]; // ch0-melodie, ch1-pitch, ch9-drums → index 0,1,2
+  for(const[ms,n,v,ch]of recLog){byCh[ch===9?2:ch===1?1:0].push([ms,n,v,ch]);}
+  function trackOf(evs){
+    evs.sort((a,b)=>a[0]-b[0]);
+    const b=[];let last=0;
+    for(const e of evs){vlq(b,e[0]-last);last=e[0];b.push(e[1],e[2],e[3]);}
+    vlq(b,0);b.push(0xFF,0x2F,0x00);
+    return [0x4D,0x54,0x72,0x6B,(b.length>>>24)&255,(b.length>>>16)&255,(b.length>>>8)&255,b.length&255,...b];
+  }
+  function noteTrack(list){ // noten → on/off events op hun eigen kanaal
+    const evs=[];
+    for(const[ms,n,v,ch]of list){
+      const tk=Math.round(ms/1000*bpm/60*tpq);
+      evs.push([tk,0x90|ch,n,v]);evs.push([tk+Math.round(tpq/4),0x80|ch,n,0]);
+    }
+    return evs;
+  }
+  const tracks=[[0x00,0xFF,0x51,0x03,mpq>>16,(mpq>>8)&255,mpq&255]]; // tempo-track
+  const names=['G2B-MELODIE','G2B-PITCH','G2B-DRUMS'];
+  byCh.forEach((list,i)=>{if(!list.length)return;
+    const evs=[[0,0xFF,0x03,names[i].length,...names[i].split('').map(c=>c.charCodeAt(0))],...noteTrack(list)];
+    evs.sort((a,b)=>a[0]-b[0]);
+    const b=[];let last=0;
+    for(const e of evs){vlq(b,e[0]-last);last=e[0];b.push(e[1],e[2],e[3]);}
+    vlq(b,0);b.push(0xFF,0x2F,0x00);
+    tracks.push([0x4D,0x54,0x72,0x6B,(b.length>>>24)&255,(b.length>>>16)&255,(b.length>>>8)&255,b.length&255,...b]);
+  });
+  const head=[0x4D,0x54,0x68,0x64,0,0,0,6,0,0,0,1,0,0,tpq>>8,tpq&255];
+  head[9]=1;head[10]=tracks.length; // format 1, N tracks
+  return new Blob([new Uint8Array([...head,...tracks.flat()])],{type:'audio/midi'});
+}
+
+// --- beweging ---
+function pads(){const n=$('npads').value==='8'?PAD8:PAD4;return n;}
+function zoneEnergies(ps){
+  octx.drawImage($('cam'),0,0,LW,LH);
+  const cur=octx.getImageData(0,0,LW,LH).data;
+  if(!prev){prev=new Uint8ClampedArray(cur);return null;}
+  const out=new Float32Array(ps.length);
+  const pw=(ps.length===8?PW8:PW4),ph=(ps.length===8?PH8:PH4);
+  for(let z=0;z<ps.length;z++){
+    const zx=1-ps[z].x; // zelfde spiegeling als de getekende pads
+    const x0=Math.max(0,Math.floor((zx-pw/2)*LW)),x1=Math.min(LW,Math.ceil((zx+pw/2)*LW));
+    const y0=Math.max(0,Math.floor((ps[z].y-ph/2)*LH)),y1=Math.min(LH,Math.ceil((ps[z].y+ph/2)*LH));
+    let s=0,c=0;
+    for(let y=y0;y<y1;y+=2)for(let x=x0;x<x1;x+=2){
+      const i=(y*LW+x)*4;
+      s+=Math.abs(cur[i]-prev[i])+Math.abs(cur[i+1]-prev[i+1])+Math.abs(cur[i+2]-prev[i+2]);c++;
+    }
+    out[z]=c?s/c/255:0;
+  }
+  prev.set(cur);return out;
+}
+// gewogen middelpunt van beweging over hele beeld (voor mel/fx)
+function centroid(ps){
+  octx.drawImage($('cam'),0,0,LW,LH);
+  const cur=octx.getImageData(0,0,LW,LH).data;
+  if(!prev){prev=new Uint8ClampedArray(cur);return null;}
+  let sx=0,sy=0,sc=0;
+  for(let y=0;y<LH;y+=3)for(let x=0;x<LW;x+=3){
+    const i=(y*LW+x)*4;
+    const d=Math.abs(cur[i]-prev[i])+Math.abs(cur[i+1]-prev[i+1])+Math.abs(cur[i+2]-prev[i+2]);
+    if(d>60){sx+=x;sy+=y;sc++;}
+  }
+  prev.set(cur);
+  return sc?{x:sx/sc/LW,y:sy/sc/LH,e:sc/(LW*LH/9)}:null;
+}
+
+// --- teken ---
+const cv=$('cv'),ctx=cv.getContext('2d');
+let fl=new Float64Array(8);
+function teken(){
+  const W=cv.width=cv.clientWidth,H=cv.height=cv.clientHeight;
+  ctx.clearRect(0,0,W,H);
+  const mode=$('mode').value;
+  if(mode==='drums'||mode==='muis'){
+    const ps=pads(),pw=(ps.length===8?PW8:PW4)*W,ph=(ps.length===8?PH8:PH4)*H;
+    ps.forEach((p,z)=>{
+      const x=(1-p.x)*W-pw/2,y=p.y*H-ph/2;
+      const hit=performance.now()-fl[z]<150;
+      ctx.strokeStyle=p.col;ctx.lineWidth=hit?5:2;
+      ctx.fillStyle=p.col+(hit?'66':'22');
+      ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,pw,ph,14);else ctx.rect(x,y,pw,ph);ctx.fill();ctx.stroke();
+      ctx.fillStyle=hit?'#fff':p.col;ctx.font='bold '+(ps.length===8?14:18)+'px system-ui';ctx.textAlign='center';
+      ctx.fillText(p.n,x+pw/2,y+ph/2+6);
+    });
+  }else if(mode==='mel'){
+    const scale=SCALES[$('toon').value|0];
+    ctx.strokeStyle='#35d07f44';ctx.lineWidth=1;
+    for(let i=0;i<scale.length;i++){const y=i/scale.length*H;
+      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    ctx.fillStyle='#f5e9c8';ctx.font='bold 16px system-ui';ctx.textAlign='center';
+    ctx.fillText('HOOG ↑',W/2,22);ctx.fillText('LAAG ↓',W/2,H-10);
+  }else{
+    const g=ctx.createLinearGradient(0,0,W,H);
+    g.addColorStop(0,'#35d07f22');g.addColorStop(1,'#b98cff22');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='#35d07f55';
+    ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();
+    ctx.fillStyle='#f5e9c8';ctx.font='bold 13px system-ui';ctx.textAlign='center';
+    ctx.fillText('← FILTER (CC74 / wah) →',W/2,20);ctx.fillText('↕ EXPRESSIE (CC11 / vol)',W/2,H-12);
+  }
+}
+
+// --- meters ---
+function buildMeters(){
+  const el=$('meters');el.innerHTML='';
+  const mode=$('mode').value;
+    const labels=mode==='drums'?pads().map(p=>p.n):mode==='mel'?['TOON']:mode==='pitch'?['NOOT']:['XY']; // gtr gebruikt ook XY
+  labels.forEach(n=>{const d=document.createElement('div');d.className='met';
+    d.innerHTML='<div class="b"><div class="f" style="height:0%"></div></div>'+n;el.appendChild(d);});
+}
+$('mode').onchange=()=>{buildMeters();const m=$('mode').value;$('stat').textContent=m==='muis'?'MUIS-modus: klik + sleep over de pads — geen camera nodig.':m==='gtr'?'GITAAR-modus: klik in het vak → sluit gitaar/mic aan, beweeg X=wah Y=volume (camera of muis).':m==='pitch'?'PITCH-modus: klik in het vak → zing/speel in je mic — noten gaan naar MIDI + opname.':'';};$('npads').onchange=()=>{buildMeters();buildPadCfg();};buildMeters();
+
+// trigger-tempo: hits op een ritmisch grid (1/4..1/32 van je BPM), 'vrij' = ongeremd
+function gateMs(){const g=$('gate').value;if(g==='uit')return 0;return 60000/(+$('bpm').value||120)*(4/ +g);}
+
+// --- gitaar-pedaal: audio in → filter/wah + volume, gestuurd door camera of muis ---
+let gtrSrc=null,gtrFil=null,gtrGain=null,mouseP={x:.5,y:.5};
+async function gtrSetup(){
+  try{
+    ensureAC();
+    const s=await navigator.mediaDevices.getUserMedia({audio:true});
+    gtrSrc=ac.createMediaStreamSource(s);
+    gtrFil=ac.createBiquadFilter();gtrFil.type='lowpass';gtrFil.frequency.value=800;gtrFil.Q.value=6;
+    gtrGain=ac.createGain();gtrGain.gain.value=.9;
+    gtrSrc.connect(gtrFil).connect(gtrGain).connect(ac.destination);
+    $('stat').textContent='✓ GITAAR aan — hand/muis: X=wah-filter, Y=volume';
+  }catch(e){$('stat').textContent='✗ Geen audio-ingang — sluit gitaar/mic aan (line-in).';}
+}
+function gtrCtl(x,y){ // x,y 0..1: stuur wah + volume + CC naar Reason (ch1)
+  if(!gtrFil)return;
+  const t=ac.currentTime;
+  gtrFil.frequency.setTargetAtTime(150+Math.pow(x,2)*8000,t,.02); // exponentieel wah
+  gtrGain.gain.setTargetAtTime(Math.max(0,1-y),t,.03);
+  sendCC(74,x*127,0);sendCC(11,y*127,0); // pedaal-CC's op melodie-kanaal → Reason
+}
+// --- pitch-modus: mic/gitaar-audio → live MIDI-noten (audio→MIDI) ---
+let pitchSrc=null,pitchAn=null,pitchNote=-1,pitchCand=-1,pitchCandN=0;
+function pitchStep(){ // shared door camera-loop en eigen loop
+  const f=detectPitch();
+  if(f>0){
+    let n=snap(Math.round(69+12*Math.log2(f/440))); // scale-lock op de toonsoort
+    if(n===pitchCand)pitchCandN++;else{pitchCand=n;pitchCandN=1;}
+    if(pitchCandN>=2&&n!==pitchNote){ // debounce: 2 stabiele frames
+      if(pitchNote>=0)noteOff(pitchNote,1);
+      pitchNote=n;
+      const vel=85;if($('snd').value==='aan')SYN.mel(.6,n);noteOn(n,vel,1);logNote(n,vel,1);
+      const bars=$('#meters .f')[0];if(bars)bars.style.height='80%';
+    }
+  }else{
+    pitchCand=-1;pitchCandN=0;
+    if(pitchNote>=0){noteOff(pitchNote,1);pitchNote=-1;} // note-off bij stilte — geen hangers
+    const bars=$('#meters .f')[0];if(bars)bars.style.height='0%';
+  }
+}
+async function pitchSetup(){
+  try{
+    ensureAC();
+    const s=await navigator.mediaDevices.getUserMedia({audio:true});
+    pitchSrc=ac.createMediaStreamSource(s);
+    pitchAn=ac.createAnalyser();pitchAn.fftSize=2048;
+    pitchSrc.connect(pitchAn); // alleen luisteren, geen output — geen feedback
+    $('stat').textContent='✓ PITCH aan — zing of speel, noten gaan naar MIDI-uit';
+  }catch(e){$('stat').textContent='✗ Geen audio-ingang voor PITCH.';}
+}
+const pitchBuf=new Float32Array(2048);
+function detectPitch(){ // autocorrelatie → fundamentfrequentie
+  pitchAn.getFloatTimeDomainData(pitchBuf);
+  let rms=0;for(const v of pitchBuf)rms+=v*v;rms=Math.sqrt(rms/pitchBuf.length);
+  if(rms<.012)return 0;
+  const sr=ac.sampleRate,N=pitchBuf.length;
+  let best=-1,bestC=0;
+  const lag0=Math.floor(sr/1000),lag1=Math.min(N-1,Math.floor(sr/70));
+  for(let lag=lag0;lag<lag1;lag++){
+    let s=0;for(let i=0;i<N-lag;i++)s+=pitchBuf[i]*pitchBuf[i+lag];
+    if(s>bestC){bestC=s;best=lag;}
+  }
+  return best>0?sr/best:0;
+}
+// --- muis-modus: zonder camera ---
+let muisDown=false;
+function padHit(z,v){ // gedeelde pad-trigger (muis + toetsenbord + midi-in)
+  const ps=pads();if(z>=ps.length)return;
+  const g=gateMs(),now=performance.now();if(g&&now-cool[z]<g)return;cool[z]=now;
+  if($('snd').value==='aan'){
+    if(ownSamp[z]){const b=ac.createBufferSource();b.buffer=ownSamp[z];const g=ac.createGain();g.gain.value=v;b.connect(g).connect(ac.destination);b.start();}
+    else{const synth=ps.length===8?PAD8SYNTH[z]:PAD4SYNTH[z];SYN[synth](v);}}
+  const vel=human(Math.min(127,Math.round(40+v*80)));noteOn(ps[z].note,vel);logNote(ps[z].note,vel);fl[z]=performance.now();
+  const bars=$('#meters .f')[z];if(bars)bars.style.height=v*100+'%';
+}
+function muisHit(e){
+  const r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
+  const ps=pads(),pw=(ps.length===8?PW8:PW4)*r.width,ph=(ps.length===8?PH8:PH4)*r.height;
+  ps.forEach((p,z)=>{
+    const x=(1-p.x)*r.width-pw/2,y=p.y*r.height-ph/2;
+    if(mx>=x&&mx<=x+pw&&my>=y&&my<=y+ph)padHit(z,.5+my/r.height*.5);
+  });
+}
+cv.addEventListener('pointerdown',e=>{const m=$('mode').value;const r=cv.getBoundingClientRect();mouseP={x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};if(m==='gtr'){ensureAC();if(!gtrSrc)gtrSetup();else gtrCtl(mouseP.x,mouseP.y);return;}if(m==='pitch'){ensureAC();if(!pitchSrc)pitchSetup();return;}if(m!=='muis')return;ensureAC();muisDown=true;muisHit(e);});
+cv.addEventListener('pointermove',e=>{const m=$('mode').value;const r=cv.getBoundingClientRect();mouseP={x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};if(m==='gtr'){if(gtrSrc)gtrCtl(mouseP.x,mouseP.y);return;}if(m!=='muis'||!muisDown)return;muisHit(e);});
+addEventListener('pointerup',()=>muisDown=false);
+// toetsenbord-pads: A S D F (4 pads) of A S D F J K L ; (8 pads)
+const KEYS='asdfjkl;';
+addEventListener('keydown',e=>{
+  if(e.repeat||e.target.tagName==='SELECT'||e.target.tagName==='INPUT')return;
+  const m=$('mode').value;if(m!=='muis'&&m!=='drums')return;
+  const z=KEYS.indexOf(e.key.toLowerCase());if(z<0)return;
+  ensureAC();padHit(z,e.shiftKey?1:.7); // SHIFT = accent-slag
+});
+
+// --- hoofdloop ---
+async function start(){
+  const st=$('stat');
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){st.textContent='Geen camera-ondersteuning in deze browser — gebruik Chrome/Edge.';return;}
+    st.textContent='Camera opstarten…';$('start').disabled=true;
+    // sommige laptops falen op vaste 640x480 → eerst proberen, anders gewone camera
+    let s=null;
+    try{s=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480}});}
+    catch(e){s=await navigator.mediaDevices.getUserMedia({video:true});}
+    $('cam').srcObject=s;run=true;ensureAC();requestAnimationFrame(tick);
+    // auto-kalibratie: na ~1.5s rustig neemt hij de achtergrond-ruis als basis
+    setTimeout(()=>{if(run){const ps=pads(),E=zoneEnergies(ps);if(E)for(let z=0;z<ps.length;z++)base[z]=E[z]*1.4;}},1500);
+    st.textContent='✓ Camera aan — beweeg voor de pads!';$('start').textContent='⏹ STOP';
+    $('start').onclick=()=>{s.getTracks().forEach(t=>t.stop());run=false;$('start').textContent='▶ START CAMERA';$('start').onclick=start;st.textContent='Camera uit.';$('start').disabled=false;};
+    $('start').disabled=false;
+  }catch(e){
+    $('start').disabled=false;
+    st.textContent=e.name==='NotAllowedError'?'✗ Camera geblokkeerd — klik op het slotje in de adresbalk en sta camera toe.':e.name==='NotFoundError'?'✗ Geen camera gevonden.':'✗ Camera-fout: '+e.message;
+  }
+}
+function tick(){
+  if(!run)return;
+  const now=performance.now(),mode=$('mode').value;
+  if(mode==='drums'){
+    const ps=pads(),E=zoneEnergies(ps);
+    if(E){
+      const th=+$('sens').value/100;
+      for(let z=0;z<ps.length;z++){
+        const v=E[z]-base[z];
+        const bars=$('#meters .f')[z];if(bars)bars.style.height=Math.min(100,Math.max(0,v)*300)+'%';
+        if(v>th&&now-cool[z]>Math.max(gateMs(),60)){
+          cool[z]=now;
+          // choke: open hat doodt closed hat (echte drum-regel)
+          if(ps[z].note===46&&midiOut)midiOut.send([0x89,42,0]);
+          const synth=ps.length===8?PAD8SYNTH[z]:PAD4SYNTH[z];
+          if($('snd').value==='aan'){
+            if(ownSamp[z]){const s=ac.createBufferSource();s.buffer=ownSamp[z];
+              const g=ac.createGain();g.gain.value=Math.min(1,v*3);s.connect(g).connect(ac.destination);s.start();}
+            else SYN[synth](Math.min(1,v*3));
+          }
+          const vel=Math.min(127,Math.round(40+v*300));
+          noteOn(ps[z].note,vel);logNote(ps[z].note,vel);fl[z]=now;
+        }
+      }
+    }
+  }else if(mode==='mel'){
+    const c=centroid();
+    if(c&&c.e>.01){
+      const scale=SCALES[$('toon').value|0];
+      const idx=Math.max(0,Math.min(scale.length-1,Math.floor((1-c.y)*scale.length)));
+      const note=scale[idx],vel=Math.min(127,50+Math.round(c.e*800));
+      if(note!==lastNote){
+        lastNote=note;
+        if($('snd').value==='aan')SYN.mel(Math.min(1,c.e*5),note);
+        noteOn(note,vel);logNote(note,vel);
+      }
+      const bars=$('#meters .f')[0];if(bars)bars.style.height=(1-c.y)*100+'%';
+    }else lastNote=-1;
+  }else if(mode==='gtr'){
+    if(!gtrSrc)gtrSetup();
+    else{const c=centroid();if(c&&c.e>.005){gtrCtl(c.x,c.y);const bars=$('#meters .f')[0];if(bars)bars.style.height=c.e*400+'%';}}
+  }else if(mode==='pitch'){
+    if(!pitchSrc){pitchSetup();}else pitchStep();
+  }else{
+    const c=centroid();
+    if(c&&c.e>.008&&now-fxCool>40){
+      fxCool=now;
+      sendCC(74,(1-c.x)*127);sendCC(11,(1-c.y)*127);
+      const bars=$('#meters .f')[0];if(bars)bars.style.height=c.e*400+'%';
+    }
+  }
+  teken();
+  requestAnimationFrame(tick);
+}
+$('start').onclick=start;
+// per-pad sound config
+function buildPadCfg(){
+  const el=$('padcfg');el.innerHTML='';
+  pads().forEach((p,z)=>{
+    const d=document.createElement('button');d.className='sec';
+    d.style.cssText='padding:6px 10px;font-size:11px;border-color:'+p.col+'66;color:'+p.col;
+    d.textContent=p.n+(ownSamp[z]?' ●':'');
+    d.onclick=()=>{padPick=z;$('padf').click();};
+    el.appendChild(d);});
+}
+$('padf').onchange=async()=>{
+  const f=$('padf').files[0];if(!f||padPick<0)return;
+  ensureAC();
+  try{ownSamp[padPick]=await ac.decodeAudioData(await f.arrayBuffer());
+    $('ownlist').textContent='✓ '+pads()[padPick].n+' = '+f.name;buildPadCfg();}
+  catch(e){$('ownlist').textContent='Kon '+f.name+' niet lezen.';}
+};
+$('own').onclick=()=>$('ownf').click();
+$('ownf').onchange=async()=>{
+  ensureAC();const fs=[...$('ownf').files];if(!fs.length)return;
+  ownSamp=[];let names=[];
+  for(const f of fs.slice(0,8)){
+    try{ownSamp.push(await ac.decodeAudioData(await f.arrayBuffer()));names.push(f.name);}
+    catch(e){ownSamp.push(null);}
+  }
+  $('ownlist').textContent='✓ Geladen: '+names.join(', ');buildPadCfg();
+};
+buildPadCfg();
+// metronoom
+$('bpm').oninput=()=>{$('bpmv').textContent=$('bpm').value;};
+$('metr').onchange=()=>{
+  if(metrIv){clearInterval(metrIv);metrIv=null;}
+  if($('metr').value==='aan'){ensureAC();beatN=0;
+    const step=()=>{const t=ac.currentTime;
+      sn(t,beatN%4===0?1600:1000,0,.05,beatN%4===0?.5:.25);beatN++;
+      metrIv=setTimeout(step,60000/+$('bpm').value);};
+    step();}
+};
+$('cal').onclick=()=>{
+  const ps=pads(),E=zoneEnergies(ps);
+  if(E)for(let z=0;z<ps.length;z++)base[z]=E[z]*1.4;
+};
+['pointerdown','keydown'].forEach(ev=>addEventListener(ev,function _mi(){setupMIDI()},{once:true}));
+// altijd pads tekenen in muis-modus, ook zonder camera
+// altijd pads tekenen als de camera (nog) niet loopt — zo zie je waar je drukt
+(function drawLoop(){try{const m=$('mode').value;if(m!=='mel'&&!run)teken();}catch(e){}requestAnimationFrame(drawLoop);})();
+// pitch-modus draait ook zonder camera: eigen interval
+(function pitchLoop(){try{if($('mode').value==='pitch'&&pitchSrc&&!run)pitchStep();}catch(e){}setTimeout(pitchLoop,60);})();
+
+// test-hooks
+window.__airTest=z=>{ensureAC();const k=PAD8SYNTH[z%8];SYN[k]?SYN[k](1):SYN.mel(1,60);return 'ok';};
+window.__airMidTest=()=>{recLog=[[0,36,100],[500,38,90]];return writeMid().size;};
+</script><footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
+</body></html>

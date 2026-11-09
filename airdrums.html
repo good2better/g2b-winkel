@@ -61,10 +61,11 @@ select,input[type=range]{accent-color:#35d07f}
   <a id="dl" href="#">⬇ DOWNLOAD JE OPNAME (.mid)</a>
   <div class="rij" style="margin-top:12px" id="meters"></div>
 </div>
-<p class="tip">GM-drums kanaal 10 · MELODIE: laag=lage noot, hoog=hoge noot · EFFECT: X=filter (CC74) Y=expressie (CC11) · OPNEEM schrijft .mid die je in Reason sleept · DUO: MIDI-keyboard speelt pads mee terwijl de ander de camera/effecten doet</p>
+<p class="tip">GM-drums kanaal 10 · MELODIE: laag=lage noot, hoog=hoge noot · EFFECT: X=filter (CC74) Y=expressie (CC11) · DUO: MIDI-keyboard speelt pads mee terwijl de ander de camera/effecten doet · <b style="color:#35d07f">GRATIS-versie = spelen — OPNEEM/.mid-export + eigen sounds zitten in CLUB</b></p>
 
 <script>
 const $=id=>document.getElementById(id);
+const FREE=true; // gratis-versie: spelen mag, opname/export/eigen-sounds = CLUB
 const PAD4=[
  {n:'KICK', x:.25,y:.75,note:36,col:'#35d07f'},{n:'SNARE',x:.75,y:.75,note:38,col:'#ff9a3c'},
  {n:'HAT',  x:.25,y:.28,note:42,col:'#b98cff'},{n:'CLAP', x:.75,y:.28,note:39,col:'#f5e9c8'}];
@@ -154,6 +155,7 @@ let recOn=false;
 let recCnt=false;
 function startRec(){recOn=true;$('rec').classList.add('on');$('stat').textContent='● OPNAME LOOPT';recLog=[];recT0=performance.now();$('dl').style.display='none';}
 $('rec').onclick=()=>{
+ if(FREE){$('stat').innerHTML='🔒 OPNAME + .mid-export zit in de <b>CLUB</b>-versie — <a href="bestel.html?p=g2bclub" style="color:#35d07f">word lid (€4,95/mnd)</a>';return;}
  if(recOn){recOn=false;$('rec').classList.remove('on');$('stat').textContent='';
   if(recLog.length){const b=writeMid();$('dl').href=URL.createObjectURL(b);$('dl').download='G2B-AIRDRUMS.mid';$('dl').style.display='inline';}
   return;}
@@ -477,7 +479,8 @@ $('padf').onchange=async()=>{
     $('ownlist').textContent='✓ '+pads()[padPick].n+' = '+f.name;buildPadCfg();}
   catch(e){$('ownlist').textContent='Kon '+f.name+' niet lezen.';}
 };
-$('own').onclick=()=>$('ownf').click();
+$('own').onclick=()=>{if(FREE){$('stat').innerHTML='🔒 Eigen sounds laden zit in de <b>CLUB</b>-versie — <a href="bestel.html?p=g2bclub" style="color:#35d07f">word lid (€4,95/mnd)</a>';return;}$('ownf').click();};
+if(FREE){$('dl').style.display='none';}
 $('ownf').onchange=async()=>{
   ensureAC();const fs=[...$('ownf').files];if(!fs.length)return;
   ownSamp=[];let names=[];
