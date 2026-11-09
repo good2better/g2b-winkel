@@ -30,7 +30,7 @@ select,input[type=range]{accent-color:#35d07f}
 <div id="stage"><video id="cam" autoplay playsinline muted></video><canvas id="cv"></canvas></div>
 <div id="hud">
   <div class="rij">
-    <div><label>Modus</label><select id="mode"><option value="drums">DRUMS</option><option value="mel">MELODIE</option><option value="fx">EFFECT</option><option value="muis">MUIS (zonder camera)</option></select></div>
+    <div><label>Modus</label><select id="mode"><option value="drums">DRUMS</option><option value="mel">MELODIE</option><option value="fx">EFFECT</option><option value="gtr">GITAAR-PEDAAL</option><option value="muis">MUIS (zonder camera)</option></select></div>
     <div><label>Pads</label><select id="npads"><option value="4">4 pads</option><option value="8">8 pads</option></select></div>
     <div><label>Sounds</label><select id="snd"><option value="aan">aan</option><option value="uit">uit (alleen MIDI)</option></select></div>
   </div>
@@ -230,7 +230,7 @@ function teken(){
     ctx.strokeStyle='#35d07f55';
     ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();
     ctx.fillStyle='#f5e9c8';ctx.font='bold 13px system-ui';ctx.textAlign='center';
-    ctx.fillText('← FILTER (CC74) →',W/2,20);ctx.fillText('↕ EXPRESSIE (CC11)',W/2,H-12);
+    ctx.fillText('← FILTER (CC74 / wah) →',W/2,20);ctx.fillText('↕ EXPRESSIE (CC11 / vol)',W/2,H-12);
   }
 }
 
@@ -238,12 +238,31 @@ function teken(){
 function buildMeters(){
   const el=$('meters');el.innerHTML='';
   const mode=$('mode').value;
-  const labels=mode==='drums'?pads().map(p=>p.n):mode==='mel'?['TOON']:['XY'];
+    const labels=mode==='drums'?pads().map(p=>p.n):mode==='mel'?['TOON']:['XY']; // gtr gebruikt ook XY
   labels.forEach(n=>{const d=document.createElement('div');d.className='met';
     d.innerHTML='<div class="b"><div class="f" style="height:0%"></div></div>'+n;el.appendChild(d);});
 }
-$('mode').onchange=()=>{buildMeters();$('stat').textContent=$('mode').value==='muis'?'MUIS-modus: klik + sleep over de pads — geen camera nodig.':'';};$('npads').onchange=()=>{buildMeters();buildPadCfg();};buildMeters();
+$('mode').onchange=()=>{buildMeters();const m=$('mode').value;$('stat').textContent=m==='muis'?'MUIS-modus: klik + sleep over de pads — geen camera nodig.':m==='gtr'?'GITAAR-modus: klik in het vak → sluit gitaar/mic aan, beweeg X=wah Y=volume (camera of muis).':'';};$('npads').onchange=()=>{buildMeters();buildPadCfg();};buildMeters();
 
+// --- gitaar-pedaal: audio in → filter/wah + volume, gestuurd door camera of muis ---
+let gtrSrc=null,gtrFil=null,gtrGain=null,mouseP={x:.5,y:.5};
+async function gtrSetup(){
+  try{
+    ensureAC();
+    const s=await navigator.mediaDevices.getUserMedia({audio:true});
+    gtrSrc=ac.createMediaStreamSource(s);
+    gtrFil=ac.createBiquadFilter();gtrFil.type='lowpass';gtrFil.frequency.value=800;gtrFil.Q.value=6;
+    gtrGain=ac.createGain();gtrGain.gain.value=.9;
+    gtrSrc.connect(gtrFil).connect(gtrGain).connect(ac.destination);
+    $('stat').textContent='✓ GITAAR aan — hand/muis: X=wah-filter, Y=volume';
+  }catch(e){$('stat').textContent='✗ Geen audio-ingang — sluit gitaar/mic aan (line-in).';}
+}
+function gtrCtl(x,y){ // x,y 0..1: stuur wah + volume
+  if(!gtrFil)return;
+  const t=ac.currentTime;
+  gtrFil.frequency.setTargetAtTime(150+Math.pow(x,2)*8000,t,.02); // exponentieel wah
+  gtrGain.gain.setTargetAtTime(Math.max(0,1-y),t,.03);
+}
 // --- muis-modus: zonder camera ---
 let muisDown=false;
 function padHit(z,v){ // gedeelde pad-trigger (muis + toetsenbord)
@@ -262,8 +281,8 @@ function muisHit(e){
     if(mx>=x&&mx<=x+pw&&my>=y&&my<=y+ph)padHit(z,.5+my/r.height*.5);
   });
 }
-cv.addEventListener('pointerdown',e=>{if($('mode').value!=='muis')return;ensureAC();muisDown=true;muisHit(e);});
-cv.addEventListener('pointermove',e=>{if($('mode').value!=='muis'||!muisDown)return;muisHit(e);});
+cv.addEventListener('pointerdown',e=>{const m=$('mode').value;const r=cv.getBoundingClientRect();mouseP={x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};if(m==='gtr'){ensureAC();if(!gtrSrc)gtrSetup();else gtrCtl(mouseP.x,mouseP.y);return;}if(m!=='muis')return;ensureAC();muisDown=true;muisHit(e);});
+cv.addEventListener('pointermove',e=>{const m=$('mode').value;const r=cv.getBoundingClientRect();mouseP={x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};if(m==='gtr'){if(gtrSrc)gtrCtl(mouseP.x,mouseP.y);return;}if(m!=='muis'||!muisDown)return;muisHit(e);});
 addEventListener('pointerup',()=>muisDown=false);
 // toetsenbord-pads: A S D F (4 pads) of A S D F J K L ; (8 pads)
 const KEYS='asdfjkl;';let keyCool=new Float64Array(8);
@@ -334,6 +353,9 @@ function tick(){
       }
       const bars=$('#meters .f')[0];if(bars)bars.style.height=(1-c.y)*100+'%';
     }else lastNote=-1;
+  }else if(mode==='gtr'){
+    if(!gtrSrc)gtrSetup();
+    else{const c=centroid();if(c&&c.e>.005){gtrCtl(c.x,c.y);const bars=$('#meters .f')[0];if(bars)bars.style.height=c.e*400+'%';}}
   }else{
     const c=centroid();
     if(c&&c.e>.008&&now-fxCool>40){
@@ -391,7 +413,7 @@ $('cal').onclick=()=>{
 ['pointerdown','keydown'].forEach(ev=>addEventListener(ev,function _mi(){setupMIDI()},{once:true}));
 // altijd pads tekenen in muis-modus, ook zonder camera
 // altijd pads tekenen als de camera (nog) niet loopt — zo zie je waar je drukt
-(function drawLoop(){try{const m=$('mode').value;if((m==='muis'||m==='drums')&&!run)teken();}catch(e){}requestAnimationFrame(drawLoop);})();
+(function drawLoop(){try{const m=$('mode').value;if(m!=='mel'&&!run)teken();}catch(e){}requestAnimationFrame(drawLoop);})();
 
 // test-hooks
 window.__airTest=z=>{ensureAC();const k=PAD8SYNTH[z%8];SYN[k]?SYN[k](1):SYN.mel(1,60);return 'ok';};
