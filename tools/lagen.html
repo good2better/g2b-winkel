@@ -47,7 +47,7 @@ function voegToe(){
 voegToe();
 
 function perMach(fn){document.querySelectorAll('#lijst .mach iframe').forEach(f=>{try{fn(f.contentDocument,f.contentWindow)}catch(e){}})}
-function speelAlles(aan){syncBpm();
+function speelAlles(aan){
  perMach((d,w)=>{
   const btn=d.getElementById('bPlay')||d.getElementById('play')||d.querySelector('button[id$="-gplay"]')
    ||[...d.querySelectorAll('button')].find(b=>/SPEEL|SPEL|PLAY/.test(b.textContent));
