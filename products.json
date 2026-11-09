@@ -1821,6 +1821,25 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/gimbassilite-cover.png"
+  },
+  {
+   "id": "samplex01",
+   "titel": "G2B SAMPLEX — jouw sample wordt instrument",
+   "soort": "plugin",
+   "beschrijving": "DE SAMPLE-MACHINE: sleep je eigen .wav erin en SAMPLEX maakt er een speelbaar instrument van — toonhoogte over het hele keyboard + 16 chops om mee te hakken. MIDI-keyboard werkt direct. Nul ingebakken samples = 100% jouw geluid, sync-veilig. Inclusief VST3 + CLAP + standalone app, LEESMIJ en NL PDF-handleiding. Windows, klaar voor Reason/FL/Ableton (gratis host: MorningDAW).",
+   "prijs": "€ 24,95",
+   "links": {
+    "koop": "bestel.html?p=samplex01",
+    "download": "bedankt.html?k=samplex01",
+    "handleiding": "https://github.com/good2better/g2b-winkel/releases/download/dl/G2B-SampleX-Handleiding.pdf",
+    "stripe": "https://buy.stripe.com/8x23cv7QQgyL37x4xT5J62Q"
+   },
+   "groep": "plugins",
+   "badge": "NIEUW",
+   "cover": "media/g2b-samplex-cover.png",
+   "download_dir": "d/samplex01",
+   "demo": "media/samplex-demo-v3.mp4",
+   "video": "media/samplex-demo-v3.mp4"
   }
  ]
 }
