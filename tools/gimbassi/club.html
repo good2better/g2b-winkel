@@ -141,7 +141,16 @@ function maakInst(){
 }
 function setCut(id,v){const s=$(id+'-cut');s.value=v;$(id+'-vlc').textContent=v;}
 const INST={}; // id -> {buf,mono,sr,kicks,bpm}
-function paintGrid(id){const I=INST[id];$(id+'-grij').querySelectorAll('.gc').forEach(c=>{
+// --- lagen-buur: machines delen hun patroon zodat DICE slim laagt ---
+const LBC='BroadcastChannel' in window?new BroadcastChannel('g2b-lagen'):null;
+const ANDER={};let MYID=Math.random().toString(36).slice(2);
+if(LBC)LBC.onmessage=e=>{const d=e.data;if(d&&d.src!==MYID)ANDER[d.src]=d;};
+function deelPatroon(id){if(!LBC)return;const I=INST[id];if(!I)return;
+ LBC.postMessage({src:MYID,kick:I.kick,sub:I.sub,root:+$(id+'-groot').value,t:Date.now()});}
+function bezetSub(){const z=new Set(),nu=Date.now();
+ for(const a of Object.values(ANDER))if(nu-a.t<60000&&a.sub)a.sub.forEach((v,s)=>{if(v)z.add(s)});
+ return z;}
+function paintGrid(id){deelPatroon(id);const I=INST[id];$(id+'-grij').querySelectorAll('.gc').forEach(c=>{
  const r=c.dataset.r,v=I[r][+c.dataset.s];
  c.className='gc'+(r==='sub'?' sub':'')+(v?' aan':'')+(r==='sub'&&v>1?' v'+v:'');});}
 async function laad(id,f){
@@ -354,12 +363,14 @@ function diceGroove(id){const I=INST[id];
  const r=RATIO[I.lastGenre||'zouk']||RATIO.zouk;
  // plaats noten in zingende groepjes van 1-3 aaneengesloten stappen
  const vrij=s=>s<16&&!I.kick[s]&&!I.sub[s];
+ const bz=bezetSub();
  let n=6+Math.floor(Math.random()*3),tries=0;
  while(n>0&&tries++<50){
   let s=Math.floor(Math.random()*16);
-  if(!vrij(s))continue;
+  if(!vrij(s)||(bz.has(s)&&Math.random()<0.85))continue;
   const len=1+Math.floor(Math.random()*3);
   for(let k=0;k<len&&vrij(s+k)&&n>0;k++,n--){
+   if(bz.has(s+k))break; // cluster stopt bij buur-ruimte
    const x=Math.random();
    I.sub[s+k]=(s+k>0&&I.kick[s+k-1])?1:(x<r[0]?1:(x<r[0]+r[1]?2:3));}}
  paintGrid(id);
