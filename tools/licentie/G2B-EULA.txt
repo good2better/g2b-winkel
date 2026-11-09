@@ -1,7 +1,8 @@
 G2B EINDGEBRUIKERSLICENTIE (EULA)
 Good2Better · G.T.J. Sandvliet · g.sandvliet88@gmail.com
-Versie 1.0 — geldt voor álle G2B-producten: sound-packs, beats/tracks,
+Versie 1.1 — geldt voor álle G2B-producten: sound-packs, beats/tracks,
 stems, VST-plugins en digitale boeken, tenzij bij het product anders staat.
+Elke licentie geldt WERELDWIJD en op elk medium, ook toekomstige platforms.
 
 1. WAT JE KOOPT
 Je koopt een persoonlijke, niet-exclusieve gebruikslicentie — geen eigendom.
@@ -12,8 +13,11 @@ allen tijde bij Good2Better / G.T.J. Sandvliet.
 - De sounds gebruiken in je eigen beats, songs en producties.
 - Die muziek overal uitbrengen en ermee geld verdienen: Spotify, YouTube,
   Apple Music, film, games, reclame, optredens — zonder royalty's aan ons.
-- Sync-tracks: binnen de gekochte licentie (MP3-lease = non-exclusive,
-  WAV = broadcast-kwaliteit, EXCLUSIEF = wij halen de track uit de verkoop).
+- Sync-tracks: binnen de gekochte licentie en looptijd:
+  MP3-lease = non-exclusive, 1 jaar · WAV = broadcast-kwaliteit, 3 jaar ·
+  EXCLUSIEF = voor altijd; wij halen de track uit de verkoop.
+  (Echte sync-licenties voor film/TV/reclame zijn maatwerk en worden per
+  project schriftelijk vastgelegd — gebruik, territorium, looptijd.)
 - Stems mixen, knippen en aanpassen voor je eindproduct.
 
 3. WAT JE NIET MAG
@@ -38,11 +42,26 @@ wij verwijderen hem uit de openbare verkoop. Het auteursrecht blijft bij
 G2B; je krijgt een exclusief gebruiksrecht (buy-out).
 
 6. GARANTIE & AANSPRAKELIJKHEID
-Producten worden geleverd "zoals ze zijn". Wij zijn niet aansprakelijk
-voor gevolgschade. Onze sounds zijn 100% eigen gemaakt — geen samples
-van derden, geen AI-gegenereerde audio — dus er zitten geen verborgen
-rechten van anderen aan jouw gebruik.
+Producten worden geleverd "zoals ze zijn" (as is). Wij zijn niet
+aansprakelijk voor indirecte schade, gevolgschade, gederfde winst,
+claims van derden of foutief gebruik; onze aansprakelijkheid is in
+elk geval maximaal het aankoopbedrag.
+Onze sounds zijn 100% eigen gemaakt — geen samples van derden, geen
+AI-gegenereerde audio — dus er zitten geen verborgen rechten van
+anderen aan jouw gebruik.
 
-7. VRAGEN
+7. HERROEPINGSRECHT, LEVERING & HERSTEL
+Je krijgt je digitale product direct na betaling. Bij aankoop stem je
+af van je herroepingsrecht (art. 6:230p BW) — digitale downloads zijn
+wettelijk niet "terug te sturen".
+Werkt iets niet? Meld het via good2better.com/meld.html of mail —
+wij leveren dan een werkende versie opnieuw via je downloadlink.
+Als herstel niet lukt, krijg je je geld terug.
+
+8. TOEPASSELIJK RECHT & GESCHILLEN
+Op alle aankopen is Nederlands recht van toepassing. Geschillen worden
+voorgelegd aan de Nederlandse rechter.
+
+9. VRAGEN
 Zakelijke licenties, stems op maat of twijfel over je gebruik?
 Mail: g.sandvliet88@gmail.com
