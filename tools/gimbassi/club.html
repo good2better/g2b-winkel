@@ -116,7 +116,7 @@ function maakInst(){
   if(ev==='drop'&&e.dataTransfer.files[0])laad(id,e.dataTransfer.files[0]);
  }));
  file.onchange=()=>file.files[0]&&laad(id,file.files[0]);
- $(id+'-cut').oninput=e=>$(id+'-vlc').textContent=e.target.value;
+ $(id+'-cut').oninput=e=>{$(id+'-vlc').textContent=e.target.value;if(INST[id])INST[id].cutHand=true;};
  $(id+'-bpm').oninput=e=>$(id+'-vbpm').textContent=e.target.value||'auto';
  $(id+'-q').onclick=e=>e.target.classList.toggle('on');
  $(id+'-go').onclick=()=>bassiDing(id);
@@ -169,6 +169,12 @@ function tekenGolf(id,mono,sr){
   for(const t of INST[id].kicks){const x=t/(mono.length/sr)*c.width;ctx.fillRect(x-1,2,2,50);}}
 }
 // --- DSP: lowpass (1-pool), onset-detect in lage band, bpm uit slag-intervallen ---
+function rmsBand(mono,sr,lo,hi){
+ // energie in band lo..hi via gecascadeerde (2-polige) lowpassen — steile flank
+ const y1=lowBand(lowBand(mono,sr,hi),sr,hi);let s=0;
+ if(lo<=0){for(let i=0;i<y1.length;i+=4)s+=y1[i]*y1[i];}
+ else{const y0=lowBand(lowBand(mono,sr,lo),sr,lo);for(let i=0;i<y1.length;i+=4){const d=y1[i]-y0[i];s+=d*d;}}
+ return Math.sqrt(s/(y1.length/4));}
 function lowBand(mono,sr,fc){
  const a=1-Math.exp(-2*Math.PI*fc/sr),y=new Float32Array(mono.length);let p=0;
  for(let i=0;i<mono.length;i++){p+=a*(mono[i]-p);y[i]=p;}return y;
@@ -205,6 +211,11 @@ function bassiDing(id){
  const I=INST[id];if(!I)return;
  const st=$(id+'-st'),res=$(id+'-res');res.innerHTML='';st.textContent='zoeken…';
  setTimeout(()=>{
+  // LUISTER: kies zelf de juiste sound — meet diepe-sub vs basgitaar-band
+  const eSub=rmsBand(I.mono,I.sr,0,110),eMid=rmsBand(I.mono,I.sr,110,200);
+  const auto=eSub>1.5*eMid?120:(eMid>0.8*eSub?190:140);
+  if(!I.cutHand){setCut(id,auto);
+   st.dataset.auto='sound: '+(auto===120?'808-sub':auto===190?'basgitaar':'standaard')+' (auto)';}
   const fc=+$(id+'-cut').value,low=lowBand(I.mono,I.sr,fc);
   let kicks=vindKicks(low,I.sr);
   let bpm=+$(id+'-bpm').value||vindBpm(kicks);
