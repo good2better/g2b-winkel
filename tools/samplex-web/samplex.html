@@ -57,10 +57,10 @@ let ws=null;
 function waveShaper(){if(ws)return ws;const k=+$('drv').value/100;
  const a=ac();ws=a.createWaveShaper();const n=1024,c=new Float32Array(n),f=drijn(k);
  for(let i=0;i<n;i++)c[i]=f(i/(n-1)*2-1);ws.curve=c;return ws;}
-function speel(i){
+function speel(i,semi){
  if(!buf)return;const a=ac(),t=a.currentTime;
  const src=a.createBufferSource();src.buffer=buf;
- const toon=+$('toon').value;
+ const toon=+$('toon').value+(semi||0);
  let rate=1,offset=buf.duration*+$('strt').value/100,dur=buf.duration-offset;
  if(mode==='pitch'){rate=Math.pow(2,(i+toon)/12);src.playbackRate.value=rate;}
  else{const sl=buf.duration/16;offset=i*sl;dur=sl;src.playbackRate.value=Math.pow(2,toon/12);}
@@ -84,12 +84,7 @@ for(let i=0;i<16;i++){const d=document.createElement('div');d.className='pad';
  pads.appendChild(d);}
 labels();
 const KEYS='qwerasdfzxcv1234';
-document.onkeydown=e=>{const i=KEYS.indexOf(e.key.toLowerCase());if(i>=0&&i<16)speel(i);};
-if(navigator.requestMIDIAccess)navigator.requestMIDIAccess().then(m=>{
- st.textContent=st.textContent.replace('MIDI-keyboard','MIDI-keyboard ✓');
- for(const inp of m.inputs.values())inp.onmidimessage=ev=>{
-  const[s,n,v]=ev.data;
-  if((s&0xF0)===0x90&&v>0){const i=(n-36)%16;speel(((i%16)+16)%16);}};}).catch(()=>{});
+document.onkeydown=e=>{const i=KEYS.indexOf(e.key.toLowerCase());if(i>=0&&i<16){speel(i);if(window.G2BKB&&G2BKB.log)G2BKB.log(60+i,0,100);}};
 // wave-tekening
 function teken(){const c=$('wave');c.width=c.clientWidth*2;c.height=140;
  const x=c.getContext('2d');const cs=getComputedStyle(document.body);
@@ -119,5 +114,6 @@ $('len').oninput=e=>$('vLen').textContent=e.target.value+'%';
 $('vol').oninput=e=>{$('vVol').textContent=e.target.value+'%';if(master)master.gain.value=e.target.value/100;};
 new ResizeObserver(teken).observe($('wave'));
 </script>
+<script src="midi.js"></script><script src="keyboardmode.js"></script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 </body></html>
