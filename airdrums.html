@@ -44,6 +44,7 @@ select,input[type=range]{accent-color:#35d07f}
     <div><label>BPM</label><input type="range" id="bpm" min="60" max="180" value="120" style="width:90px"><span id="bpmv" style="font-size:12px;color:#35d07f">120</span></div>
     <div><label>Opname-kwantisering</label><select id="quant"><option value="16">16e noten</option><option value="uit">uit</option></select></div>
     <div><label>Trigger-tempo</label><select id="gate"><option value="4">1/4 noot</option><option value="8">1/8 noot</option><option value="16" selected>1/16 noot</option><option value="32">1/32 noot</option><option value="uit">vrij</option></select></div>
+    <div><label>Akkoorden</label><select id="chord"><option value="uit">uit</option><option value="aan">CHORD (1 noot = akkoord)</option></select></div>
   </div>
   <div class="tip">Klik op een pad hieronder om daar je eigen sound te laden — toetsenbord A S D F (of J K L ; voor 8) speelt de pads ook:</div>
   <div class="rij" id="padcfg"></div>
@@ -118,10 +119,10 @@ async function setupMIDI(){
           ensureAC();
           const ps=pads(),z=ps.findIndex(p=>p.note===n);
           if(z>=0){padHit(z,Math.max(.3,v/127));}
-          else{ // melodie-instrumenten (gitaar/bas/blaas) → kanaal 1 + scale-lock
-            const nn=snap(n),vv=Math.max(.25,v/127);
-            if($('snd').value==='aan')SYN.mel(vv,nn);
-            const vel=Math.min(127,40+Math.round(v*.7));noteOn(nn,vel,0);logNote(nn,vel,0);
+          else{ // melodie-instrumenten (gitaar/bas/blaas) → kanaal 1 + scale-lock + akkoord
+            const vv=Math.max(.25,v/127),vel=Math.min(127,40+Math.round(v*.7)+Math.round((Math.random()-.5)*10));
+            const chord=$('chord').value==='aan'?chordNotes(n):[snap(n)];
+            for(const nn of chord){if($('snd').value==='aan')SYN.mel(vv,nn);noteOn(nn,vel,0);logNote(nn,vel,0);}
           }
         }else if(typ===0x80||(typ===0x90&&v===0)){
           const ps=pads();if(!ps.find(p=>p.note===n))noteOff(snap(n),0); // echte note-off voor melodie
@@ -140,6 +141,13 @@ function snap(n){
   for(let d=0;d<=5;d++){if(pcs.includes((n-d)%12))return n-d;if(pcs.includes((n+d)%12))return n+d;}
   return n;
 }
+// chord-trigger: grondtoon → 3 noot-akkoord op de toonsoort (1 noot speelt akkoord)
+function chordNotes(root){
+  const sc=SCALES[$('toon').value|0].slice().sort((a,b)=>a-b);
+  const i=sc.reduce((b,_,j)=>Math.abs(sc[j]-root)<Math.abs(sc[b]-root)?j:b,0);
+  return [sc[i],sc[(i+2)%sc.length]+(i+2>=sc.length?12:0),sc[(i+4)%sc.length]+(i+4>=sc.length?12:0)];
+}
+function human(v){return Math.max(1,Math.min(127,v+Math.round((Math.random()-.5)*12)));} // lichte velocity-variatie
 
 // --- opname → .mid ---
 let recOn=false;
@@ -161,23 +169,40 @@ function logNote(n,v,ch){if(recOn){
   if($('quant').value==='16'){const q=60000/(+$('bpm').value)/4;ms=Math.round(ms/q)*q;}
   recLog.push([ms,n,v,ch===undefined?9:ch]);}}
 function vlq(a,v){do{let b=v&127;v>>=7;if(v)b|=128;a.push(b);}while(v);}
+// Type-1 multi-track .mid: tempo-track + drums(ch10) + melodie(ch1) + pitch(ch2) als aparte sporen
 function writeMid(){
-  const t=[];const tpq=480,mpq=Math.round(60000000/(+$('bpm').value||120));
+  const tpq=480,mpq=Math.round(60000000/(+$('bpm').value||120)),bpm=+$('bpm').value||120;
   recLog.sort((a,b)=>a[0]-b[0]);
-  let last=0;
-  const evs=[];
-  for(const[ms,n,v,ch]of recLog){
-    const tk=Math.round(ms/1000*(+$('bpm').value||120)/60*tpq);
-    evs.push([tk,0x90|ch,n,v]);evs.push([tk+Math.round(tpq/4),0x80|ch,n,0]);
+  const byCh=[[],[],[]]; // ch0-melodie, ch1-pitch, ch9-drums → index 0,1,2
+  for(const[ms,n,v,ch]of recLog){byCh[ch===9?2:ch===1?1:0].push([ms,n,v,ch]);}
+  function trackOf(evs){
+    evs.sort((a,b)=>a[0]-b[0]);
+    const b=[];let last=0;
+    for(const e of evs){vlq(b,e[0]-last);last=e[0];b.push(e[1],e[2],e[3]);}
+    vlq(b,0);b.push(0xFF,0x2F,0x00);
+    return [0x4D,0x54,0x72,0x6B,(b.length>>>24)&255,(b.length>>>16)&255,(b.length>>>8)&255,b.length&255,...b];
   }
-  evs.sort((a,b)=>a[0]-b[0]);
-  const b=[];
-  for(const e of evs){vlq(b,e[0]-last);last=e[0];b.push(e[1],e[2],e[3]);}
-  vlq(b,0);b.push(0xFF,0x2F,0x00);
-  const tr=[0,0xFF,0x51,0x03,mpq>>16,(mpq>>8)&255,mpq&255,...b];
-  const head=[0x4D,0x54,0x68,0x64,0,0,0,6,0,0,0,1,tpq>>8,tpq&255];
-  const trk=[0x4D,0x54,0x72,0x6B,(tr.length>>>24)&255,(tr.length>>>16)&255,(tr.length>>>8)&255,tr.length&255];
-  return new Blob([new Uint8Array(head),new Uint8Array(trk),new Uint8Array(tr)],{type:'audio/midi'});
+  function noteTrack(list){ // noten → on/off events op hun eigen kanaal
+    const evs=[];
+    for(const[ms,n,v,ch]of list){
+      const tk=Math.round(ms/1000*bpm/60*tpq);
+      evs.push([tk,0x90|ch,n,v]);evs.push([tk+Math.round(tpq/4),0x80|ch,n,0]);
+    }
+    return evs;
+  }
+  const tracks=[[0x00,0xFF,0x51,0x03,mpq>>16,(mpq>>8)&255,mpq&255]]; // tempo-track
+  const names=['G2B-MELODIE','G2B-PITCH','G2B-DRUMS'];
+  byCh.forEach((list,i)=>{if(!list.length)return;
+    const evs=[[0,0xFF,0x03,names[i].length,...names[i].split('').map(c=>c.charCodeAt(0))],...noteTrack(list)];
+    evs.sort((a,b)=>a[0]-b[0]);
+    const b=[];let last=0;
+    for(const e of evs){vlq(b,e[0]-last);last=e[0];b.push(e[1],e[2],e[3]);}
+    vlq(b,0);b.push(0xFF,0x2F,0x00);
+    tracks.push([0x4D,0x54,0x72,0x6B,(b.length>>>24)&255,(b.length>>>16)&255,(b.length>>>8)&255,b.length&255,...b]);
+  });
+  const head=[0x4D,0x54,0x68,0x64,0,0,0,6,0,0,0,1,0,0,tpq>>8,tpq&255];
+  head[9]=1;head[10]=tracks.length; // format 1, N tracks
+  return new Blob([new Uint8Array([...head,...tracks.flat()])],{type:'audio/midi'});
 }
 
 // --- beweging ---
@@ -336,7 +361,7 @@ function padHit(z,v){ // gedeelde pad-trigger (muis + toetsenbord + midi-in)
   if($('snd').value==='aan'){
     if(ownSamp[z]){const b=ac.createBufferSource();b.buffer=ownSamp[z];const g=ac.createGain();g.gain.value=v;b.connect(g).connect(ac.destination);b.start();}
     else{const synth=ps.length===8?PAD8SYNTH[z]:PAD4SYNTH[z];SYN[synth](v);}}
-  const vel=Math.min(127,Math.round(40+v*80));noteOn(ps[z].note,vel);logNote(ps[z].note,vel);fl[z]=performance.now();
+  const vel=human(Math.min(127,Math.round(40+v*80)));noteOn(ps[z].note,vel);logNote(ps[z].note,vel);fl[z]=performance.now();
   const bars=$('#meters .f')[z];if(bars)bars.style.height=v*100+'%';
 }
 function muisHit(e){
