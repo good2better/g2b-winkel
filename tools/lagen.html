@@ -23,7 +23,13 @@ h1{font-size:18px;margin-bottom:4px}
 <body>
 <h1 id="t">🧅 G2B LAGEN</h1>
 <div class="utl">Elke <b>+</b> opent een eigen machine met z'n eigen grid. Laag voor laag bouwen — ze kunnen allemaal tegelijk spelen.</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
 <button class="plus" onclick="voegToe()">＋ nieuwe machine</button>
+<button class="plus" style="border-color:var(--grn);color:var(--grn)" onclick="speelAlles(true)">▶ SPEEL ALLES</button>
+<button class="plus" onclick="speelAlles(false)">⏹ STOP ALLES</button>
+<button class="plus" onclick="syncBpm()">⇄ TEMPO GELIJK</button>
+<span style="color:var(--dim);font-size:12px">SPEEL ALLES = alle machines tegelijk · TEMPO GELIJK = zet alle machines op het tempo van machine 1</span>
+</div>
 <div id="lijst"></div>
 <button class="plus" onclick="voegToe()">＋ nieuwe machine</button>
 <script>
@@ -39,6 +45,19 @@ function voegToe(){
  document.getElementById('lijst').appendChild(d);
 }
 voegToe();
+
+function perMach(fn){document.querySelectorAll('#lijst .mach iframe').forEach(f=>{try{fn(f.contentDocument,f.contentWindow)}catch(e){}})}
+function speelAlles(aan){syncBpm();
+ perMach((d,w)=>{
+  const btn=d.getElementById('bPlay')||d.getElementById('play')||d.querySelector('button[id$="-gplay"]')
+   ||[...d.querySelectorAll('button')].find(b=>/SPEEL|SPEL|PLAY/.test(b.textContent));
+  if(!btn)return;
+  const speelt=/STOP|PAUZE|■/.test(btn.textContent);
+  if((aan&&!speelt)||(!aan&&speelt))btn.click();
+ });}
+function syncBpm(){let v=null;const ins=[];
+ perMach((d)=>{const i=d.querySelector('#bpm,[id$="-bpm"]');if(i){ins.push(i);if(!v&&i.value)v=i.value;}});
+ if(v)ins.forEach(i=>{if(i.value!==v){i.value=v;i.dispatchEvent(new Event('input',{bubbles:true}));i.dispatchEvent(new Event('change',{bubbles:true}))}});}
 </script>
 </body>
 </html>
