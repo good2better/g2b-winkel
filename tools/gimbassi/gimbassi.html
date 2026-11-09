@@ -44,6 +44,7 @@ canvas.wave{width:100%;height:54px;background:#0a0d0a;border:1px solid var(--ran
 <div id="insts"></div>
 <button class="plus" onclick="maakInst()" title="nog een GIM BASSI — lagen maken">+</button>
 <div class="kaart"><b>zo werkt-ie:</b> bestand erin → BASSI zoekt zelf het tempo + de kick-slagen in het lage deel · <b>QUANTIZE</b> zet de slagen netjes op het 16e-raster (zoals beatmaker) · <b>KICK</b> = alleen die slagen · <b>BASS</b> = de sub/808 eronder, kicks eruit gedimd · plus-knop = nog een voor lagen</div>
+<div class="kaart"><b>LOW-CUT kiezen:</b> <b>808-sub (120)</b> = trap/drill met diepe sub · <b>standaard (140)</b> = werkt bijna altijd · <b>basgitaar (190)</b> = warme bas/boombap, mist anders noten · klinkt je BASS te leeg → hoger · rommel of modder erin → lager</div>
 <script>
 'use strict';const $=id=>document.getElementById(id);
 let nInst=0;
@@ -59,7 +60,12 @@ function maakInst(){
   <canvas class="wave" id="${id}-wave" width="700" height="54"></canvas>
   <div class="rij">
    <label><b>TEMPO <span id="${id}-vbpm">auto</span></b><input type="number" id="${id}-bpm" min="60" max="200" placeholder="auto"></label>
-   <label><b>LOW-CUT <span id="${id}-vlc">140</span>Hz</b><input type="range" id="${id}-cut" min="60" max="300" value="140" step="5"></label>
+   <label><b>LOW-CUT <span id="${id}-vlc">140</span>Hz</b><input type="range" id="${id}-cut" min="60" max="300" value="140" step="5">
+   <span style="display:flex;gap:3px;margin-top:2px">
+    <button class="uit" style="padding:2px 6px;font-size:10px" onclick="event.preventDefault();setCut('${id}',120)">808-sub</button>
+    <button class="uit" style="padding:2px 6px;font-size:10px" onclick="event.preventDefault();setCut('${id}',140)">standaard</button>
+    <button class="uit" style="padding:2px 6px;font-size:10px" onclick="event.preventDefault();setCut('${id}',190)">basgitaar</button>
+   </span></label>
    <label><b>GRID</b><select id="${id}-grid"><option value="4">1/4</option><option value="8">1/8</option><option value="16" selected>1/16</option></select></label>
    <button class="uit on" id="${id}-q">⏱ QUANTIZE</button>
    <button class="uit go" id="${id}-go">⚡ BASSI DING</button>
@@ -80,6 +86,7 @@ function maakInst(){
  $(id+'-q').onclick=e=>e.target.classList.toggle('on');
  $(id+'-go').onclick=()=>bassiDing(id);
 }
+function setCut(id,v){const s=$(id+'-cut');s.value=v;$(id+'-vlc').textContent=v;}
 const INST={}; // id -> {buf,mono,sr,kicks,bpm}
 async function laad(id,f){
  const st=$(id+'-st');$(id+'-body').style.display='';st.textContent='decoderen…';
