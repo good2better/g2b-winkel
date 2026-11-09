@@ -30,7 +30,7 @@ select,input[type=range]{accent-color:#35d07f}
 <div id="stage"><video id="cam" autoplay playsinline muted></video><canvas id="cv"></canvas></div>
 <div id="hud">
   <div class="rij">
-    <div><label>Modus</label><select id="mode"><option value="drums">DRUMS</option><option value="mel">MELODIE</option><option value="fx">EFFECT</option></select></div>
+    <div><label>Modus</label><select id="mode"><option value="drums">DRUMS</option><option value="mel">MELODIE</option><option value="fx">EFFECT</option><option value="muis">MUIS (zonder camera)</option></select></div>
     <div><label>Pads</label><select id="npads"><option value="4">4 pads</option><option value="8">8 pads</option></select></div>
     <div><label>Sounds</label><select id="snd"><option value="aan">aan</option><option value="uit">uit (alleen MIDI)</option></select></div>
   </div>
@@ -194,7 +194,7 @@ function teken(){
   const W=cv.width=cv.clientWidth,H=cv.height=cv.clientHeight;
   ctx.clearRect(0,0,W,H);
   const mode=$('mode').value;
-  if(mode==='drums'){
+  if(mode==='drums'||mode==='muis'){
     const ps=pads(),pw=(ps.length===8?PW8:PW4)*W,ph=(ps.length===8?PH8:PH4)*H;
     ps.forEach((p,z)=>{
       const x=(1-p.x)*W-pw/2,y=p.y*H-ph/2;
@@ -231,7 +231,26 @@ function buildMeters(){
   labels.forEach(n=>{const d=document.createElement('div');d.className='met';
     d.innerHTML='<div class="b"><div class="f" style="height:0%"></div></div>'+n;el.appendChild(d);});
 }
-$('mode').onchange=buildMeters;$('npads').onchange=()=>{buildMeters();buildPadCfg();};buildMeters();
+$('mode').onchange=()=>{buildMeters();$('stat').textContent=$('mode').value==='muis'?'MUIS-modus: klik + sleep over de pads — geen camera nodig.':'';};$('npads').onchange=()=>{buildMeters();buildPadCfg();};buildMeters();
+
+// --- muis-modus: zonder camera ---
+let muisDown=false;
+function muisHit(e){
+  const r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
+  const ps=pads(),pw=(ps.length===8?PW8:PW4)*r.width,ph=(ps.length===8?PH8:PH4)*r.height;
+  ps.forEach((p,z)=>{
+    const x=(1-p.x)*r.width-pw/2,y=p.y*r.height-ph/2;
+    if(mx>=x&&mx<=x+pw&&my>=y&&my<=y+ph){
+      const v=.5+my/r.height*.5;
+      if($('snd').value==='aan'){
+        if(ownSamp[z]){const b=ac.createBufferSource();b.buffer=ownSamp[z];const g=ac.createGain();g.gain.value=v;b.connect(g).connect(ac.destination);b.start();}
+        else{const synth=ps.length===8?PAD8SYNTH[z]:PAD4SYNTH[z];SYN[synth](v);}}
+      const vel=Math.min(127,Math.round(40+v*80));noteOn(ps[z].note,vel);logNote(ps[z].note,vel);fl[z]=performance.now();
+    }});
+}
+cv.addEventListener('pointerdown',e=>{if($('mode').value!=='muis')return;ensureAC();muisDown=true;muisHit(e);});
+cv.addEventListener('pointermove',e=>{if($('mode').value!=='muis'||!muisDown)return;muisHit(e);});
+addEventListener('pointerup',()=>muisDown=false);
 
 // --- hoofdloop ---
 async function start(){
