@@ -148,7 +148,8 @@ if(LBC)LBC.onmessage=e=>{const d=e.data;if(d&&d.src!==MYID)ANDER[d.src]=d;};
 function deelPatroon(id){if(!LBC)return;const I=INST[id];if(!I)return;
  LBC.postMessage({src:MYID,kick:I.kick,sub:I.sub,root:+$(id+'-groot').value,t:Date.now()});}
 function bezetSub(){const z=new Set(),nu=Date.now();
- for(const a of Object.values(ANDER))if(nu-a.t<60000&&a.sub)a.sub.forEach((v,s)=>{if(v)z.add(s)});
+ for(const a of Object.values(ANDER))if(nu-a.t<60000){
+  (a.sub||[]).forEach((v,s)=>{if(v)z.add(s)});(a.mel||[]).forEach(s=>z.add(s));}
  return z;}
 function paintGrid(id){deelPatroon(id);const I=INST[id];$(id+'-grij').querySelectorAll('.gc').forEach(c=>{
  const r=c.dataset.r,v=I[r][+c.dataset.s];

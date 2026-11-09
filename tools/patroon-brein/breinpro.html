@@ -74,6 +74,16 @@ const LADDERS={mineur:[0,2,3,5,7,8,10],pentatonisch:[0,3,5,7,10],majeur:[0,2,4,5
 const SFEREN={mineur:'Donker / Drill',pentatonisch:'Emotioneel / Zouk',majeur:'Vrolijk / Licht',lydisch:'Dromerig'};
 const NOTEN=['A','A#','B','C','C#','D','D#','E','F','F#','G','G#'];
 const DRUMN={KICK:36,SNARE:38,HAT:42,OHAT:46};
+// --- lagen-buur: machines delen patroon, DICE vult vrije ruimte ---
+const LBC='BroadcastChannel' in window?new BroadcastChannel('g2b-lagen'):null;
+const ANDER={};const MYID=Math.random().toString(36).slice(2);
+if(LBC)LBC.onmessage=e=>{const d=e.data;if(d&&d.src!==MYID)ANDER[d.src]=d;};
+function deelPatroon(){if(!LBC||!G)return;
+ LBC.postMessage({src:MYID,kick:G.drums&&G.drums.KICK||[],mel:(G.mel||[]).map(m=>m.s),root:G.root,t:Date.now()});}
+function bezetMel(){const z=new Set(),nu=Date.now();
+ for(const a of Object.values(ANDER))if(nu-a.t<60000){(a.mel||[]).forEach(s=>z.add(s));
+  (a.sub||[]).forEach((v,s)=>{if(v)z.add(s)});(a.kick||[]).forEach((v,s)=>{if(v)z.add(s)});}
+ return z;}
 let KITS={}; // genre -> [kit]
 let G={genre:'',ki:0,root:9,ladder:'mineur',drums:null,mel:[],seed:1};
 let ac=null,playing=false,stap=0,timer=null,GLIDE=true,laatsteToon=null;
@@ -117,7 +127,7 @@ function laadKit(){const k=KITS[G.genre][G.ki];
  $('kittel').textContent='kit '+(G.ki+1)+'/'+KITS[G.genre].length+(k.bpm?' · geleerd op '+k.bpm+' bpm':'');
  bouwLagen();bouwRaster();
  $('st').textContent=G.genre+'/'+k.name+' geladen — pas aan of druk GENEREER';}
-function bouwRaster(){G.root=+$('root').value;G.ladder=$('ladder').value;G.seed=+$('seed').value||G.seed;
+function bouwRaster(){G.root=+$('root').value;G.ladder=$('ladder').value;G.seed=+$('seed').value||G.seed;deelPatroon();
  if(!G.drums)return;
  const nt=ladNoten();
  const rijen=[...Object.keys(G.drums).map(r=>({lbl:r,drum:r})),...nt.slice().reverse().map((n,j)=>({lbl:NOTEN[n%12]+(Math.floor(n/12)-1),note:n,deg:nt.length-1-j}))];
@@ -170,8 +180,10 @@ function dice(){G.seed=(Math.imul(G.seed,48271)+Date.now())>>>0;
   const sc=LADDERS[G.ladder].length,kick=G.drums.KICK;
   const bas=[0,4,6,8,10,12,14].filter(()=>rng()<0.8);
   if(!bas.includes(0))bas.unshift(0);bas.sort((a,b)=>a-b);let d=0;
+  const bz=bezetMel();
   for(const s of bas){
    if(kick[s]&&s!==0&&s!==8&&rng()<0.7)continue; // anti-clash: sub niet op de kick
+   if(bz.has(s)&&rng()<0.85)continue; // laag-ruimte: buur speelt hier al
    if(s===0||s===8)d=0;
    else if(s>=12&&rng()<0.2)d=Math.min(sc-1,5); // oktaaf-sprong op maateinde
    else d=Math.max(0,Math.min(3,d+[-1,0,0,1][Math.floor(rng()*4)]));
