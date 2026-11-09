@@ -261,15 +261,15 @@ function kikC(ctx,dst,t,v){const o=ctx.createOscillator(),g=ctx.createGain();o.t
  o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(45,t+0.12);
  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.4);
  o.connect(g).connect(dst);o.start(t);o.stop(t+0.42);}
-function bas808(t,f,v,len){bas808C(gac,gac.destination,t,f,v,len)}
-function bas808C(ctx,dst,t,f,v,len){const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';
+function bas808(t,f,v,len,tier){bas808C(gac,gac.destination,t,f,v,len,tier)}
+function bas808C(ctx,dst,t,f,v,len,tier){tier=tier||1;const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';
  o.frequency.setValueAtTime(f*2,t);o.frequency.exponentialRampToValueAtTime(f,t+0.08);
  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+0.008);
  g.gain.exponentialRampToValueAtTime(0.001,t+len);
- o.connect(g).connect(gac.destination);o.start(t);o.stop(t+len+0.05);
- const o2=gac.createOscillator(),g2=gac.createGain();o2.type='triangle';o2.frequency.value=f*4;
- g2.gain.setValueAtTime(v*0.18,t);g2.gain.exponentialRampToValueAtTime(0.001,t+len*0.5);
- o2.connect(g2).connect(gac.destination);o2.start(t);o2.stop(t+len*0.5+0.05);}
+ o.connect(g).connect(dst);o.start(t);o.stop(t+len+0.05);
+ const o2=ctx.createOscillator(),g2=ctx.createGain();o2.type='triangle';o2.frequency.value=f*4;
+ g2.gain.setValueAtTime(v*[0.10,0.22,0.32][tier-1],t);g2.gain.exponentialRampToValueAtTime(0.001,t+len*0.5);
+ o2.connect(g2).connect(dst);o2.start(t);o2.stop(t+len*0.5+0.05);}
 function speelGroove(id){const I=INST[id];
  if(I.gplaying){clearInterval(I.gtimer);I.gplaying=false;$(id+'-gplay').textContent='▶ SPEEL';gHighlight(id,-1);return;}
  if(!gac)gac=new(window.AudioContext||window.webkitAudioContext)();
@@ -283,7 +283,7 @@ function speelGroove(id){const I=INST[id];
    const s=I.gstap,t=t0+s*spb;
    if(I.kick[s])kik(t,0.95);
    if(I.sub[s]){let nx=16;for(let k=s+1;k<16;k++)if(I.sub[k]){nx=k;break}
-    bas808(t,f*Math.pow(2,[0,7,12][I.sub[s]-1]/12),I.kick[s]?0.34:0.5,(nx-s)*spb*0.95);}
+    bas808(t,f*Math.pow(2,[0,7,12][I.sub[s]-1]/12),I.kick[s]?0.34:0.5,(nx-s)*spb*0.95,I.sub[s]);}
    setTimeout(ss=>gHighlight(id,ss),Math.max(0,(t-gac.currentTime)*1000),s);
    I.gstap++;}
   if(I.gstap>=16&&ct>t0+16*spb){I.gstap=0;t0=ct+0.05;}
