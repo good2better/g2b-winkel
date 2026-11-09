@@ -209,10 +209,11 @@ async function laden() {
           ${p.prijs ? `<div class="prijs">${esc(p.prijs)}</div>` : ""}
         </div>
       </div>
-      ${(p._beschr || p.video) ? `
+      ${(p._beschr || p.video || p.specs) ? `
       <details class="meer" open>
         <summary>${p.video ? "▶ demo & info" : "ℹ info"}</summary>
         ${p._beschr ? `<div class="beschr">${esc(p._beschr)}</div>` : ""}
+        ${p.specs ? `<div class="specs">${esc(p.specs)}</div>` : ""}
         ${p.video ? `
         <div class="vid-wrap">
           ${p.video_en || p.video_es ? `<button class="taal" data-taal="${esc(p.id)}"

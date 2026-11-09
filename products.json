@@ -24,7 +24,8 @@
       "upsell": [
         "g2bbestof",
         "g2balles"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "stapeldice",
@@ -46,7 +47,8 @@
       "upsell": [
         "stapeldicefull",
         "g2bclub"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "stapeldicefull",
@@ -69,7 +71,8 @@
       "upsell": [
         "beatmakerpro",
         "g2bstarter"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "g2bmaster",
@@ -97,7 +100,8 @@
       "upsell": [
         "g2bpillpack",
         "g2bstarter"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "g2bpillpack",
@@ -121,7 +125,8 @@
       "upsell": [
         "g2bmaster",
         "g2bstarter"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "g2bmixer",
@@ -148,7 +153,8 @@
       "upsell": [
         "g2brefors",
         "g2bstudio"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "g2bgeluidmidi",
@@ -174,7 +180,8 @@
       "upsell": [
         "g2bband",
         "g2bstudio"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "g2brefors",
@@ -201,7 +208,8 @@
       "upsell": [
         "g2bmixer",
         "g2bstudio"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "g2bprodsuite",
@@ -227,7 +235,8 @@
       "uitgelicht": true,
       "upsell": [
         "g2balles"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW"
     },
     {
       "id": "g2bclub",
@@ -246,7 +255,8 @@
       "uitgelicht": true,
       "upsell": [
         "g2balles"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "g2bstarter",
@@ -265,7 +275,8 @@
       "upsell": [
         "g2bstudio",
         "g2balles"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "g2bstudio",
@@ -283,7 +294,8 @@
       },
       "upsell": [
         "g2balles"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "g2balles",
@@ -301,7 +313,8 @@
       },
       "upsell": [
         "g2bclub"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "beatmakerpro",
@@ -323,7 +336,8 @@
         "g2balles"
       ],
       "demo": "media/beatmakerpro-demo.mp4",
-      "video": "media/beatmakerpro-demo.mp4"
+      "video": "media/beatmakerpro-demo.mp4",
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "g2bband",
@@ -349,7 +363,8 @@
       "upsell": [
         "prod01",
         "g2bstudio"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "g2bsmash",
@@ -375,7 +390,8 @@
       "upsell": [
         "g2bairdrums",
         "g2b-workstation"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · werkt offline uit ZIP · Windows / macOS / Linux"
     },
     {
       "id": "g2bairdrums",
@@ -401,7 +417,8 @@
       "upsell": [
         "g2bsmash",
         "g2balles"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · webcam of muis/toetsenbord · Windows / macOS / Linux"
     },
     {
       "id": "g2bsuite1",
@@ -423,7 +440,8 @@
       "sub_es": "media/suite1-uitleg.es.vtt",
       "upsell": [
         "g2b-workstation"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "seofabriek1",
@@ -470,7 +488,8 @@
       "sub_es": "media/agency1-uitleg.es.vtt",
       "upsell": [
         "g2bsuite1"
-      ]
+      ],
+      "specs": "📄 Digitaal licentie-bestand (PDF) · geen software nodig"
     },
     {
       "id": "marketerbundel1",
@@ -492,7 +511,8 @@
       "sub_es": "media/marketerbundel1-uitleg.es.vtt",
       "upsell": [
         "g2bsuite1"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW"
     },
     {
       "id": "mailfabriek1",
@@ -517,7 +537,8 @@
       "upsell": [
         "leadfabriek1",
         "g2bsuite1"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "sheetfabriek1",
@@ -542,7 +563,8 @@
       "upsell": [
         "sequentiefabriek1",
         "g2bsuite1"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "sequentiefabriek1",
@@ -567,7 +589,8 @@
       "upsell": [
         "sheetfabriek1",
         "g2bsuite1"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "crmfabriek1",
@@ -592,7 +615,8 @@
       "upsell": [
         "leadfabriek1",
         "g2bsuite1"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "watcherfabriek1",
@@ -617,7 +641,8 @@
       "upsell": [
         "flowfabriek1",
         "g2bsuite1"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "flowfabriek1",
@@ -642,7 +667,8 @@
       "upsell": [
         "watcherfabriek1",
         "g2bsuite1"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "kanaalfabriek1",
@@ -667,7 +693,8 @@
       "upsell": [
         "leadfabriek1",
         "g2bsuite1"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "leadfabriek1",
@@ -692,7 +719,8 @@
       "upsell": [
         "lijstfabriek1",
         "g2bsuite1"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "lijstfabriek1",
@@ -717,7 +745,8 @@
       "upsell": [
         "crmfabriek1",
         "g2bsuite1"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "g2bvibe1",
@@ -743,7 +772,8 @@
       "upsell": [
         "g2bfx1",
         "g2balles"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "g2bbestof",
@@ -769,7 +799,8 @@
       "upsell": [
         "g2b-oneshots",
         "g2balles"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "g2b-oneshots",
@@ -796,7 +827,8 @@
       "upsell": [
         "g2bbd1",
         "g2balles"
-      ]
+      ],
+      "specs": "📦 WAV-bestanden · werkt in elke DAW · Windows / macOS / Linux"
     },
     {
       "id": "g2b-juridisch",
@@ -823,7 +855,8 @@
       "upsell": [
         "g2b-psychologie",
         "g2b-bedrijfsmiddelen"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "g2b-psychologie",
@@ -850,7 +883,8 @@
       "upsell": [
         "g2b-juridisch",
         "g2b-bedrijfsmiddelen"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "g2b-workstation",
@@ -878,7 +912,8 @@
       "upsell": [
         "g2bsuite1",
         "g2balles"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "cursus01",
@@ -902,7 +937,8 @@
       "upsell": [
         "prod01",
         "g2b-brein"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "g2b-bedrijfsmiddelen",
@@ -929,7 +965,8 @@
       "upsell": [
         "g2b-juridisch",
         "cursus01"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "2878e291",
@@ -961,7 +998,8 @@
         "vrolijk"
       ],
       "demo": "media/2878e291-preview.mp4",
-      "video": "media/2878e291-preview.mp4"
+      "video": "media/2878e291-preview.mp4",
+      "specs": "🔊 WAV studio-kwaliteit · werkt in elke DAW/editor · Windows / macOS / Linux"
     },
     {
       "id": "d9d479ab",
@@ -993,7 +1031,8 @@
         "spanning"
       ],
       "demo": "media/d9d479ab-preview.mp4",
-      "video": "media/d9d479ab-preview.mp4"
+      "video": "media/d9d479ab-preview.mp4",
+      "specs": "🔊 WAV studio-kwaliteit · werkt in elke DAW/editor · Windows / macOS / Linux"
     },
     {
       "id": "7fe03e5c",
@@ -1025,7 +1064,8 @@
         "zomer"
       ],
       "demo": "media/7fe03e5c-preview.mp4",
-      "video": "media/7fe03e5c-preview.mp4"
+      "video": "media/7fe03e5c-preview.mp4",
+      "specs": "🔊 WAV studio-kwaliteit · werkt in elke DAW/editor · Windows / macOS / Linux"
     },
     {
       "id": "0ef9a078",
@@ -1057,7 +1097,8 @@
         "sensueel"
       ],
       "demo": "media/0ef9a078-preview.mp4",
-      "video": "media/0ef9a078-preview.mp4"
+      "video": "media/0ef9a078-preview.mp4",
+      "specs": "🔊 WAV studio-kwaliteit · werkt in elke DAW/editor · Windows / macOS / Linux"
     },
     {
       "id": "8171e455",
@@ -1089,7 +1130,8 @@
         "eigen"
       ],
       "demo": "media/8171e455-preview.mp4",
-      "video": "media/8171e455-preview.mp4"
+      "video": "media/8171e455-preview.mp4",
+      "specs": "🔊 WAV studio-kwaliteit · werkt in elke DAW/editor · Windows / macOS / Linux"
     },
     {
       "id": "266054dc",
@@ -1121,7 +1163,8 @@
         "energie"
       ],
       "demo": "media/266054dc-preview.mp4",
-      "video": "media/266054dc-preview.mp4"
+      "video": "media/266054dc-preview.mp4",
+      "specs": "🔊 WAV studio-kwaliteit · werkt in elke DAW/editor · Windows / macOS / Linux"
     },
     {
       "id": "53c9dc1f",
@@ -1153,7 +1196,8 @@
         "vrolijk"
       ],
       "demo": "media/53c9dc1f-preview.mp4",
-      "video": "media/53c9dc1f-preview.mp4"
+      "video": "media/53c9dc1f-preview.mp4",
+      "specs": "🔊 WAV studio-kwaliteit · werkt in elke DAW/editor · Windows / macOS / Linux"
     },
     {
       "id": "054630ff",
@@ -1185,7 +1229,8 @@
         "caribisch"
       ],
       "demo": "media/054630ff-preview.mp4",
-      "video": "media/054630ff-preview.mp4"
+      "video": "media/054630ff-preview.mp4",
+      "specs": "🔊 WAV studio-kwaliteit · werkt in elke DAW/editor · Windows / macOS / Linux"
     },
     {
       "id": "3083f3d3",
@@ -1217,7 +1262,8 @@
         "spanning"
       ],
       "demo": "media/3083f3d3-preview.mp4",
-      "video": "media/3083f3d3-preview.mp4"
+      "video": "media/3083f3d3-preview.mp4",
+      "specs": "🔊 WAV studio-kwaliteit · werkt in elke DAW/editor · Windows / macOS / Linux"
     },
     {
       "id": "600fb829",
@@ -1249,7 +1295,8 @@
         "zomer"
       ],
       "demo": "media/600fb829-preview.mp4",
-      "video": "media/600fb829-preview.mp4"
+      "video": "media/600fb829-preview.mp4",
+      "specs": "🔊 WAV studio-kwaliteit · werkt in elke DAW/editor · Windows / macOS / Linux"
     },
     {
       "id": "f92b4951",
@@ -1281,7 +1328,8 @@
         "zomer"
       ],
       "demo": "media/f92b4951-preview.mp4",
-      "video": "media/f92b4951-preview.mp4"
+      "video": "media/f92b4951-preview.mp4",
+      "specs": "🔊 WAV studio-kwaliteit · werkt in elke DAW/editor · Windows / macOS / Linux"
     },
     {
       "id": "0b5647bf",
@@ -1312,7 +1360,8 @@
         "afgerond"
       ],
       "demo": "media/0b5647bf-preview.mp4",
-      "video": "media/0b5647bf-preview.mp4"
+      "video": "media/0b5647bf-preview.mp4",
+      "specs": "🔊 WAV studio-kwaliteit · werkt in elke DAW/editor · Windows / macOS / Linux"
     },
     {
       "id": "ritmosbundel",
@@ -1338,7 +1387,8 @@
       "sub_es": "media/ritmosbundel-uitleg.es.vtt",
       "upsell": [
         "g2b-oneshots"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "g2bfx1",
@@ -1364,7 +1414,8 @@
       "upsell": [
         "g2bvibe1",
         "g2balles"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "ocho01",
@@ -1391,7 +1442,8 @@
       "upsell": [
         "g2b-oneshots",
         "g2balles"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "titel": "G2B Sleutel-Helper",
@@ -1427,7 +1479,8 @@
       "sub_es": "media/sl3ut3-uitleg.es.vtt",
       "upsell": [
         "g2b-juridisch"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "g2b-brein",
@@ -1462,7 +1515,8 @@
       "video_extra_lbls": [
         "BREIN browser (gratis) — grid + mute/lock/only",
         "BREIN PRO — 90 geleerde kits × grid"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "prod01",
@@ -1488,7 +1542,8 @@
       "upsell": [
         "g2bband",
         "g2balles"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "sp00ky",
@@ -1515,7 +1570,8 @@
       "upsell": [
         "g2b-oneshots",
         "g2balles"
-      ]
+      ],
+      "specs": "📦 WAV-bestanden · werkt in elke DAW · Windows / macOS / Linux"
     },
     {
       "id": "school1",
@@ -1538,7 +1594,8 @@
       "sub_es": "media/school1-uitleg.es.vtt",
       "upsell": [
         "g2bclub"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "g2bbd1",
@@ -1564,7 +1621,8 @@
       "upsell": [
         "g2b-oneshots",
         "g2balles"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "steun-3",
@@ -1719,7 +1777,8 @@
       "upsell": [
         "g2bclub",
         "g2balles"
-      ]
+      ],
+      "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
     },
     {
       "id": "g2bdren",
@@ -1746,7 +1805,8 @@
       "upsell": [
         "g2bbestof",
         "g2balles"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "drenlite",
@@ -1769,7 +1829,8 @@
       "preview": "media/drenlite-preview.mp3",
       "upsell": [
         "g2bdren"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "ocholite",
@@ -1792,7 +1853,8 @@
       "preview": "media/ocholite-preview.mp3",
       "upsell": [
         "ocho01"
-      ]
+      ],
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "gimbassilite",
@@ -1808,7 +1870,8 @@
       "badge": "GRATIS",
       "cover": "media/gimbassilite-cover.png",
       "demo": "media/gimbassi-demo.mp4",
-      "video": "media/gimbassi-demo.mp4"
+      "video": "media/gimbassi-demo.mp4",
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "gimbassipro",
@@ -1826,7 +1889,8 @@
       "badge": "NIEUW",
       "cover": "media/gimbassilite-cover.png",
       "demo": "media/gimbassi-demo.mp4",
-      "video": "media/gimbassi-demo.mp4"
+      "video": "media/gimbassi-demo.mp4",
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     },
     {
       "id": "samplex01",
@@ -1845,7 +1909,8 @@
       "cover": "media/g2b-samplex-cover.png",
       "download_dir": "d/samplex01",
       "demo": "media/samplex-demo-v3.mp4",
-      "video": "media/samplex-demo-v3.mp4"
+      "video": "media/samplex-demo-v3.mp4",
+      "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
     }
   ]
 }

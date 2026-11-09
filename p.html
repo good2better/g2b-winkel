@@ -113,6 +113,7 @@ async function main(){
       <div class="titel">${esc(p.titel)}${p.badge?`<span class="badge">${esc(p.badge)}</span>`:""}</div>
       ${p.prijs?`<div class="prijs">${esc(p.prijs)} <small>${gratis?"":"eenmalig · geen abonnement"}</small></div>`:""}
       ${p.beschrijving?`<div class="beschr">${esc(p.beschrijving)}</div>`:""}
+      ${p.specs?`<div class="beschr" style="font-size:13px;border-top:1px dashed var(--line);padding-top:10px">⚙ <b>Specificaties:</b> ${esc(p.specs)}</div>`:""}
       <div class="koopblok">
         ${licenties.map((k,i)=>`<button class="licentie${i===0?" on":""}" data-lic="${k}">${NAMEN[k]}${p.prijzen&&p.prijzen[k]?" · "+esc(p.prijzen[k]):""}</button>`).join("")}
         ${koopHref?`<a class="koop" id="koop" ${gratis?'data-gate="1"':""} target="_blank" rel="noopener" href="${esc(koopHref)}">${gratis?"⬇ Download":"Koop nu"}</a>`:`<span class="koop uit">Binnenkort</span>`}
