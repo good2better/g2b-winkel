@@ -269,7 +269,10 @@ function bas808C(ctx,dst,t,f,v,len,tier){tier=tier||1;const o=ctx.createOscillat
  o.connect(g).connect(dst);o.start(t);o.stop(t+len+0.05);
  const o2=ctx.createOscillator(),g2=ctx.createGain();o2.type='triangle';o2.frequency.value=f*4;
  g2.gain.setValueAtTime(v*[0.10,0.22,0.32][tier-1],t);g2.gain.exponentialRampToValueAtTime(0.001,t+len*0.5);
- o2.connect(g2).connect(dst);o2.start(t);o2.stop(t+len*0.5+0.05);}
+ o2.connect(g2);
+ if(tier>1){const ws=ctx.createWaveShaper();ws.curve=Float32Array.from({length:257},(_,i)=>Math.tanh((i/128-1)*(tier===3?3:2)));
+  g2.connect(ws).connect(dst);}else{g2.connect(dst);}
+ o2.start(t);o2.stop(t+len*0.5+0.05);}
 function speelGroove(id){const I=INST[id];
  if(I.gplaying){clearInterval(I.gtimer);I.gplaying=false;$(id+'-gplay').textContent='▶ SPEEL';gHighlight(id,-1);return;}
  if(!gac)gac=new(window.AudioContext||window.webkitAudioContext)();
