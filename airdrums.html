@@ -259,7 +259,10 @@ async function start(){
   try{
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){st.textContent='Geen camera-ondersteuning in deze browser — gebruik Chrome/Edge.';return;}
     st.textContent='Camera opstarten…';$('start').disabled=true;
-    const s=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480}});
+    // sommige laptops falen op vaste 640x480 → eerst proberen, anders gewone camera
+    let s=null;
+    try{s=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480}});}
+    catch(e){s=await navigator.mediaDevices.getUserMedia({video:true});}
     $('cam').srcObject=s;run=true;ensureAC();requestAnimationFrame(tick);
     st.textContent='✓ Camera aan — beweeg voor de pads!';$('start').textContent='⏹ STOP';
     $('start').onclick=()=>{s.getTracks().forEach(t=>t.stop());run=false;$('start').textContent='▶ START CAMERA';$('start').onclick=start;st.textContent='Camera uit.';$('start').disabled=false;};
