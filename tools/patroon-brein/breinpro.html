@@ -155,8 +155,12 @@ function dice(){G.seed=(Math.imul(G.seed,48271)+Date.now())>>>0;
   const a=G.drums[r];
   for(let s=0;s<16;s++)a[s]=rng()<(r==='KICK'?dens*0.6:r==='SNARE'?0.10:dens);
   a[0]=r==='KICK'?1:a[0];} // kick altijd op 1
- if(!LOCK.MEL){G.mel=[];const nm=2+Math.floor(rng()*4),sc=LADDERS[G.ladder].length;
-  for(let k=0;k<nm;k++)G.mel.push({s:Math.floor(rng()*16),d:Math.floor(rng()*sc),l:1+Math.floor(rng()*3)});}
+ if(!LOCK.MEL){G.mel=[]; // baslijn-motor: lage graden, stapsgewijs (±1), wortel op tel 1+9
+  const bas=[0,4,6,8,10,12,14].filter(()=>rng()<0.8);
+  if(!bas.includes(0))bas.unshift(0);bas.sort((a,b)=>a-b);let d=0;
+  for(const s of bas){
+   if(s===0||s===8)d=0;else d=Math.max(0,Math.min(3,d+[-1,0,0,1][Math.floor(rng()*4)]));
+   G.mel.push({s,d,l:1+Math.floor(rng()*2)});}}
  bouwRaster();$('st').textContent='🎲 gedobbeld — alles binnen de ladder';}
 // ---------- velocity + timing ----------
 function vel(s){const k=+$('kracht').value/100;
