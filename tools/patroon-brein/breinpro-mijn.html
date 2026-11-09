@@ -52,6 +52,7 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <button class="uit" onclick="genereer()">✨ GENEREER</button>
 <button class="uit" onclick="dice()">🎲 DICE</button>
 <button class="uit" id="bGlide" onclick="toggleGlide()">〰️ GLIDE: aan</button>
+<button class="uit" onclick="$('leerF').click()">📚 LEER .mid</button><input id="leerF" type="file" accept=".mid,.midi" multiple hidden onchange="leerMid(this.files)"><button class="uit" onclick="$('leerD').click()">📁 LEER MAP</button><input id="leerD" type="file" webkitdirectory hidden onchange="leerMid(this.files)">
 <button class="uit go" onclick="autoScore()">🤖 AUTO</button>
 <button class="uit" onclick="exportSong()">📀 SONG .mid</button>
 <button class="uit" onclick="exportMid()">📥 exporteer .mid</button>
@@ -74,7 +75,7 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <div class="kaart" id="raster2" hidden><b>BOUWVELD (raster 2)</b> — AUTO-SCORE vriest elke voltooide laag hier vast · klik een laag = solo horen:
 <div id="as"></div></div>
 <div class="kaart" id="info"></div>
-<div class="kaart"><b>zo werkt-ie:</b> <b>SFEER</b> = kies je gevoel (Donker/Drill, Emotioneel/Zouk…) — elke noot klinkt goed · <b>〰️ GLIDE</b> = overlappende basnoten glijden (808-slides) · KAWINA = automatische menselijke swing · kick dimt als de sub speelt → schone low-end · kies een genre-pil → blader met ◀▶ door de kits die de app heeft geleerd · klik vakjes aan/uit · GENEREER muteert 1-2 stappen maar houdt je groove · DICE dobbelt alles opnieuw binnen je toonladder · <b>LAGEN:</b> klik laagnaam = mute, 🔒 = blijft staan bij GENEREER/DICE · SNARE/HAT/OHAT starten op mute (stabiel fundament) · ⚡ SLAG ONLY · HAT/OHAT = 32 stappen — klik de halve vakjes (1/32, voor snelle drill-rolls) = juist alléén die drie · 🤖 AUTO = de auto-score: bouwt zelf in 3 fases een complete beat (melodie-basis → slag-laag) op het bouwveld · .mid is klaar voor je DAW (drums kanaal 10, melodie kanaal 1)</div>
+<div class="kaart"><b>zo werkt-ie:</b> <b>SFEER</b> = kies je gevoel (Donker/Drill, Emotioneel/Zouk…) — elke noot klinkt goed · <b>〰️ GLIDE</b> = overlappende basnoten glijden (808-slides) · KAWINA = automatische menselijke swing · kick dimt als de sub speelt → schone low-end · <b>📚 LEER .mid / LEER MAP</b> = gooi je eigen midis erin → hij maakt er GELEERD-kits van in jouw stijl · kies een genre-pil → blader met ◀▶ door de kits die de app heeft geleerd · klik vakjes aan/uit · GENEREER muteert 1-2 stappen maar houdt je groove · DICE dobbelt alles opnieuw binnen je toonladder · <b>LAGEN:</b> klik laagnaam = mute, 🔒 = blijft staan bij GENEREER/DICE · SNARE/HAT/OHAT starten op mute (stabiel fundament) · ⚡ SLAG ONLY · HAT/OHAT = 32 stappen — klik de halve vakjes (1/32, voor snelle drill-rolls) = juist alléén die drie · 🤖 AUTO = de auto-score: bouwt zelf in 3 fases een complete beat (melodie-basis → slag-laag) op het bouwveld · .mid is klaar voor je DAW (drums kanaal 10, melodie kanaal 1)</div>
 <div class="kaart"><b>verschillen:</b> de browser-versie blijft <b>gratis</b> — deze PRO combineert de app's geleerde kits met het browser-grid</div>
 <script>
 'use strict';const $=id=>document.getElementById(id);
@@ -359,5 +360,65 @@ function exportSong(){
  dl(new Blob([new Uint8Array(hdr),new Uint8Array(trk)],{type:'audio/midi'}),'g2b-brein-SONG-'+KITS[G.genre][G.ki].name+'.mid');
  $('st').textContent='📀 SONG gedownload — 20 maten: intro (4·melodie) → verse (8·+kick+hat) → refrein (8·alles) · '+bpm+' bpm';}
 function dl(b,name){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();}
-fetch('breinpro-kits.json').then(r=>r.json()).then(k=>{KITS=k;bouwUI();kiesGenre(Object.keys(k).find(g=>k[g].length));});
+
+function parseMidKit(ab,naam){
+ const u=new Uint8Array(ab);let p=0;
+ const rd=n=>{let v=0;for(let i=0;i<n;i++)v=v*256+u[p++];return v};
+ const vlq=()=>{let v=0,b;do{b=u[p++];v=(v<<7)|(b&127)}while(b&128&&p<u.length);return v};
+ if(u.length<14||rd(4)!==0x4D546864)return null;
+ const hl=rd(4),hs=p;rd(2);const ntrk=rd(2),ppq=rd(2)&0x7fff;p=hs+hl;
+ const st=ppq/4,noten=[];let bpm=0;
+ for(let tr=0;tr<ntrk&&p<u.length-4;){
+  const tag=rd(4),tl=rd(4),end=p+tl;
+  if(tag!==0x4D54726B){p=end;continue}
+  let t=0,run=0;const on={};
+  while(p<end){
+   t+=vlq();let s=u[p];
+   if(s<128)s=run;else{run=s;p++}
+   if(s===0xff){const tp=u[p++],ln=vlq();if(tp===0x51&&ln===3)bpm=Math.round(6e7/((u[p]<<16)|(u[p+1]<<8)|u[p+2]));p+=ln;continue}
+   if(s===0xf0||s===0xf7){p+=vlq();continue}
+   const k=s&0xf0,ch=s&15;
+   if(k===0x90||k===0x80){const n=u[p++],v=u[p++],key=ch*200+n;
+    if(k===0x90&&v>0)(on[key]=on[key]||[]).push(t);
+    else if(on[key]&&on[key].length)noten.push({ch:ch,n:n,t0:on[key].shift(),t1:t});}
+   else if(k===0xa0||k===0xb0||k===0xe0)p+=2;
+   else if(k===0xc0||k===0xd0)p+=1;
+   else break;
+  }
+  p=end;
+ }
+ if(!noten.length||!ppq)return null;
+ const t0=Math.min.apply(null,noten.map(n=>n.t0));
+ const bass=noten.filter(n=>n.ch!==9&&n.n<60),bron=bass.length?bass:noten.filter(n=>n.ch!==9);
+ const hist={};bron.forEach(n=>hist[n.n%12]=(hist[n.n%12]||0)+1);
+ const rootPC=+Object.keys(hist).sort((a,b)=>hist[b]-hist[a])[0]||0;
+ let bestL='majeur',bs=-1;
+ for(const ln in LADDERS){const ok=new Set(LADDERS[ln].map(i=>(rootPC+i)%12));
+  const c=noten.filter(n=>n.ch!==9&&ok.has(n.n%12)).length;if(c>bs){bs=c;bestL=ln}}
+ const sc=LADDERS[bestL];
+ const deg=n=>{const pc=((n.n-rootPC)%12+12)%12;let bi=0,bd=99;
+  for(let i=0;i<sc.length;i++){const d=Math.min(Math.abs(sc[i]-pc),12-Math.abs(sc[i]-pc));if(d<bd){bd=d;bi=i}}return bi};
+ const drums={KICK:Array(16).fill(0),SNARE:Array(16).fill(0),HAT:Array(16).fill(0),OHAT:Array(16).fill(0)};
+ const MAP={35:'KICK',36:'KICK',38:'SNARE',40:'SNARE',42:'HAT',44:'HAT',57:'HAT',52:'HAT',46:'OHAT',51:'OHAT',53:'OHAT'};
+ const mel=[];
+ for(const n of noten){
+  const rel=n.t0-t0,bar=Math.floor(rel/(st*16));
+  if(bar<0||bar>3)continue;
+  const s=Math.round(rel/st)%16;
+  if(n.ch===9){const r=MAP[n.n];if(r)drums[r][s]=1;continue}
+  if(mel.some(m=>m.s===s&&m.b===bar))continue;
+  mel.push({b:bar,s:s,d:deg(n),l:Math.max(1,Math.min(8,Math.round((n.t1-n.t0)/st)))});
+ }
+ const perBar={};mel.forEach(m=>perBar[m.b]=(perBar[m.b]||0)+1);
+ const bar=+Object.keys(perBar).sort((a,b)=>perBar[b]-perBar[a])[0]||0;
+ const mel16=mel.filter(m=>m.b===bar).sort((a,b)=>a.s-b.s).map(m=>({s:m.s,d:m.d,l:m.l}));
+ return {name:naam.replace(/\.midi?$/i,''),bpm:bpm||0,drums:drums,mel:mel16};
+}
+function leerMid(fs){let ok=0,fout=0;
+ Promise.all([...fs].map(f=>f.arrayBuffer().then(ab=>{const k=parseMidKit(ab,f.name);
+  if(k){KITS.GELEERD=KITS.GELEERD||[];KITS.GELEERD.push(k);ok++}else fout++}).catch(()=>fout++)))
+ .then(()=>{try{localStorage.setItem('breinGeleerd',JSON.stringify(KITS.GELEERD||[]))}catch(e){}
+  bouwUI();if(ok)kiesGenre('GELEERD');
+  $('st').textContent='📚 '+ok+' kit(s) geleerd → GELEERD-pil'+(fout?' · '+fout+' bestand(en) overgeslagen':'');});}
+fetch('breinpro-kits.json').then(r=>r.json()).then(k=>{KITS=k;try{const g=JSON.parse(localStorage.getItem('breinGeleerd')||'[]');if(g.length)KITS.GELEERD=(KITS.GELEERD||[]).concat(g)}catch(e){}bouwUI();kiesGenre(Object.keys(k).find(g=>k[g].length));});
 </script></body></html>
