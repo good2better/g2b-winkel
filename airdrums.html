@@ -114,8 +114,14 @@ async function setupMIDI(){
       inp.onmidimessage=ev=>{
         const [st,n,v]=ev.data;
         if((st&0xF0)===0x90&&v>0){
+          ensureAC();
           const ps=pads(),z=ps.findIndex(p=>p.note===n);
-          if(z>=0){ensureAC();padHit(z,Math.max(.3,v/127));}
+          if(z>=0){padHit(z,Math.max(.3,v/127));}
+          else{ // melodie-instrumenten (gitaar/bas/blaas): speel de melodie-synth + neem mee op
+            const vv=Math.max(.25,v/127);
+            if($('snd').value==='aan')SYN.mel(vv,n);
+            const vel=Math.min(127,40+Math.round(v*.7));noteOn(n,vel);logNote(n,vel);
+          }
         }
       };
     }
