@@ -381,7 +381,7 @@ addEventListener('keydown',e=>{
   if(e.repeat||e.target.tagName==='SELECT'||e.target.tagName==='INPUT')return;
   const m=$('mode').value;if(m!=='muis'&&m!=='drums')return;
   const z=KEYS.indexOf(e.key.toLowerCase());if(z<0)return;
-  ensureAC();padHit(z,.9);
+  ensureAC();padHit(z,e.shiftKey?1:.7); // SHIFT = accent-slag
 });
 
 // --- hoofdloop ---
