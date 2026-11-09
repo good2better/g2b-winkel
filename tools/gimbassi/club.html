@@ -49,7 +49,7 @@ canvas.wave{width:100%;height:54px;background:#0a0d0a;border:1px solid var(--ran
 <div id="insts"></div>
 <button class="plus" onclick="maakInst()" title="nog een GIM BASSI — lagen maken">+</button>
 <div class="kaart"><b>zo werkt-ie:</b> bestand erin → BASSI zoekt zelf het tempo + de kick-slagen in het lage deel · <b>QUANTIZE</b> zet de slagen netjes op het 16e-raster (zoals beatmaker) · <b>KICK</b> = alleen die slagen · <b>BASS</b> = de sub/808 eronder, kicks eruit gedimd · plus-knop = nog een voor lagen</div>
-<div class="kaart"><b>🎛 808-GRID:</b> na ⚡ BASSI DING staan de gevonden kick + sub als vakjes in het grid — klik vakjes aan/uit om je eigen bassline te bouwen · <b>808-TOON</b> kiest de toonhoogte · ▶ SPEEL loopt het patroon als échte 808 · 📥 .mid = exporteren naar je DAW · plus-knop = extra machine voor elke laag</div>
+<div class="kaart"><b>🎛 808-GRID:</b> na ⚡ MAAK BASLIJN staan de gevonden kick + sub als vakjes in het grid — klik vakjes aan/uit om je eigen bassline te bouwen · <b>808-TOON</b> kiest de toonhoogte · ▶ SPEEL loopt het patroon als échte 808 · 📥 .mid = exporteren naar je DAW · plus-knop = extra machine voor elke laag</div>
 <script>
 'use strict';const $=id=>document.getElementById(id);
 let nInst=0;
@@ -73,7 +73,7 @@ function maakInst(){
    </span></label>
    <label><b>GRID</b><select id="${id}-grid"><option value="4">1/4</option><option value="8">1/8</option><option value="16" selected>1/16</option></select></label>
    <button class="uit on" id="${id}-q">⏱ QUANTIZE</button>
-   <button class="uit go" id="${id}-go">⚡ BASSI DING</button>
+   <button class="uit go" id="${id}-go">⚡ MAAK BASLIJN</button>
   </div>
   <div class="res" id="${id}-res"></div>
  </div>
@@ -139,7 +139,7 @@ async function laad(id,f){
   for(let ch=0;ch<buf.numberOfChannels;ch++){const d=buf.getChannelData(ch);for(let i=0;i<n;i++)mono[i]+=d[i]/buf.numberOfChannels;}
   Object.assign(INST[id]||={},{mono,sr,kicks:null,bpm:null,low:null});
   tekenGolf(id,mono,sr);
-  st.textContent=f.name+' — '+(n/sr).toFixed(1)+'s · '+sr+' Hz · druk ⚡ BASSI DING';
+  st.textContent=f.name+' — '+(n/sr).toFixed(1)+'s · '+sr+' Hz · druk ⚡ MAAK BASLIJN';
  }catch(e){st.textContent='kan niet lezen: '+e.message}
 }
 function tekenGolf(id,mono,sr){
@@ -263,7 +263,8 @@ function speelGroove(id){const I=INST[id];
   while(I.gstap<16&&t0+I.gstap*spb<ct+0.06){
    const s=I.gstap,t=t0+s*spb;
    if(I.kick[s])kik(t,0.95);
-   if(I.sub[s])bas808(t,f,0.5,spb*1.9);
+   if(I.sub[s]){let nx=16;for(let k=s+1;k<16;k++)if(I.sub[k]){nx=k;break}
+    bas808(t,f,I.kick[s]?0.34:0.5,(nx-s)*spb*0.95);}
    setTimeout(ss=>gHighlight(id,ss),Math.max(0,(t-gac.currentTime)*1000),s);
    I.gstap++;}
   if(I.gstap>=16&&ct>t0+16*spb){I.gstap=0;t0=ct+0.05;}
@@ -297,6 +298,7 @@ const GROOVES={
 function groovePreset(id,naam){const I=INST[id],g=GROOVES[naam];if(!g)return;
  I.kick.fill(0);I.sub.fill(0);
  g.kick.forEach(s=>I.kick[s]=1);g.sub.forEach(s=>I.sub[s]=1);
+ for(let s=0;s<16;s++)if(I.kick[s]&&I.sub[s]){const d=(s+1<16&&!I.kick[s+1]&&!I.sub[s+1])?s+1:(s-1>=0&&!I.kick[s-1]&&!I.sub[s-1])?s-1:-1;I.sub[s]=0;if(d>=0)I.sub[d]=1;}
  $(id+'-grij').querySelectorAll('.gc').forEach(c=>{const r=c.dataset.r,s=+c.dataset.s;c.classList.toggle('aan',!!I[r][s]);});
  $(id+'-st').textContent='🎛 '+naam.toUpperCase()+'-groove geladen — pas aan of speel af';}
 // ---------- .mid export (SMF type 0, 960 PPQ): kick + 808-sub ----------
