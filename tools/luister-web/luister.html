@@ -24,6 +24,11 @@ input[type=range]{width:140px;accent-color:var(--groen)}
 #grid{width:100%;background:var(--kaart);border:1px solid var(--rand);border-radius:10px;display:block;margin-top:10px}
 .info{background:var(--kaart);border:1px solid var(--rand);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--dim);margin-top:10px}
 body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#12231a;--dim:#5c6b61}
+.lt{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:6px 10px;font-size:.72rem;font-weight:700;cursor:pointer}
+.lt.on{background:var(--groen);color:#04130b;border-color:var(--groen)}
+.lt.mut{background:#7a1d1d;color:#ffd6d6;border-color:#a04040}
+#cnt{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:98;pointer-events:none;background:#00000055}
+#cnt span{font:900 130px/1 system-ui;color:var(--groen);text-shadow:0 0 40px #19c37d88}
 </style></head><body>
 <h1>G2B LUISTER <small>geluid → MIDI-loop schrijver · browser</small></h1>
 <div id="drop">👂 Sleep een audio-bestand hierheen of klik om te kiezen (wav/mp3/ogg) — of druk 🎤 en neurie 4 tellen<input type="file" id="file" accept="audio/*" hidden></div>
@@ -37,6 +42,18 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <span id="st">nog geen geluid geladen</span>
 </div>
 <div id="pills"></div>
+<div class="rij" id="lagen">
+<span style="font-size:.72rem;color:var(--dim);font-weight:700">LAGEN:</span>
+<button class="lt" id="m0" onclick="mut(0)" title="drums dempen">🔊 DRUMS</button>
+<button class="lt" id="s0" onclick="sol(0)" title="alleen drums horen">S</button>
+<button class="lt" id="l0" onclick="lok(0)" title="drums vastzetten — dice/refine laat ze staan">🔒</button>
+<button class="lt" id="m1" onclick="mut(1)" title="melodie dempen">🔊 MELODIE</button>
+<button class="lt" id="s1" onclick="sol(1)" title="alleen melodie horen">S</button>
+<button class="lt" id="l1" onclick="lok(1)" title="melodie vastzetten">🔒</button>
+<button class="lt" id="m2" onclick="mut(2)" title="bas dempen">🔊 BAS</button>
+<button class="lt" id="s2" onclick="sol(2)" title="alleen bas horen">S</button>
+<button class="lt" id="l2" onclick="lok(2)" title="bas vastzetten">🔒</button>
+</div>
 <div class="rij">
 <label>HEFT (dichtheid) <b id="vHeft">50%</b><input type="range" id="heft" min="0" max="100" value="50"></label>
 <label>MENS <b id="vMens">30%</b><input type="range" id="mens" min="0" max="100" value="30"></label>
@@ -49,6 +66,7 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <button class="uit" id="bMidM" onclick="mid(1)" disabled>↓MELODIE.mid</button>
 </div>
 <canvas id="grid"></canvas>
+<div id="cnt"><span></span></div>
 <div class="info">Zo werkt het: hij luistert naar je geluid → vindt de slagen (kick/snare/hat), het tempo en de toonsoort → schrijft een MIDI-loop in je genre. Rijen: KICK · SNARE · HAT · TOM · MELODIE (blokfluit) · BAS. ↓DRUMS en ↓MELODIE downloaden echte .mid-bestanden voor je DAW. Alles draait in je browser — niks gaat naar internet.</div>
 <script>
 "use strict";
@@ -132,7 +150,12 @@ function analyseer(){
  },30);}
 
 // ===== generate =====
+const MUT=[0,0,0],SOL=[0,0,0],LOK=[0,0,0];
+function mut(c){MUT[c]^=1;$('m'+c).classList.toggle('mut',!!MUT[c]);}
+function sol(c){SOL[c]^=1;$('s'+c).classList.toggle('on',!!SOL[c]);}
+function lok(c){LOK[c]^=1;$('l'+c).classList.toggle('on',!!LOK[c]);}
 function genereer(refine){
+ const bewaar=notes.filter(n=>LOK[n.ch]);
  notes=[];
  const barsL=[2,4,8,16],bars=barsL[Math.max(0,Math.min(3,+$('len').value))];
  const steps=bars*16;
@@ -165,6 +188,7 @@ function genereer(refine){
   for(let bb=0;bb<bars;bb++){
    addN(bb*16,root-12,100,4,2);
    if(rnd()<dens)addN(bb*16+8,root-12+sc[(bb%3)*2]%12,95,4,2);}}
+ notes=notes.filter(n=>!LOK[n.ch]).concat(bewaar);
  notes.sort((a,b)=>a.at-b.at);}
 
 // ===== afspelen =====
@@ -198,8 +222,10 @@ function melNote(n,v,dur,t,ch){const a=ac();
   o.connect(g);g.connect(mg());o.start(t);o.stop(t+dur+0.05);}}
 async function speel(){if(!notes.length)return;await laadFluit();const a=ac();mg();
  loopLen=Math.max(...notes.map(x=>x.at))+0.5;
+ const enigSolo=SOL[0]||SOL[1]||SOL[2];
  const plan=()=>{const t0=loopAt;
-  for(const n of notes){const t=t0+n.at;if(n.ch===0)drum(n.note,n.vel,t);else melNote(n.note,n.vel,n.dur,t,n.ch);}
+  for(const n of notes){if(MUT[n.ch]||(enigSolo&&!SOL[n.ch]))continue;
+   const t=t0+n.at;if(n.ch===0)drum(n.note,n.vel,t);else melNote(n.note,n.vel,n.dur,t,n.ch);}
   loopAt=t0+loopLen;};
  loopAt=a.currentTime+0.08;plan();
  playTimer=setInterval(()=>{if(loopAt<a.currentTime+0.6)plan();},200);
@@ -263,6 +289,16 @@ drop.ondragleave=()=>drop.classList.remove('over');
 drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');if(e.dataTransfer.files[0])lees(e.dataTransfer.files[0]);};
 file.onchange=()=>{if(file.files[0])lees(file.files[0]);};
 function lees(f){f.arrayBuffer().then(ab=>ac().decodeAudioData(ab)).then(zetBuf).catch(()=>st.textContent='kan dit bestand niet lezen');}
+// aftel/count-in: 4 tikjes op het gevonden tempo, dan start de opname op de maat
+function tik(hoog){const a=ac(),g=a.createGain(),o=a.createOscillator();
+ o.frequency.value=hoog?1200:750;o.type='square';
+ g.gain.setValueAtTime(hoog?0.15:0.08,a.currentTime);g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+0.07);
+ o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+0.08);}
+function telAf(cb){
+ const cnt=$('cnt');const beatMs=Math.max(300,Math.min(800,60000/bpm));let n=4;
+ const stap=()=>{if(n>0){cnt.firstChild.textContent=n;cnt.style.display='flex';tik(false);n--;setTimeout(stap,beatMs);}
+  else{cnt.style.display='none';tik(true);cb();}};
+ stap();}
 async function neuri(){
  const a=ac();
  try{
@@ -272,8 +308,9 @@ async function neuri(){
   rec.onstop=async()=>{stream.getTracks().forEach(t=>t.stop());
    const ab=await new Blob(parts).arrayBuffer();
    try{const ab2=await a.decodeAudioData(ab);zetBuf(ab2);}catch(e){st.textContent='opname niet leesbaar';}};
-  st.textContent='OPNAME — neurie/speel nu… (4 sec)';$('bMic').disabled=true;
-  rec.start();setTimeout(()=>{rec.stop();$('bMic').disabled=false;},4000);
+  $('bMic').disabled=true;
+  telAf(()=>{st.textContent='OPNAME — neurie/speel nu… (4 sec)';
+   rec.start();setTimeout(()=>{rec.stop();$('bMic').disabled=false;},4000);});
  }catch(e){st.textContent='geen microfoon-toegang — sleep een bestand erin';}}
 
 // ===== ui =====
