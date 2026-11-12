@@ -414,7 +414,8 @@
    "upsell": [
     "g2b-workstation"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "cover": "media/covers/g2bsuite1.png"
   },
   {
    "id": "seofabriek1",
@@ -439,7 +440,8 @@
    "upsell": [
     "marketerbundel1",
     "g2bsuite1"
-   ]
+   ],
+   "cover": "media/covers/seofabriek1.png"
   },
   {
    "id": "agency1",
@@ -462,7 +464,8 @@
    "upsell": [
     "g2bsuite1"
    ],
-   "specs": "📄 Digitaal licentie-bestand (PDF) · geen software nodig"
+   "specs": "📄 Digitaal licentie-bestand (PDF) · geen software nodig",
+   "cover": "media/covers/agency1.png"
   },
   {
    "id": "marketerbundel1",
@@ -485,7 +488,8 @@
    "upsell": [
     "g2bsuite1"
    ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW"
+   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW",
+   "cover": "media/covers/marketerbundel1.png"
   },
   {
    "id": "mailfabriek1",
@@ -511,7 +515,8 @@
     "leadfabriek1",
     "g2bsuite1"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "cover": "media/covers/mailfabriek1.png"
   },
   {
    "id": "sheetfabriek1",
@@ -537,7 +542,8 @@
     "sequentiefabriek1",
     "g2bsuite1"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "cover": "media/covers/sheetfabriek1.png"
   },
   {
    "id": "sequentiefabriek1",
@@ -563,7 +569,8 @@
     "sheetfabriek1",
     "g2bsuite1"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "cover": "media/covers/sequentiefabriek1.png"
   },
   {
    "id": "crmfabriek1",
@@ -589,7 +596,8 @@
     "leadfabriek1",
     "g2bsuite1"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "cover": "media/covers/crmfabriek1.png"
   },
   {
    "id": "watcherfabriek1",
@@ -615,7 +623,8 @@
     "flowfabriek1",
     "g2bsuite1"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "cover": "media/covers/watcherfabriek1.png"
   },
   {
    "id": "flowfabriek1",
@@ -641,7 +650,8 @@
     "watcherfabriek1",
     "g2bsuite1"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "cover": "media/covers/flowfabriek1.png"
   },
   {
    "id": "kanaalfabriek1",
@@ -656,7 +666,7 @@
    },
    "groep": "apps",
    "badge": "NIEUW",
-   "cover": "media/kanaalfabriek-cover.png",
+   "cover": "media/covers/kanaalfabriek1.png",
    "download_dir": "d/kanaalfabriek1",
    "demo": "media/kanaalfabriek-demo.mp4",
    "video": "media/kanaalfabriek-demo.mp4",
@@ -693,7 +703,8 @@
     "lijstfabriek1",
     "g2bsuite1"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "cover": "media/covers/leadfabriek1.png"
   },
   {
    "id": "lijstfabriek1",
@@ -719,7 +730,8 @@
     "crmfabriek1",
     "g2bsuite1"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "cover": "media/covers/lijstfabriek1.png"
   },
   {
    "id": "g2bvibe1",
@@ -1544,7 +1556,8 @@
    "upsell": [
     "g2bclub"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "cover": "media/covers/school1.png"
   },
   {
    "id": "g2bbd1",
@@ -1637,7 +1650,7 @@
    "sub_nl": "media/gamefabriek1-uitleg.nl.vtt",
    "sub_es": "media/gamefabriek1-uitleg.es.vtt",
    "uitgelicht": true,
-   "cover": "apps-img/gamefabriek.jpg",
+   "cover": "media/covers/gamefabriek1.png",
    "upsell": [
     "g2bclub",
     "g2balles"
@@ -1750,7 +1763,8 @@
     "koop": "bestel.html?p=g2bkoor",
     "download": "bedankt.html?k=g2bkoor"
    },
-   "groep": "plugins"
+   "groep": "plugins",
+   "cover": "media/covers/g2bkoor.png"
   },
   {
    "id": "aura-midiforge",
