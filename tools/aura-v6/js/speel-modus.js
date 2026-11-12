@@ -81,11 +81,11 @@ const SpeelModus = {
         <option value="kaseko">KASEKO/SURI</option><option value="sus">SUS4</option>
         <option value="trap">TRAP DONKER</option>
       </select>
-      <button data-m="oct" class="sm">OCTAAF STACK</button>
+      <button data-m="oct" class="sm">OCTAAF-STAPEL</button>
       <button data-m="arp" class="sm">ARP</button>
       <select id="smArp" class="sm-sel"><option value="8">1/8</option><option value="16">1/16</option></select>
       <select id="smArpDir" class="sm-sel"><option value="up">↑</option><option value="down">↓</option><option value="updown">↑↓</option></select>
-      <button id="smScale" class="sm">SCALE LOCK: UIT</button>
+      <button id="smScale" class="sm">NOOIT VALS: UIT</button>
       <select id="smKey" class="sm-sel"></select>`;
     el.appendChild(bar);
 
@@ -104,7 +104,7 @@ const SpeelModus = {
     keySel.onchange = e => { const [r, t] = e.target.value.split(':'); S.scaleRoot = +r; S.scaleType = t; };
     bar.querySelector('#smScale').onclick = e => {
       S.scaleOn = !S.scaleOn;
-      e.target.textContent = 'SCALE LOCK: ' + (S.scaleOn ? 'AAN' : 'UIT');
+      e.target.textContent = 'NOOIT VALS: ' + (S.scaleOn ? 'AAN' : 'UIT');
       e.target.classList.toggle('on', S.scaleOn);
     };
     return this;

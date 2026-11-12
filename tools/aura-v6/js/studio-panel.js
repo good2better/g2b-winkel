@@ -15,9 +15,9 @@ const StudioPanel = {
     box.innerHTML = `
       <div class="sp-trans">
         <button id="spDirect" class="sp-main">⚡ DIRECT SPELEN</button>
-        <button id="spPlay">▶ PLAY</button>
+        <button id="spPlay">▶ SPEEL</button>
         <button id="spStop">■ STOP</button>
-        <button id="spRec">● REC</button>
+        <button id="spRec">● OPN</button>
         <button id="spLoop" class="on">↻ LOOP: AAN</button>
         <button id="spStep">STAP-INSPELEN</button>
         <button id="spWis">WIS RASTER</button>
@@ -91,7 +91,7 @@ const StudioPanel = {
       st.textContent = P.stepRec ? 'stap-inspelen aan — elke noot = volgende stap' : ''; };
     box.querySelector('#spWis').onclick = () => { P.notes = []; draw(); st.textContent = 'raster leeg'; };
     const updRec = () => { const b = box.querySelector('#spRec');
-      b.classList.toggle('on', P.rec); b.textContent = P.rec ? '● REC (aan)' : '● REC'; };
+      b.classList.toggle('on', P.rec); b.textContent = P.rec ? '● OPN (aan)' : '● OPN'; };
     box.querySelector('#spRec').onclick = () => { P.rec = !P.rec; updRec();
       if (P.rec) { Aura.resume(); start(); st.textContent = 'opnemen — speel noten in'; } };
 
