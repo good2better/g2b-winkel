@@ -1,1 +1,82 @@
-{"banks": ["BEST-OF"], "pads": {"BEST-OF": ["Piano 56", "Donderpi 54", "Housepno 54", "Hammond 60", "Strings 54", "Vibra 54", "Marimba 56", "Vibes 56", "Mbira 54", "Nylon 60", "Spaansgtr 52", "Zoukgit 63", "Egtrclean 67", "Ebass 35", "Zoukbas 35", "Steeldrm 72"]}, "files": {"BEST-OF": ["piano", "donderpi", "housepno", "hammond", "strings", "vibra", "marimba", "vibes", "mbira", "nylon", "spaansgtr", "zoukgit", "egtrclean", "ebass", "zoukbas", "steeldrm"]}}
+{
+ "banks": [
+  "BEST-OF",
+  "BEST-OF 2"
+ ],
+ "pads": {
+  "BEST-OF": [
+   "Piano 56",
+   "Donderpi 54",
+   "Housepno 54",
+   "Hammond 60",
+   "Strings 54",
+   "Vibra 54",
+   "Marimba 56",
+   "Vibes 56",
+   "Mbira 54",
+   "Nylon 60",
+   "Spaansgtr 52",
+   "Zoukgit 63",
+   "Egtrclean 67",
+   "Ebass 35",
+   "Zoukbas 35",
+   "Steeldrm 72"
+  ],
+  "BEST-OF 2": [
+   "SAX",
+   "OBOE",
+   "HARP",
+   "BRASS",
+   "TROMBONE",
+   "GLOCK",
+   "RECORDER",
+   "MARIMBA LO",
+   "BASSOON",
+   "FUS-DAN-GTR",
+   "PLUCK",
+   "FLUTE",
+   "DARBUKA",
+   "BONGO",
+   "BELL",
+   "FUS-BAS-KARP"
+  ]
+ },
+ "files": {
+  "BEST-OF": [
+   "piano",
+   "donderpi",
+   "housepno",
+   "hammond",
+   "strings",
+   "vibra",
+   "marimba",
+   "vibes",
+   "mbira",
+   "nylon",
+   "spaansgtr",
+   "zoukgit",
+   "egtrclean",
+   "ebass",
+   "zoukbas",
+   "steeldrm"
+  ],
+  "BEST-OF 2": [
+   "sax_kSx50_1",
+   "obo_kObo_D4",
+   "har_kH_C4",
+   "bra_kBra_C3",
+   "bra_kTbn_D3",
+   "glock_kGK_G4",
+   "rec_kRec_C4",
+   "mar_kMar_C2_s",
+   "bsn_kBsn_C3",
+   "kS_FUSGITDAN_39_v1",
+   "pluck",
+   "dru_sf_flute_1792585599",
+   "kD_darb",
+   "dru_sf_bongo_1792585593",
+   "kD_bell",
+   "kS_FUSBASKARP_30_v1"
+  ]
+ }
+}
