@@ -213,11 +213,6 @@ footer b{color:var(--accent)}
     <span data-i18n="trust4">🎹 100% eigen geluid — geen samples van anderen</span>
     <span data-i18n="trust5">📜 commercieel gebruik inbegrepen</span>
   </div>
-  <a class="deal" href="#" id="deal" data-i18n-html="deal">
-    <span><span class="dt">🔥 DEAL — G2B PRODUCER SUITE</span><br>
-    <span class="dd">6 plugins in één set · los €180 → nu</span></span>
-    <span class="dp">€79</span>
-  </a>
   <div class="stickybar">
   <input class="zoek" id="zoek" type="search" data-i18n-ph="zoek_ph" placeholder="🔍 Zoek in de winkel… (beat, plugin, pack, boek)" aria-label="Zoek in de winkel">
   <div id="cats" class="groepen"></div>
@@ -266,11 +261,7 @@ if(!EV_SCRIPT_URL){
     }catch(_){ evM.textContent=(typeof g2bT==='function'?g2bT('news_err'):'Even niet gelukt — mail ons via de link hieronder.'); }
   });
 }
-document.getElementById('deal').addEventListener('click',function(e){
-  e.preventDefault();
-  var c=document.querySelector('.card[data-id="g2bprodsuite"]');
-  if(c){c.scrollIntoView({behavior:'smooth',block:'center'});var d=c.querySelector('details.meer');if(d)d.open=true;}
-});
+
 </script>
 <script type="module" src="app.js"></script>
 <script src="cookie.js"></script>
