@@ -15,10 +15,16 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 .trak{display:flex;align-items:center;gap:8px;background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:8px 10px;margin-bottom:8px;flex-wrap:wrap}
 .trak .nm{font-weight:800;font-size:.7rem;color:var(--groen);width:58px}
 .proll{width:100%;height:72px;background:#0b0e0c;border:1px solid var(--rand);border-radius:6px;cursor:crosshair}
-.steps{display:grid;grid-template-columns:repeat(16,1fr);gap:4px;width:100%}
-.laneblock{flex:1;min-width:280px;border-radius:6px;border:1px solid;padding:4px;position:relative}
+.steps{display:grid;grid-template-columns:repeat(16,1fr);gap:4px;width:100%;min-width:0}
+.laneblock{flex:1;min-width:200px;max-width:100%;overflow:hidden;border-radius:6px;border:1px solid;padding:4px;position:relative}
 .alane{width:100%;height:72px;background:#0b0e0c;border:1px solid var(--rand);border-radius:6px;cursor:ew-resize}
 .klein{padding:6px 10px;font-size:.72rem}
+.fxrack{flex-basis:100%;background:#0d1512;border:1px solid var(--rand);border-radius:8px;padding:8px;margin-top:4px;display:none}
+.fxrack .fx{display:flex;align-items:center;gap:6px;background:#122019;border:1px solid var(--rand);border-radius:6px;padding:5px 8px;margin-bottom:4px;flex-wrap:wrap}
+.fxrack .fx b{font-size:.68rem;color:var(--groen);min-width:60px}
+.fxrack label{font-size:.62rem;display:flex;align-items:center;gap:3px}
+.fxrack input[type=range]{width:70px}
+.fxsel{font-size:.7rem}
 #recov{position:fixed;inset:0;background:rgba(6,9,7,.94);display:none;align-items:center;justify-content:center;z-index:50;flex-direction:column}
 #recov .pane{width:min(92vw,860px);background:var(--kaart);border:1px solid var(--rand);border-radius:16px;padding:22px;text-align:center}
 #recwave{width:100%;height:200px;background:#0b0e0c;border:1px solid var(--rand);border-radius:10px}
@@ -48,6 +54,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <button class="uit klein" onclick="addTrack('roll')">+TOON</button>
 <button class="uit klein" onclick="addTrack('audio')">+AUDIO</button>
 <button class="uit klein" id="arrbtn" onclick="arrToggle()">▣ OVERZICHT</button>
+<button class="uit klein" id="mfxbtn" onclick="mfxToggle()">🎚 MASTER FX</button>
 <button class="uit" onclick="ongedaan()">↩ ONGEDAAN MAKEN</button>
 <span id="st">sets laden…</span>
 <button class="uit" id="skin" onclick="skin()">◐ WIT</button>
@@ -61,6 +68,11 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
   <span style="font-size:.68rem;color:var(--sub)">alle lanes samen — playhead beweegt mee</span>
  </div>
  <canvas id="arrw" width="1000" height="200" style="width:100%;background:#0b0e0c;border-radius:8px;display:block"></canvas>
+</div>
+<div id="mfxpanel" style="display:none;margin-bottom:10px;background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:10px">
+ <b style="font-size:.75rem;color:var(--groen)">🎚 MASTER — effects op alles samen</b>
+ <div id="mfxlist"></div>
+ <select class="fxsel" id="mfxsel"><option value="">+ effect op master…</option><option value="eq">EQ (3-band)</option><option value="delay">DELAY</option><option value="reverb">REVERB</option><option value="filter">FILTER</option><option value="drive">DRIVE</option><option value="brein">BREIN-resonator</option></select>
 </div>
 <div id="traks"></div>
 <div id="recov"><div class="pane">
@@ -112,12 +124,17 @@ async function mkTrack(t,type){
    <div class="laneblock" style="border-color:${col}66;background:linear-gradient(180deg,${col}22,${col}0e)">${lane}</div>
    <label>vol<input type="range" id="vol${t}" min="0" max="100" value="80" style="width:52px"></label>
    <label>pan<input type="range" id="pan${t}" min="-100" max="100" value="0" style="width:48px"></label>
+   <button class="uit" id="fxb${t}" style="padding:6px 10px" onclick="fxToggle(${t})" title="Effects op dit spoor">▾FX</button>
    <button class="uit" id="ar${t}" style="padding:6px 10px" onclick="opneem(${t})" title="Neem audio op — je take wordt je ${type==='audio'?'clip':'pad'}">⏺ OP</button>
    <button class="uit" id="mut${t}" style="padding:6px 10px" onclick="mute(${t})">MUTE</button>
-   <button class="uit" style="padding:6px 10px" onclick="wis(${t})">✕</button>`;
+   <button class="uit" style="padding:6px 10px" onclick="wis(${t})">✕</button>
+   <div class="fxrack" id="fxr${t}"><div id="fxl${t}"></div>
+    <select class="fxsel" id="fxs${t}"><option value="">+ effect op TR${t+1}…</option><option value="eq">EQ (3-band)</option><option value="delay">DELAY</option><option value="reverb">REVERB</option><option value="filter">FILTER</option><option value="drive">DRIVE</option><option value="brein">BREIN-resonator</option></select>
+   </div>`;
  el.appendChild(row);
+ document.getElementById('fxs'+t).onchange=e=>{if(!e.target.value)return;fxAdd(t,e.target.value);e.target.value=''};
  row.style.setProperty('--tc',col);
- TR[t]={type,col,grid:type==='grid'?new Array(16).fill(false):null,notes:type==='roll'?[]:null,clip:null,buffers:[],pad:0,vol:.8,muted:false};
+ TR[t]={type,col,fx:[],grid:type==='grid'?new Array(16).fill(false):null,notes:type==='roll'?[]:null,clip:null,buffers:[],pad:0,vol:.8,muted:false};
  if(type==='grid'){const steps=document.getElementById('st'+t);
   for(let s=0;s<16;s++){const c=document.createElement('button');c.className='st';c.onclick=()=>{snap();TR[t].grid[s]=!TR[t].grid[s];c.className='st'+(TR[t].grid[s]?' aan':'')};steps.appendChild(c)}}
  else if(type==='roll')bouwRoll(t);
@@ -178,7 +195,7 @@ function speel(t,pitch){
  g.gain.setValueAtTime(0,tn);
  g.gain.linearRampToValueAtTime(vol*1.3,tn+0.002);
  g.gain.setTargetAtTime(vol,tn+0.002,0.005);
- if(pn)s.connect(g).connect(pn).connect(c.destination);else s.connect(g).connect(c.destination);s.start();
+ if(pn)s.connect(g).connect(pn).connect(busOf(t));else s.connect(g).connect(busOf(t));s.start();
  TR[t]._src[padk]={s,g};s.onended=()=>{if(TR[t]._src[padk]&&TR[t]._src[padk].s===s)delete TR[t]._src[padk]};
 }
 /* ---------- piano-roll voor toon-tracks (TR3-4): tekenen/slepen/resizen/wissen ---------- */
@@ -282,7 +299,7 @@ function speelClip(t){
  const g=ac().createGain(),pn=ac().createStereoPanner?ac().createStereoPanner():null;
  if(pn)pn.pan.value=+document.getElementById('pan'+t).value/100;
  g.gain.value=vol;
- if(pn)s.connect(g).connect(pn).connect(ac().destination);else s.connect(g).connect(ac().destination);
+ if(pn)s.connect(g).connect(pn).connect(busOf(t));else s.connect(g).connect(busOf(t));
  s.start(0,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)));
 }
 function tick(){
@@ -329,6 +346,123 @@ function drawArr(){
  // playhead
  if(playing){g.fillStyle='#fff';g.fillRect(NAME+((step+15)%16)*Z,0,2,c.height)}
 }
+// ===== FX-engine: inserts per spoor + master =====
+const MAST={fx:[],in:null,out:null};
+function newFx(type){
+ const d={eq:{lo:0,mid:0,hi:0},delay:{t:.3,fb:.35,mix:.3},reverb:{size:2,mix:.3},filter:{f:8000,q:1},drive:{amt:.4,out:.8},brein:{note:57,fb:.5,mix:.4}};
+ return {type,bypass:false,p:{...d[type]}};
+}
+function buildFxNode(c,fx){ // returns {in,out,upd}
+ const p=fx.p;
+ if(fx.type==='eq'){
+  const lo=c.createBiquadFilter();lo.type='lowshelf';lo.frequency.value=200;lo.gain.value=p.lo;
+  const mid=c.createBiquadFilter();mid.type='peaking';mid.frequency.value=1000;mid.Q.value=1;mid.gain.value=p.mid;
+  const hi=c.createBiquadFilter();hi.type='highshelf';hi.frequency.value=6000;hi.gain.value=p.hi;
+  lo.connect(mid);mid.connect(hi);
+  return {in:lo,out:hi,upd:()=>{lo.gain.value=p.lo;mid.gain.value=p.mid;hi.gain.value=p.hi}};
+ }
+ if(fx.type==='delay'){
+  const inp=c.createGain(),wet=c.createGain(),dl=c.createDelay(2),fb=c.createGain();
+  dl.delayTime.value=p.t;fb.gain.value=p.fb;wet.gain.value=p.mix;
+  inp.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(wet);inp.connect(wet);
+  const out=c.createGain();inp.connect(out);wet.connect(out);
+  return {in:inp,out,upd:()=>{dl.delayTime.value=p.t;fb.gain.value=p.fb;wet.gain.value=p.mix}};
+ }
+ if(fx.type==='reverb'){
+  const inp=c.createGain(),wet=c.createGain(),cv=c.createConvolver();
+  cv.buffer=fxIR(c,p.size);wet.gain.value=p.mix;
+  inp.connect(cv);cv.connect(wet);
+  const out=c.createGain();inp.connect(out);wet.connect(out);
+  return {in:inp,out,upd:()=>{cv.buffer=fxIR(c,p.size);wet.gain.value=p.mix}};
+ }
+ if(fx.type==='filter'){
+  const b=c.createBiquadFilter();b.type='lowpass';b.frequency.value=p.f;b.Q.value=p.q;
+  return {in:b,out:b,upd:()=>{b.frequency.value=p.f;b.Q.value=p.q}};
+ }
+ if(fx.type==='drive'){
+  const ws=c.createWaveShaper(),g=c.createGain();
+  const n=256,cur=new Float32Array(n);for(let i=0;i<n;i++){const x=i*2/n-1;cur[i]=Math.tanh(x*(1+p.amt*8))}ws.curve=cur;ws.oversample='2x';g.gain.value=p.out;
+  ws.connect(g);
+  return {in:ws,out:g,upd:()=>{const c2=new Float32Array(n);for(let i=0;i<n;i++){const x=i*2/n-1;c2[i]=Math.tanh(x*(1+p.amt*8))}ws.curve=c2;g.gain.value=p.out}};
+ }
+ if(fx.type==='brein'){ // resonator-comb op noot — het 'luistert' op het spoor
+  const inp=c.createGain(),out=c.createGain(),wet=c.createGain();
+  const f0=440*Math.pow(2,(p.note-69)/12);
+  const ns=[1,2,4].map(m=>{const b=c.createBiquadFilter();b.type='bandpass';b.frequency.value=f0*m;b.Q.value=14;return b});
+  const fb=c.createGain();fb.gain.value=p.fb;wet.gain.value=p.mix;
+  ns.forEach(b=>{inp.connect(b);b.connect(wet);b.connect(fb)});fb.connect(ns[0]);
+  inp.connect(out);wet.connect(out);
+  return {in:inp,out,upd:()=>{const f=440*Math.pow(2,(p.note-69)/12);ns.forEach((b,i)=>b.frequency.value=f*[1,2,4][i]);fb.gain.value=p.fb;wet.gain.value=p.mix}};
+ }
+ return {in:c.createGain(),out:c.createGain(),upd:()=>{}};
+}
+const _ir={};
+function fxIR(c,size){ // simpel stereo reverb-IR (ruis met decay)
+ const k=c.sampleRate+'_'+size;if(_ir[k])return _ir[k];
+ const len=Math.ceil(c.sampleRate*size),b=c.createBuffer(2,len,c.sampleRate);
+ for(let ch=0;ch<2;ch++){const d=b.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.2)}
+ _ir[k]=b;return b;
+}
+function ocIn(oc,t){ // offline bus → track fx chain → oc.destination (1x per render)
+ if(!TR[t]._occh){const ch=chainFor(oc,TR[t].fx);ch.out.connect(oc.destination);TR[t]._occh=ch}
+ return TR[t]._occh.in;
+}
+function chainFor(c,fxList){ // {in,out} — nieuwe keten voor ctx c
+ const first=c.createGain(),last=c.createGain();let cur=first;const nds=[];
+ for(const fx of fxList){if(fx.bypass)continue;const n=buildFxNode(c,fx);cur.connect(n.in);cur=n.out;nds.push({fx,n})}
+ cur.connect(last);return {in:first,out:last,nds};
+}
+function rebuildFx(t){ // herbouw live-keten van track t
+ const c=ac();if(!TR[t]._in){TR[t]._in=c.createGain();TR[t]._pn=c.createStereoPanner?c.createStereoPanner():c.createGain();const pe=document.getElementById('pan'+t);if(TR[t]._pn.pan)TR[t]._pn.pan.value=pe?pe.value/100:0;TR[t]._pn.connect(masterIn())}
+ const ch=chainFor(c,TR[t].fx);
+ try{TR[t]._in.disconnect()}catch(e){}
+ TR[t]._in.connect(ch.in);ch.out.connect(TR[t]._pn);TR[t]._ch=ch;
+}
+function masterIn(){
+ if(!MAST.in){const c=ac();MAST.in=c.createGain();rebuildMaster()}
+ return MAST.in;
+}
+function rebuildMaster(){
+ const c=ac();const ch=chainFor(c,MAST.fx);
+ try{MAST._ch&&MAST._ch.out.disconnect()}catch(e){}
+ ch.out.connect(c.destination);MAST._ch=ch;MAST.out=ch.out;
+ try{MAST.in.disconnect()}catch(e){}
+ MAST.in.connect(ch.in);
+}
+// speel/clip → via insert-keten i.p.v. direct
+function busOf(t){rebuildFx(t);return TR[t]._in}
+
+// UI
+const FXPARS={eq:[['lo','LAAG',-18,18],['mid','MID',-18,18],['hi','HOOG',-18,18]],
+ delay:[['t','TIJD',0.05,1],['fb','FEEDBACK',0,0.9],['mix','MIX',0,1]],
+ reverb:[['size','RUIMTE',0.3,4],['mix','MIX',0,1]],
+ filter:[['f','FREQ',100,16000],['q','Q',0.1,10]],
+ drive:[['amt','DRIVE',0,1],['out','UIT',0,1]],
+ brein:[['note','NOOT',36,84],['fb','FEEDBACK',0,0.9],['mix','MIX',0,1]]};
+function fxAdd(t,type){TR[t].fx.push(newFx(type));rebuildFx(t);fxDraw(t)}
+function fxDraw(t){
+ const el=document.getElementById('fxl'+t);if(!el)return;
+ el.innerHTML=TR[t].fx.map((fx,i)=>`<div class="fx"><b>${fx.type.toUpperCase()}</b>
+  ${FXPARS[fx.type].map(([k,nm,mn,mx])=>`<label>${nm}<input type="range" min="${mn}" max="${mx}" step="0.01" value="${fx.p[k]}" oninput="fxSet(${t},${i},'${k}',this.value)"></label>`).join('')}
+  <button class="uit klein" onclick="fxBypass(${t},${i})">${fx.bypass?'▶':'⏸'}</button>
+  <button class="uit klein" onclick="fxDel(${t},${i})">✕</button></div>`).join('')||'<span style="font-size:.65rem;color:var(--sub)">geen effects — kies hieronder</span>';
+}
+function fxSet(t,i,k,v){TR[t].fx[i].p[k]=+v;
+ if(TR[t]._ch){const nd=TR[t]._ch.nds.find(n=>n.fx===TR[t].fx[i]);if(nd)nd.n.upd()}
+}
+function fxBypass(t,i){TR[t].fx[i].bypass=!TR[t].fx[i].bypass;rebuildFx(t);fxDraw(t)}
+function fxDel(t,i){TR[t].fx.splice(i,1);rebuildFx(t);fxDraw(t)}
+function fxToggle(t){const r=document.getElementById('fxr'+t);r.style.display=r.style.display==='block'?'none':'block';if(r.style.display==='block')fxDraw(t)}
+function mfxToggle(){const p=document.getElementById('mfxpanel');p.style.display=p.style.display==='block'?'none':'block';if(p.style.display==='block')mfxDraw()}
+function mfxDraw(){
+ const el=document.getElementById('mfxlist');
+ el.innerHTML=MAST.fx.map((fx,i)=>`<div class="fx"><b>${fx.type.toUpperCase()}</b>
+  ${FXPARS[fx.type].map(([k,nm,mn,mx])=>`<label>${nm}<input type="range" min="${mn}" max="${mx}" step="0.01" value="${fx.p[k]}" oninput="mfxSet(${i},'${k}',this.value)"></label>`).join('')}
+  <button class="uit klein" onclick="MAST.fx[${i}].bypass=!MAST.fx[${i}].bypass;rebuildMaster();mfxDraw()">${fx.bypass?'▶':'⏸'}</button>
+  <button class="uit klein" onclick="MAST.fx.splice(${i},1);rebuildMaster();mfxDraw()">✕</button></div>`).join('')||'<span style="font-size:.65rem;color:var(--sub)">geen master-effects</span>';
+}
+function mfxSet(i,k,v){MAST.fx[i].p[k]=+v;if(MAST._ch){const nd=MAST._ch.nds.find(n=>n.fx===MAST.fx[i]);if(nd)nd.n.upd()}}
+document.getElementById('mfxsel').onchange=e=>{if(!e.target.value)return;MAST.fx.push(newFx(e.target.value));rebuildMaster();mfxDraw();e.target.value=''};
 let mediaRec=null;
 let recCtx=null,recAn=null,recRAF=null,recT0=0,recTarget=null;
 function recDraw(){
@@ -440,20 +574,21 @@ function abWav(rb){ // stereo interleaved PCM16
  const chs=[];for(let c=0;c<nc;c++)chs.push(rb.getChannelData(c));
  for(let i=0;i<n;i++)for(let c=0;c<nc;c++)v.setInt16(44+(i*nc+c)*2,Math.max(-32768,Math.min(32767,chs[c][i]*32767)),true);
  return ab}
-async function exportWav(){if(!licOk())return;
+function clearOcCh(){TR.forEach(t=>t._occh=null)}
+async function exportWav(){clearOcCh();if(!licOk())return;
  const bpm=+document.getElementById('bpm').value,dur=16*(60/bpm/4)+0.3;
  const oc=new OfflineAudioContext(2,Math.ceil(dur*22050),22050);
  for(let t=0;t<8;t++){
   if(TR[t].muted)continue;
-  if(TR[t].type==='audio'){const c=TR[t].clip;if(c&&c.buf){const sc=oc.createBufferSource();sc.buffer=c.buf;const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;const pn=oc.createStereoPanner?oc.createStereoPanner():null;if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(oc.destination)}else sc.connect(g).connect(oc.destination);sc.start(c.pos*60/bpm/4,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)))}continue}
+  if(TR[t].type==='audio'){const c=TR[t].clip;if(c&&c.buf){const sc=oc.createBufferSource();sc.buffer=c.buf;const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;const pn=oc.createStereoPanner?oc.createStereoPanner():null;if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(ocIn(oc,t))}else sc.connect(g).connect(ocIn(oc,t));sc.start(c.pos*60/bpm/4,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)))}continue}
   const b=TR[t].buffers[TR[t].pad];if(!b)continue;
   const hit=(s,p,d)=>{
    const src=oc.createBufferSource();src.buffer=b;
    if(p!=null)src.playbackRate.value=Math.pow(2,(p-60)/12);
    const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;
    const pn=oc.createStereoPanner?oc.createStereoPanner():null;
-   if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;src.connect(g).connect(pn).connect(oc.destination)}
-   else src.connect(g).connect(oc.destination);
+   if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;src.connect(g).connect(pn).connect(ocIn(oc,t))}
+   else src.connect(g).connect(ocIn(oc,t));
    src.start(s*60/bpm/4);if(d)src.stop(s*60/bpm/4+d*60/bpm/4+0.05);
   };
   if(TR[t].notes){for(const n of TR[t].notes)hit(n.s,n.p,n.d)}
@@ -464,12 +599,13 @@ async function exportWav(){if(!licOk())return;
 }
 // ---- STEMS export: 4 losse wav's (één per track) ----
 async function renderStem(t,bpm,dur){
+  TR[t]._occh=null;
   if(TR[t].type==='audio'){const c=TR[t].clip;if(!c||!c.buf)return null;
    const oc=new OfflineAudioContext(2,Math.ceil(dur*22050),22050);
    const sc=oc.createBufferSource();sc.buffer=c.buf;
    const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;
    const pn=oc.createStereoPanner?oc.createStereoPanner():null;
-   if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(oc.destination)}else sc.connect(g).connect(oc.destination);
+   if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(ocIn(oc,t))}else sc.connect(g).connect(ocIn(oc,t));
    sc.start(c.pos*60/bpm/4,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)));
    const rb=await oc.startRendering();return abWav(rb)}
   const b=TR[t].buffers[TR[t].pad];if(!b)return null;
@@ -480,8 +616,8 @@ async function renderStem(t,bpm,dur){
    if(p!=null)sc.playbackRate.value=Math.pow(2,(p-60)/12);
    const g=oc.createGain();g.gain.value=vol;
    const pn=oc.createStereoPanner?oc.createStereoPanner():null;
-   if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(oc.destination)}
-   else sc.connect(g).connect(oc.destination);
+   if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(ocIn(oc,t))}
+   else sc.connect(g).connect(ocIn(oc,t));
    sc.start(s*60/bpm/4);if(d)sc.stop(s*60/bpm/4+d*60/bpm/4+0.05);
   };
   if(TR[t].notes){for(const n of TR[t].notes)hit(n.s,n.p,n.d);}
@@ -489,7 +625,7 @@ async function renderStem(t,bpm,dur){
   const rb=await oc.startRendering();
   return abWav(rb);
 }
-async function exportStems(){if(!licOk())return;
+async function exportStems(){clearOcCh();if(!licOk())return;
  const bpm=+document.getElementById('bpm').value,dur=16*(60/bpm/4)+0.3;
  for(let t=0;t<TR.length;t++){
   if(TR[t].muted)continue;const ab=await renderStem(t,bpm,dur);if(!ab)continue;
@@ -498,7 +634,7 @@ async function exportStems(){if(!licOk())return;
 }
 // ---- naar LAAGBAAS: 4 stems via sessionStorage-stash, geen download ----
 function ab2b64(ab){const u8=new Uint8Array(ab);let bin='';for(let i=0;i<u8.length;i+=8192)bin+=String.fromCharCode.apply(null,u8.subarray(i,i+8192));return btoa(bin)}
-async function naarLaagbaas(){
+async function naarLaagbaas(){clearOcCh();
  const bpm=+document.getElementById('bpm').value,dur=16*(60/bpm/4)+0.3;
  const stash=[];
  for(let t=0;t<TR.length;t++){
