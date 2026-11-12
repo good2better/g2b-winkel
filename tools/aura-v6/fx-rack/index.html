@@ -1,0 +1,34 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>FX-Rack — AURA v6</title>
+<link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
+<h1>✨ FX-Rack — Refors + Koor+Key + Master <a href="../" style="float:right;font-size:12px">← AURA</a></h1>
+<div class="card"><p>Mix/master-keten: G2B Refors (referentie-check), Koor+Key (akkoorden/toon),
+Master FX — <b>knip hard ≤20%</b>, look-ahead limiter, gelijke loudness.</p>
+<div class="row"><label>Knip <input type="range" min="0" max="0.20" step="0.01" value="0.05" id="knipSl"></label>
+<label>Master <input type="range" min="0" max="1.5" step="0.05" value="1" id="volSl"></label>
+<button class="danger" id="panic">⏹ STOP</button></div>
+<div class="row"><label>Koor+Key <select id="koor"><option value="0">uit</option><option value="4">+4 semitones</option><option value="7">+7 (kwint)</option><option value="12">+12 (octaaf)</option></select></label>
+<label>Toon <input type="range" min="0.25" max="4" step="0.05" value="1" id="toneSl"></label></div>
+<div id="kbd"></div>
+<div class="card" style="margin-top:10px"><b>Loop &amp; Step-Record</b><div id="raster"></div></div>
+<div id="brain"></div></div></div>
+<script src="../js/aura-engine.js"></script><script src="../js/instrument-matrix.js"></script>
+<script src="../js/keyboard.js"></script><script src="../js/brain-memory.js"></script>
+<script>
+let koor = 0, tone = 1;
+(async () => {
+  await Aura.init('../js/aura-dsp-worklet.js');
+  InstrumentMatrix.build(document.createElement('div'), []);
+  InstrumentMatrix.play = (p, o = {}) => {
+    Aura.noteOn(p, { wave: 'saw', tone: (o.tone || 1) * tone });
+    if (koor) Aura.noteOn(p + koor, { wave: 'tri', tone, decay: 0.999 }); // koor-laag
+  };
+  document.getElementById('koor').onchange = e => koor = +e.target.value;
+  document.getElementById('toneSl').oninput = e => tone = +e.target.value;
+  document.getElementById('knipSl').oninput = e => Aura.setKnip(+e.target.value);
+  document.getElementById('volSl').oninput = e => Aura.setVolume(+e.target.value);
+  document.getElementById('panic').onclick = () => Aura.panic();
+  bouwKeyboard(document.getElementById('kbd'), 3, 2);
+  const ras = Aura.loopRaster(document.getElementById('raster')); ras.start();
+  BrainMemory.knop(document.getElementById('brain'));
+})();
+</script></body></html>

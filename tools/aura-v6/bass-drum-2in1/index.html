@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>Bass & Drum 2-in-1 — AURA v6</title>
+<link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
+<h1>🔊 Bass &amp; Drum 2-in-1 <a href="../" style="float:right;font-size:12px">← AURA</a></h1>
+<div class="card"><p>Bass + Drum&amp;Bass samengevoegd — Sub, Reese, 808 &amp; Bass one-shots.
+Groen = selecteer (aan/uitklikbaar), speelt over heel keyboard.</p>
+<div class="row"><label>Toon (pitch) <input type="range" min="0.25" max="4" step="0.05" value="1" id="toneSl"></label>
+<label>Lengte (decay) <input type="range" min="0.990" max="0.9999" step="0.0005" value="0.996" id="lenSl"></label></div>
+<div id="matrix"></div><div id="kbd"></div><div id="knip"></div>
+<div id="brain"></div></div></div>
+<script src="../js/aura-engine.js"></script><script src="../js/instrument-matrix.js"></script>
+<script src="../js/keyboard.js"></script><script src="../js/brain-memory.js"></script>
+<script>
+const SOUNDS = [
+  {naam:'Sub Pure', wave:'sine', tone:0.5, decay:0.9995},
+  {naam:'Sub 808', wave:'sine', tone:0.4, decay:0.998},
+  {naam:'Reese Wide', wave:'saw', tone:0.25, decay:0.999},
+  {naam:'Reese Dark', wave:'saw', tone:0.2, decay:0.9998},
+  {naam:'Bassdrum', wave:'sine', tone:0.6, decay:0.99},
+  {naam:'Kick Deep', wave:'sine', tone:0.5, decay:0.988},
+  {naam:'808 Long', wave:'sine', tone:0.35, decay:0.9997},
+  {naam:'Pluck Bas', wave:'saw', tone:0.3, decay:0.995},
+  {naam:'Wobble', wave:'saw', tone:0.3, decay:0.999},
+  {naam:'Round Bas', wave:'tri', tone:0.35, decay:0.997},
+  {naam:'Snap Bas', wave:'square', tone:0.4, decay:0.994},
+  {naam:'808 Distort', wave:'saw', tone:0.4, decay:0.998}
+];
+let tone = 1, len = 0.996;
+(async () => {
+  await Aura.init('../js/aura-dsp-worklet.js');
+  InstrumentMatrix.build(document.getElementById('matrix'), SOUNDS);
+  document.getElementById('toneSl').oninput = e => tone = +e.target.value;
+  document.getElementById('lenSl').oninput = e => len = +e.target.value;
+  bouwKeyboard(document.getElementById('kbd'), 2, 2);
+  knipRij(document.getElementById('knip'));
+  const orig = InstrumentMatrix.play.bind(InstrumentMatrix);
+  InstrumentMatrix.play = (p, o = {}) => orig(p, { ...o, tone: tone * (o.tone || 1), decay: len });
+  BrainMemory.knop(document.getElementById('brain'));
+})();
+</script></body></html>

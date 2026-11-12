@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>AURA All-Instruments — v6</title>
+<link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
+<h1>🎼 AURA All-Instruments <a href="../" style="float:right;font-size:12px">← AURA</a></h1>
+<div class="card"><p>Alle instrumenten in 1 engine met categorieën. Groen = selecteren (solo of stapel).</p>
+<div class="row"><label>Categorie <select id="catSel"></select></label></div>
+<div id="matrix"></div><div id="kbd"></div><div id="knip"></div>
+<div class="card" style="margin-top:10px"><b>Loop &amp; Step-Record</b><div id="raster"></div></div>
+<div id="brain"></div></div></div>
+<script src="../js/aura-engine.js"></script><script src="../js/instrument-matrix.js"></script>
+<script src="../js/keyboard.js"></script><script src="../js/brain-memory.js"></script>
+<script>
+const CATS = {
+  keys:['Piano','E-Piano','Orgel','Clav','Marimba','Kalimba'],
+  strings:['Contrabas','Cello','Viool','Harp','Gitaar','Banjo'],
+  brass:['Trompet','Hoorn','Trombone','Sax','Fluit','Piccolo'],
+  bass:['Sub Bass','Reese','808','Pluck Bas','Wobble','Roundbas'],
+  lead:['Saw Lead','Square Lead','Tri Lead','Sync Lead','Porta','Bell'],
+  drums:['Kick','Snare','Hat','Tom','Perc','Shaker']
+};
+const WAVES = {keys:'tri',strings:'saw',brass:'saw',bass:'saw',lead:'square',drums:'square'};
+const TONES = {keys:1,strings:1,brass:1.5,bass:0.25,lead:2,drums:0.5};
+let sounds = [];
+for (const [cat,items] of Object.entries(CATS))
+  items.forEach(n => sounds.push({naam:n, cat, wave:WAVES[cat], tone:TONES[cat], decay:0.997}));
+(async () => {
+  await Aura.init('../js/aura-dsp-worklet.js');
+  const sel = document.getElementById('catSel');
+  sel.innerHTML = Object.keys(CATS).map(c => `<option>${c}</option>`).join('');
+  const build = cat => InstrumentMatrix.build(document.getElementById('matrix'),
+    cat ? sounds.filter(s => s.cat === cat) : sounds);
+  sel.onchange = () => build(sel.value); build('');
+  sel.value = 'keys'; build('keys');
+  bouwKeyboard(document.getElementById('kbd'), 3, 2);
+  knipRij(document.getElementById('knip'));
+  const ras = Aura.loopRaster(document.getElementById('raster')); ras.start();
+  const orig = InstrumentMatrix.play.bind(InstrumentMatrix);
+  InstrumentMatrix.play = (p,o) => { ras.hit(p); orig(p,o); };
+  BrainMemory.knop(document.getElementById('brain'));
+})();
+</script></body></html>

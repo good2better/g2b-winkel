@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8">
+<title>G2B AURA v6.0 — Master Studio</title>
+<link rel="stylesheet" href="style.css"></head><body><div class="wrap">
+<h1>G2B AURA v6.0 MASTER STUDIO <span style="float:right;font-size:11px">poort 8300 · 100% client-side · © Good2Better</span></h1>
+<div class="grid">
+  <div class="card" style="grid-column:1/-1"><h2>🎹 AURA MIDI-Forge — Studio</h2>
+    <div class="row">
+      <button id="genTrap">Trap</button><button id="genKaseko">Surinaams/Kaseko</button>
+      <button id="genDrill">Drill Glide</button>
+      <button class="on" id="btnPlay">▶ Speel</button>
+      <button id="btnExport">⬇ Export .mid</button>
+      <label>BPM <input id="bpm" type="number" value="140" style="width:64px"></label>
+    </div>
+    <canvas id="roll" height="220"></canvas>
+    <div class="row"><span class="hint">klik = noot zetten · glide-curves zitten in de stijl-generatoren · export = echte .mid met watermerk</span></div>
+  </div>
+  <div class="card"><h2>🥁 Suri-Pads &amp; World</h2><p>Pads Verkoop/Gio + Surinaamse instrumenten — multi-select stacking.</p><a href="suri-pads/">Open module →</a></div>
+  <div class="card"><h2>🎼 AURA All-Instruments</h2><p>Alle instrumenten in 1 engine met categorieën.</p><a href="all-instruments/">Open →</a></div>
+  <div class="card"><h2>🔊 Bass &amp; Drum 2-in-1</h2><p>Sub, Reese, 808 &amp; Bassdrum — Toon/Lengte gekoppeld aan DSP.</p><a href="bass-drum-2in1/">Open →</a></div>
+  <div class="card"><h2>🎲 Dice Synth</h2><p>Stabiele AudioWorklet synth — nooit hangende noten.</p><a href="dice-synth/">Open →</a></div>
+  <div class="card"><h2>🎛 Dren Studio</h2><p>323 unieke presets.</p><a href="dren-studio/">Open →</a></div>
+  <div class="card"><h2>✨ FX-Rack</h2><p>G2B Refors + Koor+Key + Master FX (knip ≤20%).</p><a href="fx-rack/">Open →</a></div>
+  <div class="card"><h2>🧠 Mijn Brein</h2><div id="brainBox"></div></div>
+</div></div>
+<script src="js/aura-engine.js"></script>
+<script src="js/midi-forge-engine.js"></script>
+<script src="js/brain-memory.js"></script>
+<script>
+const roll = new PianoRoll(document.getElementById('roll'), { bars: 4 });
+const exp = new AuraMidiExporter();
+const stijl = { Trap: () => StijlGen.trap(), 'Surinaams/Kaseko': () => StijlGen.kaseko(), 'Drill Glide': () => StijlGen.drill() };
+document.getElementById('genTrap').onclick = () => { roll.notes = StijlGen.trap(); roll.draw(); };
+document.getElementById('genKaseko').onclick = () => { roll.notes = StijlGen.kaseko(); roll.draw(); };
+document.getElementById('genDrill').onclick = () => { roll.notes = StijlGen.drill(); roll.draw(); };
+document.getElementById('btnExport').onclick = () => exp.download(roll.notes, +document.getElementById('bpm').value);
+let playing = false;
+document.getElementById('btnPlay').onclick = async () => {
+  await Aura.init(); playing = !playing;
+  document.getElementById('btnPlay').textContent = playing ? '⏸ Stop' : '▶ Speel';
+  if (playing) for (const n of roll.notes) Aura.noteOn(n.pitch, { wave: 'saw', velocity: n.velocity });
+  else Aura.panic();
+};
+BrainMemory.knop(document.getElementById('brainBox'));
+</script></body></html>
