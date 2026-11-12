@@ -405,7 +405,7 @@
     "download": "bedankt.html?k=g2bsuite1",
     "stripe": "https://buy.stripe.com/9B67sLefegyL9vV3tP5J61T"
    },
-   "groep": "apps",
+   "groep": "tools",
    "badge": "ALLES-IN-1",
    "download_dir": "d/g2bsuite1",
    "uitleg": "media/suite1-uitleg.mp4",
@@ -423,7 +423,7 @@
    "prijs": 49,
    "beschrijving": "Volledige SEO-site-audit in één klik. Crawlt ALLE pagina's: titels, meta descriptions, H1-structuur, alt-teksten, laadtijd, kapotte links, canonicals, og-tags, structured data, sitemap, robots. Score 0-100 + printbaar audit-rapport om zelf aan klanten te verkopen. Zelfde checks als tools van EUR30+/maand — bij jou eenmalig, onbeperkt, 100% lokaal. Windows.",
    "download": "d/seofabriek1/",
-   "groep": "apps",
+   "groep": "tools",
    "badge": "NIEUW",
    "video": "media/seofabriek-demo.mp4",
    "video_en": "media/seofabriek-demo-en.mp4",
@@ -455,7 +455,7 @@
     "download": "bedankt.html?k=agency1",
     "stripe": "https://buy.stripe.com/bJe00j4EEgyL0Zp6G15J61V"
    },
-   "groep": "apps",
+   "groep": "tools",
    "badge": "AGENCY",
    "download_dir": "d/agency1",
    "uitleg": "media/agency1-uitleg.mp4",
@@ -479,7 +479,7 @@
     "download": "bedankt.html?k=marketerbundel1",
     "stripe": "https://buy.stripe.com/5kQaEX2ww0zN37x6G15J61W"
    },
-   "groep": "apps",
+   "groep": "tools",
    "badge": "BUNDEL",
    "download_dir": "d/marketerbundel1",
    "uitleg": "media/marketerbundel1-uitleg.mp4",
@@ -502,7 +502,7 @@
     "download": "bedankt.html?k=mailfabriek1",
     "stripe": "https://buy.stripe.com/8x24gzc762HVgYn2pL5J61X"
    },
-   "groep": "apps",
+   "groep": "tools",
    "badge": "NIEUW",
    "download_dir": "d/mailfabriek1",
    "video": "media/mailfabriek-demo.mp4",
@@ -529,7 +529,7 @@
     "download": "bedankt.html?k=sheetfabriek1",
     "stripe": "https://buy.stripe.com/fZu3cv0oogyLazZd4p5J61Y"
    },
-   "groep": "apps",
+   "groep": "tools",
    "badge": "NIEUW",
    "download_dir": "d/sheetfabriek1",
    "video": "media/sheetfabriek-demo.mp4",
@@ -556,7 +556,7 @@
     "download": "bedankt.html?k=sequentiefabriek1",
     "stripe": "https://buy.stripe.com/cNibJ11ss4Q34bBggB5J61Z"
    },
-   "groep": "apps",
+   "groep": "tools",
    "badge": "NIEUW",
    "download_dir": "d/sequentiefabriek1",
    "video": "media/sequentiefabriek-demo.mp4",
@@ -583,7 +583,7 @@
     "download": "bedankt.html?k=crmfabriek1",
     "stripe": "https://buy.stripe.com/cNiaEX1ss5U7azZ9Sd5J620"
    },
-   "groep": "apps",
+   "groep": "tools",
    "badge": "NIEUW",
    "download_dir": "d/crmfabriek1",
    "video": "media/crmfabriek-demo.mp4",
@@ -610,7 +610,7 @@
     "download": "bedankt.html?k=watcherfabriek1",
     "stripe": "https://buy.stripe.com/28EfZh8UUciveQf3tP5J621"
    },
-   "groep": "apps",
+   "groep": "tools",
    "badge": "NIEUW",
    "download_dir": "d/watcherfabriek1",
    "video": "media/watcherfabriek-demo.mp4",
@@ -637,7 +637,7 @@
     "download": "bedankt.html?k=flowfabriek1",
     "stripe": "https://buy.stripe.com/bJe14n7QQber0Zp4xT5J622"
    },
-   "groep": "apps",
+   "groep": "tools",
    "badge": "NIEUW",
    "download_dir": "d/flowfabriek1",
    "video": "media/flowfabriek-demo.mp4",
@@ -664,7 +664,7 @@
     "download": "bedankt.html?k=kanaalfabriek1",
     "stripe": "https://buy.stripe.com/9B6eVd5IIaanfUjfcx5J623"
    },
-   "groep": "apps",
+   "groep": "tools",
    "badge": "NIEUW",
    "cover": "media/covers/kanaalfabriek1.png",
    "download_dir": "d/kanaalfabriek1",
@@ -690,7 +690,7 @@
     "download": "bedankt.html?k=leadfabriek1",
     "stripe": "https://buy.stripe.com/3cI14ndba96j9vV3tP5J624"
    },
-   "groep": "apps",
+   "groep": "tools",
    "badge": "NIEUW",
    "download_dir": "d/leadfabriek1",
    "video": "media/leadfabriek-demo.mp4",
@@ -717,7 +717,7 @@
     "download": "bedankt.html?k=lijstfabriek1",
     "stripe": "https://buy.stripe.com/eVq00j9YY1DR4bB6G15J625"
    },
-   "groep": "apps",
+   "groep": "tools",
    "badge": "NIEUW",
    "download_dir": "d/lijstfabriek1",
    "video": "media/lijstfabriek-demo.mp4",
@@ -828,7 +828,7 @@
     "download": "bedankt.html?k=g2b-juridisch"
    },
    "duur": 0,
-   "groep": "apps",
+   "groep": "tools",
    "cover": "media/g2b-juridisch-cover.png",
    "download_dir": "d/12f11d0fe3c348",
    "demo": "media/juridisch-demo.mp4",
@@ -857,7 +857,7 @@
     "download": "bedankt.html?k=g2b-psychologie"
    },
    "duur": 0,
-   "groep": "apps",
+   "groep": "tools",
    "cover": "media/g2b-psychologie-cover.png",
    "download_dir": "d/eff2f763bada21",
    "demo": "media/psychologie-demo.mp4",
@@ -939,7 +939,7 @@
     "download": "bedankt.html?k=g2b-bedrijfsmiddelen"
    },
    "duur": 0,
-   "groep": "apps",
+   "groep": "tools",
    "cover": "media/g2b-bedrijfsmiddelen-cover.png",
    "download_dir": "d/f481c3d2e1e330",
    "demo": "media/bedrijfsmiddelen-demo.mp4",
@@ -1548,7 +1548,7 @@
     "koop": "schoolspelen/index.html",
     "download": "schoolspelen/index.html"
    },
-   "groep": "gratis",
+   "groep": "tools",
    "badge": "GRATIS",
    "uitleg": "media/school1-uitleg.mp4",
    "sub_nl": "media/school1-uitleg.nl.vtt",
@@ -1557,7 +1557,8 @@
     "g2bclub"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/school1.png"
+   "cover": "media/covers/school1.png",
+   "verborgen": true
   },
   {
    "id": "g2bbd1",
@@ -1642,7 +1643,7 @@
     "download": "bedankt.html?k=gamefabriek1",
     "stripe": "https://buy.stripe.com/28E7sLb325U70ZpggB5J62b"
    },
-   "groep": "apps",
+   "groep": "tools",
    "badge": "NIEUW",
    "download_dir": "d/gamefabriek1",
    "video": "media/gamefabriek-demo.mp4",

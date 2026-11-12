@@ -155,8 +155,9 @@ footer{margin-top:90px;border-top:1px solid var(--line);padding:46px 24px 36px;c
     <button class="fb" data-f="instrumenten">INSTRUMENTEN</button>
     <button class="fb" data-f="effecten">EFFECTEN</button>
     <button class="fb" data-f="packs">BEATS &amp; PACKS</button>
-    <button class="fb" data-f="apps">APPS &amp; TOOLS</button>
+    <button class="fb" data-f="apps">MUZIEK-APPS</button>
     <button class="fb" data-f="bundels">BUNDELS &amp; LIDMAATSCHAP</button>
+    <button class="fb" data-f="tools">ANDERE TOOLS</button>
     <button class="fb" data-f="demo">GRATIS DEMO</button>
   </div>
   <div class="grid" id="grid"></div>
@@ -207,14 +208,15 @@ const CATMAP = {
   "g2bgeluidmidi":"effecten","sl3ut3":"effecten",
   // bundels & lidmaatschap
   "g2bclub":"bundels","g2bstarter":"bundels","g2bstudio":"bundels","g2balles":"bundels",
-  "g2bsuite1":"bundels","marketerbundel1":"bundels","agency1":"bundels",
-  // apps & tools
+  // muziek-apps
   "beatmakerpro":"apps","stapeldice":"apps","stapeldicefull":"apps","g2bsmash":"apps","g2bairdrums":"apps",
-  "mailfabriek1":"apps","sheetfabriek1":"apps","sequentiefabriek1":"apps","crmfabriek1":"apps",
-  "watcherfabriek1":"apps","flowfabriek1":"apps","kanaalfabriek1":"apps","leadfabriek1":"apps",
-  "lijstfabriek1":"apps","gamefabriek1":"apps","seofabriek1":"apps",
-  "g2b-juridisch":"apps","g2b-psychologie":"apps","g2b-workstation":"apps","cursus01":"apps",
-  "g2b-bedrijfsmiddelen":"apps","school1":"apps",
+  "g2b-workstation":"apps","cursus01":"apps","ritmosbundel":"packs",
+  // andere tools (niet-muziek) — apart, onderaan
+  "g2bsuite1":"tools","marketerbundel1":"tools","agency1":"tools",
+  "mailfabriek1":"tools","sheetfabriek1":"tools","sequentiefabriek1":"tools","crmfabriek1":"tools",
+  "watcherfabriek1":"tools","flowfabriek1":"tools","kanaalfabriek1":"tools","leadfabriek1":"tools",
+  "lijstfabriek1":"tools","gamefabriek1":"tools","seofabriek1":"tools",
+  "g2b-juridisch":"tools","g2b-psychologie":"tools","g2b-bedrijfsmiddelen":"tools","school1":"tools",
 };
 // wat NIET op de hoofdwinkel hoort (steun-knoppen, tape-bundel; beats+packs gaan op soort)
 const SKIP = new Set(["steun-3","steun-5","steun-10"]);
@@ -246,7 +248,7 @@ const SUITE = {id:"g2balles", nu:"199", los:"244,65", koop:"https://buy.stripe.c
 
 // volgorde: eerst de v6-sterren, daarna rest op categorie
 const EERST = ["aura-suripads","aura-allinstr","aura-bassdrum","aura-dicesynth","aura-dren","aura-fxrack","aura-midiforge","g2bclub"];
-const CATORDER = {instrumenten:0, effecten:1, packs:2, apps:3, bundels:4};
+const CATORDER = {instrumenten:0, effecten:1, packs:2, apps:3, bundels:4, tools:5};
 
 fetch('products.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
   const prods = (d.producten||[]).filter(p=>!p.verborgen && !SKIP.has(p.id));
