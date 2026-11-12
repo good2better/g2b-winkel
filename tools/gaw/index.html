@@ -512,13 +512,16 @@ function advAnalyse(){
  for(let i=0;i<TR.length;i++)
   if(TR[i].type!=='audio'&&((TR[i].grid&&TR[i].grid.some(x=>x))||(TR[i].notes&&TR[i].notes.length))&&!TR[i].fx.some(f=>f.type==='eq'))
    ADV.push({t:`TR${i+1} klinkt maar heeft geen EQ — zal ik een EQ op ${TR[i].name} zetten (schonere plek in de mix)?`,ja:()=>{TR[i].fx.push(newFx('eq'));rebuildFx(i)}});
- // 5) geen audio-lane
+ // 5) MIJN BREIN-hint als veel toon-sporen leeg zijn
+ const leegN=rolls.filter(i=>!TR[i].notes.length).length;
+ if(leegN>=2)ADV.push({t:'Heel wat toon-sporen leeg — wil je eerst je eigen midis leren in MIJN BREIN (opent in nieuw tabblad)?',ja:()=>window.open('../patroon-brein/breinpro-mijn.html','_blank')});
+ // 6) geen audio-lane
  if(!auds.length&&TR.length<14)
   ADV.push({t:'Geen audio-spoor — zal ik een AUDIO-lane toevoegen voor je stem/instrument?',ja:()=>addTrack('audio')});
- // 6) te veel fx op één spoor?
+ // 7) te veel fx op één spoor?
  for(let i=0;i<TR.length;i++)
   if(TR[i].fx.length>3)ADV.push({t:`TR${i+1} heeft ${TR[i].fx.length} effects — zal ik ze uitdunnen tot de 2 sterkste?`,ja:()=>{TR[i].fx=TR[i].fx.slice(0,2);rebuildFx(i);fxDraw(i);}});
- // 7) altijd: naar LAAGBAAS
+ // 8) altijd: naar LAAGBAAS
  ADV.push({t:'Klaar? Zal ik al je stems naar LAAGBAAS sturen voor de pro-master?',ja:()=>naarLaagbaas()});
  advDraw();
 }
