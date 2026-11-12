@@ -75,6 +75,7 @@ audio{width:100%;height:34px;margin-top:4px}
   <div class="row"><span class="note">💎 ná:</span><audio id="postPlay" controls></audio></div>
   <div class="row" style="margin-top:8px">
     <a id="dlWav"><button>⬇ download master (wav)</button></a>
+    <a id="dlMix"><button class="ghost">⬇ download mix — vóór (wav)</button></a>
   </div>
 </div>
 <p class="note" style="text-align:center;margin-top:10px">G2B LAAGBAAS · pro-DSP via libsonare (Apache-2.0) · je audio verlaat je browser nooit</p>
@@ -523,6 +524,7 @@ window.doMaster=async()=>{
     $('prePlay').src=URL.createObjectURL(preBlob);
     $('postPlay').src=URL.createObjectURL(postBlob);
     $('dlWav').href=URL.createObjectURL(postBlob);$('dlWav').download='G2B-master.wav';
+    $('dlMix').href=URL.createObjectURL(preBlob);$('dlMix').download='G2B-mix-voor.wav';
     $('abCard').style.display='';
     const pk=a=>{let m=0;for(let i=0;i<a.length;i++)m=Math.max(m,Math.abs(a[i]));return m;};
     const db=x=>20*Math.log10(Math.max(x,1e-8));
