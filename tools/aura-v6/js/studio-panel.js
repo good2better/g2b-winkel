@@ -41,6 +41,7 @@ const StudioPanel = {
         <button id="spLoop" class="on">↻ LOOP: AAN</button>
         <button id="spStep">STAP-INSPELEN</button>
         <button id="spWis">WIS RASTER</button>
+        <button id="spGlue" class="on">🔥 PRO GLUE: AAN</button>
         <button id="spUndo">↩ ONGEDAAN MAKEN</button>
         <button id="spMid">↓ .MID</button>
         <button id="spWav">↓ .WAV</button>
@@ -170,6 +171,12 @@ const StudioPanel = {
       e.target.classList.toggle('on', P.stepRec);
       st.textContent = P.stepRec ? 'stap-inspelen aan — elke noot = volgende stap' : ''; };
     box.querySelector('#spWis').onclick = () => { snap(); P.notes = []; draw(); st.textContent = 'raster leeg'; };
+    P.glue = true;
+    box.querySelector('#spGlue').onclick = e => { P.glue = !P.glue;
+      e.target.textContent = P.glue ? '🔥 PRO GLUE: AAN' : '🔥 PRO GLUE: UIT';
+      e.target.classList.toggle('on', P.glue);
+      try { Aura.setGlue(P.glue); } catch (err) {}
+      st.textContent = P.glue ? 'pro glue aan — afgemasterd geluid' : 'pro glue uit — droog signaal'; };
     const updRec = () => { const b = box.querySelector('#spRec');
       b.classList.toggle('on', P.rec); b.textContent = P.rec ? '● OPN (aan)' : '● OPN'; };
     box.querySelector('#spRec').onclick = () => { P.rec = !P.rec; P.recSnap = false; updRec();

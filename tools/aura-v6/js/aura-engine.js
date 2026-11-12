@@ -3,7 +3,7 @@
    loop-raster (Wet 7), knip ≤20% + volume, PANIC. Gebruik: await Aura.init() */
 const Aura = {
   ctx: null, node: null, master: null, _rec: null,
-  _buf: {}, _live: new Set(),
+  _buf: {}, _live: new Set(), _pad: {},
 
   async init(workletUrl = '../js/aura-dsp-worklet.js') {
     if (this.ctx) return this;
@@ -36,8 +36,22 @@ const Aura = {
      basePitch = noot waarop de sample origineel klinkt (default 60 = C4). */
   async loadSample(url) {
     if (this._buf[url]) return this._buf[url];
-    this._buf[url] = this.ctx.decodeAudioData(await (await fetch(url)).arrayBuffer());
-    return this._buf[url];
+    const buf = await this.ctx.decodeAudioData(await (await fetch(url)).arrayBuffer());
+    // normalize → -1dB piek: overstuurde samples kunnen nooit meer gruizen/klikken
+    let peak = 0;
+    for (let c = 0; c < buf.numberOfChannels; c++) {
+      const d = buf.getChannelData(c);
+      for (let i = 0; i < d.length; i++) { const a = Math.abs(d[i]); if (a > peak) peak = a; }
+    }
+    if (peak > 0.891) {
+      const f = 0.891 / peak;
+      for (let c = 0; c < buf.numberOfChannels; c++) {
+        const d = buf.getChannelData(c);
+        for (let i = 0; i < d.length; i++) d[i] *= f;
+      }
+    }
+    this._buf[url] = buf;
+    return buf;
   },
   async sampleOn(pitch, opts = {}) {
     this.resume();
@@ -57,14 +71,23 @@ const Aura = {
     if (pitch < 48) amp *= 1.4; // lage noten klinken zachter → auto-gain
     const hold = opts.hold != null ? opts.hold : Math.min(buf.duration, 4);
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(amp, t + 0.004);
-    g.gain.setTargetAtTime(0, t + Math.max(0.05, hold), 0.12);
+    g.gain.linearRampToValueAtTime(amp * 1.3, t + 0.002); // 2ms fade-in + punch op de aanslag
+    g.gain.setTargetAtTime(amp, t + 0.002, 0.005);         // punch valt terug in ~15ms
+    g.gain.setTargetAtTime(0, t + Math.max(0.05, hold), 0.12); // zachte uitloop = geen eind-klik
+    // cut-self: zelfde pad opnieuw = vorige dooft in 5ms ipv opstapelen
+    const key = opts.src;
+    const prev = this._pad[key];
+    if (prev) { try { prev._g.gain.cancelScheduledValues(this.ctx.currentTime);
+      prev._g.gain.setTargetAtTime(0, this.ctx.currentTime, 0.0017); prev.stop(this.ctx.currentTime + 0.02); } catch (e) {} }
+    this._pad[key] = src; src._g = g;
     src.connect(g).connect(this.master);
     this._live.add(src);
-    src.onended = () => this._live.delete(src);
+    src.onended = () => { this._live.delete(src); if (this._pad[key] === src) delete this._pad[key]; };
     src.start();
     return src;
   },
+
+  setGlue(v) { if (this.node) this.node.parameters.get('glue').value = v ? 1 : 0; },
 
   setKnip(v) { this.node.parameters.get('knip').value = Math.min(0.20, Math.max(0, v)); },
   setVolume(v) { this.node.parameters.get('volume').value = v; },
