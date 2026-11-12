@@ -202,10 +202,11 @@ const HASH='a6027a131916280eab4a9f091cf28b36eb1dc59285023ce8c2403a76f24ff982';
 async function unlock(){
   const v=document.getElementById('code').value.trim().toLowerCase();
   const hex=await _g2b_hex(v);
-  if(hex===HASH){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';sessionStorage.g2bmijn='1';}
+  if(hex===HASH){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';sessionStorage.g2bmijn='1';try{localStorage.setItem('g2b_aura_licentie',v)}catch(e){}}
   else document.getElementById('err').style.display='block';
 }
 if(sessionStorage.g2bmijn==='1'){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';}
+(async()=>{try{const sv=(localStorage.getItem('g2b_aura_licentie')||'').trim().toLowerCase();if(sv&&sv!=='ok'&&await _g2b_hex(sv)===HASH){sessionStorage.g2bmijn='1';document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';}}catch(e){}})();
 document.getElementById('code').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>

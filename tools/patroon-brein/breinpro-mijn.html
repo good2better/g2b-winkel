@@ -437,4 +437,5 @@ function leerMid(fs){let ok=0,fout=0;
   bouwUI();if(ok)kiesGenre('GELEERD');
   $('st').textContent='📚 '+ok+' kit(s) geleerd → GELEERD-pil'+(fout?' · '+fout+' bestand(en) overgeslagen':'');});}
 fetch('breinpro-kits.json').then(r=>r.json()).then(k=>{KITS=k;try{const g=JSON.parse(localStorage.getItem('breinGeleerd')||'[]');if(g.length)KITS.GELEERD=(KITS.GELEERD||[]).concat(g)}catch(e){}bouwUI();kiesGenre(Object.keys(k).find(g=>k[g].length));});
-</script></body></html>
+</script><script src="/js/g2b-gate.js" data-tier="inner"></script>
+</body></html>

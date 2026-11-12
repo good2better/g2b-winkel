@@ -55,13 +55,13 @@ button{background:var(--accent);color:#04120a;border:0;border-radius:24px;paddin
 </main>
 <script>
 const K='g2b_aura_licentie';
-const toon=()=>{const ok=localStorage.getItem(K)==='ok';
+const toon=()=>{const ok=!!localStorage.getItem(K);
   document.getElementById('lstat').textContent=ok?'✅ Ontgrendeld op deze computer — export werkt.':'🔒 Nog niet ontgrendeld (demo: spelen + opnemen werkt al).'};
 toon();
 document.getElementById('ok').onclick=()=>{const c=document.getElementById('code').value.trim();
   const m=document.getElementById('lmsg');
   if(c.length<6){m.textContent='Die code is te kort — check je bevestigingsmail.';return}
-  localStorage.setItem(K,'ok');m.textContent='Gelukt! Export staat nu aan.';toon()};
+  localStorage.setItem(K,c.toLowerCase());m.textContent='Gelukt! Export staat nu aan.';toon()};
 document.getElementById('ga').onclick=()=>{const v=document.getElementById('dl').value.trim();
   const k=(v.match(/[?&]k=([a-z0-9-]+)/i)||[,v])[1];
   if(!/^[a-z0-9-]{4,32}$/i.test(k||'')){document.getElementById('dmsg').textContent='Dat lijkt geen geldige downloadcode.';return}

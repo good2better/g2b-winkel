@@ -6,7 +6,7 @@
 /* demo-gate: .mid/.wav export alleen voor kopers (licentiecode via validate.php of ?licentie= of opgeslagen) */
 const _gelicen = () => {
   try {
-    if (localStorage.getItem('g2b_aura_licentie') === 'ok') return true;
+    var _lv = localStorage.getItem('g2b_aura_licentie'); if (_lv === 'ok' || (_lv && _lv.length >= 4)) return true;
     const q = new URLSearchParams(location.search).get('licentie');
     if (q && q.length >= 6) { localStorage.setItem('g2b_aura_licentie', 'ok'); return true; }
   } catch (e) {}

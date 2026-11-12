@@ -149,10 +149,11 @@ const HASHES=['f0b9b68f41a25aee79b21cc1e0c1309b9c683b1d3f300d1dca427cd653c157c0'
 async function unlock(){
   const v=document.getElementById('code').value.trim().toLowerCase();
   const hex=await _g2b_hex(v);
-  if(HASHES.includes(hex)){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';sessionStorage.g2bvriend='1';}
+  if(HASHES.includes(hex)){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';sessionStorage.g2bvriend='1';try{localStorage.setItem('g2b_aura_licentie',v)}catch(e){}}
   else document.getElementById('err').style.display='block';
 }
 if(sessionStorage.g2bvriend==='1'){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';}
+(async()=>{try{const sv=(localStorage.getItem('g2b_aura_licentie')||'').trim().toLowerCase();if(sv&&sv!=='ok'&&HASHES.includes(await _g2b_hex(sv))){sessionStorage.g2bvriend='1';document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';}}catch(e){}})();
 document.getElementById('code').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>

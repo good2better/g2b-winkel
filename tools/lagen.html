@@ -62,5 +62,6 @@ function syncBpm(){let v=null;const ins=[];
  perMach((d)=>{const i=d.querySelector('#bpm,[id$="-bpm"]');if(i){ins.push(i);if(!v&&i.value)v=i.value;}});
  if(v)ins.forEach(i=>{if(i.value!==v){i.value=v;i.dispatchEvent(new Event('input',{bubbles:true}));i.dispatchEvent(new Event('change',{bubbles:true}))}});}
 </script>
+<script src="/js/g2b-gate.js" data-tier="leden"></script>
 </body>
 </html>

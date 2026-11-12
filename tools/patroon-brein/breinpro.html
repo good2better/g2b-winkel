@@ -303,4 +303,5 @@ function bounce(){ // render 1 maat offline met dezelfde mini-synth
  $('st').textContent='🔊 WAV-loop gedownload — '+bpm+' bpm, naadloos loopbaar';}
 function dl(b,name){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();}
 fetch('breinpro-kits.json').then(r=>r.json()).then(k=>{KITS=k;bouwUI();kiesGenre(Object.keys(k).find(g=>k[g].length));});
-</script></body></html>
+</script><script src="/js/g2b-gate.js" data-tier="leden"></script>
+</body></html>
