@@ -1,7 +1,7 @@
 name: aura-desktop
 on:
   push:
-    paths: ['tools/aura-v6/**', '.github/workflows/aura-desktop.yml']
+    paths: ['tools/aura-v6/**', 'aura-desktop/**', '.github/workflows/aura-desktop.yml']
   workflow_dispatch:
 
 jobs:
