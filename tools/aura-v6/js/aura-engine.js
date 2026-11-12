@@ -11,6 +11,12 @@ const Aura = {
     await this.ctx.audioWorklet.addModule(workletUrl);
     this.node = new AudioWorkletNode(this.ctx, 'aura-master', { outputChannelCount: [2] });
     this.master = this.ctx.createDynamicsCompressor();
+    // glue-instelling: zacht kneden ipv hard pletten — geen pompen/vervorming op sub-stapels
+    this.master.threshold.value = -20;
+    this.master.knee.value = 20;
+    this.master.ratio.value = 4;
+    this.master.attack.value = 0.004;
+    this.master.release.value = 0.22;
     this.node.connect(this.master).connect(this.ctx.destination);
     return this;
   },
@@ -79,6 +85,13 @@ const Aura = {
     const prev = this._pad[key];
     if (prev) { try { prev._g.gain.cancelScheduledValues(this.ctx.currentTime);
       prev._g.gain.setTargetAtTime(0, this.ctx.currentTime, 0.0017); prev.stop(this.ctx.currentTime + 0.02); } catch (e) {} }
+    // sub-bas monofonisch: nieuwe lage noot dooft de vorige lage sample — geen wobble
+    if (pitch < 48 && this._padLow && this._padLow !== src) {
+      try { this._padLow._g.gain.cancelScheduledValues(this.ctx.currentTime);
+        this._padLow._g.gain.setTargetAtTime(0, this.ctx.currentTime, 0.0017);
+        this._padLow.stop(this.ctx.currentTime + 0.02); } catch (e) {}
+    }
+    if (pitch < 48) this._padLow = src;
     this._pad[key] = src; src._g = g;
     src.connect(g).connect(this.master);
     this._live.add(src);
