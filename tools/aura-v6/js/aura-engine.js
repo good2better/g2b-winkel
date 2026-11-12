@@ -3,6 +3,7 @@
    loop-raster (Wet 7), knip ≤20% + volume, PANIC. Gebruik: await Aura.init() */
 const Aura = {
   ctx: null, node: null, master: null, _rec: null,
+  _buf: {}, _live: new Set(),
 
   async init(workletUrl = '../js/aura-dsp-worklet.js') {
     if (this.ctx) return this;
@@ -25,7 +26,38 @@ const Aura = {
     });
   },
   noteOff(pitch) { if (this.node) this.node.port.postMessage({ type: 'NOTE_OFF', pitch }); },
-  panic() { if (this.node) this.node.port.postMessage({ type: 'PANIC' }); },
+  panic() {
+    if (this.node) this.node.port.postMessage({ type: 'PANIC' });
+    this._live.forEach(s => { try { s.stop(); } catch (e) {} });
+    this._live.clear();
+  },
+
+  /* Echte wav-samples: laden + afspelen door dezelfde compressor/veiligheidsketen.
+     basePitch = noot waarop de sample origineel klinkt (default 60 = C4). */
+  async loadSample(url) {
+    if (this._buf[url]) return this._buf[url];
+    this._buf[url] = this.ctx.decodeAudioData(await (await fetch(url)).arrayBuffer());
+    return this._buf[url];
+  },
+  async sampleOn(pitch, opts = {}) {
+    this.resume();
+    const buf = await this.loadSample(opts.src);
+    const src = this.ctx.createBufferSource();
+    src.buffer = buf;
+    const base = opts.basePitch != null ? opts.basePitch : 60;
+    src.playbackRate.value = Math.pow(2, (pitch - base) / 12) * (opts.rate || 1);
+    const g = this.ctx.createGain();
+    const t = this.ctx.currentTime, amp = opts.gain != null ? opts.gain : 0.9;
+    const hold = opts.hold != null ? opts.hold : Math.min(buf.duration, 4);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(amp, t + 0.004);
+    g.gain.setTargetAtTime(0, t + Math.max(0.05, hold), 0.12);
+    src.connect(g).connect(this.master);
+    this._live.add(src);
+    src.onended = () => this._live.delete(src);
+    src.start();
+    return src;
+  },
 
   setKnip(v) { this.node.parameters.get('knip').value = Math.min(0.20, Math.max(0, v)); },
   setVolume(v) { this.node.parameters.get('volume').value = v; },

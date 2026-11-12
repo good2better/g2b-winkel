@@ -12,21 +12,25 @@
 <script src="../js/keyboard.js"></script><script src="../js/brain-memory.js"></script>
 <script>
 const SOUNDS = [
-  // Surinaams (eigen synth-benaderingen)
-  {naam:'Kawina Drum', cat:'suri', wave:'square', tone:0.5, decay:0.995},
-  {naam:'Apinti Lead', cat:'suri', wave:'saw', tone:2.0, decay:0.998},
-  {naam:'Kaseko Bas', cat:'suri', wave:'saw', tone:0.25, decay:0.994},
-  {naam:'Skratjie Perc', cat:'suri', wave:'tri', tone:3.0, decay:0.99},
-  // Pads verkoop
-  {naam:'Warm Pad A', cat:'pads', wave:'saw', tone:1.0, decay:0.9995},
-  {naam:'Dark Pad B', cat:'pads', wave:'tri', tone:0.5, decay:0.9995},
-  {naam:'Bright Pad', cat:'pads', wave:'saw', tone:1.5, decay:0.999},
-  {naam:'Deep Pad', cat:'pads', wave:'sine', tone:0.5, decay:0.9998},
-  // Gio-pads
+  // Surinaams — échte samples
+  {naam:'Kawina', cat:'suri', src:'../wav/suri/KAWINA_0.wav'},
+  {naam:'Apinti', cat:'suri', src:'../wav/suri/APINTI_0.wav'},
+  {naam:'Kaseko', cat:'suri', src:'../wav/suri/KASEKO_0.wav'},
+  {naam:'Winti', cat:'suri', src:'../wav/suri/WINTI_0.wav'},
+  {naam:'Aleke', cat:'suri', src:'../wav/suri/ALEKE_0.wav'},
+  {naam:'Skratjie', cat:'suri', src:'../wav/suri/skratji.wav'},
+  {naam:'Agogo', cat:'suri', src:'../wav/suri/agogo.wav'},
+  {naam:'Slaggitaar', cat:'suri', src:'../wav/suri/SLAGGITAAR_0.wav'},
+  // World (verkoop-smaak)
+  {naam:'Soca', cat:'pads', src:'../wav/suri/SOCA_0.wav'},
+  {naam:'Dembow', cat:'pads', src:'../wav/suri/DEMBOW_0.wav'},
+  {naam:'Bubbling', cat:'pads', src:'../wav/suri/BUBBLING_0.wav'},
+  {naam:'Zouk', cat:'pads', src:'../wav/suri/ZOUK_0.wav'},
+  {naam:'Dancehall', cat:'pads', src:'../wav/suri/DANCEHALL_0.wav'},
+  {naam:'Afro', cat:'pads', src:'../wav/suri/AFRO_0.wav'},
+  // Gio-laag (synth-pads om mee te stapelen)
   {naam:'Gio Drone', cat:'gio', wave:'saw', tone:0.25, decay:0.9998},
-  {naam:'Gio Air', cat:'gio', wave:'sine', tone:2.0, decay:0.9995},
-  {naam:'Gio Swell', cat:'gio', wave:'tri', tone:1.0, decay:0.9995},
-  {naam:'Gio Low', cat:'gio', wave:'saw', tone:0.125, decay:0.9997}
+  {naam:'Gio Swell', cat:'gio', wave:'tri', tone:1.0, decay:0.9995}
 ];
 (async () => {
   await Aura.init('../js/aura-dsp-worklet.js');

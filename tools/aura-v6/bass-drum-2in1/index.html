@@ -11,18 +11,24 @@ Groen = selecteer (aan/uitklikbaar), speelt over heel keyboard.</p>
 <script src="../js/keyboard.js"></script><script src="../js/brain-memory.js"></script>
 <script>
 const SOUNDS = [
-  {naam:'Sub Pure', wave:'sine', tone:0.5, decay:0.9995},
-  {naam:'Sub 808', wave:'sine', tone:0.4, decay:0.998},
-  {naam:'Reese Wide', wave:'saw', tone:0.25, decay:0.999},
-  {naam:'Reese Dark', wave:'saw', tone:0.2, decay:0.9998},
-  {naam:'Bassdrum', wave:'sine', tone:0.6, decay:0.99},
-  {naam:'Kick Deep', wave:'sine', tone:0.5, decay:0.988},
-  {naam:'808 Long', wave:'sine', tone:0.35, decay:0.9997},
-  {naam:'Pluck Bas', wave:'saw', tone:0.3, decay:0.995},
-  {naam:'Wobble', wave:'saw', tone:0.3, decay:0.999},
-  {naam:'Round Bas', wave:'tri', tone:0.35, decay:0.997},
-  {naam:'Snap Bas', wave:'square', tone:0.4, decay:0.994},
-  {naam:'808 Distort', wave:'saw', tone:0.4, decay:0.998}
+  // Subs / Reese / 808 — échte OCHO-samples
+  {naam:'Sub 808', src:'../wav/bass/sub808.wav'},
+  {naam:'Reese', src:'../wav/bass/sub-rees.wav'},
+  {naam:'Sub Donk', src:'../wav/bass/sub-donk.wav'},
+  {naam:'Sub Warm', src:'../wav/bass/sub-warm.wav'},
+  {naam:'Wobble', src:'../wav/bass/sub-wobb.wav'},
+  {naam:'Sub Punch', src:'../wav/bass/sub-pnch.wav'},
+  {naam:'Sub Glaf', src:'../wav/bass/sub-glaf.wav'},
+  {naam:'Sub Held', src:'../wav/bass/sub-held.wav'},
+  {naam:'Sub Distort', src:'../wav/bass/sub-dist.wav'},
+  {naam:'Sub Vies', src:'../wav/bass/sub-vies.wav'},
+  {naam:'Sub Kort', src:'../wav/bass/sub-kort.wav'},
+  {naam:'Sub Lang', src:'../wav/bass/sub-lang.wav'},
+  // Bassdrum / kicks
+  {naam:'Bassdrum A', src:'../wav/bass/b00_0.wav'},
+  {naam:'Bassdrum B', src:'../wav/bass/b03_0.wav'},
+  {naam:'Bassdrum C', src:'../wav/bass/b06_0.wav'},
+  {naam:'Bassdrum D', src:'../wav/bass/b09_0.wav'}
 ];
 let tone = 1, len = 0.996;
 (async () => {
@@ -33,7 +39,9 @@ let tone = 1, len = 0.996;
   bouwKeyboard(document.getElementById('kbd'), 2, 2);
   knipRij(document.getElementById('knip'));
   const orig = InstrumentMatrix.play.bind(InstrumentMatrix);
-  InstrumentMatrix.play = (p, o = {}) => orig(p, { ...o, tone: tone * (o.tone || 1), decay: len });
+  // Toon → playbackRate op de sample; Lengte → hoe lang de sample doorklinkt (0.2s–4s)
+  const hold = () => 0.2 + ((len - 0.990) / 0.0099) * 3.8;
+  InstrumentMatrix.play = (p, o = {}) => orig(p, { ...o, rate: tone, tone, hold: hold() });
   BrainMemory.knop(document.getElementById('brain'));
 })();
 </script></body></html>
