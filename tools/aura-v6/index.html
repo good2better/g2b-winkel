@@ -24,6 +24,15 @@
 </div></div>
 <script src="js/aura-engine.js"></script>
 <script src="js/midi-forge-engine.js"></script>
+<script>const _gelicen = () => {
+  try {
+    if (localStorage.getItem('g2b_aura_licentie') === 'ok') return true;
+    const q = new URLSearchParams(location.search).get('licentie');
+    if (q && q.length >= 6) { localStorage.setItem('g2b_aura_licentie', 'ok'); return true; }
+  } catch (e) {}
+  return false;
+};
+</script>
 <script src="js/brain-memory.js"></script>
 <script>
 const roll = new PianoRoll(document.getElementById('roll'), { bars: 4 });
@@ -32,7 +41,11 @@ const stijl = { Trap: () => StijlGen.trap(), 'Surinaams/Kaseko': () => StijlGen.
 document.getElementById('genTrap').onclick = () => { roll.notes = StijlGen.trap(); roll.draw(); };
 document.getElementById('genKaseko').onclick = () => { roll.notes = StijlGen.kaseko(); roll.draw(); };
 document.getElementById('genDrill').onclick = () => { roll.notes = StijlGen.drill(); roll.draw(); };
-document.getElementById('btnExport').onclick = () => exp.download(roll.notes, +document.getElementById('bpm').value);
+document.getElementById('btnExport').onclick = () => {
+  if (_gelicen()) { exp.download(roll.notes, +document.getElementById('bpm').value); return; }
+  const code = prompt('Export (.mid) is voor kopers.\nHeb je een licentiecode? Vul hem hier in — anders: koop MIDI-Forge in de winkel.');
+  if (code && code.trim().length >= 6) { try { localStorage.setItem('g2b_aura_licentie', 'ok'); } catch (e) {} exp.download(roll.notes, +document.getElementById('bpm').value); }
+};
 let playing = false;
 document.getElementById('btnPlay').onclick = async () => {
   await Aura.init(); playing = !playing;

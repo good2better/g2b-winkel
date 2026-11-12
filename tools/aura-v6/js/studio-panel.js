@@ -3,6 +3,22 @@
    transportbalk (direct spelen/play/stop/rec/loop/step/wis/.mid/.wav).
    Noten verschijnen als groene/cyaan balkjes op toonhoogte in het raster.
    Gebruik: const panel = StudioPanel.bouw(el, {bpm:120}); panel.hit(pitch,vel) vanuit play(). */
+/* demo-gate: .mid/.wav export alleen voor kopers (licentiecode via validate.php of ?licentie= of opgeslagen) */
+const _gelicen = () => {
+  try {
+    if (localStorage.getItem('g2b_aura_licentie') === 'ok') return true;
+    const q = new URLSearchParams(location.search).get('licentie');
+    if (q && q.length >= 6) { localStorage.setItem('g2b_aura_licentie', 'ok'); return true; }
+  } catch (e) {}
+  return false;
+};
+const _vraagLicentie = (st) => {
+  const code = prompt('Export (.mid/.wav) is voor kopers.\nHeb je een licentiecode? Vul hem hier in — anders: koop de module in de winkel.');
+  if (code && code.trim().length >= 6) { try { localStorage.setItem('g2b_aura_licentie', 'ok'); } catch (e) {} st.textContent = 'licentie ok — export werkt nu'; return true; }
+  st.textContent = 'demo-modus: spelen & opnemen gratis — export alleen voor kopers';
+  return false;
+};
+
 const StudioPanel = {
   bouw(el, opts = {}) {
     const bpm = opts.bpm || 120, bars = 4, steps = 16, N = bars * steps;
@@ -127,7 +143,7 @@ const StudioPanel = {
       a.download = 'g2b-opname.mid'; a.click();
       st.textContent = P.notes.length + ' noten → g2b-opname.mid';
     };
-    box.querySelector('#spMid').onclick = exportMid;
+    box.querySelector('#spMid').onclick = () => { if (_gelicen() || _vraagLicentie(st)) exportMid(); };
 
     /* ---------- .WAV export (echte opname van de master-bus) ---------- */
     let wavRec = null;
@@ -166,7 +182,7 @@ const StudioPanel = {
         wavRec = null; box.querySelector('#spWav').classList.remove('on');
       }
     };
-    box.querySelector('#spWav').onclick = exportWav;
+    box.querySelector('#spWav').onclick = () => { if (_gelicen() || _vraagLicentie(st)) exportWav(); };
 
     draw();
     /* API — zelfde interface als oude loopRaster + hit met pitch */
