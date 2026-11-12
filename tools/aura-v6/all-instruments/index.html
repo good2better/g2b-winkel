@@ -16,7 +16,11 @@ const CATS = {
   blazers:['Brass','Trombone','Fagot','Sax','Hobo','Blokfluit'],
   bass:['Bas A1','Bas C1','Bas D1','Bas E1','SF Bass','SF Sub808','Zouk Bas'],
   fusion:['Fus Gitaar','Fus Bas Karp','Fus Donder Harp'],
-  drums:['Kick','Snare','Hat','Clap','Darbouka','Bell','Djembe','Bongo','Cowbell','Donk']
+  drums:['Kick','Snare','Hat','Clap','Darbouka','Bell','Djembe','Bongo','Cowbell','Donk'],
+  dna_keys:['DNA Keys Boombap','DNA Keys RnB','DNA Keys Afro','DNA Keys Drill','DNA Rhodes Corp','DNA Rhodes RnB','DNA Rhodes Mel'],
+  dna_snaar:['DNA Funk Gitaar','DNA Rockabilly Gitaar','DNA Southern Gitaar','DNA Rockabilly Bas','DNA Southern Bas','DNA Funk Bas','DNA Reggae Bas','DNA Pluck'],
+  dna_mel:['DNA Marimba','DNA Reggaeton Mel','DNA Trap Lead','DNA Drill Fluit','DNA Lofi Lead','DNA Lofi Lead 2','DNA Pop Lead','DNA Pop Lead 2','DNA Pad Droom','DNA Pad Droom 2','DNA Epic Mel','DNA Epic Melodie','DNA Funk Mel','DNA Rockabilly Mel','DNA Southern Mel'],
+  dna_drums:['DNA Snare Roll','DNA Crunk Clap','DNA Soca Snare','DNA Dembow Rim','DNA Open Hat','DNA Hat 2','DNA Shaker','DNA Tambo','DNA Tambo 2','DNA Crash','DNA Crash 2','DNA Crash Kit','DNA Oogst Kick','DNA Oogst Snare','DNA Oogst Hat','DNA Oogst Bas']
 };
 const SRC = {
   'Piano C2':'piano_kP_C2_v1','Piano C3':'piano_kP_C3_v1','Piano C4':'piano_kP_C4_v1',
@@ -32,7 +36,19 @@ const SRC = {
   'Fus Gitaar':'kS_FUSGITDAN_39_v1','Fus Bas Karp':'kS_FUSBASKARP_30_v1','Fus Donder Harp':'kS_FUSDONDHARP_35_v1',
   'Kick':'kD_kick','Snare':'kD_snare','Hat':'kD_hat','Clap':'kD_clap','Darbouka':'kD_darb',
   'Bell':'kD_bell','Djembe':'dru_sf_djembe_1792585593','Bongo':'dru_sf_bongo_1792585593',
-  'Cowbell':'dru_sf_cowbell_1792585593','Donk':'dru_sf_donk_1792585594'
+  'Cowbell':'dru_sf_cowbell_1792585593','Donk':'dru_sf_donk_1792585594',
+  'DNA Keys Boombap':'boombapkeys','DNA Keys RnB':'rnbkeys','DNA Keys Afro':'afrobeatkeys','DNA Keys Drill':'drillkeys',
+  'DNA Rhodes Corp':'corporatemel','DNA Rhodes RnB':'rnbmel','DNA Rhodes Mel':'corporatemelodie',
+  'DNA Funk Gitaar':'funkmelodie','DNA Rockabilly Gitaar':'rockabillymelodie','DNA Southern Gitaar':'southernmelodie',
+  'DNA Rockabilly Bas':'rockabillybass','DNA Southern Bas':'southernbass','DNA Funk Bas':'funkbass','DNA Reggae Bas':'reggaetonbass','DNA Pluck':'pluck',
+  'DNA Marimba':'reggaetonmelodie','DNA Reggaeton Mel':'reggaetonmel','DNA Trap Lead':'traplead','DNA Drill Fluit':'drillmel',
+  'DNA Lofi Lead':'lofimelodie','DNA Lofi Lead 2':'lofimelodie2','DNA Pop Lead':'popmelodie','DNA Pop Lead 2':'popmelodie2',
+  'DNA Pad Droom':'dromerigmelodie','DNA Pad Droom 2':'dromerigmelodie2','DNA Epic Mel':'epicmel','DNA Epic Melodie':'epicmelodie',
+  'DNA Funk Mel':'funkmelodie2','DNA Rockabilly Mel':'rockabillymelodie2','DNA Southern Mel':'southernmelodie2',
+  'DNA Snare Roll':'bubsnareroll_g2b','DNA Crunk Clap':'layer_crunkclap_g2b','DNA Soca Snare':'snare_soca_g2b','DNA Dembow Rim':'rim_dembow_g2b',
+  'DNA Open Hat':'openhat_2_g2b','DNA Hat 2':'ohat_2_g2b','DNA Shaker':'shakerloop_104_g2b',
+  'DNA Tambo':'tambo_2_g2b','DNA Tambo 2':'tambo_0_g2b','DNA Crash':'crash_1786_26ca','DNA Crash 2':'crash_1917_ad28','DNA Crash Kit':'crash_kit_8a03',
+  'DNA Oogst Kick':'kick','DNA Oogst Snare':'snare','DNA Oogst Hat':'hat','DNA Oogst Bas':'bass'
 };
 let sounds = [];
 for (const [cat,items] of Object.entries(CATS))
