@@ -88,6 +88,7 @@ const SpeelModus = {
       <button data-m="arp" class="sm">ARP</button>
       <select id="smArp" class="sm-sel"><option value="8">1/8</option><option value="16">1/16</option></select>
       <select id="smArpDir" class="sm-sel"><option value="up">↑</option><option value="down">↓</option><option value="updown">↑↓</option></select>
+      <button id="smDice" class="sm">🎲 DICE</button>
       <button id="smScale" class="sm">NOOIT VALS: UIT</button>
       <select id="smKey" class="sm-sel"></select>`;
     el.appendChild(bar);
@@ -107,6 +108,31 @@ const SpeelModus = {
     bar.querySelector('#smChord').onchange = e => S.chordType = e.target.value;
     bar.querySelector('#smArp').onchange = e => S.arpRate = +e.target.value;
     bar.querySelector('#smArpDir').onchange = e => S.arpDir = e.target.value;
+    const sync = () => {
+      bar.querySelector('button.sm[data-m=norm]').classList.toggle('on', !S.chordOn && !S.octOn && !S.arpOn);
+      bar.querySelector('button.sm[data-m=chord]').classList.toggle('on', S.chordOn);
+      bar.querySelector('button.sm[data-m=oct]').classList.toggle('on', S.octOn);
+      bar.querySelector('button.sm[data-m=arp]').classList.toggle('on', S.arpOn);
+    };
+    // 🎲 DICE: rol een random preset-combinatie
+    bar.querySelector('#smDice').onclick = () => {
+      const r = Math.random;
+      S.chordOn = r() < 0.55;
+      S.octOn = r() < 0.4;
+      S.arpOn = r() < 0.6;
+      if (!S.chordOn && !S.octOn && !S.arpOn) S.arpOn = true; // altijd iets
+      const ct = ['min','maj','min7','maj7','kaseko','sus','trap'];
+      S.chordType = ct[(r() * ct.length) | 0];
+      bar.querySelector('#smChord').value = S.chordType;
+      S.arpRate = r() < 0.5 ? 8 : 16;
+      bar.querySelector('#smArp').value = S.arpRate;
+      const dirs = ['up','down','updown'];
+      S.arpDir = dirs[(r() * 3) | 0];
+      bar.querySelector('#smArpDir').value = S.arpDir;
+      sync();
+      const d = bar.querySelector('#smDice');
+      d.classList.add('on'); setTimeout(() => d.classList.remove('on'), 350);
+    };
     const keySel = bar.querySelector('#smKey');
     this.ROOTS.forEach((r, i) => keySel.add(new Option(r + ' min', i + ':min')));
     this.ROOTS.forEach((r, i) => keySel.add(new Option(r + ' maj', i + ':maj')));
