@@ -83,8 +83,7 @@ async function laden() {
     PLUGIN_CAT.instrumenten.includes(p.id) ? "instrumenten"
     : PLUGIN_CAT.bundels.includes(p.id) ? "bundels"
     : "studiotools";
-  const CAT = p => p.groep === "femina" ? "femina"
-    : p.groep === "apps" ? "apps"
+  const CAT = p => p.groep === "apps" ? "apps"
     : p.soort === "audio" ? "beats"
     : (p.groep === "software" || p.groep === "plugins") ? pluginCat(p)
     : (p.groep === "sounds" || p.groep === "soundpacks") ? "sounds"
@@ -97,7 +96,6 @@ async function laden() {
     instrumenten: T("cat_instrumenten"), studiotools: T("cat_studiotools"),
     bundels: T("cat_bundels"), sounds: T("cat_sounds"),
     muziek: T("cat_muziek"), beats: T("cat_beats"),
-    femina: T("cat_femina"),
   };
   const CAT_UITLEG = {
     instrumenten: T("u_instrumenten"),
@@ -107,10 +105,9 @@ async function laden() {
     beats: T("u_beats"),
     muziek: T("u_muziek"),
     apps: T("u_apps"),
-    femina: T("u_femina"),
   };
   const CAT_VOLGORDE = ["instrumenten", "studiotools", "bundels", "sounds",
-    "beats", "muziek", "apps", "femina"];
+    "beats", "muziek", "apps"];
 
   // taal-overlay: vertaalde titel/beschrijving/badge bovenop de NL-tekst
   const rawProds = [...(data.producten || [])];
