@@ -348,8 +348,8 @@ function tik(){
  }
 }
 // ---- MELODIE-REBUILD: drop melodie → noten eruit → rebuild met eigen instrumenten
-const MINST={kalimba:[49,53,58,61,65,70,73],piano:[36,48,52,58,60,64,72,81,84],marimba:[29,43,47,53,60,71,84],flute:[53,58,60,62,64,68,72],glock:[67,72,79,84,92],contrabas:[36,43,48,55,60,67,72,79],hardebas:[36,43,48,55,60,67,72,79],softbas:[36,48,60,72],sub808:[36],horn:[31,45],hornmute:[41,50,55],trombone:[29,48,53],tuba:[29,41],clarinet:[38,50,65,78],timpani:[41,50,55],pad:[36,42,48,54,60,66,72,78]};
-const MELN={kalimba:'🎋 KALIMBA',piano:'🎹 PIANO',marimba:'🪵 MARIMBA',flute:'🪈 FLUIT',glock:'🔔 GLOCK',contrabas:'🎻 CONTRABAS',hardebas:'🎻 HARDE BAS',softbas:'🎻 ZACHTE BAS',sub808:'🔊 808-SUB',horn:'🎺 HOORN',hornmute:'🎺 HOORN-MUTE',trombone:'🎺 TROMBONE',tuba:'🎺 TUBA',clarinet:'🎷 KLARINET',timpani:'🥁 TIMPANI',pad:'🌫 PAD-DNA'};
+const MINST={kalimba:[49,53,58,61,65,70,73],piano:[36,48,52,58,60,64,72,81,84],marimba:[29,43,47,53,60,71,84],flute:[53,58,60,62,64,68,72],glock:[67,72,79,84,92],contrabas:[36,43,48,55,60,67,72,79],hardebas:[36,43,48,55,60,67,72,79],softbas:[36,48,60,72],sub808:[36],horn:[31,45],hornmute:[41,50,55],trombone:[29,48,53],tuba:[29,41],clarinet:[38,50,65,78],timpani:[41,50,55],pad:[36,42,48,54,60,66,72,78],dnabas:[36,43,48,55,60,67,72,79,84],dnapad:[36,43,48,55,60,67,72,79,84],dnalead:[36,43,48,55,60,67,72,79,84]};
+const MELN={kalimba:'🎋 KALIMBA',piano:'🎹 PIANO',marimba:'🪵 MARIMBA',flute:'🪈 FLUIT',glock:'🔔 GLOCK',contrabas:'🎻 CONTRABAS',hardebas:'🎻 HARDE BAS',softbas:'🎻 ZACHTE BAS',sub808:'🔊 808-SUB',horn:'🎺 HOORN',hornmute:'🎺 HOORN-MUTE',trombone:'🎺 TROMBONE',tuba:'🎺 TUBA',clarinet:'🎷 KLARINET',timpani:'🥁 TIMPANI',pad:'🌫 PAD',dnabas:'🧬 DNA-BAS',dnapad:'🧬 DNA-PAD',dnalead:'🧬 DNA-LEAD'};
 // noten-lagen: ieder met eigen instrument, eigen loop-lengte (sec) en mute — DRUMS raken uploads nooit
 const NLAY={bas:{nm:'🔊 BAS',inst:'contrabas',noten:[],len:0,mute:false},
             mel:{nm:'🎹 MELODIE',inst:'piano',noten:[],len:0,mute:false},
