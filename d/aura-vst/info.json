@@ -1,0 +1,9 @@
+{
+ "titel": "G2B AURA Sampler — VST3 + Standalone (Windows)",
+ "licentie": "Licentiecode voor export: aura-v6",
+ "cover": "tools/aura-v6/img/suri-pads.png",
+ "bestanden": [
+  {"naam": "AURA Sampler VST3 + packs (ZIP, Windows)", "bestand": "G2B-AURA-SAMPLER.zip"},
+  {"naam": "Nederlandse uitleg (PDF)", "url": "d/aura-v6/G2B-AURA-V6-UITLEG.pdf"}
+ ]
+}
