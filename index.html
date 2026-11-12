@@ -199,9 +199,9 @@ const PROD = [
   {id:"aura-dren",      cat:"instrumenten", naam:"Dren Studio", zin:"323 echt unieke presets — van droomtapijt tot donkere lead, direct bespeelbaar.", nu:"34,95", na:"59,95", img:"tools/aura-v6/img/dren-studio.png", demo:"tools/aura-v6/dren-studio/"},
   {id:"aura-fxrack",    cat:"effecten",     naam:"FX-Rack", zin:"Refors, Koor+Key en Master in één keten — je mix klinkt meteen af en luid.", nu:"39,95", na:"69,95", img:"tools/aura-v6/img/fx-rack.png", demo:"tools/aura-v6/fx-rack/"},
   {id:"aura-midiforge", cat:"effecten",     naam:"AURA MIDI-Forge", zin:"Piano-roll met stijl-generator en glide — maak melodieën en exporteer als .MID.", nu:"39,95", na:"69,95", img:"tools/aura-v6/img/midi-forge.png", demo:"tools/aura-v6/"},
-  {id:"g2bclub",        cat:"bundels",      naam:"G2B CLUB — lidmaatschap", zin:"Alle browser-tools volledig, inclusief export. Maandelijks opzegbaar.", nu:"4,95", per:"/mnd", img:"media/promo-club.png", demo:"club-apps.html", koop:"https://buy.stripe.com/3cIeVd5IIeqDcI76G15J62O"},
+  {id:"g2bclub",        cat:"bundels",      naam:"G2B ALL-ACCESS — abonnement", zin:"Één code ontgrendelt álle browser-modules + export, op al je apparaten. Maandelijks opzegbaar.", nu:"4,95", per:"/mnd", img:"media/promo-club.png", demo:"club-apps.html", koop:"https://buy.stripe.com/3cIeVd5IIeqDcI76G15J62O"},
 ];
-const SUITE = {id:"g2balles", nu:"199", los:"244,65", koop:"https://buy.stripe.com/00w8wP7QQ5U77nN3tP5J61J"};
+const SUITE = {id:"g2balles", nu:"199", los:"244,65", koop:"https://buy.stripe.com/00w8wP7QQ5U77nN3tP5J61J", club:"https://buy.stripe.com/3cIeVd5IIeqDcI76G15J62O"};
 const A = window.G2B_ACTIE, actief = A && A.loopt();
 
 function kaart(p){
@@ -218,19 +218,23 @@ function kaart(p){
     </div></article>`;
 }
 function suite(){
-  return `<section class="suite" id="prosuite" data-cat="bundels" data-demo="1">
+  return `<section class="suite" id="prosuite" data-cat="bundels" data-demo="0">
     <div>
-      <div class="eyebrow">🔥 G2B PRO SUITE / ALL-ACCESS</div>
-      <h2>Alles in één pakket.<br><span>Eén keer betalen, voor altijd.</span></h2>
-      <p>Alle 7 AURA v6.0-modules als browser-studio, desktop-app én VST3 — plus alle G2B-plugins en browser-tools.</p>
-      <ul><li>Suri-Pads &amp; World</li><li>AURA All-Instruments</li><li>Bass &amp; Drum 2-in-1</li><li>AURA Dice Synth</li><li>Dren Studio</li><li>FX-Rack + MIDI-Forge</li><li>9 G2B VST3-plugins</li><li>Stapel-Dice PRO + Beat Maker PRO</li></ul>
+      <div class="eyebrow">🔥 G2B ALL-ACCESS — ONZE NUMMER 1</div>
+      <h2>Alle modules. Één code.<br><span>Overal ontgrendeld, in elke browser.</span></h2>
+      <p>Met één actieve abonnementscode ontgrendel je álle G2B browser-modules tegelijk — inclusief .MID/.WAV-export, op al je apparaten. Eénmalig kopen kan ook, maar lid zijn is de slimste keuze.</p>
+      <ul><li>Suri-Pads &amp; World</li><li>AURA All-Instruments</li><li>Bass &amp; Drum 2-in-1</li><li>AURA Dice Synth</li><li>Dren Studio</li><li>FX-Rack + MIDI-Forge</li><li>GAW-lite studio</li><li>+ elke nieuwe browser-module</li></ul>
     </div>
     <div class="rechts">
-      <div class="oud">los samen € ${SUITE.los}</div>
-      <div class="nu">€ ${SUITE.nu}</div>
-      ${actief ? `<div class="klokrij">🎁 + gratis 808 &amp; Drum Pack · actie eindigt over <span class="klok" data-klok>…</span></div>` : '<div class="klokrij">Windows · Mac · browser</div>'}
-      <a class="btn vol" style="width:100%" href="${SUITE.koop}" target="_blank" rel="noopener">KOOP DE PRO SUITE</a>
-      <div style="margin-top:12px"><a class="k-demo" style="display:inline-block;font-size:12px;letter-spacing:1px;font-weight:700;padding:9px 20px;border-radius:20px" href="tools/aura-v6/">PROBEER EERST GRATIS</a></div>
+      <div style="font-size:11px;letter-spacing:2px;color:var(--accent);font-weight:800">NU #1 KEUZE</div>
+      <div class="nu">€ 4,95<small>/maand</small></div>
+      <div class="klokrij" style="margin:4px 0 14px">één code ontgrendelt álle modules · maandelijks opzegbaar</div>
+      <a class="btn vol" style="width:100%" href="${SUITE.club}" target="_blank" rel="noopener">WORD ALL-ACCESS LID</a>
+      <div style="margin:16px 0 10px;border-top:1px solid var(--line);padding-top:14px">
+        <div class="oud">eenmalig: los samen € ${SUITE.los} → € ${SUITE.nu}</div>
+        <a href="${SUITE.koop}" target="_blank" rel="noopener" style="font-size:12px;color:var(--dim);text-decoration:underline">Liever eenmalig kopen (€ ${SUITE.nu}, VST3's erbij)</a>
+      </div>
+      ${actief ? `<div class="klokrij">🎁 + gratis 808 &amp; Drum Pack · eindigt over <span class="klok" data-klok>…</span></div>` : ''}
     </div></section>`;
 }
 const html = PROD.map(kaart);

@@ -213,13 +213,13 @@
   },
   {
    "id": "g2bclub",
-   "titel": "G2B CLUB — abonnement: alle browser-tools volledig",
+   "titel": "G2B ALL-ACCESS — abonnement: alle browser-modules ontgrendeld",
    "prijs": "€ 4,95/mnd",
-   "badge": "ABONNEMENT",
+   "badge": "NU #1 KEUZE",
    "groep": "apps",
    "soort": "digitaal",
    "cover": "apps-img/winkel.jpg",
-   "beschrijving": "CLUB-ABONNEMENT — alle browser-tools volledig + exports: Beat Maker PRO, BREIN PRO, GIM BASSI, GAW MINI, MIXER, MASTER, MENGER, REFORS en meer. Nieuwe tools komen er automatisch bij. Exclusief VST-downloads en Giorgio's privé- en GIO-versies. Maandelijks opzegbaar. Toegang loopt zolang je abonnement én de site draaien — losse downloads blijven altijd van jou.",
+   "beschrijving": "Één actieve abonnementscode ontgrendelt álle G2B browser-modules tegelijk (alle AURA-modules, GAW-lite, Refors e.a.) inclusief .MID/.WAV-export, op al je apparaten. Maandelijks opzegbaar. Onze nummer 1 keuze.",
    "links": {
     "stripe": "https://buy.stripe.com/3cIeVd5IIeqDcI76G15J62O",
     "download": "bedankt.html?k=g2bclub",
@@ -229,7 +229,8 @@
    "upsell": [
     "g2balles"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "eerst": 1
   },
   {
    "id": "g2bstarter",
