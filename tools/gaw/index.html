@@ -75,7 +75,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
   <button class="uit klein" onclick="arrZoom(1.4)">+ groter</button>
   <span style="font-size:.68rem;color:var(--sub)">alle lanes samen — playhead beweegt mee</span>
  </div>
- <canvas id="arrw" width="1000" height="200" style="width:100%;background:#0b0e0c;border-radius:8px;display:block"></canvas>
+ <canvas id="arrw" width="1000" height="200" style="width:100%;background:#0b0e0c;border-radius:8px;display:block;cursor:pointer"></canvas>
 </div>
 <div id="mfxpanel" style="display:none;margin-bottom:10px;background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:10px">
  <b style="font-size:.75rem;color:var(--groen)">🎚 MASTER — effects op alles samen</b>
@@ -402,6 +402,11 @@ document.getElementById('bpm').onchange=()=>{if(playing){clearInterval(timer);ti
 let ARR={on:false,z:50}; // z = px per stap
 function arrToggle(){ARR.on=!ARR.on;document.getElementById('arrpanel').style.display=ARR.on?'block':'none';document.getElementById('arrbtn').style.borderColor=ARR.on?'var(--groen)':'';if(ARR.on)drawArr()}
 function arrZoom(f){ARR.z=Math.max(14,Math.min(160,ARR.z*f));drawArr()}
+document.getElementById('arrw').addEventListener('click',e=>{
+ const cv=e.target,r=cv.getBoundingClientRect(),y=(e.clientY-r.top)/r.height*cv.height,x=(e.clientX-r.left)/r.width*cv.width;
+ if(x<86)return;const idx=Math.floor((y-6)/((cv.height-12)/Math.max(1,TR.length)));
+ const rows=document.querySelectorAll('#traks .trak');if(rows[idx])rows[idx].scrollIntoView({behavior:'smooth',block:'center'});
+});
 function drawArr(){
  if(!ARR.on)return;
  const c=document.getElementById('arrw'),g=c.getContext('2d');
