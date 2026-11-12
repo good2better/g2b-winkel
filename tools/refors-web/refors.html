@@ -60,7 +60,7 @@ const ENV=[
  [150, 8000,-2, 4,0.12, 90,0.20,0.10,0.7 , 0], // TV
  [ 90,11000,-2, 3,0.25,  0,0.00,0.00,0.8 ,-1], // TIENTJE
 ];
-const P={afst:0,kamer:100,menigte:0,vol:80,kracht:100,ruimte:0,aan:true};
+const P={afst:0,kamer:55,menigte:0,vol:80,kracht:100,ruimte:0,aan:true};
 let ctx=null,buf=null,src=null,G=null,seed=777>>>0,lastDrv=-1;
 const $=id=>document.getElementById(id);
 
@@ -129,10 +129,10 @@ function reken(sr){
  const E=ENV[P.ruimte],af=P.afst/100,kam=P.kamer/100;
  const hiHz=Math.max(800,E[1]*(1-0.65*af));
  const delS=E[5]/1000, heeftEcho=delS*sr>16;
- const echoMix=heeftEcho?Math.min(E[7]*(0.35+1.05*kam)+af*0.10,0.42):0;
+ const echoMix=heeftEcho?Math.min(E[7]*(0.30+0.70*kam)+af*0.08,0.30):0;
  return {E,af,hiHz,delS,heeftEcho,echoMix,
   presDb:20*Math.log10(1+(Math.pow(10,E[3]/20)-1)*0.6),
-  drv:1+E[4]*6,dm:E[4]*0.8,fb:heeftEcho?E[6]:0,w:E[8],
+  drv:1+E[4]*6,dm:E[4]*0.8,fb:heeftEcho?Math.min(E[6],0.30):0,w:E[8],
   crowd:P.menigte/100*0.10, // zelfde nivo als de VST (was 2.5x te hard = gruis)
   outG:Math.pow(10,(E[9]-af*6)/20)*(0.5+0.5*(P.vol/100)*2),
   k:P.aan?P.kracht/100:0};
