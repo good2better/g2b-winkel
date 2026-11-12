@@ -60,6 +60,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <button class="uit klein" id="advbtn" onclick="advToggle()">🧠 ADVIES</button>
 <button class="uit klein" id="brbtn" onclick="brToggle()">☰ BROWSER</button>
 <button class="uit klein" onclick="lesOpen()">🎓 LES</button>
+<button class="uit klein" id="wizbtn" onclick="chatToggle();document.getElementById('chatpan').style.display='flex';_wiz={};bouwWiz(0)" title="5 vragen → ik bouw je beat">🎯 BOUW</button>
 <button class="uit" onclick="ongedaan()">↩ ONGEDAAN MAKEN</button>
 <span id="st">sets laden…</span>
 <button class="uit" id="skin" onclick="skin()">◐ WIT</button>
@@ -223,6 +224,7 @@ async function chatSend(){
   dl(new Blob([txt],{type:'text/plain'}),'g2b-gaw-feedback.txt');zeg(a.length+' punten gedownload — geef het .txt aan Devin');return}
  if(/wis feedback|feedback leeg/.test(t)){_fbSave([]);zeg('feedback-lijst geleegd');return}
  if(/help|wat kan|commando/.test(t))zeg('Ik kan:<br>• <b>bouwen</b>: "maak een beat" → kies stijl, ik bouw alles<br>• <b>maken</b>: "maak drumgrid", "baslijn", "melodie", "voeg audio/effect toe"<br>• <b>sturen</b>: "speel", "stop", "bpm 120", "solo/mute track 3"<br>• <b>effecten</b>: "zet delay/comp/eq/brein op track 2" of "op master"<br>• <b>uitvoer</b>: "wav export", "stems", "naar laagbaas"<br>• <b>zoeken</b>: typ een geluidsnaam → ik zoek in de Browser links');
+ else if(/bouw met mij|samen.*beat|wizard|begeleid/.test(t)){bouwWiz(0)}
  else if(/maak.*beat|bouw.*beat|nieuwe beat|beat voor me/.test(t)){
   zeg('welke stijl? klik er één:');Object.keys(STIJLEN).forEach(s=>chatBtn('🎵 '+s,()=>{bouwBeat(s);zeg(s+'-beat gebouwd — SPEEL om te horen. Zeg "weer anders" voor nieuwe stijl of stuur met ja/nee in 🧠 ADVIES')}));
  }
@@ -560,24 +562,57 @@ const STIJLEN={
  'house':{bpm:124,lanes:[[0,4,8,12],[4,12],[2,6,10,14],[0,4,8,12]],bas:{d:[0,4,8,12],o:0},mel:{d:[0,6,8,14],o:1}},
  'boom bap':{bpm:88,lanes:[[0,7,10],[4,12],[0,2,4,6,8,10,12,14],[15]],bas:{d:[0,7,10],o:0},mel:{d:[0,4,10,12],o:1}},
  'dnb':{bpm:174,lanes:[[0,10],[4,12],[0,2,4,6,8,10,12,14],[2,6,10,14]],bas:{d:[0,6,10],o:0},mel:{d:[0,8],o:1}},
- 'laidback':{bpm:78,lanes:[[0,8],[12],[2,6,10,14],[0]],bas:{d:[0,8],o:0},mel:{d:[0,4,8,12],o:1}}
+ 'laidback':{bpm:78,lanes:[[0,8],[12],[2,6,10,14],[0]],bas:{d:[0,8],o:0},mel:{d:[0,4,8,12],o:1}},
+ 'trap':{bpm:140,lanes:[[0,7,8],[4,12],[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],[10]],bas:{d:[0,7],o:0},mel:{d:[0,6,12],o:1}}
 };
-function bouwBeat(stijlNaam){
- const st=STIJLEN[stijlNaam];if(!st)return;
+const WIZ=[
+ {q:'waarvoor is de beat?',ant:['verkoop ⭐','sync/licentie','eigen release','club/dans','oefenen'],k:'doel'},
+ {q:'welke stijl?',ant:['house ⭐','boom bap','dnb','laidback','trap'],k:'stijl'},
+ {q:'hoeveel energie?',ant:['groove ⭐','rustig','druk'],k:'energie'},
+ {q:'welk tempo?',ant:['mid ⭐','traag','snel'],k:'tempo'},
+ {q:'wat moet er zwaar in?',ant:['alles ⭐','bas zwaar','melodie'],k:'smaak'}
+];
+let _wiz=null;
+function bouwWiz(stap){
+ if(!_wiz)_wiz={};
+ document.querySelectorAll('#chatlog button').forEach(b=>{b.disabled=true;b.style.opacity=.4;b.style.cursor='default'});
+ if(stap===0){chatZeg('🎯 BOUW — ik stel 5 vragen, jij kiest (⭐ = aanrader):')}
+ if(stap>=WIZ.length){const a=_wiz;_wiz=null;
+  const stijl=a.stijl.replace(' ⭐','');
+  const mods={energie:a.energie.replace(' ⭐',''),tempo:a.tempo.replace(' ⭐',''),smaak:a.smaak==='alles ⭐'?'':a.smaak==='bas zwaar'?'bas':'mel'};
+  bouwBeat(stijl,mods);
+  chatZeg('klaar — '+stijl+'-beat gebouwd voor '+a.doel.replace(' ⭐','')+'. SPEEL om te horen; stuur verder met 🎲, 🧠 ADVIES of nieuwe verzoeken.');
+  return}
+ const w=WIZ[stap];chatZeg('<b>stap '+(stap+1)+'/5 — '+w.q+'</b>');
+ w.ant.forEach(a=>{const schoon=a.replace(' ⭐','');
+  chatBtn(a,()=>{_wiz[w.k]=schoon;bouwWiz(stap+1)})});
+}
+function bouwBeat(stijlNaam,mods){
+ mods=mods||{};const st=STIJLEN[stijlNaam];if(!st)return;
  snap();
- document.getElementById('bpm').value=st.bpm;document.getElementById('bpmv').textContent=st.bpm;
- if(playing){clearInterval(timer);timer=setInterval(tick,60000/st.bpm/4)}
+ let bpm=st.bpm;
+ if(mods.tempo==='traag')bpm=Math.max(70,st.bpm-20);
+ if(mods.tempo==='snel')bpm=Math.min(175,st.bpm+15);
+ if(mods.tempo==='mid')bpm=Math.round((Math.max(70,st.bpm-8)+Math.min(175,st.bpm+8))/2);
+ document.getElementById('bpm').value=bpm;document.getElementById('bpmv').textContent=bpm;
+ if(playing){clearInterval(timer);timer=setInterval(tick,60000/bpm/4)}
  let gi=0,ri=0;
  for(let t=0;t<TR.length;t++){
   if(TR[t].type==='grid'){
-   const pat=st.lanes[gi%st.lanes.length];TR[t].grid=new Array(16).fill(false);
+   let pat=st.lanes[gi%st.lanes.length].slice();
+   if(mods.energie==='rustig')pat=pat.filter((s,i)=>i%2===0||s%4===0);
+   if(mods.energie==='druk')pat=pat.concat([3,7,11,15].filter(s=>Math.random()<.4));
+   TR[t].grid=new Array(16).fill(false);
    pat.forEach(s=>TR[t].grid[s]=true);syncGrid(t);gi++;
   }else if(TR[t].type==='roll'){
+   if(mods.smaak==='bas'&&ri>0){ri++;continue}
    const cfg=ri===0?st.bas:st.mel;ri++;
    const wortel=cfg.o===0?48:57;const noten=[];
    cfg.d.forEach(s=>{noten.push({s,d:cfg.o===0?2:1,p:wortel+(cfg.o?12*Math.floor(Math.random()*2):0)+_SCHAAL[Math.floor(Math.random()*_SCHAAL.length)],v:92+Math.floor(Math.random()*24)})});
    TR[t].notes=noten;drawRoll(t);
    if(cfg.o===0&&!TR[t].fx.some(f=>f.type==='comp'))fxAdd(t,'comp');
+   if(mods.smaak==='bas'&&cfg.o===0&&!TR[t].fx.some(f=>f.type==='drive'))fxAdd(t,'drive');
+   if(mods.smaak==='mel'&&cfg.o===1&&!TR[t].fx.some(f=>f.type==='delay'))fxAdd(t,'delay');
   }
  }
  if(!MAST.fx.length){MAST.fx.push(newFx('eq'));MAST.fx.push(newFx('drive'));rebuildMaster();mfxDraw()}
