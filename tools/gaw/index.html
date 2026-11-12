@@ -73,7 +73,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <div id="mfxpanel" style="display:none;margin-bottom:10px;background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:10px">
  <b style="font-size:.75rem;color:var(--groen)">🎚 MASTER — effects op alles samen</b>
  <div id="mfxlist"></div>
- <select class="fxsel" id="mfxsel"><option value="">+ effect op master…</option><option value="eq">EQ (3-band)</option><option value="delay">DELAY</option><option value="reverb">REVERB</option><option value="filter">FILTER</option><option value="drive">DRIVE</option><option value="brein">BREIN-resonator</option></select>
+ <select class="fxsel" id="mfxsel"><option value="">+ effect op master…</option><option value="eq">EQ (3-band)</option><option value="delay">DELAY</option><option value="reverb">REVERB</option><option value="filter">FILTER</option><option value="drive">DRIVE</option><option value="comp">COMP</option><option value="brein">BREIN-resonator</option></select>
 </div>
 <div id="advpanel" style="display:none;margin-bottom:10px;background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:10px">
  <b style="font-size:.75rem;color:var(--groen)">🧠 GAW denkt mee — jij kiest alleen JA of NEE</b>
@@ -89,6 +89,9 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 </div></div>
 <div id="wm">⚡ G2B GAW — GIO</div>
 <script>
+let CLICK=false;
+function clickToggle(){CLICK=!CLICK;document.getElementById('clk').style.borderColor=CLICK?'var(--groen)':'';document.getElementById('clk').style.color=CLICK?'var(--groen)':''}
+function clickPlay(){const c=ac(),o=c.createOscillator(),g=c.createGain();o.frequency.value=step%4===0?1500:1000;o.type='square';g.gain.setValueAtTime(0.08,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.03);o.connect(g).connect(c.destination);o.start(c.currentTime);o.stop(c.currentTime+0.04)}
 let REC=false;function rec(){REC=!REC;document.getElementById('rec').style.background=REC?'#d33':'';document.getElementById('rec').style.color=REC?'#fff':''}
 let HIST=[];const snap=()=>{HIST.push(JSON.stringify(TR.map(t=>({g:t.grid,n:t.notes}))));if(HIST.length>60)HIST.shift()};
 function ongedaan(){if(!HIST.length)return;const s=JSON.parse(HIST.pop());TR.forEach((t,i)=>{t.grid=s[i].g;t.notes=s[i].n;syncGrid(i)});document.getElementById('st').textContent='ongedaan gemaakt'}
@@ -134,7 +137,7 @@ async function mkTrack(t,type){
    <button class="uit" id="mut${t}" style="padding:6px 10px" onclick="mute(${t})">MUTE</button>
    <button class="uit" style="padding:6px 10px" onclick="wis(${t})">✕</button>
    <div class="fxrack" id="fxr${t}"><div id="fxl${t}"></div>
-    <select class="fxsel" id="fxs${t}"><option value="">+ effect op TR${t+1}…</option><option value="eq">EQ (3-band)</option><option value="delay">DELAY</option><option value="reverb">REVERB</option><option value="filter">FILTER</option><option value="drive">DRIVE</option><option value="brein">BREIN-resonator</option></select>
+    <select class="fxsel" id="fxs${t}"><option value="">+ effect op TR${t+1}…</option><option value="eq">EQ (3-band)</option><option value="delay">DELAY</option><option value="reverb">REVERB</option><option value="filter">FILTER</option><option value="drive">DRIVE</option><option value="comp">COMP</option><option value="brein">BREIN-resonator</option></select>
    </div>`;
  el.appendChild(row);
  document.getElementById('fxs'+t).onchange=e=>{if(!e.target.value)return;fxAdd(t,e.target.value);e.target.value=''};
@@ -309,6 +312,7 @@ function speelClip(t){
 }
 function tick(){
  document.querySelectorAll('.st').forEach(c=>c.classList.remove('play'));
+ if(CLICK)clickPlay();
  for(let t=0;t<TR.length;t++){
   if(TR[t].muted){continue}
   if(TR[t].type==='audio'){const c=TR[t].clip;if(c&&step===c.pos)speelClip(t);drawWave(t)}
@@ -354,7 +358,7 @@ function drawArr(){
 // ===== FX-engine: inserts per spoor + master =====
 const MAST={fx:[],in:null,out:null};
 function newFx(type){
- const d={eq:{lo:0,mid:0,hi:0},delay:{t:.3,fb:.35,mix:.3},reverb:{size:2,mix:.3},filter:{f:8000,q:1},drive:{amt:.4,out:.8},brein:{note:57,fb:.5,mix:.4}};
+ const d={eq:{lo:0,mid:0,hi:0},delay:{t:.3,fb:.35,mix:.3},reverb:{size:2,mix:.3},filter:{f:8000,q:1},drive:{amt:.4,out:.8},comp:{thr:-18,ratio:4,rel:.2},brein:{note:57,fb:.5,mix:.4}};
  return {type,bypass:false,p:{...d[type]}};
 }
 function buildFxNode(c,fx){ // returns {in,out,upd}
@@ -389,6 +393,11 @@ function buildFxNode(c,fx){ // returns {in,out,upd}
   const n=256,cur=new Float32Array(n);for(let i=0;i<n;i++){const x=i*2/n-1;cur[i]=Math.tanh(x*(1+p.amt*8))}ws.curve=cur;ws.oversample='2x';g.gain.value=p.out;
   ws.connect(g);
   return {in:ws,out:g,upd:()=>{const c2=new Float32Array(n);for(let i=0;i<n;i++){const x=i*2/n-1;c2[i]=Math.tanh(x*(1+p.amt*8))}ws.curve=c2;g.gain.value=p.out}};
+ }
+ if(fx.type==='comp'){
+  const cp=c.createDynamicsCompressor();cp.threshold.value=p.thr;cp.ratio.value=p.ratio;cp.attack.value=0.003;cp.release.value=p.rel;cp.knee.value=20;
+  const g=c.createGain();cp.connect(g);
+  return {in:cp,out:g,upd:()=>{cp.threshold.value=p.thr;cp.ratio.value=p.ratio;cp.release.value=p.rel}};
  }
  if(fx.type==='brein'){ // resonator-comb op noot — het 'luistert' op het spoor
   const inp=c.createGain(),out=c.createGain(),wet=c.createGain();
@@ -431,8 +440,8 @@ function rebuildMaster(){
  const c=ac();const ch=chainFor(c,MAST.fx);
  try{MAST._ch&&MAST._ch.out.disconnect()}catch(e){}
  ch.out.connect(c.destination);MAST._ch=ch;MAST.out=ch.out;
- try{MAST.in.disconnect()}catch(e){}
- MAST.in.connect(ch.in);
+ try{MAST.in&&MAST.in.disconnect()}catch(e){}
+ if(MAST.in)MAST.in.connect(ch.in);
 }
 // speel/clip → via insert-keten i.p.v. direct
 function busOf(t){rebuildFx(t);return TR[t]._in}
@@ -443,6 +452,7 @@ const FXPARS={eq:[['lo','LAAG',-18,18],['mid','MID',-18,18],['hi','HOOG',-18,18]
  reverb:[['size','RUIMTE',0.3,4],['mix','MIX',0,1]],
  filter:[['f','FREQ',100,16000],['q','Q',0.1,10]],
  drive:[['amt','DRIVE',0,1],['out','UIT',0,1]],
+ comp:[['thr','DREMPEL',-40,0],['ratio','RATIO',1,20],['rel','RELEASE',0.05,1]],
  brein:[['note','NOOT',36,84],['fb','FEEDBACK',0,0.9],['mix','MIX',0,1]]};
 function fxAdd(t,type){TR[t].fx.push(newFx(type));rebuildFx(t);fxDraw(t)}
 function fxDraw(t){
@@ -488,6 +498,10 @@ function advAnalyse(){
     TR[i].notes=i%2?[{p:72,s:0,d:1,v:100},{p:74,s:4,d:1,v:100},{p:76,s:8,d:2,v:100}]:[{p:36,s:0,d:2,v:110},{p:36,s:8,d:2,v:110},{p:43,s:12,d:2,v:100}];
     drawRoll(i);}});
  // 3) geen master-fx
+ if(+document.getElementById('bpm').value>140)
+  ADV.push({t:'BPM boven 140 — voor de meeste verkoop is 85-140 veiliger. Zal ik hem op 96 zetten?',ja:()=>{document.getElementById('bpm').value=96;document.getElementById('bpmv').textContent=96}});
+ if(MAST.fx.length&&!MAST.fx.some(f=>f.type==='comp'))
+  ADV.push({t:'Geen compressor op je master — zal ik COMP toevoegen (strakkere, hardere mix)?',ja:()=>{MAST.fx.push(newFx('comp'));rebuildMaster();if(document.getElementById('mfxpanel').style.display==='block')mfxDraw()}});
  if(!MAST.fx.length)
   ADV.push({t:'Nog geen master-effect — zal ik EQ + DRIVE op je master zetten (voller geluid)?',ja:()=>{
    const e=newFx('eq');e.p.lo=2;e.p.hi=3;MAST.fx.push(e);MAST.fx.push(newFx('drive'));rebuildMaster();if(document.getElementById('mfxpanel').style.display==='block')mfxDraw();}});
