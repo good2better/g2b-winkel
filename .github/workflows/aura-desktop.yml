@@ -1,0 +1,30 @@
+name: aura-desktop
+on:
+  push:
+    paths: ['tools/aura-v6/**', '.github/workflows/aura-desktop.yml']
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo
+          key: cargo-${{ matrix.os }}-aura
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: tools/aura-v6/desktop
+          tagName: aura-v6.0
+          releaseName: 'G2B AURA v6.0 Studio'
+          releaseDraft: false
+          prerelease: false
