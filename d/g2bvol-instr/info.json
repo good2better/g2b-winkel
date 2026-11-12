@@ -1,21 +1,13 @@
 {
-  "titel": "G2B INSTRUMENTEN VOL1-3 — complete instrumenten-collectie",
+  "titel": "G2B INSTRUMENTEN ALL — alle instrumenten in 1 VST (VOL1+VOL3 categorieën)",
   "licentie": "G2B EULA — persoonlijk + commercieel gebruik",
   "bestanden": [
     {
-      "naam": "G2B-INSTRUMENTEN-GIORGIO-VOL1.zip — instrumenten-deel 1 (VST3+CLAP+exe)",
-      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-INSTRUMENTEN-GIORGIO-VOL1.zip"
+      "naam": "G2B-INSTRUMENTEN-ALL.zip — 60 instrumenten in één plugin (VST3+CLAP+exe, Windows+Linux)",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-INSTRUMENTEN-ALL.zip"
     },
     {
-      "naam": "G2B-INSTRUMENTEN-GIORGIO-VOL2.zip — instrumenten-deel 2",
-      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-INSTRUMENTEN-GIORGIO-VOL2.zip"
-    },
-    {
-      "naam": "G2B-INSTRUMENTEN-GIORGIO-VOL3.zip — instrumenten-deel 3",
-      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-INSTRUMENTEN-GIORGIO-VOL3.zip"
-    },
-    {
-      "naam": "Instrumenten-VOL1-Handleiding.pdf (NL)",
+      "naam": "Instrumenten-Handleiding.pdf (NL)",
       "url": "https://github.com/good2better/g2b-winkel/releases/download/dl/G2B-Instrumenten-VOL1-Handleiding.pdf"
     }
   ],
