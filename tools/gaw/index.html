@@ -365,6 +365,7 @@ async function mkTrack(t,type){
    <button class="uit" id="sol${t}" style="padding:6px 9px" onclick="solo(${t})">S</button>
    <button class="uit" id="mut${t}" style="padding:6px 10px" onclick="mute(${t})">MUTE</button>
    ${type==='grid'?`<button class="uit" style="padding:6px 9px" title="vult dit spoor met een strak patroon — elke klik een nieuwe" onclick="gridFill(${t})">🎲</button>`:type==='roll'?`<button class="uit" style="padding:6px 9px" title="schrijft een melodie/baslijn — elke klik een nieuwe" onclick="rollFill(${t})">🎲</button>`:''}
+   <button class="uit" style="padding:6px 9px" title="kloon dit spoor (geluid + patroon + fx)" onclick="kloon(${t})">📋</button>
    <button class="uit" style="padding:6px 10px" onclick="wis(${t})">✕</button>
    <div class="fxrack" id="fxr${t}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><b style="font-size:.65rem;color:${TCOL[t%TCOL.length]}">FX-RACK</b><button class="uit klein" id="fxbyp${t}" onclick="fxBypassAll(${t})">BYPASS</button></div><div id="fxl${t}"></div>
     <select class="fxsel" id="fxs${t}"><option value="">+ effect op TR${t+1}…</option><option value="eq">EQ (3-band)</option><option value="delay">DELAY</option><option value="reverb">REVERB</option><option value="filter">FILTER</option><option value="drive">DRIVE</option><option value="comp">COMP</option><option value="brein">BREIN-resonator</option></select>
@@ -383,6 +384,23 @@ async function mkTrack(t,type){
   ss.value=PREF[t+1]?PREF[t+1][0]:'OCHO';
   await trackSet(t);
  } else drawWave(t);
+}
+async function kloon(t){
+ if(TR.length>=14){document.getElementById('st').textContent='max 14 tracks';return}
+ const type=TR[t].type,nt=TR.length;
+ await mkTrack(nt,type);
+ const T=TR[nt];
+ if(type!=='audio'){
+  const sv=id=>{const el=document.getElementById(id+nt);const src=document.getElementById(id+t);if(el&&src){el.value=src.value}};
+  sv('src');await trackSet(nt);sv('bank');await trackBank(nt);sv('pad');
+ }
+ if(TR[t].grid)T.grid=TR[t].grid.slice();
+ if(TR[t].notes)T.notes=TR[t].notes.map(n=>({...n}));
+ TR[t].fx.forEach(f=>{T.fx.push({type:f.type,bypass:f.bypass,p:{...f.p}})});
+ document.getElementById('vol'+nt).value=document.getElementById('vol'+t).value;
+ document.getElementById('pan'+nt).value=document.getElementById('pan'+t).value;
+ rebuildFx(nt);fxDraw(nt);syncGrid(nt);
+ document.getElementById('st').textContent='TR'+(nt+1)+' = kopie van TR'+(t+1);
 }
 async function buildTraks(){
  for(let t=0;t<8;t++)await mkTrack(t,t<4?'grid':'roll');
