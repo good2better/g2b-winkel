@@ -689,15 +689,27 @@ let _re={t:null,vars:[]};
 const _rei=()=>{try{return JSON.parse(localStorage.getItem('g2b_gaw_reimagine')||'{}')}catch(e){return{}}};
 const _reiSave=o=>localStorage.setItem('g2b_gaw_reimagine',JSON.stringify(o));
 const RESEED={
- 'hiphop':[['C4',0,2],['D#4',4,1],['G4',6,2],['C4',8,2],['A#3',12,1],['G3',14,2]],
- 'neosoul':[['C4',0,3],['E4',2,2],['G4',4,2],['B4',6,1],['A4',8,2],['G4',10,1],['E4',12,3]],
- 'trance':[['A4',0,1],['C5',2,1],['E5',4,1],['A4',6,1],['C5',8,1],['E5',10,1],['D5',12,1],['B4',14,1]],
- 'trap':[['C4',0,3],['C5',4,1],['G4',6,1],['D#4',8,3],['C5',12,1],['A#4',14,1]],
- 'droom':[['E4',0,4],['G4',4,2],['B4',8,4],['D5',12,3]]
+ 'Arps':[[60,0,1],[63,1,1],[67,2,1],[72,3,1],[67,4,1],[63,5,1],[60,6,1],[67,7,1],[58,8,1],[62,9,1],[65,10,1],[70,11,1],[65,12,1],[62,13,1],[58,14,1],[65,15,1]],
+ 'Deep Ocean':[[48,0,8],[55,0,8],[63,0,8],[51,8,8],[58,8,8],[67,8,8]],
+ 'HipHop':[[53,0,6],[60,0,6],[65,0,6],[68,6,2],[51,8,8],[58,8,8],[63,8,8]],
+ 'Luxury Keys':[[48,0,8],[63,0,8],[67,1,8],[70,1,7],[74,2,6]],
+ 'Melodic Piano':[[69,0,2],[72,2,2],[76,4,4],[74,8,2],[72,10,2],[71,12,4]],
+ 'Neo Soul':[[53,0,7],[60,0,7],[64,0,7],[67,1,6],[71,7,1],[55,8,8],[62,8,8],[65,8,8]],
+ 'Omega':[[64,0,3],[64,3,1],[67,4,2],[71,6,2],[69,8,4],[67,12,4]],
+ 'Platinum Factory':[[60,0,2],[67,2,2],[63,4,2],[70,6,2],[68,8,4],[67,12,4]],
+ 'Pop':[[72,0,2],[71,2,2],[67,4,4],[69,8,2],[67,10,2],[64,12,4]],
+ 'Random':[[60,0,2],[62,2,2],[63,4,2],[65,6,2],[67,8,2],[68,10,2],[70,12,2],[72,14,2]],
+ 'RnB Forever':[[56,0,8],[63,0,8],[67,0,8],[70,0,8],[54,8,8],[61,8,8],[65,8,8]],
+ 'Slow Chords':[[48,0,16],[57,0,16],[60,0,16],[64,0,16]],
+ 'Trance':[[69,0,1],[69,1,1],[72,2,1],[69,3,1],[76,4,1],[69,5,1],[74,6,1],[69,7,1],[72,8,1],[72,9,1],[71,10,1],[71,11,1],[69,12,1],[69,13,1],[67,14,1],[67,15,1]],
+ 'Trap':[[61,0,2],[62,2,2],[68,4,4],[66,8,2],[62,10,2],[61,12,4]],
+ 'Vision':[[60,0,2],[67,2,2],[63,4,2],[70,6,2],[65,8,2],[72,10,2],[67,12,2],[75,14,2]]
 };
 const _n2p=n=>KEYS.indexOf(n.replace(/[0-9]/g,''))+12*(+n.slice(-1)+1);
 const _favs=()=>{try{return new Set(JSON.parse(localStorage.getItem('g2b_gaw_packfavs')||'[]'))}catch(e){return new Set()}};
 const _hue=n=>{let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))%360;return h};
+const PACKKLEUR={'Arps':'#1e1b4b,#db2777','Deep Ocean':'#020617,#0284c7','HipHop':'#18181b,#52525b','Luxury Keys':'#451a03,#d97706','Melodic Piano':'#0f172a,#334155','Neo Soul':'#78350f,#f59e0b','Omega':'#1e3a8a,#7c3aed','Platinum Factory':'#27272a,#a1a1aa','Pop':'#881337,#f43f5e','Random':'#172554,#2563eb','RnB Forever':'#31102f,#be185d','Slow Chords':'#09090b,#3f3f46','Trance':'#1d4ed8,#06b6d4','Trap':'#0f0722,#6d28d9','Vision':'#18181b,#71717a'};
+const _cov=n=>PACKKLEUR[n]||('hsl('+_hue(n)+',55%,26%),hsl('+((_hue(n)+60)%360)+',65%,14%)');
 let _reHist=[],_reHistI=-1,_reFilePack=null;
 function rePacksDraw(){
  const el=document.getElementById('repacks');if(!el)return;el.innerHTML='';
@@ -712,8 +724,9 @@ function rePacksDraw(){
   return true}).forEach(p=>{
   const card=document.createElement('div');card.className='pcard';
   const h=_hue(p.n);
-  card.innerHTML=`<div class="cov" style="background:linear-gradient(135deg,hsl(${h},55%,26%),hsl(${(h+60)%360},65%,14%))">
+  card.innerHTML=`<div class="cov" style="background:linear-gradient(135deg,${_cov(p.n)})">
     <span class="star${favs.has(p.n)?' fav':''}">${favs.has(p.n)?'★':'☆'}</span>
+    <span style="position:absolute;bottom:5px;left:0;right:0;text-align:center;font-size:.55rem;font-weight:700;color:#fff;text-shadow:0 1px 3px #000;letter-spacing:.5px">${p.n.toUpperCase().slice(0,12)}</span>
     <span class="ld"><span class="pill pri" style="pointer-events:none">Load…</span></span></div>
    <div class="titel">${p.fac?'':'⭐ '}${p.n}</div>`;
   card.onclick=e=>{if(e.target.classList.contains('star')){reFav(p.n);return}rePack(p.n)};
@@ -734,7 +747,7 @@ function reCtx(e,n,fac){const m=document.getElementById('rectx');
 function reCtxSluit(){document.getElementById('rectx').style.display='none'}
 function _packNoten(n){const e=_repacks()[n];
  if(e)return e.map(x=>({p:x.p,s:x.s,d:x.d,v:95}));
- return RESEED[n].map(x=>({p:_n2p(x[0]),s:x[1],d:x[2],v:95}))}
+ return RESEED[n].map(x=>({p:Math.max(PLO,Math.min(PHI,x[0])),s:x[1],d:x[2],v:95}))}
 function rePackExport(n){const ns=_packNoten(n);_re.vars=[ns];reMid(0)}
 function rePackRename(n){const m=_repacks();const nw=prompt('nieuwe naam:',n);
  if(!nw||nw===n||!m[n])return;m[nw]=m[n];delete m[n];
