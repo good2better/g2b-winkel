@@ -40,8 +40,8 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
       decayRate: d.decayRate != null ? d.decayRate : (low ? 0.99995 : 0.9997),
       glideTargetFreq: d.glideFreq || null,
       waveType: d.waveType || 'sine',
-      gain: ((d.velocity || 100) / 127) * 0.85 * (low ? 1.585 : 1.0), // +4dB sub-compensatie
-      subGain: low ? 0.9 : 0
+      gain: ((d.velocity || 100) / 127) * 0.85 * (low ? 1.22 : 1.0), // +2.6dB sub-compensatie
+      subGain: low ? 0.45 : 0
     });
   }
   releaseVoice(pitch) {
@@ -84,12 +84,14 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
         s += this.osc(v.waveType, v.phase) * amp;
         if (v.subGain) { // schone sub-osc onder C3: sinus + warme 2e harmonische
           v.subPhase += v.freq / sr; if (v.subPhase > 1) v.subPhase -= 1;
-          s += (Math.sin(2 * Math.PI * v.subPhase) + 0.35 * Math.sin(4 * Math.PI * v.subPhase))
+          s += (Math.sin(2 * Math.PI * v.subPhase) + 0.3 * Math.sin(4 * Math.PI * v.subPhase))
                * amp * v.subGain;
         }
         v.env *= v.decayRate;
       }
       this.voices = this.voices.filter(v => v.env > 0.0005);
+      // auto gain-staging: gestapelde stemmen deelt headroom (solo-noot = vol volume)
+      s /= Math.max(1, 1 + (this.voices.length - 1) * 0.35);
       // ~20Hz rumble-cut — sub-boom (35-80Hz) blijft 100% intact
       const a = 0.9975;
       this.hp_y1 = a * (this.hp_y1 + s - this.hp_x1); this.hp_x1 = s;

@@ -62,13 +62,13 @@ const Aura = {
     let rate = Math.pow(2, (pitch - base) / 12) * (opts.rate || 1);
     if (rate < 0.5) { // max 1 octaaf omlaag → geen vervorming; schone sub-osc geeft de 'boom'
       rate = 0.5;
-      this.noteOn(pitch, { wave: 'sine', velocity: (opts.velocity || 100) * 1.1, decay: 0.99995 });
+      this.noteOn(pitch, { wave: 'sine', velocity: (opts.velocity || 100) * 0.9, decay: 0.99995 });
     }
     src.playbackRate.value = rate;
     const g = this.ctx.createGain();
     const t = this.ctx.currentTime;
     let amp = opts.gain != null ? opts.gain : 0.9;
-    if (pitch < 48) amp *= 1.4; // lage noten klinken zachter → auto-gain
+    if (pitch < 48) amp *= 1.2; // lage noten klinken zachter → auto-gain
     const hold = opts.hold != null ? opts.hold : Math.min(buf.duration, 4);
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(amp * 1.3, t + 0.002); // 2ms fade-in + punch op de aanslag
