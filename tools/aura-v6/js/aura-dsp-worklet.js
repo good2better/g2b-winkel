@@ -26,18 +26,21 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
   }
   spawnVoice(d) {
     this.voices = this.voices.filter(v => v.pitch !== d.pitch); // geen dubbele hangende stem
+    const freq = (440 * Math.pow(2, (d.pitch - 69) / 12)) * (d.tone || 1.0);
+    const low = freq < 130.81; // onder C3
     this.voices.push({
       pitch: d.pitch,
-      freq: (440 * Math.pow(2, (d.pitch - 69) / 12)) * (d.tone || 1.0),
-      phase: 0, env: 1.0,
-      decayRate: d.decayRate != null ? d.decayRate : 0.9997,
+      freq,
+      phase: 0, env: 1.0, subPhase: 0,
+      decayRate: d.decayRate != null ? d.decayRate : (low ? 0.99995 : 0.9997),
       glideTargetFreq: d.glideFreq || null,
       waveType: d.waveType || 'sine',
-      gain: ((d.velocity || 100) / 127) * 0.85
+      gain: ((d.velocity || 100) / 127) * 0.85 * (low ? 1.585 : 1.0), // +4dB sub-compensatie
+      subGain: low ? 0.9 : 0
     });
   }
   releaseVoice(pitch) {
-    this.voices.forEach(v => { if (v.pitch === pitch) v.decayRate = Math.min(v.decayRate, 0.995); });
+    this.voices.forEach(v => { if (v.pitch === pitch) v.decayRate = Math.min(v.decayRate, v.freq < 130.81 ? 0.9995 : 0.995); });
   }
   applySafeKnip(s, rawKnip) {
     const k = Math.min(0.20, Math.max(0.0, rawKnip));
@@ -69,16 +72,21 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
         v.phase += v.freq / sr;
         if (v.phase > 1) v.phase -= 1;
         s += this.osc(v.waveType, v.phase) * v.env * v.gain;
+        if (v.subGain) { // schone sub-osc onder C3: sinus + warme 2e harmonische
+          v.subPhase += v.freq / sr; if (v.subPhase > 1) v.subPhase -= 1;
+          s += (Math.sin(2 * Math.PI * v.subPhase) + 0.35 * Math.sin(4 * Math.PI * v.subPhase))
+               * v.env * v.subGain * v.gain;
+        }
         v.env *= v.decayRate;
       }
       this.voices = this.voices.filter(v => v.env > 0.0005);
-      // 28Hz rumble-cut (2-pole HP)
-      const a = 0.995;
+      // ~20Hz rumble-cut — sub-boom (35-80Hz) blijft 100% intact
+      const a = 0.9975;
       this.hp_y1 = a * (this.hp_y1 + s - this.hp_x1); this.hp_x1 = s;
       s = this.hp_y1;
-      // 700Hz tilt-EQ (zachte LP op laag + boost)
+      // warme low-shelf: ~460Hz LP +4dB op het laag, hoog vlak
       this.tilt_lp += (s - this.tilt_lp) * 0.06;
-      s = this.tilt_lp * 0.7 + (s - this.tilt_lp) * 1.15;
+      s = this.tilt_lp * 1.2 + (s - this.tilt_lp) * 1.0;
       s = this.applySafeKnip(s, knipVal) * vol;
       // 0.99 look-ahead limiter (zachte clip-safe)
       if (s > 0.99) s = 0.99; else if (s < -0.99) s = -0.99;

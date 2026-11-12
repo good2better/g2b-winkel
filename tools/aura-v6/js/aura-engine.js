@@ -21,7 +21,7 @@ const Aura = {
     this.node.port.postMessage({
       type: 'NOTE_ON', pitch, velocity: opts.velocity || 100,
       waveType: opts.wave || 'sine', tone: opts.tone || 1.0,
-      decayRate: opts.decay != null ? opts.decay : 0.9997,
+      decayRate: opts.decay != null ? opts.decay : (pitch < 48 ? 0.99995 : 0.9997),
       glideFreq: opts.glideFreq || null
     });
   },
@@ -45,9 +45,16 @@ const Aura = {
     const src = this.ctx.createBufferSource();
     src.buffer = buf;
     const base = opts.basePitch != null ? opts.basePitch : 60;
-    src.playbackRate.value = Math.pow(2, (pitch - base) / 12) * (opts.rate || 1);
+    let rate = Math.pow(2, (pitch - base) / 12) * (opts.rate || 1);
+    if (rate < 0.5) { // max 1 octaaf omlaag → geen vervorming; schone sub-osc geeft de 'boom'
+      rate = 0.5;
+      this.noteOn(pitch, { wave: 'sine', velocity: (opts.velocity || 100) * 1.1, decay: 0.99995 });
+    }
+    src.playbackRate.value = rate;
     const g = this.ctx.createGain();
-    const t = this.ctx.currentTime, amp = opts.gain != null ? opts.gain : 0.9;
+    const t = this.ctx.currentTime;
+    let amp = opts.gain != null ? opts.gain : 0.9;
+    if (pitch < 48) amp *= 1.4; // lage noten klinken zachter → auto-gain
     const hold = opts.hold != null ? opts.hold : Math.min(buf.duration, 4);
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(amp, t + 0.004);
