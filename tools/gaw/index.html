@@ -18,6 +18,14 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 .steps{display:grid;grid-template-columns:repeat(16,1fr);gap:4px;flex:1;min-width:280px}
 .alane{flex:1;min-width:280px;height:72px;background:#0b0e0c;border:1px solid var(--rand);border-radius:6px;cursor:ew-resize}
 .klein{padding:6px 10px;font-size:.72rem}
+#recov{position:fixed;inset:0;background:rgba(6,9,7,.94);display:none;align-items:center;justify-content:center;z-index:50;flex-direction:column}
+#recov .pane{width:min(92vw,860px);background:var(--kaart);border:1px solid var(--rand);border-radius:16px;padding:22px;text-align:center}
+#recwave{width:100%;height:200px;background:#0b0e0c;border:1px solid var(--rand);border-radius:10px}
+#recov .tijd{font-size:1.6rem;font-weight:800;color:#d33;margin:10px 0 4px}
+#recov .uitleg{font-size:.8rem;color:var(--sub);margin-bottom:12px}
+#recov .grid{background:
+ repeating-linear-gradient(90deg,transparent 0 12.4%,#1d2c23 12.4% 12.5%),
+ repeating-linear-gradient(0deg,transparent 0 24%,#14201a 24% 25%)}
 .st{aspect-ratio:1;border-radius:5px;background:var(--rand);cursor:pointer;border:0;min-width:16px}
 .st.aan{background:var(--groen);box-shadow:0 0 6px #2fbf7166}
 .st.play{outline:2px solid #fff}body.licht .st.play{outline-color:#12231a}
@@ -44,6 +52,13 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <button class="uit" id="rec" onclick="rec()">⏺ REC</button>
 </div>
 <div id="traks"></div>
+<div id="recov"><div class="pane">
+ <div style="font-weight:800;color:var(--groen);letter-spacing:.5px" id="rectitle">⏺ OPNAME</div>
+ <div class="tijd" id="rectime">0:00</div>
+ <canvas id="recwave" class="grid" width="820" height="200"></canvas>
+ <div class="uitleg">neem je stem/instrument op — de clip landt op je track en is direct te bewerken</div>
+ <button class="uit" style="background:#d33;color:#fff;font-size:1rem;padding:12px 34px" onclick="recStop()">■ STOP &amp; BEWAAR</button>
+</div></div>
 <div id="wm">⚡ G2B GAW — GIO</div>
 <script>
 let REC=false;function rec(){REC=!REC;document.getElementById('rec').style.background=REC?'#d33':'';document.getElementById('rec').style.color=REC?'#fff':''}
@@ -274,14 +289,27 @@ function toggle(){
 }
 document.getElementById('bpm').onchange=()=>{if(playing){clearInterval(timer);timer=setInterval(tick,60000/+document.getElementById('bpm').value/4)}};
 let mediaRec=null;
+let recCtx=null,recAn=null,recRAF=null,recT0=0,recTarget=null;
+function recDraw(){
+ const c=document.getElementById('recwave'),g=c.getContext('2d');
+ g.fillStyle='#0b0e0c';g.fillRect(0,0,c.width,c.height);
+ const d=new Uint8Array(recAn.frequencyBinCount);recAn.getByteTimeDomainData(d);
+ g.strokeStyle='#3fd08a';g.lineWidth=2;g.beginPath();
+ for(let i=0;i<d.length;i++){const x=i/d.length*c.width,y=d[i]/255*c.height;i?g.lineTo(x,y):g.moveTo(x,y)}
+ g.stroke();
+ const s=Math.floor((performance.now()-recT0)/1000);
+ document.getElementById('rectime').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+ if(mediaRec)recRAF=requestAnimationFrame(recDraw);
+}
+function recStop(){if(mediaRec)mediaRec.stop()}
 async function opneem(t){
  if(mediaRec){mediaRec.stop();return}
  const btn=document.getElementById('ar'+t);
  try{
   const st=await navigator.mediaDevices.getUserMedia({audio:true});
-  const rec=new MediaRecorder(st);mediaRec=rec;const chunks=[];
+  const rec=new MediaRecorder(st);mediaRec=rec;const chunks=[];recTarget=t;
   rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
-  rec.onstop=async()=>{st.getTracks().forEach(x=>x.stop());mediaRec=null;btn.style.borderColor='';btn.style.color='';
+  rec.onstop=async()=>{st.getTracks().forEach(x=>x.stop());mediaRec=null;btn.style.borderColor='';btn.style.color='';document.getElementById('recov').style.display='none';if(recRAF)cancelAnimationFrame(recRAF);
    try{
     const ab=await(await new Blob(chunks)).arrayBuffer();
     const buf=await ac().decodeAudioData(ab);
@@ -292,7 +320,14 @@ async function opneem(t){
      document.getElementById('st').textContent='opname op pad '+(TR[t].pad+1)+' — speel direct mee'}
    }catch(e){document.getElementById('st').textContent='opname niet leesbaar'}};
   btn.style.borderColor='#d33';btn.style.color='#d33';
-  rec.start();document.getElementById('st').textContent='⏺ opname TR'+(t+1)+' — klik ⏺ OP opnieuw om te stoppen';
+  rec.start();
+  // opname-venster: live waveform + tijd (Reason-stijl)
+  recCtx=recCtx||new (window.AudioContext||window.webkitAudioContext)();
+  if(recCtx.state==='suspended')await recCtx.resume();
+  const src2=recCtx.createMediaStreamSource(st);recAn=recCtx.createAnalyser();recAn.fftSize=2048;src2.connect(recAn);
+  document.getElementById('rectitle').textContent='⏺ OPNAME — TR'+(t+1)+(TR[t].type==='audio'?' (audio-lane)':'');
+  document.getElementById('recov').style.display='flex';recT0=performance.now();recDraw();
+  document.getElementById('st').textContent='⏺ opname TR'+(t+1)+' — STOP & BEWAAR in het opname-venster';
  }catch(e){document.getElementById('st').textContent='mic niet beschikbaar — sta microfoon toe'}
 }
 function trimAudio(buf){ // stilte weg voor/achter + normalize — opname meteen bruikbaar
