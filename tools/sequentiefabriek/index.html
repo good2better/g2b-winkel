@@ -27,7 +27,7 @@ label{font-size:12px;color:var(--dim)}
 <body>
 <h1>🔁 G2B SEQUENTIE-FABRIEK</h1>
 <div class="sub">Follow-up reeks: mail 1 → X dagen → mail 2 → …<br>
-<b>Browser-versie:</b> bewaart je sequenties en toont welke mail vandaag aan de beurt is — jij klikt VERSTUUR (via ProxiedMail of je eigen mail-app). Automatisch mailen terwijl de pagina dicht is kan niet; open 'm dagelijks even.</div>
+<b>Browser-versie:</b> bewaart je sequenties en toont welke mail vandaag aan de beurt is — jij klikt VERSTUUR (via je eigen Gmail, ProxiedMail of je eigen mail-app). Automatisch mailen terwijl de pagina dicht is kan niet; open 'm dagelijks even.</div>
 
 <div class="card">
 <b>Mijn sequenties</b>
@@ -46,11 +46,37 @@ label{font-size:12px;color:var(--dim)}
 </div>
 
 <div class="card">
-<b>ProxiedMail (echt versturen — optioneel)</b>
+<b>Echt versturen (optioneel)</b>
+<label>Kies je verzend-manier</label>
+<select id="pm_methode" onchange="methodeUI()">
+<option value="gmail">📧 Gmail — GRATIS via je eigen Google-account</option>
+<option value="proxied">ProxiedMail — met je proxy-adres + wachtwoord</option>
+</select>
+<div id="pm_gmail">
+<label>Jouw web-app URL (uit Google Apps Script — zie uitleg)</label>
+<input id="pm_gas" placeholder="https://script.google.com/macros/s/…/exec">
+<details style="margin-top:8px;font-size:12px;color:var(--dim)">
+<summary style="cursor:pointer;color:var(--groen)">📖 Stap-voor-stap: gratis Gmail-verzending instellen (éénmalig, ±10 min)</summary>
+<ol style="margin:8px 0;padding-left:18px;line-height:1.7">
+<li>Ga naar <b>script.google.com</b>, log in met je Google-account.</li>
+<li>Klik <b>+ Nieuw project</b>, wis de voorbeeldcode en plak dit script (klik 📋):
+<button class="klein" style="margin:6px 0" onclick="kopieerScript()">📋 SCRIPT KOPIEREN</button>
+<pre id="gascode" style="background:var(--bg);border:1px solid var(--rand);border-radius:8px;padding:10px;font-size:11px;white-space:pre-wrap">function doPost(e){
+  var d=JSON.parse(e.postData.contents);
+  GmailApp.sendEmail(d.to, d.subject, '', {htmlBody:d.body, name:d.naam||'G2B'});
+  return ContentService.createTextOutput('ok');
+}</pre></li>
+<li>Klik <b>Implementeren → Nieuwe implementatie</b> → type <b>Web-app</b> → Uitvoeren als: <b>Ik</b> · Toegang: <b>Iedereen</b> → <b>Implementeren</b> (1× toestemming geven via "Geavanceerd" → "Ga naar …" → "Toestaan").</li>
+<li>Kopieer de <b>web-app-URL</b> (eindigt op <b>/exec</b>), plak hierboven → OPSLAGEN. Mails gaan nu via je eigen Gmail (limiet ±100/dag).</li>
+</ol>
+</details>
+</div>
+<div id="pm_proxied" style="display:none">
 <label>Proxy e-mailadres</label><input id="pm_user" placeholder="jouw@proxiedmail.com">
 <label>Wachtwoord</label><input id="pm_ww" type="password">
+</div>
 <label>Van-naam</label><input id="pm_naam" placeholder="G2B">
-<div style="font-size:11px;color:var(--dim);margin-top:6px">Blijft alleen in jouw browser — nooit op de site.</div>
+<div style="font-size:11px;color:var(--dim);margin-top:6px">Blijft alleen in jouw browser — nooit op de site. Deze instellingen deelt deze tool met de Mail-Fabriek.</div>
 <button class="klein" style="margin-top:8px" onclick="bewaarPM()">OPSLAGEN</button>
 <span id="pm_status" style="font-size:12px;color:var(--groen);margin-left:8px"></span>
 </div>
@@ -62,11 +88,33 @@ const vandaag=()=>Math.floor(Date.now()/864e5);
 function load(){try{return JSON.parse(localStorage.getItem('g2b_seq')||'[]')}catch(e){return[]}}
 function save(s){localStorage.setItem('g2b_seq',JSON.stringify(s))}
 const PM=JSON.parse(localStorage.getItem('g2b_pm')||'{}');
-if(PM.user){document.getElementById('pm_user').value=PM.user;
- document.getElementById('pm_ww').value=PM.ww||'';document.getElementById('pm_naam').value=PM.naam||'';}
-function bewaarPM(){const o={user:v('pm_user').trim(),ww:v('pm_ww'),naam:v('pm_naam').trim()};
+if(!PM.methode)PM.methode=PM.user?'proxied':'gmail';
+document.getElementById('pm_methode').value=PM.methode;
+if(PM.user)document.getElementById('pm_user').value=PM.user;
+if(PM.ww)document.getElementById('pm_ww').value=PM.ww;
+if(PM.naam)document.getElementById('pm_naam').value=PM.naam;
+if(PM.gas)document.getElementById('pm_gas').value=PM.gas;
+function methodeUI(){const m=v('pm_methode');
+ document.getElementById('pm_gmail').style.display=m==='gmail'?'block':'none';
+ document.getElementById('pm_proxied').style.display=m==='proxied'?'block':'none';}
+methodeUI();
+function kopieerScript(){navigator.clipboard.writeText(document.getElementById('gascode').textContent)
+ .then(()=>{document.getElementById('pm_status').textContent='✓ script gekopieerd — plak in Apps Script'})}
+function bewaarPM(){const o={methode:v('pm_methode'),user:v('pm_user').trim(),ww:v('pm_ww'),naam:v('pm_naam').trim(),gas:v('pm_gas').trim()};
  localStorage.setItem('g2b_pm',JSON.stringify(o));Object.assign(PM,o);
  document.getElementById('pm_status').textContent='✓ opgeslagen'}
+async function verstuur1(l,st){
+ const onder=tpl(st.ond,l), tekst=tpl(st.txt,l).replace(/\n/g,'<br>');
+ if(PM.methode==='gmail'){
+  const r=await fetch(PM.gas,{method:'POST',body:JSON.stringify({to:l._mail,subject:onder,body:tekst,naam:PM.naam||'G2B'})});
+  return r.ok;
+ }
+ const r=await fetch('https://proxiedmail.com/gapi/send-mail',{method:'POST',
+  headers:{'Content-Type':'application/json','Authorization':'Bearer '+PM.ww},
+  body:JSON.stringify({auth:{host:'mx.proxiedmail.com',port:587,username:PM.user,password:PM.ww},
+   mail:{from:(PM.naam?PM.naam+' <'+PM.user+'>':PM.user),to:l._mail,subject:onder,body:tekst}})});
+ return r.ok;
+}
 let n=0;
 function addStap(){
  n++;const d=document.createElement('div');d.className='stap';
@@ -126,22 +174,16 @@ function toon(){
 }
 async function stuur(sid,stap){
  const seqs=load();const s=seqs.find(x=>x.id===sid);if(!s)return;
- const wacht=st.dagen??0;
- const due=s.leads.filter(l=>l._stap===stap&&(vandaag()-l._dag)>=(s.stappen[stap].dagen||0));
- if(!due.length){toon();return}
  const st=s.stappen[stap];
- if(PM.user&&PM.ww){
-  if(!confirm(due.length+' mails echt versturen via '+PM.user+'?'))return;
+ const due=s.leads.filter(l=>l._stap===stap&&(vandaag()-l._dag)>=(st.dagen||0));
+ if(!due.length){toon();return}
+ const viaGmail=PM.methode==='gmail';
+ if((viaGmail&&PM.gas)||(!viaGmail&&PM.user&&PM.ww)){
+  const via=viaGmail?'Gmail (jouw Apps Script)':'ProxiedMail ('+PM.user+')';
+  if(!confirm(due.length+' mails echt versturen via '+via+'?'))return;
   let ok=0,fout=0;
   for(const l of due){
-   try{
-    const r=await fetch('https://proxiedmail.com/gapi/send-mail',{method:'POST',
-     headers:{'Content-Type':'application/json','Authorization':'Bearer '+PM.ww},
-     body:JSON.stringify({auth:{host:'mx.proxiedmail.com',port:587,username:PM.user,password:PM.ww},
-      mail:{from:(PM.naam?PM.naam+' <'+PM.user+'>':PM.user),to:l._mail,
-            subject:tpl(st.ond,l),body:tpl(st.txt,l).replace(/\n/g,'<br>')}})});
-    if(r.ok)ok++;else fout++;
-   }catch(e){fout++}
+   try{if(await verstuur1(l,st))ok++;else fout++}catch(e){fout++}
    l._stap=stap+1;l._dag=vandaag();
    await new Promise(r=>setTimeout(r,800));
   }
