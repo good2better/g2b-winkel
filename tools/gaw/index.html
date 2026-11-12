@@ -47,10 +47,20 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <button class="uit klein" onclick="addTrack('grid')">+RITME</button>
 <button class="uit klein" onclick="addTrack('roll')">+TOON</button>
 <button class="uit klein" onclick="addTrack('audio')">+AUDIO</button>
+<button class="uit klein" id="arrbtn" onclick="arrToggle()">▣ OVERZICHT</button>
 <button class="uit" onclick="ongedaan()">↩ ONGEDAAN MAKEN</button>
 <span id="st">sets laden…</span>
 <button class="uit" id="skin" onclick="skin()">◐ WIT</button>
 <button class="uit" id="rec" onclick="rec()">⏺ REC</button>
+</div>
+<div id="arrpanel" style="display:none;margin-bottom:10px;background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:10px">
+ <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+  <b style="font-size:.75rem;color:var(--groen)">ARRANGEMENT</b>
+  <button class="uit klein" onclick="arrZoom(0.7)">− kleiner</button>
+  <button class="uit klein" onclick="arrZoom(1.4)">+ groter</button>
+  <span style="font-size:.68rem;color:var(--sub)">alle lanes samen — playhead beweegt mee</span>
+ </div>
+ <canvas id="arrw" width="1000" height="200" style="width:100%;background:#0b0e0c;border-radius:8px;display:block"></canvas>
 </div>
 <div id="traks"></div>
 <div id="recov"><div class="pane">
@@ -264,7 +274,7 @@ function bouwWave(t){
  const end=()=>{drag=null;drawWave(t)};
  c.onpointerup=end;c.onpointercancel=end;
 }
-function syncGrid(t){if(TR[t].type==='audio'){drawWave(t);return}if(TR[t].grid&&document.getElementById('st'+t))document.getElementById('st'+t).childNodes.forEach((c,i)=>c.className='st'+(TR[t].grid[i]?' aan':''));else drawRoll(t)}
+function syncGrid(t){refreshArr();if(TR[t].type==='audio'){drawWave(t);return}if(TR[t].grid&&document.getElementById('st'+t))document.getElementById('st'+t).childNodes.forEach((c,i)=>c.className='st'+(TR[t].grid[i]?' aan':''));else drawRoll(t)}
 function speelClip(t){
  const c=TR[t].clip;if(!c||!c.buf)return;
  const s=ac().createBufferSource();s.buffer=c.buf;
@@ -284,6 +294,7 @@ function tick(){
   else{for(const n of TR[t].notes)if(n.s===step)speel(t,n.p);drawRoll(t)}
  }
  step=(step+1)%16;
+ drawArr();
 }
 function toggle(){
  if(playing){clearInterval(timer);playing=false;document.getElementById('play').textContent='▶ SPEEL';return}
@@ -292,6 +303,32 @@ function toggle(){
  document.getElementById('play').textContent='⏹ STOP';
 }
 document.getElementById('bpm').onchange=()=>{if(playing){clearInterval(timer);timer=setInterval(tick,60000/+document.getElementById('bpm').value/4)}};
+let ARR={on:false,z:50}; // z = px per stap
+function arrToggle(){ARR.on=!ARR.on;document.getElementById('arrpanel').style.display=ARR.on?'block':'none';document.getElementById('arrbtn').style.borderColor=ARR.on?'var(--groen)':'';if(ARR.on)drawArr()}
+function arrZoom(f){ARR.z=Math.max(14,Math.min(160,ARR.z*f));drawArr()}
+function drawArr(){
+ if(!ARR.on)return;
+ const c=document.getElementById('arrw'),g=c.getContext('2d');
+ const N=TR.length,LH=26,NAME=64,Z=ARR.z;
+ c.width=NAME+NS*Z+8;c.height=8+N*LH+6;
+ g.fillStyle='#0b0e0c';g.fillRect(0,0,c.width,c.height);
+ // maatlijnen + stappen
+ for(let i=0;i<=NS;i++){const x=NAME+i*Z;g.strokeStyle=i%4===0?'#3a5a45':'#16211b';g.beginPath();g.moveTo(x,0);g.lineTo(x,c.height);g.stroke();
+  if(Z>26){g.fillStyle='#3a5a45';g.font='8px sans-serif';g.fillText(i+1,x+2,8)}}
+ TR.forEach((tr,t)=>{
+  const y=8+t*LH;
+  g.fillStyle='#0e1512';g.fillRect(0,y-2,c.width,LH-4);
+  g.fillStyle=tr.col;g.fillRect(4,y,NAME-8,LH-8);g.fillStyle='#0a0a0a';g.font='bold 9px sans-serif';g.fillText('TR'+(t+1),8,y+LH/2+2);
+  if(tr.grid){for(let s=0;s<NS;s++)if(tr.grid[s]){g.fillStyle=tr.col;g.fillRect(NAME+s*Z+1,y+3,Math.max(2,Z-2),LH-10)}}
+  else if(tr.notes){for(const n of tr.notes){g.fillStyle=tr.col;const h=3+(n.p-36)/5;g.fillRect(NAME+n.s*Z+1,y+LH-6-Math.min(LH-10,h),Math.max(3,(n.d||1)*Z-2),Math.min(LH-10,h))}}
+  else if(tr.clip&&tr.clip.buf){const w2=((tr.clip.trim1||tr.clip.buf.duration)-(tr.clip.trim0||0))*4*Z;
+   g.fillStyle=tr.col+'66';g.fillRect(NAME+tr.clip.pos*Z+1,y+3,Math.max(4,Math.min(w2,(NS-tr.clip.pos)*Z-2)),LH-10);
+   g.strokeStyle=tr.col;g.strokeRect(NAME+tr.clip.pos*Z+1,y+3,Math.max(4,Math.min(w2,(NS-tr.clip.pos)*Z-2)),LH-10)}
+  if(tr.muted){g.fillStyle='rgba(10,10,10,.55)';g.fillRect(NAME,y-2,c.width-NAME,LH-4)}
+ });
+ // playhead
+ if(playing){g.fillStyle='#fff';g.fillRect(NAME+((step+15)%16)*Z,0,2,c.height)}
+}
 let mediaRec=null;
 let recCtx=null,recAn=null,recRAF=null,recT0=0,recTarget=null;
 function recDraw(){
@@ -345,6 +382,7 @@ function trimAudio(buf){ // stilte weg voor/achter + normalize — opname meteen
  else if(pk>0&&pk<0.3){const f=0.7/pk;for(let i=0;i<nd.length;i++)nd[i]=Math.max(-1,Math.min(1,nd[i]*f))}
  return nb}
 function mute(t){TR[t].muted=!TR[t].muted;const b=document.getElementById('mut'+t);b.style.borderColor=TR[t].muted?'#d33':'';b.style.color=TR[t].muted?'#d33':''}
+function refreshArr(){if(ARR.on)drawArr()}
 function wis(t){snap();if(TR[t].type==='audio'){TR[t].clip=null;drawWave(t);return}if(TR[t].grid)TR[t].grid.fill(false);else{TR[t].notes=[];drawRoll(t)}syncGrid(t)}
 function opslaan(){const st={bpm:+document.getElementById('bpm').value,tr:TR.map((t,i)=>({type:t.type,src:t.type!=='audio'?document.getElementById('src'+i).value:null,bi:t.type!=='audio'?document.getElementById('bank'+i).selectedIndex:0,pad:t.pad,vol:+document.getElementById('vol'+i).value,pan:+document.getElementById('pan'+i).value,muted:t.muted,grid:t.grid,notes:t.notes,clip:t.clip?{pos:t.clip.pos,trim0:t.clip.trim0,trim1:t.clip.trim1}:null}))};localStorage.setItem('g2b_gaw_preset',JSON.stringify(st));document.getElementById('st').textContent='opgeslagen — blijft ook na sluiten'}
 async function laden(){const raw=localStorage.getItem('g2b_gaw_preset');if(!raw){document.getElementById('st').textContent='niks opgeslagen';return}
