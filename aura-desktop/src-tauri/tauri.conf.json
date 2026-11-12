@@ -1,6 +1,6 @@
 {
   "build": {
-    "distDir": "../tools/aura-v6",
+    "distDir": "../../tools/aura-v6",
     "devPath": "http://localhost:8300",
     "beforeBuildCommand": "",
     "beforeDevCommand": ""
