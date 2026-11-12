@@ -101,7 +101,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <div id="mfxpanel" style="display:none;margin-bottom:10px;background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:10px">
  <b style="font-size:.75rem;color:var(--groen)">🎚 MASTER — effects op alles samen</b>
  <div id="mfxlist"></div>
- <select class="fxsel" id="mfxsel"><option value="">+ effect op master…</option><option value="eq">EQ (3-band)</option><option value="delay">DELAY</option><option value="reverb">REVERB</option><option value="filter">FILTER</option><option value="drive">DRIVE</option><option value="comp">COMP</option><option value="brein">BREIN-resonator</option></select>
+ <select class="fxsel" id="mfxsel"><option value="">+ effect op master…</option><option value="eq">EQ (3-band)</option><option value="delay">DELAY</option><option value="reverb">REVERB</option><option value="filter">FILTER</option><option value="drive">DRIVE</option><option value="comp">COMP</option><option value="brein">BREIN-resonator</option><option value="limit">LIMITER</option><option value="polish">POLISH</option><option value="refors">REFORS-fix</option><option value="pump">PUMP</option><option value="kanaal">KANAAL-strip</option></select>
 </div>
 <div id="advpanel" style="display:none;margin-bottom:10px;background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:10px">
  <b style="font-size:.75rem;color:var(--groen)">🧠 GAW denkt mee — jij kiest alleen JA of NEE</b>
@@ -433,7 +433,7 @@ async function mkTrack(t,type){
    <button class="uit" style="padding:6px 9px" title="kloon dit spoor (geluid + patroon + fx)" onclick="kloon(${t})">📋</button>
    <button class="uit" style="padding:6px 10px" onclick="wis(${t})">✕</button>
    <div class="fxrack" id="fxr${t}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><b style="font-size:.65rem;color:${TCOL[t%TCOL.length]}">FX-RACK</b><button class="uit klein" id="fxbyp${t}" onclick="fxBypassAll(${t})">BYPASS</button></div><div id="fxl${t}"></div>
-    <select class="fxsel" id="fxs${t}"><option value="">+ effect op TR${t+1}…</option><option value="eq">EQ (3-band)</option><option value="delay">DELAY</option><option value="reverb">REVERB</option><option value="filter">FILTER</option><option value="drive">DRIVE</option><option value="comp">COMP</option><option value="brein">BREIN-resonator</option></select>
+    <select class="fxsel" id="fxs${t}"><option value="">+ effect op TR${t+1}…</option><option value="eq">EQ (3-band)</option><option value="delay">DELAY</option><option value="reverb">REVERB</option><option value="filter">FILTER</option><option value="drive">DRIVE</option><option value="comp">COMP</option><option value="brein">BREIN-resonator</option><option value="limit">LIMITER</option><option value="polish">POLISH</option><option value="refors">REFORS-fix</option><option value="pump">PUMP</option><option value="kanaal">KANAAL-strip</option></select>
    </div>`;
  el.appendChild(row);
  document.getElementById('fxs'+t).onchange=e=>{if(!e.target.value)return;fxAdd(t,e.target.value);e.target.value=''};
@@ -918,7 +918,7 @@ function drawArr(){
 // ===== FX-engine: inserts per spoor + master =====
 const MAST={fx:[],in:null,out:null};
 function newFx(type){
- const d={eq:{lo:0,mid:0,hi:0},delay:{t:.3,fb:.35,mix:.3},reverb:{size:2,mix:.3},filter:{f:8000,q:1},drive:{amt:.4,out:.8},comp:{thr:-18,ratio:4,rel:.2},brein:{note:57,fb:.5,mix:.4}};
+ const d={eq:{lo:0,mid:0,hi:0},delay:{t:.3,fb:.35,mix:.3},reverb:{size:2,mix:.3},filter:{f:8000,q:1},drive:{amt:.4,out:.8},comp:{thr:-18,ratio:4,rel:.2},brein:{note:57,fb:.5,mix:.4},limit:{thr:-4,out:1},polish:{glans:.4,uit:1},refors:{cut:80,tame:-4},pump:{diepte:.5,stap:2},kanaal:{lo:0,hi:0,glue:.4}};
  return {type,bypass:false,p:{...d[type]}};
 }
 function buildFxNode(c,fx){ // returns {in,out,upd}
@@ -968,6 +968,41 @@ function buildFxNode(c,fx){ // returns {in,out,upd}
   inp.connect(out);wet.connect(out);
   return {in:inp,out,upd:()=>{const f=440*Math.pow(2,(p.note-69)/12);ns.forEach((b,i)=>b.frequency.value=f*[1,2,4][i]);fb.gain.value=p.fb;wet.gain.value=p.mix}};
  }
+ if(fx.type==='limit'){ // MENGER/master limiter: hard plafond + makeup
+  const cp=c.createDynamicsCompressor();cp.threshold.value=p.thr;cp.ratio.value=20;cp.attack.value=.001;cp.release.value=.05;cp.knee.value=0;
+  const g=c.createGain();g.gain.value=p.out;cp.connect(g);
+  return {in:cp,out:g,upd:()=>{cp.threshold.value=p.thr;g.gain.value=p.out}};
+ }
+ if(fx.type==='polish'){ // master-glans: lage-cut + lucht-shelf + zachte tape-saturatie
+  const hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=25;
+  const sh=c.createBiquadFilter();sh.type='highshelf';sh.frequency.value=9000;
+  const ws=c.createWaveShaper(),g=c.createGain();
+  const mk=a=>{const n=256,cr=new Float32Array(n);for(let i=0;i<n;i++){const x=i*2/n-1;cr[i]=Math.tanh(x*(1+a*2))}return cr};
+  const upd=()=>{sh.gain.value=p.glans*6;ws.curve=mk(p.glans);g.gain.value=p.uit};
+  hp.connect(sh);sh.connect(ws);ws.connect(g);upd();
+  return {in:hp,out:g,upd};
+ }
+ if(fx.type==='refors'){ // ruimte-fix: brom-cut + scherp-dof (REFORS als fx)
+  const hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=p.cut;
+  const dip=c.createBiquadFilter();dip.type='peaking';dip.frequency.value=3500;dip.Q.value=1.2;dip.gain.value=p.tame;
+  hp.connect(dip);
+  return {in:hp,out:dip,upd:()=>{hp.frequency.value=p.cut;dip.gain.value=p.tame}};
+ }
+ if(fx.type==='pump'){ // sidechain-pomp: LFO pompt het volume op het tempo
+  const g=c.createGain(),os=c.createOscillator(),og=c.createGain();
+  const upd=()=>{const f=(+document.getElementById('bpm').value||120)/60/Math.max(1,p.stap);os.frequency.value=f;g.gain.value=1-p.diepte/2;og.gain.value=p.diepte/2};
+  os.connect(og);og.connect(g.gain);os.start();upd();
+  return {in:g,out:g,upd};
+ }
+ if(fx.type==='kanaal'){ // MIXER V2 kanaalstrip: cut + laag/hoog + lijm-comp
+  const hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=70;
+  const lo=c.createBiquadFilter();lo.type='lowshelf';lo.frequency.value=200;lo.gain.value=p.lo;
+  const hi=c.createBiquadFilter();hi.type='highshelf';hi.frequency.value=6500;hi.gain.value=p.hi;
+  const cp=c.createDynamicsCompressor();cp.attack.value=.005;cp.release.value=.2;cp.knee.value=25;
+  const upd=()=>{lo.gain.value=p.lo;hi.gain.value=p.hi;cp.threshold.value=-6-p.glue*14;cp.ratio.value=1+p.glue*5};
+  hp.connect(lo);lo.connect(hi);hi.connect(cp);upd();
+  return {in:hp,out:cp,upd};
+ }
  return {in:c.createGain(),out:c.createGain(),upd:()=>{}};
 }
 const _ir={};
@@ -1013,7 +1048,12 @@ const FXPARS={eq:[['lo','LAAG',-18,18],['mid','MID',-18,18],['hi','HOOG',-18,18]
  filter:[['f','FREQ',100,16000],['q','Q',0.1,10]],
  drive:[['amt','DRIVE',0,1],['out','UIT',0,1]],
  comp:[['thr','DREMPEL',-40,0],['ratio','RATIO',1,20],['rel','RELEASE',0.05,1]],
- brein:[['note','NOOT',36,84],['fb','FEEDBACK',0,0.9],['mix','MIX',0,1]]};
+ brein:[['note','NOOT',36,84],['fb','FEEDBACK',0,0.9],['mix','MIX',0,1]],
+ limit:[['thr','PLAFOND',-12,0],['out','UIT',0,1.5]],
+ polish:[['glans','GLANS',0,1],['uit','UIT',0,1.5]],
+ refors:[['cut','BROM WEG',20,400],['tame','SCHERP DOF',-12,0]],
+ pump:[['diepte','DIEPTE',0,1],['stap','STAPPEN',1,8]],
+ kanaal:[['lo','LAAG',-18,18],['hi','HOOG',-18,18],['glue','LIJM',0,1]]};
 function fxAdd(t,type){TR[t].fx.push(newFx(type));rebuildFx(t);fxDraw(t)}
 function fxDraw(t){
  const el=document.getElementById('fxl'+t);if(!el)return;
