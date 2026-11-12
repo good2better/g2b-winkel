@@ -1,7 +1,8 @@
 {
  "banks": [
   "BEST-OF",
-  "BEST-OF 2"
+  "BEST-OF 2",
+  "G2B SPECIAL"
  ],
  "pads": {
   "BEST-OF": [
@@ -39,6 +40,24 @@
    "BONGO",
    "BELL",
    "FUS-BAS-KARP"
+  ],
+  "G2B SPECIAL": [
+   "SLAGGITAAR NYL",
+   "SLAGGITAAR STL",
+   "BANGI",
+   "KALIMBA",
+   "TIMBAL",
+   "G2B-STAB",
+   "LOGDRUM",
+   "KOTI",
+   "FUS-HARP",
+   "AKKOORD-KEY",
+   "TRAPLEAD",
+   "DRILLBAS",
+   "FUNKBASS",
+   "EPICBASS",
+   "SUB808",
+   "ZOUK-KIT"
   ]
  },
  "files": {
@@ -77,6 +96,24 @@
    "dru_sf_bongo_1792585593",
    "kD_bell",
    "kS_FUSBASKARP_30_v1"
+  ],
+  "G2B SPECIAL": [
+   "g2bspecial_00",
+   "g2bspecial_01",
+   "g2bspecial_02",
+   "g2bspecial_03",
+   "g2bspecial_04",
+   "g2bspecial_05",
+   "g2bspecial_06",
+   "g2bspecial_07",
+   "g2bspecial_08",
+   "g2bspecial_09",
+   "g2bspecial_10",
+   "g2bspecial_11",
+   "g2bspecial_12",
+   "g2bspecial_13",
+   "g2bspecial_14",
+   "g2bspecial_15"
   ]
  }
 }
