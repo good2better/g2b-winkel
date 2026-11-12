@@ -1,0 +1,12 @@
+{
+ "titel": "G2B AURA v6.0 Studio — Desktop + Browser",
+ "licentie": "Licentiecode voor export: aura-v6",
+ "cover": "tools/aura-v6/img/midi-forge.png",
+ "bestanden": [
+  {"naam": "Windows installer (.exe)", "url": "https://github.com/good2better/g2b-winkel/releases/download/aura-v6.0/G2B.AURA.v6.0_6.0.0_x64-setup.exe"},
+  {"naam": "Windows installer (.msi)", "url": "https://github.com/good2better/g2b-winkel/releases/download/aura-v6.0/G2B.AURA.v6.0_6.0.0_x64_en-US.msi"},
+  {"naam": "Mac app (.dmg)", "url": "https://github.com/good2better/g2b-winkel/releases/download/aura-v6.0/G2B.AURA.v6.0_6.0.0_aarch64.dmg"},
+  {"naam": "Browser-versie (ZIP)", "bestand": "G2B-AURA-V6.zip"},
+  {"naam": "Nederlandse uitleg (PDF)", "bestand": "G2B-AURA-V6-UITLEG.pdf"}
+ ]
+}
