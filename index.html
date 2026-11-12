@@ -57,6 +57,28 @@ nav{position:sticky;top:0;z-index:50;background:rgba(8,9,10,.86);backdrop-filter
 .fb:hover{color:var(--txt);border-color:#2c3a32}
 .fb.aan{background:var(--txt);color:#08090a;border-color:var(--txt)}
 
+/* uitgelicht-slider */
+.slider{position:relative;margin:0 0 44px;border-radius:22px;overflow:hidden;border:1px solid var(--line)}
+.slides{display:flex;transition:transform .55s cubic-bezier(.22,.9,.3,1)}
+.slide{min-width:100%;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:0;background:linear-gradient(120deg,#0f1713 55%,#0a0d0b);position:relative}
+.slide .beeld{position:relative;height:340px;overflow:hidden;background:#0b0e0c}
+.slide .beeld img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.slide .beeld::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 55%,rgba(10,13,11,.9))}
+.slide .tekst{padding:40px 48px}
+.slide .tekst .eyebrow{margin-bottom:14px}
+.slide h3{font-size:clamp(24px,3vw,36px);line-height:1.12;font-weight:800;letter-spacing:-.4px}
+.slide .zin{color:var(--dim);font-size:14.5px;margin:12px 0 18px;max-width:440px}
+.slide .s-prijs{display:flex;align-items:baseline;gap:12px;margin-bottom:22px}
+.slide .s-prijs .nu{font-size:32px}
+.slide .s-knoppen{display:flex;gap:12px;flex-wrap:wrap}
+.slide .s-knoppen a{font-weight:800;font-size:13px;letter-spacing:1px;padding:13px 26px;border-radius:26px}
+.s-nav{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.14);background:rgba(8,9,10,.55);backdrop-filter:blur(6px);color:var(--txt);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;z-index:3;font-family:inherit}
+.s-nav:hover{background:var(--accent);color:#03140a;border-color:var(--accent)}
+.s-prev{left:14px}.s-next{right:14px}
+.s-dots{position:absolute;bottom:14px;left:0;right:0;display:flex;gap:8px;justify-content:center;z-index:3}
+.s-dot{width:8px;height:8px;border-radius:50%;border:0;background:rgba(255,255,255,.22);cursor:pointer;padding:0;transition:all .2s}
+.s-dot.aan{background:var(--accent);width:22px;border-radius:5px}
+
 /* grid + kaarten */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:34px}
 .kaart{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,border-color .2s,box-shadow .25s}
@@ -117,6 +139,10 @@ footer{margin-top:90px;border-top:1px solid var(--line);padding:46px 24px 36px;c
   .menu a{white-space:nowrap;font-size:11px;padding:7px 10px}
   .hero{padding:64px 18px 56px}.hero p{font-size:15px}
   .grid{grid-template-columns:1fr}
+  .slide{grid-template-columns:1fr}
+  .slide .beeld{height:200px}
+  .slide .beeld::after{background:linear-gradient(180deg,transparent 55%,rgba(10,13,11,.9))}
+  .slide .tekst{padding:22px 22px 30px}
   .suite ul{grid-template-columns:1fr}
   .news form{flex-direction:column}
   .actie{font-size:11.5px}
@@ -159,6 +185,12 @@ footer{margin-top:90px;border-top:1px solid var(--line);padding:46px 24px 36px;c
     <button class="fb" data-f="bundels">BUNDELS &amp; LIDMAATSCHAP</button>
     <button class="fb" data-f="tools">ANDERE TOOLS</button>
     <button class="fb" data-f="demo">GRATIS DEMO</button>
+  </div>
+  <div class="slider" id="slider" hidden>
+    <div class="slides" id="slides"></div>
+    <button class="s-nav s-prev" id="s-prev" aria-label="vorige">‹</button>
+    <button class="s-nav s-next" id="s-next" aria-label="volgende">›</button>
+    <div class="s-dots" id="s-dots"></div>
   </div>
   <div class="grid" id="grid"></div>
 </main>
@@ -259,6 +291,11 @@ fetch('products.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
     if(ca!==cb) return (CATORDER[ca]??9)-(CATORDER[cb]??9);
     return (a.eerst?0:1)-(b.eerst?0:1) || (a.titel||'').localeCompare(b.titel||'');
   });
+  // uitgelicht-slider: de v6-sterren + uitgelichte producten met cover (max 8, sterren eerst)
+  const slijst = prods.filter(p => p.cover && (p.uitgelicht || EERST.includes(p.id)))
+    .sort((a,b)=>(EERST.indexOf(a.id)<0?99:EERST.indexOf(a.id))-(EERST.indexOf(b.id)<0?99:EERST.indexOf(b.id)))
+    .slice(0,8);
+  if (slijst.length) bouwSlider(slijst);
   const html = prods.map(kaart);
   html.splice(3,0,suite());
   document.getElementById('grid').innerHTML = html.join('');
@@ -292,8 +329,54 @@ function suite(){
     </div></section>`;
 }
 
+// ── slider ──
+let sIdx = 0, sTimer = null, sN = 0;
+function bouwSlider(lijst){
+  const box = document.getElementById('slides'), dots = document.getElementById('s-dots');
+  sN = lijst.length;
+  box.innerHTML = lijst.map(p => {
+    const links = p.links||{};
+    const koop = links.stripe || links.koop || `bestel.html?p=${p.id}`;
+    const ext = /^https?:/.test(koop) ? ' target="_blank" rel="noopener"' : '';
+    const gratis = String(p.prijs||"").toUpperCase().includes("GRATIS");
+    const demo = links.browser || (gratis ? `p.html?id=${p.id}` : null);
+    const pr = String(p.prijs||"");
+    const prijs = gratis ? `<span class="nu">GRATIS</span>` : pr ? `<span class="nu">${esc(/€/.test(pr)?pr:("€ "+pr))}</span>` : "";
+    const zin = (p.beschrijving||"").split("\n")[0];
+    return `<div class="slide">
+      <a class="beeld" href="p.html?id=${esc(p.id)}"><img src="${esc(p.cover)}" alt="${esc(p.titel)}" loading="lazy"></a>
+      <div class="tekst">
+        ${p.badge?`<div class="eyebrow">${esc(p.badge)}</div>`:'<div class="eyebrow">UITGELICHT</div>'}
+        <h3>${esc(p.titel)}</h3><div class="zin">${esc(zin)}</div>
+        <div class="s-prijs">${prijs}</div>
+        <div class="s-knoppen">${demo?`<a class="k-demo" href="${esc(demo)}">GRATIS DEMO</a>`:''}<a class="k-koop" href="${esc(koop)}"${ext}>${gratis?"OPEN":"KOOP NU"}</a></div>
+      </div></div>`;
+  }).join('');
+  dots.innerHTML = lijst.map((_,i)=>`<button class="s-dot" data-i="${i}" aria-label="slide ${i+1}"></button>`).join('');
+  document.getElementById('slider').hidden = false;
+  document.getElementById('s-prev').onclick = () => slideTo(sIdx-1, true);
+  document.getElementById('s-next').onclick = () => slideTo(sIdx+1, true);
+  dots.onclick = e => { const d = e.target.closest('.s-dot'); if (d) slideTo(+d.dataset.i, true); };
+  const sl = document.getElementById('slider');
+  sl.addEventListener('mouseenter', () => clearInterval(sTimer));
+  sl.addEventListener('mouseleave', startAuto);
+  let tx = null;
+  sl.addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true});
+  sl.addEventListener('touchend', e => { if (tx===null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 40) slideTo(sIdx + (dx<0?1:-1), true); tx = null; }, {passive:true});
+  slideTo(0); startAuto();
+}
+function slideTo(i, hand){
+  sIdx = (i + sN) % sN;
+  document.getElementById('slides').style.transform = `translateX(-${sIdx*100}%)`;
+  document.querySelectorAll('.s-dot').forEach((d,j) => d.classList.toggle('aan', j===sIdx));
+  if (hand) { clearInterval(sTimer); startAuto(); }
+}
+function startAuto(){ clearInterval(sTimer); sTimer = setInterval(() => { if (!document.getElementById('slider').hidden) slideTo(sIdx+1); }, 5200); }
+
 function filterTo(f){
   document.querySelectorAll('.fb').forEach(x => x.classList.toggle('aan', x.dataset.f === f));
+  const sl = document.getElementById('slider');
+  if (sl) sl.hidden = (f !== 'uitgelicht');
   document.querySelectorAll('#grid > *').forEach(el => {
     const ok = f === 'alles'
       || (f === 'uitgelicht' ? el.dataset.uitg === '1' || el.id === 'prosuite'
