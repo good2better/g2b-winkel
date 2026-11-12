@@ -153,6 +153,8 @@ footer{margin-top:90px;border-top:1px solid var(--line);padding:46px 24px 36px;c
     <button class="fb aan" data-f="alles">ALLES</button>
     <button class="fb" data-f="instrumenten">INSTRUMENTEN</button>
     <button class="fb" data-f="effecten">EFFECTEN</button>
+    <button class="fb" data-f="packs">BEATS &amp; PACKS</button>
+    <button class="fb" data-f="apps">APPS &amp; TOOLS</button>
     <button class="fb" data-f="bundels">BUNDELS &amp; LIDMAATSCHAP</button>
     <button class="fb" data-f="demo">GRATIS DEMO</button>
   </div>
@@ -190,34 +192,74 @@ footer{margin-top:90px;border-top:1px solid var(--line);padding:46px 24px 36px;c
 
 <script src="actie.js"></script>
 <script>
-// cat: instrumenten | effecten | bundels — "demo" = heeft gratis browser-demo
-const PROD = [
-  {id:"aura-suripads",  cat:"instrumenten", naam:"Suri-Pads & World", zin:"Sfeervolle pads en echte Surinaamse instrumenten in één engine — stapel ze met één klik.", nu:"29,95", na:"49,95", img:"tools/aura-v6/img/suri-pads.png", demo:"tools/aura-v6/suri-pads/"},
-  {id:"aura-allinstr",  cat:"instrumenten", naam:"AURA All-Instruments", zin:"Keys, snaren, melodie en drums — alle instrumenten in één plugin, even hard en zuiver.", nu:"34,95", na:"59,95", img:"tools/aura-v6/img/all-instruments.png", demo:"tools/aura-v6/all-instruments/"},
-  {id:"aura-bassdrum",  cat:"instrumenten", naam:"Bass & Drum 2-in-1", zin:"Sub, Reese, 808 en bassdrum met Toon en Lengte — direct een zware basis.", nu:"29,95", na:"49,95", img:"tools/aura-v6/img/bass-drum-2in1.png", demo:"tools/aura-v6/bass-drum-2in1/"},
-  {id:"aura-dicesynth", cat:"instrumenten", naam:"AURA Dice Synth", zin:"Eén klik op de dobbelsteen = een gloednieuwe synth-sound. Nooit hangende noten.", nu:"34,95", na:"59,95", img:"tools/aura-v6/img/dice-synth.png", demo:"tools/aura-v6/dice-synth/"},
-  {id:"aura-dren",      cat:"instrumenten", naam:"Dren Studio", zin:"323 echt unieke presets — van droomtapijt tot donkere lead, direct bespeelbaar.", nu:"34,95", na:"59,95", img:"tools/aura-v6/img/dren-studio.png", demo:"tools/aura-v6/dren-studio/"},
-  {id:"aura-fxrack",    cat:"effecten",     naam:"FX-Rack", zin:"Refors, Koor+Key en Master in één keten — je mix klinkt meteen af en luid.", nu:"39,95", na:"69,95", img:"tools/aura-v6/img/fx-rack.png", demo:"tools/aura-v6/fx-rack/"},
-  {id:"aura-midiforge", cat:"effecten",     naam:"AURA MIDI-Forge", zin:"Piano-roll met stijl-generator en glide — maak melodieën en exporteer als .MID.", nu:"39,95", na:"69,95", img:"tools/aura-v6/img/midi-forge.png", demo:"tools/aura-v6/"},
-  {id:"g2bclub",        cat:"bundels",      naam:"G2B ALL-ACCESS — abonnement", zin:"Één code ontgrendelt álle browser-modules + export, op al je apparaten. Maandelijks opzegbaar.", nu:"4,95", per:"/mnd", img:"media/promo-club.png", demo:"club-apps.html", koop:"https://buy.stripe.com/3cIeVd5IIeqDcI76G15J62O"},
-];
-const SUITE = {id:"g2balles", nu:"199", los:"244,65", koop:"https://buy.stripe.com/00w8wP7QQ5U77nN3tP5J61J", club:"https://buy.stripe.com/3cIeVd5IIeqDcI76G15J62O"};
-const A = window.G2B_ACTIE, actief = A && A.loopt();
+// categorie per product-id; alles komt uit products.json (één bron van waarheid)
+const CATMAP = {
+  // instrumenten
+  "aura-suripads":"instrumenten","aura-allinstr":"instrumenten","aura-bassdrum":"instrumenten",
+  "aura-dicesynth":"instrumenten","aura-dren":"instrumenten","g2bdicesynth":"instrumenten",
+  "g2bdren":"instrumenten","drenlite":"instrumenten","ocho01":"instrumenten","ocholite":"instrumenten",
+  "g2bbd1":"instrumenten","samplex01":"instrumenten","g2bbestof":"instrumenten",
+  "g2bband":"instrumenten","g2bvibe1":"instrumenten","g2b-brein":"instrumenten",
+  // effecten
+  "aura-fxrack":"effecten","aura-midiforge":"effecten","g2bmaster":"effecten","g2bpillpack":"effecten",
+  "g2bmixer":"effecten","g2brefors":"effecten","g2bfx1":"effecten","g2bkoor":"effecten",
+  "g2bgeluidmidi":"effecten","sl3ut3":"effecten",
+  // bundels & lidmaatschap
+  "g2bclub":"bundels","g2bstarter":"bundels","g2bstudio":"bundels","g2balles":"bundels",
+  "g2bsuite1":"bundels","marketerbundel1":"bundels","agency1":"bundels",
+  // apps & tools
+  "beatmakerpro":"apps","stapeldice":"apps","stapeldicefull":"apps","g2bsmash":"apps","g2bairdrums":"apps",
+  "mailfabriek1":"apps","sheetfabriek1":"apps","sequentiefabriek1":"apps","crmfabriek1":"apps",
+  "watcherfabriek1":"apps","flowfabriek1":"apps","kanaalfabriek1":"apps","leadfabriek1":"apps",
+  "lijstfabriek1":"apps","gamefabriek1":"apps","seofabriek1":"apps",
+  "g2b-juridisch":"apps","g2b-psychologie":"apps","g2b-workstation":"apps","cursus01":"apps",
+  "g2b-bedrijfsmiddelen":"apps","school1":"apps",
+};
+// wat NIET op de hoofdwinkel hoort (steun-knoppen, tape-bundel; beats+packs gaan op soort)
+const SKIP = new Set(["steun-3","steun-5","steun-10"]);
+const catOf = p => CATMAP[p.id] || (p.soort==="audio"||p.soort==="pack" ? "packs" : "apps");
 
 function kaart(p){
-  const koop = p.koop || `bestel.html?p=${p.id}`;
-  const ext = p.koop ? ' target="_blank" rel="noopener"' : '';
-  const prijs = (actief && p.na)
-    ? `<div class="oud"><small>na actie</small>€ ${p.na}</div><div class="nu">€ ${p.nu}<small>INTRO-ACTIE</small></div>`
-    : `<div class="nu">€ ${p.nu}${p.per ? `<small>${p.per}</small>` : ''}</div>`;
-  return `<article class="kaart" data-cat="${p.cat}" data-demo="${p.demo ? 1 : 0}">
-    <a class="img" href="${p.demo || koop}"><img src="${p.img}" alt="${p.naam} — studio-preview" loading="lazy">${actief && p.na ? '<span class="label">ACTIE</span>' : ''}</a>
-    <div class="body"><h3>${p.naam}</h3><div class="zin">${p.zin}</div>
-      ${p.id.startsWith('aura-') && p.id !== 'aura-midiforge' ? '<div style="font-size:10.5px;letter-spacing:1.2px;color:var(--dim);font-weight:700;margin-top:4px">🖥 VST3 + DESKTOP-APP INBEGREPEN</div>' : ''}
+  const links = p.links||{};
+  const koop = links.stripe || links.koop || `bestel.html?p=${p.id}`;
+  const ext = /^https?:/.test(koop) ? ' target="_blank" rel="noopener"' : '';
+  const gratis = String(p.prijs||"").toUpperCase().includes("GRATIS");
+  const demo = links.browser || (gratis ? (links.browser || `p.html?id=${p.id}`) : null);
+  const pr = String(p.prijs||"");
+  const prijs = gratis ? `<div class="nu">GRATIS</div>`
+    : pr ? `<div class="nu">${esc(/€/.test(pr)?pr:("€ "+pr))}</div>` : "";
+  const img = p.cover ? `<img src="${esc(p.cover)}" alt="${esc(p.titel)} — preview" loading="lazy">`
+                      : `<div style="width:100%;height:100%;background:linear-gradient(135deg,#14201a,#0b0e0c);display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:800;color:var(--accent)">G2B</div>`;
+  const zin = (p.beschrijving||"").split("\n")[0];
+  return `<article class="kaart" data-cat="${catOf(p)}" data-demo="${demo?1:0}">
+    <a class="img" href="p.html?id=${esc(p.id)}">${img}${p.badge?`<span class="label">${esc(p.badge)}</span>`:""}</a>
+    <div class="body"><h3>${esc(p.titel)}</h3><div class="zin">${esc(zin)}</div>
       <div class="prijsrij">${prijs}</div>
-      <div class="knoppen"><a class="k-demo" href="${p.demo}">GRATIS DEMO</a><a class="k-koop" href="${koop}"${ext}>KOOP</a></div>
+      <div class="knoppen">${demo?`<a class="k-demo" href="${esc(demo)}">GRATIS DEMO</a>`:""}<a class="k-koop" href="${esc(koop)}"${ext}>${gratis?"OPEN":"KOOP"}</a></div>
     </div></article>`;
 }
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const A = window.G2B_ACTIE, actief = A && A.loopt();
+const SUITE = {id:"g2balles", nu:"199", los:"244,65", koop:"https://buy.stripe.com/00w8wP7QQ5U77nN3tP5J61J", club:"https://buy.stripe.com/3cIeVd5IIeqDcI76G15J62O"};
+
+// volgorde: eerst de v6-sterren, daarna rest op categorie
+const EERST = ["aura-suripads","aura-allinstr","aura-bassdrum","aura-dicesynth","aura-dren","aura-fxrack","aura-midiforge","g2bclub"];
+const CATORDER = {instrumenten:0, effecten:1, packs:2, apps:3, bundels:4};
+
+fetch('products.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+  const prods = (d.producten||[]).filter(p=>!p.verborgen && !SKIP.has(p.id));
+  prods.sort((a,b)=>{
+    const ea=EERST.indexOf(a.id), eb=EERST.indexOf(b.id);
+    if(ea>=0||eb>=0) return (ea<0?99:ea)-(eb<0?99:eb);
+    const ca=catOf(a), cb=catOf(b);
+    if(ca!==cb) return (CATORDER[ca]??9)-(CATORDER[cb]??9);
+    return (a.eerst?0:1)-(b.eerst?0:1) || (a.titel||'').localeCompare(b.titel||'');
+  });
+  const html = prods.map(kaart);
+  html.splice(3,0,suite());
+  document.getElementById('grid').innerHTML = html.join('');
+}).catch(()=>{ document.getElementById('grid').innerHTML = '<p style="color:var(--dim);text-align:center">Winkel laden mislukt — ververs de pagina.</p>'; });
+
 function suite(){
   return `<section class="suite" id="prosuite" data-cat="bundels" data-demo="0">
     <div>
@@ -238,9 +280,6 @@ function suite(){
       ${actief ? `<div class="klokrij">🎁 + gratis 808 &amp; Drum Pack · eindigt over <span class="klok" data-klok>…</span></div>` : ''}
     </div></section>`;
 }
-const html = PROD.map(kaart);
-html.splice(3, 0, suite());           // PRO SUITE midden op de pagina, na de eerste rij
-document.getElementById('grid').innerHTML = html.join('');
 
 document.getElementById('filters').addEventListener('click', e => {
   const b = e.target.closest('.fb'); if (!b) return;
