@@ -45,3 +45,9 @@ pre{background:#060b08;color:#b8ffe0;padding:10px;border:1px solid var(--bd);fon
 
 /* Knoppenrij onderaan */
 .knip{display:flex;gap:14px;align-items:center;font-size:12px;color:var(--dim)}
+/* octaaf-balk (kleine keyboards) */
+.oct-bar{display:flex;gap:5px;align-items:center;margin:4px 0 0}
+.oct-b{padding:5px 9px;font-size:11px;font-weight:700;background:#0e1f16;color:#bdf;border:1px solid #1e4a33;border-radius:8px;cursor:pointer}
+.oct-b:hover{border-color:#0fc}
+.oct-spr{color:#8fd;background:#0a1610}
+.oct-lbl{min-width:52px;text-align:center;font-size:12px;font-weight:800;color:#0fc;letter-spacing:.5px}

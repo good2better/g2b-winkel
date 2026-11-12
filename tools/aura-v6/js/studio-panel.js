@@ -119,7 +119,10 @@ const StudioPanel = {
         if (first) first.click();
       }
       Aura.setVolume(1);
-      InstrumentMatrix.play(60, { velocity: 110 });
+      // speel op de root-noot van het gekozen geluid — meteen de goede toonhoogte
+      const i0 = InstrumentMatrix.selected.size ? [...InstrumentMatrix.selected][0] : -1;
+      const root = (i0 >= 0 && InstrumentMatrix.sounds[i0] && InstrumentMatrix.sounds[i0].basePitch) || 60;
+      InstrumentMatrix.play(root, { velocity: 110 });
       st.textContent = 'speelt — eerste geluid actief';
     };
 
