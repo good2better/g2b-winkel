@@ -23,7 +23,12 @@ const StudioPanel = {
   bouw(el, opts = {}) {
     const bpm = opts.bpm || 120, bars = 4, steps = 16, N = bars * steps;
     const P = { rec: false, loop: true, stepRec: false, pos: -1, timer: null,
-                notes: [], _pb: false, playing: false };
+                notes: [], _pb: false, playing: false, hist: [] };
+    /* ↩ ongedaan maken: momentopname van noten voor elke bewerking */
+    const snap = () => { P.hist.push(JSON.stringify(P.notes)); if (P.hist.length > 60) P.hist.shift(); };
+    const undo = () => { if (P.hist.length) { P.notes = JSON.parse(P.hist.pop()); draw(); st.textContent = 'ongedaan gemaakt'; } };
+    box.querySelector('#spUndo').onclick = undo;
+    el.ownerDocument.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); } });
     /* notes: {p: midi, s: stap, d: stappen-duur, v: vel} */
 
     el.innerHTML = '';
@@ -37,6 +42,7 @@ const StudioPanel = {
         <button id="spLoop" class="on">↻ LOOP: AAN</button>
         <button id="spStep">STAP-INSPELEN</button>
         <button id="spWis">WIS RASTER</button>
+        <button id="spUndo">↩ ONGEDAAN MAKEN</button>
         <button id="spMid">↓ .MID</button>
         <button id="spWav">↓ .WAV</button>
         <span id="spStat" class="hint"></span>
@@ -100,8 +106,9 @@ const StudioPanel = {
       const r = cvs.getBoundingClientRect(), x = (e.clientX - r.left) * cvs.width / r.width, y = (e.clientY - r.top) * cvs.height / r.height;
       const w = cvs.width / N, i = Math.max(0, Math.min(N - 1, Math.floor(x / w)));
       const h = hitN(x, y);
-      if (e.button === 2) { if (h) { P.notes.splice(P.notes.indexOf(h.n), 1); draw(); } return; } // rechts = wis
+      if (e.button === 2) { if (h) { snap(); P.notes.splice(P.notes.indexOf(h.n), 1); draw(); } return; } // rechts = wis
       cvs.setPointerCapture(e.pointerId);
+      snap();
       if (h) {
         drag = { n: h.n, mode: h.edge, x0: x, p0: h.n.p, s0: h.n.s, d0: h.n.d || 1 };
         P.dragN = h.n;
@@ -109,6 +116,7 @@ const StudioPanel = {
         const p = Math.max(PITCH_LO, Math.min(PITCH_HI, pOf(y)));
         const n = { p, s: i, d: 1, v: 100 };
         P.notes.push(n); drag = { n, mode: 'resize', x0: x, s0: i, d0: 1 }; P.dragN = n;
+        try { InstrumentMatrix.play(n.p, { velocity: 90 }); } catch (err) {}
       }
       draw();
     };
@@ -122,7 +130,8 @@ const StudioPanel = {
       } else {
         const ds = Math.round((x - drag.x0) / w);
         n.s = Math.max(0, Math.min(N - (n.d || 1), drag.s0 + ds));
-        n.p = Math.max(PITCH_LO, Math.min(PITCH_HI, pOf(y)));
+        const np = Math.max(PITCH_LO, Math.min(PITCH_HI, pOf(y)));
+        if (np !== n.p) { n.p = np; try { InstrumentMatrix.play(n.p, { velocity: 80 }); } catch (err) {} } // preview: hoor waar je hem neerzet
       }
       draw();
     };
@@ -135,7 +144,7 @@ const StudioPanel = {
     cvs.onpointerup = endDrag; cvs.onpointercancel = endDrag;
     cvs.ondblclick = e => {
       const r = cvs.getBoundingClientRect(), x = (e.clientX - r.left) * cvs.width / r.width, y = (e.clientY - r.top) * cvs.height / r.height;
-      const h = hitN(x, y); if (h) { P.notes.splice(P.notes.indexOf(h.n), 1); draw(); }
+      const h = hitN(x, y); if (h) { snap(); P.notes.splice(P.notes.indexOf(h.n), 1); draw(); }
     };
 
     /* ---------- transport ---------- */
@@ -160,10 +169,10 @@ const StudioPanel = {
     box.querySelector('#spStep').onclick = e => { P.stepRec = !P.stepRec;
       e.target.classList.toggle('on', P.stepRec);
       st.textContent = P.stepRec ? 'stap-inspelen aan — elke noot = volgende stap' : ''; };
-    box.querySelector('#spWis').onclick = () => { P.notes = []; draw(); st.textContent = 'raster leeg'; };
+    box.querySelector('#spWis').onclick = () => { snap(); P.notes = []; draw(); st.textContent = 'raster leeg'; };
     const updRec = () => { const b = box.querySelector('#spRec');
       b.classList.toggle('on', P.rec); b.textContent = P.rec ? '● OPN (aan)' : '● OPN'; };
-    box.querySelector('#spRec').onclick = () => { P.rec = !P.rec; updRec();
+    box.querySelector('#spRec').onclick = () => { P.rec = !P.rec; P.recSnap = false; updRec();
       if (P.rec) { Aura.resume(); start(); st.textContent = 'opnemen — speel noten in'; } };
 
     /* ⚡ DIRECT SPELEN: selecteer eerste geluid + speel direct een noot */
@@ -253,9 +262,9 @@ const StudioPanel = {
           P.notes.push({ p: pitch, s: i, d: 1, v: vel });
           P.pos = (i + 1) % N; draw(); return;
         }
-        if (P.rec && P.pos >= 0) { P.notes.push({ p: pitch, s: P.pos, d: 1, v: vel }); draw(); }
+        if (P.rec && P.pos >= 0) { if (!P.recSnap) { snap(); P.recSnap = true; } P.notes.push({ p: pitch, s: P.pos, d: 1, v: vel }); draw(); }
       },
-      record(on) { P.rec = on; updRec(); },
+      record(on) { P.rec = on; P.recSnap = false; updRec(); },
       start, stop: halt, grid: () => P.notes.map(n => n.s), canvas: cvs,
       _p: P
     };
