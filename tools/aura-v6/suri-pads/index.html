@@ -3,6 +3,7 @@
 <h1>🥁 Suri-Pads &amp; World <a href="../" style="float:right;font-size:12px">← AURA</a></h1>
 <div class="card"><p>Pads (Verkoop + Gio) én Surinaamse instrumenten in één engine.
 <b>Groene vakken:</b> 1 = solo over heel keyboard · meerdere = direct stapelen · opnieuw klikken = uit.</p>
+<div style="margin:6px 0"><label for="bank">Bank:&nbsp;</label><select id="bank"><option value="">SURI + WORLD (alles)</option></select></div>
 <div id="matrix"></div>
 <div class="card" style="margin-top:10px"><b>Opname &amp; Loop</b><div id="studio"></div></div>
 <div id="modus"></div>
@@ -57,7 +58,27 @@ const SOUNDS = [
 ];
 (async () => {
   await Aura.init('../js/aura-dsp-worklet.js');
-  InstrumentMatrix.build(document.getElementById('matrix'), SOUNDS);
+  const matrixEl = document.getElementById('matrix');
+  InstrumentMatrix.build(matrixEl, SOUNDS);
+  // PADS genre-banken meemergen: kies een bank → grid toont haar 16 pads
+  try {
+    const meta = await (await fetch('../../pads-web/pads-meta.json')).json();
+    const sel = document.getElementById('bank');
+    meta.banks.forEach((b, i) => {
+      const o = document.createElement('option');
+      o.value = i; o.textContent = 'PADS — ' + b;
+      sel.appendChild(o);
+    });
+    sel.onchange = () => {
+      if (sel.value === '') { InstrumentMatrix.build(matrixEl, SOUNDS); return; }
+      const i = +sel.value, b = meta.banks[i];
+      const kit = meta.pads[b].map((nm, j) => ({
+        naam: nm, cat: 'kit', basePitch: 60,
+        src: `../../pads-web/wav/b${String(i).padStart(2,'0')}_${j}.wav`
+      }));
+      InstrumentMatrix.build(matrixEl, kit);
+    };
+  } catch(e) { console.warn('pads-banken niet bereikbaar', e); }
   bouwKeyboard(document.getElementById('kbd'), 3, 2);
   knipRij(document.getElementById('knip'));
   const panel = StudioPanel.bouw(document.getElementById('studio'));
