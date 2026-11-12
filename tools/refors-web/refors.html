@@ -32,6 +32,7 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <button class="uit" id="bAan" onclick="zetAan(!P.aan)">AAN</button>
 <button class="uit" id="bDice" onclick="dice()">🎲 DICE</button>
 <button class="uit" id="bAuto" onclick="auto()" disabled>🤖 AUTO</button>
+<button class="uit go" id="bWav" onclick="exportWav()" disabled>↓ DOWNLOAD .WAV</button>
 <button class="uit" id="skin" onclick="document.body.classList.toggle('licht')">◐</button>
 <span id="st">nog geen track geladen</span>
 </div>
@@ -44,7 +45,7 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <label>KRACHT <b id="vKracht">100%</b><input type="range" id="kracht" min="0" max="100" value="100"></label>
 </div>
 <canvas id="meter" width="900" height="90"></canvas>
-<div class="info">Kies een ruimte: STUDIO = plat (referentie) · CLUB = grote PA + zaal · AUTO = basbult + cabine · TELEFOON = smal, mono, krakerig · AIRPODS = dun maar clean · FESTIVAL = buiten, top valt weg · TV = boxy midden · TIENTJE = goedkope oordopjes.<br>AFSTAND = verder weg (minder top, zachter, meer ruimte) · KAMER = hoeveel echo van de ruimte · MENIGTE = publiek-geruis · VOLUME = hoe hard de speaker staat · KRACHT = 0% je originele track, 100% volle simulatie · 🤖 AUTO meet je track en kiest zelf de slimste testruimte + afstand. Alles draait in je browser — niks gaat naar internet.</div>
+<div class="info">Kies een ruimte: STUDIO = plat (referentie) · CLUB = grote PA + zaal · AUTO = basbult + cabine · TELEFOON = smal, mono, krakerig · AIRPODS = dun maar clean · FESTIVAL = buiten, top valt weg · TV = boxy midden · TIENTJE = goedkope oordopjes.<br>AFSTAND = verder weg (minder top, zachter, meer ruimte) · KAMER = hoeveel echo van de ruimte · MENIGTE = publiek-geruis · VOLUME = hoe hard de speaker staat · KRACHT = 0% je originele track, 100% volle simulatie · 🤖 AUTO meet je track en kiest zelf de slimste testruimte + afstand. Luisteren is gratis; ↓ DOWNLOAD .WAV vraagt je G2B-abonnement/licentiecode. Alles draait in je browser — niks gaat naar internet.</div>
 <script>
 // --- poort van ReforsPlugin.cpp ---
 const NAMEN=["STUDIO","CLUB","AUTO","TELEFOON","AIRPODS","FESTIVAL","TV","TIENTJE"];
@@ -65,8 +66,9 @@ const $=id=>document.getElementById(id);
 
 function ac(){if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();if(ctx.state=='suspended')ctx.resume();return ctx}
 
-function bouwGraaf(){
- const c=ac(),g={};
+function bouwGraaf(){ G=bouwGraafOp(ac()); lastDrv=-1; update(true); }
+function bouwGraafOp(c){
+ const g={};
  g.in=c.createGain();
  g.dry=c.createGain(); g.wet=c.createGain(); g.out=c.createGain();
  // speaker-curve
@@ -102,7 +104,7 @@ function bouwGraaf(){
   const n=c.createBufferSource(); n.buffer=nb; n.loop=true;
   const hp=c.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=300;
   const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=3000;
-  const pk=c.createBiquadFilter(); pk.type='peaking'; pk.frequency.value=900; pk.Q.value=1; pk.gain.value=4;
+  const pk=c.createBiquadFilter(); pk.type='peaking'; pk.frequency.value=900; pk.Q.value=1; pk.gain.value=2;
   const sw=c.createGain(); sw.gain.value=0.65;
   const lfo=c.createOscillator(); lfo.frequency.value=hz; const lg=c.createGain(); lg.gain.value=0.35;
   lfo.connect(lg); lg.connect(sw.gain);
@@ -118,37 +120,87 @@ function bouwGraaf(){
  // KRACHT: dry*(1-k)+wet*k
  g.in.connect(g.dry); g.dry.connect(g.out); g.wet.connect(g.out);
  g.an=c.createAnalyser(); g.an.fftSize=2048; g.out.connect(g.an); g.out.connect(c.destination);
- G=g; lastDrv=-1; update(true);
+ return g;
 }
 function curve(f,range){const n=4096,a=new Float32Array(n);for(let i=0;i<n;i++){const x=(i/(n-1)*2-1)*range;a[i]=f(x)}return a}
 
+// alle graaf-waardes op één plek — realtime én wav-export gebruiken dezelfde rekensom
+function reken(sr){
+ const E=ENV[P.ruimte],af=P.afst/100,kam=P.kamer/100;
+ const hiHz=Math.max(800,E[1]*(1-0.65*af));
+ const delS=E[5]/1000, heeftEcho=delS*sr>16;
+ const echoMix=heeftEcho?Math.min(E[7]*(0.35+1.05*kam)+af*0.10,0.42):0;
+ return {E,af,hiHz,delS,heeftEcho,echoMix,
+  presDb:20*Math.log10(1+(Math.pow(10,E[3]/20)-1)*0.6),
+  drv:1+E[4]*6,dm:E[4]*0.8,fb:heeftEcho?E[6]:0,w:E[8],
+  crowd:P.menigte/100*0.10, // zelfde nivo als de VST (was 2.5x te hard = gruis)
+  outG:Math.pow(10,(E[9]-af*6)/20)*(0.5+0.5*(P.vol/100)*2),
+  k:P.aan?P.kracht/100:0};
+}
+// zelfde waardes direct op de knoppen zetten (voor offline-render)
+function zetGraaf(g,r,sr){
+ g.hp.frequency.value=r.E[0]; g.lp.frequency.value=Math.min(r.hiHz,sr*0.45);
+ g.bas.gain.value=r.E[2]; g.pres.gain.value=r.presDb;
+ g.drive.curve=curve(x=>x*(1-r.dm)+Math.tanh(x*r.drv)*r.dm/r.drv,4);
+ g.eDry.gain.value=1-r.echoMix; g.eWet.gain.value=r.echoMix;
+ if(r.heeftEcho){g.dL.delayTime.value=r.delS; g.dR.delayTime.value=r.delS+0.011}
+ g.fbL.gain.value=r.fb; g.fbR.gain.value=r.fb;
+ const w=r.w; g.LL.gain.value=(1+w)/2; g.RR.gain.value=(1+w)/2;
+ g.RL.gain.value=(1-w)/2; g.LR.gain.value=(1-w)/2;
+ g.crowd.gain.value=r.crowd; g.outG.gain.value=r.outG;
+ g.dry.gain.value=1-r.k; g.wet.gain.value=r.k;
+}
 function update(direct){
  if(!G)return; const c=ctx,t=c.currentTime,T=direct?0.001:0.03;
  const set=(p,v)=>p.setTargetAtTime(v,t,T);
- const E=ENV[P.ruimte],af=P.afst/100,kam=P.kamer/100;
- const hiHz=Math.max(800,E[1]*(1-0.65*af));
- set(G.hp.frequency,E[0]); set(G.lp.frequency,Math.min(hiHz,c.sampleRate*0.45));
- set(G.bas.gain,E[2]);
- // plugin: boven-2.5k rest * (gPres-1)*0.6 erbij → shelf-gain in dB
- const gPres=Math.pow(10,E[3]/20); set(G.pres.gain,20*Math.log10(1+(gPres-1)*0.6));
- if(E[4]!==lastDrv){lastDrv=E[4];const drv=1+E[4]*6,dm=E[4]*0.8;
-  G.drive.curve=curve(x=>x*(1-dm)+Math.tanh(x*drv)*dm/drv,4)}
- const delS=E[5]/1000, heeftEcho=delS*c.sampleRate>16;
- const echoMix=heeftEcho?Math.min(E[7]*(0.5+1.5*kam)+af*0.15,0.6):0;
- set(G.eDry.gain,1-echoMix); set(G.eWet.gain,echoMix);
- if(heeftEcho){set(G.dL.delayTime,delS);set(G.dR.delayTime,delS+0.011)}
- set(G.fbL.gain,heeftEcho?E[6]:0); set(G.fbR.gain,heeftEcho?E[6]:0);
- const w=E[8]; set(G.LL.gain,(1+w)/2);set(G.RR.gain,(1+w)/2);set(G.RL.gain,(1-w)/2);set(G.LR.gain,(1-w)/2);
- set(G.crowd.gain,P.menigte/100*0.25);
- set(G.outG.gain,Math.pow(10,(E[9]-af*6)/20)*(0.5+0.5*(P.vol/100)*2));
- const k=P.aan?P.kracht/100:0; set(G.dry.gain,1-k); set(G.wet.gain,k);
+ const r=reken(c.sampleRate),E=r.E;
+ set(G.hp.frequency,E[0]); set(G.lp.frequency,Math.min(r.hiHz,c.sampleRate*0.45));
+ set(G.bas.gain,E[2]); set(G.pres.gain,r.presDb);
+ if(r.drv!==lastDrv){lastDrv=r.drv; G.drive.curve=curve(x=>x*(1-r.dm)+Math.tanh(x*r.drv)*r.dm/r.drv,4)}
+ set(G.eDry.gain,1-r.echoMix); set(G.eWet.gain,r.echoMix);
+ if(r.heeftEcho){set(G.dL.delayTime,r.delS);set(G.dR.delayTime,r.delS+0.011)}
+ set(G.fbL.gain,r.fb); set(G.fbR.gain,r.fb);
+ const w=r.w; set(G.LL.gain,(1+w)/2);set(G.RR.gain,(1+w)/2);set(G.RL.gain,(1-w)/2);set(G.LR.gain,(1-w)/2);
+ set(G.crowd.gain,r.crowd);
+ set(G.outG.gain,r.outG);
+ set(G.dry.gain,1-r.k); set(G.wet.gain,r.k);
+}
+
+// demo-gate: .wav download alleen voor klanten met abonnement/licentie
+function demoOk(){
+ try{ if(localStorage.getItem('g2b_aura_licentie')==='ok')return true;
+  const q=new URLSearchParams(location.search).get('licentie');
+  if(q&&q.length>=6){localStorage.setItem('g2b_aura_licentie','ok');return true}}catch(e){}
+ const code=prompt('DOWNLOAD (.wav) is voor klanten met een G2B-abonnement of licentiecode.\nHeb je een code? Vul hem hier in — anders: word lid of koop in de winkel.');
+ if(code&&code.trim().length>=6){try{localStorage.setItem('g2b_aura_licentie','ok')}catch(e){}$('st').textContent='licentie ok — download werkt nu';return true}
+ return false;
+}
+async function exportWav(){
+ if(!buf)return; if(!demoOk())return;
+ $('st').textContent='renderen…';
+ const sr=buf.sampleRate,oc=new OfflineAudioContext(buf.numberOfChannels,buf.length,sr);
+ const g=bouwGraafOp(oc); zetGraaf(g,reken(sr),sr);
+ const s=oc.createBufferSource(); s.buffer=buf; s.connect(g.in); s.start();
+ const out=await oc.startRendering();
+ downloadWav(out,'g2b-refors-'+NAMEN[P.ruimte].toLowerCase()+'.wav');
+ $('st').textContent='✔ gedownload: g2b-refors-'+NAMEN[P.ruimte].toLowerCase()+'.wav';
+}
+function downloadWav(ab,name){
+ const n=ab.length,ch=ab.numberOfChannels,sr=ab.sampleRate;
+ const dv=new DataView(new ArrayBuffer(44+n*ch*2));let o=0;
+ const W=(s)=>{for(const c of s)dv.setUint8(o++,c.charCodeAt(0))};
+ const u32=v=>{dv.setUint32(o,v,true);o+=4},u16=v=>{dv.setUint16(o,v,true);o+=2},i16=v=>{dv.setInt16(o,Math.max(-32768,Math.min(32767,Math.round(v*32767))),true);o+=2};
+ W('RIFF');u32(36+n*ch*2);W('WAVEfmt ');u32(16);u16(1);u16(ch);u32(sr);u32(sr*ch*2);u16(ch*2);u16(16);W('data');u32(n*ch*2);
+ const L=ab.getChannelData(0),R=ch>1?ab.getChannelData(1):L;
+ for(let i=0;i<n;i++){i16(L[i]);if(ch>1)i16(R[i])}
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([dv.buffer],{type:'audio/wav'}));a.download=name;a.click();
 }
 
 function laad(file){
  $('st').textContent='laden: '+file.name+'…';
  file.arrayBuffer().then(ab=>ac().decodeAudioData(ab)).then(b=>{
   buf=b; $('st').textContent='✔ '+file.name+' · '+b.duration.toFixed(1)+' s · '+b.numberOfChannels+' kan.';
-  $('bPlay').disabled=false; $('bAuto').disabled=false; if(src){stop();speel()}
+  $('bPlay').disabled=false; $('bAuto').disabled=false; $('bWav').disabled=false; if(src){stop();speel()}
  }).catch(e=>{$('st').textContent='✖ kan dit bestand niet lezen ('+e.message+')';console.warn(e)});
 }
 function speel(){
