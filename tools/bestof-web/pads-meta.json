@@ -27,7 +27,8 @@
   "KIT — SOUL",
   "KIT — SURINAAMS",
   "KIT — TRAP",
-  "KIT — ZOUK"
+  "KIT — ZOUK",
+  "DNA"
  ],
  "pads": {
   "BEST-OF": [
@@ -529,6 +530,24 @@
    "SURDO 78",
    "TIMBAL 82",
    "TIMBAL 72"
+  ],
+  "DNA": [
+   "DNABAS 36",
+   "DNABAS 48",
+   "DNABAS 55",
+   "DNABAS 60",
+   "DNABAS 67",
+   "DNABAS 72",
+   "DNAPAD 36",
+   "DNAPAD 48",
+   "DNAPAD 55",
+   "DNAPAD 60",
+   "DNAPAD 67",
+   "DNAPAD 72",
+   "DNALEAD 36",
+   "DNALEAD 48",
+   "DNALEAD 55",
+   "DNALEAD 60"
   ]
  },
  "files": {
@@ -1031,6 +1050,24 @@
    "kit_zouk_13",
    "kit_zouk_14",
    "kit_zouk_15"
+  ],
+  "DNA": [
+   "dnabas_36",
+   "dnabas_48",
+   "dnabas_55",
+   "dnabas_60",
+   "dnabas_67",
+   "dnabas_72",
+   "dnapad_36",
+   "dnapad_48",
+   "dnapad_55",
+   "dnapad_60",
+   "dnapad_67",
+   "dnapad_72",
+   "dnalead_36",
+   "dnalead_48",
+   "dnalead_55",
+   "dnalead_60"
   ]
  }
 }
