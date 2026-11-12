@@ -1,7 +1,10 @@
 // SPEEL-MODUS: normaal / 1-toets akkoord / octaaf stack / arpeggiator / scale lock
 // Werkt voor muis, computertoetsenbord én USB MIDI-keyboard (alles loopt via InstrumentMatrix.play).
 const SpeelModus = {
-  mode: 'norm',            // norm | chord | oct | arp
+  mode: 'norm',            // legacy — wordt afgeleid uit de vlaggen hieronder
+  chordOn: false,          // 1-toets akkoord aan/uit
+  octOn: false,            // octaaf-stapel aan/uit
+  arpOn: false,            // arpeggiator aan/uit — combineerbaar met chord + oct
   chordType: 'min',        // min | maj | kaseko | trap | sus
   arpRate: 8,              // 8 | 16
   arpDir: 'up',            // up | updown | down
@@ -37,21 +40,21 @@ const SpeelModus = {
   },
 
   // geeft [{p, at}] — at = 16e-stappen vertraging (0 = nu)
+  // combinaties: chord+oct+arp stapelen (arp over akkoord en/of octaaf-laag)
   expand(p) {
     p = this.snap(p);
-    if (this.mode === 'oct') return [{ p, at: 0 }, { p: p - 12, at: 0 }, { p: p + 12, at: 0 }];
-    if (this.mode === 'chord' || this.mode === 'arp') {
+    let notes = [p];
+    if (this.chordOn) {
       const iv = this.CHORDS[this.chordType] || this.CHORDS.min;
-      const notes = iv.map(i => this.snap(p + i));
-      if (this.mode === 'chord') return notes.map(n => ({ p: n, at: 0 }));
-      // arp
-      const st = this.arpRate === 16 ? 1 : 2;
-      let seq = notes.slice();
-      if (this.arpDir === 'down') seq.reverse();
-      if (this.arpDir === 'updown') seq = [...seq, ...notes.slice(1, -1).reverse()];
-      return seq.map((n, i) => ({ p: n, at: i * st }));
+      notes = iv.map(i => this.snap(p + i));
     }
-    return [{ p, at: 0 }];
+    if (this.octOn) notes = notes.flatMap(n => [n - 12, n, n + 12]);
+    if (!this.arpOn) return notes.map(n => ({ p: n, at: 0 }));
+    const st = this.arpRate === 16 ? 1 : 2;
+    let seq = notes.slice();
+    if (this.arpDir === 'down') seq.reverse();
+    if (this.arpDir === 'updown') seq = [...seq, ...notes.slice(1, -1).reverse()];
+    return seq.map((n, i) => ({ p: n, at: i * st }));
   },
 
   // maakt een InstrumentMatrix.play die via de modi expandeert + het paneel voedt
@@ -90,8 +93,16 @@ const SpeelModus = {
     el.appendChild(bar);
 
     bar.querySelectorAll('button.sm[data-m]').forEach(b => b.onclick = () => {
-      S.mode = b.dataset.m;
-      bar.querySelectorAll('button.sm[data-m]').forEach(x => x.classList.toggle('on', x === b));
+      const m = b.dataset.m;
+      if (m === 'norm') { S.chordOn = S.octOn = S.arpOn = false; }
+      else if (m === 'chord') S.chordOn = !S.chordOn;
+      else if (m === 'oct') S.octOn = !S.octOn;
+      else if (m === 'arp') S.arpOn = !S.arpOn;
+      S.mode = S.arpOn ? 'arp' : S.chordOn ? 'chord' : S.octOn ? 'oct' : 'norm';
+      bar.querySelector('button.sm[data-m=norm]').classList.toggle('on', !S.chordOn && !S.octOn && !S.arpOn);
+      bar.querySelector('button.sm[data-m=chord]').classList.toggle('on', S.chordOn);
+      bar.querySelector('button.sm[data-m=oct]').classList.toggle('on', S.octOn);
+      bar.querySelector('button.sm[data-m=arp]').classList.toggle('on', S.arpOn);
     });
     bar.querySelector('#smChord').onchange = e => S.chordType = e.target.value;
     bar.querySelector('#smArp').onchange = e => S.arpRate = +e.target.value;
