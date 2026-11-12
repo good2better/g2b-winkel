@@ -57,6 +57,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <button class="uit klein" id="mfxbtn" onclick="mfxToggle()">🎚 MASTER FX</button>
 <button class="uit klein" id="advbtn" onclick="advToggle()">🧠 ADVIES</button>
 <button class="uit klein" id="brbtn" onclick="brToggle()">☰ BROWSER</button>
+<button class="uit klein" onclick="lesOpen()">🎓 LES</button>
 <button class="uit" onclick="ongedaan()">↩ ONGEDAAN MAKEN</button>
 <span id="st">sets laden…</span>
 <button class="uit" id="skin" onclick="skin()">◐ WIT</button>
@@ -89,6 +90,19 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 </div>
 <div id="traks"></div>
 </div></div>
+<div id="lespan" style="display:none;position:fixed;left:14px;bottom:14px;width:300px;background:#0a0f0d;border:1px solid var(--groen);border-radius:12px;z-index:40;padding:12px">
+ <div style="display:flex;justify-content:space-between;align-items:center">
+  <b id="lestit" style="font-size:.75rem;color:var(--groen)"></b>
+  <button class="uit klein" onclick="lesSluit()">✕</button>
+ </div>
+ <div id="lestap" style="font-size:.72rem;margin:8px 0;line-height:1.5"></div>
+ <div style="display:flex;gap:6px;justify-content:space-between">
+  <button class="uit klein" onclick="lesVorige()">← vorige</button>
+  <span id="lesnr" style="font-size:.65rem;color:var(--dim);align-self:center"></span>
+  <button class="uit klein" id="lesprobeer" style="border-color:var(--groen);color:var(--groen)">▶ PROBEER</button>
+  <button class="uit klein" onclick="lesVolgende()">volgende →</button>
+ </div>
+</div>
 <button id="chatbtn" onclick="chatToggle()" style="position:fixed;right:14px;bottom:14px;z-index:40;border-radius:50%;width:52px;height:52px;font-size:20px;padding:0">💬</button>
 <div id="chatpan" style="display:none;position:fixed;right:14px;bottom:74px;width:280px;max-height:50vh;background:#0a0f0d;border:1px solid var(--rand);border-radius:12px;z-index:40;flex-direction:column">
  <div style="padding:8px 10px;font-size:.7rem;color:var(--groen);font-weight:700;border-bottom:1px solid var(--rand)">GIO-assistent · vraag of commando</div>
@@ -205,6 +219,53 @@ async function chatSend(){
  else if(/overzicht/.test(t)){arrToggle();zeg('overzicht aan')}
  else{document.getElementById('brzoek').value=t;if(!BROPEN)brToggle();brDraw();const n=document.querySelectorAll('#brlist .bitem').length;zeg(n?`${n} resultaten in de Browser links — klik om te laden/horen`:'niks gevonden — probeer "help"')}
 }
+// ===== GIO-cursus: lessen in je GAW =====
+const LESSEN={
+ 'Je eerste beat':[
+  {t:'Druk op <b>▶ SPEEL</b> (of spatie) — je hoort je beat lopen op het tempo dat bij <b>BPM</b> staat.',act:()=>{if(!playing)toggle()}},
+  {t:'De vakjes op een <b>ritme-spoor</b> (TR1-4) zijn 16 stappen: klik een vakje = geluid aan, nog een klik = uit. Kick vaak op 1,5,9,13 — hat op elke 3e.',act:()=>{const g=TR.findIndex(x=>x.type==='grid');TR[g].grid[0]=true;syncGrid(g)}},
+  {t:'Op een <b>toon-spoor</b> (TR5+) teken je noten in de piano-roll: klik = noot, sleep = verplaatsen, rand = langer, dubbelklik = weg.',act:()=>{const r=TR.findIndex(x=>x.type==='roll');if(r>=0)document.querySelectorAll('.proll')[0].scrollIntoView({block:'center'})}},
+  {t:'<b>▾FX</b> opent je rack: zet bv. EQ of DELAY op dat ene spoor. <b>🎚 MASTER FX</b> geldt voor alles samen — COMP maakt je mix harder.',act:()=>{mfxToggle()}},
+  {t:'Klaar? <b>⬇ WAV</b> voor je mix of <b>▶ LAAGBAAS</b> om hem pro te laten klinken. <b>💾 OPSLAAN</b> bewaart je werk.'},
+ ],
+ 'Audio opnemen':[
+  {t:'<b>+AUDIO</b> maakt een audio-spoor — voor stem, gitaar, of geluid dat je zelf neemt.',act:()=>addTrack('audio')},
+  {t:'Druk <b>⏺ OP</b> op je audio-spoor → het opname-scherm opent met je live waveform.',act:()=>{const a=TR.findIndex(x=>x.type==='audio');if(a>=0)opneem(a)}},
+  {t:'<b>STOP & BEWAAR</b> → je take komt als clip op de lane. Sleep het midden om te schuiven, de randen om te trimmen.'},
+  {t:'Je clip speelt mee, exporteert mee en kan ook naar LAAGBAAS als stem.'},
+ ],
+ 'Je geluid vinden':[
+  {t:'<b>☰ BROWSER</b> links toont ál je geluiden + midis. De chips filteren per bank (OCHO, BAS, KEYS…).',act:()=>{if(!BROPEN)brToggle()}},
+  {t:'Typ in <b>🔍 zoek</b> bv. "kick" of "bas" — klik een geluid om te horen, dubbelklik zet hem op je ritme-spoor.',act:()=>{document.getElementById('brzoek').value='kick';brDraw()}},
+  {t:'Onder <b>🎼 MIDI</b> staan je midi-bibliotheek: klik een drum → ritme-spoor, een melodie/bas → toon-spoor.',act:()=>{document.getElementById('brzoek').value='';brDraw()}},
+ ],
+ 'Hulp & advies':[
+  {t:'<b>🧠 ADVIES</b>: GAW kijkt naar je track en stelt verbeteringen voor — jij klikt JA of NEE.',act:()=>{advToggle();advAnalyse()}},
+  {t:'<b>💬 assistent</b> rechtsonder: typ "maak drumgrid" of "zet delay op master" en hij doet het.',act:()=>chatToggle()},
+  {t:'<b>▣ OVERZICHT</b> toont alle lanes samen; klik op een lane om erheen te springen.',act:()=>arrToggle()},
+ ],
+};
+let LES=null,LESI=0;
+function lesOpen(){
+ const p=document.getElementById('lespan');
+ if(!LES){ // keuzelijst
+  p.style.display='block';
+  document.getElementById('lestit').textContent='🎓 Kies een les';
+  document.getElementById('lestap').innerHTML=Object.keys(LESSEN).map(k=>`<div style="padding:6px 8px;background:#122019;border-radius:6px;margin-bottom:5px;cursor:pointer" onclick="lesStart('${k}')">${k}</div>`).join('');
+  document.getElementById('lesnr').textContent='';document.getElementById('lesprobeer').style.display='none';return}
+ lesSluit();
+}
+function lesStart(k){LES=k;LESI=0;lesToon()}
+function lesToon(){
+ document.getElementById('lestit').textContent='🎓 '+LES;
+ document.getElementById('lestap').innerHTML=LESSEN[LES][LESI].t;
+ document.getElementById('lesnr').textContent=`${LESI+1}/${LESSEN[LES].length}`;
+ const pb=document.getElementById('lesprobeer');pb.style.display=LESSEN[LES][LESI].act?'':'none';
+ pb.onclick=()=>{try{LESSEN[LES][LESI].act()}catch(e){}};
+}
+function lesVolgende(){if(LESI<LESSEN[LES].length-1)LESI++;lesToon()}
+function lesVorige(){if(LESI>0)LESI--;lesToon()}
+function lesSluit(){document.getElementById('lespan').style.display='none';LES=null;LESI=0}
 let CLICK=false;
 function clickToggle(){CLICK=!CLICK;document.getElementById('clk').style.borderColor=CLICK?'var(--groen)':'';document.getElementById('clk').style.color=CLICK?'var(--groen)':''}
 function clickPlay(){const c=ac(),o=c.createOscillator(),g=c.createGain();o.frequency.value=step%4===0?1500:1000;o.type='square';g.gain.setValueAtTime(0.08,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.03);o.connect(g).connect(c.destination);o.start(c.currentTime);o.stop(c.currentTime+0.04)}
