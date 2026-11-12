@@ -14,14 +14,40 @@
  '#kbbar button.on{background:#16a34a;color:#04120a;border-color:#16a34a}'+
  '#kbbar button.rec{background:#7a1d1d;color:#ffd6d6;border-color:#a04040}'+
  '#kbcnt{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:98;pointer-events:none}'+
- '#kbcnt span{font:900 130px/1 system-ui;color:#19c37d;text-shadow:0 0 40px #19c37d88}';
+ '#kbcnt span{font:900 130px/1 system-ui;color:#19c37d;text-shadow:0 0 40px #19c37d88}'+
+ '#kbgrid{position:fixed;left:50%;transform:translateX(-50%);bottom:8px;display:none;gap:4px;z-index:97}'+
+ '#kbgrid div{width:26px;height:14px;border-radius:4px;background:#131c2e;border:1px solid #22314d;display:flex;align-items:center;justify-content:center;font:700 9px/1 system-ui;color:#4cc9f0}'+
+ '#kbgrid div.on{background:#16a34a;border-color:#16a34a;color:#04120a}'+
+ '#kbgrid div.maat{border-color:#4cc9f0}';
  document.head.appendChild(st);
  const bar=document.createElement('div');bar.id='kbbar';
  const bKb=document.createElement('button');bKb.textContent='🎹 KEYBOARD';bKb.title='aan = klik een pad om de sound te kiezen, speel hem op je midi-keyboard';
  const bRec=document.createElement('button');bRec.textContent='● REC';bRec.style.display='none';bRec.title='neem je keyboard-spel op — telt eerst 3-2-1 af';
  const bDl=document.createElement('button');bDl.textContent='⬇ .mid';bDl.style.display='none';bDl.title='download je opname — sleep in je DAW';
- bar.append(bKb,bRec,bDl);document.body.appendChild(bar);
+ const bLoop=document.createElement('button');bLoop.textContent='🔁 LOOP';bLoop.style.display='none';bLoop.title='speelt je opname in een rondje af — oefen of neem er stap voor stap overheen';
+ bar.append(bKb,bRec,bLoop,bDl);document.body.appendChild(bar);
+ let looping=false,loopT=null;
+ function loopStop(){looping=false;if(loopT)clearTimeout(loopT);loopT=null;bLoop.classList.remove('on');}
+ bLoop.onclick=()=>{
+  if(looping){loopStop();return;}
+  if(!take.length){bLoop.title='neem eerst iets op met ● REC';setTimeout(()=>bLoop.title='speelt je opname in een rondje af',1800);return;}
+  looping=true;bLoop.classList.add('on');
+  const dur=take[take.length-1].t||1;
+  const speelTake=()=>{if(!looping)return;
+   take.forEach(e=>{if(e.v>0)setTimeout(()=>{if(looping)sel.forEach(s=>{try{speel(s,e.n-60)}catch(x){}})},e.t)});
+   loopT=setTimeout(speelTake,dur+500);};
+  speelTake();};
  const cnt=document.createElement('div');cnt.id='kbcnt';cnt.innerHTML='<span></span>';document.body.appendChild(cnt);
+ // maat-raster: 4 cellen per maat × 4 maten, licht loopt mee op 120bpm (500ms/beat = count-in tempo)
+ const grid=document.createElement('div');grid.id='kbgrid';
+ for(let i=0;i<16;i++){const d=document.createElement('div');d.textContent=(i%4)+1;if(i%4===0)d.classList.add('maat');grid.appendChild(d)}
+ document.body.appendChild(grid);
+ let gridTimer=null,gridTick=0;
+ function gridStart(){gridTick=0;grid.style.display='flex';gridTickGo();}
+ function gridTickGo(){gridTimer=setTimeout(()=>{if(grid.style.display==='none')return;
+   grid.querySelectorAll('div').forEach((d,i)=>d.classList.toggle('on',i===gridTick%16));gridTick++;
+   gridTickGo();},500)}
+ function gridStop(){grid.style.display='none';if(gridTimer)clearTimeout(gridTimer);gridTimer=null;}
  function padIdx(el){if(el.id&&el.id.startsWith('p'))return +el.id.slice(1);const a=[...document.querySelectorAll('.pad')];return a.indexOf(el)}
  document.addEventListener('pointerdown',e=>{
   if(!G2BKB.on)return;
@@ -33,7 +59,8 @@
  },true);
  bKb.onclick=()=>{G2BKB.on=!G2BKB.on;bKb.classList.toggle('on',G2BKB.on);
   bRec.style.display=bDl.style.display=G2BKB.on?'':'none';
-  if(!G2BKB.on){document.querySelectorAll('.pad.sel').forEach(x=>x.classList.remove('sel'));sel.clear();stopCount();}
+  bLoop.style.display=(G2BKB.on&&take.length)?'':'none';
+  if(!G2BKB.on){document.querySelectorAll('.pad.sel').forEach(x=>x.classList.remove('sel'));sel.clear();stopCount();loopStop();}
   bKb.textContent=G2BKB.on?'🎹 KIES EEN PAD':'🎹 KEYBOARD';};
  // --- aftel/count-in: 3-2-1 tikjes, daarna start de opname ---
  let cntTimer=null;
@@ -42,18 +69,19 @@
    o.frequency.value=hoog?1200:750;o.type='square';g.gain.setValueAtTime(hoog?0.16:0.09,A.currentTime);
    g.gain.exponentialRampToValueAtTime(0.001,A.currentTime+0.07);o.connect(g);g.connect(A.destination);
    o.start();o.stop(A.currentTime+0.08);}catch(e){}}
- function stopCount(){counting=false;if(cntTimer){clearTimeout(cntTimer);cntTimer=null}cnt.style.display='none';}
+ function stopCount(){counting=false;if(cntTimer){clearTimeout(cntTimer);cntTimer=null}cnt.style.display='none';gridStop();}
  function countIn(){
   counting=true;let n=3;
   const stap=()=>{if(!counting)return;
    if(n>0){cnt.firstChild.textContent=n;cnt.style.display='flex';tik(false);n--;cntTimer=setTimeout(stap,500);}
-   else{cnt.style.display='none';tik(true);rec=true;take=[];t0=performance.now();
+   else{cnt.style.display='none';tik(true);rec=true;take=[];t0=performance.now();gridStart();
     bRec.classList.add('on');bRec.textContent='■ STOP';counting=false;}};
   stap();}
  bRec.onclick=()=>{
   if(counting){stopCount();bRec.textContent='● REC';return;}
   if(!rec){countIn();}
-  else{rec=false;bRec.classList.remove('on');bRec.textContent='● REC';}};
+  else{rec=false;bRec.classList.remove('on');bRec.textContent='● REC';gridStop();
+   if(take.length)bLoop.style.display='';}};
  // hooks die midi.js aanroept bij elke noot-aan / noot-uit
  window.onMidiNote=function(n,i,v){if(!G2BKB.on)return;
   sel.forEach(s=>{try{speel(s,n-60)}catch(e){}}); // meerdere groene = gestapeld
