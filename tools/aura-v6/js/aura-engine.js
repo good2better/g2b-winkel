@@ -75,6 +75,9 @@ const Aura = {
     const t = this.ctx.currentTime;
     let amp = opts.gain != null ? opts.gain : 0.9;
     if (pitch < 48) amp *= 1.2; // lage noten klinken zachter → auto-gain
+    // stapel-headroom: elke extra live-sample deelt de ruimte — gestapelde pads
+    // kunnen zo nooit meer clippen/gekraak geven, solo-sound blijft vol volume
+    amp /= Math.max(1, 1 + this._live.size * 0.45);
     const hold = opts.hold != null ? opts.hold : Math.min(buf.duration, 4);
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(amp * 1.3, t + 0.002); // 2ms fade-in + punch op de aanslag

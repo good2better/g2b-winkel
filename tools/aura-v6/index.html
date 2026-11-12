@@ -48,7 +48,7 @@ document.getElementById('btnExport').onclick = () => {
 };
 let playing = false;
 document.getElementById('btnPlay').onclick = async () => {
-  await Aura.init(); playing = !playing;
+  await Aura.init('js/aura-dsp-worklet.js'); playing = !playing;
   document.getElementById('btnPlay').textContent = playing ? '⏸ Stop' : '▶ Speel';
   if (playing) for (const n of roll.notes) Aura.noteOn(n.pitch, { wave: 'saw', velocity: n.velocity });
   else Aura.panic();
