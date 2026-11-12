@@ -213,6 +213,7 @@ function kaart(p){
   return `<article class="kaart" data-cat="${p.cat}" data-demo="${p.demo ? 1 : 0}">
     <a class="img" href="${p.demo || koop}"><img src="${p.img}" alt="${p.naam} — studio-preview" loading="lazy">${actief && p.na ? '<span class="label">ACTIE</span>' : ''}</a>
     <div class="body"><h3>${p.naam}</h3><div class="zin">${p.zin}</div>
+      ${p.id.startsWith('aura-') && p.id !== 'aura-midiforge' ? '<div style="font-size:10.5px;letter-spacing:1.2px;color:var(--dim);font-weight:700;margin-top:4px">🖥 VST3 + DESKTOP-APP INBEGREPEN</div>' : ''}
       <div class="prijsrij">${prijs}</div>
       <div class="knoppen"><a class="k-demo" href="${p.demo}">GRATIS DEMO</a><a class="k-koop" href="${koop}"${ext}>KOOP</a></div>
     </div></article>`;

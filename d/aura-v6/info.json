@@ -1,31 +1,51 @@
 {
- "titel": "G2B AURA v6.0 Studio — Desktop + Browser",
- "licentie": "Licentiecode voor export: aura-v6",
- "cover": "tools/aura-v6/img/midi-forge.png",
- "bestanden": [
-  {
-   "naam": "VST3 plugin + packs (Windows, ZIP)",
-   "url": "d/aura-vst/G2B-AURA-SAMPLER.zip"
-  },
-  {
-   "naam": "Windows installer (.exe)",
-   "url": "https://github.com/good2better/g2b-winkel/releases/download/aura-v6.0/G2B.AURA.v6.0_6.0.0_x64-setup.exe"
-  },
-  {
-   "naam": "Windows installer (.msi)",
-   "url": "https://github.com/good2better/g2b-winkel/releases/download/aura-v6.0/G2B.AURA.v6.0_6.0.0_x64_en-US.msi"
-  },
-  {
-   "naam": "Mac app (.dmg)",
-   "url": "https://github.com/good2better/g2b-winkel/releases/download/aura-v6.0/G2B.AURA.v6.0_6.0.0_aarch64.dmg"
-  },
-  {
-   "naam": "Browser-versie (ZIP)",
-   "bestand": "G2B-AURA-V6.zip"
-  },
-  {
-   "naam": "Nederlandse uitleg (PDF)",
-   "bestand": "G2B-AURA-V6-UITLEG.pdf"
-  }
- ]
+  "titel": "G2B AURA v6.0 Studio — Desktop + Browser",
+  "licentie": "Licentiecode voor export: aura-v6",
+  "cover": "tools/aura-v6/img/midi-forge.png",
+  "bestanden": [
+    {
+      "naam": "VST3 plugin + packs (Windows, ZIP)",
+      "url": "d/aura-vst/G2B-AURA-SAMPLER.zip"
+    },
+    {
+      "naam": "Windows installer (.exe)",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/aura-v6.0/G2B.AURA.v6.0_6.0.0_x64-setup.exe"
+    },
+    {
+      "naam": "Windows installer (.msi)",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/aura-v6.0/G2B.AURA.v6.0_6.0.0_x64_en-US.msi"
+    },
+    {
+      "naam": "Mac app (.dmg)",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/aura-v6.0/G2B.AURA.v6.0_6.0.0_aarch64.dmg"
+    },
+    {
+      "naam": "Browser-versie (ZIP)",
+      "bestand": "G2B-AURA-V6.zip"
+    },
+    {
+      "naam": "Nederlandse uitleg (PDF)",
+      "bestand": "G2B-AURA-V6-UITLEG.pdf"
+    },
+    {
+      "naam": "AURA Dice Synth — VST3 + standalone (Windows)",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-DICE-SYNTH.zip"
+    },
+    {
+      "naam": "Dren Studio — VST3 + standalone (Windows)",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-DREN.zip"
+    },
+    {
+      "naam": "G2B Refors — VST3 + CLAP + standalone",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Refors.zip"
+    },
+    {
+      "naam": "G2B KOOR+KEY — VST3 + standalone",
+      "url": "d/g2bkoor/g2b-koor.zip"
+    },
+    {
+      "naam": "G2B Master — mastering-plugin VST3 + standalone",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Master.zip"
+    }
+  ]
 }
