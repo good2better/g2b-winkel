@@ -1,17 +1,18 @@
 <!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>Dren Studio — AURA v6</title>
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <h1>🎛 Dren Studio — 323 presets <a href="../" style="float:right;font-size:12px">← AURA</a></h1>
-<div class="card"><p>Alle 323 presets laden unieke wavetables/parameters — geen dubbel geluid,
-geen overdadige effecten. '>' = volgende, '🎲' = willekeurig; naam én knoppen lopen synchroon.</p>
+<div class="card"><p>🎲 dobbelt willekeurig · ▶ volgende preset · naam + knoppen gaan mee.</p>
 <div class="row"><button id="prev">◀</button><button id="next">▶</button><button id="dice">🎲</button>
 <span id="pNaam" style="font-weight:bold"></span></div>
 <div class="row"><label>Golf <select id="wave"><option>sine</option><option>saw</option><option>square</option><option>tri</option></select></label>
 <label>Toon <input type="range" min="0.25" max="4" step="0.05" value="1" id="toneSl"></label>
 <label>Lengte <input type="range" min="0.99" max="0.9999" step="0.0005" value="0.997" id="lenSl"></label>
 <label>Knip <input type="range" min="0" max="0.20" step="0.01" value="0.03" id="knipSl"></label></div>
+<div class="card" style="margin-top:10px"><b>Opname &amp; Loop</b><div id="studio"></div></div>
+<div id="modus"></div>
 <div id="kbd"></div><div id="brain"></div></div></div>
 <script src="../js/aura-engine.js"></script><script src="../js/instrument-matrix.js"></script>
-<script src="../js/keyboard.js"></script><script src="../js/brain-memory.js"></script>
+<script src="../js/keyboard.js"></script><script src="../js/brain-memory.js"></script><script src="../js/studio-panel.js"></script><script src="../js/speel-modus.js"></script>
 <script>
 /* 323 unieke presets: deterministisch per index → geen dubbele klank, geen overdadige FX */
 const N = 323;
@@ -50,6 +51,10 @@ const setUI = p => {
   $('#prev').onclick = () => load(idx - 1);
   $('#dice').onclick = () => load(Math.floor(Math.random() * N));
   load(0);
+  const panel = StudioPanel.bouw(document.getElementById('studio'));
+  SpeelModus.bouw(document.getElementById('modus'));
+  const _o = InstrumentMatrix.play.bind(InstrumentMatrix);
+  InstrumentMatrix.play = SpeelModus.wire(_o, panel);
   BrainMemory.knop($('#brain'));
 })();
 </script></body></html>

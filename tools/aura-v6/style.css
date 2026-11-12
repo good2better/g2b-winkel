@@ -20,3 +20,18 @@ canvas{width:100%;background:#050508;border:1px solid var(--bd);display:block;bo
 .key:active,.key.dn{background:var(--cy)}
 .hint{font-size:11px;color:#7a9}
 pre{background:#050508;color:#b8fff0;padding:10px;border:1px solid var(--bd);font-size:11px;overflow-x:auto;border-radius:4px}
+
+/* Studio-paneel (opname & loop) */
+.studio{margin:8px 0}
+.sp-trans{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.sp-trans button{padding:6px 10px;font-size:12px;border-radius:6px;border:1px solid #2a5;background:#10291c;color:#dfa;cursor:pointer}
+.sp-trans button.on{background:#0f6;color:#031}
+.sp-trans button.sp-main{background:#0a4;color:#fff;font-weight:700}
+.sp-grid{width:100%;border:1px solid #234;border-radius:8px;display:block}
+
+/* Speel-modus balk */
+.sm-bar{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:6px 0;padding:6px;background:#0c1f16;border:1px solid #1e4a33;border-radius:8px}
+.sm-lbl{font-size:10px;letter-spacing:1px;color:#5a9;margin-right:4px}
+.sm{padding:5px 9px;font-size:11px;border-radius:6px;border:1px solid #2a5;background:#0e2418;color:#cfa;cursor:pointer}
+.sm.on{background:#0f6;color:#021;font-weight:700}
+.sm-sel{font-size:11px;padding:4px;background:#0e2418;color:#cfa;border:1px solid #2a5;border-radius:6px}
