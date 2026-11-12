@@ -6,7 +6,7 @@
 // opname — sleep die in je DAW en neem er direct op.
 (function(){
  window.G2BKB={on:false};
- let sel=-1,rec=false,take=[],t0=0,counting=false;
+ const sel=new Set();let rec=false,take=[],t0=0,counting=false;
  const st=document.createElement('style');st.textContent=
  '.pad.sel{outline:3px solid #4cc9f0;outline-offset:-3px;box-shadow:0 0 22px #4cc9f088}'+
  '#kbbar{position:fixed;right:10px;bottom:8px;display:flex;gap:6px;z-index:99}'+
@@ -27,13 +27,13 @@
   if(!G2BKB.on)return;
   const p=e.target.closest&&e.target.closest('.pad');if(!p)return;
   e.stopPropagation();e.preventDefault();
-  const i=padIdx(p);if(i<0)return;sel=i;
-  document.querySelectorAll('.pad.sel').forEach(x=>x.classList.remove('sel'));
-  p.classList.add('sel');p.classList.add('hit');setTimeout(()=>p.classList.remove('hit'),140);
+  const i=padIdx(p);if(i<0)return;
+  if(sel.has(i)){sel.delete(i);p.classList.remove('sel');return;} // wegklikken = uit
+  sel.add(i);p.classList.add('sel');p.classList.add('hit');setTimeout(()=>p.classList.remove('hit'),140);
  },true);
  bKb.onclick=()=>{G2BKB.on=!G2BKB.on;bKb.classList.toggle('on',G2BKB.on);
   bRec.style.display=bDl.style.display=G2BKB.on?'':'none';
-  if(!G2BKB.on){document.querySelectorAll('.pad.sel').forEach(x=>x.classList.remove('sel'));sel=-1;stopCount();}
+  if(!G2BKB.on){document.querySelectorAll('.pad.sel').forEach(x=>x.classList.remove('sel'));sel.clear();stopCount();}
   bKb.textContent=G2BKB.on?'🎹 KIES EEN PAD':'🎹 KEYBOARD';};
  // --- aftel/count-in: 3-2-1 tikjes, daarna start de opname ---
  let cntTimer=null;
@@ -56,11 +56,11 @@
   else{rec=false;bRec.classList.remove('on');bRec.textContent='● REC';}};
  // hooks die midi.js aanroept bij elke noot-aan / noot-uit
  window.onMidiNote=function(n,i,v){if(!G2BKB.on)return;
-  if(sel>=0){try{speel(sel,n-60)}catch(e){}}
-  if(rec&&sel>=0)take.push({n:n,t:performance.now()-t0,v:v||100});};
+  sel.forEach(s=>{try{speel(s,n-60)}catch(e){}}); // meerdere groene = gestapeld
+  if(rec&&sel.size)take.push({n:n,t:performance.now()-t0,v:v||100});};
  window.onMidiOff=function(n){if(rec)take.push({n:n,t:performance.now()-t0,v:0});};
  // neem ook toetsenbord-noten mee in de opname (als de tool speel(i,semi) aanroept)
- window.G2BKB.log=function(n,semi,v){if(rec&&sel>=0)take.push({n:n,t:performance.now()-t0,v:v||100});};
+ window.G2BKB.log=function(n,semi,v){if(rec&&sel.size)take.push({n:n,t:performance.now()-t0,v:v||100});};
  function vlq(x){const b=[x&127];while(x>>=7)b.unshift((x&127)|128);return b}
  bDl.onclick=()=>{
   const open={},ev=[];
