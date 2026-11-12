@@ -89,6 +89,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 </div></div>
 <div id="wm">⚡ G2B GAW — GIO</div>
 <script>
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&e.target.tagName!=='SELECT'&&e.target.tagName!=='INPUT'){e.preventDefault();toggle()}});
 let CLICK=false;
 function clickToggle(){CLICK=!CLICK;document.getElementById('clk').style.borderColor=CLICK?'var(--groen)':'';document.getElementById('clk').style.color=CLICK?'var(--groen)':''}
 function clickPlay(){const c=ac(),o=c.createOscillator(),g=c.createGain();o.frequency.value=step%4===0?1500:1000;o.type='square';g.gain.setValueAtTime(0.08,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.03);o.connect(g).connect(c.destination);o.start(c.currentTime);o.stop(c.currentTime+0.04)}
@@ -134,6 +135,7 @@ async function mkTrack(t,type){
    <label>pan<input type="range" id="pan${t}" min="-100" max="100" value="0" style="width:48px"></label>
    <button class="uit" id="fxb${t}" style="padding:6px 10px" onclick="fxToggle(${t})" title="Effects op dit spoor">▾FX</button>
    <button class="uit" id="ar${t}" style="padding:6px 10px" onclick="opneem(${t})" title="Neem audio op — je take wordt je ${type==='audio'?'clip':'pad'}">⏺ OP</button>
+   <button class="uit" id="sol${t}" style="padding:6px 9px" onclick="solo(${t})">S</button>
    <button class="uit" id="mut${t}" style="padding:6px 10px" onclick="mute(${t})">MUTE</button>
    <button class="uit" style="padding:6px 10px" onclick="wis(${t})">✕</button>
    <div class="fxrack" id="fxr${t}"><div id="fxl${t}"></div>
@@ -417,8 +419,8 @@ function fxIR(c,size){ // simpel stereo reverb-IR (ruis met decay)
  for(let ch=0;ch<2;ch++){const d=b.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.2)}
  _ir[k]=b;return b;
 }
-function ocIn(oc,t){ // offline bus → track fx chain → oc.destination (1x per render)
- if(!TR[t]._occh){const ch=chainFor(oc,TR[t].fx);ch.out.connect(oc.destination);TR[t]._occh=ch}
+function ocIn(oc,t,dest){ // offline bus → track fx chain → dest (master-bus of destination)
+ if(!TR[t]._occh){const ch=chainFor(oc,TR[t].fx);ch.out.connect(dest||oc.destination);TR[t]._occh=ch}
  return TR[t]._occh.in;
 }
 function chainFor(c,fxList){ // {in,out} — nieuwe keten voor ctx c
@@ -577,6 +579,7 @@ function trimAudio(buf){ // stilte weg voor/achter + normalize — opname meteen
  if(pk>0.891){const f=0.891/pk;for(let i=0;i<nd.length;i++)nd[i]*=f}
  else if(pk>0&&pk<0.3){const f=0.7/pk;for(let i=0;i<nd.length;i++)nd[i]=Math.max(-1,Math.min(1,nd[i]*f))}
  return nb}
+function solo(t){const on=!TR[t]._solo;TR.forEach((x,i)=>{x._solo=false;x.muted=i===t?false:x.muted||true;const b=document.getElementById('mut'+i);if(b){b.style.borderColor=x.muted?'#d33':'';b.style.color=x.muted?'#d33':''}});TR[t]._solo=on;if(!on){TR.forEach((x,i)=>{x.muted=false;const b=document.getElementById('mut'+i);if(b){b.style.borderColor='';b.style.color=''}})}const s=document.getElementById('sol'+t);s.style.borderColor=on?'var(--groen)':'';s.style.color=on?'var(--groen)':''}
 function mute(t){TR[t].muted=!TR[t].muted;const b=document.getElementById('mut'+t);b.style.borderColor=TR[t].muted?'#d33':'';b.style.color=TR[t].muted?'#d33':''}
 function refreshArr(){if(ARR.on)drawArr()}
 function wis(t){snap();if(TR[t].type==='audio'){TR[t].clip=null;drawWave(t);return}if(TR[t].grid)TR[t].grid.fill(false);else{TR[t].notes=[];drawRoll(t)}syncGrid(t)}
@@ -640,17 +643,18 @@ function clearOcCh(){TR.forEach(t=>t._occh=null)}
 async function exportWav(){clearOcCh();if(!licOk())return;
  const bpm=+document.getElementById('bpm').value,dur=16*(60/bpm/4)+0.3;
  const oc=new OfflineAudioContext(2,Math.ceil(dur*22050),22050);
+ oc._mb=null;if(MAST.fx.length){const _mch=chainFor(oc,MAST.fx);_mch.out.connect(oc.destination);oc._mb=_mch.in}
  for(let t=0;t<8;t++){
   if(TR[t].muted)continue;
-  if(TR[t].type==='audio'){const c=TR[t].clip;if(c&&c.buf){const sc=oc.createBufferSource();sc.buffer=c.buf;const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;const pn=oc.createStereoPanner?oc.createStereoPanner():null;if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(ocIn(oc,t))}else sc.connect(g).connect(ocIn(oc,t));sc.start(c.pos*60/bpm/4,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)))}continue}
+  if(TR[t].type==='audio'){const c=TR[t].clip;if(c&&c.buf){const sc=oc.createBufferSource();sc.buffer=c.buf;const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;const pn=oc.createStereoPanner?oc.createStereoPanner():null;if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(ocIn(oc,t,oc._mb))}else sc.connect(g).connect(ocIn(oc,t,oc._mb));sc.start(c.pos*60/bpm/4,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)))}continue}
   const b=TR[t].buffers[TR[t].pad];if(!b)continue;
   const hit=(s,p,d)=>{
    const src=oc.createBufferSource();src.buffer=b;
    if(p!=null)src.playbackRate.value=Math.pow(2,(p-60)/12);
    const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;
    const pn=oc.createStereoPanner?oc.createStereoPanner():null;
-   if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;src.connect(g).connect(pn).connect(ocIn(oc,t))}
-   else src.connect(g).connect(ocIn(oc,t));
+   if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;src.connect(g).connect(pn).connect(ocIn(oc,t,oc._mb))}
+   else src.connect(g).connect(ocIn(oc,t,oc._mb));
    src.start(s*60/bpm/4);if(d)src.stop(s*60/bpm/4+d*60/bpm/4+0.05);
   };
   if(TR[t].notes){for(const n of TR[t].notes)hit(n.s,n.p,n.d)}
@@ -667,7 +671,7 @@ async function renderStem(t,bpm,dur){
    const sc=oc.createBufferSource();sc.buffer=c.buf;
    const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;
    const pn=oc.createStereoPanner?oc.createStereoPanner():null;
-   if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(ocIn(oc,t))}else sc.connect(g).connect(ocIn(oc,t));
+   if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(ocIn(oc,t,oc._mb))}else sc.connect(g).connect(ocIn(oc,t,oc._mb));
    sc.start(c.pos*60/bpm/4,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)));
    const rb=await oc.startRendering();return abWav(rb)}
   const b=TR[t].buffers[TR[t].pad];if(!b)return null;
@@ -678,8 +682,8 @@ async function renderStem(t,bpm,dur){
    if(p!=null)sc.playbackRate.value=Math.pow(2,(p-60)/12);
    const g=oc.createGain();g.gain.value=vol;
    const pn=oc.createStereoPanner?oc.createStereoPanner():null;
-   if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(ocIn(oc,t))}
-   else sc.connect(g).connect(ocIn(oc,t));
+   if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(ocIn(oc,t,oc._mb))}
+   else sc.connect(g).connect(ocIn(oc,t,oc._mb));
    sc.start(s*60/bpm/4);if(d)sc.stop(s*60/bpm/4+d*60/bpm/4+0.05);
   };
   if(TR[t].notes){for(const n of TR[t].notes)hit(n.s,n.p,n.d);}
