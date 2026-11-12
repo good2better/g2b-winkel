@@ -1,9 +1,13 @@
 {
-  "titel": "G2B ONE-SHOTS VOL2 — alle one-shots in één pack",
-  "bestanden": [
-    {
-      "naam": "G2B-ONE-SHOTS-VOL2.zip — 280+ WAV's (DRUMS + MELODIE + GRUIS-FX) + SFZ-kit + licentie",
-      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-ONE-SHOTS-VOL2.zip"
-    }
-  ]
+ "titel": "G2B SIGNATURE PACK VOL1 — one-shots + loops + bijpassende MIDI",
+ "bestanden": [
+  {
+   "naam": "G2B-SIGNATURE-PACK-VOL1.zip — 190 bestanden: ONE-SHOTS + LOOPS + 84 MIDI (drum-patronen · akkoorden · loop-tweelingen) + licentie",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-SIGNATURE-PACK-VOL1.zip"
+  },
+  {
+   "naam": "G2B-ONE-SHOTS-VOL2.zip — GRATIS extra: 280+ WAV's (DRUMS + MELODIE + GRUIS-FX) + SFZ-kit",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-ONE-SHOTS-VOL2.zip"
+  }
+ ]
 }
