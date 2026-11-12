@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>WERKSTATION-web — alle muziek-tools in je browser</title>
+<title>WERKSTATION-web GIO — alle muziek-tools in je browser</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230D0F0E'/><text x='50' y='68' font-size='52' font-weight='bold' text-anchor='middle' fill='%232FBF71' font-family='sans-serif'>G2</text></svg>">
 <style>
 :root{--groen:#16a34a;--donker:#0b1220;--kaart:#131c2e;--rand:#22314d;--tekst:#e8eef8;--zacht:#9fb0c9}
@@ -13,8 +13,15 @@ body{background:var(--donker);color:var(--tekst);font:15px/1.5 system-ui,sans-se
 .wrap{max-width:1060px;margin:0 auto;padding:24px}
 h1{font-size:1.7rem}
 h1 b{color:#4ade80}
-.sub{color:var(--zacht);margin-bottom:22px}
-.groep{color:#7ee2a8;font-size:.95rem;font-weight:700;letter-spacing:.5px;margin:22px 0 10px;text-transform:uppercase}
+.sub{color:var(--zacht);margin-bottom:14px}
+.stappen{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:16px 0 6px}
+.stap{background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:12px 14px;cursor:pointer;transition:.15s}
+.stap:hover{border-color:var(--groen)}
+.stap .nr{display:inline-block;width:24px;height:24px;border-radius:50%;background:var(--groen);color:#04120a;font-weight:800;text-align:center;line-height:24px;font-size:.8rem;margin-right:7px}
+.stap b{font-size:.85rem;letter-spacing:.5px}
+.stap .ut{color:var(--zacht);font-size:.73rem;margin-top:5px;line-height:1.35}
+.groep{color:#7ee2a8;font-size:.95rem;font-weight:700;letter-spacing:.5px;margin:24px 0 4px;text-transform:uppercase}
+.groep-uitleg{color:var(--zacht);font-size:.8rem;margin-bottom:10px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
 a.app{background:var(--kaart);border:1px solid var(--rand);border-radius:14px;padding:16px;text-decoration:none;color:var(--tekst);display:block;transition:.15s}
 a.app:hover{border-color:var(--groen);transform:translateY(-2px);box-shadow:0 8px 20px #0006}
@@ -23,55 +30,81 @@ a.app img{width:100%;aspect-ratio:8/5;object-fit:cover;object-position:top;borde
 a.app .nm{font-weight:700;font-size:.95rem}
 a.app .in{color:var(--zacht);font-size:.78rem;margin-top:3px}
 .tag{float:right;font-size:.65rem;color:#7ee2a8;border:1px solid #7ee2a855;border-radius:6px;padding:1px 6px}
+.tag.prive{color:#f0b34d;border-color:#f0b34d55}
 .back{display:inline-block;margin-bottom:14px;color:#7ee2a8;text-decoration:none;font-size:.85rem}
 .foot{color:var(--zacht);font-size:.75rem;margin-top:28px;text-align:center}
 </style>
 </head>
 <body>
 <div class="wrap">
-<a class="back" href="../../vriend-apps.html">← terug naar G2B APPS</a>
-<h1>🎛️ WERKSTATION-<b>web</b></h1>
-<p class="sub">Alle muziek-tools in je browser op één plek — niks installeren, alles werkt lokaal.</p>
+<a class="back" href="../../mijn-apps.html">← terug naar MIJN APPS</a>
+<h1>🎛️ WERKSTATION-<b>web GIO</b></h1>
+<p class="sub">Jouw privé browser-werkstation — alles werkt lokaal, niks installeren. Volg de stappen van idee naar klaar nummer.</p>
 
-<div class="groep">🥁 Beats maken</div>
-<div class="grid">
-<a class="app" href="../beatmaker-pro/app/index.html"><img src="../../apps-img/bm-pro.jpg" alt="" loading="lazy"><span class="ic">🎚️</span><span class="nm">Beat Maker PRO <span class="tag">VERKOOP</span></span><div class="in">Beats bouwen met grid, lagen en eigen sounds</div></a>
-<a class="app" href="../../beatmaker.html"><img src="../../apps-img/beatmaker.jpg" alt="" loading="lazy"><span class="ic">🥁</span><span class="nm">Beat Maker</span><div class="in">De gratis versie — beats maken in je browser</div></a>
-<a class="app" href="../gaw-lite/gaw-mini.html"><img src="../../apps-img/gaw-lite.jpg" alt="" loading="lazy"><span class="ic">🎛️</span><span class="nm">GAW MINI</span><div class="in">4 tracks — je browser-VST sounds + .mid/.wav export</div></a>
+<div class="stappen">
+  <div class="stap" onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})"><span class="nr">1</span><b>MAKEN</b><div class="ut">Begin je beat: grid-rappers, piano-roll, AI-maatje dat meeschrijft of je neuri omzet naar MIDI.</div></div>
+  <div class="stap" onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})"><span class="nr">2</span><b>SPELEN &amp; SOUNDS</b><div class="ut">Speel instrumenten en pad-machines live op je keys — 456+ sounds in banken.</div></div>
+  <div class="stap" onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})"><span class="nr">3</span><b>MIX &amp; MASTER</b><div class="ut">Stems erin → de engine mixt en masterd voor je → kraakheldere wav eruit.</div></div>
+  <div class="stap" onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})"><span class="nr">4</span><b>DELEN</b><div class="ut">Promo-video maken van je beat voor TikTok/Shorts — 100% lokaal.</div></div>
 </div>
 
-<div class="groep">🤖 AI-maatjes</div>
+<div class="groep" id="s1">🥁 Stap 1 — Beats maken</div>
+<p class="groep-uitleg">Hier bouw je de basis van je nummer: drums, bas, melodie in een grid. De PRO en GIO hebben je eigen soundbanken; de gratis versie is om snel te schetsen.</p>
 <div class="grid">
-<a class="app" href="../../copro.html"><img src="../../apps-img/copro.jpg" alt="" loading="lazy"><span class="ic">🎹</span><span class="nm">G2B CO-PRODUCER</span><div class="in">Speel je halve beat → hij schrijft de tweede helft → .mid</div></a>
-<a class="app" href="../../djebu.html"><img src="../../apps-img/djebu.jpg" alt="" loading="lazy"><span class="ic">🎸</span><span class="nm">G2B DJEBU</span><div class="in">Houd akkoorden vast → je bandlid speelt bass + drums mee live → .mid</div></a>
-
-<a class="app" href="../../trein.html"><img src="../../apps-img/trein.jpg" alt="" loading="lazy"><span class="ic">🚂</span><span class="nm">G2B TREIN</span><div class="in">Speel je loop → download je hele arrangement + MIX-kaart</div></a>
-<a class="app" href="../../band.html"><img src="../../apps-img/band.jpg" alt="" loading="lazy"><span class="ic">🎧</span><span class="nm">G2B BAND</span><div class="in">3-in-1: speel mee · tweede helft · heel nummer .mid</div></a>
-<a class="app" href="../../geluidmidi.html"><img src="../../apps-img/geluidmidi.jpg" alt="" loading="lazy"><span class="ic">🎙</span><span class="nm">G2B GELUID→MIDI</span><div class="in">Neuri → MIDI-noten + antwoord-melodie → .mid</div></a>
-<a class="app" href="../../stapeldice-lite.html"><img src="../../apps-img/stapeldice.jpg" alt="" loading="lazy"><span class="ic">🎲</span><span class="nm">G2B STAPEL-DICE <span class="tag">NIEUW</span></span><div class="in">One-shots erin → stapelt 2-3 op elkaar → .wav eruit</div></a>
+<a class="app" href="../beatmaker-gio/app/index.html"><img src="../../apps-img/bm-gio.jpg" alt="" loading="lazy"><span class="ic">🧬</span><span class="nm">Beat Maker GIO <span class="tag prive">PRIVÉ</span></span><div class="in">Jouw eigen versie — met DNA-banken die nergens anders zitten</div></a>
+<a class="app" href="../beatmaker-pro/app/index.html"><img src="../../apps-img/bm-pro.jpg" alt="" loading="lazy"><span class="ic">🎚️</span><span class="nm">Beat Maker PRO</span><div class="in">Beats bouwen met grid, lagen en eigen sounds</div></a>
+<a class="app" href="../../beatmaker.html"><img src="../../apps-img/beatmaker.jpg" alt="" loading="lazy"><span class="ic">🥁</span><span class="nm">Beat Maker</span><div class="in">De lichte versie — snel een idee neerzetten</div></a>
+<a class="app" href="../gaw-lite/gaw-mini.html"><img src="../../apps-img/gaw-lite.jpg" alt="" loading="lazy"><span class="ic">🎛️</span><span class="nm">GAW MINI</span><div class="in">4 tracks — je browser-sounds + .mid/.wav export</div></a>
+<a class="app" href="../gaw-lite/gaw.html"><img src="../../apps-img/gaw.jpg" alt="" loading="lazy"><span class="ic">🎼</span><span class="nm">GAW LITE</span><div class="in">Piano-roll bewerken — slepen, tekenen, wissen, quantize</div></a>
 </div>
 
-<div class="groep">🎹 Spelen &amp; samples</div>
+<div class="groep">🤖 AI-maatjes &amp; makers</div>
+<p class="groep-uitleg">Speel iets en de maatjes schrijven mee: een bandlid dat live meespeelt, een brein dat je patronen leert, of je neuri die MIDI wordt.</p>
+<div class="grid">
+<a class="app" href="../../band.html"><img src="../../apps-img/band.jpg" alt="" loading="lazy"><span class="ic">🎧</span><span class="nm">G2B BAND</span><div class="in">3-in-1: speel mee · tweede helft · heel nummer → .mid</div></a>
+<a class="app" href="../patroon-brein/breinpro-mijn.html"><img src="../../apps-img/pads.jpg" alt="" loading="lazy"><span class="ic">🧠</span><span class="nm">MIJN BREIN <span class="tag prive">PRIVÉ</span></span><div class="in">Leert jouw patronen — jouw kits die niemand anders heeft</div></a>
+<a class="app" href="../../geluidmidi.html"><img src="../../apps-img/geluidmidi.jpg" alt="" loading="lazy"><span class="ic">🎙</span><span class="nm">GELUID→MIDI</span><div class="in">Neuri → MIDI-noten + antwoord-melodie → .mid</div></a>
+<a class="app" href="../../stapeldice-pro.html"><img src="../../apps-img/stapeldice.jpg" alt="" loading="lazy"><span class="ic">🎲</span><span class="nm">STAPEL-DICE PRO</span><div class="in">Shot-stapelaar + DICE-SYNTH — eigen one-shots maken</div></a>
+</div>
+
+<div class="groep">🎛️ AURA-studio</div>
+<p class="groep-uitleg">De AURA-modules: synths, pads, instruments en de FX-rack. SPEEL-MODUS combineert akkoord + octaaf + arp, met 🎲 DICE die preset-combos rolt. Export .mid/.wav vraagt je code.</p>
+<div class="grid">
+<a class="app" href="../aura-v6/index.html"><span class="ic">✨</span><span class="nm">AURA HUB</span><div class="in">Startpunt van alle AURA-modules — kies je instrument</div></a>
+<a class="app" href="../aura-v6/dren-studio/"><span class="ic">🎹</span><span class="nm">Dren Studio</span><div class="in">323 presets — piano-roll + opname → .mid/.wav</div></a>
+<a class="app" href="../aura-v6/suri-pads/"><img src="../../apps-img/suri.jpg" alt="" loading="lazy"><span class="ic">🪘</span><span class="nm">Suri-Pads &amp; World</span><div class="in">Pads + wereld-instrumenten + 22 genre-kits</div></a>
+<a class="app" href="../aura-v6/all-instruments/"><img src="../../apps-img/bestof.jpg" alt="" loading="lazy"><span class="ic">🎻</span><span class="nm">All-Instruments</span><div class="in">Alle instrumenten in één — blader door categorieën</div></a>
+<a class="app" href="../aura-v6/bass-drum-2in1/"><img src="../../apps-img/bassdrum.jpg" alt="" loading="lazy"><span class="ic">🥁</span><span class="nm">Bass &amp; Drum 2-in-1</span><div class="in">Sub → 808 → reese morphen + drums op je keys</div></a>
+<a class="app" href="../aura-v6/dice-synth/"><span class="ic">🎲</span><span class="nm">Dice Synth</span><div class="in">Dobbel nieuwe sounds — elke klik een preset</div></a>
+<a class="app" href="../aura-v6/fx-rack/"><img src="../../apps-img/refors.jpg" alt="" loading="lazy"><span class="ic">🎚️</span><span class="nm">FX-Rack</span><div class="in">Effecten-keten: knip, ruimte, breedte op je sound</div></a>
+</div>
+
+<div class="groep" id="s2">🎹 Stap 2 — Spelen &amp; samples</div>
+<p class="groep-uitleg">Losse pad-machines en keyboards om live te spelen: 808's, de 456-sound BEST OF, en drummen met je webcam.</p>
 <div class="grid">
 <a class="app" href="../ocho-web/ocho.html"><img src="../../apps-img/ocho.jpg" alt="" loading="lazy"><span class="ic">🎛️</span><span class="nm">G2B OCHO</span><div class="in">808 pad-machine — echte VST-sounds in de browser</div></a>
-<a class="app" href="../bestof-web/bestof.html"><img src="../../apps-img/bestof.jpg" alt="" loading="lazy"><span class="ic">🎻</span><span class="nm">G2B BEST-OF</span><div class="in">16 beste instrumenten — echte VST-sounds</div></a>
+<a class="app" href="../bestof-web/bestof.html"><img src="../../apps-img/bestof.jpg" alt="" loading="lazy"><span class="ic">🎻</span><span class="nm">G2B BEST-OF</span><div class="in">456 sounds in 29 banken — instrumenten · genre-kits · DNA</div></a>
 <a class="app" href="../../airdrums.html"><img src="../../apps-img/airdrums.jpg" alt="" loading="lazy"><span class="ic">🥁</span><span class="nm">G2B AIRDRUMS</span><div class="in">Drum in de lucht — webcam-vakken → sounds + MIDI</div></a>
 </div>
 
-<div class="groep">💎 Mixen &amp; masteren</div>
+<div class="groep" id="s3">💎 Stap 3 — Mixen &amp; masteren</div>
+<p class="groep-uitleg">Stems of je mix erin → de engines luisteren, ruimen op en masteren. MENGER en MASTER zijn de pro-keten, REFORS test of je mix goed vertaalt.</p>
 <div class="grid">
-<a class="app" href="../menger-web/index.html"><span class="ic">🎚️</span><span class="nm">MENGER-web <span class="tag">NIEUW</span></span><div class="in">Stems erin → schuifjes → één klik → pro-master wav eruit (dezelfde keten als de pc-Engineer)</div></a>
+<a class="app" href="../menger-web/index.html"><img src="../../apps-img/mixer.jpg" alt="" loading="lazy"><span class="ic">🎚️</span><span class="nm">MENGER-web</span><div class="in">Stems erin → schuifjes → één klik → pro-master wav eruit</div></a>
+<a class="app" href="../master-web/master.html"><span class="ic">💎</span><span class="nm">MASTER-web</span><div class="in">Je track erin → de master-brein doet de eindpolish</div></a>
+<a class="app" href="../refors-web/refors.html"><img src="../../apps-img/refors.jpg" alt="" loading="lazy"><span class="ic">🔍</span><span class="nm">REFORS-web</span><div class="in">Check je mix op ruimte/balans → .wav + MASTER-tip eruit</div></a>
 <a class="app" href="../../mixer.html"><img src="../../apps-img/mixer.jpg" alt="" loading="lazy"><span class="ic">🎚️</span><span class="nm">G2B MIXER v2</span><div class="in">Stems erin → luistert + ruimte maken + master → mix.wav</div></a>
 </div>
 
-<div class="groep">📹 Delen</div>
+<div class="groep" id="s4">📹 Stap 4 — Delen</div>
+<p class="groep-uitleg">Klaar nummer? SMASH maakt er een promo-video van voor TikTok/Shorts — alles lokaal op je eigen machine.</p>
 <div class="grid">
 <a class="app" href="../../smash.html"><img src="../../apps-img/smash.jpg" alt="" loading="lazy"><span class="ic">💥</span><span class="nm">G2B SMASH</span><div class="in">Beat erin → promo-.mp4 eruit (TikTok/Shorts), 100% lokaal</div></a>
 </div>
 
-<div class="foot">WERKSTATION-web — de browser-verzameling · de volledige pc-Werkstation met mix/master is alleen voor Giorgio</div>
+<div class="foot">WERKSTATION-web GIO — jouw privé browser-werkstation · export en download werken met jouw code · alleen voor Giorgio</div>
 </div>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
-<script src="/js/g2b-gate.js" data-tier="inner"></script>
+<script src="/js/g2b-gate.js" data-tier="mijn"></script>
 </body>
 </html>
