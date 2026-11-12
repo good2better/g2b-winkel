@@ -138,7 +138,7 @@ async function mkTrack(t,type){
    <button class="uit" id="sol${t}" style="padding:6px 9px" onclick="solo(${t})">S</button>
    <button class="uit" id="mut${t}" style="padding:6px 10px" onclick="mute(${t})">MUTE</button>
    <button class="uit" style="padding:6px 10px" onclick="wis(${t})">✕</button>
-   <div class="fxrack" id="fxr${t}"><div id="fxl${t}"></div>
+   <div class="fxrack" id="fxr${t}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><b style="font-size:.65rem;color:${TCOL[t%TCOL.length]}">FX-RACK</b><button class="uit klein" id="fxbyp${t}" onclick="fxBypassAll(${t})">BYPASS</button></div><div id="fxl${t}"></div>
     <select class="fxsel" id="fxs${t}"><option value="">+ effect op TR${t+1}…</option><option value="eq">EQ (3-band)</option><option value="delay">DELAY</option><option value="reverb">REVERB</option><option value="filter">FILTER</option><option value="drive">DRIVE</option><option value="comp">COMP</option><option value="brein">BREIN-resonator</option></select>
    </div>`;
  el.appendChild(row);
@@ -468,6 +468,7 @@ function fxSet(t,i,k,v){TR[t].fx[i].p[k]=+v;
  if(TR[t]._ch){const nd=TR[t]._ch.nds.find(n=>n.fx===TR[t].fx[i]);if(nd)nd.n.upd()}
 }
 function fxBypass(t,i){TR[t].fx[i].bypass=!TR[t].fx[i].bypass;rebuildFx(t);fxDraw(t)}
+function fxBypassAll(t){const all=TR[t].fx.length&&TR[t].fx.every(f=>f.bypass);TR[t].fx.forEach(f=>f.bypass=!all);rebuildFx(t);fxDraw(t);const b=document.getElementById('fxbyp'+t);b.style.borderColor=all?'':'var(--groen)';b.style.color=all?'':'var(--groen)'}
 function fxDel(t,i){TR[t].fx.splice(i,1);rebuildFx(t);fxDraw(t)}
 function fxToggle(t){const r=document.getElementById('fxr'+t);r.style.display=r.style.display==='block'?'none':'block';if(r.style.display==='block')fxDraw(t)}
 function mfxToggle(){const p=document.getElementById('mfxpanel');p.style.display=p.style.display==='block'?'none':'block';if(p.style.display==='block')mfxDraw()}
@@ -507,13 +508,17 @@ function advAnalyse(){
  if(!MAST.fx.length)
   ADV.push({t:'Nog geen master-effect — zal ik EQ + DRIVE op je master zetten (voller geluid)?',ja:()=>{
    const e=newFx('eq');e.p.lo=2;e.p.hi=3;MAST.fx.push(e);MAST.fx.push(newFx('drive'));rebuildMaster();if(document.getElementById('mfxpanel').style.display==='block')mfxDraw();}});
- // 4) geen audio-lane
+ // 4) spoor met inhoud maar geen EQ
+ for(let i=0;i<TR.length;i++)
+  if(TR[i].type!=='audio'&&((TR[i].grid&&TR[i].grid.some(x=>x))||(TR[i].notes&&TR[i].notes.length))&&!TR[i].fx.some(f=>f.type==='eq'))
+   ADV.push({t:`TR${i+1} klinkt maar heeft geen EQ — zal ik een EQ op ${TR[i].name} zetten (schonere plek in de mix)?`,ja:()=>{TR[i].fx.push(newFx('eq'));rebuildFx(i)}});
+ // 5) geen audio-lane
  if(!auds.length&&TR.length<14)
   ADV.push({t:'Geen audio-spoor — zal ik een AUDIO-lane toevoegen voor je stem/instrument?',ja:()=>addTrack('audio')});
- // 5) te veel fx op één spoor?
+ // 6) te veel fx op één spoor?
  for(let i=0;i<TR.length;i++)
   if(TR[i].fx.length>3)ADV.push({t:`TR${i+1} heeft ${TR[i].fx.length} effects — zal ik ze uitdunnen tot de 2 sterkste?`,ja:()=>{TR[i].fx=TR[i].fx.slice(0,2);rebuildFx(i);fxDraw(i);}});
- // 6) altijd: naar LAAGBAAS
+ // 7) altijd: naar LAAGBAAS
  ADV.push({t:'Klaar? Zal ik al je stems naar LAAGBAAS sturen voor de pro-master?',ja:()=>naarLaagbaas()});
  advDraw();
 }
