@@ -207,6 +207,16 @@ async function chatSend(){
  if(/wat heb je geleerd|geleerd\?/.test(t)){const ks=Object.keys(_learn());zeg(ks.length?'geleerd:<br>'+ks.map(k=>'• "'+k+'" → "'+_learn()[k]+'"').join('<br>'):'nog niks geleerd — "leer &lt;vraag&gt; = &lt;commando&gt;"');return}
  const L=_learn();const hit=Object.keys(L).find(k=>t===k||t.includes(k));
  if(hit){zeg('geleerd → "'+L[hit]+'"');const cmd=L[hit];inp.value=cmd;chatIk('');return chatSend()}
+ // meld-laag: ideeën/fouten aan Devin doorgeven — lokaal, gratis, downloadbaar
+ const _fb=()=>{try{return JSON.parse(localStorage.getItem('g2b_gaw_feedback')||'[]')}catch(e){return[]}};
+ const _fbSave=a=>localStorage.setItem('g2b_gaw_feedback',JSON.stringify(a));
+ const fm=t.match(/^(verbeter|verbetering|fout|bug|idee|tip)\s*:?\s*(.+)$/);
+ if(fm){const a=_fb();a.push({ts:new Date().toISOString().slice(0,16),soort:fm[1],tekst:fm[2]});_fbSave(a);zeg('genoteerd ('+fm[1]+'): "'+fm[2]+'" — "wat staat er open" toont de lijst, "download feedback" geeft een .txt voor Devin');return}
+ if(/wat staat er open|open punten|feedback$|verbeteringen$/.test(t)){const a=_fb();zeg(a.length?a.map((f,i)=>(i+1)+'. ['+f.soort+'] '+f.tekst+' <i>('+f.ts+')</i>').join('<br>'):'niets open — "verbeter: …" of "fout: …" om iets te melden');return}
+ if(/download feedback/.test(t)){const a=_fb();if(!a.length){zeg('niets open');return}
+  const txt='G2B GAW feedback\n'+a.map((f,i)=>(i+1)+'. ['+f.soort+'] '+f.tekst+' ('+f.ts+')').join('\n');
+  dl(new Blob([txt],{type:'text/plain'}),'g2b-gaw-feedback.txt');zeg(a.length+' punten gedownload — geef het .txt aan Devin');return}
+ if(/wis feedback|feedback leeg/.test(t)){_fbSave([]);zeg('feedback-lijst geleegd');return}
  if(/help|wat kan|commando/.test(t))zeg('Ik kan:<br>• <b>maken</b>: "maak drumgrid", "baslijn", "melodie", "voeg audio/effect toe"<br>• <b>sturen</b>: "speel", "stop", "bpm 120", "solo/mute track 3"<br>• <b>effecten</b>: "zet delay/comp/eq/brein op track 2" of "op master"<br>• <b>uitvoer</b>: "wav export", "stems", "naar laagbaas"<br>• <b>zoeken</b>: typ een geluidsnaam → ik zoek in de Browser links');
  else if(/drum|ritme|kick/.test(t)){const g=TR.findIndex(x=>x.type==='grid');if(g<0)zeg('geen ritme-spoor — zeg "voeg ritme toe"');else{for(let s=0;s<16;s+=8)TR[g].grid[s]=true;syncGrid(g);zeg('drumgrid gezet op '+TR[g].name+' — hoor met SPEEL')}}
  else if(/baslijn|bas/.test(t)){const r=TR.findIndex(x=>x.type==='roll');if(r<0)zeg('geen toon-spoor');else{TR[r].notes=[{p:36,s:0,d:2,v:110},{p:36,s:8,d:2,v:110},{p:43,s:12,d:2,v:100}];drawRoll(r);zeg('baslijn op '+TR[r].name)}}
