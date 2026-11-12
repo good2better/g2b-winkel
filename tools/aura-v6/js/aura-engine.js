@@ -93,7 +93,8 @@ const Aura = {
     }
     if (pitch < 48) this._padLow = src;
     this._pad[key] = src; src._g = g;
-    src.connect(g).connect(this.master);
+    // door de worklet: volume/knip/limiter gelden óók voor samples — geen gekraak meer bij stapelen
+    g.connect(this.node);
     this._live.add(src);
     src.onended = () => { this._live.delete(src); if (this._pad[key] === src) delete this._pad[key]; };
     src.start();

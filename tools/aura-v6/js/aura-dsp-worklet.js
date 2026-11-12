@@ -76,12 +76,17 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
   process(inputs, outputs, parameters) {
     const out = outputs[0];
     if (!out || out.length === 0) return true;
+    const inp = inputs[0];
     const knipVal = Math.min(0.20, parameters.knip[0]);
     const vol = parameters.volume[0];
     const chs = out.length;
     const sr = sampleRate;
     for (let i = 0; i < out[0].length; i++) {
       let s = 0;
+      if (inp && inp.length) { // wav-samples van de engine: zelfde keten = volume + limiter werken erop
+        s += inp[0][i];
+        if (inp.length > 1) s = (s + inp[1][i]) * 0.5;
+      }
       const glueOn = parameters.glue ? parameters.glue[0] > 0.5 : true;
       for (const v of this.voices) {
         if (v.glideTargetFreq) { // Bézier-achtige glide naar target
