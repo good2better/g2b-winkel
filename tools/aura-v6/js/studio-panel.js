@@ -46,11 +46,21 @@ const StudioPanel = {
     const cvs = box.querySelector('canvas'), g = cvs.getContext('2d');
     const st = box.querySelector('#spStat');
 
-    /* ---------- raster tekenen ---------- */
+    /* ---------- raster: echte mini piano-roll (slepen/bewerken/wissen) ---------- */
     const PITCH_LO = 36, PITCH_HI = 84;
+    const rowH = () => (cvs.height - 18 - 6) / (PITCH_HI - PITCH_LO);
+    const yOf = p => 18 + (1 - (p - PITCH_LO) / (PITCH_HI - PITCH_LO)) * (cvs.height - 18 - 6);
+    const pOf = y => Math.round(PITCH_LO + (1 - (y - 18) / (cvs.height - 18 - 6)) * (PITCH_HI - PITCH_LO));
     const draw = () => {
       const W = cvs.width, w = W / N, H = cvs.height, top = 18;
       g.fillStyle = '#0d1512'; g.fillRect(0, 0, W, H);
+      // octaaf-rijlijnen + C-labels
+      for (let p = PITCH_LO; p <= PITCH_HI; p++) {
+        if (p % 12 === 0) { const y = yOf(p);
+          g.strokeStyle = '#1d3a2a'; g.lineWidth = 1;
+          g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke();
+          g.fillStyle = '#5a8'; g.font = '9px sans-serif'; g.fillText('C' + (p / 12 - 1), 2, y - 2); }
+      }
       // maat-nummers + beat-lijnen
       for (let b = 0; b <= bars; b++) {
         const x = b * 16 * w;
@@ -63,24 +73,69 @@ const StudioPanel = {
         g.strokeStyle = i % 4 === 0 ? '#243' : '#1a2a20'; g.lineWidth = 1;
         g.beginPath(); g.moveTo(x, top); g.lineTo(x, H); g.stroke();
       }
-      // opgenomen noten als balkjes op toonhoogte
+      // noten als sleeptbare balkjes
       for (const n of P.notes) {
-        const y = top + (1 - (n.p - PITCH_LO) / (PITCH_HI - PITCH_LO)) * (H - top - 6);
-        g.fillStyle = P.rec ? '#0f6' : '#0cf';
-        g.fillRect(n.s * w + 1, Math.max(top + 1, y - 2), Math.max(3, (n.d || 1) * w - 2), 4);
+        const y = yOf(n.p), rh = Math.max(5, rowH() * 0.9);
+        g.fillStyle = n === P.dragN ? '#ffd24a' : (P.rec ? '#0f6' : '#0cf');
+        g.fillRect(n.s * w + 1, y - rh / 2, Math.max(3, (n.d || 1) * w - 2), rh);
+        g.strokeStyle = 'rgba(0,0,0,.5)'; g.lineWidth = 1;
+        g.strokeRect(n.s * w + 1, y - rh / 2, Math.max(3, (n.d || 1) * w - 2), rh);
       }
       // playhead
-      if (P.pos >= 0) {
-        g.fillStyle = '#0fc'; g.fillRect(P.pos * w, 0, 2, H);
-      }
+      if (P.pos >= 0) { g.fillStyle = '#0fc'; g.fillRect(P.pos * w, 0, 2, H); }
     };
-    cvs.onclick = e => {  // klik = stap wissen/plaatsen (losse klik = wis noten op stap)
-      const r = cvs.getBoundingClientRect();
-      const i = Math.floor((e.clientX - r.left) / r.width * N);
-      const before = P.notes.length;
-      P.notes = P.notes.filter(n => n.s !== i);
-      if (P.notes.length === before) P.notes.push({ p: 60, s: i, d: 1, v: 100 });
+    /* hit-test: welke noot zit onder de cursor? rand (laatste 5px) = resize */
+    const hitN = (x, y) => {
+      const w = cvs.width / N, rh = Math.max(5, rowH() * 0.9);
+      for (let i = P.notes.length - 1; i >= 0; i--) {
+        const n = P.notes[i], x0 = n.s * w + 1, x1 = x0 + Math.max(3, (n.d || 1) * w - 2), y0 = yOf(n.p);
+        if (x >= x0 && x <= x1 && Math.abs(y - y0) <= rh / 2 + 2)
+          return { n, edge: x > x1 - 5 ? 'resize' : 'move' };
+      }
+      return null;
+    };
+    let drag = null; // {n, mode, offS, offP} of {nieuw}
+    cvs.oncontextmenu = e => e.preventDefault();
+    cvs.onpointerdown = e => {
+      const r = cvs.getBoundingClientRect(), x = (e.clientX - r.left) * cvs.width / r.width, y = (e.clientY - r.top) * cvs.height / r.height;
+      const w = cvs.width / N, i = Math.max(0, Math.min(N - 1, Math.floor(x / w)));
+      const h = hitN(x, y);
+      if (e.button === 2) { if (h) { P.notes.splice(P.notes.indexOf(h.n), 1); draw(); } return; } // rechts = wis
+      cvs.setPointerCapture(e.pointerId);
+      if (h) {
+        drag = { n: h.n, mode: h.edge, x0: x, p0: h.n.p, s0: h.n.s, d0: h.n.d || 1 };
+        P.dragN = h.n;
+      } else if (y >= 18) { // leeg: teken een nieuwe noot
+        const p = Math.max(PITCH_LO, Math.min(PITCH_HI, pOf(y)));
+        const n = { p, s: i, d: 1, v: 100 };
+        P.notes.push(n); drag = { n, mode: 'resize', x0: x, s0: i, d0: 1 }; P.dragN = n;
+      }
       draw();
+    };
+    cvs.onpointermove = e => {
+      const r = cvs.getBoundingClientRect(), x = (e.clientX - r.left) * cvs.width / r.width, y = (e.clientY - r.top) * cvs.height / r.height;
+      const w = cvs.width / N;
+      if (!drag) { const h = hitN(x, y); cvs.style.cursor = h ? (h.edge === 'resize' ? 'ew-resize' : 'move') : 'crosshair'; return; }
+      const n = drag.n;
+      if (drag.mode === 'resize') {
+        n.d = Math.max(1, Math.min(N - n.s, Math.round((x - n.s * w) / w)));
+      } else {
+        const ds = Math.round((x - drag.x0) / w);
+        n.s = Math.max(0, Math.min(N - (n.d || 1), drag.s0 + ds));
+        n.p = Math.max(PITCH_LO, Math.min(PITCH_HI, pOf(y)));
+      }
+      draw();
+    };
+    const endDrag = e => {
+      if (drag && drag.mode === 'move' && Math.abs((e.clientX - cvs.getBoundingClientRect().left) * cvs.width / cvs.getBoundingClientRect().width - drag.x0) < 3) {
+        // klik zonder beweging op een noot = wis hem (handig voor fouten)
+      }
+      drag = null; P.dragN = null; draw();
+    };
+    cvs.onpointerup = endDrag; cvs.onpointercancel = endDrag;
+    cvs.ondblclick = e => {
+      const r = cvs.getBoundingClientRect(), x = (e.clientX - r.left) * cvs.width / r.width, y = (e.clientY - r.top) * cvs.height / r.height;
+      const h = hitN(x, y); if (h) { P.notes.splice(P.notes.indexOf(h.n), 1); draw(); }
     };
 
     /* ---------- transport ---------- */
@@ -188,6 +243,7 @@ const StudioPanel = {
     box.querySelector('#spWav').onclick = () => { if (_gelicen() || _vraagLicentie(st)) exportWav(); };
 
     draw();
+    el._sp = P; // test/debug-hook
     /* API — zelfde interface als oude loopRaster + hit met pitch */
     return {
       hit(pitch, vel = 100) {
