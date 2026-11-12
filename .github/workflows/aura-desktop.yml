@@ -4,6 +4,9 @@ on:
     paths: ['tools/aura-v6/**', 'aura-desktop/**', '.github/workflows/aura-desktop.yml']
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     strategy:
