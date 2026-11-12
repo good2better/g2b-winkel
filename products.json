@@ -1753,21 +1753,6 @@
    "groep": "plugins"
   },
   {
-   "id": "gimbassipro",
-   "titel": "G2B GIM BASSI PRO — bas + kick extractor",
-   "soort": "plugin",
-   "beschrijving": "Beat of song erin → alleen de bas (sub/808) + kick eruit, gequantized als wav. VST3 + CLAP + standalone.",
-   "prijs": "€ 24,95",
-   "links": {
-    "koop": "bestel.html?p=gimbassipro",
-    "download": "bedankt.html?k=gimbassipro"
-   },
-   "groep": "plugins",
-   "cover": "media/gimbassilite-cover.png",
-   "demo": "media/gimbassi-demo.mp4",
-   "video": "media/gimbassi-demo.mp4"
-  },
-  {
    "id": "aura-midiforge",
    "titel": "AURA MIDI-Forge — piano-roll + Bézier + .mid-export",
    "soort": "tool",
