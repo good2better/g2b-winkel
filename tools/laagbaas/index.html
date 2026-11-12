@@ -283,6 +283,17 @@ function drawStems(){
 }
 window.delStem=i=>{stems.splice(i,1);drawStems();};
 
+// .mid vanuit MIDI-BIB direct inladen (sessionStorage-stash, geen download nodig)
+(async()=>{try{
+  const stash=sessionStorage.getItem('g2b_mid_stash');
+  if(!stash)return;
+  sessionStorage.removeItem('g2b_mid_stash');
+  const {name,b64}=JSON.parse(stash);
+  const bin=atob(b64);const bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+  await addFiles([new File([bytes],name||'midi-bib.mid',{type:'audio/midi'})]);
+}catch(e){console.warn('midi-stash',e);}})();
+
 // zelfde pro-keten als de pc-Engineer (libsonare-config)
 const CFG={
   g2b:{dynamics:{compressor:{thresholdDb:-14,ratio:2.2,attackMs:12,releaseMs:120}},

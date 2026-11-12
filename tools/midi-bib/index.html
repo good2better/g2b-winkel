@@ -57,10 +57,19 @@ for(const g in BESTANDEN){
   const el=document.getElementById(g);
   for(const nm of BESTANDEN[g]){
     const d=document.createElement('div');d.className='mf';
-    d.innerHTML=`<div class="nm">${nm.replace(/-/g,' ')}</div><div class="wt">.mid · 4 maten</div><a href="mid/${nm}.mid" download>⬇ download</a>`;
+    d.innerHTML=`<div class="nm">${nm.replace(/-/g,' ')}</div><div class="wt">.mid · 4 maten</div><a href="mid/${nm}.mid" download>⬇ download</a> <a href="#" class="sm lb" data-mid="mid/${nm}.mid" data-nm="${nm}.mid">▶ LAAGBAAS</a>`;
     el.appendChild(d);
   }
 }
+document.addEventListener('click',async e=>{
+  const a=e.target.closest('a.lb');if(!a)return;
+  e.preventDefault();
+  const r=await fetch(a.dataset.mid);const ab=await r.arrayBuffer();
+  let bin='';const u8=new Uint8Array(ab);
+  for(let i=0;i<u8.length;i++)bin+=String.fromCharCode(u8[i]);
+  sessionStorage.setItem('g2b_mid_stash',JSON.stringify({name:a.dataset.nm,b64:btoa(bin)}));
+  location.href='../laagbaas/index.html';
+});
 </script>
 <script src="/js/g2b-gate.js" data-tier="mijn"></script>
 </body></html>
