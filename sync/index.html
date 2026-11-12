@@ -146,10 +146,19 @@ header{position:relative;padding:0;overflow:hidden}
   </div>
 
   <div class="card">
+    <h3 data-i18n="sync_buyout_t">BUY-OUT pipeline — zo loopt het</h3>
+    <div class="tier"><b data-i18n="sync_bo_s1">1 · Aanvraag</b><p data-i18n="sync_bo_p1">Klik BUY-OUT bij de track → je mail gaat direct naar de eigenaar met track + project-info.</p></div>
+    <div class="tier"><b data-i18n="sync_bo_s2">2 · Offerte binnen 24u</b><p data-i18n="sync_bo_p2">Je krijgt een vaste prijs + voorwaarden op maat van je productie (territorium, termijn, exclusiviteit).</p></div>
+    <div class="tier"><b data-i18n="sync_bo_s3">3 · Betaling</b><p data-i18n="sync_bo_p3">Factuur van Good2Better H.Q.M. (KvK 95199926) — betaling via bank of betaallink vóór levering.</p></div>
+    <div class="tier"><b data-i18n="sync_bo_s4">4 · Levering</b><p data-i18n="sync_bo_p4">Compleet pakket: WAV-masters (44.1kHz) + losse stems + MIDI + getekend overdrachts-contract.</p></div>
+    <div class="tier"><b data-i18n="sync_bo_s5">5 · Overdracht</b><p data-i18n="sync_bo_p5">Track verdwijnt uit de catalogus en wordt voor niemand anders gelicenseerd — jij bent de enige eigenaar.</p></div>
+  </div>
+
+  <div class="card">
     <h3 data-i18n="sync_licopt_t">License options</h3>
     <div class="tier"><b data-i18n="sync_lic_nexb">Non-exclusive sync license</b><p data-i18n="sync_lic_nexp">Standard — track stays in the catalog, per-use fee. Delivered with WAV + stems.</p></div>
     <div class="tier"><b data-i18n="sync_lic_exb">Exclusive sync license</b><p data-i18n="sync_lic_exp">Track reserved for your production/campaign, removed from licensing to others.</p></div>
-    <div class="tier"><b data-i18n="sync_lic_bob">Buy-out</b><p data-i18n="sync_lic_bop" data-i18n-html>One-off full purchase for major film/brand deals — complete transfer, price on request. <i>Applies to custom commissions only.</i></p></div>
+    <div class="tier"><b data-i18n="sync_lic_bob">Buy-out</b><p data-i18n="sync_lic_bop" data-i18n-html>One-off full purchase — complete master + publishing transfer. Catalog tracks leave the library; custom tracks are built exclusively for you. Price on request.</p></div>
     <p style="margin-top:10px;color:var(--gray)" data-i18n="sync_lic_note">Every deal is personally approved — you always deal with the owner directly.</p>
   </div>
 
@@ -287,10 +296,9 @@ function lic(t,buy){
   return `<div class="lic"><a href="${m('Sync license')}">LICENSE</a>${buy?`<a class="buy" href="${m('Buy-out')}">BUY-OUT</a>`:''}</div>`;
 }
 function row(n,t,file,cls,tag,buy){const m=META[t];return `<div class="track ${cls||''}"><div class="num">${n}</div><div class="info"><div class="t">${t}</div><div class="k">${m?m+' · ':''}${tag||'GOOD2BETTER · 100% owned'}</div></div><audio controls preload="none" src="${file}"></audio>${lic(t,buy)}</div>`;}
-document.getElementById('voc').innerHTML=LATIN.map(([n,t])=>row(n,t,`media/latin/${n} - ${encodeURIComponent(t)}.mp3`)).join('');
-document.getElementById('ins').innerHTML=INSTR.map(([n,t,f])=>row(n,t,`media/latin/${encodeURIComponent(f)}.mp3`,'instr')).join('');
-const BUYOUT=new Set(['G2B-MidnightZouk']);
-document.getElementById('cat').innerHTML=CAT.map((t,i)=>row(String(i+1).padStart(2,'0'),t,`media/english/${encodeURIComponent(t)}.mp3`,'','GOOD2BETTER · LICENSE-READY',BUYOUT.has(t))).join('');
+document.getElementById('voc').innerHTML=LATIN.map(([n,t])=>row(n,t,`media/latin/${n} - ${encodeURIComponent(t)}.mp3`,'','GOOD2BETTER · 100% owned',true)).join('');
+document.getElementById('ins').innerHTML=INSTR.map(([n,t,f])=>row(n,t,`media/latin/${encodeURIComponent(f)}.mp3`,'instr','GOOD2BETTER · 100% owned',true)).join('');
+document.getElementById('cat').innerHTML=CAT.map((t,i)=>row(String(i+1).padStart(2,'0'),t,`media/english/${encodeURIComponent(t)}.mp3`,'','GOOD2BETTER · LICENSE-READY',true)).join('');
 document.getElementById('isrc').innerHTML=LATIN.map(([n,t])=>`${ISRC[t]} — ${t}`).join('<br>')+'<br>'+ISRC_XTRA.map(([c,t])=>`${c} — ${t}`).join('<br>');
 // zoek + mood-filter
 const MOODMAP={party:['party','club','nightlife','night','dance','euphoric','festive','carnival','rush','bounce','groove'],drama:['drama','film','heartbreak','longing','nostalgic','ballad','march','ritual','journey'],sports:['sports','energy','triumphant','high energy','driving','anthem','motivation'],ads:['ads','commercial','business','corporate','lifestyle'],chill:['chill','calm','laid-back','lo-fi','smooth','warm','focus'],dark:['dark','moody','gritty','edgy','undertone','experimental']};
