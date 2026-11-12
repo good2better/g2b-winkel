@@ -55,6 +55,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <button class="uit klein" onclick="addTrack('audio')">+AUDIO</button>
 <button class="uit klein" id="arrbtn" onclick="arrToggle()">▣ OVERZICHT</button>
 <button class="uit klein" id="mfxbtn" onclick="mfxToggle()">🎚 MASTER FX</button>
+<button class="uit klein" id="advbtn" onclick="advToggle()">🧠 ADVIES</button>
 <button class="uit" onclick="ongedaan()">↩ ONGEDAAN MAKEN</button>
 <span id="st">sets laden…</span>
 <button class="uit" id="skin" onclick="skin()">◐ WIT</button>
@@ -73,6 +74,10 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
  <b style="font-size:.75rem;color:var(--groen)">🎚 MASTER — effects op alles samen</b>
  <div id="mfxlist"></div>
  <select class="fxsel" id="mfxsel"><option value="">+ effect op master…</option><option value="eq">EQ (3-band)</option><option value="delay">DELAY</option><option value="reverb">REVERB</option><option value="filter">FILTER</option><option value="drive">DRIVE</option><option value="brein">BREIN-resonator</option></select>
+</div>
+<div id="advpanel" style="display:none;margin-bottom:10px;background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:10px">
+ <b style="font-size:.75rem;color:var(--groen)">🧠 GAW denkt mee — jij kiest alleen JA of NEE</b>
+ <div id="advlist" style="margin-top:6px"></div>
 </div>
 <div id="traks"></div>
 <div id="recov"><div class="pane">
@@ -463,6 +468,49 @@ function mfxDraw(){
 }
 function mfxSet(i,k,v){MAST.fx[i].p[k]=+v;if(MAST._ch){const nd=MAST._ch.nds.find(n=>n.fx===MAST.fx[i]);if(nd)nd.n.upd()}}
 document.getElementById('mfxsel').onchange=e=>{if(!e.target.value)return;MAST.fx.push(newFx(e.target.value));rebuildMaster();mfxDraw();e.target.value=''};
+// ===== ADVIES-engine: analyseert je track, stelt voor, jij kiest ja/nee =====
+let ADV=[];
+function advAnalyse(){
+ ADV=[];
+ const grids=TR.map((t,i)=>t.grid?i:-1).filter(i=>i>=0);
+ const rolls=TR.map((t,i)=>t.notes?i:-1).filter(i=>i>=0);
+ const auds=TR.map((t,i)=>t.type==='audio'?i:-1).filter(i=>i>=0);
+ // 1) geen ritme
+ if(grids.length&&!grids.some(i=>TR[i].grid.some(x=>x)))
+  ADV.push({t:'Je hebt nog geen ritme — zal ik een strak drumgrid zetten (kick+hat)?',ja:()=>{
+   for(let s=0;s<16;s+=8)TR[grids[0]].grid[s]=true;
+   if(grids[1])for(let s=2;s<16;s+=4)TR[grids[1]].grid[s]=true;
+   grids.forEach(i=>syncGrid(i));}});
+ // 2) lege toon-tracks → baslijn van midi-bib
+ for(const i of rolls.slice(0,2))
+  if(!TR[i].notes.length)
+   ADV.push({t:`TR${i+1} (${typeLbl(TR[i])}) is leeg — ${i%2?'melodie':'baslijn'} erin zetten?`,ja:()=>{
+    TR[i].notes=i%2?[{p:72,s:0,d:1,v:100},{p:74,s:4,d:1,v:100},{p:76,s:8,d:2,v:100}]:[{p:36,s:0,d:2,v:110},{p:36,s:8,d:2,v:110},{p:43,s:12,d:2,v:100}];
+    drawRoll(i);}});
+ // 3) geen master-fx
+ if(!MAST.fx.length)
+  ADV.push({t:'Nog geen master-effect — zal ik EQ + DRIVE op je master zetten (voller geluid)?',ja:()=>{
+   const e=newFx('eq');e.p.lo=2;e.p.hi=3;MAST.fx.push(e);MAST.fx.push(newFx('drive'));rebuildMaster();if(document.getElementById('mfxpanel').style.display==='block')mfxDraw();}});
+ // 4) geen audio-lane
+ if(!auds.length&&TR.length<14)
+  ADV.push({t:'Geen audio-spoor — zal ik een AUDIO-lane toevoegen voor je stem/instrument?',ja:()=>addTrack('audio')});
+ // 5) te veel fx op één spoor?
+ for(let i=0;i<TR.length;i++)
+  if(TR[i].fx.length>3)ADV.push({t:`TR${i+1} heeft ${TR[i].fx.length} effects — zal ik ze uitdunnen tot de 2 sterkste?`,ja:()=>{TR[i].fx=TR[i].fx.slice(0,2);rebuildFx(i);fxDraw(i);}});
+ // 6) altijd: naar LAAGBAAS
+ ADV.push({t:'Klaar? Zal ik al je stems naar LAAGBAAS sturen voor de pro-master?',ja:()=>naarLaagbaas()});
+ advDraw();
+}
+function typeLbl(tr){return tr.type==='roll'?'toon':tr.type==='audio'?'audio':'ritme'}
+function advDraw(){
+ const el=document.getElementById('advlist');if(!el)return;
+ el.innerHTML=ADV.map((a,i)=>`<div class="fx" style="justify-content:space-between"><span style="font-size:.72rem;flex:1">${a.t}</span>
+  <button class="uit klein" style="background:var(--groen);color:#0a0a0a;border-color:var(--groen)" onclick="advJa(${i})">JA</button>
+  <button class="uit klein" onclick="advNee(${i})">NEE</button></div>`).join('')||'<span style="font-size:.65rem;color:var(--sub)">niks meer te adviseren — ziet er goed uit</span>';
+}
+function advJa(i){const a=ADV[i];ADV.splice(i,1);try{a.ja()}catch(e){}advDraw()}
+function advNee(i){ADV.splice(i,1);advDraw()}
+function advToggle(){const p=document.getElementById('advpanel');p.style.display=p.style.display==='block'?'none':'block';if(p.style.display==='block')advAnalyse()}
 let mediaRec=null;
 let recCtx=null,recAn=null,recRAF=null,recT0=0,recTarget=null;
 function recDraw(){
