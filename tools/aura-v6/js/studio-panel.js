@@ -27,7 +27,6 @@ const StudioPanel = {
     /* ↩ ongedaan maken: momentopname van noten voor elke bewerking */
     const snap = () => { P.hist.push(JSON.stringify(P.notes)); if (P.hist.length > 60) P.hist.shift(); };
     const undo = () => { if (P.hist.length) { P.notes = JSON.parse(P.hist.pop()); draw(); st.textContent = 'ongedaan gemaakt'; } };
-    box.querySelector('#spUndo').onclick = undo;
     el.ownerDocument.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); } });
     /* notes: {p: midi, s: stap, d: stappen-duur, v: vel} */
 
@@ -51,6 +50,7 @@ const StudioPanel = {
     el.appendChild(box);
     const cvs = box.querySelector('canvas'), g = cvs.getContext('2d');
     const st = box.querySelector('#spStat');
+    box.querySelector('#spUndo').onclick = undo;
 
     /* ---------- raster: echte mini piano-roll (slepen/bewerken/wissen) ---------- */
     const PITCH_LO = 36, PITCH_HI = 84;
