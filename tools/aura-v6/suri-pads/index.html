@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>Suri-Pads & World — AURA v6</title>
 <link rel="stylesheet" href="../style.css"></head><body><div class="wrap">
 <h1>🥁 Suri-Pads &amp; World <a href="../" style="float:right;font-size:12px">← AURA</a></h1>
-<div class="card"><p>Pads (Verkoop + Gio) én Surinaamse instrumenten in één engine.
+<div class="card"><p>Pads én Surinaamse instrumenten in één engine.
 <b>Groene vakken:</b> 1 = solo over heel keyboard · meerdere = direct stapelen · opnieuw klikken = uit.</p>
 <div style="margin:6px 0"><label for="bank">Bank:&nbsp;</label><select id="bank"><option value="">SURI + WORLD (alles)</option></select></div>
 <div id="matrix"></div>
@@ -52,9 +52,9 @@ const SOUNDS = [
   {naam:'Marimba', cat:'pads', src:'../wav/suri/marimba.wav', basePitch:60},
   {naam:'Kalimba', cat:'pads', src:'../wav/suri/kalimba.wav', basePitch:60},
   {naam:'Logdrum', cat:'pads', src:'../wav/suri/logdrum.wav', basePitch:60},
-  // Gio-laag (synth-pads om mee te stapelen)
-  {naam:'Gio Drone', cat:'gio', wave:'saw', tone:0.25, decay:0.9998},
-  {naam:'Gio Swell', cat:'gio', wave:'tri', tone:1.0, decay:0.9995}
+  // DNA-laag (synth-pads om mee te stapelen)
+  {naam:'DNA Drone', cat:'gio', wave:'saw', tone:0.25, decay:0.9998},
+  {naam:'DNA Swell', cat:'gio', wave:'tri', tone:1.0, decay:0.9995}
 ];
 (async () => {
   await Aura.init('../js/aura-dsp-worklet.js');
