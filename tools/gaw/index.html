@@ -65,6 +65,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <div id="wrap">
 <div id="sidebar">
  <input id="brzoek" placeholder="🔍 zoek geluid/midi…" oninput="brDraw()">
+ <div id="brchips" style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px"></div>
  <div id="brlist"></div>
 </div>
 <div style="flex:1;min-width:0;padding-left:8px">
@@ -100,14 +101,21 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 document.addEventListener('keydown',e=>{if(e.code==='Space'&&e.target.tagName!=='SELECT'&&e.target.tagName!=='INPUT'){e.preventDefault();toggle()}});
 // ===== ZIJBALK BROWSER: zoek midi+geluiden, klik = laden =====
 const BR_MID=['akkoord-a-min-1564','akkoord-a-min-6415','akkoord-a-min-bies','akkoord-c-maj-1564','akkoord-e-min-1564','bas-drill','bas-house','bas-pop','bas-schuivel','bas-trap','bas-zouk','drums-dancehall','drums-drill','drums-house','drums-kawina','drums-pop','drums-rnb','drums-schuivel','drums-trap','drums-zouk','melodie-house-a','melodie-schuivel-a','melodie-trap-a','melodie-zouk-a'];
-let BROPEN=true;
+let BROPEN=true,BRF='';
+function brChip(f){BRF=f;brDraw();
+ document.querySelectorAll('#brchips .bchip').forEach(c=>c.style.borderColor=c.textContent===(f||'ALLES')?'var(--groen)':'');
+}
 function brToggle(){BROPEN=!BROPEN;document.getElementById('sidebar').classList.toggle('dicht',!BROPEN);document.getElementById('brbtn').style.color=BROPEN?'':'var(--groen)'}
 async function brDraw(){
  const q=(document.getElementById('brzoek').value||'').toLowerCase();
- let h='<h4>🎼 MIDI · klik = in toon-spoor</h4>';
- h+=BR_MID.filter(m=>m.includes(q)).map(m=>`<div class="bitem" onclick="brMid('${m}')">${m}</div>`).join('')||'<span style="font-size:.6rem;color:var(--dim)">niks gevonden</span>';
- h+='<h4>🔊 GELUIDEN · klik = probeer / dubbel = op ritme-spoor</h4>';
+ const ch=document.getElementById('brchips');
+ if(ch&&!ch.innerHTML)ch.innerHTML=['ALLES','MIDI',...Object.keys(BRON)].map(k=>`<span class="bchip" style="font-size:.58rem;padding:2px 6px;border:1px solid var(--rand);border-radius:10px;cursor:pointer;${(k===(BRF||'ALLES'))?'border-color:var(--groen);color:var(--groen)':''}" onclick="brChip('${k==='ALLES'?'':k}')">${k}</span>`).join('');
+ const alleenMid=BRF==='MIDI',alleenSnd=BRF&&BRF!=='MIDI';
+ let h=alleenSnd?'':'<h4>🎼 MIDI · klik = in toon-spoor</h4>';
+ if(!alleenSnd)h+=BR_MID.filter(m=>m.includes(q)).map(m=>`<div class="bitem" onclick="brMid('${m}')">${m}</div>`).join('')||'<span style="font-size:.6rem;color:var(--dim)">niks gevonden</span>';
+ if(!alleenMid)h+='<h4>🔊 GELUIDEN · klik = probeer / dubbel = op ritme-spoor</h4>';
  for(const key of Object.keys(BRON)){
+  if(alleenMid||(alleenSnd&&key!==BRF))continue;
   const d=await bronData(key);
   d.per.forEach((bk,bi)=>{
    const items=bk.files.map((f,j)=>({f,j})).filter(x=>(x.f+' '+bk.namen[x.j]).toLowerCase().includes(q));
