@@ -187,9 +187,9 @@ function exportMid(){if(!licOk())return;
  const ev=[];
  for(let t=0;t<4;t++){
   const ch=t<2?9:0,base=[36,38][t]||36;
-  if(TR[t].grid)for(let s=0;s<16;s++)if(TR[t].grid[s]){
+  if(TR[t].grid){for(let s=0;s<16;s++)if(TR[t].grid[s]){
    ev.push({t:s*SPB,on:true,n:base,ch});ev.push({t:s*SPB+SPB-4,on:false,n:base,ch});
-  }
+  }}
   else for(const nn of TR[t].notes){
    ev.push({t:nn.s*SPB,on:true,n:nn.p,ch});ev.push({t:(nn.s+(nn.d||1))*SPB-4,on:false,n:nn.p,ch});
   }
