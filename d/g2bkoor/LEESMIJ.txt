@@ -1,0 +1,7 @@
+G2B KOOR+KEY — Nederlandse installatie
+=======================================
+VST3: kopieer de "g2b_koor.vst3"-map naar
+  C:\Program Files\Common Files\VST3\  → herstart je DAW.
+STANDALONE: dubbelklik g2b_koor.exe — werkt zonder DAW.
+Stuur MIDI erin en hij leert zelf de toonsoort (AUTO).
+Vragen? → meld.html in de winkel.
