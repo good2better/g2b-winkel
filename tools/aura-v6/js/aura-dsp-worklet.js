@@ -16,7 +16,10 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
     super();
     this.voices = [];
     this.hp_x1 = 0; this.hp_x2 = 0; this.hp_y1 = 0; this.hp_y2 = 0;
-    this.tilt_lp = 0; this.mono_lp = 0;
+    this.tilt_lp = 0; this.mono_lp = 0; this.mono_lp2 = 0;
+    // chorus HP @150Hz: 4 traps op input + 2 op tap-output → sub ~-35dB weg uit chorus
+    this.chp_a = 0; this.chp_b = 0; this.chp_c = 0; this.chp_d = 0;
+    this.chp_L1 = 0; this.chp_L2 = 0; this.chp_R1 = 0; this.chp_R2 = 0;
     // stereo-chorus delaylijnen (~50ms) + langzame LFO
     this.dlL = new Float32Array(2400); this.dlR = new Float32Array(2400);
     this.dlW = 0; this.lfo = 0;
@@ -49,6 +52,12 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
   }
   releaseVoice(pitch) {
     this.voices.forEach(v => { if (v.pitch === pitch) v.decayRate = Math.min(v.decayRate, v.freq < 130.81 ? 0.9995 : 0.995); });
+  }
+  softLim(x) { // zachte limiter: knie op 0.85, plafond 0.96 — nooit clip, headroom-safe
+    const t = 0.85, c = 0.96;
+    if (x > t) return t + (c - t) * Math.tanh((x - t) / (c - t));
+    if (x < -t) return -t - (c - t) * Math.tanh((-x - t) / (c - t));
+    return x;
   }
   applySafeKnip(s, rawKnip) {
     const k = Math.min(0.20, Math.max(0.0, rawKnip));
@@ -103,25 +112,37 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
       this.tilt_lp += (s - this.tilt_lp) * 0.06;
       s = this.tilt_lp * 1.2 + (s - this.tilt_lp) * 1.0;
       s = this.applySafeKnip(s, knipVal);
-      // 🔥 PRO GLUE: mono <120Hz strak, >120Hz subtiel breder (chorus-delay)
-      this.mono_lp += (s - this.mono_lp) * 0.0155; // ~120Hz LP
-      const low = this.mono_lp, hi = s - low;
+      // 🔥 PRO GLUE: mono <150Hz strak (sub staat 100% stil), >150Hz subtiel breder
+      // 2× gekaskadeerde LP = scherpere splits (-12dB/oct) → geen sub in de chorus
+      this.mono_lp += (s - this.mono_lp) * 0.0194;   // ~150Hz LP (passe 1)
+      this.mono_lp2 += (this.mono_lp - this.mono_lp2) * 0.0194; // passe 2
+      const low = this.mono_lp2, hi = s - low;
       let L = low + hi, R = low + hi;
       if (glueOn && chs > 1) {
-        this.dlL[this.dlW] = hi; this.dlR[this.dlW] = hi;
+        // delay-input: 4-traps HP @150Hz — sub blijft 100% uit de chorus
+        this.chp_a += (hi - this.chp_a) * 0.0194; const h1 = hi - this.chp_a;
+        this.chp_b += (h1 - this.chp_b) * 0.0194; const h2 = h1 - this.chp_b;
+        this.chp_c += (h2 - this.chp_c) * 0.0194; const h3 = h2 - this.chp_c;
+        this.chp_d += (h3 - this.chp_d) * 0.0194; const din = h3 - this.chp_d;
+        this.dlL[this.dlW] = din; this.dlR[this.dlW] = din;
         this.lfo += 0.4 / sr; if (this.lfo > 1) this.lfo -= 1;
         const dl = 384 + 96 * Math.sin(2 * Math.PI * this.lfo);        // L: 8-10ms
         const dr = 384 + 96 * Math.sin(2 * Math.PI * this.lfo + Math.PI); // R: tegenfase
         const rL = (this.dlW + 2400 - Math.floor(dl)) % 2400;
         const rR = (this.dlW + 2400 - Math.floor(dr)) % 2400;
-        L = low + hi + 0.22 * this.dlR[rR]; // kruiselingse mix → breedte
-        R = low + hi + 0.22 * this.dlL[rL];
+        // tap-output HP ×2: ook het laatste sub-residu uit het chorus-signaal
+        const tL = this.dlR[rR], tR = this.dlL[rL];
+        this.chp_L1 += (tL - this.chp_L1) * 0.0194; const gL1 = tL - this.chp_L1;
+        this.chp_L2 += (gL1 - this.chp_L2) * 0.0194; const gL = gL1 - this.chp_L2;
+        this.chp_R1 += (tR - this.chp_R1) * 0.0194; const gR1 = tR - this.chp_R1;
+        this.chp_R2 += (gR1 - this.chp_R2) * 0.0194; const gR = gR1 - this.chp_R2;
+        L = low + hi + 0.22 * gL; // kruiselingse mix → breedte
+        R = low + hi + 0.22 * gR;
         this.dlW = (this.dlW + 1) % 2400;
       }
       L *= vol; R *= vol;
-      // 0.99 look-ahead limiter (zachte clip-safe)
-      if (L > 0.99) L = 0.99; else if (L < -0.99) L = -0.99;
-      if (R > 0.99) R = 0.99; else if (R < -0.99) R = -0.99;
+      // zachte limiter — nooit hard-clippen
+      L = this.softLim(L); R = this.softLim(R);
       out[0][i] = L; if (chs > 1) out[1][i] = R;
       for (let c = 2; c < chs; c++) out[c][i] = L;
     }
