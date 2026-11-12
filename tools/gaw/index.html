@@ -56,11 +56,18 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <button class="uit klein" id="arrbtn" onclick="arrToggle()">▣ OVERZICHT</button>
 <button class="uit klein" id="mfxbtn" onclick="mfxToggle()">🎚 MASTER FX</button>
 <button class="uit klein" id="advbtn" onclick="advToggle()">🧠 ADVIES</button>
+<button class="uit klein" id="brbtn" onclick="brToggle()">☰ BROWSER</button>
 <button class="uit" onclick="ongedaan()">↩ ONGEDAAN MAKEN</button>
 <span id="st">sets laden…</span>
 <button class="uit" id="skin" onclick="skin()">◐ WIT</button>
 <button class="uit" id="rec" onclick="rec()">⏺ REC</button>
 </div>
+<div id="wrap">
+<div id="sidebar">
+ <input id="brzoek" placeholder="🔍 zoek geluid/midi…" oninput="brDraw()">
+ <div id="brlist"></div>
+</div>
+<div style="flex:1;min-width:0;padding-left:8px">
 <div id="arrpanel" style="display:none;margin-bottom:10px;background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:10px">
  <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
   <b style="font-size:.75rem;color:var(--groen)">ARRANGEMENT</b>
@@ -80,6 +87,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
  <div id="advlist" style="margin-top:6px"></div>
 </div>
 <div id="traks"></div>
+</div></div>
 <div id="recov"><div class="pane">
  <div style="font-weight:800;color:var(--groen);letter-spacing:.5px" id="rectitle">⏺ OPNAME</div>
  <div class="tijd" id="rectime">0:00</div>
@@ -90,6 +98,66 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <div id="wm">⚡ G2B GAW — GIO</div>
 <script>
 document.addEventListener('keydown',e=>{if(e.code==='Space'&&e.target.tagName!=='SELECT'&&e.target.tagName!=='INPUT'){e.preventDefault();toggle()}});
+// ===== ZIJBALK BROWSER: zoek midi+geluiden, klik = laden =====
+const BR_MID=['akkoord-a-min-1564','akkoord-a-min-6415','akkoord-a-min-bies','akkoord-c-maj-1564','akkoord-e-min-1564','bas-drill','bas-house','bas-pop','bas-schuivel','bas-trap','bas-zouk','drums-dancehall','drums-drill','drums-house','drums-kawina','drums-pop','drums-rnb','drums-schuivel','drums-trap','drums-zouk','melodie-house-a','melodie-schuivel-a','melodie-trap-a','melodie-zouk-a'];
+let BROPEN=true;
+function brToggle(){BROPEN=!BROPEN;document.getElementById('sidebar').classList.toggle('dicht',!BROPEN);document.getElementById('brbtn').style.color=BROPEN?'':'var(--groen)'}
+async function brDraw(){
+ const q=(document.getElementById('brzoek').value||'').toLowerCase();
+ let h='<h4>🎼 MIDI · klik = in toon-spoor</h4>';
+ h+=BR_MID.filter(m=>m.includes(q)).map(m=>`<div class="bitem" onclick="brMid('${m}')">${m}</div>`).join('')||'<span style="font-size:.6rem;color:var(--dim)">niks gevonden</span>';
+ h+='<h4>🔊 GELUIDEN · klik = probeer / dubbel = op ritme-spoor</h4>';
+ for(const key of Object.keys(BRON)){
+  const d=await bronData(key);
+  d.per.forEach((bk,bi)=>{
+   const items=bk.files.map((f,j)=>({f,j})).filter(x=>(x.f+' '+bk.namen[x.j]).toLowerCase().includes(q));
+   if(items.length)h+=`<div style="font-size:.6rem;color:var(--dim);margin:3px 0">${key} · ${d.banken[bi]}</div>`+items.map(x=>`<div class="bitem" onclick="brHoor('${key}',${bi},${x.j})" ondblclick="brPad('${key}',${bi},${x.j})">${bk.namen[x.j]}</div>`).join('');
+  });
+ }
+ document.getElementById('brlist').innerHTML=h;
+}
+async function brHoor(key,bi,j){
+ try{const r=await fetch(`/tools/${BRON[key].dir}/wav/${cache[key].per[bi].files[j]}.wav`);const ab=await r.arrayBuffer();const b=await ac().decodeAudioData(ab);const s=ac().createBufferSource();s.buffer=b;s.connect(ac().destination);s.start()}catch(e){document.getElementById('st').textContent='kan niet laden'}
+}
+async function brPad(key,bi,j){ // zet geluid op eerste ritme-spoor
+ const t=TR.findIndex(x=>x.type==='grid');if(t<0){document.getElementById('st').textContent='geen ritme-spoor';return}
+ try{const r=await fetch(`/tools/${BRON[key].dir}/wav/${cache[key].per[bi].files[j]}.wav`);const ab=await r.arrayBuffer();const nb=await ac().decodeAudioData(ab);TR[t].buffers[0]=nb;document.getElementById('st').textContent='geluid op '+TR[t].name}catch(e){}
+}
+// simpele mid-parser: type0/1 → {notes:[{p,s,d,v}],drum:bool}
+function parseMid(dv){
+ const u8=new Uint8Array(dv.buffer);let p=0;const r32=()=>{const v=dv.getUint32(p);p+=4;return v},r16=()=>{const v=dv.getUint16(p);p+=2;return v};
+ if(r32()!==0x4D546864)return null;p+=4;const fmt=r16();const ntrk=r16();const div=r16()||480;
+ const evs=[];let drum=false;
+ for(let tr=0;tr<ntrk;tr++){
+  if(r32()!==0x4D54726B)break;const len=r32();const end=p+len;let tick=0,run=0;const on={};
+  while(p<end){
+   let dt=0,b;do{b=u8[p++];dt=(dt<<7)|(b&127)}while(b&128);tick+=dt;
+   let st=u8[p++];
+   if(st<0x80){p--;st=run}else if(st<0xf0)run=st;
+   const ty=st&0xf0,ch=st&0x0f;
+   if(ty===0x90||ty===0x80){const n=u8[p],v=u8[p+1];p+=2;
+    if(ch===9)drum=true;
+    if(ty===0x90&&v>0){on[ch+':'+n]={t:tick,v}}
+    else if(on[ch+':'+n]){evs.push({p:n,s:on[ch+':'+n].t,d:Math.max(1,tick-on[ch+':'+n].t),v:on[ch+':'+n].v,ch});delete on[ch+':'+n]}}
+   else if(ty===0xA0||ty===0xB0||ty===0xE0)p+=2;
+   else if(ty===0xC0||ty===0xD0)p+=1;
+   else if(st===0xFF){const m=u8[p++];let l=0;do{b=u8[p++];l=(l<<7)|(b&127)}while(b&128);p+=l}
+   else if(st===0xF0||st===0xF7){let l=0;do{b=u8[p++];l=(l<<7)|(b&127)}while(b&128);p+=l}
+  }
+ }
+ const spb=div/4; // 16e stap
+ return {notes:evs.map(e=>({p:e.p,s:Math.round(e.s/spb),d:Math.max(1,Math.round(e.d/spb)),v:e.v})),drum};
+}
+async function brMid(nm){
+ try{const r=await fetch(`/tools/midi-bib/mid/${nm}.mid`);const dv=new DataView(await r.arrayBuffer());const m=parseMid(dv);if(!m)return;
+  const isDrum=nm.startsWith('drums');
+  const t=TR.findIndex(x=>isDrum?x.type==='grid':x.type==='roll');
+  if(t<0){document.getElementById('st').textContent='geen '+(isDrum?'ritme':'toon')+'-spoor';return}
+  if(isDrum){TR[t].grid=new Array(16).fill(false);m.notes.slice(0,16).forEach(n=>{if(n.s<16)TR[t].grid[n.s]=true});syncGrid(t)}
+  else{TR[t].notes=m.notes.map(n=>({p:n.p,s:n.s%16,d:n.d,v:n.v}));drawRoll(t)}
+  document.getElementById('st').textContent=nm+' geladen → '+TR[t].name;
+ }catch(e){document.getElementById('st').textContent='mid fout'}
+}
 let CLICK=false;
 function clickToggle(){CLICK=!CLICK;document.getElementById('clk').style.borderColor=CLICK?'var(--groen)':'';document.getElementById('clk').style.color=CLICK?'var(--groen)':''}
 function clickPlay(){const c=ac(),o=c.createOscillator(),g=c.createGain();o.frequency.value=step%4===0?1500:1000;o.type='square';g.gain.setValueAtTime(0.08,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.03);o.connect(g).connect(c.destination);o.start(c.currentTime);o.stop(c.currentTime+0.04)}
@@ -301,7 +369,7 @@ function bouwWave(t){
  const end=()=>{drag=null;drawWave(t)};
  c.onpointerup=end;c.onpointercancel=end;
 }
-function syncGrid(t){refreshArr();if(TR[t].type==='audio'){drawWave(t);return}if(TR[t].grid&&document.getElementById('st'+t))document.getElementById('st'+t).childNodes.forEach((c,i)=>c.className='st'+(TR[t].grid[i]?' aan':''));else drawRoll(t)}
+function syncGrid(t){if(typeof window._brd==='undefined'){window._brd=1;setTimeout(()=>{try{brDraw()}catch(e){}},600)}refreshArr();if(TR[t].type==='audio'){drawWave(t);return}if(TR[t].grid&&document.getElementById('st'+t))document.getElementById('st'+t).childNodes.forEach((c,i)=>c.className='st'+(TR[t].grid[i]?' aan':''));else drawRoll(t)}
 function speelClip(t){
  const c=TR[t].clip;if(!c||!c.buf)return;
  const s=ac().createBufferSource();s.buffer=c.buf;
