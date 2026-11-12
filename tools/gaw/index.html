@@ -244,6 +244,17 @@ const LESSEN={
   {t:'<b>💬 assistent</b> rechtsonder: typ "maak drumgrid" of "zet delay op master" en hij doet het.',act:()=>chatToggle()},
   {t:'<b>▣ OVERZICHT</b> toont alle lanes samen; klik op een lane om erheen te springen.',act:()=>arrToggle()},
  ],
+ 'Mixen met effecten':[
+  {t:'Elk spoor heeft een <b>▾FX</b>-rack: kies EQ om plek in de mix te maken, DELAY/REVERB voor ruimte, DRIVE voor karakter, COMP voor strakheid.',act:()=>fxToggle(0)},
+  {t:'<b>BYPASS</b> boven je rack schakelt alle effecten van dat spoor tegelijk uit/aan — handig om hoorbaar te vergelijken.',act:()=>{const b=document.getElementById('fxbyp0');if(b)b.scrollIntoView({block:'center'})},
+  {t:'<b>BREIN-resonator</b> als effect "luistert" naar je instrument-spoor en klinkt mee op de toonhoogte die je instelt — probeer op een toon-spoor.',act:()=>{const r=TR.findIndex(x=>x.type==='roll');if(r>=0){TR[r].fx.push(newFx('brein'));rebuildFx(r);fxToggle(r);fxDraw(r)}}},
+  {t:'Op <b>🎚 MASTER FX</b> zet je COMP → strakkere, hardere mix voor iedereen die luistert.',act:()=>{MAST.fx.push(newFx('comp'));rebuildMaster();mfxToggle()}},
+ ],
+ 'Opslaan & exporteren':[
+  {t:'<b>💾 OPSLAAN</b> bewaart je hele song (bpm + alle tracks + noten) in je browser — <b>📂 LADEN</b> haalt hem terug.',act:()=>opslaan()},
+  {t:'<b>⬇ WAV</b> rendert je hele mix als .wav — met je track-éN master-effecten erin. <b>⬇ STEMS</b> geeft elke track apart.',},
+  {t:'<b>⬇ .MID</b> exporteert je noten voor elke andere DAW. <b>▶ LAAGBAAS</b> stuurt je stems direct door voor de pro-master.',act:()=>{}},
+ ],
 };
 let LES=null,LESI=0;
 function lesOpen(){
