@@ -50,9 +50,10 @@ const SRC = {
   'DNA Tambo':'tambo_2_g2b','DNA Tambo 2':'tambo_0_g2b','DNA Crash':'crash_1786_26ca','DNA Crash 2':'crash_1917_ad28','DNA Crash Kit':'crash_kit_8a03',
   'DNA Oogst Kick':'kick','DNA Oogst Snare':'snare','DNA Oogst Hat':'hat','DNA Oogst Bas':'bass'
 };
+const NOTE = {'funkbass':60,'shakerloop_104_g2b':60,'corporatemel':60,'kD_darb':60,'reggaetonmel':60,'hat':60,'kS_FUSDONDHARP_35_v1':60,'housepno':60,'rockabillybass':60,'A1':60,'piano':60,'drillmel':60,'southernmelodie2':60,'layer_crunkclap_g2b':60,'dromerigmelodie2':60,'southernbass':60,'drillkeys':60,'epicmelodie':60,'kD_snare':60,'reggaetonmelodie':60,'mar_kMar_C2_s':60,'piano_kP_C2_v1':60,'popmelodie2':60,'boombapkeys':60,'hammond':60,'southernmelodie':60,'bubsnareroll_g2b':60,'kS_FUSGITDAN_39_v1':60,'kD_clap':60,'E1':60,'sax_kSx50_1':60,'kD_hat':60,'kS_FUSBASKARP_30_v1':60,'tambo_0_g2b':60,'vibes':60,'kD_kick':60,'obo_kObo_D4':60,'strings':60,'traplead':60,'crash_kit_8a03':60,'glock_kGK_G4':60,'bass':60,'popmelodie':60,'tambo_2_g2b':60,'rnbmel':60,'rec_kRec_C4':60,'epicmel':60,'mbira':60,'zoukbas':60,'crash_1917_ad28':60,'rnbkeys':60,'bra_kBra_C3':60,'zoukgit':60,'corporatemelodie':60,'snare':60,'kD_bell':60,'crash_1786_26ca':60,'funkmelodie2':60,'dru_sf_djembe_1792585593':60,'bas_sf_sub808_1792585596':60,'dru_sf_cowbell_1792585593':60,'donderpi':60,'lofimelodie2':60,'spaansgtr':60,'marimba':60,'reggaetonbass':60,'bra_kTbn_D3':60,'piano_kP_C4_v1':60,'lofimelodie':60,'bas_sf_bass_1792585597':60,'dru_sf_bongo_1792585593':60,'C1':60,'afrobeatkeys':60,'pluck':60,'kick':60,'rockabillymelodie':60,'piano_kP_C3_v1':60,'snare_soca_g2b':60,'dru_sf_donk_1792585594':60,'dromerigmelodie':60,'bsn_kBsn_C3':60,'har_kH_C4':60,'rockabillymelodie2':60,'D1':60,'rim_dembow_g2b':60,'egtrclean':60,'funkmelodie':60,'ohat_2_g2b':60,'nylon':60,'openhat_2_g2b':60};
 let sounds = [];
 for (const [cat,items] of Object.entries(CATS))
-  items.forEach(n => sounds.push({naam:n, cat, src:`../wav/instr/${SRC[n]}.wav`}));
+  items.forEach(n => sounds.push({naam:n, cat, src:`../wav/instr/${SRC[n]}.wav`, basePitch:NOTE[SRC[n]]||60}));
 (async () => {
   await Aura.init('../js/aura-dsp-worklet.js');
   const sel = document.getElementById('catSel');

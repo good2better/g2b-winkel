@@ -1,4 +1,25 @@
-/* G2B AURA v6.0 — keyboard.js: piano-keyboard dat via InstrumentMatrix.play() speelt */
+/* G2B AURA v6.0 — keyboard.js: piano-keyboard dat via InstrumentMatrix.play() speelt
+   + Web MIDI: een echt MIDI-keyboard stuurt dezelfde play() aan (met velocity). */
+let _kbdRef = null;
+function midiInit() {
+  if (midiInit.done || !navigator.requestMIDIAccess) return;
+  midiInit.done = true;
+  navigator.requestMIDIAccess().then(acc => {
+    const onMsg = e => {
+      const [st, note, vel] = e.data, cmd = st & 0xf0;
+      const k = _kbdRef && _kbdRef.querySelector(`[data-pitch="${note}"]`);
+      if (cmd === 0x90 && vel > 0) {
+        if (k) k.classList.add('dn');
+        InstrumentMatrix.play(note, { velocity: vel });
+      } else if (cmd === 0x80 || (cmd === 0x90 && vel === 0)) {
+        if (k) k.classList.remove('dn');
+        Aura.noteOff(note);
+      }
+    };
+    const hook = () => [...acc.inputs.values()].forEach(i => i.onmidimessage = onMsg);
+    hook(); acc.onstatechange = hook;
+  }).catch(() => {});
+}
 function bouwKeyboard(el, octStart = 3, octs = 2) {
   const wrap = document.createElement('div'); wrap.className = 'kbd';
   const names = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
@@ -11,7 +32,7 @@ function bouwKeyboard(el, octStart = 3, octs = 2) {
     k.onpointerup = k.onpointerleave = () => { k.classList.remove('dn'); Aura.noteOff(pitch); };
     wrap.appendChild(k);
   }
-  el.appendChild(wrap); return wrap;
+  el.appendChild(wrap); _kbdRef = wrap; midiInit(); return wrap;
 }
 function knipRij(el) {
   const r = document.createElement('div'); r.className = 'row';
