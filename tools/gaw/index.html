@@ -45,6 +45,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <button id="play" onclick="toggle()">▶ SPEEL</button>
 <label>BPM <span id="bpmv">96</span><input type="range" id="bpm" min="60" max="160" value="96" oninput="bpmv.textContent=this.value"></label>
 <canvas id="vu" width="46" height="26" style="align-self:center" title="master-level"></canvas>
+<label style="font-size:.65rem">SWING <span id="swingv">0</span><input type="range" id="swing" min="0" max="60" value="0" style="width:60px" oninput="swingv.textContent=this.value" title="vertraagt de even 16e's — groove"></label>
 <button class="uit" onclick="exportMid()">⬇ .MID</button>
 <button class="uit" onclick="exportWav()">⬇ .WAV</button>
 <button class="uit" onclick="exportStems()">⬇ STEMS</button>
@@ -576,16 +577,20 @@ function speelClip(t){
  s.start(0,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)));
 }
 function tick(){
- document.querySelectorAll('.st').forEach(c=>c.classList.remove('play'));
- if(CLICK)clickPlay();
- for(let t=0;t<TR.length;t++){
-  if(TR[t].muted){continue}
-  if(TR[t].type==='audio'){const c=TR[t].clip;if(c&&step===c.pos)speelClip(t);drawWave(t)}
-  else if(TR[t].grid){if(TR[t].grid[step])speel(t);document.getElementById('st'+t).children[step].classList.add('play')}
-  else{for(const n of TR[t].notes)if(n.s===step)speel(t,n.p);drawRoll(t)}
- }
- step=(step+1)%16;
- drawArr();
+ const sw=(step%2===1)?(+document.getElementById('swing').value/100)*(60000/bpm/4):0;
+ const run=()=>{
+  document.querySelectorAll('.st').forEach(c=>c.classList.remove('play'));
+  if(CLICK)clickPlay();
+  for(let t=0;t<TR.length;t++){
+   if(TR[t].muted){continue}
+   if(TR[t].type==='audio'){const c=TR[t].clip;if(c&&step===c.pos)speelClip(t);drawWave(t)}
+   else if(TR[t].grid){if(TR[t].grid[step])speel(t);document.getElementById('st'+t).children[step].classList.add('play')}
+   else{for(const n of TR[t].notes)if(n.s===step)speel(t,n.p);drawRoll(t)}
+  }
+  step=(step+1)%16;
+  drawArr();
+ };
+ if(sw)setTimeout(run,sw);else run();
 }
 function toggle(){
  if(playing){clearInterval(timer);playing=false;document.getElementById('play').textContent='▶ SPEEL';return}
@@ -931,7 +936,7 @@ async function exportWav(){clearOcCh();if(!licOk())return;
    const pn=oc.createStereoPanner?oc.createStereoPanner():null;
    if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;src.connect(g).connect(pn).connect(ocIn(oc,t,oc._mb))}
    else src.connect(g).connect(ocIn(oc,t,oc._mb));
-   src.start(s*60/bpm/4);if(d)src.stop(s*60/bpm/4+d*60/bpm/4+0.05);
+   const sw=(s%2===1)?(+document.getElementById('swing').value/100)*(60/bpm/4):0;src.start(s*60/bpm/4+sw);if(d)src.stop(s*60/bpm/4+sw+d*60/bpm/4+0.05);
   };
   if(TR[t].notes){for(const n of TR[t].notes)hit(n.s,n.p,n.d)}
   else for(let s=0;s<16;s++)if(TR[t].grid[s])hit(s);
@@ -960,7 +965,7 @@ async function renderStem(t,bpm,dur){
    const pn=oc.createStereoPanner?oc.createStereoPanner():null;
    if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(ocIn(oc,t,oc._mb))}
    else sc.connect(g).connect(ocIn(oc,t,oc._mb));
-   sc.start(s*60/bpm/4);if(d)sc.stop(s*60/bpm/4+d*60/bpm/4+0.05);
+   const sw=(s%2===1)?(+document.getElementById('swing').value/100)*(60/bpm/4):0;sc.start(s*60/bpm/4+sw);if(d)sc.stop(s*60/bpm/4+sw+d*60/bpm/4+0.05);
   };
   if(TR[t].notes){for(const n of TR[t].notes)hit(n.s,n.p,n.d);}
   else for(let s=0;s<16;s++)if(TR[t].grid[s])hit(s);
