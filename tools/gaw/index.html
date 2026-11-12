@@ -34,6 +34,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
  repeating-linear-gradient(90deg,transparent 0 12.4%,#1d2c23 12.4% 12.5%),
  repeating-linear-gradient(0deg,transparent 0 24%,#14201a 24% 25%)}
 .st{aspect-ratio:1;border-radius:5px;background:var(--rand);cursor:pointer;border:0;min-width:16px}
+.kbw.aan{background:var(--groen)!important}.kbk.aan{background:var(--groen)!important}
 .st.aan{background:var(--groen);box-shadow:0 0 6px #2fbf7166}
 .st.play{outline:2px solid #fff}body.licht .st.play{outline-color:#12231a}
 #st{font-size:.75rem;color:var(--dim)}
@@ -81,6 +82,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <span id="st">sets laden…</span>
 <button class="uit" id="skin" onclick="skin()">◐ WIT</button>
 <button class="uit" id="rec" onclick="rec()">⏺ REC</button>
+<button class="uit" id="kbbtn" onclick="kbToggle()" title="toetsenbord — speel op je toon-spoor">🎹</button>
 </div>
 <div id="wrap">
 <div id="sidebar">
@@ -121,6 +123,17 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
   <button class="uit klein" id="lesprobeer" style="border-color:var(--groen);color:var(--groen)">▶ PROBEER</button>
   <button class="uit klein" onclick="lesVolgende()">volgende →</button>
  </div>
+</div>
+<div id="kbdock" style="display:none;position:fixed;left:0;right:0;bottom:0;background:#0a0f0d;border-top:2px solid var(--rand);z-index:45;padding:6px 10px;flex-direction:column;gap:4px">
+ <div style="display:flex;gap:8px;align-items:center;font-size:.7rem;flex-wrap:wrap">
+  <b style="color:var(--groen)">🎹 TOETSEN</b>
+  <label>spoor <select id="kbsel" onchange="kbT=+this.value" style="background:#0d1512;color:#dfe;border:1px solid #345;padding:2px"></select></label>
+  <button class="uit klein" onclick="kbOct=Math.max(-1,kbOct-1);kbDraw()">◀ oct</button>
+  <button class="uit klein" onclick="kbOct=Math.min(1,kbOct+1);kbDraw()">oct ▶</button>
+  <span style="color:var(--sub)">klik = horen · ⏺ REC + ▶ SPEEL = opnemen in de roll · qwerty Z X C… + Q W E… · USB-keyboard werkt ook</span>
+  <button class="uit klein" style="margin-left:auto" onclick="kbToggle()">✕</button>
+ </div>
+ <div id="kbkeys" style="position:relative;display:flex;height:96px;user-select:none"></div>
 </div>
 <button id="chatbtn" onclick="chatToggle()" style="position:fixed;right:14px;bottom:14px;z-index:40;border-radius:50%;width:52px;height:52px;font-size:20px;padding:0">💬</button>
 <div id="chatpan" style="display:none;position:fixed;right:14px;bottom:74px;width:280px;max-height:50vh;background:#0a0f0d;border:1px solid var(--rand);border-radius:12px;z-index:40;flex-direction:column">
@@ -389,8 +402,35 @@ let REC=false;function rec(){REC=!REC;document.getElementById('rec').style.backg
 let HIST=[];const snap=()=>{HIST.push(JSON.stringify(TR.map(t=>({g:t.grid,n:t.notes}))));if(HIST.length>60)HIST.shift()};
 function ongedaan(){if(!HIST.length)return;const s=JSON.parse(HIST.pop());TR.forEach((t,i)=>{t.grid=s[i].g;t.notes=s[i].n;syncGrid(i)});document.getElementById('st').textContent='ongedaan gemaakt'}
 addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();ongedaan()}});
-window.onMidiNote=(n,idx)=>{if(REC&&playing){const t=idx%TR.length;snap();if(TR[t].notes){TR[t].notes.push({p:n,s:step,d:1,v:100});drawRoll(t)}else{TR[t].grid[step]=true;document.getElementById('st'+t).children[step].classList.add('aan')}}}
+window.onMidiNote=(n,idx)=>{if(REC&&playing){const t=idx%TR.length;if(TR[t]&&TR[t].grid){snap();TR[t].grid[step]=true;document.getElementById('st'+t).children[step].classList.add('aan')}}}
 function skin(){document.body.classList.toggle('licht');const l=document.body.classList.contains('licht');document.getElementById('skin').textContent=l?'◑ ZWART':'◐ WIT'}
+/* ---------- 🎹 TOETSEN-dock: klik/qwerty/USB → speel + REC in de roll ---------- */
+let KBO=false,kbT=-1,kbOct=0;
+function kbToggle(){KBO=!KBO;document.getElementById('kbdock').style.display=KBO?'flex':'none';document.getElementById('kbbtn').style.color=KBO?'var(--groen)':'';if(KBO){kbVul();kbDraw()}}
+function kbRolls(){return TR.map((t,i)=>t&&t.notes?i:-1).filter(i=>i>=0)}
+function kbVul(){const s=document.getElementById('kbsel'),rs=kbRolls();s.innerHTML=rs.map(i=>`<option value="${i}">TR${i+1}</option>`).join('');if(!rs.includes(kbT))kbT=rs.length?rs[0]:-1;s.value=kbT}
+function kbHit(p){
+ let t=kbRolls().includes(kbT)?kbT:(kbRolls()[0]??-1);
+ if(t<0){document.getElementById('st').textContent='geen toon-spoor — voeg eerst +TOON toe';return}
+ kbT=t;const pp=Math.max(PLO,Math.min(PHI,p));speel(t,pp);
+ if(REC&&playing){snap();TR[t].notes.push({p:pp,s:step,d:1,v:100});drawRoll(t)}
+ const k=document.querySelector(`#kbkeys [data-p="${p}"]`);if(k){k.classList.add('aan');setTimeout(()=>k.classList.remove('aan'),160)}
+}
+function kbDraw(){const el=document.getElementById('kbkeys');el.innerHTML='';const base=48+kbOct*12;
+ const W=[0,2,4,5,7,9,11],BP=[1,3,6,8,10],BPOS=[0,1,3,4,5];
+ const mk=(p,wi,bl)=>{const k=document.createElement('div');k.dataset.p=p;k.className=bl?'kbk':'kbw';
+  if(bl){k.style.cssText=`position:absolute;top:0;left:calc(${(wi+1)*6.667}% - 14px);width:28px;height:58px;background:#16181d;border:1px solid #000;border-radius:0 0 4px 4px;z-index:2;cursor:pointer`}
+  else{k.style.cssText='flex:1;position:relative;background:#e8e4dc;border:1px solid #8a857a;border-radius:0 0 4px 4px;cursor:pointer';
+   k.innerHTML=`<span style="position:absolute;bottom:3px;left:0;right:0;text-align:center;font-size:.5rem;color:#678;pointer-events:none">${KEYS[p%12]}${Math.floor(p/12)-1}</span>`}
+  k.onmousedown=e=>{e.preventDefault();kbHit(p)};k.onmouseenter=e=>{if(e.buttons)kbHit(p)};el.appendChild(k)};
+ for(let o=0;o<2;o++)for(const d of W)mk(base+o*12+d,o*7+W.indexOf(d),0);
+ mk(base+24,14,0);
+ for(let o=0;o<2;o++)BP.forEach((d,bi)=>mk(base+o*12+d,o*7+BPOS[bi],1))}
+const KBQ={z:0,s:1,x:2,d:3,c:4,v:5,g:6,b:7,h:8,n:9,j:10,m:11,q:12,'2':13,w:14,'3':15,e:16,r:17,'5':18,t:19,'6':20,y:21,'7':22,u:23,i:24};
+addEventListener('keydown',e=>{if(!KBO||e.repeat||e.ctrlKey||e.metaKey)return;const tg=e.target.tagName;if(tg==='INPUT'||tg==='SELECT'||tg==='TEXTAREA')return;
+ const d=KBQ[e.key.toLowerCase()];if(d==null)return;e.preventDefault();kbHit(48+kbOct*12+d)});
+// USB-MIDI: noot = pitch op het gekozen toon-spoor (midi.js roept gawMidi i.p.v. pad-speel als die bestaat)
+window.gawMidi=(n,v)=>{kbHit(n)};
 // bronnen: [map, meta-bestand, bank->files functie]
 const BRON={
  'OCHO':{dir:'ocho-web',sets:['OCHO','SUB808'],load:async s=>{const n=[['DONDER','KICKBAS','TRAP','BOOM','AFRO','DEMBOW','DRILL','SUB808','SKRATJI','BANGI','KOTI','AGOGO','SEKI','SURDO','TIMBAL','KLAP'],['SUB-ORIG','SUB-KORT','SUB-LANG','SUB-GLAF','SUB-GLOP','SUB-VIES','SUB-DONK','SUB-HELD','SUB-DEMB','SUB-PNCH','SUB-WOBB','SUB-ROLL','SUB-MUTE','SUB-WARM','SUB-REES','SUB-DIST']];return{namen:n[s],files:n[s].map(x=>x.toLowerCase())}}},
