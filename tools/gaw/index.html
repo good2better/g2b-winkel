@@ -23,7 +23,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 #wm{position:fixed;right:10px;bottom:8px;font-size:.62rem;color:var(--dim);opacity:.55;pointer-events:none}
 </style></head><body>
 <h1>🎛️ G2B <b>GAW</b> — GIO</h1>
-<p class="sub">Jouw volledige browser-werkplek: 8 tracks, je échte VST-sounds. TR1-4 = ritme (stap-grid), TR5-8 = toon (piano-roll).<br>Per track: bron/bank/pad + volume + pan + mute. ▶ LAAGBAAS stuurt al je stems direct door.</p>
+<p class="sub">Jouw volledige browser-werkplek: 8 tracks, je échte VST-sounds. TR1-4 = ritme (stap-grid), TR5-8 = toon (piano-roll).<br>Per track: bron/bank/pad + volume + pan + mute + ⏺ OP (mic → wordt je pad). ▶ LAAGBAAS stuurt al je stems direct door.</p>
 <div class="bar">
 <button id="play" onclick="toggle()">▶ SPEEL</button>
 <label>BPM <span id="bpmv">96</span><input type="range" id="bpm" min="60" max="160" value="96" oninput="bpmv.textContent=this.value"></label>
@@ -77,6 +77,7 @@ async function buildTraks(){
    ${t<4?`<div class="steps" id="st${t}"></div>`:`<canvas class="proll" id="pr${t}" width="720" height="72"></canvas>`}
    <label>vol<input type="range" id="vol${t}" min="0" max="100" value="80" style="width:60px"></label>
    <label>pan<input type="range" id="pan${t}" min="-100" max="100" value="0" style="width:56px"></label>
+   <button class="uit" id="ar${t}" style="padding:6px 10px" onclick="opneem(${t})" title="Neem audio op voor deze track — je take wordt je pad">⏺ OP</button>
    <button class="uit" id="mut${t}" style="padding:6px 10px" onclick="mute(${t})">MUTE</button>
    <button class="uit" style="padding:6px 10px" onclick="wis(${t})">✕</button>`;
   el.appendChild(row);
@@ -140,20 +141,31 @@ function speel(t,pitch){
 const PLO=48,PHI=76,NS=16;
 function rollY(c,p){return (1-(p-PLO)/(PHI-PLO))*(c.height-4)+2}
 function rollP(c,y){return Math.max(PLO,Math.min(PHI,Math.round(PLO+(1-(y-2)/(c.height-4))*(PHI-PLO))))}
+const KEYS=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'],BLACK={1:1,3:1,6:1,8:1,10:1},KB=22;
 function drawRoll(t){
- const c=document.getElementById('pr'+t),g=c.getContext('2d'),w=c.width/NS;
+ const c=document.getElementById('pr'+t),g=c.getContext('2d'),w=(c.width-KB)/NS;
  g.fillStyle='#0d1512';g.fillRect(0,0,c.width,c.height);
- for(let p=PLO;p<=PHI;p+=12){const y=rollY(c,p);g.strokeStyle='#1d3a2a';g.beginPath();g.moveTo(0,y);g.lineTo(c.width,y);g.stroke();
-  g.fillStyle='#5a8';g.font='8px sans-serif';g.fillText('C'+(p/12-1),2,y-1)}
- for(let i=0;i<=NS;i++){g.strokeStyle=i%4===0?'#2a4433':'#1a2a20';g.beginPath();g.moveTo(i*w,0);g.lineTo(i*w,c.height);g.stroke()}
- for(const n of TR[t].notes){const y=rollY(c,n.p);
-  g.fillStyle=n===TR[t]._drag?'#ffd24a':'#0cf';g.fillRect(n.s*w+1,y-3,Math.max(4,(n.d||1)*w-2),6);
-  g.strokeStyle='rgba(0,0,0,.5)';g.strokeRect(n.s*w+1,y-3,Math.max(4,(n.d||1)*w-2),6)}
- if(playing){g.fillStyle='#0fc';g.fillRect(((step+15)%16)*w,0,2,c.height)}
+ // per-halve-toon rijen (DAW-grid) + zwarte-toetsen band op witte rijen
+ for(let p=PLO;p<=PHI;p++){const y=rollY(c,p),y2=p<PHI?rollY(c,p+1):c.height;
+  if(!BLACK[p%12]){g.fillStyle='#101915';g.fillRect(KB,y,Math.max(0,y2-y-0.5)||1,c.width-KB)}
+  g.strokeStyle='#16211b';g.beginPath();g.moveTo(KB,y);g.lineTo(c.width,y);g.stroke();
+  if(p%12===0){g.strokeStyle='#2a4433';g.beginPath();g.moveTo(KB,y);g.lineTo(c.width,y);g.stroke()}}
+ // piano-keys links
+ for(let p=PLO;p<=PHI;p++){const y=rollY(c,p),y2=p<PHI?rollY(c,p+1):c.height,h=Math.max(1.5,y2-y-0.6);
+  const zw=BLACK[p%12];g.fillStyle=zw?'#111':'#dfe8e2';g.fillRect(zw?0:2,y,zw?14:20,h);
+  if(p%12===0){g.fillStyle='#123';g.font='7px sans-serif';g.fillText('C'+(p/12-1),3,y+7)}}
+ // maat/stap-lijnen
+ for(let i=0;i<=NS;i++){g.strokeStyle=i%4===0?'#3a5a45':'#1d2c23';g.lineWidth=i%4===0?1.4:1;g.beginPath();g.moveTo(KB+i*w,0);g.lineTo(KB+i*w,c.height);g.stroke()}
+ g.lineWidth=1;
+ // noten
+ for(const n of TR[t].notes){const y=rollY(c,n.p),x0=KB+n.s*w;
+  g.fillStyle=n===TR[t]._drag?'#ffd24a':'#0cf';g.fillRect(x0+1,y-3,Math.max(4,(n.d||1)*w-2),6);
+  g.strokeStyle='rgba(0,0,0,.6)';g.strokeRect(x0+1,y-3,Math.max(4,(n.d||1)*w-2),6)}
+ if(playing){g.fillStyle='#0fc';g.fillRect(KB+((step+15)%16)*w,0,2,c.height)}
 }
 function hitRoll(t,x,y){
- const c=document.getElementById('pr'+t),w=c.width/NS;
- for(let i=TR[t].notes.length-1;i>=0;i--){const n=TR[t].notes[i],x0=n.s*w+1,x1=x0+Math.max(4,(n.d||1)*w-2);
+ const c=document.getElementById('pr'+t),w=(c.width-KB)/NS;
+ for(let i=TR[t].notes.length-1;i>=0;i--){const n=TR[t].notes[i],x0=KB+n.s*w+1,x1=x0+Math.max(4,(n.d||1)*w-2);
   if(x>=x0&&x<=x1&&Math.abs(y-rollY(c,n.p))<=5)return{n,edge:x>x1-5?'resize':'move'}}
  return null;
 }
@@ -161,16 +173,16 @@ function bouwRoll(t){
  const c=document.getElementById('pr'+t);let drag=null;
  const XY=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)*c.width/r.width,(e.clientY-r.top)*c.height/r.height]};
  c.oncontextmenu=e=>e.preventDefault();
- c.onpointerdown=e=>{const[x,y]=XY(e),w=c.width/NS,i=Math.max(0,Math.min(NS-1,Math.floor(x/w))),h=hitRoll(t,x,y);
+ c.onpointerdown=e=>{const[x,y]=XY(e),w=(c.width-KB)/NS,i=Math.max(0,Math.min(NS-1,Math.floor((x-KB)/w))),h=hitRoll(t,x,y);
   if(e.button===2){if(h){snap();TR[t].notes.splice(TR[t].notes.indexOf(h.n),1);drawRoll(t)}return}
   c.setPointerCapture(e.pointerId);snap();
   if(h)drag={n:h.n,mode:h.edge,x0:x,s0:h.n.s};
   else{const n={p:rollP(c,y),s:i,d:1,v:100};TR[t].notes.push(n);drag={n,mode:'resize',x0:x};TR[t]._drag=n;speel(t,n.p)}
   drawRoll(t)};
- c.onpointermove=e=>{const[x,y]=XY(e),w=c.width/NS;
+ c.onpointermove=e=>{const[x,y]=XY(e),w=(c.width-KB)/NS;
   if(!drag){const h=hitRoll(t,x,y);c.style.cursor=h?(h.edge==='resize'?'ew-resize':'move'):'crosshair';return}
   const n=drag.n;
-  if(drag.mode==='resize')n.d=Math.max(1,Math.min(NS-n.s,Math.round((x-n.s*w)/w)));
+  if(drag.mode==='resize')n.d=Math.max(1,Math.min(NS-n.s,Math.round((x-KB-n.s*w)/w)));
   else{n.s=Math.max(0,Math.min(NS-(n.d||1),drag.s0+Math.round((x-drag.x0)/w)));
    const np=rollP(c,y);if(np!==n.p){n.p=np;speel(t,n.p)}} // preview: hoor waar je hem neerzet
   drawRoll(t)};
@@ -195,6 +207,36 @@ function toggle(){
  document.getElementById('play').textContent='⏹ STOP';
 }
 document.getElementById('bpm').onchange=()=>{if(playing){clearInterval(timer);timer=setInterval(tick,60000/+document.getElementById('bpm').value/4)}};
+let mediaRec=null;
+async function opneem(t){
+ if(mediaRec){mediaRec.stop();return}
+ const btn=document.getElementById('ar'+t);
+ try{
+  const st=await navigator.mediaDevices.getUserMedia({audio:true});
+  const rec=new MediaRecorder(st);mediaRec=rec;const chunks=[];
+  rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+  rec.onstop=async()=>{st.getTracks().forEach(x=>x.stop());mediaRec=null;btn.style.borderColor='';btn.style.color='';
+   try{
+    const ab=await(await new Blob(chunks)).arrayBuffer();
+    const buf=await ac().decodeAudioData(ab);
+    TR[t].buffers[TR[t].pad]=trimAudio(buf);
+    const ps=document.getElementById('pad'+t);const o=ps.options[TR[t].pad];if(o&&!o.textContent.endsWith(' ⏺'))o.textContent+=' ⏺';
+    document.getElementById('st').textContent='opname op pad '+(TR[t].pad+1)+' — speel direct mee';
+   }catch(e){document.getElementById('st').textContent='opname niet leesbaar'}};
+  btn.style.borderColor='#d33';btn.style.color='#d33';
+  rec.start();document.getElementById('st').textContent='⏺ opname TR'+(t+1)+' — klik ⏺ OP opnieuw om te stoppen';
+ }catch(e){document.getElementById('st').textContent='mic niet beschikbaar — sta microfoon toe'}
+}
+function trimAudio(buf){ // stilte weg voor/achter + normalize — opname meteen bruikbaar
+ const d=buf.getChannelData(0),sr=buf.sampleRate;let a=0,b=d.length-1;
+ while(a<b&&Math.abs(d[a])<0.008)a++;
+ while(b>a&&Math.abs(d[b])<0.008)b--;
+ const s0=Math.max(0,a-Math.floor(sr*0.02)),e0=Math.min(d.length,b+Math.floor(sr*0.05));
+ const nb=ac().createBuffer(1,Math.max(32,e0-s0),sr),nd=nb.getChannelData(0);
+ let pk=0;for(let i=s0;i<e0;i++){nd[i-s0]=d[i];const x=Math.abs(d[i]);if(x>pk)pk=x}
+ if(pk>0.891){const f=0.891/pk;for(let i=0;i<nd.length;i++)nd[i]*=f}
+ else if(pk>0&&pk<0.3){const f=0.7/pk;for(let i=0;i<nd.length;i++)nd[i]=Math.max(-1,Math.min(1,nd[i]*f))}
+ return nb}
 function mute(t){TR[t].muted=!TR[t].muted;const b=document.getElementById('mut'+t);b.style.borderColor=TR[t].muted?'#d33':'';b.style.color=TR[t].muted?'#d33':''}
 function wis(t){snap();if(TR[t].grid)TR[t].grid.fill(false);else{TR[t].notes=[];drawRoll(t)}syncGrid(t)}
 function opslaan(){const st={bpm:+document.getElementById('bpm').value,tr:TR.map((t,i)=>({src:document.getElementById('src'+i).value,bi:document.getElementById('bank'+i).selectedIndex,pad:t.pad,vol:+document.getElementById('vol'+i).value,pan:+document.getElementById('pan'+i).value,muted:t.muted,grid:t.grid,notes:t.notes}))};localStorage.setItem('g2b_gaw_preset',JSON.stringify(st));document.getElementById('st').textContent='opgeslagen — blijft ook na sluiten'}
