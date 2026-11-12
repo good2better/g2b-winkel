@@ -38,6 +38,22 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 .st.play{outline:2px solid #fff}body.licht .st.play{outline-color:#12231a}
 #st{font-size:.75rem;color:var(--dim)}
 #wm{position:fixed;right:10px;bottom:8px;font-size:.62rem;color:var(--dim);opacity:.55;pointer-events:none}
+.packgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;max-height:190px;overflow-y:auto;margin-top:10px}
+.packgrid.uit{max-height:none}
+.pcard{cursor:pointer;position:relative}
+.pcard .cov{width:100%;aspect-ratio:1;border-radius:4px;border:1px solid #2A2E39;position:relative;overflow:hidden}
+.pcard .cov .ld{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45)}
+.pcard:hover .cov .ld{display:flex}
+.pcard:hover .cov{border-color:#EC4899}
+.pcard .star{position:absolute;top:3px;right:4px;font-size:.75rem;color:#9CA3AF;text-shadow:0 1px 2px #000;z-index:2}
+.pcard .star.fav{color:#f5c542}
+.pcard .titel{font-size:.62rem;text-align:center;color:#F3F4F6;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pctx{position:fixed;background:#1A1D24;border:1px solid #374151;border-radius:6px;z-index:80;font-size:.7rem;min-width:150px}
+.pctx div{padding:7px 10px;cursor:pointer}
+.pctx div:hover{background:#2563EB;color:#fff}
+#repanel .pill{background:#1A1D24;border:1px solid #374151;color:#F3F4F6;border-radius:20px;padding:4px 12px;font-size:.66rem;cursor:pointer}
+#repanel .pill.pri{background:#2563EB;border-color:#2563EB}
+#repanel .pill:disabled{opacity:.35;cursor:default}
 </style></head><body>
 <h1>🎛️ G2B <b>GAW</b> — GIO</h1>
 <p class="sub">Jouw volledige browser-werkplek: 8 tracks, je échte VST-sounds. TR1-4 = ritme (stap-grid), TR5-8 = toon (piano-roll).<br>Per track: bron/bank/pad + volume + pan + mute + ⏺ OP. Audio-lanes: clip verschuiven & trimmen met de muis. ▶ LAAGBAAS stuurt al je stems direct door.</p>
@@ -126,7 +142,37 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
   <button class="uit" onclick="reGen()" style="border-color:var(--groen);color:var(--groen)">✨ RE-IMAGINE</button>
  </div>
  <input type="file" id="refile" accept=".mid,.midi" style="display:none" onchange="reFile(event)">
- <div id="repacks" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;align-items:center"></div>
+ <div style="border-top:1px solid #2A2E39;margin-top:10px;padding-top:8px">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+   <span style="font-size:.64rem;color:#9CA3AF">Klik op een pack om die midi als prompt te laden en te Re-Imagine'n…</span>
+   <span style="display:flex;gap:8px">
+    <select id="refilter" class="pill" onchange="rePacksDraw()" style="background:#1A1D24"><option value="all">All Packs</option><option value="fav">Favorites</option><option value="user">User Packs</option><option value="fac">Factory Packs</option></select>
+    <button class="pill" onclick="reCreate()">Create Pack…</button>
+    <button class="pill pri" id="reexpand" onclick="reExpand()">Expand…</button>
+   </span>
+  </div>
+  <div id="repacks" class="packgrid"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+   <span style="font-size:.6rem;color:#9CA3AF">Klik = laden · ⭐ = favoriet · rechts-klik = menu</span>
+   <span style="display:flex;gap:6px"><button class="pill" id="reundo" onclick="reUndo()" disabled>Undo</button><button class="pill" id="reredo" onclick="reRedo()" disabled>Redo</button></span>
+  </div>
+ </div>
+ <div id="rectx" class="pctx" style="display:none"></div>
+ <div id="recreate" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:75;align-items:center;justify-content:center">
+  <div style="background:#1A1D24;border:1px solid #374151;border-radius:10px;padding:18px;width:340px">
+   <b style="font-size:.8rem">Create Pack</b>
+   <p style="font-size:.64rem;color:#9CA3AF">Naam + eigen .mid of het huidige spoor als inhoud.</p>
+   <input id="recnam" placeholder="pack-naam" style="width:100%;background:#111318;border:1px solid #374151;color:#F3F4F6;padding:6px;border-radius:5px;font-size:.72rem">
+   <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+    <button class="pill" onclick="document.getElementById('refile2').click()">📂 .mid kiezen</button>
+    <button class="pill" onclick="reCreateDo('spoor')">huidige spoor gebruiken</button>
+   </div>
+   <input type="file" id="refile2" accept=".mid,.midi" style="display:none" onchange="reCreateMid(event)">
+   <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
+    <button class="pill" onclick="document.getElementById('recreate').style.display='none'">annuleer</button>
+   </div>
+  </div>
+ </div>
  <div id="recards" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px"></div>
  </div>
 </div>
@@ -650,23 +696,73 @@ const RESEED={
  'droom':[['E4',0,4],['G4',4,2],['B4',8,4],['D5',12,3]]
 };
 const _n2p=n=>KEYS.indexOf(n.replace(/[0-9]/g,''))+12*(+n.slice(-1)+1);
+const _favs=()=>{try{return new Set(JSON.parse(localStorage.getItem('g2b_gaw_packfavs')||'[]'))}catch(e){return new Set()}};
+const _hue=n=>{let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))%360;return h};
+let _reHist=[],_reHistI=-1,_reFilePack=null;
 function rePacksDraw(){
- const el=document.getElementById('repacks');if(!el)return;
- el.innerHTML='<span style="font-size:.62rem;color:var(--dim)">prompt-packs:</span>';
- const eigen=Object.keys(_repacks());
- Object.keys(RESEED).concat(eigen).forEach(n=>{
-  const b=document.createElement('button');b.className='uit klein';b.style.cssText='font-size:.62rem';
-  b.textContent=(eigen.includes(n)?'⭐ ':'')+n;
-  b.onclick=()=>{rePack(n)};el.appendChild(b)});
- const up=document.createElement('button');up.className='uit klein';up.style.fontSize='.62rem';up.textContent='📂 .mid als prompt';
- up.onclick=()=>document.getElementById('refile').click();el.appendChild(up);
- const sv=document.createElement('button');sv.className='uit klein';sv.style.cssText='font-size:.62rem;border-color:var(--groen);color:var(--groen)';sv.textContent='💾 bewaar pack';
- sv.onclick=()=>{const nm=prompt('naam voor je pack (bijv. mijn-neosoul):');if(!nm)return;const m=_repacks();m[nm]=TR[_re.t].notes.map(n=>({p:n.p,s:n.s,d:n.d}));localStorage.setItem('g2b_gaw_repacks',JSON.stringify(m));rePacksDraw();document.getElementById('st').textContent='pack "'+nm+'" bewaard'};el.appendChild(sv)}
+ const el=document.getElementById('repacks');if(!el)return;el.innerHTML='';
+ const eigen=_repacks(),favs=_favs(),flt=(document.getElementById('refilter')||{}).value||'all';
+ const lijst=[];
+ Object.keys(RESEED).forEach(n=>lijst.push({n,fac:true}));
+ Object.keys(eigen).forEach(n=>lijst.push({n,fac:false}));
+ lijst.filter(p=>{
+  if(flt==='fav')return favs.has(p.n);
+  if(flt==='user')return !p.fac;
+  if(flt==='fac')return p.fac;
+  return true}).forEach(p=>{
+  const card=document.createElement('div');card.className='pcard';
+  const h=_hue(p.n);
+  card.innerHTML=`<div class="cov" style="background:linear-gradient(135deg,hsl(${h},55%,26%),hsl(${(h+60)%360},65%,14%))">
+    <span class="star${favs.has(p.n)?' fav':''}">${favs.has(p.n)?'★':'☆'}</span>
+    <span class="ld"><span class="pill pri" style="pointer-events:none">Load…</span></span></div>
+   <div class="titel">${p.fac?'':'⭐ '}${p.n}</div>`;
+  card.onclick=e=>{if(e.target.classList.contains('star')){reFav(p.n);return}rePack(p.n)};
+  card.oncontextmenu=e=>{e.preventDefault();reCtx(e,p.n,p.fac)};
+  el.appendChild(card)});
+ if(!lijst.length)el.innerHTML='<span style="font-size:.62rem;color:#9CA3AF;grid-column:1/-1">geen packs — maak er één met Create Pack…</span>'}
+function reFav(n){const f=_favs();f.has(n)?f.delete(n):f.add(n);
+ localStorage.setItem('g2b_gaw_packfavs',JSON.stringify([...f]));rePacksDraw()}
+function reExpand(){const g=document.getElementById('repacks'),b=document.getElementById('reexpand');
+ g.classList.toggle('uit');b.textContent=g.classList.contains('uit')?'Collapse':'Expand…'}
+function reCtx(e,n,fac){const m=document.getElementById('rectx');
+ m.innerHTML=`<div onclick="rePack('${n}');reCtxSluit()">Load…</div>
+  <div onclick="rePackExport('${n}');reCtxSluit()">Export .mid</div>
+  ${fac?'':`<div onclick="rePackRename('${n}');reCtxSluit()">Edit Pack…</div>
+  <div onclick="rePackDel('${n}');reCtxSluit()">Delete Pack</div>`}`;
+ m.style.display='block';m.style.left=e.clientX+'px';m.style.top=e.clientY+'px';
+ setTimeout(()=>document.addEventListener('click',reCtxSluit,{once:true}),10)}
+function reCtxSluit(){document.getElementById('rectx').style.display='none'}
+function _packNoten(n){const e=_repacks()[n];
+ if(e)return e.map(x=>({p:x.p,s:x.s,d:x.d,v:95}));
+ return RESEED[n].map(x=>({p:_n2p(x[0]),s:x[1],d:x[2],v:95}))}
+function rePackExport(n){const ns=_packNoten(n);_re.vars=[ns];reMid(0)}
+function rePackRename(n){const m=_repacks();const nw=prompt('nieuwe naam:',n);
+ if(!nw||nw===n||!m[n])return;m[nw]=m[n];delete m[n];
+ localStorage.setItem('g2b_gaw_repacks',JSON.stringify(m));rePacksDraw()}
+function rePackDel(n){const m=_repacks();delete m[n];
+ localStorage.setItem('g2b_gaw_repacks',JSON.stringify(m));rePacksDraw()}
+function reCreate(){document.getElementById('recreate').style.display='flex';document.getElementById('recnam').focus()}
+function reCreateDo(how){
+ const nm=(document.getElementById('recnam').value||'').trim()||('pack-'+Date.now()%10000);
+ const m=_repacks();
+ const notes=how==='spoor'?TR[_re.t].notes.map(n=>({p:n.p,s:n.s,d:n.d})):_reFilePack;
+ if(!notes||!notes.length){document.getElementById('st').textContent='geen noten voor de pack';return}
+ m[nm]=notes;localStorage.setItem('g2b_gaw_repacks',JSON.stringify(m));
+ document.getElementById('recreate').style.display='none';_reFilePack=null;rePacksDraw();
+ document.getElementById('st').textContent='pack "'+nm+'" aangemaakt'}
+function reCreateMid(ev){const f=ev.target.files[0];if(!f)return;const rd=new FileReader();
+ rd.onload=()=>{const m=parseMid(new DataView(rd.result));
+  if(m&&m.notes.length){_reFilePack=m.notes.slice(0,64).map(n=>({p:Math.max(PLO,Math.min(PHI,n.p)),s:n.s%16,d:n.d,v:n.v}));reCreateDo('mid')}
+  else document.getElementById('st').textContent='geen noten in die .mid'};
+ rd.readAsArrayBuffer(f);ev.target.value=''}
+function reUndo(){if(_reHistI<=0)return;_reHistI--;_re.prompt=_reHist[_reHistI];reHistKnoppen();reGen()}
+function reRedo(){if(_reHistI>=_reHist.length-1)return;_reHistI++;_re.prompt=_reHist[_reHistI];reHistKnoppen();reGen()}
+function reHistKnoppen(){document.getElementById('reundo').disabled=_reHistI<=0;document.getElementById('reredo').disabled=_reHistI>=_reHist.length-1}
 const _repacks=()=>{try{return JSON.parse(localStorage.getItem('g2b_gaw_repacks')||'{}')}catch(e){return{}}};
 function rePack(n){
- const seed=eigen=>eigen.map(x=>({p:x.p,s:x.s,d:x.d,v:95}));
- const notes=_repacks()[n]?seed(_repacks()[n]):RESEED[n].map(x=>({p:_n2p(x[0]),s:x[1],d:x[2],v:95}));
- _re.prompt=notes;document.getElementById('st').textContent='prompt-pack "'+n+'" — nu ✨ RE-IMAGINE';reGen()}
+ _re.prompt=_packNoten(n);
+ _reHist=_reHist.slice(0,_reHistI+1);_reHist.push(_re.prompt);_reHistI=_reHist.length-1;reHistKnoppen();
+ document.getElementById('st').textContent='prompt-pack "'+n+'" — nu ✨ RE-IMAGINE';reGen()}
 function reFile(ev){
  const f=ev.target.files[0];if(!f)return;const rd=new FileReader();
  rd.onload=()=>{const m=parseMid(new DataView(rd.result));
