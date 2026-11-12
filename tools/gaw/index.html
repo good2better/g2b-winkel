@@ -44,6 +44,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <div class="bar">
 <button id="play" onclick="toggle()">▶ SPEEL</button>
 <label>BPM <span id="bpmv">96</span><input type="range" id="bpm" min="60" max="160" value="96" oninput="bpmv.textContent=this.value"></label>
+<canvas id="vu" width="46" height="26" style="align-self:center" title="master-level"></canvas>
 <button class="uit" onclick="exportMid()">⬇ .MID</button>
 <button class="uit" onclick="exportWav()">⬇ .WAV</button>
 <button class="uit" onclick="exportStems()">⬇ STEMS</button>
@@ -355,6 +356,7 @@ async function mkTrack(t,type){
    <button class="uit" id="ar${t}" style="padding:6px 10px" onclick="opneem(${t})" title="Neem audio op — je take wordt je ${type==='audio'?'clip':'pad'}">⏺ OP</button>
    <button class="uit" id="sol${t}" style="padding:6px 9px" onclick="solo(${t})">S</button>
    <button class="uit" id="mut${t}" style="padding:6px 10px" onclick="mute(${t})">MUTE</button>
+   ${type==='grid'?`<button class="uit" style="padding:6px 9px" title="vult dit spoor met een strak patroon — elke klik een nieuwe" onclick="gridFill(${t})">🎲</button>`:''}
    <button class="uit" style="padding:6px 10px" onclick="wis(${t})">✕</button>
    <div class="fxrack" id="fxr${t}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><b style="font-size:.65rem;color:${TCOL[t%TCOL.length]}">FX-RACK</b><button class="uit klein" id="fxbyp${t}" onclick="fxBypassAll(${t})">BYPASS</button></div><div id="fxl${t}"></div>
     <select class="fxsel" id="fxs${t}"><option value="">+ effect op TR${t+1}…</option><option value="eq">EQ (3-band)</option><option value="delay">DELAY</option><option value="reverb">REVERB</option><option value="filter">FILTER</option><option value="drive">DRIVE</option><option value="comp">COMP</option><option value="brein">BREIN-resonator</option></select>
@@ -519,6 +521,9 @@ function bouwWave(t){
  const end=()=>{drag=null;drawWave(t)};
  c.onpointerup=end;c.onpointercancel=end;
 }
+const _PATROON=[[0,4,8,12],[4,12],[2,6,10,14],[0,2,4,6,8,10,12,14],[0,3,6,10,12],[0,7,10],[0,10],[0,4,8,12,14],[0,5,10]];
+function gridFill(t){snap();const p=_PATROON[Math.floor(Math.random()*_PATROON.length)];
+ TR[t].grid=new Array(16).fill(false);p.forEach(s=>TR[t].grid[s]=true);syncGrid(t)}
 function syncGrid(t){if(typeof window._brd==='undefined'){window._brd=1;setTimeout(()=>{try{brDraw()}catch(e){}},600)}refreshArr();if(TR[t].type==='audio'){drawWave(t);return}if(TR[t].grid&&document.getElementById('st'+t))document.getElementById('st'+t).childNodes.forEach((c,i)=>c.className='st'+(TR[t].grid[i]?' aan':''));else drawRoll(t)}
 function speelClip(t){
  const c=TR[t].clip;if(!c||!c.buf)return;
