@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="nl"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B MIDI-BIB — jouw bouwblokken</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0b0d12;color:#e8ecf3;font-family:system-ui,Segoe UI,Roboto,sans-serif;min-height:100vh}
+.wrap{max-width:860px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:22px;margin:8px 0 4px}
+.sub{color:#9aa4b5;font-size:14px;margin-bottom:18px}
+a.back{color:#9aa4b5;font-size:13px;text-decoration:none}
+a.back:hover{color:#e8ecf3}
+.groep{font-size:15px;font-weight:700;color:#fff;margin:22px 0 4px}
+.uitleg{color:#9aa4b5;font-size:13px;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.mf{background:#141824;border:1px solid #232a3a;border-radius:12px;padding:12px}
+.mf .nm{font-size:14px;font-weight:600;margin-bottom:2px}
+.mf .wt{font-size:11px;color:#9aa4b5;margin-bottom:8px}
+.mf a{display:inline-block;background:#2bd06f;color:#06210f;font-size:12px;font-weight:700;text-decoration:none;padding:6px 10px;border-radius:8px}
+.mf a:hover{filter:brightness(1.1)}
+.mf a.sm{background:#232a3a;color:#e8ecf3}
+.tip{margin-top:24px;background:#141824;border:1px solid #232a3a;border-radius:12px;padding:14px;font-size:13px;color:#9aa4b5;line-height:1.6}
+.tip b{color:#e8ecf3}
+</style>
+</head><body>
+<div class="wrap">
+<a class="back" href="../werkstation-web/index.html">← terug naar werkstation</a>
+<h1>🎼 G2B MIDI-BIB <span style="font-size:13px;color:#9aa4b5;font-weight:400">— jouw bouwblokken (privé)</span></h1>
+<p class="sub">Kant-en-klare akkoorden, baslijnen, drumgrooves en melodie-starters. Sleep een .mid in LAAGBAAS of Beat Maker → hij speelt meteen met G2B-sounds.</p>
+
+<div class="groep">🥁 DRUMS — 4-maten grooves per genre</div>
+<p class="uitleg">Het ritme-skelet. Sleep erin → je hoort kick/snare/hat van het genre.</p>
+<div class="grid" id="drums"></div>
+
+<div class="groep">🎹 AKKOORDEN — 4-akkoord reeksen</div>
+<p class="uitleg">Harmonie-fundering. Elk akkoord 4 tellen + octaaf eronder voor body.</p>
+<div class="grid" id="akkoord"></div>
+
+<div class="groep">🎸 BAS — baslijnen per genre</div>
+<p class="uitleg">De onderlaag die je groove draagt. Lage noten = 808/sub-territorium.</p>
+<div class="grid" id="bas"></div>
+
+<div class="groep">🎵 MELODIE — starters om op voort te bouwen</div>
+<p class="uitleg">Toplijn-ideeën. Sleep erin, speel erover, of laat het brein variëren.</p>
+<div class="grid" id="melodie"></div>
+
+<div class="tip"><b>Zo gebruik je het:</b> download een .mid → open <b>LAAGBAAS</b> → sleep het bestand erin → elk kanaal wordt automatisch een spoor met G2B-sounds. Combineer vrij: een zouk-drum + trap-bas + jouw melodie = jouw eigen hybride.</div>
+</div>
+<script>
+const BESTANDEN={
+drums:['drums-schuivel','drums-zouk','drums-kawina','drums-drill','drums-house','drums-trap','drums-pop','drums-rnb','drums-dancehall'],
+akkoord:['akkoord-a-min-1564','akkoord-c-maj-1564','akkoord-a-min-bies','akkoord-e-min-1564'],
+bas:['bas-schuivel','bas-zouk','bas-drill','bas-house','bas-trap','bas-pop'],
+melodie:['melodie-zouk-a','melodie-schuivel-a','melodie-trap-a','melodie-house-a'],
+};
+for(const g in BESTANDEN){
+  const el=document.getElementById(g);
+  for(const nm of BESTANDEN[g]){
+    const d=document.createElement('div');d.className='mf';
+    d.innerHTML=`<div class="nm">${nm.replace(/-/g,' ')}</div><div class="wt">.mid · 4 maten</div><a href="mid/${nm}.mid" download>⬇ download</a>`;
+    el.appendChild(d);
+  }
+}
+</script>
+<script src="/js/g2b-gate.js" data-tier="mijn"></script>
+</body></html>
