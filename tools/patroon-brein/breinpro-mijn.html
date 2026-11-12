@@ -69,7 +69,7 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <label><b>SEED</b><input type="number" id="seed" value="1" min="0" oninput="G.seed=+this.value||1"></label>
 </div>
 <div id="pills"></div>
-<div id="kitnav"><button class="uit" onclick="kitNav(-1)">◀</button><span class="naam" id="kitnaam">…</span><button class="uit" onclick="kitNav(1)">▶</button><span class="tel" id="kittel"></span></div>
+<div id="kitnav"><button class="uit" onclick="kitNav(-1)">◀</button><span class="naam" id="kitnaam">…</span><button class="uit" onclick="kitNav(1)">▶</button><span class="tel" id="kittel"></span><button class="uit" id="bWis" onclick="wisKit()" style="display:none">🗑 wis kit</button></div>
 <div id="lagen"></div>
 <div id="grid"></div>
 <div class="kaart" id="raster2" hidden><b>BOUWVELD (raster 2)</b> — AUTO-SCORE vriest elke voltooide laag hier vast · klik een laag = solo horen:
@@ -125,6 +125,19 @@ function bouwUI(){
  $('pills').innerHTML=Object.keys(KITS).filter(g=>KITS[g].length)
   .map(g=>`<button class="pill" data-g="${g}" onclick="kiesGenre('${g}')">${g} <small>${KITS[g].length}</small></button>`).join('');}
 function ladNoten(){const sc=LADDERS[$('ladder').value],r=+$('root').value;return sc.map(i=>r+45+i)}
+let fileGeleerdN=0; // kits die uit het bestand komen = niet wisbaar; alleen je eigen geleerde wel
+function wisKit(){
+ if(G.genre!=='GELEERD'||!KITS.GELEERD||!KITS.GELEERD.length)return;
+ if(G.ki<fileGeleerdN){alert('Dit is een vaste kit uit de app — alleen je eigen geleerde kits kun je wissen.');return;}
+ const k=KITS.GELEERD[G.ki];
+ if(!confirm('Kit "'+(k.name||'geleerd')+'" wissen? Hij is weg uit je brein.'))return;
+ KITS.GELEERD.splice(G.ki,1);
+ try{localStorage.setItem('breinGeleerd',JSON.stringify(KITS.GELEERD.slice(fileGeleerdN)))}catch(e){}
+ if(G.ki>=KITS.GELEERD.length)G.ki=Math.max(0,KITS.GELEERD.length-1);
+ bouwUI();
+ if(!KITS.GELEERD.length){kiesGenre(Object.keys(KITS).find(g=>g!=='GELEERD'&&KITS[g].length));return;}
+ laadKit();
+}
 function kiesGenre(g){G.genre=g;G.ki=0;
  document.querySelectorAll('.pill').forEach(b=>b.classList.toggle('on',b.dataset.g===g));
  laadKit();}
@@ -135,6 +148,7 @@ function laadKit(){const k=KITS[G.genre][G.ki];
  if(k.bpm){$('bpm').value=k.bpm;$('vBpm').textContent=k.bpm;}
  $('kitnaam').textContent=G.genre+' · '+(G.genre==='KAWINA'?k.name.replace(/^rythem(\d+)(?:_bpm\d+)?/i,'kawina-ritme $1'):k.name);
  $('kittel').textContent='kit '+(G.ki+1)+'/'+KITS[G.genre].length+(k.bpm?' · geleerd op '+k.bpm+' bpm':'');
+ const bw=$('bWis');if(bw)bw.style.display=G.genre==='GELEERD'?'':'none';
  bouwLagen();bouwRaster();
  $('st').textContent=G.genre+'/'+k.name+' geladen — pas aan of druk GENEREER';}
 function bouwRaster(){G.root=+$('root').value;G.ladder=$('ladder').value;G.seed=+$('seed').value||G.seed;deelPatroon();
@@ -436,6 +450,6 @@ function leerMid(fs){let ok=0,fout=0;
  .then(()=>{try{localStorage.setItem('breinGeleerd',JSON.stringify(KITS.GELEERD||[]))}catch(e){}
   bouwUI();if(ok)kiesGenre('GELEERD');
   $('st').textContent='📚 '+ok+' kit(s) geleerd → GELEERD-pil'+(fout?' · '+fout+' bestand(en) overgeslagen':'');});}
-fetch('breinpro-kits.json').then(r=>r.json()).then(k=>{KITS=k;try{const g=JSON.parse(localStorage.getItem('breinGeleerd')||'[]');if(g.length)KITS.GELEERD=(KITS.GELEERD||[]).concat(g)}catch(e){}bouwUI();kiesGenre(Object.keys(k).find(g=>k[g].length));});
+fetch('breinpro-kits.json').then(r=>r.json()).then(k=>{KITS=k;fileGeleerdN=(KITS.GELEERD||[]).length;try{const g=JSON.parse(localStorage.getItem('breinGeleerd')||'[]');if(g.length)KITS.GELEERD=(KITS.GELEERD||[]).concat(g)}catch(e){}bouwUI();kiesGenre(Object.keys(k).find(g=>k[g].length));});
 </script><script src="/js/g2b-gate.js" data-tier="inner"></script>
 </body></html>
