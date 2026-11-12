@@ -78,6 +78,7 @@ footer b{color:var(--accent)}
 <footer><span data-i18n="foot" data-i18n-html>Gebouwd door <b>Good2Better</b> — eigen winkel, geen commissie.</span><br><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465
 </footer>
 <script src="lang.js" defer></script>
+<script src="actie.js"></script>
 <script type="module">
 // taal-wissel: herlaad in de gekozen taal (localStorage onthoudt de keuze)
 window.g2bRerender = () => location.reload();
@@ -108,7 +109,7 @@ try {
 
 async function laden() {
   const k = new URLSearchParams(location.search).get("k") || "";
-  if (!/^[a-z0-9]{4,32}$/i.test(k)) { fout(); return; }
+  if (!/^[a-z0-9][a-z0-9-]{3,40}$/i.test(k)) { fout(); return; }
   let info;
   try {
     const r = await fetch(`d/${k}/info.json`, { cache: "no-store" });
@@ -126,6 +127,16 @@ async function laden() {
       ⬇ ${esc(b.naam || T("download"))}</a>`;
   }).join("") : `<a class="knop" href="${esc(href)}" ${extern ? 'target="_blank" rel="noopener"' : "download"}>
       ⬇ ${T("download")}</a>`;
+  let bonus = "";
+  try {
+    const A = window.G2B_ACTIE;
+    const pd = await (await fetch("products.json", { cache: "no-store" })).json();
+    const prod = (pd.producten || []).find(x => x.id === k ||
+      JSON.stringify(x.links || {}).includes(`k=${k}"`));
+    const gratis = prod && /gratis/i.test(String(prod.prijs));
+    if (A && A.loopt() && !gratis && !info.geen_bonus)
+      bonus = `<a class="knop" href="${esc(A.bonus.url)}" download>⬇ ${esc(A.bonus.naam)}</a>`;
+  } catch {}
   kaart.innerHTML = `
     <div class="vinkje">✓</div>
     <h1>${T("bedankt_t")}</h1>
@@ -137,7 +148,7 @@ async function laden() {
         <div class="l">${esc(info.licentie || "")}</div>
       </div>
     </div>
-    ${knoppen}
+    ${knoppen}${bonus}
     <div class="klein">${T("dl_klein")}
       <br><br>🔧 Werkt iets niet? <a href="meld.html?p=${esc(k)}" style="color:var(--accent)">Meld het hier</a> — we fixen 't en je downloadt opnieuw via dezezelfde link.
       <br><a href="index.html">${T("terug")}</a></div>

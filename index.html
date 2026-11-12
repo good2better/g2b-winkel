@@ -4,301 +4,267 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="p:domain_verify" content="043a7e665d6dc7ffd59d20bbbb191750"/>
-<title>G2B Winkel</title>
-<meta name="description" content="Eigen winkel van Good2Better — beats, plugins en sound packs, direct van de maker.">
-<meta property="og:title" content="G2B Winkel — beats, plugins & sound packs">
-<meta property="og:description" content="Eigen beats, plugins & sound packs — direct van de maker. Maak gratis je eigen beat.">
+<title>G2B Studio — plugins & instrumenten, direct in je browser en DAW</title>
+<meta name="description" content="G2B AURA v6.0: studio-instrumenten en effecten die direct in je browser werken — en als VST3 + desktop-app in je DAW. Probeer gratis.">
+<meta property="og:title" content="G2B Studio — de toekomst van muziekproductie">
+<meta property="og:description" content="Direct in je browser & studio. Probeer de AURA v6.0-modules gratis.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://good2better.github.io/g2b-winkel/media/g2b-packderpacks-cover.png">
-<meta name="theme-color" content="#0d0f0e">
+<meta property="og:image" content="https://good2better.github.io/g2b-winkel/media/g2bprodsuite-cover.png">
+<meta name="theme-color" content="#0a0c0b">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230D0F0E'/><text x='50' y='68' font-size='52' font-weight='bold' text-anchor='middle' fill='%232FBF71' font-family='sans-serif'>G2</text></svg>">
 <style>
-:root{
-  --bg:#0a0c0b; --panel:#141816; --panel2:#1c221e; --line:#26302a;
-  --txt:#eef4f0; --dim:#93a69b; --accent:#2fbf71; --accent2:#1d7a48;
-  --glow:rgba(47,191,113,.14);
-}
+:root{--bg:#08090a;--panel:#101312;--panel2:#151a17;--line:#1d2621;--txt:#eef4f0;--dim:#8a9b91;--accent:#2fbf71;--accent2:#1d7a48}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-html,body{overflow-x:hidden}
-body{background:
-  radial-gradient(1200px 500px at 50% -200px, var(--glow), transparent 70%),
-  var(--bg);
-  color:var(--txt);
-  font:15px/1.6 'Segoe UI',system-ui,sans-serif;min-height:100vh}
-header{position:relative;text-align:center;padding:44px 20px 30px;
-  background:linear-gradient(180deg,#101512 0%,var(--bg) 100%);
-  border-bottom:1px solid var(--line);overflow:hidden}
-header::before{content:"";position:absolute;inset:-40% -20% auto;
-  height:180%;background:
-  radial-gradient(600px 300px at 50% 0%, rgba(47,191,113,.20), transparent 70%);
-  pointer-events:none}
-header>*{position:relative}
-.logo{font-size:clamp(30px,5.5vw,46px);font-weight:800;letter-spacing:4px;
-  text-shadow:0 2px 30px rgba(47,191,113,.35)}
-.logo b{color:var(--accent)}
-.sub{color:var(--dim);font-size:14px;margin-top:6px;letter-spacing:.3px}
-main{max-width:900px;margin:0 auto;padding:26px 16px 60px}
-.trust{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
-  margin:0 0 22px}
-.trust span{color:var(--dim);font-size:12px;border:1px solid var(--line);
-  border-radius:20px;padding:4px 14px;background:rgba(255,255,255,.02)}
-.card{background:linear-gradient(180deg,var(--panel2) 0%,var(--panel) 100%);
-  border:1px solid var(--line);
-  border-radius:16px;padding:18px;margin-bottom:18px;
-  transition:transform .18s ease,border-color .2s,box-shadow .25s}
-.card:hover{border-color:var(--accent2);transform:translateY(-2px);
-  box-shadow:0 10px 34px rgba(0,0,0,.45),0 0 0 1px rgba(47,191,113,.08)}
-.card .top{display:flex;gap:16px;align-items:flex-start}
-.cover{width:104px;height:104px;border-radius:12px;object-fit:cover;
-  background:#000;flex:none;border:1px solid var(--line);
-  box-shadow:0 4px 18px rgba(0,0,0,.4)}
-.info{flex:1;min-width:0}
-.titel{font-size:17px;font-weight:700}
-.prijs{color:var(--accent);font-weight:800;margin:2px 0;font-size:15px}
-.beschr{color:var(--dim);font-size:13px;margin-top:4px;
-  overflow-wrap:break-word;word-break:break-word;hyphens:auto}
-.titel{overflow-wrap:break-word}
-.card{max-width:100%}
-.player{display:flex;align-items:center;gap:10px;margin-top:12px}
-.vid-wrap{position:relative;margin-top:12px}
-.vid-label{position:absolute;top:8px;left:8px;z-index:3;background:rgba(10,14,12,.82);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:4px 10px;font-size:.72rem;pointer-events:none}
-.promo{width:100%;border-radius:10px;border:1px solid var(--line);background:#000;display:block}
-.taal{position:absolute;top:8px;right:8px;z-index:3;background:rgba(10,14,12,.82);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:4px 10px;font-size:.78rem;cursor:pointer;font-family:inherit}
-.taal:hover{border-color:var(--neon)}
-.vidplay{position:absolute;inset:0;margin:auto;width:64px;height:64px;
-  border-radius:50%;border:none;background:var(--accent);color:#04120a;
-  font-size:22px;cursor:pointer;z-index:2;display:flex;align-items:center;
-  justify-content:center;box-shadow:0 6px 24px rgba(0,0,0,.5);transition:transform .15s}
-.vidplay:hover{transform:scale(1.08)}
-.vid-wrap:has(.vidplay) .promo{aspect-ratio:16/9;object-fit:cover}
-.playbtn{width:42px;height:42px;border-radius:50%;border:none;
-  background:var(--accent);color:#04120a;font-size:16px;cursor:pointer;
-  flex:none;display:flex;align-items:center;justify-content:center;
-  font-weight:700}
-.playbtn:hover{filter:brightness(1.15)}
-.wave{flex:1;min-width:0;height:52px;cursor:pointer}
-.duur{color:var(--dim);font-size:12px;flex:none}
-.koop-blok{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;
-  align-items:center}
-.licentie{background:var(--panel2);border:1px solid var(--line);
-  color:var(--txt);border-radius:8px;padding:7px 12px;font-size:12.5px;
-  cursor:pointer}
-.licentie.on{border-color:var(--accent);color:var(--accent);
-  font-weight:700}
-.koop{margin-left:auto;background:linear-gradient(180deg,#38d583,var(--accent));
-  color:#04120a;
-  border:none;font-weight:800;font-size:15px;padding:12px 28px;
-  border-radius:24px;cursor:pointer;text-decoration:none;
-  display:inline-block;letter-spacing:.4px;
-  box-shadow:0 4px 18px rgba(47,191,113,.30);
-  transition:transform .15s,box-shadow .2s,filter .2s}
-.koop:hover{filter:brightness(1.1);transform:translateY(-1px);
-  box-shadow:0 6px 24px rgba(47,191,113,.42)}
-.koop.uit{opacity:.45;pointer-events:none}
-.upsell{display:inline-block;margin-top:8px;font-size:12.5px;color:var(--accent);
-  text-decoration:none;border:1px dashed var(--line);border-radius:8px;
-  padding:4px 10px;opacity:.85}
-.upsell:hover{opacity:1;border-color:var(--accent)}
-.koop.browser{background:none;color:var(--accent);border:1px solid var(--accent);
-  box-shadow:none;padding:11px 18px;font-size:13px}
-.leeg{text-align:center;color:var(--dim);padding:60px 20px;
-  border:1px dashed var(--line);border-radius:14px}
-.stickybar{position:sticky;top:0;z-index:60;background:var(--bg);
-  padding:8px 0 10px;margin:0 -16px;padding-left:16px;padding-right:16px}
-.meer{margin-top:10px}
-.meer summary{cursor:pointer;color:var(--accent);font-weight:700;font-size:13px;
-  list-style:none;padding:8px 12px;border:1px solid var(--line);border-radius:10px;
-  background:rgba(255,255,255,.02);user-select:none}
-.meer summary:hover{background:rgba(47,191,113,.08)}
-.meer summary::after{content:" ▸";color:var(--dim)}
-.meer[open] summary::after{content:" ▾"}
-.meer .beschr{margin-top:10px}
-.specs{color:var(--dim);font-size:12px;margin-top:8px;border-top:1px dashed var(--line);
-  padding-top:8px;line-height:1.5}
-.conditie{color:var(--dim);font-size:11px;margin-top:6px;line-height:1.4}
-.conditie a{color:var(--accent)}
-.deal{display:flex;align-items:center;gap:12px;justify-content:space-between;
-  background:linear-gradient(90deg,rgba(47,191,113,.16),rgba(47,191,113,.05));
-  border:1px solid var(--accent);border-radius:14px;padding:12px 18px;
-  margin:0 0 18px;cursor:pointer;text-decoration:none;color:var(--txt)}
-.deal:hover{background:linear-gradient(90deg,rgba(47,191,113,.24),rgba(47,191,113,.08))}
-.deal .dt{font-weight:800;font-size:14px}
-.deal .dd{color:var(--dim);font-size:12px}
-.deal .dp{background:var(--accent);color:#04120a;font-weight:800;border-radius:20px;
-  padding:6px 16px;white-space:nowrap;font-size:14px}
-.zoek{width:100%;background:var(--panel);border:1px solid var(--line);
-  color:var(--txt);border-radius:24px;padding:12px 18px;font-size:14px;
-  margin:0 0 18px;font-family:inherit;box-shadow:inset 0 2px 8px rgba(0,0,0,.3)}
-.zoek:focus{outline:none;border-color:var(--accent);
-  box-shadow:0 0 0 3px rgba(47,191,113,.15)}
-.groepen{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
-  margin:0 0 22px}
-.groepbtn{background:var(--panel);border:1px solid var(--line);
-  color:var(--txt);border-radius:20px;padding:8px 16px;font-size:13px;
-  font-weight:700;cursor:pointer;letter-spacing:.3px;
-  transition:border-color .15s,color .15s,background .15s}
-.groepbtn:hover{border-color:var(--accent);color:var(--accent)}
-.groepbtn.speelt{border-color:var(--accent);color:var(--accent);
-  background:rgba(47,191,113,.10)}
-.groepbtn.alles{background:linear-gradient(180deg,#38d583,var(--accent));
-  color:#04120a;
-  border-color:var(--accent)}
-.groepbtn.alles:hover{color:#04120a;filter:brightness(1.1)}
-#uitg{margin:2px auto 6px;max-width:980px}
-.uitg-kop{color:var(--accent);font-weight:800;font-size:13px;letter-spacing:.1em;margin:2px 6px 8px}
-.uitg-rij{display:flex;gap:10px;overflow-x:auto;padding:2px 4px 12px;scrollbar-width:thin}
-.uitg-card{flex:0 0 148px;background:var(--panel);border:1px solid var(--line);
-  border-radius:12px;padding:8px;cursor:pointer;text-align:left;color:var(--txt);
-  font-family:inherit;transition:border-color .15s,transform .15s}
-.uitg-card:hover{border-color:var(--accent);transform:translateY(-2px)}
-.uitg-card img{width:100%;height:84px;object-fit:cover;border-radius:8px;display:block}
-.uitg-noimg{height:84px;border-radius:8px;background:#16211b}
-.uitg-t{display:block;font-size:11px;font-weight:700;margin-top:6px;line-height:1.3;min-height:28px}
-.uitg-p{display:block;color:var(--accent);font-weight:800;font-size:12px;margin-top:3px}
+body{background:var(--bg);color:var(--txt);font:15px/1.6 'Segoe UI',system-ui,-apple-system,sans-serif;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
 
-.sectie{margin:30px 0 14px;padding:0 0 10px 12px;
-  border-bottom:1px solid var(--line);border-left:4px solid var(--accent)}
-.sectie:first-of-type{margin-top:6px}
-.sectie h2{font-size:16px;font-weight:800;letter-spacing:1.8px;
-  color:var(--accent);text-transform:uppercase}
-.sectie .u{color:var(--dim);font-size:12px;margin-top:2px}
-.langset{position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:5}
-.langb{background:var(--panel2);border:1px solid var(--line);color:var(--dim);
-  border-radius:14px;padding:4px 11px;font-size:11px;font-weight:800;
-  letter-spacing:.5px;cursor:pointer;font-family:inherit}
-.langb:hover{border-color:var(--accent);color:var(--accent)}
-.langb.aan{border-color:var(--accent);color:#04120a;background:var(--accent)}
-footer{text-align:center;color:var(--dim);font-size:12px;
-  padding:24px;border-top:1px solid var(--line)}
-footer b{color:var(--accent)}
-@media(max-width:560px){
-  header{padding:26px 12px 18px}
-  .logo{font-size:30px;letter-spacing:2px}
-  main{padding:14px 10px 48px}
-  .trust{gap:6px;margin-bottom:14px}
-  .trust span{font-size:10.5px;padding:3px 9px}
-  .deal{padding:10px 12px}
-  .stickybar{padding:6px 0 8px;margin:0 -10px;padding-left:10px;padding-right:10px}
-  .zoek{padding:10px 14px;font-size:13px;margin-bottom:8px}
-  /* pillen: horizontaal scrollen ipv opstapelen — houdt het vlak klein */
-  .groepen{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;
-    gap:6px;margin:0 0 4px;padding-bottom:4px;
-    -webkit-overflow-scrolling:touch;scrollbar-width:none}
-  .groepen::-webkit-scrollbar{display:none}
-  .groepbtn{flex:none;padding:6px 12px;font-size:11.5px;white-space:nowrap}
-  .sectie{margin:18px 0 10px}
-  .card .top{flex-direction:column}
-  .cover{width:100%;height:auto;aspect-ratio:1}
-  .koop{margin-left:0;width:100%;text-align:center}
+/* actiebalk */
+.actie{background:linear-gradient(90deg,#16884f,var(--accent),#16884f);color:#03140a;text-align:center;font-size:13px;font-weight:700;padding:8px 14px;letter-spacing:.2px}
+.actie .klok{font-variant-numeric:tabular-nums;background:rgba(0,0,0,.18);border-radius:6px;padding:1px 8px;margin-left:4px;white-space:nowrap}
+
+/* navigatie */
+nav{position:sticky;top:0;z-index:50;background:rgba(8,9,10,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;gap:16px}
+.logo{font-weight:800;font-size:19px;letter-spacing:3px}.logo b{color:var(--accent)}
+.menu{display:flex;gap:6px}
+.menu a{font-size:12.5px;font-weight:700;letter-spacing:1.2px;color:var(--dim);padding:8px 14px;border-radius:8px;transition:color .15s,background .15s}
+.menu a:hover{color:var(--txt);background:var(--panel2)}
+.menu a.acc{color:var(--accent);border:1px solid var(--accent2)}
+.menu a.acc:hover{background:rgba(47,191,113,.08)}
+
+/* hero */
+.hero{position:relative;text-align:center;padding:110px 24px 90px;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(700px 340px at 50% 0%,rgba(47,191,113,.16),transparent 70%);pointer-events:none}
+.hero>*{position:relative}
+.eyebrow{display:inline-block;font-size:11.5px;letter-spacing:3px;color:var(--accent);border:1px solid var(--line);border-radius:20px;padding:5px 14px;margin-bottom:26px}
+.hero h1{font-size:clamp(30px,5.2vw,58px);line-height:1.08;font-weight:800;letter-spacing:-.5px;max-width:900px;margin:0 auto}
+.hero h1 span{color:var(--accent)}
+.hero p{color:var(--dim);font-size:17px;max-width:560px;margin:22px auto 0}
+.cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:36px}
+.btn{display:inline-block;font-weight:800;font-size:14px;letter-spacing:.8px;padding:15px 30px;border-radius:30px;cursor:pointer;border:0;font-family:inherit;transition:transform .15s,filter .15s,box-shadow .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn.vol{background:var(--accent);color:#03140a;box-shadow:0 8px 30px rgba(47,191,113,.28)}
+.btn.vol:hover{filter:brightness(1.08)}
+.btn.rand{background:transparent;color:var(--txt);border:1px solid #2c3a32}
+.btn.rand:hover{border-color:var(--accent);color:var(--accent)}
+.trust{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin-top:46px;color:var(--dim);font-size:12.5px;letter-spacing:.3px}
+
+/* filters */
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.filters{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0 50px}
+.fb{background:transparent;border:1px solid var(--line);color:var(--dim);font-family:inherit;font-weight:700;font-size:12px;line-height:1;letter-spacing:1.4px;padding:11px 20px;border-radius:24px;cursor:pointer;transition:all .15s}
+.fb:hover{color:var(--txt);border-color:#2c3a32}
+.fb.aan{background:var(--txt);color:#08090a;border-color:var(--txt)}
+
+/* grid + kaarten */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:34px}
+.kaart{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,border-color .2s,box-shadow .25s}
+.kaart:hover{transform:translateY(-4px);border-color:#2a3a31;box-shadow:0 18px 40px rgba(0,0,0,.5)}
+.kaart .img{position:relative;aspect-ratio:16/10;background:#0b0e0c;overflow:hidden}
+.kaart .img img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform .4s}
+.kaart:hover .img img{transform:scale(1.03)}
+.label{position:absolute;top:14px;left:14px;background:var(--accent);color:#03140a;font-size:10.5px;font-weight:800;letter-spacing:1.5px;padding:4px 10px;border-radius:6px}
+.kaart .body{padding:24px 24px 26px;display:flex;flex-direction:column;flex:1}
+.kaart h3{font-size:21px;font-weight:800;letter-spacing:-.2px;line-height:1.2}
+.kaart .zin{color:var(--dim);font-size:14px;margin:8px 0 20px;flex:1}
+.prijsrij{margin-bottom:18px}
+.oud{color:#6b7a71;font-size:13px;text-decoration:line-through}
+.oud small{text-decoration:none;display:inline-block;margin-right:4px}
+.nu{color:var(--accent);font-size:26px;font-weight:800;line-height:1.1}
+.nu small{font-size:12px;color:var(--dim);font-weight:600;margin-left:6px;letter-spacing:.5px}
+.knoppen{display:flex;gap:10px}
+.knoppen a{flex:1;text-align:center;font-weight:800;font-size:12.5px;letter-spacing:1.2px;padding:12px 10px;border-radius:24px;transition:all .15s}
+.k-demo{border:1px solid #2c3a32;color:var(--txt)}
+.k-demo:hover{border-color:var(--accent);color:var(--accent)}
+.k-koop{background:var(--accent);color:#03140a}
+.k-koop:hover{filter:brightness(1.08)}
+
+/* pro suite */
+.suite{grid-column:1/-1;position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--accent2);
+  background:radial-gradient(600px 300px at 85% 50%,rgba(47,191,113,.16),transparent 70%),linear-gradient(135deg,#0f1713,#0a0d0b);
+  display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:54px 56px;margin:16px 0}
+.suite .eyebrow{margin-bottom:18px}
+.suite h2{font-size:clamp(26px,3.4vw,40px);line-height:1.1;font-weight:800}
+.suite h2 span{color:var(--accent)}
+.suite p{color:var(--dim);margin:14px 0 22px;max-width:520px}
+.suite ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;font-size:13.5px;margin-bottom:28px}
+.suite li::before{content:"✓ ";color:var(--accent);font-weight:800}
+.suite .rechts{text-align:center;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:18px;padding:34px 26px}
+.suite .nu{font-size:52px}
+.suite .klokrij{font-size:12.5px;color:var(--dim);margin:14px 0 22px}
+.suite .klok{font-variant-numeric:tabular-nums;color:var(--txt);font-weight:700}
+
+/* nieuwsbrief + footer */
+.news{max-width:620px;margin:110px auto 0;text-align:center;padding:0 24px}
+.news h4{font-size:13px;letter-spacing:3px;color:var(--accent);margin-bottom:8px}
+.news p{color:var(--dim);font-size:14px}
+.news form{display:flex;gap:10px;margin-top:18px}
+.news input{flex:1;background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:30px;padding:13px 20px;font:inherit}
+.news input:focus{outline:none;border-color:var(--accent)}
+#ev-msg{margin-top:10px;font-size:13px;color:var(--accent);min-height:1.2em}
+footer{margin-top:90px;border-top:1px solid var(--line);padding:46px 24px 36px;color:var(--dim);font-size:12.5px}
+.foot-in{max-width:1180px;margin:0 auto;display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a:hover,.foot-legal a:hover{color:var(--accent)}
+.foot-legal{margin-top:22px;max-width:1180px;margin-left:auto;margin-right:auto;font-size:11.5px;line-height:1.8}
+.foot-legal b{color:var(--txt)}
+
+@media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr);gap:24px}.suite{grid-template-columns:1fr;padding:38px 28px}}
+@media(max-width:680px){
+  .nav-in{flex-direction:column;padding:12px 14px;gap:10px}
+  .menu{width:100%;overflow-x:auto;justify-content:flex-start;scrollbar-width:none}
+  .menu a{white-space:nowrap;font-size:11px;padding:7px 10px}
+  .hero{padding:64px 18px 56px}.hero p{font-size:15px}
+  .grid{grid-template-columns:1fr}
+  .suite ul{grid-template-columns:1fr}
+  .news form{flex-direction:column}
+  .actie{font-size:11.5px}
 }
 </style>
 </head>
 <body>
-<header>
-  <div class="logo" id="titel">G2B <b>WINKEL</b></div>
-  <div class="sub" id="ondertitel">Eigen beats, plugins & sound packs — direct van de maker</div>
-  <div class="langset" id="langset">
-    <button class="langb" data-lang="nl">NL</button>
-    <button class="langb" data-lang="en">EN</button>
-    <button class="langb" data-lang="es">ES</button>
+
+<div class="actie" id="actiebalk">🎁 TIJDELIJKE ACTIE: Gratis G2B Exclusive 808 &amp; Drum Pack bij elke aankoop — Actie eindigt over <span class="klok" data-klok>…</span></div>
+
+<nav><div class="nav-in">
+  <a class="logo" href="index.html">G2B <b>STUDIO</b></a>
+  <div class="menu">
+    <a href="#winkel">PLUGINS &amp; STUDIO</a>
+    <a href="library.html">BEATS &amp; PACKS</a>
+    <a href="tools/aura-v6/">GRATIS DEMO</a>
+    <a class="acc" href="account.html">MIJN ACCOUNT / LICENTIE</a>
   </div>
-  <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><a href="beatmaker.html" data-i18n="nav_beatmaker" style="display:inline-block;background:var(--accent);color:#04120a;font-weight:800;font-size:13px;padding:8px 18px;border-radius:20px;text-decoration:none;letter-spacing:.4px">🎛 MAAK JE EIGEN BEAT — gratis</a><a href="radio.html" data-i18n="nav_radio" style="display:inline-block;background:transparent;color:var(--accent);border:1.5px solid var(--accent);font-weight:800;font-size:13px;padding:8px 18px;border-radius:20px;text-decoration:none;letter-spacing:.4px">📻 G2B RADIO</a><a href="live/" data-i18n="nav_live" style="display:inline-block;background:#c62828;color:#fff;border:1.5px solid #c62828;font-weight:800;font-size:13px;padding:8px 18px;border-radius:20px;text-decoration:none;letter-spacing:.4px">🔴 G2B LIVE</a><a href="library.html" data-i18n="nav_library" style="display:inline-block;background:transparent;color:var(--accent);border:1.5px solid var(--accent);font-weight:800;font-size:13px;padding:8px 18px;border-radius:20px;text-decoration:none;letter-spacing:.4px">🎹 BEATS & PACKS</a><a href="kleding.html" data-i18n="nav_kleding" style="display:inline-block;background:transparent;color:var(--accent);border:1.5px solid var(--accent);font-weight:800;font-size:13px;padding:8px 18px;border-radius:20px;text-decoration:none;letter-spacing:.4px">👕 KLEDING</a><a href="bouwer.html" data-i18n="nav_bouwer" style="display:inline-block;background:transparent;color:var(--accent);border:1.5px solid var(--accent);font-weight:800;font-size:13px;padding:8px 18px;border-radius:20px;text-decoration:none;letter-spacing:.4px">🧰 STEL JE BUNDEL SAMEN</a></div>
-</header>
-<main>
-  <div class="trust">
-    <span data-i18n="trust1">🔒 veilig betalen</span>
-    <span data-i18n="trust2">⬇ direct downloaden</span>
-    <span data-i18n="trust3">🤝 100% van de maker</span>
-    <span data-i18n="trust4">🎹 100% eigen geluid — geen samples van anderen</span>
-    <span data-i18n="trust5">📜 commercieel gebruik inbegrepen</span>
+</div></nav>
+
+<section class="hero">
+  <div class="eyebrow">G2B AURA v6.0 · NU BESCHIKBAAR</div>
+  <h1>DE TOEKOMST VAN MUZIEKPRODUCTIE —<br><span>DIRECT IN JE BROWSER &amp; STUDIO</span></h1>
+  <p>Studio-instrumenten en effecten die meteen in je browser spelen — en als VST3-plugin en desktop-app in je eigen DAW.</p>
+  <div class="cta">
+    <a class="btn vol" href="tools/aura-v6/">▶ PROBEER GRATIS DEMO</a>
+    <a class="btn rand" href="#prosuite">🔥 BEKIJK G2B PRO SUITE</a>
   </div>
-  <a class="deal" href="#" id="deal" data-i18n-html="deal">
-    <span><span class="dt">🔥 DEAL — G2B PRODUCER SUITE</span><br>
-    <span class="dd">6 plugins in één set · los €180 → nu</span></span>
-    <span class="dp">€79</span>
-  </a>
-  <div class="stickybar">
-  <input class="zoek" id="zoek" type="search" data-i18n-ph="zoek_ph" placeholder="🔍 Zoek in de winkel… (beat, plugin, pack, boek)" aria-label="Zoek in de winkel">
-  <div id="cats" class="groepen"></div>
-  <div id="groepen" class="groepen" style="display:none"></div>
+  <div class="trust"><span>🔒 Veilig betalen</span><span>⬇ Direct downloaden</span><span>🎹 100% eigen geluid</span><span>📜 Commercieel gebruik inbegrepen</span></div>
+</section>
+
+<main class="wrap" id="winkel">
+  <div class="filters" id="filters">
+    <button class="fb aan" data-f="alles">ALLES</button>
+    <button class="fb" data-f="instrumenten">INSTRUMENTEN</button>
+    <button class="fb" data-f="effecten">EFFECTEN</button>
+    <button class="fb" data-f="bundels">BUNDELS &amp; LIDMAATSCHAP</button>
+    <button class="fb" data-f="demo">GRATIS DEMO</button>
   </div>
-  <div id="uitg"></div>
-  <div id="lijst"><div class="leeg" data-i18n="laden">Winkel wordt geladen…</div></div>
+  <div class="grid" id="grid"></div>
 </main>
-<div id="steun" style="max-width:520px;margin:0 auto 24px;text-align:center;border:1px solid var(--line);border-radius:14px;padding:18px">
-  <b style="color:var(--accent)" data-i18n="steun_t">💚 STEUN G2B</b><br>
-  <span style="font-size:.82rem;color:var(--dim)" data-i18n="steun_x">Vind je de winkel goed? Trakteer de maker op een koffie — elke bijdrage gaat direct naar nieuwe plugins en packs.</span>
-  <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap">
-    <a href="bestel.html?p=steun-3" style="background:var(--panel2);border:1.5px solid var(--accent);color:var(--accent);font-weight:800;font-size:13px;padding:8px 18px;border-radius:20px;text-decoration:none">☕ € 3</a>
-    <a href="bestel.html?p=steun-5" style="background:var(--accent);color:#04120a;font-weight:800;font-size:13px;padding:8px 18px;border-radius:20px;text-decoration:none">☕ € 5</a>
-    <a href="bestel.html?p=steun-10" style="background:var(--panel2);border:1.5px solid var(--accent);color:var(--accent);font-weight:800;font-size:13px;padding:8px 18px;border-radius:20px;text-decoration:none">☕ € 10</a>
-  </div>
-</div>
-<div id="tips" style="max-width:520px;margin:0 auto 24px;text-align:center;border:1px solid var(--line);border-radius:14px;padding:18px">
-  <b style="color:var(--accent)" data-i18n="tips_t">🎛 GRATIS TOOLS DIE WIJ AANRADEN</b><br>
-  <span style="font-size:.82rem;color:var(--dim)" data-i18n="tips_x">Goede starters naast onze plugins — 100% gratis:</span>
-  <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap;font-size:.8rem">
-    <a href="https://vital.audio" target="_blank" rel="noopener" style="background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 14px;border-radius:16px;text-decoration:none"><b style="color:var(--accent)">Vital</b> — <span data-i18n="tips_vital">gratis synth</span></a>
-    <a href="https://lmms.io" target="_blank" rel="noopener" style="background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 14px;border-radius:16px;text-decoration:none"><b style="color:var(--accent)">LMMS</b> — <span data-i18n="tips_lmms">gratis DAW</span></a>
-    <a href="https://www.audacityteam.org" target="_blank" rel="noopener" style="background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 14px;border-radius:16px;text-decoration:none"><b style="color:var(--accent)">Audacity</b> — <span data-i18n="tips_audacity">gratis audio-editor</span></a>
-  </div>
-  <div style="margin-top:10px;font-size:.75rem;color:var(--dim)"><span data-i18n="tips_partner_pre">Eigen product of tool?</span> <a href="mailto:g.sandvliet88@gmail.com?subject=Partnerplek%20G2B%20Winkel" style="color:var(--accent)" data-i18n="tips_partner">Vraag een partnerplek aan</a></div>
-</div>
-<div id="nieuwsbrief" style="max-width:520px;margin:0 auto 28px;text-align:center;border:1px dashed var(--line);border-radius:14px;padding:18px">
-  <b style="color:var(--accent)" data-i18n="news_t">✉ Blijf op de hoogte</b><br>
-  <span style="font-size:.82rem;color:var(--dim)" data-i18n="news_x">Nieuwe packs, plugins en beats — elke maand. Geen spam.</span>
-  <form id="ev-form" style="display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap">
-    <input class="zoek" id="ev-email" type="email" data-i18n-ph="news_ph" placeholder="jouw e-mailadres" required style="margin:0;flex:1;min-width:200px">
-    <button class="koop" type="submit" style="margin:0" data-i18n="news_btn">INSCHRIJVEN</button>
+
+<section class="news">
+  <h4>BLIJF OP DE HOOGTE</h4>
+  <p>Nieuwe plugins, packs en acties — eens per maand. Geen spam.</p>
+  <form id="ev-form">
+    <input id="ev-email" type="email" placeholder="jouw e-mailadres" required>
+    <button class="btn vol" type="submit">INSCHRIJVEN</button>
   </form>
-  <div id="ev-msg" style="margin-top:8px;font-size:.8rem;color:var(--accent);min-height:1em"></div>
-  <div style="margin-top:6px;font-size:11px;color:var(--dim)">Je kunt je altijd <a href="afmelden.html" style="color:var(--dim)">uitschrijven</a> — geen spam, alleen G2B-nieuws.</div>
-</div>
-<div style="max-width:820px;margin:26px auto 0;padding:14px 16px;text-align:center;border-top:1px solid var(--line);font-size:13px;color:var(--dim)">
-  <span data-i18n="steun_txt">Vind je G2B tof? Steun ons:</span>
-  <a href="bestel.html?p=steun-3" style="display:inline-block;margin:6px 4px 0;padding:6px 14px;border:1px solid var(--accent);border-radius:999px;color:var(--accent);text-decoration:none;font-weight:700">€3</a>
-  <a href="bestel.html?p=steun-5" style="display:inline-block;margin:6px 4px 0;padding:6px 14px;border:1px solid var(--accent);border-radius:999px;color:var(--accent);text-decoration:none;font-weight:700">€5</a>
-  <a href="bestel.html?p=steun-10" style="display:inline-block;margin:6px 4px 0;padding:6px 14px;border:1px solid var(--accent);border-radius:999px;color:var(--accent);text-decoration:none;font-weight:700">€10</a>
-</div>
-<footer><span data-i18n="foot" data-i18n-html>Gebouwd door <b>Good2Better</b> — eigen winkel, geen commissie.</span><br>
-<a href="licentie.html" style="color:var(--accent)" data-i18n="foot_lic">📜 Licenties &amp; voorwaarden</a> · <a href="privacy.html" style="color:var(--accent)">🔒 Privacy</a> ·
-<span data-i18n="foot_vragen">Vragen?</span> <a href="mailto:g.sandvliet88@gmail.com" style="color:var(--accent)">g.sandvliet88@gmail.com</a><br>
-<b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465
-<span id="jaar"></span></footer>
-<script src="lang.js" defer></script>
+  <div id="ev-msg"></div>
+</section>
+
+<footer>
+  <div class="foot-in">
+    <a class="logo" href="index.html">G2B <b>STUDIO</b></a>
+    <div class="foot-links">
+      <a href="radio.html">📻 G2B Radio</a>
+      <a href="live/">🔴 G2B Live</a>
+      <a href="kleding.html">👕 Kleding</a>
+      <a href="beatmaker.html">🎛 Gratis beatmaker</a>
+      <a href="bouwer.html">🧰 Stel je bundel samen</a>
+      <a href="catalogus.html">📦 Volledige catalogus</a>
+    </div>
+  </div>
+  <div class="foot-legal">
+    <a href="licentie.html">Licenties &amp; voorwaarden</a> · <a href="privacy.html">Privacy</a> · <a href="afmelden.html">Uitschrijven</a> · Vragen? <a href="mailto:g.sandvliet88@gmail.com">g.sandvliet88@gmail.com</a><br>
+    <b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465 · © <span id="jaar"></span><br>
+    Directe digitale levering — bij aankoop ga je akkoord met de voorwaarden en dat het herroepingsrecht vervalt. Actieprijzen gelden tot het einde van de actie; daarna geldt de normale prijs.
+  </div>
+</footer>
+
+<script src="actie.js"></script>
 <script>
-// E-mailvanger: POST naar Apps Script zodra URL gevuld is; anders mailto-fallback
-const EV_SCRIPT_URL='https://script.google.com/macros/s/AKfycbwbGZ-zxrQgxEFJbUhv2-HJ7yNP1yXb66W2wo4tEWtXyx7PcDsFiGdh619QT-6LlTXC/exec'; // <- Giorgio: plak hier je Apps Script /exec URL
-const evF=document.getElementById('ev-form'),evM=document.getElementById('ev-msg');
-if(!EV_SCRIPT_URL){
-  evF.addEventListener('submit',e=>{
-    e.preventDefault();
-    const em=document.getElementById('ev-email').value.trim();
-    location.href='mailto:g.sandvliet88@gmail.com?subject='+encodeURIComponent('G2B nieuwsbrief inschrijving')+'&body='+encodeURIComponent('Hoi! Schrijf me in voor de G2B-lijst. Mijn e-mail: '+em);
-    evM.textContent=(typeof g2bT==='function'?g2bT('news_mailto'):'Je mailprogramma opent met een kant-en-klaar bericht — druk op versturen.');
-  });
-}else{
-  evF.addEventListener('submit',async e=>{
-    e.preventDefault();
-    const em=document.getElementById('ev-email').value.trim();
-    if(!em) return;
-    evM.textContent=(typeof g2bT==='function'?g2bT('news_bezig'):'Bezig…');
-    try{
-      await fetch(EV_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({email:em,bron:'winkel',tijd:new Date().toISOString()})});
-      evM.textContent=(typeof g2bT==='function'?g2bT('news_ok'):'✅ Bedankt! Je staat op de G2B-lijst.');
-      evF.reset();
-    }catch(_){ evM.textContent=(typeof g2bT==='function'?g2bT('news_err'):'Even niet gelukt — mail ons via de link hieronder.'); }
-  });
+// cat: instrumenten | effecten | bundels — "demo" = heeft gratis browser-demo
+const PROD = [
+  {id:"aura-suripads",  cat:"instrumenten", naam:"Suri-Pads & World", zin:"Sfeervolle pads en echte Surinaamse instrumenten in één engine — stapel ze met één klik.", nu:"29,95", na:"49,95", img:"tools/aura-v6/img/suri-pads.png", demo:"tools/aura-v6/suri-pads/"},
+  {id:"aura-allinstr",  cat:"instrumenten", naam:"AURA All-Instruments", zin:"Keys, snaren, melodie en drums — alle instrumenten in één plugin, even hard en zuiver.", nu:"34,95", na:"59,95", img:"tools/aura-v6/img/all-instruments.png", demo:"tools/aura-v6/all-instruments/"},
+  {id:"aura-bassdrum",  cat:"instrumenten", naam:"Bass & Drum 2-in-1", zin:"Sub, Reese, 808 en bassdrum met Toon en Lengte — direct een zware basis.", nu:"29,95", na:"49,95", img:"tools/aura-v6/img/bass-drum-2in1.png", demo:"tools/aura-v6/bass-drum-2in1/"},
+  {id:"aura-dicesynth", cat:"instrumenten", naam:"AURA Dice Synth", zin:"Eén klik op de dobbelsteen = een gloednieuwe synth-sound. Nooit hangende noten.", nu:"34,95", na:"59,95", img:"tools/aura-v6/img/dice-synth.png", demo:"tools/aura-v6/dice-synth/"},
+  {id:"aura-dren",      cat:"instrumenten", naam:"Dren Studio", zin:"323 echt unieke presets — van droomtapijt tot donkere lead, direct bespeelbaar.", nu:"34,95", na:"59,95", img:"tools/aura-v6/img/dren-studio.png", demo:"tools/aura-v6/dren-studio/"},
+  {id:"aura-fxrack",    cat:"effecten",     naam:"FX-Rack", zin:"Refors, Koor+Key en Master in één keten — je mix klinkt meteen af en luid.", nu:"39,95", na:"69,95", img:"tools/aura-v6/img/fx-rack.png", demo:"tools/aura-v6/fx-rack/"},
+  {id:"aura-midiforge", cat:"effecten",     naam:"AURA MIDI-Forge", zin:"Piano-roll met stijl-generator en glide — maak melodieën en exporteer als .MID.", nu:"39,95", na:"69,95", img:"tools/aura-v6/img/midi-forge.png", demo:"tools/aura-v6/"},
+  {id:"g2bclub",        cat:"bundels",      naam:"G2B CLUB — lidmaatschap", zin:"Alle browser-tools volledig, inclusief export. Maandelijks opzegbaar.", nu:"4,95", per:"/mnd", img:"media/promo-club.png", demo:"club-apps.html", koop:"https://buy.stripe.com/3cIeVd5IIeqDcI76G15J62O"},
+];
+const SUITE = {id:"g2balles", nu:"199", los:"244,65", koop:"https://buy.stripe.com/00w8wP7QQ5U77nN3tP5J61J"};
+const A = window.G2B_ACTIE, actief = A && A.loopt();
+
+function kaart(p){
+  const koop = p.koop || `bestel.html?p=${p.id}`;
+  const ext = p.koop ? ' target="_blank" rel="noopener"' : '';
+  const prijs = (actief && p.na)
+    ? `<div class="oud"><small>na actie</small>€ ${p.na}</div><div class="nu">€ ${p.nu}<small>INTRO-ACTIE</small></div>`
+    : `<div class="nu">€ ${p.nu}${p.per ? `<small>${p.per}</small>` : ''}</div>`;
+  return `<article class="kaart" data-cat="${p.cat}" data-demo="${p.demo ? 1 : 0}">
+    <a class="img" href="${p.demo || koop}"><img src="${p.img}" alt="${p.naam} — studio-preview" loading="lazy">${actief && p.na ? '<span class="label">ACTIE</span>' : ''}</a>
+    <div class="body"><h3>${p.naam}</h3><div class="zin">${p.zin}</div>
+      <div class="prijsrij">${prijs}</div>
+      <div class="knoppen"><a class="k-demo" href="${p.demo}">GRATIS DEMO</a><a class="k-koop" href="${koop}"${ext}>KOOP</a></div>
+    </div></article>`;
 }
-document.getElementById('deal').addEventListener('click',function(e){
+function suite(){
+  return `<section class="suite" id="prosuite" data-cat="bundels" data-demo="1">
+    <div>
+      <div class="eyebrow">🔥 G2B PRO SUITE / ALL-ACCESS</div>
+      <h2>Alles in één pakket.<br><span>Eén keer betalen, voor altijd.</span></h2>
+      <p>Alle 7 AURA v6.0-modules als browser-studio, desktop-app én VST3 — plus alle G2B-plugins en browser-tools.</p>
+      <ul><li>Suri-Pads &amp; World</li><li>AURA All-Instruments</li><li>Bass &amp; Drum 2-in-1</li><li>AURA Dice Synth</li><li>Dren Studio</li><li>FX-Rack + MIDI-Forge</li><li>9 G2B VST3-plugins</li><li>Stapel-Dice PRO + Beat Maker PRO</li></ul>
+    </div>
+    <div class="rechts">
+      <div class="oud">los samen € ${SUITE.los}</div>
+      <div class="nu">€ ${SUITE.nu}</div>
+      ${actief ? `<div class="klokrij">🎁 + gratis 808 &amp; Drum Pack · actie eindigt over <span class="klok" data-klok>…</span></div>` : '<div class="klokrij">Windows · Mac · browser</div>'}
+      <a class="btn vol" style="width:100%" href="${SUITE.koop}" target="_blank" rel="noopener">KOOP DE PRO SUITE</a>
+      <div style="margin-top:12px"><a class="k-demo" style="display:inline-block;font-size:12px;letter-spacing:1px;font-weight:700;padding:9px 20px;border-radius:20px" href="tools/aura-v6/">PROBEER EERST GRATIS</a></div>
+    </div></section>`;
+}
+const html = PROD.map(kaart);
+html.splice(3, 0, suite());           // PRO SUITE midden op de pagina, na de eerste rij
+document.getElementById('grid').innerHTML = html.join('');
+
+document.getElementById('filters').addEventListener('click', e => {
+  const b = e.target.closest('.fb'); if (!b) return;
+  document.querySelectorAll('.fb').forEach(x => x.classList.toggle('aan', x === b));
+  const f = b.dataset.f;
+  document.querySelectorAll('#grid > *').forEach(el => {
+    const ok = f === 'alles' || (f === 'demo' ? el.dataset.demo === '1' : el.dataset.cat === f);
+    el.style.display = ok ? '' : 'none';
+  });
+});
+
+// aftelklok (vaste einddatum in actie.js — na afloop verdwijnt de balk)
+const klokken = () => document.querySelectorAll('[data-klok]').forEach(k => k.textContent = A.rest());
+if (actief) { klokken(); setInterval(() => { if (!A.loopt()) location.reload(); klokken(); }, 1000); }
+else document.getElementById('actiebalk').remove();
+document.getElementById('jaar').textContent = new Date().getFullYear();
+
+// nieuwsbrief → E-mailvanger (Apps Script)
+const EV_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbGZ-zxrQgxEFJbUhv2-HJ7yNP1yXb66W2wo4tEWtXyx7PcDsFiGdh619QT-6LlTXC/exec';
+document.getElementById('ev-form').addEventListener('submit', async e => {
   e.preventDefault();
-  var c=document.querySelector('.card[data-id="g2bprodsuite"]');
-  if(c){c.scrollIntoView({behavior:'smooth',block:'center'});var d=c.querySelector('details.meer');if(d)d.open=true;}
+  const em = document.getElementById('ev-email').value.trim(), m = document.getElementById('ev-msg');
+  if (!em) return; m.textContent = 'Bezig…';
+  try {
+    await fetch(EV_SCRIPT_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({email: em, bron: 'winkel', tijd: new Date().toISOString()})});
+    m.textContent = '✅ Bedankt! Je staat op de G2B-lijst.'; e.target.reset();
+  } catch { m.textContent = 'Even niet gelukt — mail ons via de link onderaan.'; }
 });
 </script>
-<script type="module" src="app.js"></script>
 <script src="cookie.js"></script>
-<script src="litegate.js"></script>
 </body>
 </html>
