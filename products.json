@@ -1763,7 +1763,9 @@
     "browser": "tools/aura-v6/",
     "download": "bedankt.html?k=aura-v6",
     "koop": "bestel.html?p=aura-midiforge"
-   }
+   },
+   "video": "media/aura-midiforge-demo.mp4",
+   "demo": "media/aura-midiforge-demo.mp4"
   },
   {
    "id": "aura-suripads",
@@ -1776,7 +1778,9 @@
     "browser": "tools/aura-v6/suri-pads/",
     "download": "bedankt.html?k=aura-v6",
     "koop": "bestel.html?p=aura-suripads"
-   }
+   },
+   "video": "media/aura-suripads-demo.mp4",
+   "demo": "media/aura-suripads-demo.mp4"
   },
   {
    "id": "aura-allinstr",
@@ -1789,7 +1793,9 @@
     "browser": "tools/aura-v6/all-instruments/",
     "download": "bedankt.html?k=aura-v6",
     "koop": "bestel.html?p=aura-allinstr"
-   }
+   },
+   "video": "media/aura-allinstr-demo.mp4",
+   "demo": "media/aura-allinstr-demo.mp4"
   },
   {
    "id": "aura-bassdrum",
@@ -1802,7 +1808,9 @@
     "browser": "tools/aura-v6/bass-drum-2in1/",
     "download": "bedankt.html?k=aura-v6",
     "koop": "bestel.html?p=aura-bassdrum"
-   }
+   },
+   "video": "media/aura-bassdrum-demo.mp4",
+   "demo": "media/aura-bassdrum-demo.mp4"
   },
   {
    "id": "aura-dicesynth",
@@ -1815,7 +1823,9 @@
     "browser": "tools/aura-v6/dice-synth/",
     "download": "bedankt.html?k=aura-v6",
     "koop": "bestel.html?p=aura-dicesynth"
-   }
+   },
+   "video": "media/aura-dicesynth-demo.mp4",
+   "demo": "media/aura-dicesynth-demo.mp4"
   },
   {
    "id": "aura-dren",
@@ -1828,7 +1838,9 @@
     "browser": "tools/aura-v6/dren-studio/",
     "download": "bedankt.html?k=aura-v6",
     "koop": "bestel.html?p=aura-dren"
-   }
+   },
+   "video": "media/aura-dren-demo.mp4",
+   "demo": "media/aura-dren-demo.mp4"
   },
   {
    "id": "aura-fxrack",
@@ -1841,7 +1853,9 @@
     "browser": "tools/aura-v6/fx-rack/",
     "download": "bedankt.html?k=aura-v6",
     "koop": "bestel.html?p=aura-fxrack"
-   }
+   },
+   "video": "media/aura-fxrack-demo.mp4",
+   "demo": "media/aura-fxrack-demo.mp4"
   }
  ]
 }

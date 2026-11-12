@@ -150,7 +150,8 @@ footer{margin-top:90px;border-top:1px solid var(--line);padding:46px 24px 36px;c
 
 <main class="wrap" id="winkel">
   <div class="filters" id="filters">
-    <button class="fb aan" data-f="alles">ALLES</button>
+    <button class="fb aan" data-f="uitgelicht">UITGELICHT</button>
+    <button class="fb" data-f="alles">ALLES</button>
     <button class="fb" data-f="instrumenten">INSTRUMENTEN</button>
     <button class="fb" data-f="effecten">EFFECTEN</button>
     <button class="fb" data-f="packs">BEATS &amp; PACKS</button>
@@ -231,7 +232,8 @@ function kaart(p){
   const img = p.cover ? `<img src="${esc(p.cover)}" alt="${esc(p.titel)} — preview" loading="lazy">`
                       : `<div style="width:100%;height:100%;background:linear-gradient(135deg,#14201a,#0b0e0c);display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:800;color:var(--accent)">G2B</div>`;
   const zin = (p.beschrijving||"").split("\n")[0];
-  return `<article class="kaart" data-cat="${catOf(p)}" data-demo="${demo?1:0}">
+  const uitg = EERST.includes(p.id) ? ' data-uitg="1"' : '';
+  return `<article class="kaart" data-cat="${catOf(p)}" data-demo="${demo?1:0}"${uitg}>
     <a class="img" href="p.html?id=${esc(p.id)}">${img}${p.badge?`<span class="label">${esc(p.badge)}</span>`:""}</a>
     <div class="body"><h3>${esc(p.titel)}</h3><div class="zin">${esc(zin)}</div>
       <div class="prijsrij">${prijs}</div>
@@ -258,6 +260,13 @@ fetch('products.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
   const html = prods.map(kaart);
   html.splice(3,0,suite());
   document.getElementById('grid').innerHTML = html.join('');
+  // uitgelicht = AURA-sterren + top-2 van elke categorie → rustige startpagina
+  const perCat = {};
+  document.querySelectorAll('#grid .kaart').forEach(el => {
+    const c = el.dataset.cat; perCat[c] = (perCat[c] || 0) + 1;
+    if (perCat[c] <= 2) el.dataset.uitg = '1';
+  });
+  filterTo('uitgelicht');
 }).catch(()=>{ document.getElementById('grid').innerHTML = '<p style="color:var(--dim);text-align:center">Winkel laden mislukt — ververs de pagina.</p>'; });
 
 function suite(){
@@ -281,14 +290,18 @@ function suite(){
     </div></section>`;
 }
 
-document.getElementById('filters').addEventListener('click', e => {
-  const b = e.target.closest('.fb'); if (!b) return;
-  document.querySelectorAll('.fb').forEach(x => x.classList.toggle('aan', x === b));
-  const f = b.dataset.f;
+function filterTo(f){
+  document.querySelectorAll('.fb').forEach(x => x.classList.toggle('aan', x.dataset.f === f));
   document.querySelectorAll('#grid > *').forEach(el => {
-    const ok = f === 'alles' || (f === 'demo' ? el.dataset.demo === '1' : el.dataset.cat === f);
+    const ok = f === 'alles'
+      || (f === 'uitgelicht' ? el.dataset.uitg === '1' || el.id === 'prosuite'
+      : f === 'demo' ? el.dataset.demo === '1' : el.dataset.cat === f);
     el.style.display = ok ? '' : 'none';
   });
+}
+document.getElementById('filters').addEventListener('click', e => {
+  const b = e.target.closest('.fb'); if (!b) return;
+  filterTo(b.dataset.f);
 });
 
 // aftelklok (vaste einddatum in actie.js — na afloop verdwijnt de balk)
