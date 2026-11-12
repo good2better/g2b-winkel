@@ -1,0 +1,23 @@
+{
+  "titel": "G2B INSTRUMENTEN VOL1-3 — complete instrumenten-collectie",
+  "licentie": "G2B EULA — persoonlijk + commercieel gebruik",
+  "bestanden": [
+    {
+      "naam": "G2B-INSTRUMENTEN-GIORGIO-VOL1.zip — instrumenten-deel 1 (VST3+CLAP+exe)",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-INSTRUMENTEN-GIORGIO-VOL1.zip"
+    },
+    {
+      "naam": "G2B-INSTRUMENTEN-GIORGIO-VOL2.zip — instrumenten-deel 2",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-INSTRUMENTEN-GIORGIO-VOL2.zip"
+    },
+    {
+      "naam": "G2B-INSTRUMENTEN-GIORGIO-VOL3.zip — instrumenten-deel 3",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-INSTRUMENTEN-GIORGIO-VOL3.zip"
+    },
+    {
+      "naam": "Instrumenten-VOL1-Handleiding.pdf (NL)",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/dl/G2B-Instrumenten-VOL1-Handleiding.pdf"
+    }
+  ],
+  "cover": "media/g2b-instrumentpack-cover.png"
+}

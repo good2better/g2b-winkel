@@ -1,9 +1,13 @@
 {
-    "titel": "G2B MIXER — slimme channel-strip VST3 (MAAK MIX-KLAAR kalibreert zelf)",
-    "bestanden": [
-        {
-            "naam": "G2B-MIXER.zip — VST3 + CLAP + standalone + handleiding",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-MIXER.zip"
-        }
-    ]
+  "titel": "G2B MIXER v2 — slimme channel-strip VST3",
+  "bestanden": [
+    {
+      "naam": "G2B-MIXER-V2.zip — VST3 + CLAP + standalone + handleiding",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/dl/G2B-MIXER-V2.zip"
+    },
+    {
+      "naam": "G2B-Mixer-Handleiding.pdf (NL)",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/dl/G2B-Mixer-Handleiding.pdf"
+    }
+  ]
 }

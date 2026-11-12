@@ -1,7 +1,11 @@
 {
-  "titel": "G2B Bedrijfsmiddelen",
-  "licentie": "Volledige download",
-  "cover": "media/g2b-bedrijfsmiddelen-cover.png",
-  "url": "https://github.com/good2better/g2b-winkel/releases/download/dl/G2B-Bedrijfsmiddelen-COMPLEET.zip",
-  "bestand_release": "G2B-Bedrijfsmiddelen-COMPLEET.zip"
+  "titel": "G2B Bedrijfsmiddelen — bedrijfs-app (WINKEL/ROYALTIES/KLEURBOEK)",
+  "licentie": "G2B EULA — persoonlijk + commercieel gebruik",
+  "bestanden": [
+    {
+      "naam": "G2B-Bedrijfsmiddelen-COMPLEET.zip — Windows-app + handleiding",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/dl/G2B-Bedrijfsmiddelen-COMPLEET.zip"
+    }
+  ],
+  "cover": "media/g2b-bedrijfsmiddelen-cover.png"
 }

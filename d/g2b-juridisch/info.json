@@ -1,7 +1,11 @@
 {
-  "titel": "G2B Juridisch",
-  "licentie": "Volledige download",
-  "cover": "media/g2b-juridisch-cover.png",
-  "url": "https://github.com/good2better/g2b-winkel/releases/download/dl/G2B-Juridisch-COMPLEET.zip",
-  "bestand_release": "G2B-Juridisch-COMPLEET.zip"
+  "titel": "G2B Juridisch — NL wetboek-app (offline)",
+  "licentie": "G2B EULA — persoonlijk + commercieel gebruik",
+  "bestanden": [
+    {
+      "naam": "G2B-Juridisch-COMPLEET.zip — Windows-app + handleiding",
+      "url": "https://github.com/good2better/g2b-winkel/releases/download/dl/G2B-Juridisch-COMPLEET.zip"
+    }
+  ],
+  "cover": "media/g2b-juridisch-cover.png"
 }
