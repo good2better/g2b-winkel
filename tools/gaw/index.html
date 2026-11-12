@@ -16,6 +16,8 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 .trak .nm{font-weight:800;font-size:.7rem;color:var(--groen);width:58px}
 .proll{flex:1;min-width:280px;height:72px;background:#0b0e0c;border:1px solid var(--rand);border-radius:6px;cursor:crosshair}
 .steps{display:grid;grid-template-columns:repeat(16,1fr);gap:4px;flex:1;min-width:280px}
+.alane{flex:1;min-width:280px;height:72px;background:#0b0e0c;border:1px solid var(--rand);border-radius:6px;cursor:ew-resize}
+.klein{padding:6px 10px;font-size:.72rem}
 .st{aspect-ratio:1;border-radius:5px;background:var(--rand);cursor:pointer;border:0;min-width:16px}
 .st.aan{background:var(--groen);box-shadow:0 0 6px #2fbf7166}
 .st.play{outline:2px solid #fff}body.licht .st.play{outline-color:#12231a}
@@ -23,7 +25,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 #wm{position:fixed;right:10px;bottom:8px;font-size:.62rem;color:var(--dim);opacity:.55;pointer-events:none}
 </style></head><body>
 <h1>🎛️ G2B <b>GAW</b> — GIO</h1>
-<p class="sub">Jouw volledige browser-werkplek: 8 tracks, je échte VST-sounds. TR1-4 = ritme (stap-grid), TR5-8 = toon (piano-roll).<br>Per track: bron/bank/pad + volume + pan + mute + ⏺ OP (mic → wordt je pad). ▶ LAAGBAAS stuurt al je stems direct door.</p>
+<p class="sub">Jouw volledige browser-werkplek: 8 tracks, je échte VST-sounds. TR1-4 = ritme (stap-grid), TR5-8 = toon (piano-roll).<br>Per track: bron/bank/pad + volume + pan + mute + ⏺ OP. Audio-lanes: clip verschuiven & trimmen met de muis. ▶ LAAGBAAS stuurt al je stems direct door.</p>
 <div class="bar">
 <button id="play" onclick="toggle()">▶ SPEEL</button>
 <label>BPM <span id="bpmv">96</span><input type="range" id="bpm" min="60" max="160" value="96" oninput="bpmv.textContent=this.value"></label>
@@ -33,6 +35,9 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <button class="uit" onclick="naarLaagbaas()" title="Stuurt je 8 tracks direct naar LAAGBAAS om te mixen/masteren">▶ LAAGBAAS</button>
 <button class="uit" onclick="opslaan()">💾 OPSLAAN</button>
 <button class="uit" onclick="laden()">📂 LADEN</button>
+<button class="uit klein" onclick="addTrack('grid')">+RITME</button>
+<button class="uit klein" onclick="addTrack('roll')">+TOON</button>
+<button class="uit klein" onclick="addTrack('audio')">+AUDIO</button>
 <button class="uit" onclick="ongedaan()">↩ ONGEDAAN MAKEN</button>
 <span id="st">sets laden…</span>
 <button class="uit" id="skin" onclick="skin()">◐ WIT</button>
@@ -45,7 +50,7 @@ let REC=false;function rec(){REC=!REC;document.getElementById('rec').style.backg
 let HIST=[];const snap=()=>{HIST.push(JSON.stringify(TR.map(t=>({g:t.grid,n:t.notes}))));if(HIST.length>60)HIST.shift()};
 function ongedaan(){if(!HIST.length)return;const s=JSON.parse(HIST.pop());TR.forEach((t,i)=>{t.grid=s[i].g;t.notes=s[i].n;syncGrid(i)});document.getElementById('st').textContent='ongedaan gemaakt'}
 addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();ongedaan()}});
-window.onMidiNote=(n,idx)=>{if(REC&&playing){const t=idx%8;snap();if(TR[t].notes){TR[t].notes.push({p:n,s:step,d:1,v:100});drawRoll(t)}else{TR[t].grid[step]=true;document.getElementById('st'+t).children[step].classList.add('aan')}}}
+window.onMidiNote=(n,idx)=>{if(REC&&playing){const t=idx%TR.length;snap();if(TR[t].notes){TR[t].notes.push({p:n,s:step,d:1,v:100});drawRoll(t)}else{TR[t].grid[step]=true;document.getElementById('st'+t).children[step].classList.add('aan')}}}
 function skin(){document.body.classList.toggle('licht');const l=document.body.classList.contains('licht');document.getElementById('skin').textContent=l?'◑ ZWART':'◐ WIT'}
 // bronnen: [map, meta-bestand, bank->files functie]
 const BRON={
@@ -66,32 +71,42 @@ async function bronData(src){
  else{const r=await b.load(0);d={banken:b.sets||[src],per:[]};for(let s=0;s<d.banken.length;s++)d.per.push(await b.load(s))}
  cache[src]=d;return d;
 }
-async function buildTraks(){
- const el=document.getElementById('traks');el.innerHTML='';
- for(let t=0;t<8;t++){
-  const row=document.createElement('div');row.className='trak';
-  row.innerHTML=`<span class="nm">TR${t+1}</span>
-   <select id="src${t}" onchange="trackSet(${t})"></select>
+async function mkTrack(t,type){
+ const el=document.getElementById('traks');
+ const row=document.createElement('div');row.className='trak';
+ const lane=type==='grid'?`<div class="steps" id="st${t}"></div>`
+  :type==='roll'?`<canvas class="proll" id="pr${t}" width="720" height="72"></canvas>`
+  :`<canvas class="alane" id="aw${t}" width="720" height="72"></canvas>`;
+ row.innerHTML=`<span class="nm">${type==='grid'?'🥁':type==='roll'?'🎹':'🎙️'} TR${t+1}</span>
+   ${type!=='audio'?`<select id="src${t}" onchange="trackSet(${t})"></select>
    <select id="bank${t}" onchange="trackBank(${t})"></select>
-   <select id="pad${t}"></select>
-   ${t<4?`<div class="steps" id="st${t}"></div>`:`<canvas class="proll" id="pr${t}" width="720" height="72"></canvas>`}
-   <label>vol<input type="range" id="vol${t}" min="0" max="100" value="80" style="width:60px"></label>
-   <label>pan<input type="range" id="pan${t}" min="-100" max="100" value="0" style="width:56px"></label>
-   <button class="uit" id="ar${t}" style="padding:6px 10px" onclick="opneem(${t})" title="Neem audio op voor deze track — je take wordt je pad">⏺ OP</button>
+   <select id="pad${t}"></select>`:''}
+   ${lane}
+   <label>vol<input type="range" id="vol${t}" min="0" max="100" value="80" style="width:52px"></label>
+   <label>pan<input type="range" id="pan${t}" min="-100" max="100" value="0" style="width:48px"></label>
+   <button class="uit" id="ar${t}" style="padding:6px 10px" onclick="opneem(${t})" title="Neem audio op — je take wordt je ${type==='audio'?'clip':'pad'}">⏺ OP</button>
    <button class="uit" id="mut${t}" style="padding:6px 10px" onclick="mute(${t})">MUTE</button>
    <button class="uit" style="padding:6px 10px" onclick="wis(${t})">✕</button>`;
-  el.appendChild(row);
+ el.appendChild(row);
+ TR[t]={type,grid:type==='grid'?new Array(16).fill(false):null,notes:type==='roll'?[]:null,clip:null,buffers:[],pad:0,vol:.8,muted:false};
+ if(type==='grid'){const steps=document.getElementById('st'+t);
+  for(let s=0;s<16;s++){const c=document.createElement('button');c.className='st';c.onclick=()=>{snap();TR[t].grid[s]=!TR[t].grid[s];c.className='st'+(TR[t].grid[s]?' aan':'')};steps.appendChild(c)}}
+ else if(type==='roll')bouwRoll(t);
+ else bouwWave(t);
+ if(type!=='audio'){
   const ss=document.getElementById('src'+t);
   ss.innerHTML=Object.keys(BRON).map(k=>`<option>${k}</option>`).join('');
   ss.value=PREF[t+1]?PREF[t+1][0]:'OCHO';
-  if(t<4){
-   const steps=document.getElementById('st'+t);
-   for(let s=0;s<16;s++){const c=document.createElement('button');c.className='st';c.onclick=()=>{snap();TR[t].grid[s]=!TR[t].grid[s];c.className='st'+(TR[t].grid[s]?' aan':'')};steps.appendChild(c)}
-  }
-  TR[t]={grid:t<4?new Array(16).fill(false):null,notes:t<4?null:[],buffers:[],pad:0,vol:.8,muted:false};
-  if(t>=4)bouwRoll(t);
   await trackSet(t);
- }
+ } else drawWave(t);
+}
+async function buildTraks(){
+ for(let t=0;t<8;t++)await mkTrack(t,t<4?'grid':'roll');
+}
+async function addTrack(type){
+ if(TR.length>=14){document.getElementById('st').textContent='max 14 tracks';return}
+ const t=TR.length;await mkTrack(t,type);
+ document.getElementById('st').textContent='TR'+(t+1)+' toegevoegd ('+type+')';
 }
 async function trackSet(t){
  const src=document.getElementById('src'+t).value;
@@ -190,12 +205,63 @@ function bouwRoll(t){
  c.onpointerup=end;c.onpointercancel=end;
  c.ondblclick=e=>{const[x,y]=XY(e),h=hitRoll(t,x,y);if(h){snap();TR[t].notes.splice(TR[t].notes.indexOf(h.n),1);drawRoll(t)}};
 }
-function syncGrid(t){if(t<4&&document.getElementById('st'+t))document.getElementById('st'+t).childNodes.forEach((c,i)=>c.className='st'+(TR[t].grid[i]?' aan':''));else drawRoll(t)}
+function drawWave(t){
+ const c=document.getElementById('aw'+t);if(!c)return;
+ const g=c.getContext('2d'),cl=TR[t].clip,w=c.width/NS;
+ g.fillStyle='#0d1512';g.fillRect(0,0,c.width,c.height);
+ for(let i=0;i<=NS;i++){g.strokeStyle=i%4===0?'#3a5a45':'#1d2c23';g.beginPath();g.moveTo(i*w,0);g.lineTo(i*w,c.height);g.stroke()}
+ g.fillStyle='#5a8';g.font='9px sans-serif';
+ if(!cl||!cl.buf){g.fillText('⏺ OP om audio op te nemen — clip landt op stap 0',8,c.height/2+3);return}
+ const d=cl.buf.getChannelData(0),x0=cl.pos*w,span=Math.max(6,((cl.trim1||cl.buf.duration)-(cl.trim0||0))*1.2*w);
+ // waveform (min/max per kolom) binnen de clip-breedte
+ const cols=Math.min(c.width-x0,span*4);
+ for(let i=0;i<cols;i++){
+  const a=Math.floor((cl.trim0||0)*cl.buf.sampleRate+i/cols*((cl.trim1||cl.buf.duration)-(cl.trim0||0))*cl.buf.sampleRate);
+  const b=Math.min(d.length-1,a+Math.floor(d.length/cols/400));
+  let mn=1,mx=-1;for(let j=a;j<=b;j+=8){const v=d[j];if(v<mn)mn=v;if(v>mx)mx=v}
+  if(mn>mx){mn=0;mx=0}
+  g.fillStyle='#3fd08a';g.fillRect(x0+i,c.height/2-mx*c.height*0.42,1,Math.max(1,(mx-mn)*c.height*0.42));
+ }
+ g.strokeStyle='#0fc';g.strokeRect(x0,1,cols,c.height-2);
+ g.fillStyle='#0fc';g.fillText('CLIP',x0+4,10);
+ if(playing){g.fillStyle='#0fc';g.fillRect(((step+15)%16)*w,0,2,c.height)}
+}
+function bouwWave(t){
+ const c=document.getElementById('aw'+t),w=c.width/NS;let drag=null;
+ const XY=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)*c.width/r.width,(e.clientY-r.top)*c.height/r.height]};
+ c.oncontextmenu=e=>e.preventDefault();
+ c.onpointerdown=e=>{const[x,y]=XY(e);const cl=TR[t].clip;if(!cl||!cl.buf)return;
+  c.setPointerCapture(e.pointerId);snap();
+  const x0=cl.pos*w,span=Math.max(6,((cl.trim1||cl.buf.duration)-(cl.trim0||0))*1.2*w);
+  if(x<x0+8)drag={m:'t0'};else if(x>x0+span-8)drag={m:'t1'};else drag={m:'pos',s0:cl.pos,x0:x};
+ };
+ c.onpointermove=e=>{const[x]=XY(e);const cl=TR[t].clip;if(!cl||!cl.buf)return;
+  if(!drag){const x0=cl.pos*w,span=Math.max(6,((cl.trim1||cl.buf.duration)-(cl.trim0||0))*1.2*w);
+   c.style.cursor=x<x0+8||x>x0+span-8?'ew-resize':'move';return}
+  if(drag.m==='t0'){const sec=(cl.trim0||0)+((x-cl.pos*w)/(span))*((cl.trim1||cl.buf.duration)-(cl.trim0||0));cl.trim0=Math.max(0,Math.min((cl.trim1||cl.buf.duration)-0.05,sec))}
+  else if(drag.m==='t1'){const sec=(cl.trim1||cl.buf.duration)+((x-(cl.pos*w+((cl.trim1||cl.buf.duration)-(cl.trim0||0))*1.2*w))/((cl.trim1||cl.buf.duration)-(cl.trim0||0))/1.2/w*0);cl.trim1=Math.max((cl.trim0||0)+0.05,Math.min(cl.buf.duration,cl.trim1||cl.buf.duration))}
+  else cl.pos=Math.max(0,Math.min(NS-1,drag.s0+Math.round((x-drag.x0)/w)));
+  drawWave(t)};
+ const end=()=>{drag=null;drawWave(t)};
+ c.onpointerup=end;c.onpointercancel=end;
+}
+function syncGrid(t){if(TR[t].type==='audio'){drawWave(t);return}if(TR[t].grid&&document.getElementById('st'+t))document.getElementById('st'+t).childNodes.forEach((c,i)=>c.className='st'+(TR[t].grid[i]?' aan':''));else drawRoll(t)}
+function speelClip(t){
+ const c=TR[t].clip;if(!c||!c.buf)return;
+ const s=ac().createBufferSource();s.buffer=c.buf;
+ const vol=+document.getElementById('vol'+t).value/100;
+ const g=ac().createGain(),pn=ac().createStereoPanner?ac().createStereoPanner():null;
+ if(pn)pn.pan.value=+document.getElementById('pan'+t).value/100;
+ g.gain.value=vol;
+ if(pn)s.connect(g).connect(pn).connect(ac().destination);else s.connect(g).connect(ac().destination);
+ s.start(0,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)));
+}
 function tick(){
  document.querySelectorAll('.st').forEach(c=>c.classList.remove('play'));
- for(let t=0;t<8;t++){
+ for(let t=0;t<TR.length;t++){
   if(TR[t].muted){continue}
-  if(TR[t].grid){if(TR[t].grid[step])speel(t);document.getElementById('st'+t).children[step].classList.add('play')}
+  if(TR[t].type==='audio'){const c=TR[t].clip;if(c&&step===c.pos)speelClip(t);drawWave(t)}
+  else if(TR[t].grid){if(TR[t].grid[step])speel(t);document.getElementById('st'+t).children[step].classList.add('play')}
   else{for(const n of TR[t].notes)if(n.s===step)speel(t,n.p);drawRoll(t)}
  }
  step=(step+1)%16;
@@ -219,9 +285,11 @@ async function opneem(t){
    try{
     const ab=await(await new Blob(chunks)).arrayBuffer();
     const buf=await ac().decodeAudioData(ab);
-    TR[t].buffers[TR[t].pad]=trimAudio(buf);
-    const ps=document.getElementById('pad'+t);const o=ps.options[TR[t].pad];if(o&&!o.textContent.endsWith(' ⏺'))o.textContent+=' ⏺';
-    document.getElementById('st').textContent='opname op pad '+(TR[t].pad+1)+' — speel direct mee';
+    if(TR[t].type==='audio'){TR[t].clip={buf:trimAudio(buf),trim0:0,trim1:0,pos:0};TR[t].clip.trim1=TR[t].clip.buf.duration;drawWave(t);
+     document.getElementById('st').textContent='clip opgenomen — versleep/trim op de lane'}
+    else{TR[t].buffers[TR[t].pad]=trimAudio(buf);
+     const ps=document.getElementById('pad'+t);const o=ps.options[TR[t].pad];if(o&&!o.textContent.endsWith(' ⏺'))o.textContent+=' ⏺';
+     document.getElementById('st').textContent='opname op pad '+(TR[t].pad+1)+' — speel direct mee'}
    }catch(e){document.getElementById('st').textContent='opname niet leesbaar'}};
   btn.style.borderColor='#d33';btn.style.color='#d33';
   rec.start();document.getElementById('st').textContent='⏺ opname TR'+(t+1)+' — klik ⏺ OP opnieuw om te stoppen';
@@ -238,18 +306,24 @@ function trimAudio(buf){ // stilte weg voor/achter + normalize — opname meteen
  else if(pk>0&&pk<0.3){const f=0.7/pk;for(let i=0;i<nd.length;i++)nd[i]=Math.max(-1,Math.min(1,nd[i]*f))}
  return nb}
 function mute(t){TR[t].muted=!TR[t].muted;const b=document.getElementById('mut'+t);b.style.borderColor=TR[t].muted?'#d33':'';b.style.color=TR[t].muted?'#d33':''}
-function wis(t){snap();if(TR[t].grid)TR[t].grid.fill(false);else{TR[t].notes=[];drawRoll(t)}syncGrid(t)}
-function opslaan(){const st={bpm:+document.getElementById('bpm').value,tr:TR.map((t,i)=>({src:document.getElementById('src'+i).value,bi:document.getElementById('bank'+i).selectedIndex,pad:t.pad,vol:+document.getElementById('vol'+i).value,pan:+document.getElementById('pan'+i).value,muted:t.muted,grid:t.grid,notes:t.notes}))};localStorage.setItem('g2b_gaw_preset',JSON.stringify(st));document.getElementById('st').textContent='opgeslagen — blijft ook na sluiten'}
+function wis(t){snap();if(TR[t].type==='audio'){TR[t].clip=null;drawWave(t);return}if(TR[t].grid)TR[t].grid.fill(false);else{TR[t].notes=[];drawRoll(t)}syncGrid(t)}
+function opslaan(){const st={bpm:+document.getElementById('bpm').value,tr:TR.map((t,i)=>({type:t.type,src:t.type!=='audio'?document.getElementById('src'+i).value:null,bi:t.type!=='audio'?document.getElementById('bank'+i).selectedIndex:0,pad:t.pad,vol:+document.getElementById('vol'+i).value,pan:+document.getElementById('pan'+i).value,muted:t.muted,grid:t.grid,notes:t.notes,clip:t.clip?{pos:t.clip.pos,trim0:t.clip.trim0,trim1:t.clip.trim1}:null}))};localStorage.setItem('g2b_gaw_preset',JSON.stringify(st));document.getElementById('st').textContent='opgeslagen — blijft ook na sluiten'}
 async function laden(){const raw=localStorage.getItem('g2b_gaw_preset');if(!raw){document.getElementById('st').textContent='niks opgeslagen';return}
  const st=JSON.parse(raw);document.getElementById('bpm').value=st.bpm;document.getElementById('bpmv').textContent=st.bpm;
- for(let t=0;t<8;t++){const s=st.tr[t];if(!s)continue;
-  document.getElementById('src'+t).value=s.src;await trackSet(t);
-  document.getElementById('bank'+t).selectedIndex=s.bi||0;await trackBank(t);
-  document.getElementById('pad'+t).selectedIndex=s.pad||0;TR[t].pad=s.pad||0;
+ // herbouw naar opgeslagen track-types
+ while(TR.length<st.tr.length)await addTrack('grid');
+ TR.length=0;document.getElementById('traks').innerHTML='';
+ for(let t=0;t<st.tr.length;t++)await mkTrack(t,st.tr[t].type||'grid');
+ for(let t=0;t<st.tr.length;t++){const s=st.tr[t];if(!s)continue;
+  if(s.type!=='audio'&&s.src){document.getElementById('src'+t).value=s.src;await trackSet(t);
+   document.getElementById('bank'+t).selectedIndex=s.bi||0;await trackBank(t);
+   document.getElementById('pad'+t).selectedIndex=s.pad||0;TR[t].pad=s.pad||0;}
   document.getElementById('vol'+t).value=s.vol??80;document.getElementById('pan'+t).value=s.pan??0;
   TR[t].muted=!!s.muted;document.getElementById('mut'+t).style.borderColor=TR[t].muted?'#d33':'';document.getElementById('mut'+t).style.color=TR[t].muted?'#d33':'';
-  TR[t].grid=s.grid;TR[t].notes=s.notes;syncGrid(t)}
- document.getElementById('st').textContent='geladen'}
+  TR[t].grid=s.grid;TR[t].notes=s.notes;
+  if(s.clip){TR[t].clip={buf:TR[t].clip&&TR[t].clip.buf,pos:s.clip.pos||0,trim0:s.clip.trim0||0,trim1:s.clip.trim1||0}}
+  syncGrid(t)}
+ document.getElementById('st').textContent='geladen (audio-clips: opnieuw opnemen)'}
 function licOk(){try{if(localStorage.getItem('g2b_aura_licentie')==='ok')return true;
  const q=new URLSearchParams(location.search).get('licentie');
  if(q&&q.length>=6){localStorage.setItem('g2b_aura_licentie','ok');return true}}catch(e){}
@@ -260,8 +334,8 @@ function licOk(){try{if(localStorage.getItem('g2b_aura_licentie')==='ok')return 
 function exportMid(){if(!licOk())return;
  const TPQ=96,SPB=TPQ/4; // ticks per 16e
  const ev=[];
- for(let t=0;t<8;t++){
-  const ch=t<4?9:0,base=[36,38,42,46][t]||36;
+ for(let t=0;t<TR.length;t++){
+  const ch=TR[t].type==='grid'?9:0,base=[36,38,42,46][t%4]||36;
   if(TR[t].grid){for(let s=0;s<16;s++)if(TR[t].grid[s]){
    ev.push({t:s*SPB,on:true,n:base,ch});ev.push({t:s*SPB+SPB-4,on:false,n:base,ch});
   }}
@@ -294,6 +368,7 @@ async function exportWav(){if(!licOk())return;
  const oc=new OfflineAudioContext(2,Math.ceil(dur*22050),22050);
  for(let t=0;t<8;t++){
   if(TR[t].muted)continue;
+  if(TR[t].type==='audio'){const c=TR[t].clip;if(c&&c.buf){const sc=oc.createBufferSource();sc.buffer=c.buf;const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;const pn=oc.createStereoPanner?oc.createStereoPanner():null;if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(oc.destination)}else sc.connect(g).connect(oc.destination);sc.start(c.pos*60/bpm/4,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)))}continue}
   const b=TR[t].buffers[TR[t].pad];if(!b)continue;
   const hit=(s,p,d)=>{
    const src=oc.createBufferSource();src.buffer=b;
@@ -312,6 +387,14 @@ async function exportWav(){if(!licOk())return;
 }
 // ---- STEMS export: 4 losse wav's (één per track) ----
 async function renderStem(t,bpm,dur){
+  if(TR[t].type==='audio'){const c=TR[t].clip;if(!c||!c.buf)return null;
+   const oc=new OfflineAudioContext(2,Math.ceil(dur*22050),22050);
+   const sc=oc.createBufferSource();sc.buffer=c.buf;
+   const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;
+   const pn=oc.createStereoPanner?oc.createStereoPanner():null;
+   if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(oc.destination)}else sc.connect(g).connect(oc.destination);
+   sc.start(c.pos*60/bpm/4,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)));
+   const rb=await oc.startRendering();return abWav(rb)}
   const b=TR[t].buffers[TR[t].pad];if(!b)return null;
   const oc=new OfflineAudioContext(2,Math.ceil(dur*22050),22050);
   const vol=+document.getElementById('vol'+t).value/100;
@@ -331,7 +414,7 @@ async function renderStem(t,bpm,dur){
 }
 async function exportStems(){if(!licOk())return;
  const bpm=+document.getElementById('bpm').value,dur=16*(60/bpm/4)+0.3;
- for(let t=0;t<8;t++){
+ for(let t=0;t<TR.length;t++){
   if(TR[t].muted)continue;const ab=await renderStem(t,bpm,dur);if(!ab)continue;
   dl(new Blob([ab],{type:'audio/wav'}),`g2b-track${t+1}.wav`);
  }
@@ -341,9 +424,9 @@ function ab2b64(ab){const u8=new Uint8Array(ab);let bin='';for(let i=0;i<u8.leng
 async function naarLaagbaas(){
  const bpm=+document.getElementById('bpm').value,dur=16*(60/bpm/4)+0.3;
  const stash=[];
- for(let t=0;t<8;t++){
+ for(let t=0;t<TR.length;t++){
   if(TR[t].muted)continue;const ab=await renderStem(t,bpm,dur);if(!ab)continue;
-  const nm=(document.getElementById('src'+t).value||('track'+(t+1)))+''+(t+1);
+  const nm=TR[t].type==='audio'?('audio'+(t+1)):(document.getElementById('src'+t).value||('track'+(t+1)))+''+(t+1);
   stash.push({name:`gaw-${nm.toLowerCase()}.wav`,b64:ab2b64(ab)});
  }
  if(!stash.length){document.getElementById('st').textContent='niets om te sturen — zet eerst stappen aan';return;}
