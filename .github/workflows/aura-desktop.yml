@@ -23,7 +23,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          projectPath: tools/aura-v6/desktop
+          projectPath: aura-desktop
           tagName: aura-v6.0
           releaseName: 'G2B AURA v6.0 Studio'
           releaseDraft: false
