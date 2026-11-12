@@ -49,6 +49,15 @@ header{position:relative;padding:0;overflow:hidden}
 .instr .num{background:#0a1f12}
 .sec{margin:34px 0 14px;color:var(--green);font-size:13px;letter-spacing:3px;font-weight:700;text-transform:uppercase}
 .intro{color:var(--gray);font-size:14px;line-height:1.6;margin-bottom:20px}
+/* SEARCH + MOOD-FILTER */
+.zoekbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:18px}
+.zoekbar input{flex:1;min-width:220px;background:var(--card);border:1px solid var(--line);border-radius:10px;color:#e8eaed;padding:11px 14px;font-size:14px;font-family:inherit}
+.zoekbar input:focus{outline:none;border-color:var(--green)}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:16px;color:var(--gray);font-size:12px;font-weight:600;padding:7px 13px;cursor:pointer;font-family:inherit;letter-spacing:.4px}
+.chip:hover{border-color:#356b48;color:#e8eaed}
+.chip.on{background:var(--green);border-color:var(--green);color:#06220f}
+.geen{color:var(--gray);font-size:13px;padding:14px 4px;display:none}
+.track.hide{display:none}
 /* REQUEST */
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:18px}
 .card h3{color:var(--green);font-size:14px;letter-spacing:2px;margin-bottom:12px;text-transform:uppercase}
@@ -101,6 +110,7 @@ header{position:relative;padding:0;overflow:hidden}
 <div class="wrap">
 <div class="pane on" id="p0">
   <div class="intro" data-i18n="sync_latin_intro" data-i18n-html>Latin catalog by <b style="color:#fff">GOOD2BETTER</b> — vocal masters + instrumentals. Every track is 100% written, produced, performed and owned by G.T.J. Sandvliet / Good2Better High Quality Media. Full WAV + stems packages on request.</div>
+  <div class="zoekbar"><input id="zq0" type="search" placeholder="Search title, mood, genre, BPM…" oninput="zoek(0)"></div>
   <div class="sec" data-i18n="sync_vocal">Vocal masters</div>
   <div id="voc"></div>
   <div class="sec" data-i18n="sync_instr">Instrumentals</div>
@@ -109,7 +119,15 @@ header{position:relative;padding:0;overflow:hidden}
 
 <div class="pane" id="p1">
   <div class="intro" data-i18n="sync_cat_intro" data-i18n-html>Song &amp; beat <b style="color:#fff">catalog by Giorgio</b> — zijn eigen tracks. License-ready: non-exclusive &amp; exclusive sync. Alle catalog-tracks zijn gebruikslicenties — eigendom blijft altijd bij G2B. Volledige buy-out? Alleen voor custom tracks op aanvraag. Stems en WAV-packages op aanvraag.</div>
+  <div class="zoekbar"><input id="zq1" type="search" placeholder="Search title, mood, genre, BPM…" oninput="zoek(1)">
+  <button class="chip" onclick="chip(this,1,'party')">party / club</button>
+  <button class="chip" onclick="chip(this,1,'drama')">drama / film</button>
+  <button class="chip" onclick="chip(this,1,'sports')">sports / energy</button>
+  <button class="chip" onclick="chip(this,1,'ads')">ads</button>
+  <button class="chip" onclick="chip(this,1,'chill')">chill / calm</button>
+  <button class="chip" onclick="chip(this,1,'dark')">dark / moody</button></div>
   <div id="cat"></div>
+  <div class="geen" id="geen1">No tracks match — try another mood or search.</div>
 </div>
 
 <div class="pane" id="p3">
@@ -274,6 +292,27 @@ document.getElementById('ins').innerHTML=INSTR.map(([n,t,f])=>row(n,t,`media/lat
 const BUYOUT=new Set(['G2B-MidnightZouk']);
 document.getElementById('cat').innerHTML=CAT.map((t,i)=>row(String(i+1).padStart(2,'0'),t,`media/english/${encodeURIComponent(t)}.mp3`,'','GOOD2BETTER · LICENSE-READY',BUYOUT.has(t))).join('');
 document.getElementById('isrc').innerHTML=LATIN.map(([n,t])=>`${ISRC[t]} — ${t}`).join('<br>')+'<br>'+ISRC_XTRA.map(([c,t])=>`${c} — ${t}`).join('<br>');
+// zoek + mood-filter
+const MOODMAP={party:['party','club','nightlife','night','dance','euphoric','festive','carnival','rush','bounce','groove'],drama:['drama','film','heartbreak','longing','nostalgic','ballad','march','ritual','journey'],sports:['sports','energy','triumphant','high energy','driving','anthem','motivation'],ads:['ads','commercial','business','corporate','lifestyle'],chill:['chill','calm','laid-back','lo-fi','smooth','warm','focus'],dark:['dark','moody','gritty','edgy','undertone','experimental']};
+let chipQ=['',''];
+function chip(el,pane,mood){
+  chipQ[pane]=chipQ[pane]===mood?'':mood;
+  el.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',chipQ[pane]&&c===el));
+  zoek(pane);
+}
+function zoek(pane){
+  const q=(document.getElementById('zq'+pane).value||'').toLowerCase();
+  const paneEl=document.getElementById('p'+pane);
+  let zichtbaar=0;
+  paneEl.querySelectorAll('.track').forEach(tr=>{
+    const txt=tr.querySelector('.info').textContent.toLowerCase();
+    const okQ=!q||txt.includes(q);
+    let okM=true;
+    if(chipQ[pane]){okM=MOODMAP[chipQ[pane]].some(w=>txt.includes(w));}
+    tr.classList.toggle('hide',!(okQ&&okM));if(okQ&&okM)zichtbaar++;
+  });
+  const g=document.getElementById('geen'+pane);if(g)g.style.display=zichtbaar?'none':'block';
+}
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 </body>
