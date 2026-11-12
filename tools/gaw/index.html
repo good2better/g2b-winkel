@@ -14,9 +14,10 @@ input[type=range]{accent-color:var(--groen)}
 select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:5px 8px;font-size:.75rem;max-width:150px}
 .trak{display:flex;align-items:center;gap:8px;background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:8px 10px;margin-bottom:8px;flex-wrap:wrap}
 .trak .nm{font-weight:800;font-size:.7rem;color:var(--groen);width:58px}
-.proll{flex:1;min-width:280px;height:72px;background:#0b0e0c;border:1px solid var(--rand);border-radius:6px;cursor:crosshair}
-.steps{display:grid;grid-template-columns:repeat(16,1fr);gap:4px;flex:1;min-width:280px}
-.alane{flex:1;min-width:280px;height:72px;background:#0b0e0c;border:1px solid var(--rand);border-radius:6px;cursor:ew-resize}
+.proll{width:100%;height:72px;background:#0b0e0c;border:1px solid var(--rand);border-radius:6px;cursor:crosshair}
+.steps{display:grid;grid-template-columns:repeat(16,1fr);gap:4px;width:100%}
+.laneblock{flex:1;min-width:280px;border-radius:6px;border:1px solid;padding:4px;position:relative}
+.alane{width:100%;height:72px;background:#0b0e0c;border:1px solid var(--rand);border-radius:6px;cursor:ew-resize}
 .klein{padding:6px 10px;font-size:.72rem}
 #recov{position:fixed;inset:0;background:rgba(6,9,7,.94);display:none;align-items:center;justify-content:center;z-index:50;flex-direction:column}
 #recov .pane{width:min(92vw,860px);background:var(--kaart);border:1px solid var(--rand);border-radius:16px;padding:22px;text-align:center}
@@ -76,6 +77,7 @@ const BRON={
  'BAS':{dir:'bas-web',load:async()=>{const m=await(await fetch('/tools/bas-web/meta.json')).json();return{namen:m.names,files:m.files}}}
 };
 const PREF={1:['OCHO',0],2:['BASSDRUM',0],3:['DRUMS',0],4:['OCHO',1],5:['BAS',0],6:['MELODIE',0],7:['KEYS',0],8:['AKKOORD',0]};
+const TCOL=['#ff9d2e','#3fa7ff','#e04dd0','#8fd63f','#ffcf2e','#2ecfff','#ff5d5d','#b48cff','#4adfb8','#ff8a5c','#5c9fff','#ff5c9d','#9dff5c','#ffe45c'];
 let ctx=null,TR=[],bpm=96,playing=false,step=0,timer=null;
 const cache={};
 function ac(){if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume();return ctx}
@@ -89,21 +91,23 @@ async function bronData(src){
 async function mkTrack(t,type){
  const el=document.getElementById('traks');
  const row=document.createElement('div');row.className='trak';
+ const col=TCOL[t%TCOL.length];
  const lane=type==='grid'?`<div class="steps" id="st${t}"></div>`
   :type==='roll'?`<canvas class="proll" id="pr${t}" width="720" height="72"></canvas>`
   :`<canvas class="alane" id="aw${t}" width="720" height="72"></canvas>`;
- row.innerHTML=`<span class="nm">${type==='grid'?'🥁':type==='roll'?'🎹':'🎙️'} TR${t+1}</span>
+ row.innerHTML=`<span class="nm" style="background:${col};color:#0a0a0a;border-radius:5px;padding:3px 6px">${type==='grid'?'🥁':type==='roll'?'🎹':'🎙️'} TR${t+1}</span>
    ${type!=='audio'?`<select id="src${t}" onchange="trackSet(${t})"></select>
    <select id="bank${t}" onchange="trackBank(${t})"></select>
    <select id="pad${t}"></select>`:''}
-   ${lane}
+   <div class="laneblock" style="border-color:${col}66;background:linear-gradient(180deg,${col}22,${col}0e)">${lane}</div>
    <label>vol<input type="range" id="vol${t}" min="0" max="100" value="80" style="width:52px"></label>
    <label>pan<input type="range" id="pan${t}" min="-100" max="100" value="0" style="width:48px"></label>
    <button class="uit" id="ar${t}" style="padding:6px 10px" onclick="opneem(${t})" title="Neem audio op — je take wordt je ${type==='audio'?'clip':'pad'}">⏺ OP</button>
    <button class="uit" id="mut${t}" style="padding:6px 10px" onclick="mute(${t})">MUTE</button>
    <button class="uit" style="padding:6px 10px" onclick="wis(${t})">✕</button>`;
  el.appendChild(row);
- TR[t]={type,grid:type==='grid'?new Array(16).fill(false):null,notes:type==='roll'?[]:null,clip:null,buffers:[],pad:0,vol:.8,muted:false};
+ row.style.setProperty('--tc',col);
+ TR[t]={type,col,grid:type==='grid'?new Array(16).fill(false):null,notes:type==='roll'?[]:null,clip:null,buffers:[],pad:0,vol:.8,muted:false};
  if(type==='grid'){const steps=document.getElementById('st'+t);
   for(let s=0;s<16;s++){const c=document.createElement('button');c.className='st';c.onclick=()=>{snap();TR[t].grid[s]=!TR[t].grid[s];c.className='st'+(TR[t].grid[s]?' aan':'')};steps.appendChild(c)}}
  else if(type==='roll')bouwRoll(t);
@@ -189,9 +193,9 @@ function drawRoll(t){
  g.lineWidth=1;
  // noten
  for(const n of TR[t].notes){const y=rollY(c,n.p),x0=KB+n.s*w;
-  g.fillStyle=n===TR[t]._drag?'#ffd24a':'#0cf';g.fillRect(x0+1,y-3,Math.max(4,(n.d||1)*w-2),6);
+  g.fillStyle=n===TR[t]._drag?'#ffd24a':TR[t].col||'#0cf';g.fillRect(x0+1,y-3,Math.max(4,(n.d||1)*w-2),6);
   g.strokeStyle='rgba(0,0,0,.6)';g.strokeRect(x0+1,y-3,Math.max(4,(n.d||1)*w-2),6)}
- if(playing){g.fillStyle='#0fc';g.fillRect(KB+((step+15)%16)*w,0,2,c.height)}
+ if(playing){g.fillStyle='#fff';g.fillRect(KB+((step+15)%16)*w,0,2,c.height)}
 }
 function hitRoll(t,x,y){
  const c=document.getElementById('pr'+t),w=(c.width-KB)/NS;
@@ -235,11 +239,11 @@ function drawWave(t){
   const b=Math.min(d.length-1,a+Math.floor(d.length/cols/400));
   let mn=1,mx=-1;for(let j=a;j<=b;j+=8){const v=d[j];if(v<mn)mn=v;if(v>mx)mx=v}
   if(mn>mx){mn=0;mx=0}
-  g.fillStyle='#3fd08a';g.fillRect(x0+i,c.height/2-mx*c.height*0.42,1,Math.max(1,(mx-mn)*c.height*0.42));
+  g.fillStyle=TR[t].col||'#3fd08a';g.fillRect(x0+i,c.height/2-mx*c.height*0.42,1,Math.max(1,(mx-mn)*c.height*0.42));
  }
- g.strokeStyle='#0fc';g.strokeRect(x0,1,cols,c.height-2);
- g.fillStyle='#0fc';g.fillText('CLIP',x0+4,10);
- if(playing){g.fillStyle='#0fc';g.fillRect(((step+15)%16)*w,0,2,c.height)}
+ g.strokeStyle=TR[t].col||'#0fc';g.strokeRect(x0,1,cols,c.height-2);
+ g.fillStyle=TR[t].col||'#0fc';g.fillText('CLIP',x0+4,10);
+ if(playing){g.fillStyle='#fff';g.fillRect(((step+15)%16)*w,0,2,c.height)}
 }
 function bouwWave(t){
  const c=document.getElementById('aw'+t),w=c.width/NS;let drag=null;
