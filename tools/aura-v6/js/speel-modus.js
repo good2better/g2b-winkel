@@ -54,7 +54,27 @@ const SpeelModus = {
     const st = this.arpRate === 16 ? 1 : 2;
     let seq = notes.slice();
     if (this.arpDir === 'down') seq.reverse();
-    if (this.arpDir === 'updown') seq = [...seq, ...notes.slice(1, -1).reverse()];
+    else if (this.arpDir === 'updown') seq = [...seq, ...notes.slice(1, -1).reverse()];
+    else if (this.arpDir === 'conv') { // converge: buiten→binnen (laag,hoog,2e-laag,2e-hoog,...)
+      const s = notes.slice().sort((a, b) => a - b), out = [];
+      for (let i = 0, j = s.length - 1; i <= j;) { out.push(s[i++]); if (i <= j) out.push(s[j--]); }
+      seq = out;
+    } else if (this.arpDir === 'div') { // diverge: binnen→buiten (harp-achtig, strak met STRAK-gate)
+      const s = notes.slice().sort((a, b) => a - b), out = [];
+      let i = (s.length - 1) >> 1, j = i + 1;
+      while (i >= 0 || j < s.length) { if (i >= 0) out.push(s[i--]); if (j < s.length) out.push(s[j++]); }
+      seq = out;
+    } else if (this.arpDir === 'oct') { // octave-jump: elke 2e noot +12 — hoog krijgt extra korte gate
+      seq = notes.flatMap((n, i) => i % 2 ? [{ p: n + 12, sh: 1 }] : [{ p: n }]);
+      return seq.map((n, i) => ({ p: n.p, at: i * st, sh: n.sh }));
+    } else if (this.arpDir === 'rand') { // random volgorde — elke aanslag anders
+      seq = notes.slice();
+      for (let i = seq.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [seq[i], seq[j]] = [seq[j], seq[i]]; }
+    } else if (this.arpDir === 'ratchet') { // ratchet: 1e noot dubbelt 2x snel — alleen nuttig met afkapping
+      const out = [];
+      notes.forEach((n, i) => { if (i === 0) { out.push({ p: n, at: 0, sh: 1 }, { p: n, at: st / 2, sh: 1 }); } else out.push({ p: n, at: st * i }); });
+      return out;
+    }
     return seq.map((n, i) => ({ p: n, at: i * st }));
   },
 
@@ -64,9 +84,10 @@ const SpeelModus = {
     return (p, o = {}) => {
       const v = o.velocity || 100;
       const st = SpeelModus.arpRate === 16 ? 1 : 2;
-      // STRAK: noot klinkt max ~85% van haar stap → volgende noot is schoon (piano-gevoel)
-      const gateMs = (SpeelModus.arpOn && SpeelModus.arpTight) ? st * stepMs * 0.85 : 0;
-      SpeelModus.expand(p).forEach(n => {
+      SpeelModus.expand(p).forEach((n, i) => {
+        // STRAK + groove-gate: tel-noten 80%, tussen-noten 45% van de stap (pianist-groove)
+        const gateMs = (SpeelModus.arpOn && SpeelModus.arpTight)
+          ? st * stepMs * (n.sh ? 0.45 : (i % 2 ? 0.45 : 0.8)) : 0;
         const go = () => {
           if (panel) panel.hit(n.p, v);
           baseFn(n.p, gateMs ? { ...o, hold: gateMs / 1000 } : o);
@@ -96,7 +117,7 @@ const SpeelModus = {
       <button data-m="oct" class="sm">OCTAAF-STAPEL</button>
       <button data-m="arp" class="sm">ARP</button>
       <select id="smArp" class="sm-sel"><option value="8">1/8</option><option value="16">1/16</option></select>
-      <select id="smArpDir" class="sm-sel"><option value="up">↑</option><option value="down">↓</option><option value="updown">↑↓</option></select>
+      <select id="smArpDir" class="sm-sel"><option value="up">↑</option><option value="down">↓</option><option value="updown">↑↓</option><option value="conv">→←</option><option value="div">←→</option><option value="oct">OCT+</option><option value="rand">RND</option><option value="ratchet">RAT</option></select>
       <button id="smTight" class="sm on">STRAK: AAN</button>
       <button id="smDice" class="sm">🎲 DICE</button>
       <button id="smScale" class="sm">NOOIT VALS: UIT</button>
@@ -140,7 +161,7 @@ const SpeelModus = {
       bar.querySelector('#smChord').value = S.chordType;
       S.arpRate = r() < 0.5 ? 8 : 16;
       bar.querySelector('#smArp').value = S.arpRate;
-      const dirs = ['up','down','updown'];
+      const dirs = ['up','down','updown','conv','div','oct','rand','ratchet'];
       S.arpDir = dirs[(r() * 3) | 0];
       bar.querySelector('#smArpDir').value = S.arpDir;
       sync();
