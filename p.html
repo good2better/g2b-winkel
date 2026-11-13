@@ -96,7 +96,7 @@ async function main(){
   // advies: eerste upsell die bestaat
   const advies=(p.upsell||[]).map(u=>lijst.find(q=>q.id===u)).find(Boolean);
   const vids=[];
-  if(p.video) vids.push({lbl:"▶ demo — hoort hoe het klinkt",src:p.video,subs:p});
+  if(p.video) vids.push({lbl:p.video_lbl||"▶ demo — hoort hoe het klinkt",src:p.video,subs:p,sub:!!(p.sub_nl||p.sub_es)});
   if(p.uitleg) vids.push({lbl:"▶ uitleg — EN stem, NL/ES ondertiteling",src:p.uitleg,uitleg:true,subs:p});
   (p.video_extra||[]).forEach((x,i)=>vids.push({lbl:"▶ "+(p.video_extra_lbls?.[i]||"extra versie"),src:x,subs:p}));
   const punten=[];
@@ -127,8 +127,8 @@ async function main(){
   ${vids.length?`<section class="sectie"><h2>Video${vids.length>1?"'s":""}</h2><div class="video">
     ${vids.map(v=>`<div class="vid"><div class="lbl">${v.lbl}</div>
       <video controls playsinline preload="none" ${p.cover?`poster="${esc(p.cover)}"`:""} src="${esc(v.src)}">
-        ${v.uitleg&&p.sub_nl?`<track kind="subtitles" srclang="nl" label="Nederlands" src="${esc(p.sub_nl)}" default>`:""}
-        ${v.uitleg&&p.sub_es?`<track kind="subtitles" srclang="es" label="Español" src="${esc(p.sub_es)}">`:""}
+        ${(v.uitleg||v.sub)&&p.sub_nl?`<track kind="subtitles" srclang="nl" label="Nederlands" src="${esc(p.sub_nl)}" default>`:""}
+        ${(v.uitleg||v.sub)&&p.sub_es?`<track kind="subtitles" srclang="es" label="Español" src="${esc(p.sub_es)}">`:""}
       </video></div>`).join("")}
   </div></section>`:""}
   <section class="sectie"><h2>Wat je krijgt</h2><ul class="punten">

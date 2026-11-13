@@ -1839,7 +1839,12 @@
     "download": "bedankt.html?k=aura-v6",
     "koop": "bestel.html?p=aura-dicesynth"
    },
-   "video": "media/aura-dicesynth-demo.mp4",
+   "video": "media/aura-dicesynth-promo.mp4",
+   "video_lbl": "▶ promo — ENG, NL/ES ondertiteling",
+   "video_extra": ["media/aura-dicesynth-demo.mp4"],
+   "video_extra_lbls": ["demo — zo werkt hij"],
+   "sub_nl": "media/aura-dicesynth-promo.nl.vtt",
+   "sub_es": "media/aura-dicesynth-promo.es.vtt",
    "demo": "media/aura-dicesynth-demo.mp4"
   },
   {
