@@ -54,6 +54,8 @@ const SpeelModus = {
     if (this.octOn) notes = notes.flatMap(n => [n - 12, n, n + 12]);
     if (!this.arpOn) return notes.map(n => ({ p: n, at: 0 }));
     const st = this.arpRate === 16 ? 1 : 2;
+    // 1 noot + ARP = roll: zelfde noot 8 stappen achter elkaar (drum-roll / arp op 1 toets)
+    if (notes.length === 1) return Array.from({ length: 8 }, (_, i) => ({ p: notes[0], at: i * st }));
     let seq = notes.slice();
     if (this.arpDir === 'down') seq.reverse();
     else if (this.arpDir === 'updown') seq = [...seq, ...notes.slice(1, -1).reverse()];

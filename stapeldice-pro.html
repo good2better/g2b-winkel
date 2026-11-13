@@ -851,6 +851,7 @@ function arpExpand(nt){
   let notes=chOn?SH[Math.min(3,Math.round(S.fP[KP.ChordShape]*3))].map(i=>nt+i):[nt];
   if(!ARP.on)return notes.map(p=>({p,at:0,dur:null}));
   const st=ARP.rate===16?1:2,stepSec=60/120/4*1; // 16e @120bpm
+  if(notes.length===1)return Array.from({length:8},(_,i)=>({p:notes[0],at:i*st})); // 1 noot = roll
   let seq=notes.slice();
   if(ARP.dir==='down')seq.reverse();
   else if(ARP.dir==='updown')seq=[...seq,...notes.slice(1,-1).reverse()];
