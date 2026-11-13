@@ -77,12 +77,12 @@ let _mst=null;
 function master(){ if(!_mst){ const a=ac(); _mst=a.createDynamicsCompressor();
   _mst.threshold.value=-20;_mst.knee.value=20;_mst.ratio.value=4;
   _mst.attack.value=0.004;_mst.release.value=0.22;_mst.connect(a.destination); } return _mst; }
-function speel(i){
+function speel(i,semi){
  const b=buffers[i];if(!b)return;
  const a=ac(),t=a.currentTime;
  if(voices[i]){try{voices[i].stop()}catch(e){}}
  const s=a.createBufferSource();s.buffer=b;
- s.playbackRate.value=Math.pow(2,(+document.getElementById('pitch').value)/12);
+ s.playbackRate.value=Math.pow(2,(+document.getElementById('pitch').value+(semi||0))/12);
  const f=+document.getElementById('filt').value;
  let node=s;
  if(f>0){const lp=a.createBiquadFilter();lp.type='lowpass';lp.frequency.value=f;s.connect(lp);node=lp}
@@ -95,7 +95,7 @@ function speel(i){
  const el=document.getElementById('p'+i);el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),120);
 }
 document.addEventListener('keydown',e=>{
- const i=KEYS.indexOf(e.key.toLowerCase());if(i>=0&&!e.repeat)speel(i);
+ const i=KEYS.indexOf(e.key.toLowerCase());if(i>=0&&!e.repeat){speel(i);if(window.G2BKB&&G2BKB.log)G2BKB.log(60+i,0,100);}
 });
 ['pitch','leng','filt','vol'].forEach(id=>{
  document.getElementById(id).addEventListener('input',e=>{
@@ -107,6 +107,6 @@ document.addEventListener('keydown',e=>{
 
 </script>
 <script src="midi.js"></script><footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
-<script src="/js/g2b-gate.js" data-tier="leden"></script>
+<script src="midi.js"></script><script src="keyboardmode.js"></script><script src="/js/g2b-gate.js" data-tier="leden"></script>
 </body>
 </html>
