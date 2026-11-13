@@ -8,6 +8,7 @@ const SpeelModus = {
   arpTight: true,          // STRAK: elke arp-noot stopt vóór de volgende — geen overlap (piano-gevoel)
   arpGate: 80,             // GATE %: 10=vlijmscherp pluck, 100=los/dromerig
   bassHold: false,         // BASHOLD: grondtoon klinkt door, top-noten kapten elkaar (lo-fi/R&B)
+  holdOn: false,           // HOUD: noot klinkt zolang je de toets vasthoudt (synth + samples)
   chordType: 'min',        // min | maj | kaseko | trap | sus
   arpRate: 8,              // 8 | 16
   arpDir: 'up',            // up | updown | down
@@ -98,9 +99,11 @@ const SpeelModus = {
         // 1 noot = volle aanklank (piano), 2+ noten = strak arp-gate
         const gateMs = (SpeelModus.arpOn && SpeelModus.arpTight && !isBassHold && seq.length > 1)
           ? st * stepMs * (n.sh ? g * 0.4 : (i % 2 ? g * 0.6 : g)) : 0;
+        // HOUD: lange hold + bijna-geen decay → noot blijft tot loslaten (samples + synth)
+        const ho = (SpeelModus.holdOn && !gateMs) ? { hold: 60, decay: 0.99999 } : {};
         const go = () => {
           if (panel) panel.hit(n.p, v);
-          baseFn(n.p, gateMs ? { ...o, hold: gateMs / 1000 } : o);
+          baseFn(n.p, gateMs ? { ...o, hold: gateMs / 1000 } : { ...o, ...ho });
           if (gateMs && typeof Aura !== 'undefined' && Aura.noteOff)
             setTimeout(() => Aura.noteOff(n.p), gateMs);
         };
@@ -131,6 +134,7 @@ const SpeelModus = {
       <button id="smTight" class="sm on">STRAK: AAN</button>
       <label class="sm-lbl" style="display:flex;align-items:center;gap:4px">GATE <input type="range" id="smGate" min="10" max="100" value="80" style="width:70px"></label>
       <button id="smBassHold" class="sm">BASHOLD: UIT</button>
+      <button id="smHold" class="sm">HOUD: UIT</button>
       <select id="smPreset" class="sm-sel"><option value="">PRESET…</option>
         <option value="drill">DRILL PIANO</option><option value="techno">TECHNO PLUCK</option>
         <option value="harp">NEO-SOUL HARP</option><option value="bass">ROLLING BASS</option>
@@ -162,6 +166,8 @@ const SpeelModus = {
     bar.querySelector('#smGate').oninput = e => S.arpGate = +e.target.value;
     const bhBtn = bar.querySelector('#smBassHold');
     bhBtn.onclick = () => { S.bassHold = !S.bassHold; bhBtn.textContent = 'BASHOLD: ' + (S.bassHold ? 'AAN' : 'UIT'); bhBtn.classList.toggle('on', S.bassHold); };
+    const hdBtn = bar.querySelector('#smHold');
+    hdBtn.onclick = () => { S.holdOn = !S.holdOn; hdBtn.textContent = 'HOUD: ' + (S.holdOn ? 'AAN' : 'UIT'); hdBtn.classList.toggle('on', S.holdOn); };
     // GENRE-PRESETS: 1 klik = richting+gate+gedrag zoals het genre het wil
     const PRESETS = {
       drill:   { arpOn:1, arpDir:'down',    arpRate:16, arpGate:45, arpTight:1, bassHold:0, chordOn:0, octOn:0 },

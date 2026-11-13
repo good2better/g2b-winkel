@@ -95,7 +95,7 @@ const Aura = {
         this._padLow.stop(this.ctx.currentTime + 0.02); } catch (e) {}
     }
     if (pitch < 48) this._padLow = src;
-    this._pad[key] = src; src._g = g;
+    this._pad[key] = src; src._g = g; src._pitch = pitch;
     // door de worklet: volume/knip/limiter gelden óók voor samples — geen gekraak meer bij stapelen
     src.connect(g);
     g.connect(this.node);
@@ -103,6 +103,20 @@ const Aura = {
     src.onended = () => { this._live.delete(src); if (this._pad[key] === src) delete this._pad[key]; };
     src.start();
     return src;
+  },
+
+  // HOUD-modus: sample op pitch netjes afkappen bij loslaten (zachte fade = geen klik)
+  sampleOff(pitch) {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    for (const s of this._live) {
+      if (s._pitch !== pitch) continue;
+      try {
+        s._g.gain.cancelScheduledValues(t);
+        s._g.gain.setTargetAtTime(0, t, 0.03);
+        s.stop(t + 0.15);
+      } catch (e) {}
+    }
   },
 
   setGlue(v) { if (this.node) this.node.parameters.get('glue').value = v ? 1 : 0; },
