@@ -867,7 +867,7 @@ function playNote(nt,el){ensureAC();S.fP[KP.On]=1;
   lastNotes=ex.map((n,i)=>{
     // STRAK+GATE: noot stopt vóór de volgende stap; BASHOLD: laagste blijft
     const held=ARP.bassHold&&n.p===lo;
-    const dur=(ARP.on&&ARP.tight&&!held)?st*stepSec*(n.sh?ARP.gate*0.4:(i%2?ARP.gate*0.6:ARP.gate)):null;
+    const dur=(ARP.on&&ARP.tight&&!held&&ex.length>1)?st*stepSec*(n.sh?ARP.gate*0.4:(i%2?ARP.gate*0.6:ARP.gate)):null;
     return{t:n.at*stepSec,nt:n.p,vel:0.85,dur};
   });
   const dur=Math.max(2.2,Math.max(...lastNotes.map(e=>e.t+(e.dur||1.4)))+0.6);

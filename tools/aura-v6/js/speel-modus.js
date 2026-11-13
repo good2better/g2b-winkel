@@ -86,12 +86,15 @@ const SpeelModus = {
     return (p, o = {}) => {
       const v = o.velocity || 100;
       const st = SpeelModus.arpRate === 16 ? 1 : 2;
-      SpeelModus.expand(p).forEach((n, i) => {
+      const seq = SpeelModus.expand(p);
+      const lo = Math.min(...seq.map(x => x.p));
+      seq.forEach((n, i) => {
         // STRAK + GATE-schaal + groove: tel volle gate, tussen 60% ervan; sh = extra kort
         const g = SpeelModus.arpGate / 100;
-        // BASHOLD: laagste noot (i===0 na sorteren op p) houdt de grond vast
-        const isBassHold = SpeelModus.bassHold && n.p === Math.min(...SpeelModus.expand(p).map(x => x.p));
-        const gateMs = (SpeelModus.arpOn && SpeelModus.arpTight && !isBassHold)
+        // BASHOLD: laagste noot houdt de grond vast
+        const isBassHold = SpeelModus.bassHold && n.p === lo;
+        // 1 noot = volle aanklank (piano), 2+ noten = strak arp-gate
+        const gateMs = (SpeelModus.arpOn && SpeelModus.arpTight && !isBassHold && seq.length > 1)
           ? st * stepMs * (n.sh ? g * 0.4 : (i % 2 ? g * 0.6 : g)) : 0;
         const go = () => {
           if (panel) panel.hit(n.p, v);
