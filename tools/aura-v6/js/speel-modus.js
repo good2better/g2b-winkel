@@ -6,6 +6,8 @@ const SpeelModus = {
   octOn: false,            // octaaf-stapel aan/uit
   arpOn: false,            // arpeggiator aan/uit — combineerbaar met chord + oct
   arpTight: true,          // STRAK: elke arp-noot stopt vóór de volgende — geen overlap (piano-gevoel)
+  arpGate: 80,             // GATE %: 10=vlijmscherp pluck, 100=los/dromerig
+  bassHold: false,         // BASHOLD: grondtoon klinkt door, top-noten kapten elkaar (lo-fi/R&B)
   chordType: 'min',        // min | maj | kaseko | trap | sus
   arpRate: 8,              // 8 | 16
   arpDir: 'up',            // up | updown | down
@@ -85,9 +87,12 @@ const SpeelModus = {
       const v = o.velocity || 100;
       const st = SpeelModus.arpRate === 16 ? 1 : 2;
       SpeelModus.expand(p).forEach((n, i) => {
-        // STRAK + groove-gate: tel-noten 80%, tussen-noten 45% van de stap (pianist-groove)
-        const gateMs = (SpeelModus.arpOn && SpeelModus.arpTight)
-          ? st * stepMs * (n.sh ? 0.45 : (i % 2 ? 0.45 : 0.8)) : 0;
+        // STRAK + GATE-schaal + groove: tel volle gate, tussen 60% ervan; sh = extra kort
+        const g = SpeelModus.arpGate / 100;
+        // BASHOLD: laagste noot (i===0 na sorteren op p) houdt de grond vast
+        const isBassHold = SpeelModus.bassHold && n.p === Math.min(...SpeelModus.expand(p).map(x => x.p));
+        const gateMs = (SpeelModus.arpOn && SpeelModus.arpTight && !isBassHold)
+          ? st * stepMs * (n.sh ? g * 0.4 : (i % 2 ? g * 0.6 : g)) : 0;
         const go = () => {
           if (panel) panel.hit(n.p, v);
           baseFn(n.p, gateMs ? { ...o, hold: gateMs / 1000 } : o);
@@ -119,6 +124,8 @@ const SpeelModus = {
       <select id="smArp" class="sm-sel"><option value="8">1/8</option><option value="16">1/16</option></select>
       <select id="smArpDir" class="sm-sel"><option value="up">↑</option><option value="down">↓</option><option value="updown">↑↓</option><option value="conv">→←</option><option value="div">←→</option><option value="oct">OCT+</option><option value="rand">RND</option><option value="ratchet">RAT</option></select>
       <button id="smTight" class="sm on">STRAK: AAN</button>
+      <label class="sm-lbl" style="display:flex;align-items:center;gap:4px">GATE <input type="range" id="smGate" min="10" max="100" value="80" style="width:70px"></label>
+      <button id="smBassHold" class="sm">BASHOLD: UIT</button>
       <button id="smDice" class="sm">🎲 DICE</button>
       <button id="smScale" class="sm">NOOIT VALS: UIT</button>
       <select id="smKey" class="sm-sel"></select>`;
@@ -143,6 +150,9 @@ const SpeelModus = {
     const tightPaint = () => { tightBtn.textContent = 'STRAK: ' + (S.arpTight ? 'AAN' : 'UIT'); tightBtn.classList.toggle('on', S.arpTight); };
     tightBtn.onclick = () => { S.arpTight = !S.arpTight; tightPaint(); };
     tightPaint();
+    bar.querySelector('#smGate').oninput = e => S.arpGate = +e.target.value;
+    const bhBtn = bar.querySelector('#smBassHold');
+    bhBtn.onclick = () => { S.bassHold = !S.bassHold; bhBtn.textContent = 'BASHOLD: ' + (S.bassHold ? 'AAN' : 'UIT'); bhBtn.classList.toggle('on', S.bassHold); };
     const sync = () => {
       bar.querySelector('button.sm[data-m=norm]').classList.toggle('on', !S.chordOn && !S.octOn && !S.arpOn);
       bar.querySelector('button.sm[data-m=chord]').classList.toggle('on', S.chordOn);
