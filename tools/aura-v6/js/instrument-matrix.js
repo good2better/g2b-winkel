@@ -38,7 +38,7 @@ const InstrumentMatrix = {
     if (sel.length === 0) { Aura.noteOn(pitch, opts); return; }
     sel.forEach(i => {
       const s = this.sounds[i];
-      if (s.src) { Aura.sampleOn(pitch, { ...s, gain: (opts.velocity || 110) / 127 * 0.9 }); return; }
+      if (s.src) { Aura.sampleOn(pitch, { ...s, gain: (opts.velocity || 110) / 127 * 0.9, hold: opts.hold }); return; }
       Aura.noteOn(pitch, { wave: s.wave, tone: (opts.tone || 1) * (s.tone || 1),
         decay: opts.decay != null ? opts.decay : s.decay,
         velocity: opts.velocity || 100 });

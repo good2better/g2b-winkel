@@ -5,6 +5,7 @@ const SpeelModus = {
   chordOn: false,          // 1-toets akkoord aan/uit
   octOn: false,            // octaaf-stapel aan/uit
   arpOn: false,            // arpeggiator aan/uit — combineerbaar met chord + oct
+  arpTight: true,          // STRAK: elke arp-noot stopt vóór de volgende — geen overlap (piano-gevoel)
   chordType: 'min',        // min | maj | kaseko | trap | sus
   arpRate: 8,              // 8 | 16
   arpDir: 'up',            // up | updown | down
@@ -62,8 +63,16 @@ const SpeelModus = {
     const stepMs = 60000 / 120 / 4; // 16e stap @120bpm — zelfde raster als StudioPanel
     return (p, o = {}) => {
       const v = o.velocity || 100;
+      const st = SpeelModus.arpRate === 16 ? 1 : 2;
+      // STRAK: noot klinkt max ~85% van haar stap → volgende noot is schoon (piano-gevoel)
+      const gateMs = (SpeelModus.arpOn && SpeelModus.arpTight) ? st * stepMs * 0.85 : 0;
       SpeelModus.expand(p).forEach(n => {
-        const go = () => { if (panel) panel.hit(n.p, v); baseFn(n.p, o); };
+        const go = () => {
+          if (panel) panel.hit(n.p, v);
+          baseFn(n.p, gateMs ? { ...o, hold: gateMs / 1000 } : o);
+          if (gateMs && typeof Aura !== 'undefined' && Aura.noteOff)
+            setTimeout(() => Aura.noteOff(n.p), gateMs);
+        };
         if (n.at) setTimeout(go, n.at * stepMs); else go();
       });
     };
@@ -88,6 +97,7 @@ const SpeelModus = {
       <button data-m="arp" class="sm">ARP</button>
       <select id="smArp" class="sm-sel"><option value="8">1/8</option><option value="16">1/16</option></select>
       <select id="smArpDir" class="sm-sel"><option value="up">↑</option><option value="down">↓</option><option value="updown">↑↓</option></select>
+      <button id="smTight" class="sm on">STRAK: AAN</button>
       <button id="smDice" class="sm">🎲 DICE</button>
       <button id="smScale" class="sm">NOOIT VALS: UIT</button>
       <select id="smKey" class="sm-sel"></select>`;
@@ -108,6 +118,10 @@ const SpeelModus = {
     bar.querySelector('#smChord').onchange = e => S.chordType = e.target.value;
     bar.querySelector('#smArp').onchange = e => S.arpRate = +e.target.value;
     bar.querySelector('#smArpDir').onchange = e => S.arpDir = e.target.value;
+    const tightBtn = bar.querySelector('#smTight');
+    const tightPaint = () => { tightBtn.textContent = 'STRAK: ' + (S.arpTight ? 'AAN' : 'UIT'); tightBtn.classList.toggle('on', S.arpTight); };
+    tightBtn.onclick = () => { S.arpTight = !S.arpTight; tightPaint(); };
+    tightPaint();
     const sync = () => {
       bar.querySelector('button.sm[data-m=norm]').classList.toggle('on', !S.chordOn && !S.octOn && !S.arpOn);
       bar.querySelector('button.sm[data-m=chord]').classList.toggle('on', S.chordOn);
