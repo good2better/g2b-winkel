@@ -126,6 +126,10 @@ const SpeelModus = {
       <button id="smTight" class="sm on">STRAK: AAN</button>
       <label class="sm-lbl" style="display:flex;align-items:center;gap:4px">GATE <input type="range" id="smGate" min="10" max="100" value="80" style="width:70px"></label>
       <button id="smBassHold" class="sm">BASHOLD: UIT</button>
+      <select id="smPreset" class="sm-sel"><option value="">PRESET…</option>
+        <option value="drill">DRILL PIANO</option><option value="techno">TECHNO PLUCK</option>
+        <option value="harp">NEO-SOUL HARP</option><option value="bass">ROLLING BASS</option>
+        <option value="cloud">AMBIENT CLOUD</option></select>
       <button id="smDice" class="sm">🎲 DICE</button>
       <button id="smScale" class="sm">NOOIT VALS: UIT</button>
       <select id="smKey" class="sm-sel"></select>`;
@@ -153,6 +157,24 @@ const SpeelModus = {
     bar.querySelector('#smGate').oninput = e => S.arpGate = +e.target.value;
     const bhBtn = bar.querySelector('#smBassHold');
     bhBtn.onclick = () => { S.bassHold = !S.bassHold; bhBtn.textContent = 'BASHOLD: ' + (S.bassHold ? 'AAN' : 'UIT'); bhBtn.classList.toggle('on', S.bassHold); };
+    // GENRE-PRESETS: 1 klik = richting+gate+gedrag zoals het genre het wil
+    const PRESETS = {
+      drill:   { arpOn:1, arpDir:'down',    arpRate:16, arpGate:45, arpTight:1, bassHold:0, chordOn:0, octOn:0 },
+      techno:  { arpOn:1, arpDir:'updown',  arpRate:16, arpGate:25, arpTight:1, bassHold:0, chordOn:0, octOn:1 },
+      harp:    { arpOn:1, arpDir:'conv',    arpRate:8,  arpGate:85, arpTight:1, bassHold:1, chordOn:1, octOn:0 },
+      bass:    { arpOn:1, arpDir:'up',      arpRate:16, arpGate:70, arpTight:1, bassHold:0, chordOn:0, octOn:0 },
+      cloud:   { arpOn:1, arpDir:'div',     arpRate:8,  arpGate:100,arpTight:0, bassHold:0, chordOn:1, octOn:1 },
+    };
+    bar.querySelector('#smPreset').onchange = e => {
+      const P = PRESETS[e.target.value]; if (!P) return;
+      Object.assign(S, P);
+      bar.querySelector('#smArp').value = S.arpRate;
+      bar.querySelector('#smArpDir').value = S.arpDir;
+      bar.querySelector('#smGate').value = S.arpGate;
+      bhBtn.textContent = 'BASHOLD: ' + (S.bassHold ? 'AAN' : 'UIT'); bhBtn.classList.toggle('on', S.bassHold);
+      tightBtn.textContent = 'STRAK: ' + (S.arpTight ? 'AAN' : 'UIT'); tightBtn.classList.toggle('on', S.arpTight);
+      sync(); e.target.value = '';
+    };
     const sync = () => {
       bar.querySelector('button.sm[data-m=norm]').classList.toggle('on', !S.chordOn && !S.octOn && !S.arpOn);
       bar.querySelector('button.sm[data-m=chord]').classList.toggle('on', S.chordOn);
