@@ -80,8 +80,9 @@ const Aura = {
     amp /= Math.max(1, 1 + this._live.size * 0.45);
     const hold = opts.hold != null ? opts.hold : Math.min(buf.duration, 4);
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(amp * 1.3, t + 0.002); // 2ms fade-in + punch op de aanslag
-    g.gain.setTargetAtTime(amp, t + 0.002, 0.005);         // punch valt terug in ~15ms
+    const punchAmt = pitch < 48 ? 1.3 : 1.12;              // lage noten: punch; melodisch: zachte aanslag
+    g.gain.linearRampToValueAtTime(amp * punchAmt, t + 0.006); // 6ms fade-in = geen knal meer
+    g.gain.setTargetAtTime(amp, t + 0.006, 0.005);         // punch valt terug in ~15ms
     g.gain.setTargetAtTime(0, t + Math.max(0.05, hold), 0.12); // zachte uitloop = geen eind-klik
     // cut-self: zelfde pad opnieuw = vorige dooft in 5ms ipv opstapelen
     const key = opts.src;

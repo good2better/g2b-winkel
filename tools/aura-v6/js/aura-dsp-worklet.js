@@ -42,7 +42,7 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
     this.voices.push({
       pitch: d.pitch,
       freq,
-      phase: 0, env: 1.0, subPhase: 0, age: 0, // age: 2ms fade-in + 15ms punch
+      phase: 0, env: 1.0, subPhase: 0, age: 0, low, // age: fade-in + pitch-afhankelijke punch
       decayRate: d.decayRate != null ? d.decayRate : (low ? 0.99995 : 0.9997),
       glideTargetFreq: d.glideFreq || null,
       waveType: d.waveType || 'sine',
@@ -95,8 +95,8 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
         v.phase += v.freq / sr;
         if (v.phase > 1) v.phase -= 1;
         v.age = (v.age || 0) + 1;
-        const att = v.age < 96 ? v.age / 96 : 1;                       // 2ms fade-in = 0 clicks
-        const punch = glueOn && v.age < 720 ? 1 + 0.45 * (1 - v.age / 720) : 1; // 15ms transient-punch
+        const att = v.age < 192 ? v.age / 192 : 1;                     // 4ms fade-in = 0 clicks, zachtere aanslag
+        const punch = glueOn && v.age < 720 ? 1 + (v.low ? 0.45 : 0.18) * (1 - v.age / 720) : 1; // lage noten: punch; hoge: zacht
         const amp = v.env * v.gain * att * punch;
         s += this.osc(v.waveType, v.phase) * amp;
         if (v.subGain) { // schone sub-osc onder C3: sinus + warme 2e harmonische
