@@ -891,7 +891,6 @@
    "video_en": "media/workstation-demo-en.mp4",
    "video_es": "media/workstation-demo-es.mp4",
    "badge": "100% LOKAAL — ook AI",
-   "eerst": true,
    "download_dir": "d/g2b-workstation",
    "uitleg": "media/workstation-uitleg.mp4",
    "sub_nl": "media/workstation-uitleg.nl.vtt",
@@ -1430,7 +1429,8 @@
     "g2b-oneshots",
     "g2balles"
    ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
+   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download",
+   "eerst": true
   },
   {
    "titel": "G2B Sleutel-Helper",
@@ -1522,7 +1522,6 @@
    "cover": "media/spooky-cover.png",
    "preview": "media/spooky.mp3",
    "download_dir": "d/sp00ky",
-   "eerst": true,
    "demo": "media/sp00ky-preview.mp4",
    "video": "media/sp00ky-preview.mp4",
    "uitleg": "media/sp00ky-uitleg.mp4",
@@ -1795,7 +1794,8 @@
     "koop": "bestel.html?p=aura-suripads"
    },
    "video": "media/aura-suripads-demo.mp4",
-   "demo": "media/aura-suripads-demo.mp4"
+   "demo": "media/aura-suripads-demo.mp4",
+   "eerst": true
   },
   {
    "id": "aura-allinstr",
@@ -1841,11 +1841,16 @@
    },
    "video": "media/aura-dicesynth-promo.mp4",
    "video_lbl": "▶ promo — ENG, NL/ES ondertiteling",
-   "video_extra": ["media/aura-dicesynth-demo.mp4"],
-   "video_extra_lbls": ["demo — zo werkt hij"],
+   "video_extra": [
+    "media/aura-dicesynth-demo.mp4"
+   ],
+   "video_extra_lbls": [
+    "demo — zo werkt hij"
+   ],
    "sub_nl": "media/aura-dicesynth-promo.nl.vtt",
    "sub_es": "media/aura-dicesynth-promo.es.vtt",
-   "demo": "media/aura-dicesynth-demo.mp4"
+   "demo": "media/aura-dicesynth-demo.mp4",
+   "eerst": true
   },
   {
    "id": "aura-dren",
