@@ -82,6 +82,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
 <span id="st">sets laden…</span>
 <button class="uit" id="skin" onclick="skin()">◐ WIT</button>
 <button class="uit" id="rec" onclick="rec()">⏺ REC</button>
+<button class="uit" id="retro" onclick="retro()" title="Pakt wat je speelde terwijl SPEEL aanstond maar REC uit — luistert altijd mee">🕘 TERUG</button>
 <button class="uit" id="kbbtn" onclick="kbToggle()" title="toetsenbord — speel op je toon-spoor">🎹</button>
 <button class="uit" onclick="window.open('../melodie/','_blank')" title="G2B MELODIE — 1 klik = melodie+akkoorden+bas, export .mid">🎼 MELODIE</button>
 </div>
@@ -131,7 +132,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
   <label>spoor <select id="kbsel" onchange="kbT=+this.value" style="background:#0d1512;color:#dfe;border:1px solid #345;padding:2px"></select></label>
   <button class="uit klein" onclick="kbOct=Math.max(-1,kbOct-1);kbDraw()">◀ oct</button>
   <button class="uit klein" onclick="kbOct=Math.min(1,kbOct+1);kbDraw()">oct ▶</button>
-  <span style="color:var(--sub)">klik = horen · ⏺ REC + ▶ SPEEL = opnemen in de roll · qwerty Z X C… + Q W E… · USB-keyboard werkt ook</span>
+  <span style="color:var(--sub)">klik = horen · ⏺ REC + ▶ SPEEL = opnemen in de roll · 🕘 TERUG = gespeeld zonder REC toch pakken · qwerty Z X C… + Q W E… · USB-keyboard werkt ook</span>
   <button class="uit klein" style="margin-left:auto" onclick="kbToggle()">✕</button>
  </div>
  <div id="kbkeys" style="position:relative;display:flex;height:96px;user-select:none"></div>
@@ -400,6 +401,18 @@ let CLICK=false;
 function clickToggle(){CLICK=!CLICK;document.getElementById('clk').style.borderColor=CLICK?'var(--groen)':'';document.getElementById('clk').style.color=CLICK?'var(--groen)':''}
 function clickPlay(){const c=ac(),o=c.createOscillator(),g=c.createGain();o.frequency.value=step%4===0?1500:1000;o.type='square';g.gain.setValueAtTime(0.08,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.03);o.connect(g).connect(c.destination);o.start(c.currentTime);o.stop(c.currentTime+0.04)}
 let REC=false;function rec(){REC=!REC;document.getElementById('rec').style.background=REC?'#d33':'';document.getElementById('rec').style.color=REC?'#fff':''}
+// 🕘 TERUG (retrospective record): buffer luistert altijd mee tijdens SPEEL —
+// pak je improvisatie terug ook als REC uitstond. Laatste pass wint per (noot,stap).
+let RETBUF=[];
+function retro(){
+ if(!RETBUF.length){document.getElementById('st').textContent='niks gespeeld om terug te pakken — TERUG vangt alleen noten terwijl ▶ SPEEL aanstond';return}
+ snap();
+ for(const n of RETBUF){if(!TR[n.t]||!TR[n.t].notes)continue;
+   if(!TR[n.t].notes.some(x=>x.p===n.p&&x.s===n.s))TR[n.t].notes.push({p:n.p,s:n.s,d:n.d,v:n.v});}
+ const ts=[...new Set(RETBUF.map(n=>n.t))];ts.forEach(drawRoll);
+ document.getElementById('st').textContent=`🕘 ${RETBUF.length} gespeelde noten teruggepakt op ${ts.map(i=>'TR'+(i+1)).join('+')} — Ctrl+Z om ongedaan te maken`;
+ RETBUF=[];
+}
 let HIST=[];const snap=()=>{HIST.push(JSON.stringify(TR.map(t=>({g:t.grid,n:t.notes}))));if(HIST.length>60)HIST.shift()};
 function ongedaan(){if(!HIST.length)return;const s=JSON.parse(HIST.pop());TR.forEach((t,i)=>{t.grid=s[i].g;t.notes=s[i].n;syncGrid(i)});document.getElementById('st').textContent='ongedaan gemaakt'}
 addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();ongedaan()}});
@@ -414,6 +427,7 @@ function kbHit(p){
  let t=kbRolls().includes(kbT)?kbT:(kbRolls()[0]??-1);
  if(t<0){document.getElementById('st').textContent='geen toon-spoor — voeg eerst +TOON toe';return}
  kbT=t;const pp=Math.max(PLO,Math.min(PHI,p));speel(t,pp);
+ if(playing){RETBUF.push({t,p:pp,s:step,d:1,v:100});if(RETBUF.length>256)RETBUF.shift();}
  if(REC&&playing){snap();TR[t].notes.push({p:pp,s:step,d:1,v:100});drawRoll(t)}
  const k=document.querySelector(`#kbkeys [data-p="${p}"]`);if(k){k.classList.add('aan');setTimeout(()=>k.classList.remove('aan'),160)}
 }
