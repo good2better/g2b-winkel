@@ -11,7 +11,7 @@
       <button id="btnExport">⬇ Export .mid</button>
       <label>BPM <input id="bpm" type="number" value="140" style="width:64px"></label>
     </div>
-    <canvas id="roll" height="220"></canvas>
+    <canvas id="roll" width="1040" height="220"></canvas>
     <div class="row"><span class="hint">klik leeg = noot zetten · sleep noot = verplaatsen · staart = langer/korter · rechtsklik of dubbelklik = weg · export = echte .mid met watermerk</span></div>
   </div>
   <div class="card"><h2>🥁 Suri-Pads &amp; World</h2><p>Pads + Surinaamse instrumenten — multi-select stacking.</p><a href="suri-pads/">Open module →</a></div>
@@ -24,7 +24,7 @@
   <div class="card"><h2>🧠 Mijn Brein</h2><div id="brainBox"></div></div>
 </div></div>
 <script src="js/aura-engine.js"></script>
-<script src="js/midi-forge-engine.js"></script>
+<script src="js/midi-forge-engine.js?v=2"></script>
 <script>const _gelicen = () => {
   try {
     if (localStorage.getItem('g2b_aura_licentie') === 'ok') return true;
