@@ -52,8 +52,18 @@ const SpeelModus = {
       const iv = this.CHORDS[this.chordType] || this.CHORDS.min;
       notes = iv.map(i => this.snap(p + i));
     }
-    if (this.octOn) notes = notes.flatMap(n => [n - 12, n, n + 12]);
-    if (!this.arpOn) return notes.map(n => ({ p: n, at: 0 }));
+    this._octVel = null; // pitch → velocity-factor voor de stapel
+    if (this.octOn) {
+      // klassieke laag-truc: octaaf omlaag vol, octaaf omhoog zachter
+      // → volle bas-warmte, hoge laag = glans i.p.v. schel/dun
+      this._octVel = new Map();
+      notes = notes.flatMap(n => {
+        const hi = n + 12;
+        this._octVel.set(hi, 0.55);
+        return [n - 12, n, hi];
+      });
+    }
+    if (!this.arpOn) return notes.map(n => ({ p: n, at: 0, vel: this._octVel?.get(n) }));
     const st = this.arpRate === 16 ? 1 : 2;
     // 1 noot + ARP = roll: zelfde noot 8 stappen achter elkaar (drum-roll / arp op 1 toets)
     if (notes.length === 1) return Array.from({ length: 8 }, (_, i) => ({ p: notes[0], at: i * st }));
@@ -96,6 +106,7 @@ const SpeelModus = {
       const lo = Math.min(...seq.map(x => x.p));
       const ids = [];
       seq.forEach((n, i) => {
+        const nv = Math.round(v * (SpeelModus._octVel?.get(n.p) ?? 1)); // hoge stapel-laag zachter
         // STRAK + GATE-schaal + groove: tel volle gate, tussen 60% ervan; sh = extra kort
         const g = SpeelModus.arpGate / 100;
         // BASHOLD: laagste noot houdt de grond vast
@@ -108,7 +119,7 @@ const SpeelModus = {
         const ho = (SpeelModus.holdOn && !gateMs && !n.at) ? { hold: 60, decay: 0.99999 } : {};
         const go = () => {
           if (panel) panel.hit(n.p, v);
-          baseFn(n.p, gateMs ? { ...o, hold: gateMs / 1000 } : { ...o, ...ho });
+          baseFn(n.p, gateMs ? { ...o, hold: gateMs / 1000, velocity: nv } : { ...o, ...ho, velocity: nv });
           if (gateMs && typeof Aura !== 'undefined' && Aura.noteOff)
             setTimeout(() => Aura.noteOff(n.p), gateMs);
         };
