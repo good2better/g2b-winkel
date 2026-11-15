@@ -126,7 +126,7 @@ const StudioPanel = {
         drag = { n: h.n, mode: h.edge, x0: x, p0: h.n.p, s0: h.n.s, d0: h.n.d || 1 };
         P.dragN = h.n;
       } else if (y >= 18) { // leeg: teken een nieuwe noot
-        const p = Math.max(PITCH_LO, Math.min(PITCH_HI, pOf(y)));
+        const p = Math.max(0, Math.min(127, pOf(y)));
         const n = { p, s: i, d: 1, v: 100 };
         P.notes.push(n); drag = { n, mode: 'resize', x0: x, s0: i, d0: 1 }; P.dragN = n;
         try { InstrumentMatrix.play(n.p, { velocity: 90 }); } catch (err) {}
@@ -143,7 +143,7 @@ const StudioPanel = {
       } else {
         const ds = Math.round((x - drag.x0) / w);
         n.s = Math.max(0, Math.min(N - (n.d || 1), drag.s0 + ds));
-        const np = Math.max(PITCH_LO, Math.min(PITCH_HI, pOf(y)));
+        const np = Math.max(0, Math.min(127, pOf(y)));
         if (np !== n.p) { n.p = np; try { InstrumentMatrix.play(n.p, { velocity: 80 }); } catch (err) {} } // preview: hoor waar je hem neerzet
       }
       draw();
