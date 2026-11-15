@@ -45,22 +45,23 @@ class AuraMidiExporter {
 
 /* Stijl-generator: geeft noten-arrays terug voor de gekozen stijl */
 const StijlGen = {
-  trap(root = 45, bars = 2) { // trap-hat-ish melodie + 808 glide
+  trap(root = 45, bars = 4) { // trap-hat-ish melodie + 808 glide — vult de hele roll
     const n = [];
     for (let b = 0; b < bars * 4; b++) {
       if (b % 2 === 0) n.push({ pitch: root, startBeat: b, durationBeats: 0.9, velocity: 110,
         glide: [{ beat: 0.5, semis: -2 }] });
       if (Math.random() < .4) n.push({ pitch: root + 7, startBeat: b + 0.5, durationBeats: 0.4, velocity: 90 });
+      if (Math.random() < .25) n.push({ pitch: root + 12, startBeat: b + 0.75, durationBeats: 0.25, velocity: 80 });
     }
     return n;
   },
-  kaseko(root = 57, bars = 2) { // Surinaams: syncopated, percussive
+  kaseko(root = 57, bars = 4) { // Surinaams: syncopated, percussive — vult de hele roll
     const n = []; const pat = [0, 0.5, 1, 1.75, 2.5, 3, 3.5];
     for (let b = 0; b < bars; b++) for (const p of pat)
       n.push({ pitch: root + [0, 3, 7, 5][Math.floor(Math.random() * 4)], startBeat: b * 4 + p, durationBeats: 0.3, velocity: 95 });
     return n;
   },
-  drill(root = 45, bars = 2) { // drill glide 808's
+  drill(root = 45, bars = 4) { // drill glide 808's — vult de hele roll
     const n = [];
     for (let b = 0; b < bars * 4; b += 2)
       n.push({ pitch: root, startBeat: b, durationBeats: 1.6, velocity: 115,
