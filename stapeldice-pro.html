@@ -89,7 +89,7 @@ input:focus{border-color:var(--groen)!important}
     <button class="btn b2" id="bDice5">🎲 5x</button>
     <button class="btn b2" id="bDice20">🎲 20x</button>
     <button class="btn b2" id="bDubbel">DUBBEL: AAN</button>
-    <label>lagen<select id="nl" style="background:#16201A;color:#BFE8CE;border:1px solid #2C4A38;border-radius:6px;padding:6px;font-size:13px"><option value="0">auto</option><option>2</option><option>3</option></select></label>
+    <label>lagen<select id="nl" style="background:#16201A;color:#BFE8CE;border:1px solid #2C4A38;border-radius:6px;padding:6px;font-size:13px"><option value="0">auto</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
   </div>
   <div class="row" style="border-top:1px solid #23352A;padding-top:12px">
     <input id="libNaam" placeholder="naam van je library — bijv. dark kicks" style="flex:1;min-width:200px;background:#0D140F;border:1px solid #2C4A38;border-radius:8px;color:#BFE8CE;padding:10px;font-size:14px">
@@ -100,7 +100,9 @@ input:focus{border-color:var(--groen)!important}
   <div class="row" id="slots">
     <div class="slot" data-i="0"><h3>LAAG · sub</h3><div class="nm">—</div><div class="pr"></div><button class="lock" data-i="0">🔒 lock</button></div>
     <div class="slot" data-i="1"><h3>MIDDEN · body</h3><div class="nm">—</div><div class="pr"></div><button class="lock" data-i="1">🔒 lock</button></div>
-    <div class="slot" data-i="2"><h3>HOOG · glans</h3><div class="nm">—</div><div class="pr"></div><button class="lock" data-i="2">🔒 lock</button></div>
+    <div class="slot" data-i="2"><h3>KERN · mid</h3><div class="nm">—</div><div class="pr"></div><button class="lock" data-i="2">🔒 lock</button></div>
+    <div class="slot" data-i="3"><h3>HOOG · glans</h3><div class="nm">—</div><div class="pr"></div><button class="lock" data-i="3">🔒 lock</button></div>
+    <div class="slot" data-i="4"><h3>TOP · air</h3><div class="nm">—</div><div class="pr"></div><button class="lock" data-i="4">🔒 lock</button></div>
   </div>
   <div class="status" id="status">drop eerst minstens 2 shots</div>
 </div>
@@ -284,7 +286,7 @@ function renderSamples(){
 window.weg=i=>{buffers.splice(i,1);renderSamples();};
 
 /* ---------- stapel ---------- */
-const rolls=[null,null,null],locks=[false,false,false];
+const rolls=[null,null,null,null,null],locks=[false,false,false,false,false];
 let libCollect=null; // {naam,files:[[naam,ab]]}
 
 $('bDice').onclick=()=>rollOnce();
@@ -311,12 +313,12 @@ function rollOnce(poolOverride){
   const bron=poolOverride||buffers;
   if(bron.length<2){st('eerst 2+ shots droppen');return;}
   ensureAC();
-  const nl=+($('nl').value)||(Math.random()<0.5?2:3);
+  const nl=+($('nl').value)||[2,3,3,4,5][Math.floor(Math.random()*5)];
   const k=Math.min(nl,bron.length);
   // rol per slot: niet-gelockte slots opnieuw
   const pool=[...bron].sort((a,b)=>a.c-b.c);
   const band=i=>pool[Math.floor(i*pool.length/k)]===undefined?pool[0]:pool.slice(Math.floor(i*pool.length/k),Math.floor((i+1)*pool.length/k))||pool;
-  for(let s=0;s<3;s++){
+  for(let s=0;s<5;s++){
     if(s<k&&!locks[s]){
       const b=band(Math.min(s,bron.length===2?s*2:s)); // spreid over centroids
       const pick=b[Math.floor(Math.random()*b.length)]||pool[Math.floor(Math.random()*pool.length)];
