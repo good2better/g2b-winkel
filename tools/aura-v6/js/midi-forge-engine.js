@@ -45,30 +45,33 @@ class AuraMidiExporter {
 
 /* Stijl-generator: geeft noten-arrays terug voor de gekozen stijl */
 const StijlGen = {
-  trap(root = 57, bars = 4) { // mineur-pentatonisch motief (A A') + diepe 808-glide onderlaag
-    const n = [], sc = [0, 3, 5, 7, 10];
-    const mot = () => [0, 2, 1, 3, 0].map(i => sc[i % sc.length]);
+  trap(root = 57, bars = 4) { // mineur-pentatonisch motief (A A') + diepe 808-glide — elke druk nieuw motief
+    const n = [], sc = [0, 3, 5, 7, 10], rnd = a => a[Math.floor(Math.random() * a.length)];
+    const mot = () => Array.from({ length: 5 }, () => rnd(sc));   // vers motief uit de pentatoon
     const m1 = mot(), m2 = mot(), bass = root - 24;
+    const possen = [[0.5, 1.5, 2, 3.5], [0.5, 1.5, 3.5], [0, 1.5, 2.5, 3.5], [0.5, 2.5, 3.5]];
     for (let b = 0; b < bars; b++) {
       const M = b % 2 ? m2 : m1, ph = b < 2 ? 0 : 2;      // laatste 2 maten = variatie
-      n.push({ pitch: bass, startBeat: b * 4, durationBeats: 2.5, velocity: 115,
-        glide: [{ beat: 1.2, semis: -2 }, { beat: 2.2, semis: 0 }] });
-      const pos = b % 2 ? [0.5, 1.5, 3.5] : [0.5, 1.5, 2, 3.5];
-      pos.forEach((p, i) => n.push({ pitch: root + M[(i + ph) % M.length],
-        startBeat: b * 4 + p, durationBeats: 0.4, velocity: 85 + (i === 0 ? 15 : 0) }));
+      const gl = Math.random() < 0.8 ? -2 : (Math.random() < 0.5 ? -4 : -7);
+      n.push({ pitch: bass, startBeat: b * 4, durationBeats: 2 + Math.random(), velocity: 110 + Math.floor(Math.random() * 12),
+        glide: [{ beat: 1.2, semis: gl }, { beat: 2.2, semis: 0 }] });
+      (b % 2 ? rnd([possen[1], possen[3]]) : rnd([possen[0], possen[2]]))
+        .forEach((p, i) => n.push({ pitch: root + M[(i + ph) % M.length],
+          startBeat: b * 4 + p, durationBeats: 0.3 + Math.random() * 0.3, velocity: 85 + (i === 0 ? 15 : 0) }));
     }
     return n.sort((a, z) => a.startBeat - z.startBeat);
   },
-  kaseko(root = 57, bars = 4) { // Surinaams syncopisch: vast motief + antwoord in maat 4
-    const n = [], sc = [0, 3, 5, 7, 10];
-    const mot = [sc[0], sc[2], sc[1], sc[3]];
-    const pat = [0, 0.5, 1.25, 1.75, 2.5, 3.25];
+  kaseko(root = 57, bars = 4) { // Surinaams syncopisch: wisselend motief + antwoord in maat 4 — elke druk anders
+    const n = [], sc = [0, 3, 5, 7, 10], rnd = a => a[Math.floor(Math.random() * a.length)];
+    const mot = [sc[0], rnd(sc.slice(2)), rnd(sc.slice(1)), sc[3]];   // motief-skelet, kernnoten vers
+    const pats = [[0, 0.5, 1.25, 1.75, 2.5, 3.25], [0, 0.75, 1.5, 1.75, 2.5, 3], [0, 0.5, 1, 2, 2.5, 3.25]];
+    const pat = rnd(pats), adem = 1 + Math.floor(Math.random() * 3); // ademruimte-maat wisselt
     for (let b = 0; b < bars; b++) {
-      const antw = b === 3;
+      const antw = b === bars - 1;
       pat.forEach((p, i) => {
-        if (b === 1 && i === 4) return;                    // ademruimte
+        if (b === adem && i === 4) return;                    // ademruimte
         n.push({ pitch: root + mot[(i + (antw ? 2 : 0)) % mot.length] + (antw ? 7 : 0),
-          startBeat: b * 4 + p, durationBeats: 0.3, velocity: 95 + (i === 0 ? 10 : 0) });
+          startBeat: b * 4 + p, durationBeats: 0.25 + Math.random() * 0.15, velocity: 95 + (i === 0 ? 10 : 0) });
       });
     }
     return n.sort((a, z) => a.startBeat - z.startBeat);
