@@ -43,6 +43,7 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
       pitch: d.pitch,
       freq,
       phase: 0, env: 1.0, subPhase: 0, age: 0, low, // age: fade-in + pitch-afhankelijke punch
+      phase2: 0.37, det: (d.waveType === 'saw' || d.waveType === 'square' || d.waveType === 'tri') ? 1.0049 : 1, // +8.5 cents unison → volle klank
       decayRate: d.decayRate != null ? d.decayRate : (low ? 0.99995 : 0.9997),
       glideTargetFreq: d.glideFreq || null,
       waveType: d.waveType || 'sine',
@@ -94,11 +95,13 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
         }
         v.phase += v.freq / sr;
         if (v.phase > 1) v.phase -= 1;
+        if (v.det !== 1) { v.phase2 += (v.freq * v.det) / sr; if (v.phase2 > 1) v.phase2 -= 1; }
         v.age = (v.age || 0) + 1;
         const att = v.age < 192 ? v.age / 192 : 1;                     // 4ms fade-in = 0 clicks, zachtere aanslag
         const punch = glueOn && v.age < 720 ? 1 + (v.low ? 0.45 : 0.18) * (1 - v.age / 720) : 1; // lage noten: punch; hoge: zacht
         const amp = v.env * v.gain * att * punch;
         s += this.osc(v.waveType, v.phase) * amp;
+        if (v.det !== 1) s += this.osc(v.waveType, v.phase2) * amp * 0.45; // 2e osc -7dB: dikte zonder ruis
         if (v.subGain) { // schone sub-osc onder C3: sinus + warme 2e harmonische
           v.subPhase += v.freq / sr; if (v.subPhase > 1) v.subPhase -= 1;
           s += (Math.sin(2 * Math.PI * v.subPhase) + 0.3 * Math.sin(4 * Math.PI * v.subPhase))
@@ -108,7 +111,7 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
       }
       this.voices = this.voices.filter(v => v.env > 0.0005);
       // auto gain-staging: gestapelde stemmen deelt headroom (solo-noot = vol volume)
-      s /= Math.max(1, 1 + (this.voices.length - 1) * 0.35);
+      s /= Math.max(1, 1 + (this.voices.length - 1) * 0.35) * 1.1; // unison-compensatie: zelfde headroom
       // ~20Hz rumble-cut — sub-boom (35-80Hz) blijft 100% intact
       const a = 0.9975;
       this.hp_y1 = a * (this.hp_y1 + s - this.hp_x1); this.hp_x1 = s;
