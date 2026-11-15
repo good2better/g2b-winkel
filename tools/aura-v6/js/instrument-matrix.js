@@ -24,18 +24,23 @@ const InstrumentMatrix = {
   },
 
   toggle(i, btn) {
-    if (this.selected.has(i)) { this.selected.delete(i); btn.classList.remove('green'); }
-    else {
-      this.selected.add(i); btn.classList.add('green');
-      const s = this.sounds[i];
-      if (s.src) Aura.loadSample(s.src);  // voorladen → eerste toetsaanslag speelt direct
+    const s = this.sounds[i];
+    if (this.selected.has(i)) { // UIT: stop die sound meteen — geen doorklinkende pad meer
+      this.selected.delete(i); btn.classList.remove('green');
+      if (s.src && Aura.killSrc) Aura.killSrc(s.src);
+      return;
     }
+    this.selected.add(i); btn.classList.add('green');
+    if (s.src) Aura.loadSample(s.src);  // voorladen → eerste toetsaanslag speelt direct
+    // klik = meteen horen (preview op grondtoon) — 2 aangeklikte = 2 die je hoort
+    try { this.play(s.basePitch != null ? s.basePitch : 60, { velocity: 100 }); } catch (e) {}
     // 1 groen = solo; >1 = stapel — speelt sowieso alle groene
   },
 
   play(pitch, opts = {}) {
     const sel = this.selected.size ? [...this.selected] : [];
-    if (sel.length === 0) { Aura.noteOn(pitch, opts); return; }
+    if (sel.length === 0) { // niets aangeklikt: korte, zachte neven-toon (niet eeuwig doorklinken)
+      Aura.noteOn(pitch, { ...opts, decay: 0.995, velocity: Math.min(opts.velocity || 100, 80) }); return; }
     sel.forEach(i => {
       const s = this.sounds[i];
       if (s.src) { Aura.sampleOn(pitch, { ...s, gain: (opts.velocity || 110) / 127 * 0.9, hold: opts.hold }); return; }

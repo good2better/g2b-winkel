@@ -102,7 +102,7 @@ const Aura = {
         this._padLow.stop(this.ctx.currentTime + 0.02); } catch (e) {}
     }
     if (pitch < 48) this._padLow = src;
-    this._pad[key] = src; src._g = g; src._pitch = pitch;
+    this._pad[key] = src; src._g = g; src._pitch = pitch; src._src = opts.src;
     // door de worklet: volume/knip/limiter gelden óók voor samples — geen gekraak meer bij stapelen
     src.connect(g);
     g.connect(this.node);
@@ -124,6 +124,17 @@ const Aura = {
         s.stop(t + 0.15);
       } catch (e) {}
     }
+  },
+
+  // stop alle live stemmen van één bron-sample (pad uitgeklikt → ophouden met klinken)
+  killSrc(src) {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    for (const s of [...this._live]) {
+      if (s._src !== src) continue;
+      try { s._g.gain.cancelScheduledValues(t); s._g.gain.setTargetAtTime(0, t, 0.02); s.stop(t + 0.1); } catch (e) {}
+    }
+    delete this._pad[src];
   },
 
   setGlue(v) { if (this.node) this.node.parameters.get('glue').value = v ? 1 : 0; },
