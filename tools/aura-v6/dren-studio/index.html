@@ -6,7 +6,7 @@
 <span id="pNaam" style="font-weight:bold"></span></div>
 <div class="row"><label>Golf <select id="wave"><option>sine</option><option>saw</option><option>square</option><option>tri</option></select></label>
 <label>Toon <input type="range" min="0.25" max="4" step="0.05" value="1" id="toneSl"></label>
-<label>Lengte <input type="range" min="0.99" max="0.9999" step="0.0005" value="0.997" id="lenSl"></label>
+<label>Lengte <input type="range" min="0.99" max="0.9999" step="0.0005" value="0.9999" id="lenSl" disabled title="vast op vol — kort afkappen maakte de sound lelijk"></label>
 <label>Knip <input type="range" min="0" max="0.20" step="0.01" value="0.03" id="knipSl"></label></div>
 <div class="card" style="margin-top:10px"><b>Opname &amp; Loop</b><div id="studio"></div></div>
 <div id="modus"></div>
@@ -34,14 +34,14 @@ const $ = s => document.querySelector(s);
 const setUI = p => {
   $('#pNaam').textContent = `#${idx + 1}/323 · ${p.naam}`;
   $('#wave').value = p.wave; $('#toneSl').value = p.tone;
-  $('#lenSl').value = p.decay; $('#knipSl').value = p.knip;
+  $('#lenSl').value = 0.9999; $('#knipSl').value = p.knip;
 };
 (async () => {
   await Aura.init('../js/aura-dsp-worklet.js');
   InstrumentMatrix.build(document.createElement('div'), []);
   InstrumentMatrix.play = (p, o = {}) => {
     const pr = presets[idx];
-    Aura.noteOn(p, { wave: pr.wave, tone: (o.tone || 1) * +$('#toneSl').value, decay: +$('#lenSl').value });
+    Aura.noteOn(p, { wave: pr.wave, tone: (o.tone || 1) * +$('#toneSl').value, decay: 0.9999 }); // lengte vast op vol
   };
   bouwKeyboard($('#kbd'), 3, 2);
   knipRij(document.createElement('div')); // knipSl zit in de UI-rij zelf

@@ -5,7 +5,7 @@
 <div class="row"><button id="dice">🎲 Dice</button>
 <label>Golf <select id="wave"><option>sine</option><option>saw</option><option>square</option><option>tri</option></select></label>
 <label>Toon <input type="range" min="0.25" max="4" step="0.05" value="1" id="toneSl"></label>
-<label>Lengte <input type="range" min="0.99" max="0.9999" step="0.0005" value="0.9999" id="lenSl"></label>
+<label>Lengte <input type="range" min="0.99" max="0.9999" step="0.0005" value="0.9999" id="lenSl" disabled title="vast op vol — kort afkappen maakte de sound lelijk"></label>
 <span id="pNaam" class="hint"></span></div>
 <div id="modus"></div>
 <div id="kbd"></div><div id="knip"></div>
@@ -34,7 +34,7 @@ const rnd = a => a[Math.floor(Math.random()*a.length)];
   document.getElementById('lenSl').oninput = e => cur.decay = +e.target.value;
   document.getElementById('dice').onclick = () => {
     cur = { wave: rnd(['saw','sine','square','tri']), tone: 0.5+Math.random()*1.5,
-            decay: 0.9995+Math.random()*0.0004 }; // dice rolt alleen bijna-volle lengtes — nooit afgekapte sound
+            decay: 0.9999 }; // lengte vast op vol — nooit afgekapte sound
     naam.textContent = '→ ' + rnd(NAMEN);
     setUI(); // naam EN knoppen synchroon mee — fix Best-Of/Dren naam-bug
   };
