@@ -1761,7 +1761,8 @@
    "prijs": "€ 29,95",
    "links": {
     "koop": "bestel.html?p=g2bkoor",
-    "download": "bedankt.html?k=g2bkoor"
+    "download": "bedankt.html?k=g2bkoor",
+    "stripe": "https://buy.stripe.com/bJeeVd8UU4Q37nN2pL5J62R"
    },
    "groep": "plugins",
    "cover": "media/covers/g2bkoor.png"
@@ -1776,7 +1777,8 @@
    "links": {
     "browser": "tools/aura-v6/",
     "download": "bedankt.html?k=aura-v6",
-    "koop": "bestel.html?p=aura-midiforge"
+    "koop": "bestel.html?p=aura-midiforge",
+    "stripe": "https://buy.stripe.com/6oU00j2ww0zNazZfcx5J62S"
    },
    "video": "media/aura-midiforge-demo.mp4",
    "demo": "media/aura-midiforge-demo.mp4"
@@ -1791,7 +1793,8 @@
    "links": {
     "browser": "tools/aura-v6/suri-pads/",
     "download": "bedankt.html?k=aura-v6",
-    "koop": "bestel.html?p=aura-suripads"
+    "koop": "bestel.html?p=aura-suripads",
+    "stripe": "https://buy.stripe.com/dRm5kDefeeqD8rR9Sd5J62T"
    },
    "video": "media/aura-suripads-demo.mp4",
    "demo": "media/aura-suripads-demo.mp4",
@@ -1807,7 +1810,8 @@
    "links": {
     "browser": "tools/aura-v6/all-instruments/",
     "download": "bedankt.html?k=aura-v6",
-    "koop": "bestel.html?p=aura-allinstr"
+    "koop": "bestel.html?p=aura-allinstr",
+    "stripe": "https://buy.stripe.com/cNi8wP1sseqD9vV2pL5J62U"
    },
    "video": "media/aura-allinstr-demo.mp4",
    "demo": "media/aura-allinstr-demo.mp4"
@@ -1822,7 +1826,8 @@
    "links": {
     "browser": "tools/aura-v6/bass-drum-2in1/",
     "download": "bedankt.html?k=aura-v6",
-    "koop": "bestel.html?p=aura-bassdrum"
+    "koop": "bestel.html?p=aura-bassdrum",
+    "stripe": "https://buy.stripe.com/00w14n0oo2HV5fF5BX5J62V"
    },
    "video": "media/aura-bassdrum-demo.mp4",
    "demo": "media/aura-bassdrum-demo.mp4"
@@ -1837,7 +1842,8 @@
    "links": {
     "browser": "tools/aura-v6/dice-synth/",
     "download": "bedankt.html?k=aura-v6",
-    "koop": "bestel.html?p=aura-dicesynth"
+    "koop": "bestel.html?p=aura-dicesynth",
+    "stripe": "https://buy.stripe.com/eVq14n5II5U737x7K55J62W"
    },
    "video": "media/aura-dicesynth-promo.mp4",
    "video_lbl": "▶ promo — ENG, NL/ES ondertiteling",
@@ -1862,7 +1868,8 @@
    "links": {
     "browser": "tools/aura-v6/dren-studio/",
     "download": "bedankt.html?k=aura-v6",
-    "koop": "bestel.html?p=aura-dren"
+    "koop": "bestel.html?p=aura-dren",
+    "stripe": "https://buy.stripe.com/8x27sL5IIeqD7nN9Sd5J62X"
    },
    "video": "media/aura-dren-demo.mp4",
    "demo": "media/aura-dren-demo.mp4"
@@ -1877,7 +1884,8 @@
    "links": {
     "browser": "tools/aura-v6/fx-rack/",
     "download": "bedankt.html?k=aura-v6",
-    "koop": "bestel.html?p=aura-fxrack"
+    "koop": "bestel.html?p=aura-fxrack",
+    "stripe": "https://buy.stripe.com/cNi8wP6MM1DRfUjc0l5J62Y"
    },
    "video": "media/aura-fxrack-demo.mp4",
    "demo": "media/aura-fxrack-demo.mp4"
