@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>G2B BIBLIOTHEEK — eigen-sounds archief</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#0c0f0c;--kaart:#141a15;--rand:#223227;--groen:#19c37d;--tekst:#e8f0e9;--dim:#8fa395;--cyan:#4cc9f0}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui;margin:0;padding:14px}
+h1{font-size:20px;margin:4px 0 10px}h1 small{color:var(--groen);font-size:.55em}
+.rij{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+button{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}
+button:hover{border-color:var(--groen)}
+button.go{background:var(--groen);color:#04130b;font-weight:700}
+button.pill.on{background:var(--groen);color:#04130b;font-weight:700}
+input[type=text]{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:8px 10px;font-size:14px;width:200px}
+#st{color:var(--dim);font-size:13px}
+#lijst{max-width:920px}
+.rijp{display:grid;grid-template-columns:28px 1fr 90px 70px 60px 90px;gap:8px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--rand);cursor:pointer;font-size:13px}
+.rijp:hover{background:var(--kaart)}
+.rijp.sel{background:#182b20;border-left:3px solid var(--groen)}
+.rijp .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp{color:var(--cyan);font-size:11px;text-transform:uppercase}
+.du{color:var(--dim);font-size:12px}
+.key{color:var(--groen);font-size:12px}
+.rijp button{padding:3px 8px;font-size:12px}
+#wave{width:100%;max-width:920px;height:80px;background:var(--kaart);border:1px solid var(--rand);border-radius:10px;display:block;margin:10px 0}
+.hint{color:var(--dim);font-size:12px}
+</style></head><body>
+<h1>🗂 G2B BIBLIOTHEEK <small>je eigen-sounds archief — klik op een map, alles vindbaar &amp; beluisterbaar</small></h1>
+<div class="rij">
+<button class="go" id="kies">📁 KIES MAP</button>
+<button class="pill" id="fAll">ALLE</button>
+<button class="pill" id="fDrum">DRUMS</button>
+<button class="pill" id="fBass">BAS</button>
+<button class="pill" id="fLead">LEAD</button>
+<button class="pill" id="fPad">PAD</button>
+<button class="pill" id="fKeys">KEYS</button>
+<button class="pill" id="fOne">ONE-SHOT</button>
+<button class="pill" id="fLoop">LOOP</button>
+<input type="text" id="zoek" placeholder="zoek naam…">
+<span id="st">kies een map met je wavs/mids — alles blijft lokaal</span>
+</div>
+<canvas id="wave" width="920" height="80"></canvas>
+<div class="hint">klik regel = beluisteren · ⤓ = download · →X = stuur naar SAMPLEX (opent als instrument)</div>
+<div id="lijst"></div>
+<script>
+/* G2B BIBLIOTHEEK — DAWbro-idee in de browser: map uitlezen, elke sound
+   vindbaar (naam/type), beluisterbaar (klik=preview + golfvorm), herbruikbaar
+   (→ SAMPLEX via IndexedDB-stash). Alles lokaal, niks uploadt. */
+let actx=null, items=[], sel=-1, filter='alle', bron=null;
+const $=s=>document.querySelector(s);
+const AC=()=>{ if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)(); return actx; };
+
+async function* scan(dir,prefix=''){ // recursief alle audio/midi files
+  for await (const [name,h] of dir.entries()){
+    const p=prefix+name;
+    if(h.kind==='file' && /\.(wav|mp3|ogg|flac|mid|midi)$/i.test(name)) yield {name,p,handle:h};
+    else if(h.kind==='directory') yield* scan(h,p+'/');
+  }
+}
+function typeGuess(nm,dur){ // naam-hints eerst, dan duur-heuristiek
+  const n=nm.toLowerCase();
+  if(/kick|bass?drum|808|sub|reese|bas(?![a-z])/.test(n))return 'bass';
+  if(/snare|clap|hat|perc|drum|tambo|shaker|conga|rim|cymbal|crash|skratjie/.test(n))return 'drum';
+  if(/pad|air|drone|atmos|strings/.test(n))return 'pad';
+  if(/key|piano|keys|organ|ep\b/.test(n))return 'keys';
+  if(/lead|synth|pluck|fluit|flute|melodie|melody/.test(n))return 'lead';
+  return dur<1.2?'one-shot':(dur>4?'pad':'loop');
+}
+function toonGuess(buf){ // dominant-pitch via autocorrelatie op eerste 0.4s — gratis key-detectie
+  const ch=buf.getChannelData(0),sr=buf.sampleRate,N=Math.min(ch.length,sr*0.4|0);
+  let best=0,bf=0;
+  for(let f=40;f<1200;f+=2){
+    const p=sr/f|0; let c=0;
+    for(let i=0;i<N-p;i+=8)c+=ch[i]*ch[i+p];
+    if(c>best){best=c;bf=f;}
+  }
+  if(!bf)return '—';
+  const midi=Math.round(69+12*Math.log2(bf/440));
+  return ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'][midi%12];
+}
+async function lees(it){
+  const f=await it.handle.getFile(); it.file=f;
+  if(/\.midi?$/i.test(it.name)){ // lichte midi-telling: aantal 0x90 note-ons
+    const b=new Uint8Array(await f.arrayBuffer());
+    it.noten=[...b].filter((v,i)=>v>=0x90&&v<0xA0&&b[i+2]>0).length/2|0;
+    it.type='midi'; it.dur=0; it.key='—';
+  } else {
+    try{
+      const ab=await f.arrayBuffer(), buf=await AC().decodeAudioData(ab.slice(0));
+      it.buf=buf; it.dur=buf.duration; it.key=toonGuess(buf);
+      it.type=typeGuess(it.name,it.dur);
+    }catch(e){ it.type='onleesbaar'; it.dur=0; it.key='—'; }
+  }
+}
+function tekenWav(buf){
+  const c=$('#wave'),g=c.getContext('2d'),W=c.width,H=c.height;
+  g.fillStyle='#0d1512';g.fillRect(0,0,W,H);
+  if(!buf)return;
+  const ch=buf.getChannelData(0),step=Math.max(1,ch.length/W|0);
+  g.strokeStyle='#19c37d';g.beginPath();
+  for(let x=0;x<W;x++){
+    let mn=1,mx=-1;
+    for(let i=x*step;i<(x+1)*step&&i<ch.length;i++){const v=ch[i];if(v<mn)mn=v;if(v>mx)mx=v;}
+    g.moveTo(x,H/2-mx*H/2);g.lineTo(x,H/2-mn*H/2+0.5);
+  }
+  g.stroke();
+}
+function speel(it){
+  if(bron){try{bron.stop()}catch(e){}bron=null;}
+  if(!it.buf)return;
+  bron=AC().createBufferSource(); bron.buffer=it.buf; bron.connect(AC().destination); bron.start();
+  tekenWav(it.buf);
+}
+async function stash(it){ // → SAMPLEX: leg file klaar in IndexedDB, open samplex
+  const db=await new Promise(res=>{const r=indexedDB.open('g2b_stash',1);
+    r.onupgradeneeded=()=>r.result.createObjectStore('f'); r.onsuccess=()=>res(r.result);});
+  await new Promise(res=>{const t=db.transaction('f','readwrite');
+    t.objectStore('f').put({name:it.name,blob:it.file},'laatste'); t.oncomplete=res;});
+  location.href='../samplex-web/samplex.html?stash=1';
+}
+function lijst(){
+  const q=($('#zoek').value||'').toLowerCase();
+  const rows=items.map((it,i)=>({it,i})).filter(({it})=>
+    (filter==='alle'||(it.type||'').includes(filter)) && it.name.toLowerCase().includes(q));
+  $('#lijst').innerHTML=rows.map(({it,i})=>
+    `<div class="rijp${i===sel?' sel':''}" data-i="${i}">
+      <button data-a="speel" data-i="${i}">▶</button>
+      <span class="nm">${it.p}</span>
+      <span class="tp">${it.type||'…'}</span>
+      <span class="du">${it.dur?it.dur.toFixed(2)+'s':(it.noten?it.noten+' noten':'—')}</span>
+      <span class="key">${it.key||''}</span>
+      <span><button data-a="dl" data-i="${i}">⤓</button><button data-a="x" data-i="${i}" title="naar SAMPLEX">→X</button></span>
+    </div>`).join('');
+  $('#st').textContent=`${items.length} files · ${rows.length} getoond`;
+}
+$('#lijst').onclick=e=>{
+  const b=e.target.closest('button'); if(!b)return;
+  const i=+b.dataset.i,it=items[i],a=b.dataset.a;
+  document.querySelectorAll('.rijp').forEach(r=>r.classList.remove('sel'));
+  b.closest('.rijp').classList.add('sel'); sel=i;
+  if(a==='speel')speel(it);
+  if(a==='dl'){const u=URL.createObjectURL(it.file);const l=document.createElement('a');l.href=u;l.download=it.name;l.click();}
+  if(a==='x')stash(it);
+};
+$('#kies').onclick=async()=>{
+  try{
+    const dir=await showDirectoryPicker(); items=[]; sel=-1;
+    $('#st').textContent='scannen…';
+    for await(const h of scan(dir))items.push(h);
+    $('#st').textContent=`${items.length} files gevonden — analyseren…`;
+    // analyseer in batches zodat UI niet vastloopt
+    let i=0; const tick=async()=>{const end=Math.min(i+12,items.length);
+      for(;i<end;i++)await lees(items[i]); lijst();
+      if(i<items.length){$('#st').textContent=`analyseren ${i}/${items.length}…`;setTimeout(tick,0);}
+      else lijst();};
+    await tick();
+  }catch(e){ $('#st').textContent='geen map gekozen (Chrome/Edge nodig voor map-picker)'; }
+};
+document.querySelectorAll('.pill').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.pill').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  filter=b.id.slice(1).toLowerCase(); lijst();
+});
+$('#zoek').oninput=lijst;
+$('#fAll').classList.add('on');
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&bron){bron.stop();bron=null;}});
+</script></body></html>

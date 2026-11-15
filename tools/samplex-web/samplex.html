@@ -102,6 +102,16 @@ drop.ondragover=e=>{e.preventDefault();drop.classList.add('over');};
 drop.ondragleave=()=>drop.classList.remove('over');
 drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');if(e.dataTransfer.files[0])lees(e.dataTransfer.files[0]);};
 file.onchange=()=>{if(file.files[0])lees(file.files[0]);};
+/* stash-brug: G2B BIBLIOTHEEK legt hier een file klaar → auto-laden */
+if(new URLSearchParams(location.search).get('stash')){
+ (async()=>{try{
+   const db=await new Promise(res=>{const r=indexedDB.open('g2b_stash',1);
+     r.onupgradeneeded=()=>r.result.createObjectStore('f');r.onsuccess=()=>res(r.result);});
+   const rec=await new Promise(res=>{const t=db.transaction('f','readonly');
+     const q=t.objectStore('f').get('laatste');q.onsuccess=()=>res(q.result);});
+   if(rec&&rec.blob)lees(new File([rec.blob],rec.name||'stash.wav',{type:rec.blob.type||'audio/wav'}));
+ }catch(e){console.warn('stash leeg',e)}})();
+}
 function lees(f){f.arrayBuffer().then(ab=>ac().decodeAudioData(ab)).then(b=>{
  buf=b;ws=null;waveShaper();teken();
  st.textContent=f.name+' geladen ('+b.duration.toFixed(1)+'s) — speel de pads';
