@@ -51,6 +51,7 @@ a.app.lokaal{opacity:.75;border-style:dashed}
 <div id="page">
 <h1>🎛️ G2B <b>MIJN APPS</b></h1>
 <p class="sub">Alles op één plek — klik en werken in de browser, niks installeren. Zet deze pagina als favoriet (Ctrl+D).</p>
+<input id="zoek" type="search" placeholder="🔍 Zoek een app… (typ bijv. laag, menger, koor, gaw)" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--rand);background:#0b1220;color:var(--tekst);font-size:15px;margin-bottom:6px">
 
 <div class="groep">🎵 Muziek maken</div>
 <div class="grid">
@@ -215,6 +216,16 @@ async function unlock(){
 if(sessionStorage.g2bmijn==='1'){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';}
 (async()=>{try{const sv=(localStorage.getItem('g2b_aura_licentie')||'').trim().toLowerCase();if(sv&&sv!=='ok'&&await _g2b_hex(sv)===HASH){sessionStorage.g2bmijn='1';document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';}}catch(e){}})();
 document.getElementById('code').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
+document.getElementById('zoek').addEventListener('input',e=>{
+  const q=e.target.value.trim().toLowerCase();
+  document.querySelectorAll('a.app').forEach(a=>{
+    a.style.display=(!q||a.textContent.toLowerCase().includes(q))?'':'none';
+  });
+  document.querySelectorAll('.groep').forEach(g=>{
+    const grid=g.nextElementSibling;
+    g.style.display=(!q||[...grid.children].some(c=>c.style.display!=='none'))?'':'none';
+  });
+});
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 </body>
