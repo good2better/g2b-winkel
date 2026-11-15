@@ -4,7 +4,7 @@
 <div class="card"><p>Bass + Drum&amp;Bass samengevoegd — Sub, Reese, 808 &amp; Bass one-shots.
 Groen = selecteer (aan/uitklikbaar), speelt over heel keyboard.</p>
 <div class="row"><label>Toon (pitch) <input type="range" min="0.25" max="4" step="0.05" value="1" id="toneSl"></label>
-<label>Lengte (decay) <input type="range" min="0.990" max="0.9999" step="0.0005" value="0.996" id="lenSl"></label></div>
+<label>Lengte (decay) <input type="range" min="0.990" max="0.9999" step="0.0005" value="0.9999" id="lenSl"></label></div>
 <div id="matrix"></div><div class="card" style="margin-top:10px"><b>Opname &amp; Loop</b><div id="studio"></div></div>
 <div id="modus"></div>
 <div id="kbd"></div><div id="knip"></div>
@@ -63,7 +63,7 @@ const SOUNDS = [
   {naam:'Kick Layer', src:'../wav/bass/layer_bubbkick_g2b.wav', basePitch:36},
   {naam:'Kick Oogst', src:'../wav/bass/kick.wav', basePitch:36}
 ];
-let tone = 1, len = 0.996;
+let tone = 1, len = 0.9999;
 (async () => {
   await Aura.init('../js/aura-dsp-worklet.js');
   InstrumentMatrix.build(document.getElementById('matrix'), SOUNDS);
@@ -74,8 +74,8 @@ let tone = 1, len = 0.996;
   const panel = StudioPanel.bouw(document.getElementById('studio'));
   SpeelModus.bouw(document.getElementById('modus'));
   const orig = InstrumentMatrix.play.bind(InstrumentMatrix);
-  // Toon → playbackRate op de sample; Lengte → hoe lang de sample doorklinkt (0.2s–4s)
-  const hold = () => 0.2 + ((len - 0.990) / 0.0099) * 3.8;
+  // Toon → playbackRate op de sample; Lengte → doorklink-tijd: max = hele sample (nooit afgehakt)
+  const hold = () => len >= 0.9995 ? 999 : 0.2 + ((len - 0.990) / 0.0099) * 3.8;
   const _slot = (p, o = {}) => orig(p, { ...o, rate: tone, tone, hold: hold() });
   InstrumentMatrix.play = SpeelModus.wire(_slot, panel);
   BrainMemory.knop(document.getElementById('brain'));
