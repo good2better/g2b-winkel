@@ -86,11 +86,15 @@ const SpeelModus = {
   // maakt een InstrumentMatrix.play die via de modi expandeert + het paneel voedt
   wire(baseFn, panel) {
     const stepMs = 60000 / 120 / 4; // 16e stap @120bpm — zelfde raster als StudioPanel
+    const pending = new Map(); // aangeslagen noot -> setTimeout ids van uitgestelde arp-noten
+    // loslaten cancelt uitgestelde noten — anders starten ze ná release met HOUD-decay = eeuwig door
+    SpeelModus.release = (p) => { const t = pending.get(p); if (t) { t.forEach(clearTimeout); pending.delete(p); } };
     return (p, o = {}) => {
       const v = o.velocity || 100;
       const st = SpeelModus.arpRate === 16 ? 1 : 2;
       const seq = SpeelModus.expand(p);
       const lo = Math.min(...seq.map(x => x.p));
+      const ids = [];
       seq.forEach((n, i) => {
         // STRAK + GATE-schaal + groove: tel volle gate, tussen 60% ervan; sh = extra kort
         const g = SpeelModus.arpGate / 100;
@@ -100,15 +104,17 @@ const SpeelModus = {
         const gateMs = (SpeelModus.arpOn && SpeelModus.arpTight && !isBassHold && seq.length > 1)
           ? st * stepMs * (n.sh ? g * 0.4 : (i % 2 ? g * 0.6 : g)) : 0;
         // HOUD: lange hold + bijna-geen decay → noot blijft tot loslaten (samples + synth)
-        const ho = (SpeelModus.holdOn && !gateMs) ? { hold: 60, decay: 0.99999 } : {};
+        // alleen voor direct-gespeelde noten (at=0) — arp-uitgestelde noten krijgen gewone decay
+        const ho = (SpeelModus.holdOn && !gateMs && !n.at) ? { hold: 60, decay: 0.99999 } : {};
         const go = () => {
           if (panel) panel.hit(n.p, v);
           baseFn(n.p, gateMs ? { ...o, hold: gateMs / 1000 } : { ...o, ...ho });
           if (gateMs && typeof Aura !== 'undefined' && Aura.noteOff)
             setTimeout(() => Aura.noteOff(n.p), gateMs);
         };
-        if (n.at) setTimeout(go, n.at * stepMs); else go();
+        if (n.at) ids.push(setTimeout(() => { go(); }, n.at * stepMs)); else go();
       });
+      if (ids.length) pending.set(p, ids);
     };
   },
 

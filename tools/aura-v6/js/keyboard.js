@@ -28,6 +28,7 @@ function midiInit() {
         if (k2) k2.classList.remove('dn');
         Aura.noteOff(off != null ? off : played);
         if (Aura.sampleOff) Aura.sampleOff(off != null ? off : played);
+        if (typeof SpeelModus !== 'undefined' && SpeelModus.release) SpeelModus.release(off != null ? off : played);
       }
     };
     const hook = () => [...acc.inputs.values()].forEach(i => i.onmidimessage = onMsg);
@@ -62,6 +63,7 @@ function bouwKeyboard(el, octStart = 3, octs = 2) {
       const off = _gespeeld.get(pitch); _gespeeld.delete(pitch);
       k.classList.remove('dn'); Aura.noteOff(off != null ? off : speelPitch(pitch));
       if (Aura.sampleOff) Aura.sampleOff(off != null ? off : speelPitch(pitch));
+      if (typeof SpeelModus !== 'undefined' && SpeelModus.release) SpeelModus.release(off != null ? off : speelPitch(pitch));
     };
     wrap.appendChild(k);
   }
