@@ -1705,7 +1705,8 @@
    "sub_es": "media/drenlite-uitleg.es.vtt",
    "preview": "media/drenlite-preview.mp3",
    "upsell": [
-    "g2bdren"
+    "aura-dren",
+    "g2bclub"
    ],
    "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
   },
@@ -1729,7 +1730,8 @@
    "sub_es": "media/ocholite-uitleg.es.vtt",
    "preview": "media/ocholite-preview.mp3",
    "upsell": [
-    "ocho01"
+    "ocho01",
+    "g2bclub"
    ],
    "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
   },

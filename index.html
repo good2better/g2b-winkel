@@ -101,6 +101,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(8,9,10,.86);backdrop-filter
 .k-demo:hover{border-color:var(--accent);color:var(--accent)}
 .k-koop{background:var(--accent);color:#03140a}
 .k-koop:hover{filter:brightness(1.08)}
+.k-upsell{display:block;margin-top:10px;font-size:13px;font-weight:700;color:#ffd166;text-decoration:none;letter-spacing:.1px}
+.k-upsell:hover{color:#ffe29a;text-decoration:underline}
 
 /* pro suite */
 .suite{grid-column:1/-1;position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--accent2);
@@ -254,6 +256,7 @@ const CATMAP = {
 const SKIP = new Set(["steun-3","steun-5","steun-10"]);
 const catOf = p => CATMAP[p.id] || (p.soort==="audio"||p.soort==="pack" ? "packs" : "apps");
 
+let BYID = {};
 function kaart(p){
   const links = p.links||{};
   const koop = links.stripe || links.koop || `bestel.html?p=${p.id}`;
@@ -267,11 +270,21 @@ function kaart(p){
                       : `<div style="width:100%;height:100%;background:linear-gradient(135deg,#14201a,#0b0e0c);display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:800;color:var(--accent)">G2B</div>`;
   const zin = (p.beschrijving||"").split("\n")[0];
   const uitg = EERST.includes(p.id) ? ' data-uitg="1"' : '';
+  let up = "";
+  if (gratis && Array.isArray(p.upsell) && p.upsell.length) {
+    const t = BYID[p.upsell[0]];
+    if (t) {
+      const tl = (t.links||{}).stripe || (t.links||{}).koop || `p.html?id=${t.id}`;
+      const nm = (t.titel||t.id).replace(/^G2B\s*/,'').split('—')[0].trim();
+      up = `<a class="k-upsell" href="${esc(tl)}"${/^https?:/.test(tl)?' target="_blank" rel="noopener"':""}>⭐ MEER? ${esc(nm)} ${esc(String(t.prijs||""))} →</a>`;
+    }
+  }
   return `<article class="kaart" data-cat="${catOf(p)}" data-demo="${demo?1:0}"${uitg}>
     <a class="img" href="p.html?id=${esc(p.id)}">${img}${p.badge?`<span class="label">${esc(p.badge)}</span>`:""}</a>
     <div class="body"><h3>${esc(p.titel)}</h3><div class="zin">${esc(zin)}</div>
       <div class="prijsrij">${prijs}</div>
       <div class="knoppen">${demo?`<a class="k-demo" href="${esc(demo)}">GRATIS DEMO</a>`:""}<a class="k-koop" href="${esc(koop)}"${ext}>${gratis?"OPEN":"KOOP"}</a></div>
+      ${up}
     </div></article>`;
 }
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -283,6 +296,7 @@ const EERST = ["ocho01", "aura-suripads", "g2bclub", "aura-dicesynth", "g2bmaste
 const CATORDER = {instrumenten:0, effecten:1, packs:2, apps:3, bundels:4, tools:5};
 
 fetch('products.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+  BYID = Object.fromEntries((d.producten||[]).map(q=>[q.id,q]));
   const prods = (d.producten||[]).filter(p=>!p.verborgen && !SKIP.has(p.id));
   prods.sort((a,b)=>{
     const ea=EERST.indexOf(a.id), eb=EERST.indexOf(b.id);
