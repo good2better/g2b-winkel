@@ -9,6 +9,7 @@ const speelPitch = p => clampP(p + _oct * 12);
 function octZet(n, lbl) {
   _oct = Math.max(-3, Math.min(3, n));
   if (lbl) lbl.textContent = 'OCT ' + (_oct > 0 ? '+' + _oct : _oct);
+  dispatchEvent(new Event('octz')); // raster hertekent mee → noten blijven zichtbaar
 }
 function midiInit() {
   if (midiInit.done || !navigator.requestMIDIAccess) return;

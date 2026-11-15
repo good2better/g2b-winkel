@@ -27,6 +27,7 @@ const StudioPanel = {
     /* ↩ ongedaan maken: momentopname van noten voor elke bewerking */
     const snap = () => { P.hist.push(JSON.stringify(P.notes)); if (P.hist.length > 60) P.hist.shift(); };
     const undo = () => { if (P.hist.length) { P.notes = JSON.parse(P.hist.pop()); draw(); st.textContent = 'ongedaan gemaakt'; } };
+    addEventListener('octz', () => draw()); // OCT-schuif → bereik meeschuiven
     el.ownerDocument.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); } });
     /* notes: {p: midi, s: stap, d: stappen-duur, v: vel} */
 
@@ -54,15 +55,26 @@ const StudioPanel = {
     box.querySelector('#spUndo').onclick = undo;
 
     /* ---------- raster: echte mini piano-roll (slepen/bewerken/wissen) ---------- */
-    const PITCH_LO = 36, PITCH_HI = 84;
-    const rowH = () => (cvs.height - 18 - 6) / (PITCH_HI - PITCH_LO);
-    const yOf = p => 18 + (1 - (p - PITCH_LO) / (PITCH_HI - PITCH_LO)) * (cvs.height - 18 - 6);
-    const pOf = y => Math.round(PITCH_LO + (1 - (y - 18) / (cvs.height - 18 - 6)) * (PITCH_HI - PITCH_LO));
+    /* bereik volgt OCT-schuif + klapt uit zodat opgenomen noten nooit onzichtbaar zijn */
+    let VLO = 36, VHI = 84;
+    const bereik = () => {
+      const o = (typeof _oct !== 'undefined' ? _oct : 0);
+      let lo = 36 + o * 12, hi = lo + 48;
+      for (const n of P.notes) {
+        lo = Math.min(lo, Math.floor(n.p / 12) * 12);
+        hi = Math.max(hi, Math.ceil((n.p + 1) / 12) * 12);
+      }
+      VLO = lo; VHI = Math.max(hi, lo + 12);
+    };
+    const rowH = () => (cvs.height - 18 - 6) / (VHI - VLO);
+    const yOf = p => 18 + (1 - (p - VLO) / (VHI - VLO)) * (cvs.height - 18 - 6);
+    const pOf = y => Math.round(VLO + (1 - (y - 18) / (cvs.height - 18 - 6)) * (VHI - VLO));
     const draw = () => {
+      bereik();
       const W = cvs.width, w = W / N, H = cvs.height, top = 18;
       g.fillStyle = '#0d1512'; g.fillRect(0, 0, W, H);
       // octaaf-rijlijnen + C-labels
-      for (let p = PITCH_LO; p <= PITCH_HI; p++) {
+      for (let p = VLO; p <= VHI; p++) {
         if (p % 12 === 0) { const y = yOf(p);
           g.strokeStyle = '#1d3a2a'; g.lineWidth = 1;
           g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke();
