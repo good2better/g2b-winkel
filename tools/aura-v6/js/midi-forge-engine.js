@@ -61,32 +61,98 @@ const StijlGen = {
       n.push({ pitch: root + [0, 3, 7, 5][Math.floor(Math.random() * 4)], startBeat: b * 4 + p, durationBeats: 0.3, velocity: 95 });
     return n;
   },
-  drill(root = 45, bars = 4) { // drill glide 808's — vult de hele roll
+  drill(root = 45, bars = 4) { // drill glide 808's — elke druk een nieuw patroon
     const n = [];
-    for (let b = 0; b < bars * 4; b += 2)
-      n.push({ pitch: root, startBeat: b, durationBeats: 1.6, velocity: 115,
-        glide: [{ beat: 0.7, semis: 5 }, { beat: 1.2, semis: 0 }] });
-    return n;
+    const slides = [3, 5, 7, -2, -4, 12, -12];  // klassieke drill-slide doelen
+    const offs = [0, 0, 3, 5, 7, 10, -2, -5, 12]; // mineur-achtige nootkeuzes
+    const startOpts = [0, 0.5, 1.5, 2, 2.5, 3, 3.5];
+    const durs = [0.5, 0.75, 1, 1.5, 2];
+    for (let b = 0; b < bars; b++) {
+      const barN = 1 + Math.floor(Math.random() * 3); // 1-3 noten per maat
+      const starts = [];
+      for (let k = 0; k < barN; k++) starts.push(b * 4 + startOpts[Math.floor(Math.random() * startOpts.length)]);
+      starts.sort((a, z) => a - z);
+      for (const st of starts) {
+        const pit = root + offs[Math.floor(Math.random() * offs.length)];
+        const dur = durs[Math.floor(Math.random() * durs.length)];
+        const gl = [];
+        if (Math.random() < 0.75) { // meeste noten krijgen een glide
+          gl.push({ beat: Math.max(0.2, dur * 0.45), semis: slides[Math.floor(Math.random() * slides.length)] });
+          gl.push({ beat: dur * 0.85, semis: 0 });
+        }
+        n.push({ pitch: pit, startBeat: st, durationBeats: dur,
+          velocity: 100 + Math.floor(Math.random() * 25), glide: gl.length ? gl : null });
+      }
+    }
+    return n.sort((a, z) => a.startBeat - z.startBeat);
   }
 };
 
-/* Piano-roll: 144Hz canvas, klik om noten te zetten, sleep voor glide-curve */
+/* Piano-roll: 144Hz canvas, bewerkbaar — klik leeg = noot zetten,
+   sleep noot = verplaatsen, rand = langer/korter, rechtsklik/dubbel = weg */
 class PianoRoll {
   constructor(canvas, opts = {}) {
     this.c = canvas; this.g = canvas.getContext('2d');
     this.bars = opts.bars || 4; this.lo = opts.lo || 36; this.hi = opts.hi || 84;
-    this.notes = []; this.sel = null;
+    this.notes = []; this.sel = -1; this.drag = null;
     canvas.onmousedown = e => this.down(e);
+    canvas.onmousemove = e => this.move(e);
+    canvas.onmouseup = () => { this.drag = null; };
+    canvas.onmouseleave = () => { this.drag = null; };
+    canvas.oncontextmenu = e => { // rechtsklik = noot weggooien
+      e.preventDefault();
+      const h = this.hit(e); if (h >= 0) { this.notes.splice(h, 1); this.sel = -1; this.draw(); }
+    };
+    canvas.ondblclick = e => { // dubbelklik = ook weggooien (makkelijker te vinden)
+      const h = this.hit(e); if (h >= 0) { this.notes.splice(h, 1); this.sel = -1; this.draw(); }
+    };
     requestAnimationFrame(() => this.draw());
   }
   pitchY(p) { return this.c.height - (p - this.lo) / (this.hi - this.lo) * this.c.height; }
   beatX(b) { return b / (this.bars * 4) * this.c.width; }
+  snap(b) { return Math.max(0, Math.round(b * 4) / 4); } // 16e-noten grid
+  pos(e) { const r = this.c.getBoundingClientRect();
+    return { x: (e.clientX - r.left) * this.c.width / r.width,
+             y: (e.clientY - r.top) * this.c.height / r.height }; }
+  xy2bp(x, y) { return { beat: x / this.c.width * this.bars * 4,
+    pitch: Math.round(this.hi - y / this.c.height * (this.hi - this.lo)) }; }
+  hit(e) {
+    const { x, y } = this.pos(e);
+    for (let i = this.notes.length - 1; i >= 0; i--) {
+      const n = this.notes[i];
+      const x0 = this.beatX(n.startBeat), x1 = this.beatX(n.startBeat + Math.max(n.durationBeats, 0.15));
+      const y0 = this.pitchY(n.pitch) - 5, y1 = this.pitchY(n.pitch) + 5;
+      if (x >= x0 && x <= Math.max(x1, x0 + 8) && y >= y0 && y <= y1) return i;
+    }
+    return -1;
+  }
   down(e) {
-    const r = this.c.getBoundingClientRect();
-    const x = e.clientX - r.left, y = e.clientY - r.top;
-    const beat = x / this.c.width * this.bars * 4;
-    const pitch = Math.round(this.hi - y / this.c.height * (this.hi - this.lo));
-    this.notes.push({ pitch, startBeat: beat, durationBeats: 1, velocity: 100, glide: null });
+    const { x, y } = this.pos(e);
+    const { beat, pitch } = this.xy2bp(x, y);
+    const h = this.hit(e);
+    if (h >= 0) {
+      const n = this.notes[h];
+      const edge = Math.abs(x - this.beatX(n.startBeat + n.durationBeats)) < 8;
+      this.drag = edge ? { i: h, mode: 'resize' }
+        : { i: h, mode: 'move', dx: beat - n.startBeat, dp: pitch - n.pitch };
+      this.sel = h;
+    } else {
+      this.notes.push({ pitch, startBeat: this.snap(beat), durationBeats: 1, velocity: 100, glide: null });
+      this.sel = this.notes.length - 1;
+    }
+    this.draw();
+  }
+  move(e) {
+    if (!this.drag) return;
+    const { x, y } = this.pos(e);
+    const { beat, pitch } = this.xy2bp(x, y);
+    const n = this.notes[this.drag.i];
+    if (this.drag.mode === 'move') {
+      n.startBeat = this.snap(beat - this.drag.dx);
+      n.pitch = Math.max(this.lo, Math.min(this.hi, pitch - this.drag.dp));
+    } else { // resize: staart verslepen
+      n.durationBeats = Math.max(0.25, this.snap(beat) - n.startBeat);
+    }
     this.draw();
   }
   draw() {
@@ -98,9 +164,9 @@ class PianoRoll {
       g.strokeStyle = p % 12 === 0 ? '#243' : '#161a18';
       g.beginPath(); g.moveTo(0, this.pitchY(p)); g.lineTo(this.c.width, this.pitchY(p)); g.stroke();
     }
-    for (const n of this.notes) {
-      g.fillStyle = '#0f6';
-      g.fillRect(this.beatX(n.startBeat), this.pitchY(n.pitch) - 4, Math.max(8, this.beatX(n.durationBeats) ), 8);
+    this.notes.forEach((n, i) => {
+      g.fillStyle = i === this.sel ? '#3fa' : '#0f6';
+      g.fillRect(this.beatX(n.startBeat), this.pitchY(n.pitch) - 4, Math.max(8, this.beatX(n.durationBeats)), 8);
       if (n.glide) { // Bézier glide-curve tekenen
         g.strokeStyle = '#0fc'; g.lineWidth = 2; g.beginPath();
         g.moveTo(this.beatX(n.startBeat), this.pitchY(n.pitch));
@@ -109,6 +175,6 @@ class PianoRoll {
             this.pitchY(n.pitch + gl.semis / 2), this.beatX(n.startBeat + gl.beat), this.pitchY(n.pitch + gl.semis));
         g.stroke(); g.lineWidth = 1;
       }
-    }
+    });
   }
 }
