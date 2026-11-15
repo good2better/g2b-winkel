@@ -66,6 +66,7 @@ audio{width:100%;height:34px;margin-top:4px}
     <button id="masterBtn" onclick="doMaster()">💎 MAAK DE MASTER</button>
     <span class="note" id="loadNote">engine laden…</span>
   </div>
+  <div class="row"><label class="note" style="cursor:pointer"><input type="checkbox" id="repareer" checked> 🧹 <b>REPAREER</b> — engineer-pass: rommel-sub, modder, schelle banden en ruis eerst weg (aanbevolen bij vieze mixen/stems)</label></div>
   <div id="out" style="margin-top:10px"></div>
 </div>
 
@@ -378,6 +379,96 @@ function bandE8(L,sr){ // 8 band-energies via echte FFT (8192-bins, 8 hops)
   for(let b=0;b<8;b++)e[b]=Math.sqrt(e[b]/sc);
   return e;
 }
+// ---- REPAREER: engineer-pass die vieze bronnen eerst schoonmaakt ----
+function midSig(L,R){const M=new Float32Array(L.length);for(let i=0;i<L.length;i++)M[i]=(L[i]+R[i])*0.5;return M;}
+function hp30(X,Y,sr){const a=1-Math.exp(-2*Math.PI*30/sr);let hL=0,hR=0; // DC/rommel eruit
+  for(let i=0;i<X.length;i++){hL+=a*(X[i]-hL);hR+=a*(Y[i]-hR);X[i]-=hL;Y[i]-=hR;}}
+// ruisvloer-meter: 15e-percentiel van 0.5s-RMS van >6kHz residu;
+// per kanaal meten en de hoogste nemen (ruis kan in één kanaal zitten)
+function hfFloorArr(X,Y,sr){
+  const a=1-Math.exp(-2*Math.PI*6000/sr);
+  const w=Math.round(sr*0.5),fl=[];
+  for(const Xc of [X,Y]){
+    let h=0;const v=[];
+    for(let i=0;i<Xc.length;i+=w){
+      let t=0,n=0;
+      for(let j=i;j<Math.min(i+w,Xc.length);j++){h+=a*(Xc[j]-h);const r=Xc[j]-h;t+=r*r;n++;}
+      if(n>0)v.push(Math.sqrt(t/n));}
+    v.sort((x,y)=>x-y);
+    if(v.length)fl.push(v[Math.floor(v.length*0.15)]);}
+  return fl.length?Math.max(...fl):0;}
+// sis-gate: dempt >6kHz tot 25% waar het hoog stil is; snelle attack (2ms)
+// zodat korte transiënten (hats/consonanten) hun aanzet houden
+function hfGateArr(X,Y,sr,thr){
+  const a=1-Math.exp(-2*Math.PI*6000/sr),ae=1-Math.exp(-1/(0.002*sr)),ar=1-Math.exp(-1/(0.080*sr));
+  let hL=0,hR=0,e=0,dip=0;
+  for(let i=0;i<X.length;i++){
+    hL+=a*(X[i]-hL);hR+=a*(Y[i]-hR);
+    const hfL=X[i]-hL,hfR=Y[i]-hR;
+    e+=ae*((Math.abs(hfL)+Math.abs(hfR))-e);
+    const targetDip=1-Math.min(1,Math.max(0.25,e/thr));
+    dip+=((targetDip<dip?ae:ar))*(targetDip-dip);
+    const g=1-dip;
+    X[i]-=hfL*(1-g);Y[i]-=hfR*(1-g);}}
+const BASRE=/(bas|bass|kick|808|sub|drum|perk|perc|bongo|conga|tom)/i;
+function repareerStem(L,R,sr,name,single){ // per stem: rommel buiten zijn eigen terrein weg
+  const msgs=[];hp30(L,R,sr); // <30Hz rommel eruit (stille hygiëne, nooit verkeerd)
+  const e=bandE8(midSig(L,R),sr);const tot=e.reduce((x,y)=>x+y,0)||1e-9;
+  const sh=e.map(v=>v/tot);
+  if(!single){ // bij 1 losse file = een hele mix → bus-pass hieronder doet de banden
+    const bas=BASRE.test(name);
+    if(!bas&&sh[0]>0.45){dipStem(L,R,sr,0,Math.min(0.7,sh[0]));msgs.push('sub-overvloed terug');}
+    const mud=sh[2]+sh[3]; // laag-midden-modder alleen bij niet-bas stems flaggen
+    if(!bas&&mud>0.62){const d=Math.min(0.5,(mud-0.62)*1.4);
+      dipStem(L,R,sr,2,d);dipStem(L,R,sr,3,d);msgs.push('modder laag-midden terug');}
+    if(!/hat|perc|drum|cymb|crash|seki|shaker|snaar|snare/i.test(name)&&sh[6]>0.40){
+      dipStem(L,R,sr,6,Math.min(0.45,(sh[6]-0.40)*1.6));msgs.push('schelle 2-4 kHz getemd');}
+  }
+  const fl=hfFloorArr(L,R,sr);
+  if(fl>0.006){hfGateArr(L,R,sr,fl*3);msgs.push('ruis/sis gedempt');}
+  return msgs;}
+// biquad peaking-EQ (RBJ) — smalle resonanties notchen op hun eigen frequentie
+function biquadPeak(X,Y,sr,f,gainDb,Q){
+  const A=Math.pow(10,gainDb/40),w=2*Math.PI*f/sr,cw=Math.cos(w),sw=Math.sin(w),al=sw/(2*Q);
+  const b0=1+al*A,b1=-2*cw,b2=1-al*A,a0=1+al/A,a1=-2*cw,a2=1-al/A;
+  const c0=b0/a0,c1=b1/a0,c2=b2/a0,d1=a1/a0,d2=a2/a0;
+  for(const Xc of [X,Y]){let x1=0,x2=0,y1=0,y2=0;
+    for(let i=0;i<Xc.length;i++){const x=Xc[i];const y=c0*x+c1*x1+c2*x2-d1*y1-d2*y2;
+      x2=x1;x1=x;y2=y1;y1=y;Xc[i]=y;}}}
+// gemiddelde FFT over de track: vind resonanties + band-aandelen
+function specFrame(M,sr){
+  const N=16384,re=new Float32Array(N),im=new Float32Array(N);
+  const hops=6,step=Math.max(N,Math.floor((M.length-N)/hops));
+  const acc=new Float32Array(N/2);let cnt=0;
+  for(let off=0;off+N<=M.length&&cnt<hops;off+=step,cnt++){
+    for(let i=0;i<N;i++){re[i]=M[off+i]*(0.5-0.5*Math.cos(2*Math.PI*i/N));im[i]=0;}
+    _fft(re,im);
+    for(let k=0;k<N/2;k++)acc[k]+=re[k]*re[k]+im[k]*im[k];}
+  return {e:acc,df:sr/N};}
+function repareerMix(L,R,sr){ // eind-bus: engineer-rescue — resonanties + band-overvloed
+  const msgs=[];
+  const {e,df}=specFrame(midSig(L,R),sr);const nb=e.length;
+  const edges=[0,60,120,250,500,1000,2000,4000,Math.min(sr/2,22050)];
+  const sh=new Float32Array(8),RI=new Float32Array(8),pkF=new Float32Array(8);
+  let tot=0;
+  for(let b=0;b<8;b++){
+    let s=0,c=0,mx=0,mki=0;
+    const k0=Math.max(1,Math.round(edges[b]/df)),k1=Math.min(nb-1,Math.ceil(edges[b+1]/df));
+    for(let k=k0;k<=k1;k++){s+=e[k];c++;if(e[k]>mx){mx=e[k];mki=k;}}
+    sh[b]=s;tot+=s;RI[b]=c>0?mx/(s/c):0;pkF[b]=mki*df;}
+  for(let b=0;b<8;b++)sh[b]/=(tot||1e-9);
+  const LIM=[0.50,0.48,0.44,0.40,0.38,0.36,0.30,0.60];
+  const NM=['rommel-sub','laag','modder 120-250','modder 250-500','midden','bovenmidden','schel 2-4 kHz','sis/lucht'];
+  for(let b=0;b<7;b++){ // band 7 behandelt de sis-gate
+    const over=sh[b]-LIM[b];
+    const res=RI[b]>28&&sh[b]>0.10&&pkF[b]>40; // smalle piek domineert de band = resonantie
+    if(over>0.05){const d=Math.min(0.55,over*1.9);
+      dipStem(L,R,sr,b,d);
+      msgs.push(`${NM[b]} −${(-20*Math.log10(1-d)).toFixed(1)} dB`);}
+    else if(res){const g=-Math.min(8,1.5+RI[b]/18); // notch op de piek zelf, geen hele band
+      biquadPeak(L,R,sr,pkF[b],g,4.5);
+      msgs.push(`resonantie ~${Math.round(pkF[b])} Hz ${g.toFixed(1)} dB`);}}
+  return msgs;}
 function stemPrio(name){ // HOOG wijkt nooit, MIDDEN normaal, LAAG wijkt voor alles
   const n=name.toLowerCase();
   if(/vox|vocal|zang|lead|melod|synth|keys|piano|hook/.test(n))return 1;
@@ -432,6 +523,13 @@ window.doMaster=async()=>{
       const lr=resample(l,s.buf.sampleRate,target),rr=resample(r,s.buf.sampleRate,target);
       for(let i=0;i<Math.min(n,lr.length);i++){lr[i]*=g;rr[i]*=g;}
       return{s,l:lr,r:rr};});
+    // vóór-mix vastleggen vóór elke reparatie — eerlijke A/B op de rauwe upload
+    const rawL=new Float32Array(n),rawR=new Float32Array(n);
+    for(const p of parts){for(let i=0;i<Math.min(n,p.l.length);i++){rawL[i]+=p.l[i];rawR[i]+=p.r[i];}}
+    const repOn=$('repareer').checked;
+    const repMsgs=[];
+    if(repOn)for(const p of parts){const m=repareerStem(p.l,p.r,target,p.s.name,parts.length===1);
+      if(m.length)repMsgs.push(`• ${p.s.name}: ${m.join(', ')}`);}
     const busMsgs=masterCorrect(parts,target);
     for(const p of parts){for(let i=0;i<Math.min(n,p.l.length);i++){mixL[i]+=p.l[i];mixR[i]+=p.r[i];}}
     // dynamiek-waak: een stille, levende mix (lofi/chill) niet dichtknijpen
@@ -441,39 +539,15 @@ window.doMaster=async()=>{
     for(let i=0;i+blk<mixL.length;i+=blk){let t=0;for(let j=i;j<i+blk;j+=16)t+=mixL[j]*mixL[j];bl.push(Math.sqrt(t/(blk/16)));}
     bl.sort((a,b)=>a-b);
     const lra=bl.length>6?dB(bl[Math.floor(bl.length*.95)])-dB(bl[Math.floor(bl.length*.1)]):0;
-    const preDb=dB(rmsP(mixL)+rmsP(mixR));
+    const preDb=dB(rmsP(rawL)+rmsP(rawR));
+    // eind-bus repareer: rest-modder/schel eruit (vóór-versie = rawL/rawR hierboven)
+    if(repOn){const m=repareerMix(mixL,mixR,target);
+      repMsgs.push(...m.map(x=>'bus: '+x));}
     let cfg=CFG[$('preset').value]||CFG.g2b,waak='',ruismelding='',hfFl=0;
-    // ruisvloer-meter: 15e-percentiel van 0.5s-RMS van >6kHz residu;
-    // per kanaal meten en de hoogste nemen (ruis kan in één kanaal zitten)
-    const hfFloor=(X,Y)=>{
-      const a=1-Math.exp(-2*Math.PI*6000/target);
-      const w=Math.round(target*0.5),fl=[];
-      for(const Xc of [X,Y]){
-        let h=0;const v=[];
-        for(let i=0;i<Xc.length;i+=w){
-          let t=0,n=0;
-          for(let j=i;j<Math.min(i+w,Xc.length);j++){h+=a*(Xc[j]-h);const r=Xc[j]-h;t+=r*r;n++;}
-          if(n>0)v.push(Math.sqrt(t/n));}
-        v.sort((x,y)=>x-y);
-        if(v.length)fl.push(v[Math.floor(v.length*0.15)]);}
-      return fl.length?Math.max(...fl):0;};
-    // sis-gate: dempt >6kHz tot 25% waar het hoog stil is; snelle attack (2ms)
-    // zodat korte transiënten (hats/consonanten) hun aanzet houden
-    const hfGate=(X,Y,thr)=>{
-      const a=1-Math.exp(-2*Math.PI*6000/target),ae=1-Math.exp(-1/(0.002*target)),ar=1-Math.exp(-1/(0.080*target));
-      let hL=0,hR=0,e=0,dip=0;
-      for(let i=0;i<X.length;i++){
-        hL+=a*(X[i]-hL);hR+=a*(Y[i]-hR);
-        const hfL=X[i]-hL,hfR=Y[i]-hR;
-        e+=ae*((Math.abs(hfL)+Math.abs(hfR))-e);
-        const targetDip=1-Math.min(1,Math.max(0.25,e/thr));
-        dip+=((targetDip<dip?ae:ar))*(targetDip-dip);
-        const g=1-dip;
-        X[i]-=hfL*(1-g);Y[i]-=hfR*(1-g);}};
     // ruis-check: hoog-ruisvloer (>6kHz) meten — bij sis in de mix wordt
     // air/breedte/tape-glans alleen maar erger, dus die schroeven we terug
     {
-      const fl=hfFloor(mixL,mixR);
+      const fl=hfFloorArr(mixL,mixR,target);
       hfFl=fl;
       if(fl>0.004){
         cfg={...cfg,
@@ -492,10 +566,10 @@ window.doMaster=async()=>{
       cfg={...cfg,loudness:{...cfg.loudness,targetLufs:Math.min(cfg.loudness.targetLufs,preDb+15)}};
       waak=`<div class="line">🌙 Je mix is rustig en levend (${lra.toFixed(0)} dB dynamiek) — ik houd 'm bewust zachter zodat de sfeer blijft. (stijl 'rustig' past hier ook)</div>`;
     }
-    // vóór-versie eerst encoderen: daarna past de sis-gate mixL/mixR aan voor de keten
-    const preBlob=ab2wav(mixL,mixR,target);
+    // vóór-versie = de rauwe mix vóór repareer/keten (eerlijke A/B)
+    const preBlob=ab2wav(rawL,rawR,target);
     // pre-gate: de keten krijgt de ontdende mix als bron
-    if(ruismelding){hfGate(mixL,mixR,hfFl*3);}
+    if(ruismelding){hfGateArr(mixL,mixR,target,hfFl*3);}
     const res=S.masteringChainStereo(mixL,mixR,target,cfg);
     let OL,OR;
     if(res&&res.left&&res.right){OL=res.left;OR=res.right;}
@@ -503,7 +577,7 @@ window.doMaster=async()=>{
     else{throw new Error('onbekend resultaat van de engine');}
     // én ná de keten: ook door air/limiter omhooggetrokken sis wegdempen;
     // drempel meten op de OUTPUT (master kan harder gezet zijn dan de mix)
-    if(ruismelding){hfGate(OL,OR,hfFloor(OL,OR)*3);}
+    if(ruismelding){hfGateArr(OL,OR,target,hfFloorArr(OL,OR,target)*3);}
     const postBlob=ab2wav(OL,OR,target);
     $('prePlay').src=URL.createObjectURL(preBlob);
     $('postPlay').src=URL.createObjectURL(postBlob);
@@ -521,8 +595,9 @@ window.doMaster=async()=>{
     const check=(okLoud&&okPeak)
       ?`<div class="line">📊 Controle: ${dPre.toFixed(1)} → ${dPost.toFixed(1)} dB (${dl}), piek ${peakDb.toFixed(1)} dBTP onder het plafond — de master is beter dan de mix. 👍</div>`
       :`<div class="line">⚠ Controle: ${dPre.toFixed(1)} → ${dPost.toFixed(1)} dB, piek ${peakDb.toFixed(1)} dBTP — luister A/B; is de master niet beter, gebruik dan de vóór-versie.</div>`;
+    const rep=repMsgs.length?`<div class="line">🧹 REPAREER: `+repMsgs.join(' · ')+`</div>`:'';
     const bus=busMsgs.length?`<div class="line">🧠 MASTER-check: `+busMsgs.join(' ')+`</div>`:'';
-    out.innerHTML=`<div class="line">✅ Klaar! Je master is ${res.outputLufs!==undefined?res.outputLufs.toFixed(1)+' LUFS, piek '+res.outputTruePeakDbtp.toFixed(1)+' dBTP':'klaar'} — luister vóór/ná hieronder.</div>`+bus+ruismelding+waak+check;
+    out.innerHTML=`<div class="line">✅ Klaar! Je master is ${res.outputLufs!==undefined?res.outputLufs.toFixed(1)+' LUFS, piek '+res.outputTruePeakDbtp.toFixed(1)+' dBTP':'klaar'} — luister vóór/ná hieronder.</div>`+rep+bus+ruismelding+waak+check;
   }catch(e){out.innerHTML=`<div class="line">⚠ ${e.message||e}</div>`;}
   btn.classList.remove('busy');btn.textContent='💎 MAAK DE MASTER';
 };
