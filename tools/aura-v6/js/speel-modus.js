@@ -205,7 +205,7 @@ const SpeelModus = {
       S.arpRate = r() < 0.5 ? 8 : 16;
       bar.querySelector('#smArp').value = S.arpRate;
       const dirs = ['up','down','updown','conv','div','oct','rand','ratchet'];
-      S.arpDir = dirs[(r() * 3) | 0];
+      S.arpDir = dirs[(r() * dirs.length) | 0];
       bar.querySelector('#smArpDir').value = S.arpDir;
       sync();
       const d = bar.querySelector('#smDice');

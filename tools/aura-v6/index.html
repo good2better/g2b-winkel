@@ -47,12 +47,25 @@ document.getElementById('btnExport').onclick = () => {
   const code = prompt('Export (.mid) is voor kopers.\nHeb je een licentiecode? Vul hem hier in — anders: koop MIDI-Forge in de winkel.');
   if (code && code.trim().length >= 6) { try { localStorage.setItem('g2b_aura_licentie', 'ok'); } catch (e) {} exp.download(roll.notes, +document.getElementById('bpm').value); }
 };
-let playing = false;
+let playing = false, _timers = [];
 document.getElementById('btnPlay').onclick = async () => {
-  await Aura.init('js/aura-dsp-worklet.js'); playing = !playing;
-  document.getElementById('btnPlay').textContent = playing ? '⏸ Stop' : '▶ Speel';
-  if (playing) for (const n of roll.notes) Aura.noteOn(n.pitch, { wave: 'saw', velocity: n.velocity });
-  else Aura.panic();
+  const btn = document.getElementById('btnPlay');
+  if (playing) {
+    playing = false; _timers.forEach(clearTimeout); _timers = [];
+    Aura.panic(); btn.textContent = '▶ Speel'; return;
+  }
+  await Aura.init('js/aura-dsp-worklet.js');
+  const bpm = Math.max(40, +document.getElementById('bpm').value || 140);
+  const ms = b => b * 60000 / bpm;
+  playing = true; btn.textContent = '⏸ Stop';
+  let end = 0;
+  for (const n of roll.notes) {
+    const t = ms(n.startBeat), dur = Math.max(80, ms(n.durationBeats));
+    end = Math.max(end, t + dur);
+    _timers.push(setTimeout(() => { if (playing) Aura.noteOn(n.pitch, { wave: 'saw', velocity: n.velocity }); }, t));
+    _timers.push(setTimeout(() => { if (playing) Aura.noteOff(n.pitch); }, t + dur));
+  }
+  _timers.push(setTimeout(() => { playing = false; _timers = []; btn.textContent = '▶ Speel'; }, end + 300));
 };
 BrainMemory.knop(document.getElementById('brainBox'));
 </script></body></html>

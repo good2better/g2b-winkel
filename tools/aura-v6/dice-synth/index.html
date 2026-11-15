@@ -34,7 +34,7 @@ const rnd = a => a[Math.floor(Math.random()*a.length)];
   document.getElementById('lenSl').oninput = e => cur.decay = +e.target.value;
   document.getElementById('dice').onclick = () => {
     cur = { wave: rnd(['saw','sine','square','tri']), tone: 0.5+Math.random()*1.5,
-            decay: 0.994+Math.random()*0.005 };
+            decay: 0.9975+Math.random()*0.0024 };
     naam.textContent = '→ ' + rnd(NAMEN);
     setUI(); // naam EN knoppen synchroon mee — fix Best-Of/Dren naam-bug
   };
