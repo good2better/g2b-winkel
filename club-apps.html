@@ -51,6 +51,7 @@ a.app.lokaal{opacity:.75;border-style:dashed}
 <div id="page">
 <h1>🎧 G2B <b>CLUB</b> — ledenpagina</h1>
 <p class="sub">Alles werkt in je browser, niks installeren. Dit is de club-versie — betalende leden krijgen deze set van Giorgio.</p>
+<input id="zoek" type="search" placeholder="🔍 Zoek een app… (typ bijv. stapel, koor, ocho, beat)" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--rand);background:#0b0e0c;color:var(--tekst);font-size:15px;margin-bottom:6px">
 <div class="sub" style="border:1px solid var(--rand);border-radius:12px;padding:12px 14px;margin:12px 0 0;text-align:left">🔑 <b>Jouw code = jouw sleutel overal:</b> dezelfde club-code ontgrendelt ook de .MID/.WAV-export in álle AURA-browser-modules en GAW-lite. Vul hem één keer in op <a href="account.html" style="color:#7ee2a8">account.html</a> — daarna werkt export op deze computer altijd.</div>
 
 <div class="groep">🎵 Muziek maken</div>
@@ -165,6 +166,16 @@ async function unlock(){
 if(sessionStorage.g2bclub==='1'){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';}
 (async()=>{try{const sv=(localStorage.getItem('g2b_aura_licentie')||'').trim().toLowerCase();if(sv&&sv!=='ok'&&HASHES.includes(await _g2b_hex(sv))){sessionStorage.g2bclub='1';document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';}}catch(e){}})();
 document.getElementById('code').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
+document.getElementById('zoek').addEventListener('input',e=>{
+  const q=e.target.value.trim().toLowerCase();
+  document.querySelectorAll('a.app').forEach(a=>{
+    a.style.display=(!q||a.textContent.toLowerCase().includes(q))?'':'none';
+  });
+  document.querySelectorAll('.groep').forEach(g=>{
+    const grid=g.nextElementSibling;
+    g.style.display=(!q||[...grid.children].some(c=>c.style.display!=='none'))?'':'none';
+  });
+});
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 </body>
