@@ -68,7 +68,11 @@ const Aura = {
     let rate = Math.pow(2, (pitch - base) / 12) * (opts.rate || 1);
     if (rate < 0.5) { // max 1 octaaf omlaag → geen vervorming; schone sub-osc geeft de 'boom'
       rate = 0.5;
-      this.noteOn(pitch, { wave: 'sine', velocity: (opts.velocity || 100) * 0.9, decay: 0.99995 });
+      // sub op de gevraagde noot, maar nooit onder C1 (≈32 Hz): daaronder is het op
+      // gewone speakers onhoorbaar → schuif octaven omhoog tot het hoorbaar laag is
+      let subPitch = pitch;
+      while (subPitch < 24) subPitch += 12;
+      this.noteOn(subPitch, { wave: 'sine', velocity: (opts.velocity || 100) * 0.9, decay: 0.99995 });
     }
     src.playbackRate.value = rate;
     const g = this.ctx.createGain();
