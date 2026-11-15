@@ -114,11 +114,12 @@ function fft(re,im,input){const n=input.length;for(let i=0;i<n;i++){re[i]=input[
       for(let j=0;j<h;j++){const a=i+j,b=a+h,tr=re[b]*cr-im[b]*ci,ti=re[b]*ci+im[b]*cr;
         re[b]=re[a]-tr;im[b]=im[a]-ti;re[a]+=tr;im[a]+=ti;
         const nc=cr*wr-ci*wi;ci=cr*wi+ci*wr;cr=nc;}}}}
-function stretch(y,f){ // tijd-stretch, lengte × f
+const tick=()=>new Promise(r=>setTimeout(r,10));
+async function stretch(y,f,tag){ // tijd-stretch, lengte × f — async zodat UI nooit vastloopt
   const G=2048,Hs=512,Ha=Hs/f,ol=256;
   const n=Math.floor(y.length*f)+G,out=new Float32Array(n);
   const win=new Float32Array(G);for(let i=0;i<G;i++)win[i]=0.5-0.5*Math.cos(2*Math.PI*i/G);
-  let a=0,o=0;
+  let a=0,o=0,gr=0;
   while(a+G<y.length){
     let best=0,bs=-1e18;
     for(let d=-ol;d<=ol;d+=8){const st0=a+d;if(st0<0)continue;let c=0;
@@ -126,13 +127,14 @@ function stretch(y,f){ // tijd-stretch, lengte × f
       if(c>bs){bs=c;best=d;}}
     const s0=a+best;
     for(let i=0;i<G&&o+i<n;i++)out[o+i]+=(y[s0+i]||0)*win[i];
-    a+=Ha;o+=Hs;}
+    a+=Ha;o+=Hs;
+    if(++gr%400===0){st(`${tag} ${Math.round(a/y.length*100)}%`);await tick();}}
   return out;}
 function resampleLin(y,r){const n=Math.max(1,Math.floor(y.length/r)),o=new Float32Array(n);
   for(let i=0;i<n;i++){const x=i*r,j=x|0,fr=x-j;o[i]=(y[j]||0)*(1-fr)+(y[j+1]||0)*fr;}return o;}
-function pitchShift(y,semi,cent){const r=Math.pow(2,(semi+(cent||0)/100)/12);
+async function pitchShift(y,semi,cent,tag){const r=Math.pow(2,(semi+(cent||0)/100)/12);
   if(Math.abs(r-1)<0.001)return y.slice();
-  return resampleLin(stretch(y,r),r);}
+  return resampleLin(await stretch(y,r,tag),r);}
 
 /* ---------- audio helpers ---------- */
 function mono(buf){const n=buf.length,ch=buf.numberOfChannels,o=new Float32Array(n);
@@ -153,7 +155,6 @@ const PRESETS={
   dice:k=>{const sc=scaleFor(k),v=[0];while(v.length<4)v.push(sc[Math.floor(Math.random()*sc.length)]+12*(Math.random()<.5?1:0));return v;}
 };
 let voices=[];
-const tick=()=>new Promise(r=>setTimeout(r,10));
 $('bKoor').onclick=async()=>{
   if(!lead){st('drop eerst je vocal');return;}
   ensureAC();
@@ -175,12 +176,12 @@ $('bKoor').onclick=async()=>{
     const pan=isLead?0:((i%2?1:-1)*(0.3+0.7*Math.random()))*w;    // afwisselend L/R
     const g=isLead?1.0:0.45+Math.random()*0.25;
     st(`🎤 stem ${i+1}/${offs.length}: ${semi>0?'+':''}${semi} semitones…`);
-    const sh=isLead?lead.y:pitchShift(lead.y,semi,det);
+    const sh=isLead?lead.y:await pitchShift(lead.y,semi,det,`🎤 stem ${i+1}/${offs.length} verschuiven…`);
     const body=onepole(sh,isLead?9000:2500+Math.random()*3000); // achtergrond-stemmen dofder
     const seg=pad(body,dly);
     const gl=g*Math.cos((pan+1)*Math.PI/4),gr=g*Math.sin((pan+1)*Math.PI/4);
     for(let j=0;j<seg.length&&j<L.length;j++){L[j]+=seg[j]*gl;R[j]+=seg[j]*gr;}
-    if(!isLead)stemFiles.push([`koor-stem-${i}_${semi>0?'+':''}${semi}.wav`,wavBytes(monoBuf(seg))]);
+    if(!isLead)stemFiles.push([`koor-stem-${i}_${semi>0?'+':''}${semi}.wav`,await wavBytesAsync(monoBuf(seg))]);
     voices.push({semi,det:Math.round(det),pan:+pan.toFixed(2),dly:Math.round(dly/SR*1000)});
     dots.push({x:50+pan*42,y:isLead?45:70,lead:isLead,semi});
     await tick();
@@ -190,7 +191,7 @@ $('bKoor').onclick=async()=>{
   if(m>0){for(let i=0;i<L.length;i++){L[i]/=m/0.85;R[i]/=m/0.85;}}
   const out=AC.createBuffer(2,L.length,SR);out.getChannelData(0).set(L);out.getChannelData(1).set(R);
   lastMix=out;
-  const url=URL.createObjectURL(new Blob([wavBytes(out)],{type:'audio/wav'}));
+  const url=URL.createObjectURL(new Blob([await wavBytesAsync(out)],{type:'audio/wav'}));
   $('au').src=url;$('dl').href=url;$('dl').download=`koor-${key}-${preset}.wav`;$('dl').style.display='';
   $('bStem').style.display='';
   $('resInfo').textContent=`${key} · ${preset} · ${offs.length} stemmen · breedte ${Math.round(w*100)}%`;
@@ -240,12 +241,13 @@ $('fk').onchange=e=>{if(e.target.files[0])loadKey(e.target.files[0]);};
 
 /* ---------- wav + zip ---------- */
 function monoBuf(y){const b=AC.createBuffer(1,y.length,SR);b.getChannelData(0).set(y);return b;}
-function wavBytes(buf){const n=buf.length,ch=buf.numberOfChannels,sr=buf.sampleRate;
+async function wavBytesAsync(buf){const n=buf.length,ch=buf.numberOfChannels,sr=buf.sampleRate;
   const ab=new ArrayBuffer(44+n*ch*2),v=new DataView(ab),S=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
   S(0,'RIFF');v.setUint32(4,36+n*ch*2,true);S(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);
   v.setUint16(22,ch,true);v.setUint32(24,sr,true);v.setUint32(28,sr*ch*2,true);v.setUint16(32,ch*2,true);v.setUint16(34,16,true);
   S(36,'data');v.setUint32(40,n*ch*2,true);let p=44;
-  for(let i=0;i<n;i++)for(let c=0;c<ch;c++){let x=Math.max(-1,Math.min(1,buf.getChannelData(c)[i]));v.setInt16(p,x*32767,true);p+=2;}
+  for(let i=0;i<n;i++){for(let c=0;c<ch;c++){let x=Math.max(-1,Math.min(1,buf.getChannelData(c)[i]));v.setInt16(p,x*32767,true);p+=2;}
+    if(i%2000000===0)await tick();}
   return ab;}
 function crc32(buf){let t=crc32.t;if(!t){t=crc32.t=new Uint32Array(256);
     for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c;}}
