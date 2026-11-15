@@ -144,7 +144,9 @@ const StudioPanel = {
         const ds = Math.round((x - drag.x0) / w);
         n.s = Math.max(0, Math.min(N - (n.d || 1), drag.s0 + ds));
         const np = Math.max(0, Math.min(127, pOf(y)));
-        if (np !== n.p) { n.p = np; try { InstrumentMatrix.play(n.p, { velocity: 80 }); } catch (err) {} } // preview: hoor waar je hem neerzet
+        // preview-throttle: max 1 stem/40ms — snel slepen spawnt geen ratel-stemmen meer
+        const nw = performance.now();
+        if (np !== n.p) { n.p = np; if (nw - (drag._pv || 0) > 40) { drag._pv = nw; try { InstrumentMatrix.play(n.p, { velocity: 80 }); } catch (err) {} } }
       }
       draw();
     };

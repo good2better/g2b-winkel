@@ -35,10 +35,10 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
     const freq = (440 * Math.pow(2, (d.pitch - 69) / 12)) * (d.tone || 1.0);
     const low = freq < 130.81; // onder C3
     // cut-self: zelfde toonhoogte dooft in ~5ms ipv hard wegsnijden (geen tik)
-    for (const v of this.voices) if (v.pitch === d.pitch) v.decayRate = Math.min(v.decayRate, 0.979);
+    for (const v of this.voices) if (v.pitch === d.pitch) v.decayRate = Math.min(v.decayRate, 0.9993); // ~35ms zachte cut — geen tik bij snel hertriggeren
     // sub-bas is monofonisch: oudere sub-stemmen dooft snel — geen wobble/gruis door beat-frequenties
     if (low)
-      for (const v of this.voices) if (v.freq < 130.81) v.decayRate = Math.min(v.decayRate, 0.985);
+      for (const v of this.voices) if (v.freq < 130.81) v.decayRate = Math.min(v.decayRate, 0.9997); // ~80ms — mono-sub dooft soepel uit
     this.voices.push({
       pitch: d.pitch,
       freq,
