@@ -261,6 +261,7 @@ function bounce(){ // render 1 maat offline met dezelfde mini-synth (CPU, geen r
   ri[i]=Math.max(-32768,Math.min(32767,Math.round(R[i]*32767)));}
  dl(wavBlob(li,ri,sr),'g2b-loop-'+G.kit.toLowerCase()+'.wav');
  $('st').textContent='🔊 WAV-loop gedownload — '+bpm+' bpm, naadloos loopbaar';}
-function dl(b,name){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();}
+function dl(b,name){if(!G2BExport.ok())return;const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();}
 bouwKits();kiesKit('TRAP');bouwLagen();
-</script></body></html>
+</script><script src="/js/g2b-export.js"></script>
+</body></html>

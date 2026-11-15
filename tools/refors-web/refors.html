@@ -193,7 +193,7 @@ function downloadWav(ab,name){
  W('RIFF');u32(36+n*ch*2);W('WAVEfmt ');u32(16);u16(1);u16(ch);u32(sr);u32(sr*ch*2);u16(ch*2);u16(16);W('data');u32(n*ch*2);
  const L=ab.getChannelData(0),R=ch>1?ab.getChannelData(1):L;
  for(let i=0;i<n;i++){i16(L[i]);if(ch>1)i16(R[i])}
- const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([dv.buffer],{type:'audio/wav'}));a.download=name;a.click();
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([dv.buffer],{type:'audio/wav'}));a.download=name;if(G2BExport.ok())a.click();
 }
 
 function laad(file){
@@ -304,4 +304,5 @@ function teken(){
 teken();
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
+<script src="/js/g2b-export.js"></script>
 </body></html>

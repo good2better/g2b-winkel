@@ -157,7 +157,7 @@ function startRec(){recOn=true;$('rec').classList.add('on');$('stat').textConten
 $('rec').onclick=()=>{
  if(FREE){$('stat').innerHTML='🔒 OPNAME + .mid-export zit in de <b>CLUB</b>-versie — <a href="bestel.html?p=g2bclub" style="color:#35d07f">word lid (€4,95/mnd)</a>';return;}
  if(recOn){recOn=false;$('rec').classList.remove('on');$('stat').textContent='';
-  if(recLog.length){const b=writeMid();$('dl').href=URL.createObjectURL(b);$('dl').download='G2B-AIRDRUMS.mid';$('dl').style.display='inline';}
+  if(recLog.length){const b=writeMid();$('dl').href=URL.createObjectURL(b);$('dl').download='G2B-AIRDRUMS.mid';$('dl').style.display='inline';$('dl').onclick=e=>{if(!G2BExport.ok())e.preventDefault();};}
   return;}
  if(recCnt){return;} // dubbelklik tijdens aftellen = negeren
  recCnt=true;ensureAC();let n=3;
@@ -516,4 +516,5 @@ $('cal').onclick=()=>{
 window.__airTest=z=>{ensureAC();const k=PAD8SYNTH[z%8];SYN[k]?SYN[k](1):SYN.mel(1,60);return 'ok';};
 window.__airMidTest=()=>{recLog=[[0,36,100],[500,38,90]];return writeMid().size;};
 </script><footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
+<script src="/js/g2b-export.js"></script>
 </body></html>
