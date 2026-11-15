@@ -90,16 +90,16 @@ const Aura = {
     g.gain.linearRampToValueAtTime(amp * punchAmt, t + 0.006); // 6ms fade-in = geen knal meer
     g.gain.setTargetAtTime(amp, t + 0.006, 0.005);         // punch valt terug in ~15ms
     g.gain.setTargetAtTime(0, t + fadeStart, 0.12);        // zachte uitloop = geen eind-klik
-    // cut-self: zelfde pad opnieuw = vorige dooft in 5ms ipv opstapelen
+    // cut-self: zelfde pad opnieuw = vorige dooft in ~30ms ipv hard wegsnijden — geen 'krg'-tik
     const key = opts.src;
     const prev = this._pad[key];
     if (prev) { try { prev._g.gain.cancelScheduledValues(this.ctx.currentTime);
-      prev._g.gain.setTargetAtTime(0, this.ctx.currentTime, 0.0017); prev.stop(this.ctx.currentTime + 0.02); } catch (e) {} }
+      prev._g.gain.setTargetAtTime(0, this.ctx.currentTime, 0.009); prev.stop(this.ctx.currentTime + 0.12); } catch (e) {} }
     // sub-bas monofonisch: nieuwe lage noot dooft de vorige lage sample — geen wobble
     if (pitch < 48 && this._padLow && this._padLow !== src) {
       try { this._padLow._g.gain.cancelScheduledValues(this.ctx.currentTime);
-        this._padLow._g.gain.setTargetAtTime(0, this.ctx.currentTime, 0.0017);
-        this._padLow.stop(this.ctx.currentTime + 0.02); } catch (e) {}
+        this._padLow._g.gain.setTargetAtTime(0, this.ctx.currentTime, 0.009);
+        this._padLow.stop(this.ctx.currentTime + 0.12); } catch (e) {}
     }
     if (pitch < 48) this._padLow = src;
     this._pad[key] = src; src._g = g; src._pitch = pitch; src._src = opts.src;
