@@ -13,46 +13,38 @@
 <script>
 const CATS = {
   piano:['Piano C2','Piano C3','Piano C4','Donder Piano','House Piano','Piano Classic'],
-  keys:['Hammond','Vibes','Marimba','Marimba Soft','Glockenspiel','Mbira'],
+  keys:['Vibes','Marimba','Marimba Soft','Glockenspiel','Mbira'],
   strings:['Strings','Harp','Nylon Gitaar','Spaanse Gitaar','Clean Gitaar','Zouk Gitaar'],
-  blazers:['Brass','Trombone','Fagot','Sax','Hobo','Blokfluit'],
-  bass:['Bas A1','Bas C1','Bas D1','Bas E1','SF Bass','SF Sub808','Zouk Bas'],
-  fusion:['Fus Gitaar','Fus Bas Karp','Fus Donder Harp'],
-  drums:['Kick','Snare','Hat','Clap','Darbouka','Bell','Djembe','Bongo','Cowbell','Donk'],
+  blazers:['Brass','Trombone','Fagot','Sax','Hobo',],
+  bass:['Bas A1','Bas C1','Bas D1','Bas E1','SF Sub808',],
+  fusion:['Fus Gitaar','Fus Donder Harp'],
+  drums:['Snare','Hat','Clap','Darbouka','Bell','Bongo',],
   dna_keys:['DNA Keys Boombap','DNA Keys RnB','DNA Keys Afro','DNA Keys Drill','DNA Rhodes Corp','DNA Rhodes RnB','DNA Rhodes Mel'],
-  dna_snaar:['DNA Funk Gitaar','DNA Rockabilly Gitaar','DNA Southern Gitaar','DNA Rockabilly Bas','DNA Southern Bas','DNA Funk Bas','DNA Reggae Bas','DNA Pluck'],
-  dna_mel:['DNA Marimba','DNA Reggaeton Mel','DNA Trap Lead','DNA Drill Fluit','DNA Lofi Lead','DNA Lofi Lead 2','DNA Pop Lead','DNA Pop Lead 2','DNA Pad Droom','DNA Pad Droom 2','DNA Epic Mel','DNA Epic Melodie','DNA Funk Mel','DNA Rockabilly Mel','DNA Southern Mel'],
-  dna_drums:['DNA Snare Roll','DNA Crunk Clap','DNA Soca Snare','DNA Dembow Rim','DNA Open Hat','DNA Hat 2','DNA Shaker','DNA Tambo','DNA Tambo 2','DNA Crash','DNA Crash 2','DNA Crash Kit','DNA Oogst Kick','DNA Oogst Snare','DNA Oogst Hat','DNA Oogst Bas']
+  dna_snaar:['DNA Funk Gitaar','DNA Rockabilly Gitaar','DNA Southern Gitaar','DNA Rockabilly Bas','DNA Southern Bas','DNA Funk Bas','DNA Reggae Bas',],
+  dna_mel:['DNA Marimba','DNA Reggaeton Mel','DNA Trap Lead','DNA Drill Fluit','DNA Lofi Lead','DNA Lofi Lead 2','DNA Pop Lead','DNA Pop Lead 2','DNA Pad Droom','DNA Pad Droom 2','DNA Epic Mel','DNA Funk Mel','DNA Rockabilly Mel','DNA Southern Mel'],
+  dna_drums:['DNA Snare Roll','DNA Crunk Clap','DNA Soca Snare','DNA Dembow Rim',]
 };
 const SRC = {
   'Piano C2':'piano_kP_C2_v1','Piano C3':'piano_kP_C3_v1','Piano C4':'piano_kP_C4_v1',
-  'Donder Piano':'donderpi','House Piano':'housepno','Piano Classic':'piano',
-  'Hammond':'hammond','Vibes':'vibes','Marimba':'marimba','Marimba Soft':'mar_kMar_C2_s',
-  'Glockenspiel':'glock_kGK_G4','Mbira':'mbira',
-  'Strings':'strings','Harp':'har_kH_C4','Nylon Gitaar':'nylon','Spaanse Gitaar':'spaansgtr',
-  'Clean Gitaar':'egtrclean','Zouk Gitaar':'zoukgit',
+  'Donder Piano':'donderpi','Piano Classic':'piano','Marimba':'marimba','Marimba Soft':'mar_kMar_C2_s',
+  'Glockenspiel':'glock_kGK_G4','Mbira':'mbira','Harp':'har_kH_C4','Zouk Gitaar':'zoukgit',
   'Brass':'bra_kBra_C3','Trombone':'bra_kTbn_D3','Fagot':'bsn_kBsn_C3','Sax':'sax_kSx50_1',
-  'Hobo':'obo_kObo_D4','Blokfluit':'rec_kRec_C4',
-  'Bas A1':'A1','Bas C1':'C1','Bas D1':'D1','Bas E1':'E1',
-  'SF Bass':'bas_sf_bass_1792585597','SF Sub808':'bas_sf_sub808_1792585596','Zouk Bas':'zoukbas',
-  'Fus Gitaar':'kS_FUSGITDAN_39_v1','Fus Bas Karp':'kS_FUSBASKARP_30_v1','Fus Donder Harp':'kS_FUSDONDHARP_35_v1',
-  'Kick':'kD_kick','Snare':'kD_snare','Hat':'kD_hat','Clap':'kD_clap','Darbouka':'kD_darb',
-  'Bell':'kD_bell','Djembe':'dru_sf_djembe_1792585593','Bongo':'dru_sf_bongo_1792585593',
-  'Cowbell':'dru_sf_cowbell_1792585593','Donk':'dru_sf_donk_1792585594',
+  'Hobo':'obo_kObo_D4',
+  'Bas A1':'A1','Bas C1':'C1','Bas D1':'D1','Bas E1':'E1','SF Sub808':'bas_sf_sub808_1792585596',
+  'Fus Gitaar':'kS_FUSGITDAN_39_v1','Fus Donder Harp':'kS_FUSDONDHARP_35_v1','Snare':'kD_snare','Hat':'kD_hat','Clap':'kD_clap','Darbouka':'kD_darb',
+  'Bell':'kD_bell','Bongo':'dru_sf_bongo_1792585593',
   'DNA Keys Boombap':'boombapkeys','DNA Keys RnB':'rnbkeys','DNA Keys Afro':'afrobeatkeys','DNA Keys Drill':'drillkeys',
   'DNA Rhodes Corp':'corporatemel','DNA Rhodes RnB':'rnbmel','DNA Rhodes Mel':'corporatemelodie',
   'DNA Funk Gitaar':'funkmelodie','DNA Rockabilly Gitaar':'rockabillymelodie','DNA Southern Gitaar':'southernmelodie',
-  'DNA Rockabilly Bas':'rockabillybass','DNA Southern Bas':'southernbass','DNA Funk Bas':'funkbass','DNA Reggae Bas':'reggaetonbass','DNA Pluck':'pluck',
+  'DNA Rockabilly Bas':'rockabillybass','DNA Southern Bas':'southernbass','DNA Funk Bas':'funkbass','DNA Reggae Bas':'reggaetonbass',
   'DNA Marimba':'reggaetonmelodie','DNA Reggaeton Mel':'reggaetonmel','DNA Trap Lead':'traplead','DNA Drill Fluit':'drillmel',
   'DNA Lofi Lead':'lofimelodie','DNA Lofi Lead 2':'lofimelodie2','DNA Pop Lead':'popmelodie','DNA Pop Lead 2':'popmelodie2',
-  'DNA Pad Droom':'dromerigmelodie','DNA Pad Droom 2':'dromerigmelodie2','DNA Epic Mel':'epicmel','DNA Epic Melodie':'epicmelodie',
+  'DNA Pad Droom':'dromerigmelodie','DNA Pad Droom 2':'dromerigmelodie2','DNA Epic Mel':'epicmel',
   'DNA Funk Mel':'funkmelodie2','DNA Rockabilly Mel':'rockabillymelodie2','DNA Southern Mel':'southernmelodie2',
+'House Piano':'housepno','Vibes':'vibes','Strings':'strings','Nylon Gitaar':'nylon','Spaanse Gitaar':'spaansgtr','Clean Gitaar':'egtrclean',
   'DNA Snare Roll':'bubsnareroll_g2b','DNA Crunk Clap':'layer_crunkclap_g2b','DNA Soca Snare':'snare_soca_g2b','DNA Dembow Rim':'rim_dembow_g2b',
-  'DNA Open Hat':'openhat_2_g2b','DNA Hat 2':'ohat_2_g2b','DNA Shaker':'shakerloop_104_g2b',
-  'DNA Tambo':'tambo_2_g2b','DNA Tambo 2':'tambo_0_g2b','DNA Crash':'crash_1786_26ca','DNA Crash 2':'crash_1917_ad28','DNA Crash Kit':'crash_kit_8a03',
-  'DNA Oogst Kick':'kick','DNA Oogst Snare':'snare','DNA Oogst Hat':'hat','DNA Oogst Bas':'bass'
 };
-const NOTE = {'funkbass':60,'shakerloop_104_g2b':60,'corporatemel':60,'kD_darb':60,'reggaetonmel':60,'hat':60,'kS_FUSDONDHARP_35_v1':60,'housepno':60,'rockabillybass':60,'A1':60,'piano':60,'drillmel':60,'southernmelodie2':60,'layer_crunkclap_g2b':60,'dromerigmelodie2':60,'southernbass':60,'drillkeys':60,'epicmelodie':60,'kD_snare':60,'reggaetonmelodie':60,'mar_kMar_C2_s':60,'piano_kP_C2_v1':60,'popmelodie2':60,'boombapkeys':60,'hammond':60,'southernmelodie':60,'bubsnareroll_g2b':60,'kS_FUSGITDAN_39_v1':60,'kD_clap':60,'E1':60,'sax_kSx50_1':60,'kD_hat':60,'kS_FUSBASKARP_30_v1':60,'tambo_0_g2b':60,'vibes':60,'kD_kick':60,'obo_kObo_D4':60,'strings':60,'traplead':60,'crash_kit_8a03':60,'glock_kGK_G4':60,'bass':60,'popmelodie':60,'tambo_2_g2b':60,'rnbmel':60,'rec_kRec_C4':60,'epicmel':60,'mbira':60,'zoukbas':60,'crash_1917_ad28':60,'rnbkeys':60,'bra_kBra_C3':60,'zoukgit':60,'corporatemelodie':60,'snare':60,'kD_bell':60,'crash_1786_26ca':60,'funkmelodie2':60,'dru_sf_djembe_1792585593':60,'bas_sf_sub808_1792585596':60,'dru_sf_cowbell_1792585593':60,'donderpi':60,'lofimelodie2':60,'spaansgtr':60,'marimba':60,'reggaetonbass':60,'bra_kTbn_D3':60,'piano_kP_C4_v1':60,'lofimelodie':60,'bas_sf_bass_1792585597':60,'dru_sf_bongo_1792585593':60,'C1':60,'afrobeatkeys':60,'pluck':60,'kick':60,'rockabillymelodie':60,'piano_kP_C3_v1':60,'snare_soca_g2b':60,'dru_sf_donk_1792585594':60,'dromerigmelodie':60,'bsn_kBsn_C3':60,'har_kH_C4':60,'rockabillymelodie2':60,'D1':60,'rim_dembow_g2b':60,'egtrclean':60,'funkmelodie':60,'ohat_2_g2b':60,'nylon':60,'openhat_2_g2b':60};
+const NOTE = {'funkbass':60,'corporatemel':60,'kD_darb':60,'reggaetonmel':60,'kS_FUSDONDHARP_35_v1':60,'rockabillybass':60,'A1':60,'piano':60,'drillmel':60,'southernmelodie2':60,'layer_crunkclap_g2b':60,'dromerigmelodie2':60,'southernbass':60,'drillkeys':60,'kD_snare':60,'reggaetonmelodie':60,'mar_kMar_C2_s':60,'piano_kP_C2_v1':60,'popmelodie2':60,'boombapkeys':60,'southernmelodie':60,'bubsnareroll_g2b':60,'kS_FUSGITDAN_39_v1':60,'kD_clap':60,'E1':60,'sax_kSx50_1':60,'kD_hat':60,'obo_kObo_D4':60,'traplead':60,'glock_kGK_G4':60,'popmelodie':60,'rnbmel':60,'epicmel':60,'mbira':60,'rnbkeys':60,'bra_kBra_C3':60,'zoukgit':60,'corporatemelodie':60,'kD_bell':60,'funkmelodie2':60,'bas_sf_sub808_1792585596':60,'donderpi':60,'lofimelodie2':60,'marimba':60,'reggaetonbass':60,'bra_kTbn_D3':60,'piano_kP_C4_v1':60,'lofimelodie':60,'dru_sf_bongo_1792585593':60,'C1':60,'afrobeatkeys':60,'rockabillymelodie':60,'piano_kP_C3_v1':60,'snare_soca_g2b':60,'dromerigmelodie':60,'bsn_kBsn_C3':60,'har_kH_C4':60,'rockabillymelodie2':60,'D1':60,'rim_dembow_g2b':60,'housepno':60,'vibes':60,'strings':60,'nylon':60,'spaansgtr':60,'egtrclean':60,'funkmelodie':60,};
 let sounds = [];
 for (const [cat,items] of Object.entries(CATS))
   items.forEach(n => sounds.push({naam:n, cat, src:`../wav/instr/${SRC[n]}.wav`, basePitch:NOTE[SRC[n]]||60}));
