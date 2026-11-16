@@ -38,7 +38,10 @@ function start(cfg,hud){
    const vr=P.vrienden||[];
    this.rest=vr.length;
    vr.forEach(v=>{
-    const s=this.add.image(v.x,v.y,'v-'+v.c+':'+(v.s||0)).setScale(.24).setAlpha(.38).setInteractive({useHandCursor:true});
+    const s=this.add.image(v.x,v.y,'v-'+v.c+':'+(v.s||0)).setScale(.24).setAlpha(.62).setInteractive({useHandCursor:true});
+    // lichte silhouet-kleur (popt op donkere tekeningen) + donkere gloed-rand (popt op lichte tekeningen)
+    s.setTintFill(0xfff3cf);
+    if(s.preFX)s.preFX.addGlow(0x2a1a06,.15,16,6);
     s.hint=this.time.addEvent({delay:5200+Math.random()*2200,loop:true,
      callback:()=>{if(!s.found)this.tweens.add({targets:s,scale:.27,y:v.y-8,duration:260,yoyo:true})}});
     s.on('pointerdown',()=>{if(s.found)return;s.found=true;s.hint.remove();

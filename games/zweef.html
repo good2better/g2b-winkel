@@ -68,7 +68,7 @@ let FHELD=FOTOS.held?_pi(FOTOS.held):null;
 const FITEMS=(FOTOS.items||[]).map(_pi);
 const _rond=(i,x,y,s)=>{X.save();X.beginPath();X.arc(x,y,s/2,0,7);X.clip();X.drawImage(i,x-s/2,y-s/2,s,s);X.restore();X.strokeStyle=T.acc;X.lineWidth=2;X.beginPath();X.arc(x,y,s/2,0,7);X.stroke()};
 const ok=i=>i&&i.complete&&i.naturalWidth;
-const held=(x,y,s)=>{if(ok(FHELD))_rond(FHELD,x,y,s);else emoji(T.held,x,y,s)};
+const held=(x,y,s)=>{if(ok(FHELD))_rond(FHELD,x,y,s);else{X.save();X.globalAlpha=.34;X.fillStyle='#fff';X.beginPath();X.arc(x,y,s*.62,0,7);X.fill();X.globalAlpha=1;emoji(T.held,x,y,s);X.restore()}};
 /* licht schijfje achter elk item — altijd duidelijk, óók als een emoji donker rendert */
 const itemX=(i,x,y,s)=>{const im=FITEMS.length?FITEMS[i%FITEMS.length]:null;if(ok(im))_rond(im,x,y,s);else{X.save();X.globalAlpha=.34;X.fillStyle='#fff';X.beginPath();X.arc(x,y,s*.62,0,7);X.fill();X.globalAlpha=1;emoji(T.items[i%T.items.length],x,y,s,'rgba(255,255,255,1)');X.restore()}};
 /* 📷 eigen foto als karakter — wie het spel ook opent */
@@ -125,7 +125,7 @@ C.addEventListener('pointerup',()=>thrust=false);
   if(Math.abs(i.x-65)<28&&Math.abs(i.y-y)<28){i.x=-99;punt(10,i.x,i.y);blip(700,.1,'triangle')}});
  items2=items2.filter(i=>i.x>-50);
  dist++;if(dist%30==0)punt(1);
- if(ok(FHELD))_rond(FHELD,65,y,40);else emoji('🛸',65,y,38);
+ if(ok(FHELD))_rond(FHELD,65,y,40);else{X.save();X.globalAlpha=.34;X.fillStyle='#fff';X.beginPath();X.arc(65,y,38*.62,0,7);X.fill();X.globalAlpha=1;emoji('🛸',65,y,38);X.restore()}
  X.fillStyle='#fff9';X.font='12px sans-serif';X.textAlign='left';X.fillText('hoogte',8,20);
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
 </script><footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
