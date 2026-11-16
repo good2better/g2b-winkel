@@ -1,5 +1,5 @@
 /*
- * G2B Sleutel-Helper — theory-assist MIDI utility (MIDI-in analyse → key/chord/bass hints)
+ * G2B Sleutel-Helper — theory-assist (audio + MIDI analyse → key/chord/bass hints)
  * Plugin info for DISTRHO Plugin Framework.
  */
 
@@ -14,10 +14,10 @@
 #define DISTRHO_PLUGIN_BRAND_ID   G2Bt
 #define DISTRHO_PLUGIN_UNIQUE_ID  G2Sh
 
-#define DISTRHO_PLUGIN_IS_SYNTH       1
+#define DISTRHO_PLUGIN_IS_SYNTH       0
 #define DISTRHO_PLUGIN_HAS_UI         1
 #define DISTRHO_PLUGIN_IS_RT_SAFE     1
-#define DISTRHO_PLUGIN_NUM_INPUTS     0
+#define DISTRHO_PLUGIN_NUM_INPUTS     2
 #define DISTRHO_PLUGIN_NUM_OUTPUTS    2
 #define DISTRHO_PLUGIN_WANT_PROGRAMS  0
 #define DISTRHO_PLUGIN_WANT_MIDI_INPUT  1
@@ -25,8 +25,8 @@
 #define DISTRHO_PLUGIN_WANT_TIMEPOS   1
 #define DISTRHO_PLUGIN_WANT_STATE     1
 #define DISTRHO_PLUGIN_WANT_PARAMETER_VALUE_CHANGE_REQUEST 1
-#define DISTRHO_PLUGIN_VST3_CATEGORIES "Instrument|Tools"
-#define DISTRHO_PLUGIN_CLAP_FEATURES   "utility", "note-effect", "analyzer"
+#define DISTRHO_PLUGIN_VST3_CATEGORIES "Fx|Analyzer|Tools"
+#define DISTRHO_PLUGIN_CLAP_FEATURES   "audio-effect", "analyzer", "utility", "note-effect"
 #define DISTRHO_UI_FILE_BROWSER        0
 #define DISTRHO_UI_USER_RESIZABLE      1
 #define DISTRHO_UI_USE_NANOVG          1

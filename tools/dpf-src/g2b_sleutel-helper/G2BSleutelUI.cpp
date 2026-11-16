@@ -1,6 +1,7 @@
 // G2B Sleutel-Helper UI — toonsoort + veilige noten + hints
 // FOCUS-pills · AAN/UIT · WIS · KRACHT/DIMENTIES draaiknoppen · SKIN
 #include "DistrhoUI.hpp"
+#include "sleutel_data.h"
 #include <cstring>
 #include <cstdio>
 #include <cstdlib>
@@ -26,15 +27,26 @@ public:
 protected:
     void parameterChanged(uint32_t index, float value) override
     {
-        for(int i=0;i<2;i++) if((int)index==fParamId[i]){fValue[i]=value;repaint();return;}
+        for(int i=0;i<2;i++) if((int)index==fParamId[i]){fValue[i]=value;rebuildSug();repaint();return;}
         if(index==0) fOn=value;
-        else if(index==1) fFocus=(int)value;
+        else if(index==1){ fFocus=(int)value; rebuildSug(); }
+        else if(index==16) fBron=(int)value;
+        else if(index==17) fPlayed=(uint32_t)value;
+        else if(index==19) fLvl=(int)value;
+        else if(index==18){
+            const int v=(int)value;
+            fNext[0]=0;
+            if(v>0){ int c=v-1; char a[12],b[12],d[12];
+                g2bChordName(c%37,a,12); g2bChordName((c/37)%37,b,12); g2bChordName(c/1369,d,12);
+                std::snprintf(fNext,sizeof(fNext),"VOLGEND AKKOORD ->  %s   of   %s   of   %s",a,b,d); }
+        }
         else if(index==4) fSkin=(int)value;
         else if(index==8){                       // key-out: -1 of root*2+minor
             static const char* NN[12]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
             const int v=(int)value;
             if(v<0) std::snprintf(fKey,sizeof(fKey),"luister…");
             else std::snprintf(fKey,sizeof(fKey),"%s %s",NN[v/2],(v&1)?"mineur":"majeur");
+            fKeyV=v; rebuildSug();
         }
         else if(index==9) fConf=(int)value;
         else if(index==10) fMask=(uint32_t)value;
@@ -49,8 +61,8 @@ protected:
         else if(index==14){                        // hint-out: fout*16+goed
             static const char* NN[12]={"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
             const int v=(int)value;
-            if(v==0) fHint[0]=0;
-            else std::snprintf(fHint,sizeof(fHint),"%s ? probeer %s",NN[v/16],NN[v&15]);
+            if(v<=0) fHint[0]=0;
+            else std::snprintf(fHint,sizeof(fHint),"FOUTE NOOT: %s  ->  probeer %s",NN[((v-1)/16)%12],NN[(v-1)&15]);
         }
         repaint();
     }
@@ -94,7 +106,19 @@ protected:
         // ---- kopbalk ----
         fontSize(15); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
         fillColor(C(ac)); text(16,22,"G2B SLEUTEL-HELPER",nullptr);
-        fillColor(C(mu)); fontSize(11); text(150,22,"theory-assist · MIDI-thru",nullptr);
+        fillColor(C(mu)); fontSize(11); text(178,22,"audio + MIDI",nullptr);
+
+        // BRON pills + ingangsniveau
+        { static const char* BP[3]={"AUTO","MIDI","AUDIO"};
+          for(int i=0;i<3;i++){ const float x=262+i*60;
+            beginPath(); roundedRect(x,10,54,20,10); fillColor(i==fBron?C(ac):C(pn)); fill();
+            fillColor(i==fBron?C(bg):C(fg)); fontSize(9.5f); textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+            text(x+27,20,BP[i],nullptr); }
+          beginPath(); roundedRect(262,36,174,6,3); fillColor(C(pn)); fill();
+          if(fLvl>0){ beginPath(); roundedRect(262,36,174*fLvl/100.f,6,3);
+            fillColor(fLvl>92?Color(240,70,60):C(ac)); fill(); }
+          fillColor(C(mu)); fontSize(8); textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
+          text(262,49,fBron==1?"luistert alleen naar MIDI":"audio-ingang",nullptr); }
 
         // toonsoort blok
         beginPath(); roundedRect(W-200,8,184,44,8); fillColor(C(pn)); fill();
@@ -105,7 +129,7 @@ protected:
         if(fChord[0]){ fillColor(C(ac)); text(W-108,36,fChord,nullptr); }
         fillColor(C(mu));
         if(fConf>0){ char b[24]; std::snprintf(b,24,"zekerheid %d%%",fConf); text(W-108,47,b,nullptr); }
-        else text(W-108,47,"speel noten op je kanaal",nullptr);
+        else text(W-108,47,"speel noten of stuur audio",nullptr);
 
         // ---- FOCUS pills ----
         static const char* FP[4]={"ALLES","BAS-808","AKKOORDEN","MELODIE"};
@@ -145,6 +169,10 @@ protected:
             beginPath(); rect(wx[i],py,kw*12/7-1,ph);
             fillColor(ins?C(ac,inf?0.95f:0.45f):Color(238,238,236,1.f)); fill();
             strokeColor(C(cd)); strokeWidth(1); stroke();
+            if(fPlayed>>pc&1){ beginPath(); circle(wx[i]+(kw*12/7)/2-0.5f,py+ph-12,5);
+                fillColor(ins||fKeyV<0?Color(255,255,255):Color(240,60,50)); fill();
+                strokeColor(Color(0,0,0,0.6f)); strokeWidth(1); stroke();
+                if(!ins&&fMask!=0xFFF){ beginPath(); rect(wx[i],py,kw*12/7-1,ph); strokeColor(Color(240,60,50)); strokeWidth(2.5f); stroke(); } }
         }
         // zwarte toetsen
         static const float bo[5]={0.82f,1.85f,3.9f,4.92f,5.95f};
@@ -154,14 +182,16 @@ protected:
             const bool ins=fMask>>pc&1, inf=fFoc>>pc&1;
             beginPath(); rect(x,py,kw*12/7*0.62f,ph*0.58f);
             fillColor(ins?C(ad,inf?1.f:0.55f):C(cd)); fill();
+            if(fPlayed>>pc&1){ beginPath(); circle(x+kw*12/7*0.31f,py+ph*0.58f-9,4);
+                fillColor(ins||fKeyV<0?Color(255,255,255):Color(240,60,50)); fill(); }
         }
         // toonnamen onder de C's
         fillColor(C(mu)); fontSize(8); textAlign(ALIGN_CENTER|ALIGN_TOP);
         for(int o=0;o<3;o++) text(16+o*7*(kw*12/7)+ (kw*12/7)/2, py+ph+4, o==1?"C3":"C",nullptr);
 
         // buiten-toonsoort hint
-        if(fHint[0]){ fillColor(C(ad)); fontSize(11); textAlign(ALIGN_LEFT|ALIGN_TOP);
-            text(16,py+ph+8,fHint,nullptr); }
+        if(fHint[0]){ fillColor(Color(245,70,60)); fontSize(12); textAlign(ALIGN_RIGHT|ALIGN_MIDDLE);
+            text(W-16,py-9,fHint,nullptr); }
 
         // ---- suggestie-kaart ----
         const float sy=py+ph+22;
@@ -169,10 +199,11 @@ protected:
         fillColor(C(fg)); fontSize(12); textAlign(ALIGN_LEFT|ALIGN_TOP);
         if(fSug1[0]) text(28,sy+12,fSug1,nullptr);
         if(fSug2[0]) text(28,sy+34,fSug2,nullptr);
-        if(fSug3[0]){ fillColor(C(ac)); text(28,sy+62,fSug3,nullptr); }
-        else if(fConf>0){ fillColor(C(mu)); fontSize(10);
-            text(28,sy+12,"akkoord-, bas- en melodie-hints verschijnen",nullptr);
-            text(28,sy+28,"in je DAW-host (VST3/CLAP)",nullptr); }
+        if(fNext[0]){ fillColor(C(ac)); fontSize(13); text(28,sy+54,fNext,nullptr); }
+        if(fSug3[0]){ fillColor(C(mu)); fontSize(10); text(28,sy+78,fSug3,nullptr); }
+        if(fKeyV<0){ fillColor(C(mu)); fontSize(11);
+            text(28,sy+12,"Zet me op een spoor met audio (loop, vocal, beat) of speel MIDI-noten.",nullptr);
+            text(28,sy+32,"Ik hoor de toonsoort en laat zien welke noten + akkoorden passen.",nullptr); }
 
         // ---- XY-pad: kracht → · dimensies ↑ ----
         fXX=16;fXY_=318;fXW=188;fXH=68;
@@ -222,6 +253,9 @@ protected:
             const float dx=(float)(ev.pos.getX()/getScaleFactor())-cx, dy=(float)(ev.pos.getY()/getScaleFactor())-cy;
             if(dx*dx+dy*dy<26*26){fDrag=i;fLastY=(float)(ev.pos.getY()/getScaleFactor());fMoved=false;return true;}
         }
+        { const float mx=(float)(ev.pos.getX()/getScaleFactor()), my=(float)(ev.pos.getY()/getScaleFactor());
+          if(my>=10&&my<=30) for(int i=0;i<3;i++){ const float x=262+i*60;
+            if(mx>=x&&mx<=x+54){ spv(16,(float)i); fBron=i; repaint(); return true; } } }
         // focus pills
         if((float)(ev.pos.getY()/getScaleFactor())>=fPillY&&(float)(ev.pos.getY()/getScaleFactor())<=fPillY+24){
             for(int i=0;i<4;i++){const float x=16+i*92;
@@ -256,7 +290,10 @@ private:
     float fMin[2],fMax[2],fValue[2]; const char* fLabel[2]; int fParamId[2];
     int fDrag; bool fMoved=false; float fLastY;
     float fOn,fFocus,fSkin; uint32_t fMask,fFoc; int fConf;
-    char fKey[32], fSug1[64], fSug2[64], fSug3[96], fChord[16]={0}, fHint[40]={0};
+    char fKey[32], fSug1[128], fSug2[96], fSug3[128], fChord[16]={0}, fHint[48]={0}, fNext[96]={0};
+    int fKeyV=-1, fBron=0, fLvl=0; uint32_t fPlayed=0;
+    void rebuildSug(){ g2bBuildSug(fKeyV<0?-1:fKeyV/2, fKeyV&1, (int)fFocus, fValue[0], fValue[1],
+                                   fSug1,sizeof(fSug1),fSug2,sizeof(fSug2),fSug3,sizeof(fSug3)); }
     float fPillY=62,fPianoY=104,fKnobY=0,fSkinX=0,fSkinY=0;
     bool fXYdrag=false; float fXX=0,fXY_=0,fXW=0,fXH=0;
     void xySet(const Point<double>&p){float nx=(p.getX()-fXX)/fXW;if(nx<0)nx=0;if(nx>1)nx=1;float ny=(p.getY()-fXY_)/fXH;if(ny<0)ny=0;if(ny>1)ny=1;float kr=fMin[0]+nx*(fMax[0]-fMin[0]),dim=fMin[1]+std::round((1.f-ny)*(fMax[1]-fMin[1]));spv(fParamId[0],kr);spv(fParamId[1],dim);fValue[0]=kr;fValue[1]=dim;repaint();}
