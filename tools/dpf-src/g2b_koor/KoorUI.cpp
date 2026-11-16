@@ -16,7 +16,7 @@ START_NAMESPACE_DISTRHO
 class KoorUI : public UI
 {
 public:
-    KoorUI() : UI(560,320){}
+    KoorUI() : UI(560,320){ loadSharedResources(); }
 
 protected:
     void parameterChanged(uint32_t i,float v) override {
