@@ -45,6 +45,7 @@ function intent(t){
  if(!g)for(var k2 in ALIAS){if(t.indexOf(k2)>=0){g=ALIAS[k2];break}}
  if(/help|overzicht|wat kan je|commando/.test(t))return{a:'help'};
  if(/akkoord/.test(t)){var kk=key||(t.match(/\b([a-g](#|b|is|es)?\s*(mineur|maj|m))\b/)||[])[1];if(kk)return{a:'akkoorden',key:kk}}
+ if(/referentie|net als mijn|zoals mijn|vergelijk mijn|verbeter mijn|kwaliteit/.test(t))return{a:'ref'};
  if(/maak|genereer|bouw|nieuw|beat|dobbel|rol|willekeur|song|nummer|track/.test(t))return{a:'beat',g:g||'house',bpm:bpm||null,song:/song|nummer/.test(t)};
  if(/master/.test(t))return{a:'tool',tool:'master'};
  if(/menger|mix(?![a-z])|mixcheck/.test(t))return{a:'tool',tool:'menger'};
@@ -61,9 +62,10 @@ function intent(t){
 function run(t){
  var i=intent(t);if(!i){say('❓ niet begrepen — typ <b>help</b> voor alle commando\'s');return}
  switch(i.a){
-  case 'help':say('📋 <b>voorbeelden:</b><br>• maak houce beat 128 bpm<br>• nieuwe dembow<br>• trap op 145<br>• iets donkers voor een film<br>• akkoorden bij a mineur<br>• master / menger / melodie / refors / stapel / gaw<br>• welke key bij strijd?');break;
+  case 'help':say('📋 <b>voorbeelden:</b><br>• maak houce beat 128 bpm<br>• nieuwe dembow<br>• trap op 145<br>• iets donkers voor een film<br>• akkoorden bij a mineur<br>• master / menger / melodie / refors / stapel / gaw<br>• welke key bij strijd?<br>• referentie — gebruik je eigen beat als leidraad');break;
   case 'akkoorden':var acc=akkoorden(i.key);say(acc?('🎹 '+i.key.toUpperCase()+': <b>'+acc.join(' · ')+'</b>'):'❓ key niet gevonden — probeer bv. "akkoorden bij a mineur"');break;
   case 'mood':var M=MOOD[i.mood];say('💡 bij <b>'+i.mood+'</b> past: <b>'+M.k+'</b>, '+M.g+' ±'+M.b+'bpm — '+M.u+'. <a href="#" onclick="GIO.run(\'maak '+M.g+' '+M.b+' bpm\');return false" style="color:#7CF5B0">maak hem →</a>');break;
+  case 'ref':say('🎯 <b>eigen beat als referentie</b> — Beat Maker opent; sleep je beat in de bovenste dropzone → hij herbouwt het grid met G2B-sounds. Jouw oor is de smaak-filter: 🔒 lock de rijen die goed zijn, 🎲 rol de rest opnieuw.');open(TOOLS.beat[0]+'?ref=1');break;
   case 'tool':var T=TOOLS[i.tool];say('🔧 '+T[1]);open(T[0]);break;
   case 'beat':var u=TOOLS.beat[0]+'?g='+i.g+(i.bpm?'&bpm='+i.bpm:'')+(i.song?'&song=1':'&go=1');say('🎲 '+i.g.toUpperCase()+(i.bpm?' @'+i.bpm:'')+' — open Beat Maker');open(u);break;
  }}
