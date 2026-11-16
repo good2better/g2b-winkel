@@ -1,4 +1,9 @@
 {
- "titel": "G2B KOOR+KEY — jouw stem wordt een heel koor (VST3 + standalone)",
- "bestanden": [{"naam": "G2B-KOOR+KEY.zip — VST3 + standalone + LEESMIJ", "bestand": "g2b-koor.zip"}]
+ "titel": "G2B KOOR-MIX — stem → koor-mix + master-hulp (VST3 + standalone)",
+ "bestanden": [
+  {
+   "naam": "G2B-KOOR-MIX.zip — VST3 + standalone + LEESMIJ",
+   "bestand": "g2b-koor.zip"
+  }
+ ]
 }

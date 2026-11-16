@@ -1757,9 +1757,9 @@
   },
   {
    "id": "g2bkoor",
-   "titel": "G2B KOOR+KEY — jouw stem wordt een heel koor",
+   "titel": "G2B KOOR-MIX — stem → koor-mix + master-hulp",
    "soort": "plugin",
-   "beschrijving": "Vocal erin → hij hoort zelf de toonsoort → een heel koor eruit (terts/kwint/octaaf, podium-breedte). VST3 + standalone.",
+   "beschrijving": "Vocal erin → hij hoort zelf de toonsoort → koor eruit (terts/kwint/octaaf, podium-breedte). Ook mix/master-hulp. VST3 + standalone.",
    "prijs": "€ 29,95",
    "links": {
     "koop": "bestel.html?p=g2bkoor",
