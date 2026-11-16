@@ -1,0 +1,98 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B Videoboek-Fabriek</title>
+<style>
+body{margin:0;background:#0b1f14;color:#eaf7ee;font-family:system-ui;min-height:100vh}
+h1{font-size:1.1rem;margin:10px;color:#7ee2a8;text-align:center}
+.wrap{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;padding:0 10px 20px}
+.panel{background:#0f2b1c;border:1px solid #1c5c34;border-radius:12px;padding:12px;width:380px}
+.panel h2{margin:0 0 8px;font-size:.95rem;color:#7ee2a8}
+label{font-size:.78rem;opacity:.8;display:block;margin:8px 0 2px}
+input,select,textarea{width:100%;box-sizing:border-box;background:#0b1f14;color:#eaf7ee;border:1px solid #1c5c34;border-radius:8px;padding:7px;font-family:inherit;font-size:.85rem}
+textarea{resize:vertical}
+button{background:#1c5c34;color:#eaf7ee;border:0;border-radius:9px;padding:9px 12px;cursor:pointer;font-weight:700}
+button.sec{background:#133526}
+button:hover{filter:brightness(1.2)}
+.pgr{border:1px dashed #1c5c34;border-radius:10px;padding:8px;margin:8px 0}
+.vr{display:flex;gap:6px;align-items:center;margin:4px 0;font-size:.8rem}
+.vr button{padding:2px 7px;background:#5c1c1c}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+#canvasKlik{position:relative;cursor:crosshair}
+#canvasKlik img{width:100%;border-radius:8px;display:block}
+.stip{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border:2px solid #ffe066;border-radius:50%;pointer-events:none;box-shadow:0 0 8px #ffe06688}
+#game canvas{border-radius:12px}
+.klein{font-size:.75rem;opacity:.7}
+</style></head><body>
+<h1>🏭 G2B VIDEOBOEK-FABRIEK</h1>
+<div class="wrap">
+ <div class="panel">
+  <h2>1 · Boek</h2>
+  <label>Titel van het boek</label><input id="titel" value="Mijn Videoboek">
+  <label>Bestandsnaam (klein, geen spaties)</label><input id="naam" value="mijnboek">
+  <h2 style="margin-top:14px">2 · Pagina's</h2>
+  <div id="paginas"></div>
+  <div class="row"><button class="sec" onclick="addPage()">+ pagina</button></div>
+ </div>
+ <div class="panel">
+  <h2>3 · Verstopte vrienden — klik op de tekening</h2>
+  <label>Kies vriend</label><select id="vk"></select>
+  <div id="canvasKlik"><img id="artPrev" src="" alt=""><div id="stippen"></div></div>
+  <div class="klein">Klik op de afbeelding om een vriend te verstoppen op die plek.</div>
+  <div id="vriendLijst"></div>
+  <h2 style="margin-top:14px">4 · Klaar</h2>
+  <div class="row">
+   <button onclick="test()">▶ Test het boek</button>
+   <button class="sec" onclick="dl()">📥 Download boek.json</button>
+  </div>
+  <div class="klein">Download → Devin zet hem in <code>games/videoboeken/</code> → live op <code>videoboek.html?boek=&lt;naam&gt;</code></div>
+ </div>
+ <div class="panel">
+  <h2>Preview (echte game)</h2>
+  <div id="hud2" style="display:flex;gap:14px;font-size:.85rem"><span id="pg"></span><span id="vond">🔍 0</span><span id="punten">⭐ 0</span></div>
+  <div id="game"></div>
+ </div>
+</div>
+<script src="lib/phaser.min.js"></script>
+<script src="lib/videoboek-player.js"></script>
+<script>
+let M=null,cur=0,pages=[],game=null;
+fetch('videoboeken/manifest.json').then(r=>r.json()).then(m=>{M=m;
+ const vk=document.getElementById('vk');
+ m.vrienden.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;vk.appendChild(o)});
+ addPage();});
+function cfg(){return {titel:document.getElementById('titel').value,paginas:pages}}
+function addPage(){pages.push({art:M.art[0],tekst:'',sfeer:'dag',vrienden:[]});cur=pages.length-1;render()}
+function render(){
+ const d=document.getElementById('paginas');d.innerHTML='';
+ pages.forEach((p,i)=>{
+  const g=document.createElement('div');g.className='pgr';
+  g.innerHTML=`<b>Pagina ${i+1}</b> ${i===cur?'<span style="color:#ffe066">← bewerkt</span>':''}
+   <div class="row" style="margin:4px 0"><button class="sec" onclick="cur=${i};render()">✎ bewerk</button>
+   <button class="sec" style="background:#5c1c1c" onclick="pages.splice(${i},1);if(cur>=pages.length)cur=pages.length-1;render()">✕</button>
+   ${i>0?`<button class="sec" onclick="pages.splice(${i}-1,0,pages.splice(${i},1)[0]);cur=${i}-1;render()">↑</button>`:''}</div>`;
+  if(i===cur){
+   g.innerHTML+=`<label>Achtergrond-tekening</label><select onchange="pages[cur].art=this.value;render();artPrev()">${M.art.map(a=>`<option ${a===p.art?'selected':''}>${a}</option>`).join('')}</select>
+    <label>Sfeer (kleur van de zwevende sterren)</label><select onchange="pages[cur].sfeer=this.value">${['dag','nacht','eiland','bos'].map(s=>`<option ${s===p.sfeer?'selected':''}>${s}</option>`).join('')}</select>
+    <label>Verhaaltekst (typemachine)</label><textarea rows="2" oninput="pages[cur].tekst=this.value">${p.tekst}</textarea>`;
+  }
+  d.appendChild(g)});
+ artPrev();vriendLijst();
+}
+function artPrev(){document.getElementById('artPrev').src='../gsbooks/img/'+pages[cur].art;
+ document.getElementById('stippen').innerHTML=pages[cur].vrienden.map(v=>`<div class="stip" style="left:${v.x/5.6}%;top:${v.y/5.6}%"></div>`).join('')}
+function vriendLijst(){
+ document.getElementById('vriendLijst').innerHTML=pages[cur].vrienden.map((v,i)=>
+  `<div class="vr">🫥 ${v.c} @ ${v.x},${v.y} <button onclick="pages[cur].vrienden.splice(${i},1);artPrev();vriendLijst()">✕</button></div>`).join('')}
+document.getElementById('canvasKlik').addEventListener('pointerdown',e=>{
+ const r=e.currentTarget.getBoundingClientRect();
+ const x=Math.round((e.clientX-r.left)/r.width*560),y=Math.round((e.clientY-r.top)/r.height*560);
+ pages[cur].vrienden.push({c:document.getElementById('vk').value,x,y});artPrev();vriendLijst()});
+let testGame=null;
+function test(){
+ if(game){game.destroy(true);game=null}
+ document.getElementById('game').innerHTML='';
+ game=G2B_BOEK.start(cfg(),{pg:document.getElementById('pg'),vond:document.getElementById('vond'),punten:document.getElementById('punten')});}
+function dl(){
+ const c=cfg(),naam=(document.getElementById('naam').value||'mijnboek').replace(/[^a-z0-9_-]/gi,'').toLowerCase();
+ const blob=new Blob([JSON.stringify(c,null,1)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=naam+'.json';a.click();}
+</script></body></html>

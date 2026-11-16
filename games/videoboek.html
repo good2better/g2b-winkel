@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B Videoboek</title>
+<style>
+body{margin:0;background:#0b1f14;display:flex;flex-direction:column;align-items:center;font-family:Georgia,serif;color:#eaf7ee;min-height:100vh}
+h1{font-size:1.05rem;margin:8px;color:#7ee2a8;font-family:system-ui}
+#hud{display:flex;gap:16px;font-size:.95rem;margin:4px;font-family:system-ui}
+#game{touch-action:none;border-radius:12px;overflow:hidden;box-shadow:0 8px 30px #0008;max-width:96vw}
+.tip{opacity:.7;font-size:.8rem;margin:6px;font-family:system-ui}
+#fout{max-width:560px;background:#5c1c1c;padding:14px 18px;border-radius:10px;font-family:system-ui;display:none}
+</style></head><body>
+<h1 id="titel">VIDEOBOEK</h1>
+<div id="hud"><span id="pg"></span><span id="vond">🔍 0</span><span id="punten">⭐ 0</span></div>
+<div id="game"></div>
+<div id="fout"></div>
+<div class="tip">Tik op de verstopte vrienden · sneller vinden = meer sterren · 🎵 = muziek</div>
+<script src="lib/phaser.min.js"></script>
+<script src="lib/videoboek-player.js"></script>
+<script>
+const boek=new URLSearchParams(location.search).get('boek')||'dierenhelden';
+fetch('videoboeken/'+encodeURIComponent(boek)+'.json').then(r=>{
+ if(!r.ok)throw new Error('boek niet gevonden: '+boek);
+ return r.json()}).then(cfg=>{
+ document.getElementById('titel').textContent=(cfg.titel||boek).toUpperCase();
+ document.title=(cfg.titel||boek)+' — G2B Videoboek';
+ G2B_BOEK.start(cfg,{pg:document.getElementById('pg'),vond:document.getElementById('vond'),punten:document.getElementById('punten')});
+}).catch(e=>{const f=document.getElementById('fout');f.style.display='block';
+ f.textContent='⚠ '+e.message+'. Gebruik ?boek=<naam> uit games/videoboeken/.'});
+</script></body></html>

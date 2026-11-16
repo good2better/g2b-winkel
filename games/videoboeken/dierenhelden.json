@@ -1,0 +1,77 @@
+{
+ "titel": "Animal Heroes Videoboek",
+ "paginas": [
+  {
+   "art": "mem-louie-0.jpg",
+   "tekst": "Louie wordt wakker in zijn kamer vol sterren. Zijn vriendjes zijn al vroeg op bezoek — maar ze verstoppen zich! Vind ze allebei.",
+   "sfeer": "nacht",
+   "vrienden": [
+    {
+     "c": "kokos",
+     "x": 120,
+     "y": 80
+    },
+    {
+     "c": "ollie",
+     "x": 330,
+     "y": 70
+    }
+   ]
+  },
+  {
+   "art": "mem-bodhi-2.jpg",
+   "tekst": "Bodhi de kangoeroe springt door de outback. \"Wie springt er met me mee?\" roept hij. Drie vrienden spelen verstoppertje tussen de rotsen.",
+   "sfeer": "dag",
+   "vrienden": [
+    {
+     "c": "bram",
+     "x": 60,
+     "y": 320
+    },
+    {
+     "c": "flip",
+     "x": 340,
+     "y": 330
+    },
+    {
+     "c": "lila",
+     "x": 200,
+     "y": 55
+    }
+   ]
+  },
+  {
+   "art": "mem-sunny-1.jpg",
+   "tekst": "Op het tropische eiland is het feest! De vrienden zijn verstopt tussen de palmbomen en het strand. Vind ze alle vier!",
+   "sfeer": "eiland",
+   "vrienden": [
+    {
+     "c": "dana",
+     "x": 45,
+     "y": 60
+    },
+    {
+     "c": "ravi",
+     "x": 355,
+     "y": 70
+    },
+    {
+     "c": "vinnie",
+     "x": 70,
+     "y": 330
+    },
+    {
+     "c": "ziggy",
+     "x": 330,
+     "y": 300
+    }
+   ]
+  },
+  {
+   "art": "mem-zeven-0.jpg",
+   "tekst": "En toen waren ALLE vrienden samen in het bos — klaar voor het volgende avontuur! Einde. ⭐⭐⭐ Goed gezocht!",
+   "sfeer": "bos",
+   "vrienden": []
+  }
+ ]
+}
