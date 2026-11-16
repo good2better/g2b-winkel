@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Animal Heroes Videoboek — G2B</title>
+<style>
+body{margin:0;background:#0b1f14;display:flex;flex-direction:column;align-items:center;font-family:Georgia,serif;color:#eaf7ee;min-height:100vh}
+h1{font-size:1.05rem;margin:8px;color:#7ee2a8;font-family:system-ui}
+#hud{display:flex;gap:16px;font-size:.95rem;margin:4px;font-family:system-ui}
+#game{touch-action:none;border-radius:12px;overflow:hidden;box-shadow:0 8px 30px #0008;max-width:96vw}
+.tip{opacity:.7;font-size:.8rem;margin:6px;font-family:system-ui}
+</style></head><body>
+<h1>ANIMAL HEROES VIDEOBOEK</h1>
+<div id="hud"><span id="pg">Pagina 1/4</span><span id="vond">🔍 0</span></div>
+<div id="game"></div>
+<div class="tip">Tik op de verstopte vrienden · muziek = 🎵 knop rechtsboven</div>
+<script src="lib/phaser.min.js"></script>
+<script>
+// verhaal: 4 pagina's, elk met verstopte vrienden om te vinden
+const PAGES=[
+ {art:'../gsbooks/img/mem-louie-0.jpg',
+  tekst:'Louie wordt wakker in zijn kamer vol sterren. Zijn vriendjes zijn al vroeg op bezoek — maar ze verstoppen zich! Vind ze allebei.',
+  vrienden:[{c:'kokos',x:120,y:80},{c:'ollie',x:330,y:70}]},
+ {art:'../gsbooks/img/mem-bodhi-2.jpg',
+  tekst:'Bodhi de kangoeroe springt door de outback. "Wie springt er met me mee?" roept hij. Drie vrienden spelen verstoppertje tussen de rotsen.',
+  vrienden:[{c:'bram',x:60,y:320},{c:'flip',x:340,y:330},{c:'lila',x:200,y:55}]},
+ {art:'../gsbooks/img/mem-sunny-1.jpg',
+  tekst:'Op het tropische eiland is het feest! De vrienden zijn verstopt tussen de palmbomen en het strand. Vind ze alle vier!',
+  vrienden:[{c:'dana',x:45,y:60},{c:'ravi',x:355,y:70},{c:'vinnie',x:70,y:330},{c:'ziggy',x:330,y:300}]},
+ {art:'../gsbooks/img/mem-zeven-0.jpg',
+  tekst:'En toen waren ALLE vrienden samen in het bos — klaar voor het volgende avontuur! Einde. ⭐⭐⭐ Goed gezocht!',
+  vrienden:[]}
+];
+const IMG=c=>'../gsbooks/img/mem-'+c+'-sil-0.png';
+let pg=0,gfound=0;
+const pgEl=document.getElementById('pg'),vEl=document.getElementById('vond');
+const A=new(window.AudioContext||window.webkitAudioContext)();
+let muziek=false,muzTimer=null;
+const note=(f,d=.35,v=.06)=>{const o=A.createOscillator(),g=A.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(v,A.currentTime);g.gain.exponentialRampToValueAtTime(.001,A.currentTime+d);o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
+const pling=()=>{note(660,.09,.12);setTimeout(()=>note(880,.11,.12),70)};
+// zachte marimba-arp loop: C maj7 → Am7 → F maj7 → G
+const ARP=[[523,659,784,988],[440,523,659,880],[349,440,523,698],[392,494,587,784]];let ap=0;
+const muz=()=>{if(muziek){muziek=false;clearInterval(muzTimer);return}
+ muziek=true;muzTimer=setInterval(()=>{const ch=ARP[ap%4];ch.forEach((f,i)=>setTimeout(()=>note(f,.5,.045),i*140));ap++},1600)};
+muz(); // start zacht; browser blokkeert evt. tot eerste tik
+
+class Boek extends Phaser.Scene{
+ preload(){PAGES.forEach((p,i)=>this.load.image('art'+i,p.art));
+  [...new Set(PAGES.flatMap(p=>p.vrienden.map(v=>v.c)))].forEach(c=>this.load.image(c,IMG(c)));}
+ create(){this.showPage()}
+ showPage(){
+  const P=PAGES[pg],W=560,H=560;
+  this.children.removeAll(true);
+  this.add.image(0,0,'art'+pg).setOrigin(0).setDisplaySize(W,H);
+  pgEl.textContent='Pagina '+(pg+1)+'/4';
+  // verstopte vrienden (half verborgen tot gevonden)
+  this.rest=P.vrienden.length;
+  P.vrienden.forEach(v=>{
+   const s=this.add.image(v.x,v.y,v.c).setScale(.24).setAlpha(.38).setInteractive({useHandCursor:true});
+   s.on('pointerdown',()=>{if(s.found)return;s.found=true;
+    this.tweens.add({targets:s,alpha:1,scale:.3,angle:{from:-6,to:6},duration:300,yoyo:true,repeat:1});
+    pling();gfound++;vEl.textContent='🔍 '+gfound;
+    const p=this.add.text(v.x,v.y-40,'gevonden!',{font:'bold 14px Georgia',color:'#fff8d6'});this.tweens.add({targets:p,y:v.y-70,alpha:0,duration:900,onComplete:()=>p.destroy()});
+    if(--this.rest===0)this.time.delayedCall(700,()=>this.pageDone())});
+  });
+  // verhaal-balk onderaan
+  const bar=this.add.rectangle(0,H-92,W,92,0x000000,.62).setOrigin(0);
+  const tt=this.add.text(24,H-80,'',{font:'15px Georgia',color:'#fff',wordWrap:{width:W-48}});
+  let i=0;this.time.addEvent({delay:24,callback:()=>{tt.text+=P.tekst[i++]||''},repeat:P.tekst.length});
+  // 🎵 knop
+  const m=this.add.text(W-16,10,'🎵',{font:'22px system-ui'}).setOrigin(1,0).setInteractive({useHandCursor:true});
+  m.on('pointerdown',()=>muz());
+ }
+ pageDone(){
+  const W=560,H=560;
+  if(pg<PAGES.length-1){
+   const b=this.add.text(W/2,H/2,'▶ volgende pagina',{font:'bold 26px Georgia',color:'#ffe9a8'})
+    .setOrigin(.5).setInteractive({useHandCursor:true}).setPadding(16).setBackgroundColor('#1c5c34cc');
+   b.on('pointerdown',()=>{pg++;this.showPage()});
+   this.tweens.add({targets:b,scale:1.06,duration:500,yoyo:true,repeat:-1});
+  }else{
+   const b=this.add.text(W/2,H/2-20,'🎉 Einde — nog een keer lezen?',{font:'bold 24px Georgia',color:'#ffe9a8'})
+    .setOrigin(.5).setInteractive({useHandCursor:true}).setPadding(18).setBackgroundColor('#1c5c34cc');
+   b.on('pointerdown',()=>{pg=0;gfound=0;vEl.textContent='🔍 0';this.showPage()});
+  }
+ }
+}
+new Phaser.Game({type:Phaser.AUTO,width:560,height:560,parent:'game',scene:Boek,backgroundColor:'#0b1f14'});
+</script></body></html>

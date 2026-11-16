@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Animal Heroes Runner — G2B</title>
+<style>
+body{margin:0;background:#0b1f14;display:flex;flex-direction:column;align-items:center;font-family:system-ui;color:#eaf7ee;min-height:100vh}
+h1{font-size:1.05rem;margin:8px;color:#7ee2a8}
+#hud{display:flex;gap:16px;font-size:.95rem;margin:4px}
+#game{touch-action:none;border-radius:12px;overflow:hidden;box-shadow:0 8px 30px #0008;max-width:96vw}
+.tip{opacity:.7;font-size:.8rem;margin:6px}
+#over{display:none;position:fixed;inset:0;background:#000b;align-items:center;justify-content:center;flex-direction:column;text-align:center;z-index:9}
+#over h2{font-size:2rem;margin:6px}
+button{background:#4ade80;border:0;color:#042;padding:12px 28px;border-radius:10px;font-size:1.1rem;font-weight:700;cursor:pointer;margin-top:12px}
+</style></head><body>
+<h1>ANIMAL HEROES RUNNER</h1>
+<div id="hud"><span id="score">⭐ 0</span><span id="hs"></span></div>
+<div id="game"></div>
+<div class="tip">Spatie / klik / tik = springen · 2× tik = dubbelsprong · verzamel de vrienden, ontwijk de rotsen</div>
+<div id="over"><h2 id="ot">🎉</h2><p id="os"></p><button onclick="location.reload()">Opnieuw</button></div>
+<script src="lib/phaser.min.js"></script>
+<script>
+const CHARS=['louie','bodhi','bram','dana','flip','fluffy','keesje','kokos','lila','ollie','paard','ravi','sunny3','vinnie','zeven','ziggy'];
+const IMG=n=>'../gsbooks/img/mem-'+n+'-sil-0.png';
+let score=0,hs=+(localStorage.getItem('g2bhs_runner')||0);
+document.getElementById('hs').textContent=hs?'🏆 '+hs:'';
+const scoreEl=document.getElementById('score');
+const A=new(window.AudioContext||window.webkitAudioContext)();
+const blip=(f,d=.08,t='sine',v=.12)=>{const o=A.createOscillator(),g=A.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,A.currentTime);g.gain.exponentialRampToValueAtTime(.001,A.currentTime+d);o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
+const pling=()=>{blip(660,.07);setTimeout(()=>blip(880,.09),70)};
+
+class Runner extends Phaser.Scene{
+ preload(){CHARS.slice(0,6).forEach((c,i)=>this.load.image(c,IMG(c)));
+ }
+ create(){
+  const W=800,H=420;this.W=W;this.H=H;
+  this.speed=230;this.groundY=H-60;this.jumps=0;this.dead=false;
+  // lucht + wolken + heuvels (parallax)
+  this.add.rectangle(0,0,W,H,0x9fd8ff).setOrigin(0);
+  this.add.rectangle(0,H*.55,W,H*.45,0xb8e986).setOrigin(0);
+  this.wolk=[];for(let i=0;i<4;i++){const w=this.add.ellipse(120+i*220,60+(i%2)*40,120,40,0xffffff,.85);this.wolk.push(w)}
+  this.heuvel=this.add.ellipse(W*.6,H-30,900,160,0x8fce6f).setOrigin(.5,.5);
+  // gegenereerde textures: rots + munt (geen externe assets)
+  {const g=this.add.graphics();
+   g.fillStyle(0x5a4632);g.fillCircle(22,22,22);g.fillStyle(0x3c2e20);g.fillCircle(15,15,7);g.fillCircle(30,18,5);g.generateTexture('rotsT',44,44);g.clear();
+   g.fillStyle(0xffd94d);g.fillCircle(14,14,14);g.fillStyle(0xfff2b0);g.fillCircle(10,10,5);g.generateTexture('muntT',28,28);g.clear();
+   g.fillStyle(0xffffff,.9);g.fillRoundedRect(0,0,110,40,20);g.generateTexture('wolkT',110,40);g.destroy();}
+  // speler
+  this.hero=this.physics.add.image(140,this.groundY-60,'louie').setScale(.28);
+  this.hero.body.setSize(220,220).setOffset(70,140);
+  this.hero.setCollideWorldBounds(false);
+  this.grond=this.add.rectangle(0,this.groundY+4,W,8,0x7cb35f).setOrigin(0);this.physics.add.existing(this.grond,true);
+  this.physics.add.collider(this.hero,this.grond,()=>{this.jumps=0});
+  // obstakels + pickups
+  this.rots=this.physics.add.group();
+  this.vriend=this.physics.add.group();
+  this.ster=this.physics.add.group();
+  this.physics.add.overlap(this.hero,this.rots,()=>this.dood());
+  this.physics.add.overlap(this.hero,this.vriend,(h,v)=>{v.disableBody(true,true);score+=10;scoreEl.textContent='⭐ '+score;pling();this.pop(v.x,v.y-30,'+10','#ffdf4d')});
+  this.physics.add.overlap(this.hero,this.ster,(h,s)=>{s.disableBody(true,true);score+=25;scoreEl.textContent='⭐ '+score;bling=1;pling();setTimeout(()=>blip(1100,.1),80);this.pop(s.x,s.y-30,'+25','#fff')});
+  // spawners
+  this.time.addEvent({delay:1400,callback:()=>this.spawn(),loop:true});
+  this.time.addEvent({delay:900,callback:()=>{if(!this.dead){score+=1;scoreEl.textContent='⭐ '+score}},loop:true});
+  this.input.on('pointerdown',()=>this.sprong());
+  this.input.keyboard.on('keydown-SPACE',()=>this.sprong());
+ }
+ pop(x,y,t,k){const p=this.add.text(x,y,t,{font:'bold 20px system-ui',color:k});this.tweens.add({targets:p,y:y-46,alpha:0,duration:700,onComplete:()=>p.destroy()})}
+ sprong(){if(this.dead)return;if(this.jumps<2){this.hero.setVelocityY(this.jumps?-430:-470);this.jumps++;blip(this.jumps==2?520:420,.09,'triangle')}}
+ spawn(){if(this.dead)return;
+  const r=Math.random(),x=this.W+60;
+  if(r<.42){// rots
+   const o=this.rots.create(x,this.groundY-24,'rotsT');
+   o.body.setSize(40,40).setOffset(2,4);o.body.setAllowGravity(false)}else if(r<.8){// vriend-figuur
+   const c=CHARS[1+Math.floor(Math.random()*5)];
+   const v=this.vriend.create(x,this.groundY-34-Math.random()*60,c).setScale(.22);
+   v.body.setSize(280,280).setOffset(40,80);v.body.setAllowGravity(false)}else{// muntje hoog
+   const s=this.ster.create(x,this.groundY-110,'muntT');
+   s.body.setSize(26,26);s.body.setAllowGravity(false)}
+ }
+ update(){
+  if(this.dead)return;
+  const dt=this.game.loop.delta/1000;this.speed+=dt*4;
+  this.wolk.forEach((w,i)=>{w.x-=dt*(8+i*3);if(w.x<-80)w.x=this.W+80});
+  this.rots.getChildren().forEach(o=>{o.x-=this.speed*dt;if(o.x<-60)o.destroy()});
+  this.vriend.getChildren().forEach(v=>{v.x-=this.speed*dt;v.y+=Math.sin(this.time.now/300+v.x/40)*0.3;if(v.x<-60)v.destroy()});
+  this.ster.getChildren().forEach(s=>{s.x-=this.speed*dt;if(s.x<-60)s.destroy()});
+  // hero loop-animatie: licht wiebelen
+  this.hero.rotation=Math.sin(this.time.now/120)*0.04;
+ }
+ dood(){if(this.dead)return;this.dead=true;blip(160,.5,'sawtooth',.15);
+  this.physics.pause();this.hero.setTint(0xff9999);
+  if(score>hs){hs=score;localStorage.setItem('g2bhs_runner',hs)}
+  document.getElementById('over').style.display='flex';
+  const st=score<80?'⭐☆☆':score<200?'⭐⭐☆':'⭐⭐⭐';
+  document.getElementById('ot').textContent='🎉 Goed gelopen! '+st;
+  document.getElementById('os').textContent='Score: '+score+(score>=hs?' — nieuw record! 🏆':' — record: '+hs)}
+}
+new Phaser.Game({type:Phaser.AUTO,width:800,height:420,parent:'game',
+ physics:{default:'arcade',arcade:{gravity:{y:1100},debug:false}},scene:Runner,backgroundColor:'#9fd8ff'});
+</script></body></html>
