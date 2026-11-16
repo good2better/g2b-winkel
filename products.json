@@ -158,9 +158,9 @@
   },
   {
    "id": "g2bgeluidmidi",
-   "titel": "G2B GELUID→MIDI — geluid in, MIDI uit",
+   "titel": "G2B GELUID→MIDI — geluid in, MIDI uit (browser)",
    "soort": "plugin",
-   "beschrijving": "ÉÉN PLUGIN IN PLAATS VAN DRIE (LUISTER+OPROEP+ANTWOORD in één): alles wat je hoort wordt MIDI. LUISTER-modus: speel een beat, loop of geluid erdoor en hij schrijft de MIDI-loops (kick/snare/hat/melodie apart). NEURIE-modus: zing of neurie je lijn ±8 sec → strakke melodie-MIDI in je toonsoort, AUTO-KEY corrigeert valse noten zachtjes mee. ANTWOORD-modus: speel 4 tellen en hij antwoordt de volgende 4 tellen in jouw stijl, toonsoort en swing. Elke MIDI is een ECHT .mid-bestand in Music\\G2B — sleep het in je DAW en verander elke noot. 10 GENRE-PILLS, KEY-DETECT met zekerheids-%, BPM-detect, REFINE voor de volgende variatie, MIDI-UIT naar andere plugins, DICE, 8 skins. NIEUW: ↓MID schrijft ook een .wav-preview mee (hoor direct wat hij schreef, zonder instrument te laden), TERUG-knop voor de laatste 10 resultaten, ruis-gate in NEURIE, LAAD-knop die een IN.mid uit je Music-map transformeert en een syncopen-stand in ANTWOORD die de gaten van jouw spel opvult. Werkt volledig offline, 100% eigen DSP — geen AI, geen cloud. VST3 + CLAP + standalone EXE + handleiding-PDF, micro-timing jitter (Kawina-groove) en humanize-curve op velocity, Tresillo-accenten (KAWINA), Dembow grid-lock en HEFTIG-morph",
+   "beschrijving": "Neuri, fluit of speel een geluid — de browser-app schrijft er strakke MIDI-noten van. Kies je quantize en toonladder, luister direct terug, en download als ECHT .mid-bestand dat je zo in je DAW sleept. Werkt volledig offline in je browser — geen installatie, geen cloud, 100% eigen DSP. Één HTML-bestand dat je bookmarkt en altijd bij de hand hebt.",
    "prijs": "€ 34,95",
    "links": {
     "koop": "bestel.html?p=g2bgeluidmidi",
@@ -180,7 +180,7 @@
    "upsell": [
     "g2bstudio"
    ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · werkt offline · Windows / macOS / Linux"
   },
   {
    "id": "g2brefors",
@@ -260,7 +260,7 @@
    "badge": "DEAL",
    "cover": "media/g2b-studio-pack-cover.png",
    "uitgelicht": true,
-   "beschrijving": "De hele studio-rij: MIXER (slimme channel-strip) + REFORS (referentie-simulator) + GELUID→MIDI + BAND. Normaal €124,80 — nu €99, alle VST3/CLAP/standalone downloads direct na betaling.",
+   "beschrijving": "De hele studio-rij: MIXER (slimme channel-strip VST3/CLAP) + REFORS (referentie-simulator VST3/CLAP) + GELUID→MIDI en BAND als browser-versies (offline, geen installatie). Normaal €124,80 — nu €99, direct na betaling.",
    "links": {
     "download": "bedankt.html?k=g2bstudio",
     "stripe": "https://buy.stripe.com/aFacN58UUeqD7nN7K55J61I"
@@ -279,7 +279,7 @@
    "badge": "DEAL",
    "cover": "media/g2bprodsuite-cover.png",
    "uitgelicht": true,
-   "beschrijving": "Alle 7 AURA v6.0-modules (Suri-Pads & World, All-Instruments, Bass & Drum 2-in-1, Dice Synth, Dren Studio, FX-Rack, MIDI-Forge) als browser-studio, desktop-app én VST3 + alle G2B VST-plugins + G2B BREIN als browser-versie, PRODUCER SUITE, PILL-PACK, STAPEL-DICE PRO en Beat Maker PRO. Eén keer betalen, alles voor altijd.",
+   "beschrijving": "Alle 7 AURA v6.0-modules (Suri-Pads & World, All-Instruments, Bass & Drum 2-in-1, Dice Synth, Dren Studio, FX-Rack, MIDI-Forge) als browser-studio, desktop-app én VST3 + alle G2B VST-plugins + G2B BREIN, BAND en GELUID→MIDI als browser-versies, PRODUCER SUITE, PILL-PACK, STAPEL-DICE PRO en Beat Maker PRO. Eén keer betalen, alles voor altijd.",
    "links": {
     "download": "bedankt.html?k=g2balles",
     "stripe": "https://buy.stripe.com/00w8wP7QQ5U77nN3tP5J61J"

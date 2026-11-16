@@ -55,14 +55,6 @@
             "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Refors.zip"
         },
         {
-            "naam": "G2B-GeluidMidi.zip — VST3 + CLAP + standalone + handleiding + licentie",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-GeluidMidi.zip"
-        },
-        {
-            "naam": "G2B-Band.zip — VST3 + CLAP + standalone + handleiding + licentie",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Band.zip"
-        },
-        {
             "naam": "G2B-BEST-OF-VERKOOP.zip — VST3 + CLAP + standalone + one-shots + handleiding + licentie",
             "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-BEST-OF-VERKOOP.zip"
         },
@@ -205,6 +197,14 @@
         {
             "naam": "G2B BREIN openen — browser-versie, werkt offline (bookmark deze link)",
             "url": "https://good2better.com/brein-koop.html"
+        },
+        {
+            "naam": "G2B GELUID→MIDI openen — browser-versie (bookmark)",
+            "url": "https://good2better.com/geluidmidi-koop.html"
+        },
+        {
+            "naam": "G2B BAND openen — browser-versie (bookmark)",
+            "url": "https://good2better.com/band-koop.html"
         }
     ]
 }
