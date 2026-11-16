@@ -1,14 +1,5 @@
 {
-  "titel": "Coolbreez — WAV-licentie",
-  "licentie": "WAV-licentie — niet-exclusief gebruiksrecht — eigenaar blijft Good2Better High Quality Media · Nederlands recht van toepassing",
-  "bestanden": [
-    {
-      "naam": "Coolbreez.-.WAV.licentie.zip",
-      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Coolbreez.-.WAV.licentie.zip"
-    },
-    {
-      "naam": "Coolbreez.-.WAV.licentie.deel-2-STEMS.zip",
-      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Coolbreez.-.WAV.licentie.deel-2-STEMS.zip"
-    }
-  ]
+ "titel": "Coolbreez — WAV-licentie",
+ "uitleg": "deze download-link is vernieuwd — de nieuwe staat in je aankoop-e-mail",
+ "bestanden": []
 }
