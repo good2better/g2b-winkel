@@ -1,0 +1,11 @@
+{
+ "titel": "Bodhi en de Kleine Koala — E-boek",
+ "uitleg": "Het complete e-boek als PDF — direct downloaden en lezen.",
+ "bestanden": [
+  {
+   "naam": "Download",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Eboek-bodhi-en-de-kleine-koala-pakket.zip"
+  }
+ ],
+ "img": "../media/7ad33a82-cover.png"
+}

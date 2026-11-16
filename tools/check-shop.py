@@ -66,6 +66,21 @@ for k in used_k:
 for f in os.listdir('.'):
     if f.endswith('-koop.html'): F(f'{f} staat in root — hoort in geheime d/<key>/')
 
+# 4b) gsbooks leverings-mappen + voorspelbare ?p= sleutels
+GBD='gsbooks/d'
+if os.path.isdir(GBD):
+    for kd in sorted(os.listdir(GBD)):
+        ij=f'{GBD}/{kd}/info.json'
+        try: info=json.load(open(ij))
+        except Exception as e: F(f'{ij}: kapot ({e})');continue
+        for b in info.get('bestanden') or []:
+            if b.get('bestand') and not os.path.exists(f'{GBD}/{kd}/{b["bestand"]}'):
+                F(f'{ij}: bestand {b["bestand"]} mist')
+        if not re.match(r'^b[0-9a-f]{16,}$',kd):
+            W(f'{GBD}/{kd}: geen b-sleutel-formaat')
+src=open('gsbooks/bedankt.html').read()
+if 'PRODUCTEN' in src: F('gsbooks/bedankt.html: producttabel staat weer in de pagina')
+
 # 5) bundel-consistentie: waarschuw als bundel-item op weggehaald product lijkt
 titels=' '.join(p['titel'].lower()+p['id'].lower() for p in prods)
 for kd in sorted(os.listdir('d')):
@@ -85,14 +100,26 @@ if '--stripe' in sys.argv:
     key=os.environ.get('STRIPE_RESTRICTED_KEY')
     if not key: W('--stripe zonder STRIPE_RESTRICTED_KEY: overgeslagen')
     else:
-        r=urllib.request.Request('https://api.stripe.com/v1/payment_links?limit=100&active=true',headers={'Authorization':'Bearer '+key})
-        for pl in json.load(urllib.request.urlopen(r))['data']:
+        pls=[];after=None
+        while True:
+            q='payment_links?limit=100&active=true'+(('&starting_after='+after) if after else '')
+            r=urllib.request.Request('https://api.stripe.com/v1/'+q,headers={'Authorization':'Bearer '+key})
+            page=json.load(urllib.request.urlopen(r));pls+=page['data']
+            if not page.get('has_more'): break
+            after=page['data'][-1]['id']
+        for pl in pls:
             u=((pl.get('after_completion') or {}).get('redirect') or {}).get('url','')
             m=re.search(r'k=([A-Za-z0-9_-]+)',u)
             if m and not os.path.isdir('d/'+m.group(1)):
                 F(f'Stripe {pl["id"]}: redirect k={m.group(1)} heeft geen map')
             if m and not re.match(r'^[0-9a-f]{8,}(-[a-z0-9]+)?$|^x[0-9a-f]{16,}$',m.group(1)):
                 F(f'Stripe {pl["id"]}: voorspelbare sleutel {m.group(1)}')
+            mb=re.search(r'gsbooks/bedankt\.html\?p=([A-Za-z0-9_-]+)',u)
+            if mb:
+                if not re.match(r'^b[0-9a-f]{16,}$',mb.group(1)):
+                    F(f'Stripe {pl["id"]}: voorspelbare boek-sleutel {mb.group(1)}')
+                elif not os.path.isdir('gsbooks/d/'+mb.group(1)):
+                    F(f'Stripe {pl["id"]}: boek-sleutel {mb.group(1)} heeft geen map')
 
 print(f'✅ 0 fouten, {len(warn)} waarschuwingen' if not fouten else f'❌ {len(fouten)} fouten')
 for x in fouten: print('  FOUT:',x)

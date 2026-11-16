@@ -1,0 +1,11 @@
+{
+ "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket — Spel",
+ "uitleg": "Het interactieve spel — openen in je browser.",
+ "bestanden": [
+  {
+   "naam": "Download",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Sunny-Spel.html"
+  }
+ ],
+ "img": "../media/sunny-mega-cover.png"
+}

@@ -1,0 +1,11 @@
+{
+ "titel": "De Avonturen van Keesje Konijn — Videoboek",
+ "uitleg": "De complete voorleesfilm (~38 min, 3 delen) als MP4 met de echte boek-illustraties.",
+ "bestanden": [
+  {
+   "naam": "Download",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Keesje-Konijn-Videoboek.zip"
+  }
+ ],
+ "img": "../media/6cf27e40-cover.png"
+}

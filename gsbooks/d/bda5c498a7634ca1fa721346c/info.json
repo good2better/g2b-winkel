@@ -1,0 +1,11 @@
+{
+ "titel": "Dana en de Verdwaalde Boot — E-boek",
+ "uitleg": "Het complete e-boek als PDF — direct downloaden en lezen.",
+ "bestanden": [
+  {
+   "naam": "Download",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Eboek-dana-en-de-verdwaalde-boot-pakket.zip"
+  }
+ ],
+ "img": "../media/6c3c57aa-cover.png"
+}

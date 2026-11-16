@@ -1,0 +1,11 @@
+{
+ "titel": "Chef Kokos Stripboek — De Kleurrijke Keuken",
+ "uitleg": "Stripboek-PDF met tekstballonnen + knipbare stickerpagina.",
+ "bestanden": [
+  {
+   "naam": "Download",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Stripboek-chef-kokos-deel1-pakket.zip"
+  }
+ ],
+ "img": "../media/c2d402ab79-cover.png"
+}

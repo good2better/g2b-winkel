@@ -1,0 +1,11 @@
+{
+ "titel": "Sterre en het Kuikentje — E-boek",
+ "uitleg": "Het complete e-boek als PDF — direct downloaden en lezen.",
+ "bestanden": [
+  {
+   "naam": "Download",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Eboek-sterre-en-het-kuikentje-pakket.zip"
+  }
+ ],
+ "img": "../media/d903c8f1-cover.png"
+}

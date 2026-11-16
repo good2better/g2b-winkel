@@ -1,0 +1,11 @@
+{
+ "titel": "De Avonturen van Keesje Konijn — Audioboek",
+ "uitleg": "Alle 9 hoofdstukken als MP3 — downloaden en overal luisteren.",
+ "bestanden": [
+  {
+   "naam": "Download",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Keesje-Konijn-Audioboek.zip"
+  }
+ ],
+ "img": "../media/6cf27e40-cover.png"
+}

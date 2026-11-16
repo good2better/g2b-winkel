@@ -1,0 +1,11 @@
+{
+ "titel": "Sunny's Zeilboot Avonturen — Mega-Pakket — Bordspel",
+ "uitleg": "Print-klar bordspel (PDF) om samen te spelen.",
+ "bestanden": [
+  {
+   "naam": "Download",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Sunny-Bordspel.pdf"
+  }
+ ],
+ "img": "../media/sunny-mega-cover.png"
+}

@@ -1,0 +1,11 @@
+{
+ "titel": "Bram en het Verloren Lammetje — E-boek",
+ "uitleg": "Het complete e-boek als PDF — direct downloaden en lezen.",
+ "bestanden": [
+  {
+   "naam": "Download",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/Eboek-bram-en-het-verloren-lammetje-pakket.zip"
+  }
+ ],
+ "img": "../media/7a089fda-cover.png"
+}
