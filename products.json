@@ -28,6 +28,27 @@
    "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
   },
   {
+   "id": "videoboek",
+   "titel": "Animal Heroes VIDEOBOEK — interactief verhaal-spel (gratis)",
+   "prijs": "GRATIS",
+   "badge": "GRATIS",
+   "groep": "gratis",
+   "soort": "digitaal",
+   "cover": "media/covers/videoboek.png",
+   "beschrijving": "GRATIS — jouw boek als spel: 4 pagina's met levende illustraties (Ken Burns-zoom + zwevende sterren), verstopte vrienden aantikken, punten + ⭐⭐⭐-eindscore, typemachine-verhaal en zachte muziek. Werkt in elke browser, niks downloaden — ook op tablet/touch.",
+   "links": {
+    "koop": "games/dierenhelden-boek.html",
+    "browser": "games/dierenhelden-boek.html",
+    "download": "games/index.html"
+   },
+   "uitgelicht": false,
+   "upsell": [
+    "school1",
+    "g2bclub"
+   ],
+   "specs": "🌐 Elke moderne browser · touch + muis · geen installatie · gratis"
+  },
+  {
    "id": "stapeldice",
    "titel": "G2B STAPEL-DICE — gratis shot-stapelaar (browser)",
    "prijs": "GRATIS",
