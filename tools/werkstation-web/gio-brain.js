@@ -66,7 +66,7 @@ function run(t){
   case 'help':say('📋 <b>voorbeelden:</b><br>• maak houce beat 128 bpm<br>• nieuwe dembow<br>• trap op 145<br>• iets donkers voor een film<br>• akkoorden bij a mineur<br>• master / menger / melodie / refors / stapel / gaw<br>• welke key bij strijd?<br>• referentie — gebruik je eigen beat als leidraad<br>• <b>samen bouwen</b> — stap-voor-stap: jij keurt elke stap goed');break;
   case 'akkoorden':var acc=akkoorden(i.key);say(acc?('🎹 '+i.key.toUpperCase()+': <b>'+acc.join(' · ')+'</b>'):'❓ key niet gevonden — probeer bv. "akkoorden bij a mineur"');break;
   case 'mood':var M=MOOD[i.mood];say('💡 bij <b>'+i.mood+'</b> past: <b>'+M.k+'</b>, '+M.g+' ±'+M.b+'bpm — '+M.u+'. <a href="#" onclick="GIO.run(\'maak '+M.g+' '+M.b+' bpm\');return false" style="color:#7CF5B0">maak hem →</a>');break;
-  case 'ref':say('🎯 <b>eigen beat als referentie</b> — Beat Maker opent; sleep je beat in de bovenste dropzone → hij herbouwt het grid met G2B-sounds. Jouw oor is de smaak-filter: 🔒 lock de rijen die goed zijn, 🎲 rol de rest opnieuw.');open(TOOLS.beat[0]+'?ref=1');break;
+  case 'ref':say('🎯 <b>eigen beat als referentie</b> — alleen voor BOUWEN: hij leest je patroon/noten/structuur en herbouwt het met G2B-sounds. Je mix/master neemt hij NIET over — MENGER en MASTER doen dat op jouw eigen track, dus een slechte referentie-mix is geen probleem.');open(TOOLS.beat[0]+'?ref=1');break;
   case 'tool':var T=TOOLS[i.tool];say('🔧 '+T[1]);open(T[0]);break;
   case 'beat':var u=TOOLS.beat[0]+'?g='+i.g+(i.bpm?'&bpm='+i.bpm:'')+(i.song?'&song=1':'&go=1');say('🎲 '+i.g.toUpperCase()+(i.bpm?' @'+i.bpm:'')+' — open Beat Maker');open(u);break;
   case 'samen':startBuild(i);break;
