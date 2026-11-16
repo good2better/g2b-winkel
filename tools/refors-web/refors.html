@@ -177,22 +177,30 @@ function demoOk(){
 }
 async function exportWav(){
  if(!buf)return; if(!demoOk())return;
- $('st').textContent='renderen…';
+ $('bWav').disabled=true;
+ $('st').textContent='renderen… lange track kan ~30-60 s duren — pagina blijft werken';
+ await new Promise(r=>setTimeout(r,30));
  const sr=buf.sampleRate,oc=new OfflineAudioContext(buf.numberOfChannels,buf.length,sr);
  const g=bouwGraafOp(oc); zetGraaf(g,reken(sr),sr);
  const s=oc.createBufferSource(); s.buffer=buf; s.connect(g.in); s.start();
  const out=await oc.startRendering();
- downloadWav(out,'g2b-refors-'+NAMEN[P.ruimte].toLowerCase()+'.wav');
+ $('st').textContent='wav schrijven…';
+ await downloadWav(out,'g2b-refors-'+NAMEN[P.ruimte].toLowerCase()+'.wav');
  $('st').textContent='✔ gedownload: g2b-refors-'+NAMEN[P.ruimte].toLowerCase()+'.wav';
+ $('bWav').disabled=false;
 }
-function downloadWav(ab,name){
+async function downloadWav(ab,name){
  const n=ab.length,ch=ab.numberOfChannels,sr=ab.sampleRate;
  const dv=new DataView(new ArrayBuffer(44+n*ch*2));let o=0;
  const W=(s)=>{for(const c of s)dv.setUint8(o++,c.charCodeAt(0))};
  const u32=v=>{dv.setUint32(o,v,true);o+=4},u16=v=>{dv.setUint16(o,v,true);o+=2},i16=v=>{dv.setInt16(o,Math.max(-32768,Math.min(32767,Math.round(v*32767))),true);o+=2};
  W('RIFF');u32(36+n*ch*2);W('WAVEfmt ');u32(16);u16(1);u16(ch);u32(sr);u32(sr*ch*2);u16(ch*2);u16(16);W('data');u32(n*ch*2);
  const L=ab.getChannelData(0),R=ch>1?ab.getChannelData(1):L;
- for(let i=0;i<n;i++){i16(L[i]);if(ch>1)i16(R[i])}
+ const CH=1<<18;
+ for(let base=0;base<n;base+=CH){
+  const end=Math.min(base+CH,n);
+  for(let i=base;i<end;i++){i16(L[i]);if(ch>1)i16(R[i])}
+  if(end<n)await new Promise(r=>setTimeout(r,0));}
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([dv.buffer],{type:'audio/wav'}));a.download=name;if(G2BExport.ok())a.click();
 }
 

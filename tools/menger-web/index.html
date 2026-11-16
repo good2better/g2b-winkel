@@ -83,6 +83,7 @@ audio{width:100%;height:34px;margin-top:4px}
 <script type="module">
 import * as S from 'https://cdn.jsdelivr.net/npm/@libraz/libsonare@1.10.0/dist/index.js';
 const stems=[];const $=id=>document.getElementById(id);
+const tick=()=>new Promise(r=>setTimeout(r,0));
 let ready=false;
 async function boot(){
   try{
@@ -519,17 +520,23 @@ window.doMaster=async()=>{
     const dur=Math.max(...stems.map(s=>s.buf.duration));
     const n=Math.round(dur*target);
     const mixL=new Float32Array(n),mixR=new Float32Array(n);
-    const parts=stems.map(s=>{const[l,r]=toStereo(s.buf);const g=Math.pow(10,s.gain/20);
+    const parts=[];
+    for(const s of stems){
+      out.innerHTML='<div class="line"><span class="spin">⏳</span> Stem voorbereiden: '+s.name+'…</div>';await tick();
+      const[l,r]=toStereo(s.buf);const g=Math.pow(10,s.gain/20);
       const lr=resample(l,s.buf.sampleRate,target),rr=resample(r,s.buf.sampleRate,target);
       for(let i=0;i<Math.min(n,lr.length);i++){lr[i]*=g;rr[i]*=g;}
-      return{s,l:lr,r:rr};});
+      parts.push({s,l:lr,r:rr});}
     // vóór-mix vastleggen vóór elke reparatie — eerlijke A/B op de rauwe upload
     const rawL=new Float32Array(n),rawR=new Float32Array(n);
     for(const p of parts){for(let i=0;i<Math.min(n,p.l.length);i++){rawL[i]+=p.l[i];rawR[i]+=p.r[i];}}
     const repOn=$('repareer').checked;
     const repMsgs=[];
-    if(repOn)for(const p of parts){const m=repareerStem(p.l,p.r,target,p.s.name,parts.length===1);
+    if(repOn)for(const p of parts){
+      out.innerHTML='<div class="line"><span class="spin">⏳</span> Repareren: '+p.s.name+'…</div>';await tick();
+      const m=repareerStem(p.l,p.r,target,p.s.name,parts.length===1);
       if(m.length)repMsgs.push(`• ${p.s.name}: ${m.join(', ')}`);}
+    out.innerHTML='<div class="line"><span class="spin">⏳</span> Banden wegen + mix samenvoegen…</div>';await tick();
     const busMsgs=masterCorrect(parts,target);
     for(const p of parts){for(let i=0;i<Math.min(n,p.l.length);i++){mixL[i]+=p.l[i];mixR[i]+=p.r[i];}}
     // dynamiek-waak: een stille, levende mix (lofi/chill) niet dichtknijpen
@@ -541,7 +548,8 @@ window.doMaster=async()=>{
     const lra=bl.length>6?dB(bl[Math.floor(bl.length*.95)])-dB(bl[Math.floor(bl.length*.1)]):0;
     const preDb=dB(rmsP(rawL)+rmsP(rawR));
     // eind-bus repareer: rest-modder/schel eruit (vóór-versie = rawL/rawR hierboven)
-    if(repOn){const m=repareerMix(mixL,mixR,target);
+    if(repOn){out.innerHTML='<div class="line"><span class="spin">⏳</span> Eind-bus repareren…</div>';await tick();
+      const m=repareerMix(mixL,mixR,target);
       repMsgs.push(...m.map(x=>'bus: '+x));}
     let cfg=CFG[$('preset').value]||CFG.g2b,waak='',ruismelding='',hfFl=0;
     // ruis-check: hoog-ruisvloer (>6kHz) meten — bij sis in de mix wordt
@@ -570,6 +578,7 @@ window.doMaster=async()=>{
     const preBlob=ab2wav(rawL,rawR,target);
     // pre-gate: de keten krijgt de ontdende mix als bron
     if(ruismelding){hfGateArr(mixL,mixR,target,hfFl*3);}
+    out.innerHTML='<div class="line"><span class="spin">⏳</span> Master-keten draaien — dit kan ~10-30 s duren…</div>';await tick();
     const res=S.masteringChainStereo(mixL,mixR,target,cfg);
     let OL,OR;
     if(res&&res.left&&res.right){OL=res.left;OR=res.right;}
@@ -578,6 +587,7 @@ window.doMaster=async()=>{
     // én ná de keten: ook door air/limiter omhooggetrokken sis wegdempen;
     // drempel meten op de OUTPUT (master kan harder gezet zijn dan de mix)
     if(ruismelding){hfGateArr(OL,OR,target,hfFloorArr(OL,OR,target)*3);}
+    out.innerHTML='<div class="line"><span class="spin">⏳</span> WAV schrijven…</div>';await tick();
     const postBlob=ab2wav(OL,OR,target);
     $('prePlay').src=URL.createObjectURL(preBlob);
     $('postPlay').src=URL.createObjectURL(postBlob);

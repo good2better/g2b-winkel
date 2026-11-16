@@ -306,20 +306,32 @@ async function maakMaster(){
  const n=inL.length,uitL=new Float32Array(n),uitR=new Float32Array(n);
  $('st').textContent='masteren…';
  await render(uitL,uitR,f=>{$('balkIn').style.width=(f*100).toFixed(0)+'%'});
+ // post-passes in één gechunkt rondgang zodat de pagina levend blijft
+ $('st').textContent='analyseren + schrijven…';
+ let eIn=0,eUit=0,pk=0;
+ {const CH=1<<16;
+  for(let base=0;base<n;base+=CH){
+   const end=Math.min(base+CH,n);
+   for(let i=base;i<end;i++){eIn+=inL[i]*inL[i]+inR[i]*inR[i];eUit+=uitL[i]*uitL[i]+uitR[i]*uitR[i];
+    const a=Math.abs(uitL[i]),b=Math.abs(uitR[i]);if(a>pk)pk=a;if(b>pk)pk=b;}
+   $('balkIn').style.width=Math.min(100,(end/n)*100).toFixed(0)+'%';
+   if(end<n)await new Promise(r=>setTimeout(r,0));}}
  const blob=wavBlob(uitL,uitR,sr);
  // slimme VÓÓR: speel het origineel af op hetzelfde volume als de master,
  // zodat je het échte verschil hoort (niet alleen 'harder = beter')
- let eIn=0,eUit=0;for(let i=0;i<n;i++){eIn+=inL[i]*inL[i]+inR[i]*inR[i];eUit+=uitL[i]*uitL[i]+uitR[i]*uitR[i];}
  let g=Math.sqrt(eUit/(eIn+1e-9)); if(!(g>0.25))g=1; if(g>4)g=4;
  const preL=new Float32Array(n),preR=new Float32Array(n);
- for(let i=0;i<n;i++){preL[i]=inL[i]*g;preR[i]=inR[i]*g;}
+ {const CH=1<<16;
+  for(let base=0;base<n;base+=CH){
+   const end=Math.min(base+CH,n);
+   for(let i=base;i<end;i++){preL[i]=inL[i]*g;preR[i]=inR[i]*g;}
+   if(end<n)await new Promise(r=>setTimeout(r,0));}}
  const preBlob=wavBlob(preL,preR,sr);
  if(window._preURL)URL.revokeObjectURL(window._preURL);
  if(window._postURL)URL.revokeObjectURL(window._postURL);
  window._preURL=URL.createObjectURL(preBlob); window._postURL=URL.createObjectURL(blob);
  $('prePlay').src=window._preURL; $('postPlay').src=window._postURL;
  $('dlWav').href=window._postURL;
- let pk=0;for(let i=0;i<n;i++)pk=Math.max(pk,Math.abs(uitL[i]),Math.abs(uitR[i]));
  $('info').textContent='piek '+pk.toFixed(2)+' · '+(n/sr).toFixed(1)+' s · '+(blob.size/1048576).toFixed(1)+' MB · VÓÓR speelt op zelfde volume (eerlijk vergelijk)';
  $('uit').hidden=false; $('balkIn').style.width='100%';
  $('st').textContent='✔ klaar — luister VÓÓR/NÁ en download je master';
