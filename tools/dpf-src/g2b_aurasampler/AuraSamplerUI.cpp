@@ -153,8 +153,21 @@ protected:
             strokeColor(fTyping?g2bsk(skin,5):g2bsk(skin,4));strokeWidth(1.4f);stroke();
             fontSize(10.f);textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
             if(!fMapMsg.empty()){fillColor(g2bsk(skin,5));text(bx+8.f,ay+11.f,fMapMsg.c_str(),nullptr);}
-            else if(fMapPath.empty()){fillColor(g2bsk(skin,3));text(bx+8.f,ay+11.f,"klik + typ eigen map bv D:\\Samples  (of AURA-PACKS.txt)",nullptr);}
+            else if(fMapPath.empty()){fillColor(g2bsk(skin,3));text(bx+8.f,ay+11.f,"MAP = mapvenster, of klik + typ pad  ·  < > = geluid bladeren",nullptr);}
             else{fillColor(g2bsk(skin,2));text(bx+8.f,ay+11.f,fMapPath.c_str(),nullptr);}
+        }
+        // ‹ › bladeren door geluiden (binnen de gekozen pack)
+        {
+            const char* ar[2]={"<",">"};
+            for(int a=0;a<2;a++){
+                float ax=W-140.f+a*34.f;
+                beginPath(); roundedRect(ax,ay,28.f,22.f,11.f);
+                fillColor(g2bsk(skin,1)); fill();
+                strokeColor(g2bsk(skin,4));strokeWidth(1.f);stroke();
+                fontSize(12.f);textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+                fillColor(g2bsk(skin,5));text(ax+14.f,ay+11.f,ar[a],nullptr);
+                textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
+            }
         }
         for(int p=0;p<4;p++){
             float px=W-60.f-p*62.f;
@@ -188,7 +201,9 @@ protected:
                 if(x>=W-60&&x<=W-6){setParameterValue(4,fOn?0.f:1.f);fTyping=false;return true;}
                 if(x>=W-122&&x<=W-68){setParameterValue(8,1.f);fTyping=false;return true;}
                 if(x>=W-184&&x<=W-130){setParameterValue(10,1.f);fSel.clear();fTyping=false;repaint();return true;}
-                if(x>=W-246&&x<=W-192){laadMap();return true;}
+                if(x>=W-140&&x<=W-112){setParameterValue(13,1.f);fTyping=false;return true;}
+                if(x>=W-106&&x<=W-76){setParameterValue(14,1.f);fTyping=false;return true;}
+                if(x>=W-246&&x<=W-192){openFileBrowser();return true;}
                 if(x>=18&&x<=W-270){fTyping=true;fMapMsg.clear();repaint();return true;}
             }
             if(fTyping){fTyping=false;repaint();}
@@ -201,6 +216,13 @@ protected:
     }
     void laadMap(){
         if(fMapPath.empty()){fMapMsg="typ eerst een pad, bv D:\\Samples";repaint();return;}
+        setState("map",fMapPath.c_str());fMapMsg="laden…";fTyping=false;repaint();
+    }
+    // verkenner: klik één wav aan → hele map wordt gescand (geen typen nodig)
+    void uiFileBrowserSelected(const char* filename) override {
+        std::string fn(filename);
+        const size_t sep=fn.find_last_of("/\\");
+        fMapPath=(sep==std::string::npos)?".":fn.substr(0,sep);
         setState("map",fMapPath.c_str());fMapMsg="laden…";fTyping=false;repaint();
     }
     bool onKeyboard(const KeyboardEvent& ev) override {

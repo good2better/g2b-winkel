@@ -44,6 +44,17 @@ static std::vector<std::string> g_roots(){
             if(line.size()&&line[0]!='#')roots.push_back(line);
         }
     }
+    // gebruikers-mappen (Muziek/Documenten/Downloads) — vindt C:\G2B\AURA-achtige plekken zelf
+    const char* home=getenv("USERPROFILE");
+    if(!home||!*home)home=getenv("HOME");
+    if(home&&*home){
+        for(const char* sub:{"Music/G2B/AURA","Music/G2B","Muziek/G2B/AURA","Muziek/G2B",
+                             "Documents/G2B/AURA","Documents/G2B","Downloads/G2B/AURA",
+                             "Music/AURA","Documents/AURA","Downloads/AURA"}){
+            std::string p=std::string(home)+"/"+sub;
+            DIR* d=opendir(p.c_str());if(d){closedir(d);roots.push_back(p);}
+        }
+    }
     // standaard bank-mappen: werkt direct zonder AURA-PACKS.txt
     for(const char* p:{"wav","AURA","../AURA","../../AURA","AURA-PACKS",
                        "C:/G2B","D:/G2B",
@@ -137,7 +148,7 @@ protected:
     const char* getLicense()const override{return "G2B";}
     uint32_t getVersion()const override{return d_version(6,0,0);}
     int64_t getUniqueId()const override{return d_cconst('G','2','A','S');}
-    enum{kPack=0,kSnd,kKracht,kLevel,kOn,kToon,kLengte,kKnip,kDice,kTgl,kWis,kGalaxy,kSfeer,kNumParams};
+    enum{kPack=0,kSnd,kKracht,kLevel,kOn,kToon,kLengte,kKnip,kDice,kTgl,kWis,kGalaxy,kSfeer,kPrev,kNext,kNumParams};
     void initParameter(uint32_t i,Parameter& p)override{
         p.ranges.def=0.f;p.hints=kParameterIsAutomatable;
         switch(i){
@@ -154,6 +165,8 @@ protected:
         case kWis:p.name="WIS";p.symbol="wis";p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;break;
         case kGalaxy:p.name="DIMENTIES";p.symbol="dim";p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=26;p.ranges.def=9;break;
         case kSfeer:p.name="Sfeer";p.symbol="sfeer";p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=2;p.ranges.def=1;break;
+        case kPrev:p.name="<";p.symbol="prev";p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;break;
+        case kNext:p.name=">";p.symbol="next";p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;break;
         }
     }
     float getParameterValue(uint32_t i)const override{
@@ -161,7 +174,7 @@ protected:
             case kLevel:return fLevel;case kOn:return fOn;case kToon:return fToon;
             case kLengte:return fLengte;case kKnip:return fKnip;case kDice:return fDice;
             case kTgl:return fTgl;case kWis:return fWis;case kGalaxy:return fGalaxyV;
-            case kSfeer:return fSfeerV;}return 0.f;
+            case kSfeer:return fSfeerV;case kPrev:return fPrev;case kNext:return fNext;}return 0.f;
     }
     void setParameterValue(uint32_t i,float v)override{
         switch(i){
@@ -176,6 +189,8 @@ protected:
         case kWis:if(v>0.5f)fSel.clear();fWis=v;break;
         case kGalaxy:fGalaxyV=v;fGal.setPos((int)(v+0.5f));break;
         case kSfeer:fSfeerV=v;fSf.setMode((int)(v+0.5f));break;
+        case kPrev:if(v>0.5f)step_(-1);fPrev=v;break;
+        case kNext:if(v>0.5f)step_(1);fNext=v;break;
         }
     }
     void initState(uint32_t index,String& name,String& def)override{
@@ -286,7 +301,7 @@ private:
         if(fDisp.empty()){fDisp.push_back("(geen wavs — zie LEESMIJ)");fFull.push_back("");fPackOf.push_back(0);}
         buildIdx();
         dna_names_list()=fDisp;
-        if(fCur<0){for(size_t i=0;i<fFull.size();i++)if(!fFull[i].empty()){loadSnd((int)i);break;}}
+        if(fCur<0){for(size_t i=0;i<fFull.size();i++)if(!fFull[i].empty()){loadSnd((int)i);fSnd=(float)i;break;}}
     }
     void buildIdx(){
         fIdx.clear();
@@ -304,6 +319,12 @@ private:
         fCur=idx;fSrc=rootOf(idx);
         if(!load_wav(fFull[idx],fBuf,fRate))fBuf.clear();
         fStackBufs.clear();
+    }
+    void step_(int d){
+        if(fIdx.empty())return;
+        int pos=0;for(size_t i=0;i<fIdx.size();i++)if(fIdx[i]==fCur){pos=(int)i;break;}
+        pos=(pos+d+(int)fIdx.size())%(int)fIdx.size();
+        int nv=fIdx[pos];loadSnd(nv);fSnd=(float)nv;
     }
     void toggle(int idx){
         if(idx<0||idx>=(int)fFull.size())return;
@@ -327,7 +348,8 @@ private:
     std::set<int> fSel;
     int fCur=-1,fSrc=60,fRate=22050;bool fNamesSent=false;
     float fPack=0.f,fSnd=0.f,fKracht=0.8f,fLevel=0.f,fOn=1.f,fToon=0.f,fLengte=1.f,fKnip=0.f,
-          fDice=0.f,fTgl=0.f,fWis=0.f,fGalaxyV=9.f,fSfeerV=1.f,fKnipPh=0.f;
+          fDice=0.f,fTgl=0.f,fWis=0.f,fGalaxyV=9.f,fSfeerV=1.f,fKnipPh=0.f,
+          fPrev=0.f,fNext=0.f;
     unsigned fRnd=7654321;
     Galaxy fGal;Sfeer fSf;
     float fScope[40];uint32_t fScopeN=0;int fDecim=0;
