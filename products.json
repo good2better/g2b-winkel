@@ -178,7 +178,6 @@
    "sub_es": "media/geluidmidi-uitleg.es.vtt",
    "preview": "media/g2bgeluidmidi-preview.mp3",
    "upsell": [
-    "g2bband",
     "g2bstudio"
    ],
    "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
@@ -312,32 +311,6 @@
    "demo": "media/beatmakerpro-demo.mp4",
    "video": "media/beatmakerpro-demo.mp4",
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
-  },
-  {
-   "id": "g2bband",
-   "titel": "G2B BAND — jouw MIDI of drumloop wordt een heel nummer",
-   "soort": "plugin",
-   "beschrijving": "ÉÉN PLUGIN IN PLAATS VAN VIER (DJEBU+CO-PRODUCER+TREIN+SONG in één): zet BAND op je spoor en kies je modus — SPEL: speel akkoorden op je keyboard en hij speelt live bass+drums mee in jouw genre. VERVOLG: druk LUISTER, speel je halve beat, druk GEN en hij schrijft de tweede helft. ARRANGEMENT: stuur je MIDI of drumloop erin en hij maakt een HEEL nummer met INTRO, BUILD, DROP, BREAK en OUTRO — als .mid klaar om te slepen naar je DAW-grid zodat je elke noot kan aanpassen. 10 GENRE-PILLS (TRAP·DRILL·BOOMBAP·RNB·HOUSE·DEMBOW·KAWINA·LOFI·SOUL·POP). Knoppen: VOLHEID·DURF·HEFT·MENS·SWING·LENGTE·VAR + ↓MID export + MIDI-UIT + DICE + 8 skins. Speelt hoorbaar (eigen synth) én schrijft MIDI uit. 100% eigen code — geen cloud, geen AI-abonnement. VST3 + CLAP + standalone EXE + handleiding-PDF. NIEUW: BUS-SYNC — leest automatisch het patroon+genre van G2B GELUID->MIDI, met KLOOF-KNIP (stilte voor de drop)",
-   "prijs": "€ 34,95",
-   "links": {
-    "koop": "bestel.html?p=g2bband",
-    "download": "bedankt.html?k=g2bband",
-    "stripe": "https://buy.stripe.com/00wfZhc762HVazZe8t5J61A"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW — 4 IN 1",
-   "cover": "media/g2bband-cover.png",
-   "download_dir": "d/g2bband",
-   "video": "media/g2bband-demo.mp4",
-   "demo": "media/g2bband-demo.mp4",
-   "uitleg": "media/band-uitleg.mp4",
-   "sub_nl": "media/band-uitleg.nl.vtt",
-   "sub_es": "media/band-uitleg.es.vtt",
-   "preview": "media/g2bband-preview.mp3",
-   "upsell": [
-    "g2bstudio"
-   ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
   },
   {
    "id": "g2bsmash",

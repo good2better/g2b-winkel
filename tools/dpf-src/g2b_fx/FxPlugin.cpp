@@ -59,6 +59,7 @@ struct Galaxy { Galaxy(){reset();}
     float cb[4][CN]; int cw[4];
     float ap[2][600]; int aw[2];
     float lp[2];
+    float wetmul=0.f; // gekoppeld aan RUIMTE: 0 = helemaal geen shimmer
     int gpos=-1; float grate=2.f,gfb=0.5f,gfc=6500.f,gwet=0.6f,gdd=0.2f; int gmode=2;
     void reset(){for(int i=0;i<4;i++)sh[i].reset();std::memset(cb,0,sizeof cb);std::memset(ap,0,sizeof ap);
                  std::memset(cw,0,sizeof cw);std::memset(aw,0,sizeof aw);lp[0]=lp[1]=0;}
@@ -94,7 +95,7 @@ struct Galaxy { Galaxy(){reset();}
             ap[c][aw[c]]=tail+g*y; aw[c]=(aw[c]+1)%600;
             shim[c]=y;
         }
-        L=in[0]+gwet*shim[0]*0.10f; R=in[1]+gwet*shim[1]*0.10f;
+        L=in[0]+gwet*wetmul*shim[0]*0.10f; R=in[1]+gwet*wetmul*shim[1]*0.10f;
         if(L>0.98f)L=0.98f; else if(L<-0.98f)L=-0.98f;
         if(R>0.98f)R=0.98f; else if(R<-0.98f)R=-0.98f;
     }
@@ -106,6 +107,7 @@ public:
     MasterRackPlugin() : Plugin(kNumParams, 0, 2) {
         memset(fBufL,0,sizeof(fBufL)); memset(fBufR,0,sizeof(fBufR));
         memset(fPreL,0,sizeof(fPreL)); memset(fPreR,0,sizeof(fPreR));
+        galaxy.wetmul=fRuimte;
     }
     ~MasterRackPlugin() override { if(fEbur) ebur128_destroy(&fEbur); }
     void deactivate() override { if(fEbur){ebur128_destroy(&fEbur);fEbur=nullptr;} }
@@ -123,7 +125,7 @@ protected:
         switch(i){
         case kSub:    p.name="SUB";     p.symbol="sub";     p.ranges.min=0.f;p.ranges.max=1.f;p.ranges.def=0.55f;p.unit="%";break;
         case kPoets:  p.name="POETS";   p.symbol="poets";   p.ranges.min=0.f;p.ranges.max=1.f;p.ranges.def=0.35f;p.unit="%";break;
-        case kKnip:   p.name="KNIP";    p.symbol="knip";    p.ranges.min=0.f;p.ranges.max=1.f;p.ranges.def=0.40f;p.unit="%";break;
+        case kKnip:   p.name="KNIP";    p.symbol="knip";    p.ranges.min=0.f;p.ranges.max=0.20f;p.ranges.def=0.12f;p.unit="%";break;
         case kGlans:  p.name="GLANS";   p.symbol="glans";   p.ranges.min=0.f;p.ranges.max=1.f;p.ranges.def=0.30f;p.unit="%";break;
         case kRuimte: p.name="RUIMTE";  p.symbol="ruimte";  p.ranges.min=0.f;p.ranges.max=1.f;p.ranges.def=0.30f;p.unit="%";break;
         case kOutput: p.name="OUTPUT";  p.symbol="output";  p.ranges.min=-24.f;p.ranges.max=12.f;p.ranges.def=0.f;p.unit="dB";break;
@@ -144,14 +146,14 @@ protected:
     void setParameterValue(uint32_t i, float v) override {
         if(i==kGalaxy){fGalaxy=v;galaxy.setPos((int)v);return;}
         if(i==kPreset){applyPreset((int)(v+0.5f));return;}
-        switch(i){case kSub:fSub=v;break;case kPoets:fPoets=v;break;case kKnip:fKnip=v;break;case kGlans:fGlans=v;break;case kRuimte:fRuimte=v;break;case kOutput:fOut=v;break;case kListen:
+        switch(i){case kSub:fSub=v;break;case kPoets:fPoets=v;break;case kKnip:fKnip=v>0.20f?0.20f:v;break;case kGlans:fGlans=v;break;case kRuimte:fRuimte=v>0.45f?0.45f:v;galaxy.wetmul=fRuimte;break;case kOutput:fOut=v;break;case kListen:
             fListen=v;
             #ifdef GIO_BRAIN
             if(v>0.9f){fListenN=(uint32_t)(4.f*getSampleRate());fAccRms=fAccLow=fAccMid=fAccAir=0;fPeak=0;}
 #else
-            if(v>0.9f){fListenN=(uint32_t)(2.f*getSampleRate());fAccRms=fAccLow=fAccMid=fAccAir=0;fPeak=0;}
+            if(v>0.9f){fListenN=(uint32_t)(1.2f*getSampleRate());fAccRms=fAccLow=fAccMid=fAccAir=0;fPeak=0;}
 #endif
-            fListen=0.f;break;
+            break;
             case kDice:fDice=v;if(v>0.5f)rollDice();fDice=0.f;break;
             case kOn:fOn=v;break;case kKracht:fKr=v;break;case kLo:fLo=v;break;case kMid:fMid=v;break;case kHi:fHi=v;break;}
     }
@@ -353,7 +355,7 @@ private:
         }else{
             setParameterValue(kSub,  fminf(0.70f,fmaxf(0.2f,0.5f+dSub*0.7f)));
             setParameterValue(kGlans,fminf(0.70f,fmaxf(0.2f,0.5f+dGla)));
-            setParameterValue(kKnip, fminf(0.40f,fmaxf(0.10f,0.08f+crest*0.08f)));
+            setParameterValue(kKnip, fminf(0.18f,fmaxf(0.10f,0.08f+crest*0.08f)));
             setParameterValue(kPoets,fminf(0.60f,fmaxf(0.2f,0.42f+(0.45f-midShare)*0.8f)));
             setParameterValue(kRuimte,fminf(0.28f,fmaxf(0.08f,0.26f-crest*0.03f)));
             setParameterValue(kOutput,fminf(0.f,fmaxf(-8.f,-2.f-(rms-0.10f)*20.f)));
@@ -374,7 +376,7 @@ private:
         }else{
             setParameterValue(kSub,  fminf(0.55f,fmaxf(0.2f,0.5f+dSub*0.6f)));
             setParameterValue(kGlans,fminf(0.6f,fmaxf(0.2f,0.5f+dGla)));
-            setParameterValue(kKnip, fminf(0.30f,fmaxf(0.10f,0.08f+crest*0.06f)));
+            setParameterValue(kKnip, fminf(0.18f,fmaxf(0.10f,0.08f+crest*0.06f)));
             setParameterValue(kPoets,fminf(0.55f,fmaxf(0.2f,0.42f+(0.45f-midShare)*0.7f)));
             setParameterValue(kRuimte,fminf(0.20f,fmaxf(0.08f,0.24f-crest*0.03f)));
             setParameterValue(kOutput,fminf(0.f,fmaxf(-8.f,-2.f-(rms-0.10f)*20.f))); // headroom: luide track -> output omlaag
@@ -382,13 +384,20 @@ private:
         }
 #endif
         if(fPeak>0.9f){ setParameterValue(kOutput,-3.f); setParameterValue(kListen,0.75f); }
-        fPeak=0.f;
+        fPeak=0.f; // status blijft zichtbaar (0.35 ingreep / 0.5 al goed / 0.75 overload)
     }
     void rollDice(){
         for(int p=kSub;p<=kRuimte;p++){
             fRnd=fRnd*1664525u+1013904223u;
-            setParameterValue(p,((fRnd>>8)%100)/100.f);
+            float v=((fRnd>>8)%100)/100.f;
+            if(p==kRuimte)v*=0.45f;        // ruimte blijft behouden — geen echo-bom
+            if(p==kGlans)v=0.15f+v*0.55f;  // glans binnen schoon bereik
+            setParameterValue(p,v);
         }
+        fRnd=fRnd*1664525u+1013904223u;
+        setParameterValue(kGalaxy,(float)(((fRnd>>8)%3)*9+((fRnd>>16)%9)));
+        fRnd=fRnd*1664525u+1013904223u;
+        setParameterValue(kKracht,80.f+(float)((fRnd>>8)%21));
     }
     float fListen=0.f,fDice=0.f;
     uint32_t fListenN=0; float fAccRms=0,fAccLow=0,fAccMid=0,fAccAir=0,fALpL=0,fALpR=0,fAHpL=0,fAHpR=0,fPeak=0;

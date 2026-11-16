@@ -31,23 +31,23 @@ static const char* kProgramNames[kNumPrograms] = {
 // spiegel van kPresetParams in FxPlugin.cpp — UI pusht de 6 knopwaarden zelf
 // per preset: SUB POETS KNIP GLANS RUIMTE OUTPUT | GALAXY KRACHT LO MID HI
 static const float kUiPresetParams[17][11] = {
-    {0.55f,0.35f,0.40f,0.30f,0.30f, 0.f,  9,100, 0, 0, 0},  // G2B
-    {0.60f,0.40f,0.45f,0.25f,0.22f, 0.f,  9,100, 1, 0, 0},  // DEMBOW
-    {0.65f,0.45f,0.55f,0.15f,0.18f, 0.f,  9,100, 2,-1, 1},  // DRILL
-    {0.45f,0.30f,0.30f,0.40f,0.35f, 0.f,  9, 90, 1, 1, 0},  // RNB
-    {0.50f,0.38f,0.42f,0.35f,0.28f, 0.f,  9,100, 1, 0, 1},  // HOUSE
-    {0.55f,0.36f,0.40f,0.30f,0.26f, 0.f,  9, 95, 1, 1, 0},  // AFRO
-    {0.62f,0.42f,0.50f,0.22f,0.20f, 0.f,  9,100, 2, 0, 0},  // TRAP
-    {0.50f,0.40f,0.35f,0.25f,0.28f, 0.f,  9, 95, 1, 0,-1},  // BOOM
-    {0.52f,0.38f,0.44f,0.36f,0.30f, 0.f,  9,100, 0, 0, 1},  // UKG
-    {0.58f,0.40f,0.46f,0.28f,0.24f, 0.f,  9,100, 1, 0, 1},  // JERSEY
-    {0.55f,0.38f,0.42f,0.32f,0.27f, 0.f,  9,100, 1, 0, 1},  // BOUNCE
-    {0.42f,0.32f,0.28f,0.42f,0.36f, 0.f,  9, 85, 1, 2,-2},  // SOUL
-    {0.48f,0.50f,0.30f,0.20f,0.26f, 0.f,  9, 90, 0, 0,-4},  // LOFI
-    {0.50f,0.36f,0.44f,0.34f,0.28f, 0.f,  9, 95, 0, 1, 1},  // FUNK
-    {0.56f,0.40f,0.36f,0.30f,0.30f, 0.f,  9, 90, 1, 1,-1},  // REGGAE
-    {0.52f,0.36f,0.44f,0.38f,0.28f, 0.f,  9,100, 1, 0, 1},  // DANCE
-    {0.55f,0.37f,0.41f,0.31f,0.27f, 0.f,  9, 95, 1, 1, 0},  // KAWINA
+    {0.55f,0.35f,0.14f,0.30f,0.30f, 0.f,  9,100, 0, 0, 0},
+    {0.60f,0.40f,0.15f,0.25f,0.22f, 0.f,  9,100, 1, 0, 0},
+    {0.65f,0.45f,0.18f,0.15f,0.18f, 0.f,  9,100, 2,-1, 1},
+    {0.45f,0.30f,0.10f,0.40f,0.35f, 0.f,  9, 90, 1, 1, 0},
+    {0.50f,0.38f,0.15f,0.35f,0.28f, 0.f,  9,100, 1, 0, 1},
+    {0.55f,0.36f,0.14f,0.30f,0.26f, 0.f,  9, 95, 1, 1, 0},
+    {0.62f,0.42f,0.17f,0.22f,0.20f, 0.f,  9,100, 2, 0, 0},
+    {0.50f,0.40f,0.12f,0.25f,0.28f, 0.f,  9, 95, 1, 0,-1},
+    {0.52f,0.38f,0.15f,0.36f,0.30f, 0.f,  9,100, 0, 0, 1},
+    {0.58f,0.40f,0.16f,0.28f,0.24f, 0.f,  9,100, 1, 0, 1},
+    {0.55f,0.38f,0.15f,0.32f,0.27f, 0.f,  9,100, 1, 0, 1},
+    {0.42f,0.32f,0.10f,0.42f,0.36f, 0.f,  9, 85, 1, 2,-2},
+    {0.48f,0.50f,0.10f,0.20f,0.26f, 0.f,  9, 90, 0, 0,-4},
+    {0.50f,0.36f,0.15f,0.34f,0.28f, 0.f,  9, 95, 0, 1, 1},
+    {0.56f,0.40f,0.12f,0.30f,0.30f, 0.f,  9, 90, 1, 1,-1},
+    {0.52f,0.36f,0.15f,0.38f,0.28f, 0.f,  9,100, 1, 0, 1},
+    {0.55f,0.37f,0.14f,0.31f,0.27f, 0.f,  9, 95, 1, 1, 0},
 };
 
 class MasterRackUI : public UI
@@ -233,12 +233,15 @@ protected:
             fontSize(8.0f);
             fillColor(g2bsk(fLight,fLight==4?2:5));
             text(80.0f, 148.5f, "LUISTER", nullptr);
-            {   // status-dot: groen=AL GOED · wit=aangepast · amber=heet
+            {   // LUISTER-status als leesbare tekst naast de knop
                 if (fListenState > 0.2f) {
-                    if (fListenState > 0.6f) fillColor(235,205,60);
-                    else if (fListenState < 0.4f) fillColor(232,236,234);
-                    else fillColor(47,191,113);
-                    beginPath(); arc(105.0f, 144.5f, 3.0f, 0.f, 6.2832f, CW); fill();
+                    const char* t; Color c;
+                    if (fListenState > 0.9f)      { t = "LUISTER...";   c = Color(235,205,60); }
+                    else if (fListenState > 0.6f) { t = "HEET — uit";   c = Color(235,130,60); }
+                    else if (fListenState < 0.4f) { t = "AANGEPAST";    c = Color(232,236,234); }
+                    else                          { t = "AL GOED";      c = Color(47,191,113); }
+                    fontSize(9.5f); textAlign(ALIGN_LEFT | ALIGN_MIDDLE); fillColor(c);
+                    text(118.0f, 148.5f, t, nullptr);
                 }
             }
             const float tx = W - 40.0f;
@@ -281,7 +284,7 @@ protected:
 
     bool onMouse(const MouseEvent& ev) override
     {
-        if(!ev.press&&fBtnHeld>=0){setParameterValue(fBtnHeld,0.0f);fBtnHeld=-1;}
+        if(!ev.press&&fBtnHeld>=0){if(fBtnHeld==8)setParameterValue(8,0.0f);fBtnHeld=-1;}
         if (ev.button != 1) return false;
         const float W = getWidth();
         // preset-klik?
@@ -292,10 +295,26 @@ protected:
             { fOn = fOn>0.5f?0.f:1.f; setParameterValue(10, fOn); repaint(); return true; }
             if ((float)(ev.pos.getX()/getScaleFactor()) >= 14.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 44.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 140.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 157.0f)
-            { setParameterValue(8, 1.0f);fBtnHeld=8;; repaint(); return true; }
+            { setParameterValue(8, 1.0f);fBtnHeld=8;
+              // dice ook UI-side: knoppen draaien zichtbaar mee in elke host
+              for (int s = 0; s <= 4; ++s) {
+                  fRnd = fRnd * 1664525u + 1013904223u;
+                  float v = ((fRnd >> 8) % 100) / 100.f;
+                  if (s == 4) v *= 0.45f;              // RUIMTE onder de echo-cap
+                  if (s == 3) v = 0.15f + v * 0.55f;   // GLANS schoon bereik
+                  if (s == 2) v *= 0.20f;              // KNIP nooit boven 20
+                  fValue[s] = v; setParameterValue(parOf(s), v);
+              }
+              fRnd = fRnd * 1664525u + 1013904223u;
+              fValue[6] = (float)(((fRnd >> 8) % 3) * 9 + ((fRnd >> 16) % 9));
+              setParameterValue(7, fValue[6]);
+              fRnd = fRnd * 1664525u + 1013904223u;
+              fValue[7] = 80.f + (float)((fRnd >> 8) % 21);
+              setParameterValue(11, fValue[7]);
+              repaint(); return true; }
             if ((float)(ev.pos.getX()/getScaleFactor()) >= 48.0f && (float)(ev.pos.getX()/getScaleFactor()) <= 112.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 140.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 157.0f)
-            { setParameterValue(6, 1.0f);fBtnHeld=6;; repaint(); return true; }
+            { setParameterValue(6, 1.0f); repaint(); return true; }
             if ((float)(ev.pos.getX()/getScaleFactor()) >= W-40.0f && (float)(ev.pos.getX()/getScaleFactor()) <= W-14.0f &&
                 (float)(ev.pos.getY()/getScaleFactor()) >= 34.0f && (float)(ev.pos.getY()/getScaleFactor()) <= 51.0f)
             { fLight = (fLight+1)%8; repaint(); return true; }
@@ -408,6 +427,7 @@ private:
     int fLight = 0;
 
     int fBtnHeld=-1;
+    unsigned fRnd=987654321u;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MasterRackUI)
 };
 
