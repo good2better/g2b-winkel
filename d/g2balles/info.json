@@ -87,58 +87,6 @@
             "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-INSTRUMENTEN-ALL.zip"
         },
         {
-            "naam": "🎸 G2B-GIM-BASSI-PRO.zip — bas+kick extractor",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-GIM-BASSI-PRO-VST-win.zip"
-        },
-        {
-            "naam": "🌊 G2B-CHORUS.zip — stereo breedte",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/g2b-chorus-v1.zip"
-        },
-        {
-            "naam": "🎙 G2B-LUISTER.zip — audio→MIDI",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Luister.zip"
-        },
-        {
-            "naam": "📞 G2B-OPROEP.zip — neuri→MIDI + drag-out",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Oproep.zip"
-        },
-        {
-            "naam": "💬 G2B-ANTWOORD.zip — call & response",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Antwoord.zip"
-        },
-        {
-            "naam": "⚙️ G2B-GENERATOR.zip — drum+bass fabriek",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Generator.zip"
-        },
-        {
-            "naam": "🎼 G2B-SONG.zip — song-machine",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-SONG.zip"
-        },
-        {
-            "naam": "🎹 G2B-KEYS.zip — 4-laags Kawai",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Keys.zip"
-        },
-        {
-            "naam": "🎚 G2B-MIXER-V2.zip — channel-strip",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/dl/G2B-MIXER-V2.zip"
-        },
-        {
-            "naam": "🥁 G2B-DRUMSBAS.zip — drum+baslijn",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-DrumsBas.zip"
-        },
-        {
-            "naam": "🎛 G2B-PRODUCER.zip — deuntjes-machine",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Producer.zip"
-        },
-        {
-            "naam": "🎸 G2B-AKKOORD.zip — akkoord-plugin",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Akkoord.zip"
-        },
-        {
-            "naam": "🎸 G2B-BAS.zip — bas-plugin",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Bas.zip"
-        },
-        {
             "naam": "🥁 G2B-BASSDRUM.zip — bassdrum VST",
             "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-Bassdrum.zip"
         },
@@ -153,30 +101,6 @@
         {
             "naam": "🥁 G2B-AIRDRUMS.zip — camera-drummen",
             "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-AIRDRUMS.zip"
-        },
-        {
-            "naam": "🌊 G2B-FILTER-WAH.zip — auto-wah",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/g2b-filter-wah-v1.zip"
-        },
-        {
-            "naam": "🔥 G2B-SATURATOR.zip — tape/tube drive",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/g2b-saturator-v1.zip"
-        },
-        {
-            "naam": "📼 G2B-LOFI-MAKER.zip — lofi texture",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/g2b-lofi-v1.zip"
-        },
-        {
-            "naam": "🎵 G2B-MELODY-MAKER.zip — melodie-generator",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/g2b-melody-v1.zip"
-        },
-        {
-            "naam": "🩹 G2B-GLUE-COMP.zip — bus-compressor",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/g2b-glue-comp-v1.zip"
-        },
-        {
-            "naam": "🎹 G2B-CHORDLAB.zip — akkoord-generator",
-            "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/g2b-chordlab-v1.zip"
         },
         {
             "naam": "🖥 G2B-WERKSTATION-v3.zip — complete muziekstudio",
