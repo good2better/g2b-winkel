@@ -1,5 +1,5 @@
 /*
- * G2B KOOR+KEY — UI (NanoVG): 3 knoppen + koor-kiezer + key-display + podium.
+ * G2B KOOR-MIX — UI (NanoVG): 3 knoppen + koor-kiezer + key-display + podium.
  */
 
 #include "DistrhoUI.hpp"
@@ -33,7 +33,7 @@ protected:
         beginPath();rect(0,0,W,H);fillColor(Color(10,14,11));fill();
 
         fontSize(20.f);textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
-        fillColor(Color(61,220,132));text(18.f,22.f,"G2B KOOR+KEY",nullptr);
+        fillColor(Color(61,220,132));text(18.f,22.f,"G2B KOOR-MIX",nullptr);
         fontSize(11.f);fillColor(Color(138,170,152));
         text(18.f,40.f,"jouw stem → heel koor · hoort de toonsoort",nullptr);
 

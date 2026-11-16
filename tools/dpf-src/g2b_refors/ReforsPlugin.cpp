@@ -37,6 +37,20 @@ static const float kEnv[10][10] = {
     {120.f,12000.f, -4.f,+5.f, 0.18f,  80.f,0.30f,0.15f, 0.85f,-2.f}, // STRAAT — ghettoblaster (GIO)
 };
 
+// per-ruimte voorgestelde knopstanden: [AFSTAND, KAMER, MENIGTE, VOLUME]
+static const float kSuggest[10][4] = {
+    { 0.f,20.f, 0.f,85.f}, // STUDIO — zuivere referentie
+    {25.f,70.f,45.f,80.f}, // CLUB — grote ruimte + publiek
+    {30.f,40.f,20.f,75.f}, // AUTO — cabine-dicht
+    {60.f,15.f,10.f,70.f}, // TELEFOON — ver weg, smal
+    {40.f,15.f, 5.f,75.f}, // AIRPODS
+    {50.f,80.f,70.f,80.f}, // FESTIVAL — buiten + menigte
+    {35.f,30.f,15.f,75.f}, // TV
+    {45.f,25.f,10.f,70.f}, // TIENTJE
+    {55.f,75.f,60.f,75.f}, // KELDER
+    {45.f,55.f,40.f,80.f}, // STRAAT
+};
+
 class ReforsPlugin : public Plugin {
 public:
     enum Params { kAfst, kKamer, kMenigte, kVol, kDice, kPreset, kOn, kKracht,
@@ -80,8 +94,9 @@ protected:
         switch(i){
         case kAfst:fAfst=v;break;case kKamer:fKamer=v;break;case kMenigte:fMenigte=v;break;
         case kVol:fVol=v;break;
-        case kDice:if(v>0.5f)rollDice();break;
-        case kPreset:fPreset=v;if(v<0)fPreset=0;if(v>kNumProgs-1)fPreset=(float)(kNumProgs-1);break;
+        case kDice:if(v>0.5f){rollDice();fPush=true;}break;
+        case kPreset:fPreset=v;if(v<0)fPreset=0;if(v>kNumProgs-1)fPreset=(float)(kNumProgs-1);
+            {const float* S=kSuggest[(int)(fPreset+0.5f)];fAfst=S[0];fKamer=S[1];fMenigte=S[2];fVol=S[3];fPush=true;}break;
         case kOn:fOn=v;break;case kKracht:fKr=v;break;}
     }
     void initState(uint32_t, String&, String&) override {}
@@ -195,6 +210,10 @@ protected:
             for(uint32_t i=0;i<frames;i++){outputs[0][i]=inputs[0][i]*d+outputs[0][i]*k;
                                            outputs[1][i]=inputs[1][i]*d+outputs[1][i]*k;}}
         fLevel=fLevelBlk;fLevelBlk=0.f;
+        setParameterValue(kLevel,fLevel);
+        if(fPush){fPush=false;
+            setParameterValue(kOAfst,fAfst);setParameterValue(kOKamer,fKamer);
+            setParameterValue(kOMenigte,fMenigte);setParameterValue(kOVol,fVol);}
     }
 private:
     void rollDice(){
@@ -212,7 +231,7 @@ private:
     static const int kDelMax=44100;
     float fDelL[kDelMax],fDelR[kDelMax]; int fDelW=0;
     float fNse,fNseHP,fCrL,fCrR;
-    float fLevel=0.f,fLevelBlk=0.f;
+    float fLevel=0.f,fLevelBlk=0.f; bool fPush=false;
 };
 
 Plugin* createPlugin() { return new ReforsPlugin(); }

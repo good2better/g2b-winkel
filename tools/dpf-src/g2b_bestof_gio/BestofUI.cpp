@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <ctime>
 
 static const float G2BSK[8][7][3]={
     {{13,15,14},{23,26,25},{232,236,234},{100,110,103},{42,47,45},{47,191,113},{29,122,72}},
@@ -32,7 +33,7 @@ public:
         static const char* lbl[5]={"KRACHT","OUTPUT","DIMENTIES","SFEER","SKIN"};
         std::memcpy(fMin,mins,sizeof(mins)); std::memcpy(fMax,maxs,sizeof(maxs));
         std::memcpy(fValue,defs,sizeof(defs)); std::memcpy(fLabel,lbl,sizeof(lbl));
-        fDrag=-1; fLastY=0.f;
+        fDrag=-1; fLastY=0.f; srand((unsigned)time(nullptr));
         for(int i=0;i<kNInstr;i++){strncpy(fNames[i],kInstrNamesUI[i],15);fNames[i][15]=0;}
     }
 protected:
@@ -146,13 +147,13 @@ protected:
             // instrument pijlen
             float ix=18.f,iy=54.f,iw=W-36.f,ih=52.f;
             if(y>=iy&&y<=iy+ih){
-                if(x<ix+48){setParameterValue(0,fInstr<=0?kNInstr-1:fInstr-1);return true;}
-                if(x>ix+iw-48){setParameterValue(0,fInstr>=kNInstr-1?0:fInstr+1);return true;}
+                if(x<ix+48){float v=(float)(fInstr<=0?kNInstr-1:fInstr-1);setParameterValue(0,v);parameterChanged(0,v);return true;}
+                if(x>ix+iw-48){float v=(float)(fInstr>=kNInstr-1?0:fInstr+1);setParameterValue(0,v);parameterChanged(0,v);return true;}
             }
             // AAN / DICE pills
             float ax=W-66.f,ay=H-30.f;
-            if(x>=ax&&x<=ax+52&&y>=ay&&y<=ay+20){setParameterValue(3,fOn?0.f:1.f);return true;}
-            if(x>=ax&&x<=ax+52&&y>=ay-28&&y<=ay-8){setParameterValue(6,1.f);fBtnHeld=6;;return true;}
+            if(x>=ax&&x<=ax+52&&y>=ay&&y<=ay+20){float v=fOn?0.f:1.f;setParameterValue(3,v);parameterChanged(3,v);return true;}
+            if(x>=ax&&x<=ax+52&&y>=ay-28&&y<=ay-8){float v=(float)(int)(rand()/(RAND_MAX+1.0)*kNInstr);setParameterValue(0,v);parameterChanged(0,v);return true;}
             // knobs
             const int nk=4;float step=(W-40)/nk;
             for(int i=0;i<nk;i++){float cx=20+step*(i+0.5f),cy=214.f;
@@ -166,7 +167,7 @@ protected:
             int p=paramOf(fDrag); if(p<0)return true;
             float nv=fValue[fDrag]+dy*(fMax[fDrag]-fMin[fDrag])/200.f;
             if(nv<fMin[fDrag])nv=fMin[fDrag]; if(nv>fMax[fDrag])nv=fMax[fDrag];
-            setParameterValue(p,nv);
+            setParameterValue(p,nv);fValue[fDrag]=nv;repaint();
         }
         return fDrag>=0;
     }

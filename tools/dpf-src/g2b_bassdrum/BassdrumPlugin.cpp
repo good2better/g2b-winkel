@@ -24,7 +24,7 @@ protected:
     const char* getLicense() const override { return "G2B"; }
     uint32_t getVersion() const override { return d_version(1,0,0); }
     int64_t getUniqueId() const override { return d_cconst('G','2','P','d'); }
-    enum { kBank=0,kTune,kDecay,kLo,kHi,kLevel,kOn,kGalaxy,kSfeer,kDice,kPadSel,kPadTune,kPadDec,kPadTrig,kNumParams };
+    enum { kBank=0,kTune,kDecay,kLo,kHi,kLevel,kOn,kGalaxy,kSfeer,kDice,kPadSel,kPadTune,kPadDec,kPadTrig,kPadMask,kNumParams };
     void initParameter(uint32_t i, Parameter& p) override {
         p.ranges.def=0.f; p.hints=kParameterIsAutomatable;
         switch(i){
@@ -42,10 +42,11 @@ protected:
         case kPadTune:p.name="PAD TOON"; p.symbol="padtune";p.ranges.min=-12;p.ranges.max=12;p.ranges.def=0;p.unit="st";break;
         case kPadDec: p.name="PAD LENGTE";p.symbol="paddec";p.ranges.min=0.2f;p.ranges.max=2.5f;p.ranges.def=1.f;p.unit="x";break;
         case kPadTrig:p.name="PAD SLAG"; p.symbol="padtrig";p.hints|=kParameterIsBoolean;p.ranges.min=0;p.ranges.max=1;break;
+        case kPadMask:p.name="PAD MASK"; p.symbol="padmask";p.hints|=kParameterIsInteger;p.ranges.min=0;p.ranges.max=65535;break;
         }
     }
     float getParameterValue(uint32_t i) const override {
-        switch(i){case kBank:return fBank;case kTune:return fTune;case kDecay:return fDecay;case kLo:return fLo;case kHi:return fHi;case kLevel:return fLevel;case kOn:return fOn;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;case kDice:return fDice;case kPadSel:return fPadSel;case kPadTune:return fPadT[(int)fPadSel];case kPadDec:return fPadD[(int)fPadSel];case kPadTrig:return 0;}return 0.f;
+        switch(i){case kBank:return fBank;case kTune:return fTune;case kDecay:return fDecay;case kLo:return fLo;case kHi:return fHi;case kLevel:return fLevel;case kOn:return fOn;case kGalaxy:return fGalaxyV;case kSfeer:return fSfeerV;case kDice:return fDice;case kPadSel:return fPadSel;case kPadTune:return fPadT[(int)fPadSel];case kPadDec:return fPadD[(int)fPadSel];case kPadTrig:return 0;case kPadMask:return (float)fPadMask;}return 0.f;
     }
     void setParameterValue(uint32_t i, float v) override {
         switch(i){
@@ -57,7 +58,8 @@ protected:
         case kPadSel:fPadSel=v;break;
         case kPadTune:fPadT[(int)fPadSel]=v;break;
         case kPadDec:fPadD[(int)fPadSel]=v;break;
-        case kPadTrig:if(v>0.5f)hitPad((int)fPadSel);break;
+        case kPadTrig:if(v>0.5f)hitSel(1.f);break;
+        case kPadMask:fPadMask=(int)(v+0.5f);break;
         }
     }
     void initState(uint32_t index, String& name, String& def) override {
@@ -114,7 +116,9 @@ protected:
                 if(m.size>=3&&(m.data[0]&0xF0)==0x90&&m.data[2]>0){
                     int pad=m.data[1]-36;
                     if(pad>=0&&pad<16){
-                        hitPad(pad,m.data[2]/127.f);
+                        const float vl=m.data[2]/127.f;
+                        if(fPadMask){for(int p2=0;p2<16;p2++) if(fPadMask&(1<<p2)) hitPad(p2,vl);}
+                        else hitPad(pad,vl);
                     }
                 } else if(m.size>=3&&((m.data[0]&0xF0)==0x80||((m.data[0]&0xF0)==0x90&&m.data[2]==0))){
                     for(auto& v:fV) if(v.on&&v.note==m.data[1]&&v.rel==0.f) v.rel=1.f;
@@ -131,6 +135,10 @@ protected:
         g2b_post(nullptr,out,frames,sr,fOn,100.f,fGal,&fSf,false);
     }
 private:
+    void hitSel(float vel){ // PAD SLAG: speel alle geselecteerde pads gestapeld (browser-gedrag)
+        if(!fPadMask){hitPad((int)fPadSel,1.f);return;}
+        for(int p2=0;p2<16;p2++) if(fPadMask&(1<<p2)) hitPad(p2,1.f);
+    }
     void hitPad(int pad,float vel=1.f){ // pad 0-15 → noot 36+pad; per-pad toon/lengte meegenomen
         const PadBank& B=kPadBanks[(int)fBank];
         for(auto& v:fV) if(v.on&&v.note==36+pad){v.on=false;} // retrigger: kill zelfde pad
@@ -151,6 +159,7 @@ private:
     Galaxy fGal; Sfeer fSf;
     float fScope[40];uint32_t fScopeN=0;int fDecim=0;
     float fPadHit[16]={};
+    int fPadMask=0;
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BassdrumPlugin)
 };
 Plugin* createPlugin(){return new BassdrumPlugin();}

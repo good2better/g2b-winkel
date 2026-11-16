@@ -46,7 +46,7 @@ protected:
         case kOn:fOn=v;break;
         case kGalaxy:fGalaxyV=v;fGal.setPos((int)(v+0.5f));break;
         case kSfeer:fSfeerV=v;fSf.setMode((int)(v+0.5f));break;
-        case kDice:fDice=v;if(v>0.5f){fRnd=fRnd*1664525u+1013904223u;fInstr=(float)((fRnd>>9)%kInstrCount);}fDice=0.f;break;
+        case kDice:fDice=v;if(v>0.5f){fRnd=fRnd*1664525u+1013904223u;fInstr=(float)((fRnd>>9)%kInstrCount);setParameterValue(kInstr,fInstr);}fDice=0.f;break;
         }
     }
     void initState(uint32_t index, String& name, String& def) override {

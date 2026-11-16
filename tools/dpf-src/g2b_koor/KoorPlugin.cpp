@@ -1,4 +1,4 @@
-// G2B KOOR+KEY — vocal → koor-generator + toonsoort-detectie in één.
+// G2B KOOR-MIX — vocal → koor-mix + master-hulp (toonsoort-detectie).
 // Vocal erin → lead + harmonie-stemmen eruit (delay-pitchshifters, podium-breedte).
 // Toonsoort: leert uit MIDI-in (Krumhansl, zelfde als SLEUTEL-helper) of kies vast.
 // © G2B (good2better) — MIT.
@@ -41,7 +41,7 @@ public:
     KoorPlugin() : Plugin(kNumParams,0,0) { resetVoices_(); }
 
 protected:
-    const char* getLabel() const override { return "G2B KOOR+KEY"; }
+    const char* getLabel() const override { return "G2B KOOR-MIX"; }
     const char* getDescription() const override
     { return "G2B koor-machine: vocal → lead+harmonie-stemmen. Toonsoort via MIDI-learn of vast. Presets: duo/triak/gospel/cathedral."; }
     const char* getMaker() const override { return "G2B (good2better)"; }

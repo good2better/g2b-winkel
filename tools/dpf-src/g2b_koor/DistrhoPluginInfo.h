@@ -1,7 +1,7 @@
 #ifndef DISTRHO_PLUGIN_INFO_H
 #define DISTRHO_PLUGIN_INFO_H
 #define DISTRHO_PLUGIN_BRAND "G2B"
-#define DISTRHO_PLUGIN_NAME  "G2B KOOR+KEY"
+#define DISTRHO_PLUGIN_NAME  "G2B KOOR-MIX"
 #define DISTRHO_PLUGIN_URI   "https://good2better.nl/plugins/koor"
 #define DISTRHO_PLUGIN_CLAP_ID "nl.g2b.koor"
 #define DISTRHO_PLUGIN_BRAND_ID   G2Bt
