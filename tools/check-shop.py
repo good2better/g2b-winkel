@@ -110,10 +110,16 @@ if '--stripe' in sys.argv:
         for pl in pls:
             u=((pl.get('after_completion') or {}).get('redirect') or {}).get('url','')
             m=re.search(r'k=([A-Za-z0-9_-]+)',u)
-            if m and not os.path.isdir('d/'+m.group(1)):
-                F(f'Stripe {pl["id"]}: redirect k={m.group(1)} heeft geen map')
-            if m and not re.match(r'^[0-9a-f]{8,}(-[a-z0-9]+)?$|^x[0-9a-f]{16,}$',m.group(1)):
-                F(f'Stripe {pl["id"]}: voorspelbare sleutel {m.group(1)}')
+            if m:
+                kd2=m.group(1)
+                if not re.match(r'^x[0-9a-f]{16,}$',kd2):
+                    F(f'Stripe {pl["id"]}: voorspelbare sleutel {kd2}')
+                elif not os.path.isdir('d/'+kd2):
+                    F(f'Stripe {pl["id"]}: redirect k={kd2} heeft geen map')
+                else:
+                    inf=json.load(open('d/'+kd2+'/info.json'))
+                    if not (inf.get('bestanden') or inf.get('url') or inf.get('bestand')):
+                        F(f'Stripe {pl["id"]}: k={kd2} levert niets')
             mb=re.search(r'gsbooks/bedankt\.html\?p=([A-Za-z0-9_-]+)',u)
             if mb:
                 if not re.match(r'^b[0-9a-f]{16,}$',mb.group(1)):
