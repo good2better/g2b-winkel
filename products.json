@@ -253,17 +253,17 @@
   },
   {
    "id": "g2bstudio",
-   "titel": "G2B STUDIO-DEAL — MIXER + REFORS + GELUID→MIDI + BAND",
-   "prijs": "€ 99",
+   "titel": "G2B STUDIO-DEAL — MIXER + REFORS + GELUID→MIDI",
+   "prijs": "€ 79",
    "groep": "bundels",
    "soort": "digitaal",
    "badge": "DEAL",
    "cover": "media/g2b-studio-pack-cover.png",
    "uitgelicht": true,
-   "beschrijving": "De hele studio-rij: MIXER (slimme channel-strip VST3/CLAP) + REFORS (referentie-simulator VST3/CLAP) + GELUID→MIDI en BAND als browser-versies (offline, geen installatie). Normaal €124,80 — nu €99, direct na betaling.",
+   "beschrijving": "De studio-rij: MIXER (slimme channel-strip VST3/CLAP) + REFORS (referentie-simulator VST3/CLAP) + GELUID→MIDI als browser-versie (offline, geen installatie). Normaal €89,85 — nu €79, direct na betaling.",
    "links": {
     "download": "bedankt.html?k=g2bstudio",
-    "stripe": "https://buy.stripe.com/aFacN58UUeqD7nN7K55J61I"
+    "stripe": "https://buy.stripe.com/14AfZhefeaan4bBd4p5J630"
    },
    "upsell": [
     "g2balles"
@@ -279,7 +279,7 @@
    "badge": "DEAL",
    "cover": "media/g2bprodsuite-cover.png",
    "uitgelicht": true,
-   "beschrijving": "Alle 7 AURA v6.0-modules (Suri-Pads & World, All-Instruments, Bass & Drum 2-in-1, Dice Synth, Dren Studio, FX-Rack, MIDI-Forge) als browser-studio, desktop-app én VST3 + alle G2B VST-plugins + G2B BREIN, BAND en GELUID→MIDI als browser-versies, PRODUCER SUITE, PILL-PACK, STAPEL-DICE PRO en Beat Maker PRO. Eén keer betalen, alles voor altijd.",
+   "beschrijving": "Alle 7 AURA v6.0-modules (Suri-Pads & World, All-Instruments, Bass & Drum 2-in-1, Dice Synth, Dren Studio, FX-Rack, MIDI-Forge) als browser-studio, desktop-app én VST3 + alle G2B VST-plugins + G2B BREIN, GELUID→MIDI als browser-versies, PRODUCER SUITE, PILL-PACK, STAPEL-DICE PRO en Beat Maker PRO. Eén keer betalen, alles voor altijd.",
    "links": {
     "download": "bedankt.html?k=g2balles",
     "stripe": "https://buy.stripe.com/00w8wP7QQ5U77nN3tP5J61J"
