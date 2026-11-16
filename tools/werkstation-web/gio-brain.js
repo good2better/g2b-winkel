@@ -45,6 +45,7 @@ function intent(t){
  if(!g)for(var k2 in ALIAS){if(t.indexOf(k2)>=0){g=ALIAS[k2];break}}
  if(/help|overzicht|wat kan je|commando/.test(t))return{a:'help'};
  if(/akkoord/.test(t)){var kk=key||(t.match(/\b([a-g](#|b|is|es)?\s*(mineur|maj|m))\b/)||[])[1];if(kk)return{a:'akkoorden',key:kk}}
+ if(/samen|begeleid|stap|help me bouwen|maak samen|copro|co-?pilot/.test(t))return{a:'samen',g:g,bpm:bpm};
  if(/referentie|net als mijn|zoals mijn|vergelijk mijn|verbeter mijn|kwaliteit/.test(t))return{a:'ref'};
  if(/maak|genereer|bouw|nieuw|beat|dobbel|rol|willekeur|song|nummer|track/.test(t))return{a:'beat',g:g||'house',bpm:bpm||null,song:/song|nummer/.test(t)};
  if(/master/.test(t))return{a:'tool',tool:'master'};
@@ -62,13 +63,41 @@ function intent(t){
 function run(t){
  var i=intent(t);if(!i){say('❓ niet begrepen — typ <b>help</b> voor alle commando\'s');return}
  switch(i.a){
-  case 'help':say('📋 <b>voorbeelden:</b><br>• maak houce beat 128 bpm<br>• nieuwe dembow<br>• trap op 145<br>• iets donkers voor een film<br>• akkoorden bij a mineur<br>• master / menger / melodie / refors / stapel / gaw<br>• welke key bij strijd?<br>• referentie — gebruik je eigen beat als leidraad');break;
+  case 'help':say('📋 <b>voorbeelden:</b><br>• maak houce beat 128 bpm<br>• nieuwe dembow<br>• trap op 145<br>• iets donkers voor een film<br>• akkoorden bij a mineur<br>• master / menger / melodie / refors / stapel / gaw<br>• welke key bij strijd?<br>• referentie — gebruik je eigen beat als leidraad<br>• <b>samen bouwen</b> — stap-voor-stap: jij keurt elke stap goed');break;
   case 'akkoorden':var acc=akkoorden(i.key);say(acc?('🎹 '+i.key.toUpperCase()+': <b>'+acc.join(' · ')+'</b>'):'❓ key niet gevonden — probeer bv. "akkoorden bij a mineur"');break;
   case 'mood':var M=MOOD[i.mood];say('💡 bij <b>'+i.mood+'</b> past: <b>'+M.k+'</b>, '+M.g+' ±'+M.b+'bpm — '+M.u+'. <a href="#" onclick="GIO.run(\'maak '+M.g+' '+M.b+' bpm\');return false" style="color:#7CF5B0">maak hem →</a>');break;
   case 'ref':say('🎯 <b>eigen beat als referentie</b> — Beat Maker opent; sleep je beat in de bovenste dropzone → hij herbouwt het grid met G2B-sounds. Jouw oor is de smaak-filter: 🔒 lock de rijen die goed zijn, 🎲 rol de rest opnieuw.');open(TOOLS.beat[0]+'?ref=1');break;
   case 'tool':var T=TOOLS[i.tool];say('🔧 '+T[1]);open(T[0]);break;
   case 'beat':var u=TOOLS.beat[0]+'?g='+i.g+(i.bpm?'&bpm='+i.bpm:'')+(i.song?'&song=1':'&go=1');say('🎲 '+i.g.toUpperCase()+(i.bpm?' @'+i.bpm:'')+' — open Beat Maker');open(u);break;
+  case 'samen':startBuild(i);break;
  }}
+
+/* ---- SAMEN BOUWEN: stap-voor-stap modus — jij keurt elke stap goed ---- */
+var CTX=null;
+var STAP=[
+ {naam:'genre',vraag:function(){return 'STAP 1/6 — welk genre? Kies of typ zelf.'},knoppen:function(){return Object.keys(GENRES).filter(function(g){return g===ALIAS[g]||!ALIAS[g]}).slice(0,10).map(function(g){return {t:g,v:g}})}},
+ {naam:'sfeer',vraag:function(){return 'STAP 2/6 — welke sfeer? (typ ook eigen mood)'},knoppen:function(){return Object.keys(MOOD).map(function(m){return {t:m,v:m}})}},
+ {naam:'drums',vraag:function(){var M=CTX.sfeer&&MOOD[CTX.sfeer];var g=CTX.genre||(M?M.g:'house');var b=CTX.bpm||(M?M.b:GENRES[g]);return 'STAP 3/6 — drums: '+g+' @'+b+'bpm'+(M?' ('+M.u+')':'')},knoppen:function(){return [{t:'🎲 maak drums',v:'_drums'},{t:'⏭ overslaan',v:'_skip'}]}},
+ {naam:'melodie',vraag:function(){return 'STAP 4/6 — melodie/akkoorden erbij? (MELODIE geeft varianten, jij kiest)'},knoppen:function(){return [{t:'🎼 open MELODIE',v:'_melodie'},{t:'🎹 toon akkoorden',v:'_akk'},{t:'⏭ overslaan',v:'_skip'}]}},
+ {naam:'structuur',vraag:function(){return 'STAP 5/6 — song-structuur (intro/refrein/drop) met LAAGBAAS?'},knoppen:function(){return [{t:'🧠 open LAAGBAAS',v:'_laag'},{t:'⏭ overslaan',v:'_skip'}]}},
+ {naam:'mix-master',vraag:function(){return 'STAP 6/6 — afwerken: MENGER checkt de mix, MASTER maakt hem klaar'},knoppen:function(){return [{t:'🎛 MENGER',v:'_menger'},{t:'💎 MASTER',v:'_master'},{t:'✅ klaar',v:'_done'}]}}];
+function startBuild(i){CTX={stap:0,genre:i.g,bpm:i.bpm,sfeer:null};say('🤝 <b>SAMEN BOUWEN</b> — ik stel voor, jij keurt goed of past aan. <a href="#" onclick="GIO._stop();return false" style="color:#B77">stoppen</a>');stap()}
+function stap(){var S=STAP[CTX.stap];if(!S){einde();return}var kb=S.knoppen().map(function(k){return '<a href="#" onclick="GIO._kies(\''+k.v+'\');return false" style="display:inline-block;margin:2px 5px 0 0;padding:4px 10px;border:1px solid #2C4A38;border-radius:14px;color:#7CF5B0;font-size:12px">'+k.t+'</a>'}).join('');
+ say('🪜 '+S.vraag()+'<br>'+kb)}
+function kies(v){var S=STAP[CTX.stap];
+ if(v==='_skip'){CTX.stap++;stap();return}
+ if(v==='_drums'){var M=CTX.sfeer&&MOOD[CTX.sfeer];var g=CTX.genre||(M?M.g:'house');var b=CTX.bpm||(M?M.b:GENRES[g]);open(TOOLS.beat[0]+'?g='+g+'&bpm='+b+'&go=1');CTX.stap++;stap();return}
+ if(v==='_melodie'){open(TOOLS.melodie[0]);CTX.stap++;stap();return}
+ if(v==='_akk'){var M2=CTX.sfeer&&MOOD[CTX.sfeer];run('akkoorden bij '+(M2?M2.k:'a mineur'));return}
+ if(v==='_laag'){open(TOOLS.laagbaas[0]);CTX.stap++;stap();return}
+ if(v==='_menger'){open(TOOLS.menger[0]);return}
+ if(v==='_master'){open(TOOLS.master[0]);return}
+ if(v==='_done'){einde();return}
+ if(STAP[CTX.stap].naam==='genre'){CTX.genre=ALIAS[v]||v;CTX.stap++;stap();return}
+ if(STAP[CTX.stap].naam==='sfeer'){CTX.sfeer=v;var M3=MOOD[v];if(M3){if(!CTX.genre)CTX.genre=M3.g;if(!CTX.bpm)CTX.bpm=M3.b}CTX.stap++;stap();return}}
+function einde(){var M=CTX&&CTX.sfeer&&MOOD[CTX.sfeer];say('✅ <b>samen gebouwd!</b> '+(CTX.genre||'geen genre')+(CTX.bpm?' @'+CTX.bpm+'bpm':'')+(M?', sfeer '+CTX.sfeer:'')+' — typ <b>samen bouwen</b> voor een nieuwe.');CTX=null}
+function stopBuild(){CTX=null;say('🛑 samen-bouw gestopt.')}
+
 var AI=null;
 function probe(){fetch('http://localhost:11434/api/tags',{method:'GET'}).then(function(r){return r.json()}).then(function(d){
  AI=(d.models||[]).map(function(m){return m.name})[0]||null;
@@ -76,6 +105,7 @@ function probe(){fetch('http://localhost:11434/api/tags',{method:'GET'}).then(fu
 }).catch(function(){var b=document.getElementById('gioAi');if(b)b.textContent='🧠 regel-parser (Ollama niet gevonden — alles werkt al)'});}
 function aiParse(t){return fetch('http://localhost:11434/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:AI,stream:false,prompt:'Vertaal deze muziek-opdracht naar JSON {actie:beat|tool|akkoorden|mood|help, genre, bpm, key, tool, mood}. Genres: '+Object.keys(GENRES).join(',')+'. Tools: master,menger,melodie,refors,laagbaas,stapel,airdrums,midibib,gaw. Alleen JSON.\n\nOpdracht: '+t})}).then(function(r){return r.json()}).then(function(d){try{return JSON.parse(d.response.match(/\{[\s\S]*\}/)[0])}catch(e){return null}}).catch(function(){return null});}
 function go(){var inp=document.getElementById('gioIn');var t=(inp.value||'').trim();if(!t)return;inp.value='';say('<b style="color:#8AA">› '+t+'</b>');
+ if(CTX){var low=t.toLowerCase();var S=STAP[CTX.stap];if(S.naam==='genre'){for(var gg in GENRES){if(low.indexOf(gg)>=0){kies(gg);return}}say('❓ typ een genre (bv. house, trap, soca) of klik');return}if(S.naam==='sfeer'){for(var mm in MOOD){if(low.indexOf(mm)>=0){kies(mm);return}}CTX.sfeer=t;CTX.stap++;stap();return}}
  if(AI){aiParse(t).then(function(j){if(j&&j.actie){var s=j.actie==='beat'?('maak '+(j.genre||'house')+' '+(j.bpm||'')+'bpm'):(j.actie==='tool'?j.tool:(j.actie==='akkoorden'?('akkoorden bij '+(j.key||'c')):(j.actie==='mood'?j.mood:'help')));run(s)}else run(t)})}else run(t);}
 function boot(){
  var h=document.createElement('div');h.id='gioPanel';
@@ -83,7 +113,7 @@ function boot(){
  +'<h2>🤖 GIO — jouw commando-brein</h2><div style="font-size:12px;color:#7B9B85">typ een opdracht, ik stuur je tools aan — offline, gratis</div><div id="gioLog"></div><input id="gioIn" placeholder="bijv. maak houce beat 128 bpm — of: iets donkers voor een film" autocomplete="off"><div id="gioAi">🧠 zoeken naar lokaal model…</div>';
  var an=document.querySelector('footer,.foot')||document.body;an.parentNode.insertBefore(h,an);
  document.getElementById('gioIn').addEventListener('keydown',function(e){if(e.key==='Enter')go()});
- window.GIO={run:function(t){say('<b style="color:#8AA">› '+t+'</b>');run(t)}};
+ window.GIO={run:function(t){say('<b style="color:#8AA">› '+t+'</b>');run(t)},_kies:kies,_stop:stopBuild};
  probe();
  say('👋 GIO klaar. Typ <b>help</b> voor voorbeelden — bv. <i>maak houce beat 128 bpm</i>.');
 }
