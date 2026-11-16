@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B CLUB — jouw maand-code</title>
+<meta name="robots" content="noindex">
+<style>
+body{background:#0a0f0a;color:#e8f5ec;font-family:Inter,system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.box{background:#111a12;border:1px solid #1f3a24;border-radius:18px;padding:38px;max-width:420px;text-align:center}
+h1{color:#4ade80;font-size:1.35rem;letter-spacing:1px;margin:0 0 8px}
+p{color:#9db8a4;font-size:.85rem;line-height:1.5}
+.code{margin:22px 0;padding:18px;background:#0b120c;border:1px dashed #2fbf71;border-radius:12px;font-size:26px;font-weight:800;letter-spacing:3px;color:#4ade80;user-select:all}
+.kopie{background:#2fbf71;color:#04120a;font-weight:800;border:0;border-radius:10px;padding:12px 22px;font-size:15px;cursor:pointer}
+a.apps{display:block;margin-top:18px;color:#4ade80;font-weight:700;text-decoration:none}
+.small{margin-top:20px;font-size:.72rem;color:#5c7a63}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>🔑 G2B CLUB — maand-code</h1>
+  <p id="uitleg">De club-code wisselt elke maand. Vul deze code in bij elke club-app (1× per apparaat — hij wordt onthouden tot de maand om is).</p>
+  <div class="code" id="code">…</div>
+  <button class="kopie" onclick="navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('code').textContent);this.textContent='GEKOPIEERD ✓'">KOPIEER CODE</button>
+  <a class="apps" href="club-apps.html">→ naar de club-apps</a>
+  <p class="small">Deze pagina bookmarken = elke maand je nieuwe code hier halen.</p>
+</div>
+<script>
+/* zelfde afleiding als js/g2b-gate.js (CLUB_SALT + JJJJMM) */
+async function hex(s){
+  var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
+  return [].map.call(new Uint8Array(b),function(x){return x.toString(16).padStart(2,'0')}).join('');
+}
+var n=new Date(),ym=n.getFullYear()*100+(n.getMonth()+1);
+hex('g2bklub::rot::v1::'+ym).then(function(h){
+  document.getElementById('code').textContent='G2B-'+h.slice(0,8).toUpperCase();
+});
+</script>
+</body>
+</html>

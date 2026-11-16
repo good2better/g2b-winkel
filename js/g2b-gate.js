@@ -7,16 +7,31 @@
   var HASHES = {
     mijn:   ['a6027a131916280eab4a9f091cf28b36eb1dc59285023ce8c2403a76f24ff982'],
     vriend: ['f0b9b68f41a25aee79b21cc1e0c1309b9c683b1d3f300d1dca427cd653c157c0',
-             'a5e7193175ccdc423ce1a4a31b5856456c4e3cffb147a09a8fd9a608bbbd4a89'],
-    club:   ['cff60c87705041c98f762c822d780d4a2076f2c747240a62e1f71f340fca3b34',
-             '95b714bba3b80d76c800206ade5dfe20e189ef16d5313ec59d54672fa1efc7cf',
-             '22985a253e7a7ca83f454c7c5e4f5ace779b007fe333c70d13a9cf4c007b22d6',
-             '9233b46e6bdc591cee681f100d0e360ba9062ec04c16946d62c723bd95a7334d']
+             'a5e7193175ccdc423ce1a4a31b5856456c4e3cffb147a09a8fd9a608bbbd4a89']
   };
+  /* CLUB = maand-code: g2b-<8 hex uit sha256(salt+JJJJMM)> — huidige + vorige maand geldig.
+     Zo verloopt een gedeelde/opgezegde code vanzelf; nieuwe code staat op club-code.html. */
+  var CLUB_SALT = 'g2bklub::rot::v1::';
   var tier = (document.currentScript && document.currentScript.dataset.tier) || 'inner';
   var ALLOWED = tier === 'mijn' ? HASHES.mijn
-    : tier === 'leden' ? HASHES.mijn.concat(HASHES.vriend, HASHES.club)
+    : tier === 'leden' ? HASHES.mijn.concat(HASHES.vriend)
     : HASHES.mijn.concat(HASHES.vriend);
+
+  function clubMonths() {
+    var n = new Date(), out = [];
+    for (var i = 0; i < 2; i++) {
+      var m = new Date(n.getFullYear(), n.getMonth() - i, 1);
+      out.push(m.getFullYear() * 100 + (m.getMonth() + 1));
+    }
+    return out;
+  }
+  async function isClubCode(v) {
+    for (var ym of clubMonths()) {
+      var want = 'g2b-' + (await hex(CLUB_SALT + ym)).slice(0, 8);
+      if (v === want) return true;
+    }
+    return false;
+  }
 
   function _sha256(ascii) {
     function rr(v, a) { return (v >>> a) | (v << (32 - a)); }
@@ -100,7 +115,7 @@
     async function unlock() {
       var v = inp.value.trim().toLowerCase(); if (!v) return;
       var h = await hex(v);
-      if (ALLOWED.indexOf(h) >= 0) {
+      if (ALLOWED.indexOf(h) >= 0 || (tier === 'leden' && await isClubCode(v))) {
         try { localStorage.setItem('g2b_aura_licentie', v); sessionStorage.setItem('g2b_gate_' + tier, '1'); } catch (e) {}
         g.remove();
       } else { g.querySelector('#g2berr').style.display = 'block'; inp.value = ''; inp.focus(); }
@@ -112,7 +127,8 @@
   async function tryStored() {
     try {
       var v = (localStorage.getItem('g2b_aura_licentie') || '').trim().toLowerCase();
-      if (v && v !== 'ok' && v.length >= 4) return ALLOWED.indexOf(await hex(v)) >= 0;
+      if (v && v !== 'ok' && v.length >= 4)
+        return ALLOWED.indexOf(await hex(v)) >= 0 || (tier === 'leden' && await isClubCode(v));
       if (sessionStorage.getItem('g2b_gate_' + tier) === '1') return true;
     } catch (e) {}
     return false;

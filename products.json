@@ -8,7 +8,6 @@
    "prijs": "€ 34,95",
    "links": {
     "koop": "bestel.html?p=g2bdicesynth",
-    "download": "bedankt.html?k=g2bdicesynth",
     "stripe": "https://buy.stripe.com/8x2cN5c76dmz5fF5BX5J61v"
    },
    "groep": "plugins",
@@ -61,7 +60,6 @@
    "beschrijving": "2-in-1 browsertool (werkt offline): 🎲 STAPEL laagt je one-shots tot nieuwe sounds (stemming, fase-fix, dubbel, lock, 🎲5x batch, wav-export) én 🎹 DICE-SYNTH — dobbel synth-sounds in 5 modi met slotjes, mutate en undo, speel op je keyboard, alles download je als .wav. PROMPT-MAKER: typ je geluid ('donkere techno kick') en hij dobbelt de juiste synth-setting.",
    "links": {
     "stripe": "https://buy.stripe.com/14A14n5IIgyLeQf2pL5J62Z",
-    "download": "bedankt.html?k=stapeldicefull",
     "browser": "stapeldice-lite.html"
    },
    "video": "media/stapeldice-demo.mp4",
@@ -82,7 +80,6 @@
    "prijs": "€ 29,95",
    "links": {
     "koop": "bestel.html?p=g2bmaster",
-    "download": "bedankt.html?k=g2bmaster",
     "browser": "tools/master-web/master.html",
     "stripe": "https://buy.stripe.com/bJe3cv5II6Yb5fFaWh5J61u"
    },
@@ -111,7 +108,6 @@
    "prijs": "€ 9,95",
    "links": {
     "koop": "bestel.html?p=g2bpillpack",
-    "download": "bedankt.html?k=g2bpillpack",
     "stripe": "https://buy.stripe.com/bJedR98UU5U74bB4xT5J61t"
    },
    "groep": "plugins",
@@ -136,7 +132,6 @@
    "prijs": "€ 24,95",
    "links": {
     "koop": "bestel.html?p=g2bmixer",
-    "download": "bedankt.html?k=g2bmixer",
     "browser": "mixer.html",
     "stripe": "https://buy.stripe.com/fZu3cv1ssber4bBfcx5J61x"
    },
@@ -164,7 +159,6 @@
    "prijs": "€ 19,95",
    "links": {
     "koop": "bestel.html?p=g2bgeluidmidi",
-    "download": "bedankt.html?k=g2bgeluidmidi",
     "stripe": "https://buy.stripe.com/fZu14n7QQ1DRfUj4xT5J631"
    },
    "groep": "plugins",
@@ -190,7 +184,6 @@
    "prijs": "€ 29,95",
    "links": {
     "koop": "bestel.html?p=g2brefors",
-    "download": "bedankt.html?k=g2brefors",
     "browser": "tools/refors-web/refors.html",
     "stripe": "https://buy.stripe.com/bJe5kD3AAciv37xfcx5J61y"
    },
@@ -218,10 +211,9 @@
    "groep": "apps",
    "soort": "digitaal",
    "cover": "media/covers/g2bclub-abbo.png",
-   "beschrijving": "Één actieve abonnementscode ontgrendelt álle G2B browser-modules tegelijk (alle AURA-modules, GAW-lite, Refors e.a.) inclusief .MID/.WAV-export, op al je apparaten. Maandelijks opzegbaar. Onze nummer 1 keuze.",
+   "beschrijving": "Één club-code ontgrendelt álle G2B browser-modules tegelijk (alle AURA-modules, GAW-lite, Refors e.a.) inclusief .MID/.WAV-export, op al je apparaten. De code wisselt elke maand — nieuwe code haal je zo op je leden-pagina. Maandelijks opzegbaar. Onze nummer 1 keuze.",
    "links": {
     "stripe": "https://buy.stripe.com/3cIeVd5IIeqDcI76G15J62O",
-    "download": "bedankt.html?k=g2bclub",
     "browser": "club-apps.html"
    },
    "uitgelicht": true,
@@ -242,7 +234,6 @@
    "uitgelicht": true,
    "beschrijving": "3 topper-tools voor de prijs van 2: PILL-PACK (5 genre-pills) + STAPEL-DICE PRO (browser stapelaar) + MASTER (mastering-plugin). Normaal €54,85 — nu €49, één Stripe-betaling levert meteen alle downloads.",
    "links": {
-    "download": "bedankt.html?k=g2bstarter",
     "stripe": "https://buy.stripe.com/14A28r5II5U7azZ3tP5J61H"
    },
    "upsell": [
@@ -262,7 +253,6 @@
    "uitgelicht": true,
    "beschrijving": "De studio-rij: MIXER (slimme channel-strip VST3/CLAP) + REFORS (referentie-simulator VST3/CLAP) + GELUID→MIDI als browser-versie (offline, geen installatie). Normaal €74,85 — nu €69, direct na betaling.",
    "links": {
-    "download": "bedankt.html?k=g2bstudio",
     "stripe": "https://buy.stripe.com/4gM14n0oo3LZ37x6G15J632"
    },
    "upsell": [
@@ -281,7 +271,6 @@
    "uitgelicht": true,
    "beschrijving": "Alle 7 AURA v6.0-modules (Suri-Pads & World, All-Instruments, Bass & Drum 2-in-1, Dice Synth, Dren Studio, FX-Rack, MIDI-Forge) als browser-studio, desktop-app én VST3 + alle G2B VST-plugins + G2B BREIN, GELUID→MIDI als browser-versies, PRODUCER SUITE, PILL-PACK, STAPEL-DICE PRO en Beat Maker PRO. Eén keer betalen, alles voor altijd.",
    "links": {
-    "download": "bedankt.html?k=g2balles",
     "stripe": "https://buy.stripe.com/00w8wP7QQ5U77nN3tP5J61J"
    },
    "upsell": [
@@ -300,7 +289,6 @@
    "beschrijving": "De volle Beat Maker in je browser (werkt offline): 19 genre-smaaksets met echte drum-wavs, melodie-laag met 9 instrumenten, stems-zip export, melodie-.mid, SYNC-export pakket (wav+stems+licentie+midi) en project opslaan/laden. Gratis versie blijft; PRO is de CLUB-build.",
    "links": {
     "stripe": "https://buy.stripe.com/4gM3cv5II96j9vVc0l5J61D",
-    "download": "bedankt.html?k=beatmakerpro",
     "browser": "beatmaker.html"
    },
    "uitgelicht": true,
@@ -320,7 +308,6 @@
    "prijs": 19.95,
    "links": {
     "koop": "bestel.html?p=g2bsmash",
-    "download": "bedankt.html?k=g2bsmash",
     "stripe": "https://buy.stripe.com/eVq4gz2ww6YbeQf1lH5J61R"
    },
    "groep": "studio-tools",
@@ -347,7 +334,6 @@
    "prijs": 14.95,
    "links": {
     "koop": "bestel.html?p=g2bairdrums",
-    "download": "bedankt.html?k=g2bairdrums",
     "stripe": "https://buy.stripe.com/eVq14n0oo1DR6jJfcx5J61S"
    },
    "groep": "studio-tools",
@@ -375,7 +361,6 @@
    "prijs": 99,
    "links": {
     "koop": "bestel.html?p=g2bsuite1",
-    "download": "bedankt.html?k=g2bsuite1",
     "stripe": "https://buy.stripe.com/9B67sLefegyL9vV3tP5J61T"
    },
    "groep": "tools",
@@ -403,7 +388,6 @@
    "video_es": "media/seofabriek-demo-es.mp4",
    "links": {
     "koop": "bestel.html?p=seofabriek1",
-    "download": "bedankt.html?k=seofabriek1",
     "stripe": "https://buy.stripe.com/bJedR9efefuHdMbggB5J61U"
    },
    "download_dir": "d/seofabriek1",
@@ -425,7 +409,6 @@
    "prijs": 299,
    "links": {
     "koop": "bestel.html?p=agency1",
-    "download": "bedankt.html?k=agency1",
     "stripe": "https://buy.stripe.com/bJe00j4EEgyL0Zp6G15J61V"
    },
    "groep": "tools",
@@ -449,7 +432,6 @@
    "prijs": 69,
    "links": {
     "koop": "bestel.html?p=marketerbundel1",
-    "download": "bedankt.html?k=marketerbundel1",
     "stripe": "https://buy.stripe.com/5kQaEX2ww0zN37x6G15J61W"
    },
    "groep": "tools",
@@ -472,7 +454,6 @@
    "prijs": 39,
    "links": {
     "koop": "bestel.html?p=mailfabriek1",
-    "download": "bedankt.html?k=mailfabriek1",
     "stripe": "https://buy.stripe.com/8x24gzc762HVgYn2pL5J61X"
    },
    "groep": "tools",
@@ -499,7 +480,6 @@
    "prijs": 29,
    "links": {
     "koop": "bestel.html?p=sheetfabriek1",
-    "download": "bedankt.html?k=sheetfabriek1",
     "stripe": "https://buy.stripe.com/fZu3cv0oogyLazZd4p5J61Y"
    },
    "groep": "tools",
@@ -526,7 +506,6 @@
    "prijs": 39,
    "links": {
     "koop": "bestel.html?p=sequentiefabriek1",
-    "download": "bedankt.html?k=sequentiefabriek1",
     "stripe": "https://buy.stripe.com/cNibJ11ss4Q34bBggB5J61Z"
    },
    "groep": "tools",
@@ -553,7 +532,6 @@
    "prijs": 39,
    "links": {
     "koop": "bestel.html?p=crmfabriek1",
-    "download": "bedankt.html?k=crmfabriek1",
     "stripe": "https://buy.stripe.com/cNiaEX1ss5U7azZ9Sd5J620"
    },
    "groep": "tools",
@@ -580,7 +558,6 @@
    "prijs": 29,
    "links": {
     "koop": "bestel.html?p=watcherfabriek1",
-    "download": "bedankt.html?k=watcherfabriek1",
     "stripe": "https://buy.stripe.com/28EfZh8UUciveQf3tP5J621"
    },
    "groep": "tools",
@@ -607,7 +584,6 @@
    "prijs": 39,
    "links": {
     "koop": "bestel.html?p=flowfabriek1",
-    "download": "bedankt.html?k=flowfabriek1",
     "stripe": "https://buy.stripe.com/bJe14n7QQber0Zp4xT5J622"
    },
    "groep": "tools",
@@ -634,7 +610,6 @@
    "prijs": "€ 79,00",
    "links": {
     "koop": "bestel.html?p=kanaalfabriek1",
-    "download": "bedankt.html?k=kanaalfabriek1",
     "stripe": "https://buy.stripe.com/9B6eVd5IIaanfUjfcx5J623"
    },
    "groep": "tools",
@@ -660,7 +635,6 @@
    "prijs": 49,
    "links": {
     "koop": "bestel.html?p=leadfabriek1",
-    "download": "bedankt.html?k=leadfabriek1",
     "stripe": "https://buy.stripe.com/3cI14ndba96j9vV3tP5J624"
    },
    "groep": "tools",
@@ -687,7 +661,6 @@
    "prijs": 39,
    "links": {
     "koop": "bestel.html?p=lijstfabriek1",
-    "download": "bedankt.html?k=lijstfabriek1",
     "stripe": "https://buy.stripe.com/eVq00j9YY1DR4bB6G15J625"
    },
    "groep": "tools",
@@ -714,7 +687,6 @@
    "prijs": "€ 24,95",
    "links": {
     "koop": "bestel.html?p=g2bvibe1",
-    "download": "bedankt.html?k=g2bvibe1",
     "stripe": "https://buy.stripe.com/dRmeVd6MMcivfUj1lH5J61F"
    },
    "groep": "plugins",
@@ -741,7 +713,6 @@
    "prijs": "€ 34,95",
    "links": {
     "koop": "bestel.html?p=g2bbestof",
-    "download": "bedankt.html?k=g2bbestof",
     "stripe": "https://buy.stripe.com/fZuaEXb320zN37x0hD5J61E"
    },
    "groep": "plugins",
@@ -768,7 +739,6 @@
    "prijs": "€ 12,95",
    "links": {
     "koop": "bestel.html?p=g2b-oneshots",
-    "download": "bedankt.html?k=g2boneshots",
     "stripe": "https://buy.stripe.com/dRmbJ1efefuH9vVggB5J61P"
    },
    "groep": "soundpacks",
@@ -797,8 +767,7 @@
    "prijzen": {},
    "links": {
     "koop": "bestel.html?p=g2b-juridisch",
-    "stripe": "https://buy.stripe.com/aFa00jgnm96jazZ7K55J626",
-    "download": "bedankt.html?k=g2b-juridisch"
+    "stripe": "https://buy.stripe.com/aFa00jgnm96jazZ7K55J626"
    },
    "duur": 0,
    "groep": "tools",
@@ -826,8 +795,7 @@
    "prijzen": {},
    "links": {
     "koop": "bestel.html?p=g2b-psychologie",
-    "stripe": "https://buy.stripe.com/eVqbJ16MMdmzdMb3tP5J627",
-    "download": "bedankt.html?k=g2b-psychologie"
+    "stripe": "https://buy.stripe.com/eVqbJ16MMdmzdMb3tP5J627"
    },
    "duur": 0,
    "groep": "tools",
@@ -856,7 +824,6 @@
    "prijzen": {},
    "links": {
     "koop": "bestel.html?p=g2b-workstation",
-    "download": "bedankt.html?k=g2b-workstation",
     "stripe": "https://buy.stripe.com/7sYdR9fji2HVcI74xT5J628"
    },
    "cover": "media/g2b-workstation-cover.png",
@@ -883,7 +850,6 @@
    "prijs": "€ 9,95",
    "links": {
     "koop": "bestel.html?p=cursus01",
-    "download": "bedankt.html?k=cursus01",
     "stripe": "https://buy.stripe.com/aFaaEXc762HVdMb7K55J629"
    },
    "groep": "apps",
@@ -907,8 +873,7 @@
    "prijzen": {},
    "links": {
     "koop": "bestel.html?p=g2b-bedrijfsmiddelen",
-    "stripe": "https://buy.stripe.com/5kQ9ATb32eqDeQf8O95J62a",
-    "download": "bedankt.html?k=g2b-bedrijfsmiddelen"
+    "stripe": "https://buy.stripe.com/5kQ9ATb32eqDeQf8O95J62a"
    },
    "duur": 0,
    "groep": "tools",
@@ -1333,7 +1298,6 @@
    },
    "links": {
     "koop": "bestel.html?p=ritmosbundel",
-    "download": "bedankt.html?k=d74976fef7dfff6a",
     "stripe": "https://buy.stripe.com/bJe00j8UU4Q36jJ9Sd5J62c"
    },
    "groep": "muziek",
@@ -1357,7 +1321,6 @@
    "prijs": "€ 24,95",
    "links": {
     "koop": "bestel.html?p=g2bfx1",
-    "download": "bedankt.html?k=g2bfx1",
     "stripe": "https://buy.stripe.com/28EaEXefe96j5fFaWh5J61G"
    },
    "groep": "plugins",
@@ -1384,7 +1347,6 @@
    "prijs": "€ 19,95",
    "links": {
     "koop": "bestel.html?p=ocho01",
-    "download": "bedankt.html?k=ocho01",
     "handleiding": "media/G2B-Ocho-Handleiding.pdf",
     "stripe": "https://buy.stripe.com/4gMfZh1ss0zN5fF6G15J61K"
    },
@@ -1428,7 +1390,6 @@
    "download_dir": "d/sl3ut3",
    "links": {
     "koop": "bestel.html?p=sl3ut3",
-    "download": "bedankt.html?k=sl3ut3",
     "stripe": "https://buy.stripe.com/9B600jb322HVfUjaWh5J62d"
    },
    "moods": [
@@ -1450,7 +1411,6 @@
    "prijs": "€ 7,95",
    "links": {
     "koop": "bestel.html?p=sp00ky",
-    "download": "bedankt.html?k=sp00ky",
     "stripe": "https://buy.stripe.com/aFa6oH7QQdmz23t6G15J61Q"
    },
    "groep": "soundpacks",
@@ -1503,7 +1463,6 @@
    "prijs": "€ 19,95",
    "links": {
     "koop": "bestel.html?p=g2bbd1",
-    "download": "bedankt.html?k=g2bbd1",
     "stripe": "https://buy.stripe.com/00w8wP8UU1DR4bBfcx5J61M"
    },
    "groep": "plugins",
@@ -1575,7 +1534,6 @@
    "prijs": 39,
    "links": {
     "koop": "bestel.html?p=gamefabriek1",
-    "download": "bedankt.html?k=gamefabriek1",
     "stripe": "https://buy.stripe.com/28E7sLb325U70ZpggB5J62b"
    },
    "groep": "tools",
@@ -1601,7 +1559,6 @@
    "prijs": "€ 34,95",
    "links": {
     "koop": "bestel.html?p=g2bdren",
-    "download": "bedankt.html?k=g2bdren",
     "stripe": "https://buy.stripe.com/aFadR96MMeqDgYn4xT5J61O"
    },
    "groep": "plugins",
@@ -1679,7 +1636,6 @@
    "prijs": "€ 24,95",
    "links": {
     "koop": "bestel.html?p=samplex01",
-    "download": "bedankt.html?k=samplex01",
     "handleiding": "https://github.com/good2better/g2b-winkel/releases/download/dl/G2B-SampleX-Handleiding.pdf",
     "stripe": "https://buy.stripe.com/8x23cv7QQgyL37x4xT5J62Q"
    },
@@ -1699,7 +1655,6 @@
    "prijs": "€ 29,95",
    "links": {
     "koop": "bestel.html?p=g2bkoor",
-    "download": "bedankt.html?k=g2bkoor",
     "stripe": "https://buy.stripe.com/bJeeVd8UU4Q37nN2pL5J62R"
    },
    "groep": "plugins",
@@ -1714,7 +1669,6 @@
    "cover": "tools/aura-v6/img/midi-forge.png",
    "links": {
     "browser": "tools/aura-v6/",
-    "download": "bedankt.html?k=aura-v6",
     "koop": "bestel.html?p=aura-midiforge",
     "stripe": "https://buy.stripe.com/6oU00j2ww0zNazZfcx5J62S"
    },
@@ -1730,7 +1684,6 @@
    "cover": "tools/aura-v6/img/suri-pads.png",
    "links": {
     "browser": "tools/aura-v6/suri-pads/",
-    "download": "bedankt.html?k=aura-v6",
     "koop": "bestel.html?p=aura-suripads",
     "stripe": "https://buy.stripe.com/dRm5kDefeeqD8rR9Sd5J62T"
    },
@@ -1747,7 +1700,6 @@
    "cover": "tools/aura-v6/img/all-instruments.png",
    "links": {
     "browser": "tools/aura-v6/all-instruments/",
-    "download": "bedankt.html?k=aura-v6",
     "koop": "bestel.html?p=aura-allinstr",
     "stripe": "https://buy.stripe.com/cNi8wP1sseqD9vV2pL5J62U"
    },
@@ -1763,7 +1715,6 @@
    "cover": "tools/aura-v6/img/bass-drum-2in1.png",
    "links": {
     "browser": "tools/aura-v6/bass-drum-2in1/",
-    "download": "bedankt.html?k=aura-v6",
     "koop": "bestel.html?p=aura-bassdrum",
     "stripe": "https://buy.stripe.com/00w14n0oo2HV5fF5BX5J62V"
    },
@@ -1779,7 +1730,6 @@
    "cover": "tools/aura-v6/img/dice-synth.png",
    "links": {
     "browser": "tools/aura-v6/dice-synth/",
-    "download": "bedankt.html?k=aura-v6",
     "koop": "bestel.html?p=aura-dicesynth",
     "stripe": "https://buy.stripe.com/eVq14n5II5U737x7K55J62W"
    },
@@ -1805,7 +1755,6 @@
    "cover": "tools/aura-v6/img/dren-studio.png",
    "links": {
     "browser": "tools/aura-v6/dren-studio/",
-    "download": "bedankt.html?k=aura-v6",
     "koop": "bestel.html?p=aura-dren",
     "stripe": "https://buy.stripe.com/8x27sL5IIeqD7nN9Sd5J62X"
    },
@@ -1821,7 +1770,6 @@
    "cover": "tools/aura-v6/img/fx-rack.png",
    "links": {
     "browser": "tools/aura-v6/fx-rack/",
-    "download": "bedankt.html?k=aura-v6",
     "koop": "bestel.html?p=aura-fxrack",
     "stripe": "https://buy.stripe.com/cNi8wP6MM1DRfUjc0l5J62Y"
    },
