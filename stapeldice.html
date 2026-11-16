@@ -74,7 +74,7 @@ input[type=range]{accent-color:#3DDC84;width:110px}
     <a class="dl" id="dl" style="display:none" download="stapel.wav">⬇ DOWNLOAD WAV</a>
     <span class="hint" id="resInfo"></span>
   </div>
-  <audio id="au" controls style="margin-top:8px;width:100%"></audio>
+  <audio id="au" controls controlsList="nodownload" style="margin-top:8px;width:100%"></audio>
   <div id="lijst" style="margin-top:10px"></div>
 </div>
 
@@ -254,7 +254,7 @@ function bouw(k){
   $('au').src=url;$('dl').href=url;$('dl').download=naam+'.wav';$('dl').style.display='';
   $('resInfo').textContent=`${(n/SR).toFixed(2)}s · ${k} lagen · ${dubbel?'haas-dubbel':'mono'} · limiter 0.85`;
   const card=document.createElement('div');card.className='slot';card.style.marginTop='8px';
-  card.innerHTML=`<div class=nm>${naam}.wav</div><audio controls src="${url}" style="width:100%;margin:6px 0"></audio><a class=dl href="${url}" download="${naam}.wav" style="display:inline-block;padding:8px 14px;font-size:12px">⬇ download</a>`;
+  card.innerHTML=`<div class=nm>${naam}.wav</div><audio controls controlsList="nodownload" src="${url}" style="width:100%;margin:6px 0"></audio><a class=dl href="${url}" download="${naam}.wav" style="display:inline-block;padding:8px 14px;font-size:12px">⬇ download</a>`;
   $('lijst').prepend(card);
   st('🎲 gestapeld — luister en lock wat goed is, dobbel de rest opnieuw');
 }
