@@ -156,7 +156,7 @@ protected:
         case kOn:     p.name="Aan";    p.symbol="aan"; p.hints|=kParameterIsBoolean;
                       p.ranges.min=0.f; p.ranges.max=1.f; p.ranges.def=1.f; break;
         case kGalaxy: p.name="DIMENTIES"; p.symbol="dim"; p.hints|=kParameterIsInteger;
-                      p.ranges.min=0.f; p.ranges.max=26.f; p.ranges.def=9.f; break;
+                      p.ranges.min=0.f; p.ranges.max=26.f; p.ranges.def=0.f; break;
         case kSfeer:  p.name="Sfeer";  p.symbol="sfeer"; p.hints|=kParameterIsInteger;
                       p.ranges.min=0.f; p.ranges.max=2.f; p.ranges.def=1.f; break;
         case kZapBack:p.name="ZAP TERUG";p.symbol="zapback";p.hints|=kParameterIsBoolean;
@@ -233,7 +233,7 @@ protected:
         const float outG  = std::pow(10.f, fLevel * 0.05f);
         const float warpA = fWarp;         // st-pitch-drop bij aanslag
         const float ruw   = fRuw;
-        const float echoMix = fEcho, revMix = fRuimte;
+        const float echoMix = fEcho * 0.5f, revMix = fRuimte * 0.5f; // natte FX gehalveerd — presets blijven variëren
         const float warmA = fWarm, subA = fSub, mixW = fMix;
 
         // delay-tijden op basis van sample-rate (~330ms L / ~495ms R ping)
@@ -268,7 +268,7 @@ protected:
                     const float dec  = 0.4f + fDecay * 4.f;
                     const float env  = std::exp(-v.t * dec);
                     float w;
-                    if (v.smp) {
+                    if (v.smp && v.slen >= 2) {
                         const uint32_t i2 = (uint32_t)v.spos;
                         if (i2 >= v.slen - 1) { v.on = false; continue; }
                         const float fr = v.spos - i2;
@@ -291,10 +291,10 @@ protected:
                 fNoise = fNoise * 1664525u + 1013904223u;
                 const float nz = ((int)(fNoise >> 9) & 65535) / 32768.f - 1.f;
                 fNzLp += 0.002f * (nz - fNzLp);            // heel donker sfeerbed
-                wet += fNzLp * warmA * 0.35f;
+                wet += fNzLp * warmA * 0.15f;
 
                 // ---- RUW: bitcrush + zachte drive ---------------------------
-                float s = dry * 0.3f;
+                float s = dry * 0.55f;
                 if (ruw > 0.001f) {
                     const int bits = 16 - (int)(ruw * 11.f);
                     const float q = (float)(1 << (16 - bits));
@@ -396,7 +396,14 @@ private:
     static const int kApLen[2];
 
     void spawnVoice(int note, float vel, bool ghost) {
-        for (auto& v : fV) if (!v.on) {
+        DVoice* slot = nullptr;
+        for (auto& v : fV) if (!v.on) { slot = &v; break; }
+        if (!slot) { // alles bezet (gehouden noten + spoken) → steel oudste
+            float oud = -1.f; slot = &fV[0];
+            for (auto& v : fV) if (v.t > oud) { oud = v.t; slot = &v; }
+        }
+        {
+        DVoice& v = *slot;
             v.on = true; v.note = note; v.vel = vel; v.t = 0.f;
             v.ph1 = v.ph2 = v.ph3 = v.ph4 = v.phS = 0.f;
             v.det = 0.f; v.smp = nullptr; v.ghost = ghost;
@@ -464,7 +471,7 @@ private:
         if (!(lk & 128)) fSub    = kEp[ep][7];
         if (!(lk & 256)) fDecay  = kEp[ep][8];
         if (!(lk & 512)) fSpook  = std::min(1.f, kEp[ep][9] + vsh * 0.20f);
-        if (!fRestoring) fMix    = 0.55f;
+        if (!fRestoring) fMix    = 0.35f;
         // naam naar de UI
         char nb[24]; std::snprintf(nb, sizeof(nb), "%s-%02d", kEpNames[ep], va + 1);
         setState("presetname", nb);
@@ -549,7 +556,7 @@ private:
     ZapSnap fHist[20] = {}; int fHistP = 0, fHistN = 0; bool fRestoring = false;
     std::atomic<bool> fDumpBusy{false};
     float fKey = 9.f, fScale = 0.f, fDice = 0.f, fPreset = 0.f;
-    float fOn = 1.f, fGalaxyV = 9.f, fSfeerV = 1.f;
+    float fOn = 1.f, fGalaxyV = 0.f, fSfeerV = 1.f;
     unsigned fRnd = 424242, fGcount = 0, fNoise = 12345u;
     float fNzLp = 0.f;
     float fDlxL[kDlxLen] = {}, fDlxR[kDlxLen] = {}; int fDlPos = 0;

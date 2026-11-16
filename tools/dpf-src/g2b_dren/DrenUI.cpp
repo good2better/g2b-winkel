@@ -44,7 +44,7 @@ public:
     {
         loadSharedResources();
         static const int    par[10] = {P_TOON,P_WARM,P_DRIFT,P_WARP,P_RUW,P_ECHO,P_RUIMTE,P_SUB,P_SPOOK,P_MIX};
-        static const float  defs[10] = {0.2f,0.5f,0.15f,0.3f,0.f,0.35f,0.55f,0.25f,0.2f,0.55f};
+        static const float  defs[10] = {0.2f,0.5f,0.15f,0.3f,0.f,0.35f,0.55f,0.25f,0.2f,0.35f};
         static const char*  lbl[10]  = {"TOON","WARM","DRIFT","WARP","RUW","ECHO","RUIMTE","SUB","SPOOK","MIX"};
         std::memcpy(fPar, par, sizeof(par));
         std::memcpy(fValue, defs, sizeof(defs));
@@ -401,7 +401,7 @@ private:
     int   fLight = 0;
     int   fOn = 1;
     int   fProg = 0;
-    float fLv = 0.f, fDm = 9.f;
+    float fLv = 0.f, fDm = 0.f;
     bool  fXYdrag = false;
     float fXX = 18.0f, fXY_ = 296.0f, fXW = 524.0f, fXH = 56.0f;
     char  fPName[24];
