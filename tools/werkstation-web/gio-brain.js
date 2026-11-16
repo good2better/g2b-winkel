@@ -77,7 +77,7 @@ var CTX=null;
 var STAP=[
  {naam:'genre',vraag:function(){return 'STAP 1/6 — welk genre? Kies of typ zelf.'},knoppen:function(){return Object.keys(GENRES).filter(function(g){return g===ALIAS[g]||!ALIAS[g]}).slice(0,10).map(function(g){return {t:g,v:g}})}},
  {naam:'sfeer',vraag:function(){return 'STAP 2/6 — welke sfeer? (typ ook eigen mood)'},knoppen:function(){return Object.keys(MOOD).map(function(m){return {t:m,v:m}})}},
- {naam:'drums',vraag:function(){var M=CTX.sfeer&&MOOD[CTX.sfeer];var g=CTX.genre||(M?M.g:'house');var b=CTX.bpm||(M?M.b:GENRES[g]);return 'STAP 3/6 — drums: '+g+' @'+b+'bpm'+(M?' ('+M.u+')':'')},knoppen:function(){return [{t:'🎲 maak drums',v:'_drums'},{t:'⏭ overslaan',v:'_skip'}]}},
+ {naam:'drums',vraag:function(){var M=CTX.sfeer&&MOOD[CTX.sfeer];var g=CTX.genre||(M?M.g:'house');var b=CTX.bpm||(M?M.b:GENRES[g]);return 'STAP 3/6 — drums per-laag: '+g+' @'+b+'bpm'+(M?' ('+M.u+')':'')},knoppen:function(){return [{t:'🧱 bouw per laag',v:'_drums'},{t:'⏭ overslaan',v:'_skip'}]}},
  {naam:'melodie',vraag:function(){return 'STAP 4/6 — melodie/akkoorden erbij? (MELODIE geeft varianten, jij kiest)'},knoppen:function(){return [{t:'🎼 open MELODIE',v:'_melodie'},{t:'🎹 toon akkoorden',v:'_akk'},{t:'⏭ overslaan',v:'_skip'}]}},
  {naam:'structuur',vraag:function(){return 'STAP 5/6 — song-structuur (intro/refrein/drop) met LAAGBAAS?'},knoppen:function(){return [{t:'🧠 open LAAGBAAS',v:'_laag'},{t:'⏭ overslaan',v:'_skip'}]}},
  {naam:'mix-master',vraag:function(){return 'STAP 6/6 — afwerken: MENGER checkt de mix, MASTER maakt hem klaar'},knoppen:function(){return [{t:'🎛 MENGER',v:'_menger'},{t:'💎 MASTER',v:'_master'},{t:'✅ klaar',v:'_done'}]}}];
@@ -86,7 +86,7 @@ function stap(){var S=STAP[CTX.stap];if(!S){einde();return}var kb=S.knoppen().ma
  say('🪜 '+S.vraag()+'<br>'+kb)}
 function kies(v){var S=STAP[CTX.stap];
  if(v==='_skip'){CTX.stap++;stap();return}
- if(v==='_drums'){var M=CTX.sfeer&&MOOD[CTX.sfeer];var g=CTX.genre||(M?M.g:'house');var b=CTX.bpm||(M?M.b:GENRES[g]);open(TOOLS.beat[0]+'?g='+g+'&bpm='+b+'&go=1');CTX.stap++;stap();return}
+ if(v==='_drums'){var M=CTX.sfeer&&MOOD[CTX.sfeer];var g=CTX.genre||(M?M.g:'house');var b=CTX.bpm||(M?M.b:GENRES[g]);say('🧱 <b>per-laag bouwen</b>: rol eerst KICK apart 🎲 → dan SNARE → dan HATS → dan PERC. 🔒 goede laag vastzetten, 🎲 rest opnieuw.');open(TOOLS.beat[0]+'?g='+g+'&bpm='+b+'&go=1&lagen=1');CTX.stap++;stap();return}
  if(v==='_melodie'){open(TOOLS.melodie[0]);CTX.stap++;stap();return}
  if(v==='_akk'){var M2=CTX.sfeer&&MOOD[CTX.sfeer];run('akkoorden bij '+(M2?M2.k:'a mineur'));return}
  if(v==='_laag'){open(TOOLS.laagbaas[0]);CTX.stap++;stap();return}

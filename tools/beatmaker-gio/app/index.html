@@ -175,6 +175,9 @@ function renderGrid(){
   lk.title=LOCKED.has(r)?'rijslot AAN — willekeurig laat deze rij met rust':'rijslot uit — 🔒 houdt dit patroon vast bij 🎲';
   lk.onclick=e=>{e.stopPropagation();if(LOCKED.has(r))LOCKED.delete(r);else LOCKED.add(r);lk.textContent=LOCKED.has(r)?'🔒':'🔓';lk.title=LOCKED.has(r)?'rijslot AAN — willekeurig laat deze rij met rust':'rijslot uit — 🔒 houdt dit patroon vast bij 🎲'};
   l.appendChild(lk);
+  const db=document.createElement('span');db.className='rlock';db.textContent='🎲';db.title='rol alleen DEZE laag opnieuw (slimme '+r+'-patronen in '+cur+'-smaak)';
+  db.onclick=e=>{e.stopPropagation();rolLaag(r)};
+  l.appendChild(db);
   const fx=document.createElement('span');fx.className='rfx';fx.textContent='⚙';fx.title='geluid van deze rij: toonhoogte + lengte';
   fx.onclick=e=>{e.stopPropagation();const p=line.querySelector('.rstrip');if(p)p.style.display=p.style.display=='none'?'flex':'none'};
   l.appendChild(fx);
@@ -227,6 +230,32 @@ document.getElementById('wis').onclick=()=>{naarBasisRijen();for(const r of RIJE
  for(const k in NLAY){NLAY[k].noten=[];NLAY[k].len=0;NLAY[k].mute=false}
  for(const a of ALAY){if(a.src){try{a.src.stop()}catch(e){}}}ALAY.length=0;
  laagUI();document.getElementById('droplist').innerHTML='';document.getElementById('dropmsg').textContent='';renderGrid()};
+/* PER-LAAG dobbelen: genre-patroon als smaak-basis + kleine variaties.
+   Elke rij apart → hats/snares klinken muzikaal ipv willekeurig ruis. */
+function rolLaag(r){
+ if(!state[r])return;state[r].clear();const G=GENRES[cur]||GENRES.house,base=G.pat[r]||[];
+ const nB=nBars,sub=nSub;
+ const vul=(s)=>{for(let b=0;b<nB;b++)state[r].add(b*sub+s%sub)};
+ for(const s of base)vul(s);
+ if(r=='kick'){ // 1-2 extra of weglaten: ~35% kans een extra off-beat, ~20% een basis-slag weg
+  for(let b=0;b<nB;b++){
+   if(Math.random()<.35){const extra=[3,7,10,11,14][Math.floor(Math.random()*5)];state[r].add(b*sub+extra)}
+   if(Math.random()<.2&&base.length>1){const w=base[Math.floor(Math.random()*base.length)];if(w!==0)state[r].delete(b*sub+w)}}
+ }else if(r=='snare'){ // backbeat vast + ghost/fill-slagen
+  if(!base.length){vul(4);vul(12)}
+  for(let b=0;b<nB;b++){
+   if(Math.random()<.3){const g=[3,7,11,14,15][Math.floor(Math.random()*5)];state[r].add(b*sub+g)}
+   if(Math.random()<.12)for(let s=sub-4;s<sub;s++)if(Math.random()<.5)state[r].add(b*sub+s)}
+ }else if(r=='hat'||r=='hat2'||r=='shkr'){ // dichtheid van genre ±; off-beat swap
+  const dicht=(cur=='trap'||cur=='drill'||cur=='dna')?.95:(cur=='lofi'||cur=='schuivel')?.5:.75;
+  if(!base.length||Math.random()<.25){ // soms: volledig eigen dichtheid ipv genre-patroon
+   state[r].clear();for(let b=0;b<nB;b++)for(let s=0;s<sub;s++){if(s%2==0||Math.random()<(dicht-.4))if(Math.random()<dicht)state[r].add(b*sub+s)}
+  }else{for(let b=0;b<nB;b++)for(let s=0;s<sub;s++)if(s%4==3&&Math.random()<.15)state[r].add(b*sub+s)}
+ }else{ // perc/overig: spaarzaam, op genre-smaak ±
+  if(!base.length)for(let b=0;b<nB;b++)for(let s=0;s<sub;s++)if(Math.random()<.15&&s%2)state[r].add(b*sub+s);
+  else for(let b=0;b<nB;b++)if(Math.random()<.3){const e=[2,6,10,14][Math.floor(Math.random()*4)];state[r].add(b*sub+e)}}
+ document.querySelectorAll('.cel').forEach(c=>{if(c.dataset.r==r)c.classList.toggle('aan',state[r].has(+c.dataset.s))});
+}
 document.getElementById('random').onclick=()=>{
  gridFromLoop=false;const keep={};for(const r of RIJEN)if(LOCKED.has(r))keep[r]=new Set(state[r]);
  naarBasisRijen();nBars=1;nSub=16;renderGrid();
@@ -1079,6 +1108,7 @@ window.G2B={state,RIJEN:()=>RIJEN,NLAY,ALAY,verzamel,classBestand,naamMeta,parse
  const bp=+q.get('bpm');if(bp>=60&&bp<=180){document.getElementById('bpm').value=bp;document.getElementById('bpmv').textContent=bp}
  if(q.get('song'))document.getElementById('song').click();
  else if(q.get('go'))document.getElementById('random').click();
+ if(q.get('lagen')){const gm=document.getElementById('dropmsg')||document.createElement('div');const h=document.createElement('div');h.style.cssText='margin-top:8px;padding:9px 12px;border:1px solid var(--groen);border-radius:10px;color:var(--groen);font-size:.85rem;font-weight:700';h.textContent='🧱 LAAG-MODUS — elke rij heeft een eigen 🎲 naast 🔒: rol kick apart, dan snare, dan hats… per laag tot het goed klinkt';document.getElementById('grid').before(h);}
  if(q.get('ref')){const dz=document.getElementById('dropzone');dz.scrollIntoView({behavior:'smooth',block:'center'});dz.style.borderColor='var(--groen)';dz.style.boxShadow='0 0 0 3px #2ee09a44';const sm=dz.querySelector('small');if(sm)sm.innerHTML='<b style="color:var(--groen)">🎯 REFERENTIE-MODUS — sleep hier je eigen beat/loop heen; het grid herbouwt met G2B-sounds, jouw smaak kiest wat blijft</b>';}}catch(e){laad('house')}})();
 // E-mailvanger: POST naar Google Apps Script (zodra URL hieronder staat), anders mailto-fallback
 const EV_SCRIPT_URL='https://script.google.com/macros/s/AKfycbwbGZ-zxrQgxEFJbUhv2-HJ7yNP1yXb66W2wo4tEWtXyx7PcDsFiGdh619QT-6LlTXC/exec'; // <- Giorgio: plak hier je Apps Script /exec URL
