@@ -1552,58 +1552,6 @@
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
   },
   {
-   "id": "g2bdren",
-   "titel": "G2B DREN — de droom-radio die je bespeelt (320 afleveringen)",
-   "soort": "plugin",
-   "beschrijving": "DROOM-INSTRUMENT v2 — 320 presets in 20 episodes. NIEUW: ZAP<- (terug naar vorige aflevering), CATCH (bewaart laatste 30s als .wav), TIJDREIS (nu→1950→1920 vintage), werkende LOCK-slotjes per macro, anti-clip plafond. 3 lagen: droom-melodie (synth↔Kawai↔Steinway) + SUB + sfeer-bed + SPOOK-fragmenten. 8 macro's + KEY/SCALE + ZAP. VST3+CLAP+standalone EXE. Geen DAW nodig — werkt ook los; host het gratis in MorningDAW. 100% eigen code.",
-   "prijs": "€ 34,95",
-   "links": {
-    "koop": "bestel.html?p=g2bdren",
-    "stripe": "https://buy.stripe.com/aFadR96MMeqDgYn4xT5J61O"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW — 320 PRESETS",
-   "cover": "media/dren-cover.png",
-   "download_dir": "d/g2bdren",
-   "video": "media/g2bdren-demo.mp4",
-   "demo": "media/g2bdren-demo.mp4",
-   "uitleg": "media/dren-uitleg.mp4",
-   "sub_nl": "media/dren-uitleg.nl.vtt",
-   "sub_es": "media/dren-uitleg.es.vtt",
-   "preview": "media/g2bdren-preview.mp3",
-   "uitgelicht": true,
-   "upsell": [
-    "g2bbestof",
-    "g2balles"
-   ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
-  },
-  {
-   "id": "drenlite",
-   "titel": "G2B DREN LITE — gratis droom-radio (64 afleveringen)",
-   "soort": "plugin",
-   "beschrijving": "GRATIS — de instap-DREN v2: 64 afleveringen (4 episodes × 16). Zelfde engine als de volle: 3 lagen + SPOOK + 8 macro's + ZAP<- + CATCH + TIJDREIS. NIEUW: KOOP VOLLE-knop in de app (256 extra afleveringen, €34,95). VST3 + CLAP + standalone EXE — werkt los of gratis in MorningDAW.",
-   "prijs": "GRATIS",
-   "links": {
-    "koop": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-DREN-LITE.zip",
-    "download": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-DREN-LITE.zip"
-   },
-   "groep": "plugins",
-   "badge": "GRATIS",
-   "cover": "media/drenlite-cover.png",
-   "video": "media/drenlite-demo.mp4",
-   "demo": "media/drenlite-demo.mp4",
-   "uitleg": "media/drenlite-uitleg.mp4",
-   "sub_nl": "media/drenlite-uitleg.nl.vtt",
-   "sub_es": "media/drenlite-uitleg.es.vtt",
-   "preview": "media/drenlite-preview.mp3",
-   "upsell": [
-    "aura-dren",
-    "g2bclub"
-   ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
-  },
-  {
    "id": "ocholite",
    "titel": "G2B OCHO LITE — gratis one-shot machine (4 smaken)",
    "soort": "plugin",
