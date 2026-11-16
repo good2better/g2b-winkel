@@ -44,9 +44,14 @@ public:
 protected:
     // params: 0 PACK,1 SND,2 KRACHT,3 LEVEL,4 AAN,5 TOON,6 LENGTE,7 KNIP,8 DICE,9 TGL,10 WIS,11 GAL,12 SFEER
     static int paramOf(int slot){return slot==0?2:(slot==1?5:(slot==2?6:(slot==3?7:3)));}
-    int packOf(int i){const char*f=fFull[i];
-        if(!strncmp(f,"suri",4))return 0;if(!strncmp(f,"instr",5))return 1;
-        if(!strncmp(f,"bass",4))return 2;return -1;}
+    int packOf(int i){
+        // mapnaam-classificatie, zelfde regels als de plugin (dir onder de root)
+        std::string d=fFull[i];size_t s=d.find_last_of("/\\");
+        std::string dir=(s==std::string::npos)?std::string():d.substr(0,s);
+        if(dir.find("suri")!=std::string::npos)return 0;
+        if(dir.find("instr")!=std::string::npos)return 1;
+        if(dir.find("bass")!=std::string::npos)return 2;
+        return 0;} // plugin-default: zonder match = SURI-PADS
     void parameterChanged(uint32_t i, float v) override {
         if(i==0){fPack=(int)(v+0.5f);fPage=0;}
         else if(i==1){fInstr=(int)(v+0.5f);}
@@ -156,16 +161,16 @@ protected:
             else if(fMapPath.empty()){fillColor(g2bsk(skin,3));text(bx+8.f,ay+11.f,"MAP = mapvenster, of klik + typ pad  ·  < > = geluid bladeren",nullptr);}
             else{fillColor(g2bsk(skin,2));text(bx+8.f,ay+11.f,fMapPath.c_str(),nullptr);}
         }
-        // ‹ › bladeren door geluiden (binnen de gekozen pack)
+        // ‹ › in de tab-rij: blader door geluiden (binnen de gekozen pack)
         {
             const char* ar[2]={"<",">"};
             for(int a=0;a<2;a++){
-                float ax=W-140.f+a*34.f;
-                beginPath(); roundedRect(ax,ay,28.f,22.f,11.f);
+                float ax=W-144.f+a*30.f;
+                beginPath(); roundedRect(ax,48.f,26.f,22.f,11.f);
                 fillColor(g2bsk(skin,1)); fill();
                 strokeColor(g2bsk(skin,4));strokeWidth(1.f);stroke();
-                fontSize(12.f);textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
-                fillColor(g2bsk(skin,5));text(ax+14.f,ay+11.f,ar[a],nullptr);
+                fontSize(13.f);textAlign(ALIGN_CENTER|ALIGN_MIDDLE);
+                fillColor(g2bsk(skin,5));text(ax+13.f,59.f,ar[a],nullptr);
                 textAlign(ALIGN_LEFT|ALIGN_MIDDLE);
             }
         }
@@ -188,8 +193,12 @@ protected:
         if(ev.press){
             float x=ev.pos.getX(),y=ev.pos.getY();
             for(int i=0;i<8;i++){float dx=W-18.f-(7-i)*14.f;if(std::fabs(x-dx)<8&&std::fabs(y-16)<10){fSkin=i;repaint();return true;}}
-            // pack-tabs
-            if(y>=48&&y<=70){for(int p=0;p<3;p++){float tx=18.f+p*130.f;if(x>=tx&&x<=tx+120){setParameterValue(0,(float)p);return true;}}}
+            // pack-tabs + ‹ › geluid-bladeren in dezelfde rij
+            if(y>=48&&y<=70){
+                for(int p=0;p<3;p++){float tx=18.f+p*130.f;if(x>=tx&&x<=tx+120){setParameterValue(0,(float)p);return true;}}
+                if(x>=W-144&&x<=W-118){setParameterValue(13,1.f);return true;}
+                if(x>=W-114&&x<=W-88){setParameterValue(14,1.f);return true;}
+            }
             // grid-cellen → toggle via param 9 (idx+1)
             for(auto&c:fCells)if(x>=c.x&&x<=c.x+c.w&&y>=c.y&&y<=c.y+c.h){
                 setParameterValue(9,(float)c.i+1.f);if(fSel.count(c.i))fSel.erase(c.i);else fSel.insert(c.i);repaint();return true;}
@@ -201,8 +210,6 @@ protected:
                 if(x>=W-60&&x<=W-6){setParameterValue(4,fOn?0.f:1.f);fTyping=false;return true;}
                 if(x>=W-122&&x<=W-68){setParameterValue(8,1.f);fTyping=false;return true;}
                 if(x>=W-184&&x<=W-130){setParameterValue(10,1.f);fSel.clear();fTyping=false;repaint();return true;}
-                if(x>=W-140&&x<=W-112){setParameterValue(13,1.f);fTyping=false;return true;}
-                if(x>=W-106&&x<=W-76){setParameterValue(14,1.f);fTyping=false;return true;}
                 if(x>=W-246&&x<=W-192){openFileBrowser();return true;}
                 if(x>=18&&x<=W-270){fTyping=true;fMapMsg.clear();repaint();return true;}
             }
