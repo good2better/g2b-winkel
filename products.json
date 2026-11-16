@@ -161,11 +161,11 @@
    "titel": "G2B GELUID→MIDI — geluid in, MIDI uit (browser)",
    "soort": "plugin",
    "beschrijving": "Neuri, fluit of speel een geluid — de browser-app schrijft er strakke MIDI-noten van. Kies je quantize en toonladder, luister direct terug, en download als ECHT .mid-bestand dat je zo in je DAW sleept. Werkt volledig offline in je browser — geen installatie, geen cloud, 100% eigen DSP. Één HTML-bestand dat je bookmarkt en altijd bij de hand hebt.",
-   "prijs": "€ 34,95",
+   "prijs": "€ 19,95",
    "links": {
     "koop": "bestel.html?p=g2bgeluidmidi",
     "download": "bedankt.html?k=g2bgeluidmidi",
-    "stripe": "https://buy.stripe.com/cNidR9gnm1DRazZ0hD5J61z"
+    "stripe": "https://buy.stripe.com/fZu14n7QQ1DRfUj4xT5J631"
    },
    "groep": "plugins",
    "badge": "NIEUW — 3 IN 1",
@@ -254,16 +254,16 @@
   {
    "id": "g2bstudio",
    "titel": "G2B STUDIO-DEAL — MIXER + REFORS + GELUID→MIDI",
-   "prijs": "€ 79",
+   "prijs": "€ 69",
    "groep": "bundels",
    "soort": "digitaal",
    "badge": "DEAL",
    "cover": "media/g2b-studio-pack-cover.png",
    "uitgelicht": true,
-   "beschrijving": "De studio-rij: MIXER (slimme channel-strip VST3/CLAP) + REFORS (referentie-simulator VST3/CLAP) + GELUID→MIDI als browser-versie (offline, geen installatie). Normaal €89,85 — nu €79, direct na betaling.",
+   "beschrijving": "De studio-rij: MIXER (slimme channel-strip VST3/CLAP) + REFORS (referentie-simulator VST3/CLAP) + GELUID→MIDI als browser-versie (offline, geen installatie). Normaal €74,85 — nu €69, direct na betaling.",
    "links": {
     "download": "bedankt.html?k=g2bstudio",
-    "stripe": "https://buy.stripe.com/14AfZhefeaan4bBd4p5J630"
+    "stripe": "https://buy.stripe.com/4gM14n0oo3LZ37x6G15J632"
    },
    "upsell": [
     "g2balles"
