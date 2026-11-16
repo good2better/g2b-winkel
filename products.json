@@ -29,13 +29,13 @@
   },
   {
    "id": "stapeldice",
-   "titel": "G2B STAPEL-DICE — gratis shot-stapelaar (browser)",
+   "titel": "G2B STAPEL-DICE LITE — oefen gratis (export = PRO/abbo)",
    "prijs": "GRATIS",
    "badge": "GRATIS",
    "groep": "gratis",
    "soort": "digitaal",
    "cover": "media/stapeldicelite-cover.png",
-   "beschrijving": "GRATIS — stapel je eigen one-shots tot nieuwe sounds, 100% in je browser. 6 starter-shots ingebakken: drop meer eigen shots (max 20), 🎲 STAPEL maakt er 2-3 lagen van (sub/body/glans) met automatische stemming, fase-fix en breedte-dubbel. 🔒 lock goede lagen, 🎲5x voor batches, elke stapel download je als .wav. Werkt offline, niets uploadt.",
+   "beschrijving": "OEFEN GRATIS in je browser: stapel one-shots tot nieuwe sounds, 🎲 STAPEL (sub/body/glans + stemming + fase-fix + dubbel), 🔒 lock, luister meteen. 🔒 .wav-export zit achter de licentie — PRO €24,95 of gratis mee in het G2B ALL-ACCESS abonnement.",
    "links": {
     "koop": "stapeldice-lite.html",
     "download": "stapeldice-lite.html"
@@ -53,7 +53,7 @@
   {
    "id": "stapeldicefull",
    "titel": "G2B STAPEL-DICE PRO — stapel shots + dobbel synth-sounds",
-   "prijs": "€ 14,95",
+   "prijs": "€ 24,95",
    "badge": "NIEUW",
    "groep": "apps",
    "soort": "digitaal",
@@ -1441,43 +1441,6 @@
     "g2b-juridisch"
    ],
    "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
-  },
-  {
-   "id": "g2b-brein",
-   "titel": "G2B Brein",
-   "soort": "digitaal",
-   "beschrijving": "Patroon-brein als plugin: 219 GELEERDE kits → echte MIDI-noten naar jouw instrumenten. Kies een genre (808/KAWINA/KEYS/MISC/TRAP), blader door kits met ◀ ▶, GENEREER voor nieuwe variaties, DICE voor verrassing. Drums op kanaal 10, melodie op kanaal 1 — routeer naar je eigen drum/keys-plugins of exporteer direct als .mid-bestand. BARS 1-16, SEED, KRACHT (velocity), SWING, DRUMS/MEL/MIDI-OUT schakelaars, playhead-grid, 8 skins. Windows VST3 + CLAP. — NIEUW: ↓MID schrijft nu ook een kant-en-klare .wav (ingebouwde synth, 1,5s tail, unieke tijdstempel). DIMENTIES stuurt de evolutie: hoger = eigen drum-fills aan bar-einde + melodie-octaafvariatie.",
-   "prijs": 19.95,
-   "links": {
-    "koop": "bestel.html?p=g2b-brein",
-    "browser": "tools/patroonbrein-web/patroon.html",
-    "stripe": "https://buy.stripe.com/5kQ5kD0oofuH23t8O95J61N",
-    "download": "bedankt.html?k=g2b-brein"
-   },
-   "groep": "plugins",
-   "cover": "media/g2b-brein-cover.png",
-   "download_dir": "d/f6da0caecdf195",
-   "demo": "media/brein-pro.mp4",
-   "video": "media/brein-pro.mp4",
-   "badge": "NIEUW",
-   "uitleg": "media/brein-uitleg.mp4",
-   "sub_nl": "media/brein-uitleg.nl.vtt",
-   "sub_es": "media/brein-uitleg.es.vtt",
-   "preview": "media/g2b-brein-preview.mp3",
-   "uitgelicht": true,
-   "upsell": [
-    "beatmakerpro",
-    "g2balles"
-   ],
-   "video_extra": [
-    "media/brein-browser.mp4",
-    "media/brein-pro.mp4"
-   ],
-   "video_extra_lbls": [
-    "BREIN browser (gratis) — grid + mute/lock/only",
-    "BREIN PRO — 90 geleerde kits × grid"
-   ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
   },
   {
    "id": "sp00ky",
