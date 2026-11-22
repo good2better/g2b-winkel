@@ -90,8 +90,8 @@ let buf=null,rec=null,recChunks=[],recStream=null;
 
 /* ---------- STYLES ---------- */
 const STYLES=[
- {id:'diep',   naam:'🔊 DIEP',      u:'klassieke producer-tag: lager, trager, echo',
-  run:(c,s)=>{s.playbackRate.value=.72;let v=srcIn(c,s);v=bass(c,v,2);out(c,v);slap(c,v,.09,.28,.35)}},
+ {id:'diep',   naam:'🔊 DIEP',      u:'klassieke producer-tag: lager + echo (lengte blijft)',
+  run:(c,s)=>{let v=pitched(c,s,-6);v=bass(c,v,2);out(c,v);slap(c,v,.09,.28,.35)}},
  {id:'arena',  naam:'🏟 ARENA',     u:'stadion-shout — grote ruimte + punch',
   run:(c,s)=>{let v=srcIn(c,s);v=comp(c,v);out(c,v);verb(c,v,2.4,.45)}},
  {id:'robot',  naam:'🤖 ROBOT',     u:'ring-mod + bandpass = machine-stem',
@@ -99,7 +99,7 @@ const STYLES=[
  {id:'telefoon',naam:'📞 TELEFOON', u:'oude-radio/telefoon: smal + schoftig',
   run:(c,s)=>{let v=srcIn(c,s);v=bp(c,v,320,3400);v=crush(c,v);out(c,v)}},
  {id:'kid',    naam:'👶 KID',       u:'hoger & helder — het beroemde kind-tag geluid',
-  run:(c,s)=>{s.playbackRate.value=1.42;let v=srcIn(c,s);v=hi(c,v,2);out(c,v)}},
+  run:(c,s)=>{let v=pitched(c,s,7);v=hi(c,v,2);out(c,v)}},
  {id:'stutter',naam:'⚡ STUTTER',   u:'G-G-G2B: eerste stuk 3× + dan je zin',
   run:(c,s)=>{const v=stut(c,s,.11,3);out(c,v);slap(c,v,.12,.25,.25)}},
  {id:'whisper',naam:'🌫 WHISPER',   u:'luchtig & creepy — hp + droomruimte',
@@ -131,6 +131,22 @@ function verb(c,g,duur,wet){const len=Math.floor(c.sampleRate*duur),imp=c.create
  for(let ch=0;ch<2;ch++){const d=imp.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.4)}
  const cv=c.createConvolver();cv.buffer=imp;const w=c.createGain();w.gain.value=wet;
  g.connect(cv);cv.connect(w);w.connect(c.destination)}
+/* echte pitch-shift: korrel-resampling met overlap → toon verandert, lengte blijft.
+   semis: negatief = lager (DIEP), positief = hoger (KID) */
+function pitched(c,src,semis,grainMs){const ratio=Math.pow(2,semis/12),sr=c.sampleRate,
+ gms=(grainMs||55)/1000,gN=Math.floor(gms*sr),hop=gms/4,
+ b=src.buffer,dur=b.duration,nG=Math.ceil(dur/hop),
+ g=c.createGain(),win=new Float32Array(gN);
+ for(let i=0;i<gN;i++)win[i]=.5-.5*Math.cos(2*Math.PI*i/(gN-1));
+ for(let i=0;i<nG;i++){const off=Math.floor(i*hop*sr),len=Math.min(gN,b.length-off);
+  if(len<64)break;
+  const gb=c.createBuffer(b.numberOfChannels,len,sr);
+  for(let ch=0;ch<b.numberOfChannels;ch++){const d=b.getChannelData(ch).subarray(off,off+len),
+   w=new Float32Array(len);
+   for(let j=0;j<len;j++)w[j]=d[j]*win[j];
+   gb.copyToChannel(w,ch)}
+  const s=c.createBufferSource();s.buffer=gb;s.playbackRate.value=ratio;s.connect(g);s.start(i*hop)}
+ return g}
 function stut(c,src,seg,n){const b=src.buffer,g=c.createGain();
  const cut=Math.min(seg,b.duration*.4),N=Math.floor(cut*b.sampleRate),
  slBuf=c.createBuffer(b.numberOfChannels,N,b.sampleRate);
@@ -184,7 +200,7 @@ function bezig(t){$('bezig').innerHTML=t?'⏳ '+t:''}
 /* ---------- input ---------- */
 $('recBol').onclick=async()=>{
  if(rec&&rec.state==='recording'){rec.stop();return}
- try{recStream=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){
+ try{recStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}})}catch(e){
   $('recStatus').textContent='geen microfoon — drop een bestand hieronder';return}
  recChunks=[];rec=new MediaRecorder(recStream);
  rec.ondataavailable=e=>recChunks.push(e.data);
@@ -197,8 +213,22 @@ $('recBol').onclick=async()=>{
  $('recTxt').innerHTML='<b style="color:#e04f2f">● OPNAME LOOPT — druk nogmaals om te stoppen</b>';
  setTimeout(()=>{if(rec&&rec.state==='recording')rec.stop()},8000)};
 
+/* auto-trim stiltes + normaliseer naar gezonde tag-sterkte */
+function trimNorm(b){const sr=b.sampleRate,d=b.getChannelData(0),W=Math.floor(sr*.02),th=.006;
+ const rms=i=>{let s=0,n=0;for(let j=i;j<i+W&&j<d.length;j+=2){s+=d[j]*d[j];n++}return Math.sqrt(s/Math.max(1,n))};
+ let a=0,e=d.length-1;
+ while(a<d.length-W&&rms(a)<th)a+=W;
+ while(e>a+W*4&&rms(e-W)<th)e-=W;
+ a=Math.max(0,a-Math.floor(sr*.03));e=Math.min(d.length-1,e+Math.floor(sr*.15));
+ let pk=0;for(let i=a;i<e;i+=2)pk=Math.max(pk,Math.abs(d[i]));
+ const gain=pk>0?Math.min(4,.88/pk):1,
+ N=e-a,nb=new AudioBuffer({length:N,numberOfChannels:b.numberOfChannels,sampleRate:sr});
+ for(let ch=0;ch<b.numberOfChannels;ch++){const src=b.getChannelData(ch),dst=nb.getChannelData(ch);
+  for(let i=0;i<N;i++)dst[i]=src[a+i]*gain}
+ return nb}
+
 async function laad(ab){try{
- buf=await AC.decodeAudioData(ab);
+ buf=trimNorm(await AC.decodeAudioData(ab));
  tekenWave();
  $('origRij').style.display='block';
  $('origInfo').textContent=` — ${buf.duration.toFixed(1)}s · ${buf.numberOfChannels} kanaal(s)`;
@@ -221,13 +251,40 @@ function tekenWave(){const cv=$('wave'),x=cv.getContext('2d'),W=cv.width=cv.offs
  for(let i=0;i<W;i++){let m=0;for(let j=0;j<step;j+=4)m=Math.max(m,Math.abs(d[i*step+j]||0));
   const h=Math.max(2,m*H);x.fillRect(i,(H-h)/2,1,h)}}
 
+/* minimale zip-schrijver (stored, geen compressie) — geen externe lib nodig */
+const _crct=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;
+ for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c}return t})();
+function _crc(u){let c=~0;for(let i=0;i<u.length;i++)c=_crct[(c^u[i])&255]^(c>>>8);return ~c>>>0}
+function zipFiles(files){ // files: [{naam, data:Uint8Array}]
+ const enc=new TextEncoder(),loc=[],cen=[];let off=0;
+ for(const f of files){const nm=enc.encode(f.naam),crc=_crc(f.data),L=f.data.length,
+  lh=new DataView(new ArrayBuffer(30));let p=0;
+  const u16=v=>{lh.setUint16(p,v,true);p+=2},u32=v=>{lh.setUint32(p,v,true);p+=4};
+  u32(0x04034b50);u16(20);u16(0x0800);u16(0);u16(0);u16(0);u32(crc);u32(L);u32(L);u16(nm.length);u16(0);
+  loc.push(lh.buffer,nm,f.data);
+  const ch=new DataView(new ArrayBuffer(46));p=0;
+  const w16=v=>{ch.setUint16(p,v,true);p+=2},w32=v=>{ch.setUint32(p,v,true);p+=4};
+  w32(0x02014b50);w16(20);w16(20);w16(0x0800);w16(0);w16(0);w16(0);w32(crc);w32(L);w32(L);
+  w16(nm.length);w16(0);w16(0);w16(0);w16(0);w32(0);w32(off);
+  cen.push(ch.buffer,nm);
+  off+=30+nm.length+L}
+ const cdSize=cen.reduce((s,x)=>s+(x.byteLength||x.length),0),
+ eocd=new DataView(new ArrayBuffer(22));let p=0;
+ const u16=v=>{eocd.setUint16(p,v,true);p+=2},u32=v=>{eocd.setUint32(p,v,true);p+=4};
+ u32(0x06054b50);u16(0);u16(0);u16(files.length);u16(files.length);u32(cdSize);u32(off);u16(0);
+ return new Blob([...loc,...cen,eocd.buffer],{type:'application/zip'})}
+async function u8(blob){return new Uint8Array(await blob.arrayBuffer())}
+
 $('alles').onclick=async()=>{
  if(!buf)return;
  if(!G2BExport.ok())return;
+ const files=[];
  for(const st of STYLES){
   $('dlStatus').textContent='render '+st.naam+'…';
-  const b=await render(st);download(wavBlob(b),'G2B-TAG-'+st.id+'.wav')}
- $('dlStatus').textContent='klaar — 8 tags gedownload'};
+  const b=await render(st);
+  files.push({naam:'G2B-TAG-'+st.id+'.wav',data:await u8(wavBlob(b))})}
+ download(zipFiles(files),'G2B-TAGS-alle-8.zip');
+ $('dlStatus').textContent='klaar — ZIP met 8 tags gedownload'};
 </script>
 </body>
 </html>
