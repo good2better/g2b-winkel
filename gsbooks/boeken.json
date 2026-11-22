@@ -787,6 +787,22 @@
         "koop": "https://buy.stripe.com/cNi7sL6MM3LZ4bB1lH5J635"
       },
       "id": "slaapverhalen-pack-1"
+    },
+    {
+      "beschrijving": "8 nieuwe rustige Nederlandse slaapverhalen om af te spelen voor het slapengaan — elk ±3,5 minuut: zacht ingesproken verhaal + rustige uitloopmuziek. Figuren: Vinnie Vliegtuig, Fluffy, Lila, Bodhi, Sterre, Dana, het zwarte paard en de zeven vrienden. Direct downloadbaar (mp3).",
+      "cover": "media/slaapverhalen2-cover.png",
+      "serie": "slaapverhalen",
+      "nieuw": true,
+      "titel": "G2B Slaapverhalen — Pack 2 (8 audio-verhalen)",
+      "probeer": {
+        "prijs": "",
+        "koop": "media/slaapverhaal2-preview.mp3"
+      },
+      "luisterboek": {
+        "prijs": "9,95",
+        "koop": "https://buy.stripe.com/00w8wP0oo2HVfUj2pL5J636"
+      },
+      "id": "slaapverhalen-pack-2"
     }
   ]
 }

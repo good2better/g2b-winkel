@@ -1,0 +1,39 @@
+{
+  "titel": "G2B SLAAPVERHALEN — Pack 2",
+  "uitleg": "8 rustige Nederlandse slaapverhalen (mp3), elk ±3,5 min: verhaal + zachte uitloopmuziek. Voor het slapengaan — telefoon of tablet naast het bed, volume zacht.",
+  "img": "media/slaapverhalen2-cover.png",
+  "bestanden": [
+    {
+      "naam": "01 Vinnie Vliegtuig en de wolk die wilde knuffelen",
+      "bestand": "slaapverhaal-01.mp3"
+    },
+    {
+      "naam": "02 Fluffy en de sok die zoek was",
+      "bestand": "slaapverhaal-02.mp3"
+    },
+    {
+      "naam": "03 Lila en het eerste slaapliedje",
+      "bestand": "slaapverhaal-03.mp3"
+    },
+    {
+      "naam": "04 Bodhi en de kleine koala die niet wilde loslaten",
+      "bestand": "slaapverhaal-04.mp3"
+    },
+    {
+      "naam": "05 Sterre en het kuikentje dat het maanlicht wilde vasthouden",
+      "bestand": "slaapverhaal-05.mp3"
+    },
+    {
+      "naam": "06 Dana en de boot die droomde van de haven",
+      "bestand": "slaapverhaal-06.mp3"
+    },
+    {
+      "naam": "07 Het zwarte paard en het eerste ochtendlicht",
+      "bestand": "slaapverhaal-07.mp3"
+    },
+    {
+      "naam": "08 De zeven vrienden en de tent van dekens",
+      "bestand": "slaapverhaal-08.mp3"
+    }
+  ]
+}
