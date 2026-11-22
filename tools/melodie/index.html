@@ -185,7 +185,8 @@ function maak(wat){const c=cfg();if(!PROG||PROG.length!==c.maten||wat==='alles')
  if(wat==='alles'||wat==='akk')S.akk=maakAkk(c);
  if(wat==='alles'||wat==='bas')S.bas=maakBas(c);
  if(wat==='alles'||wat==='mel')S.mel=maakMel(c)}
-function bewaar(){hist=hist.slice(0,hi+1);hist.push(JSON.stringify({S,PROG}));if(hist.length>40)hist.shift();hi=hist.length-1}
+function bewaar(){hist=hist.slice(0,hi+1);hist.push(JSON.stringify({S,PROG}));if(hist.length>40)hist.shift();hi=hist.length-1;
+ try{localStorage.setItem('g2b_melodie_state',JSON.stringify({S:S,PROG:PROG,w:$('wortel').value,lad:$('ladder').value,g:$('genre').value,bpm:$('bpm').value,maten:$('maten').value}))}catch(e){}}
 function herstel(j){const o=JSON.parse(hist[j]);S=o.S;PROG=o.PROG;teken();sporenUI()}
 function nieuw(){stopSpeel();maak('alles');bewaar();teken();sporenUI();vars=[];$('vars').innerHTML='';
  const c=cfg();st('🎲 nieuw: '+c.g.n+' in '+NOOT[c.w]+' '+$('ladder').selectedOptions[0].text.split(' ')[0]+' — druk ▶ SPEEL')}
@@ -247,6 +248,19 @@ function plan(){const ctx=AC,sd=stapDur(),tot=cfg().maten*16,klank=$('klank').va
 function kopLoop(){if(!speelt){kop=-1;teken();return}const sd=stapDur(),tot=cfg().maten*16;
  kop=Math.max(0,((AC.currentTime-t0)/sd))%tot;teken();requestAnimationFrame(kopLoop)}
 function stopSpeel(){speelt=false;clearInterval(tmr);$('speel').textContent='▶ SPEEL';$('speel').classList.remove('aan')}
+/* variant-hoor: toggle — druk opnieuw = stop; nieuwe variant stopt de vorige */
+let HOOR=null,HOOR_ID=-1;
+function hoorStop(){if(HOOR){try{HOOR.g.gain.setTargetAtTime(0,AC.currentTime,.02)}catch(e){}}HOOR=null;HOOR_ID=-1;
+ document.querySelectorAll('#vars .knp .klein').forEach(bt=>{if(bt.textContent.indexOf('hoor')<0&&bt.dataset.h!=null){bt.textContent='▶ hoor';bt.dataset.h=''}})}
+function hoorVar(i){const ctx=ac();if(HOOR_ID===i){hoorStop();return}
+ hoorStop();const g=ctx.createGain();g.connect(MASTER);
+ const sd=stapDur(),t=ctx.currentTime+.05,klank=$('klank').value,ns=vars[i];
+ for(const n of ns)stem(ctx,g,'mel',n.p,t+n.s*sd,n.d*sd,n.v,klank);
+ if(AAN.akk)for(const n of S.akk)stem(ctx,g,'akk',n.p,t+n.s*sd,n.d*sd,n.v,klank);
+ HOOR={g:g};HOOR_ID=i;
+ const tot=(Math.max.apply(null,ns.map(function(n){return n.s+n.d}))+4)*sd;
+ const me={g:g};setTimeout(function(){if(HOOR===me){hoorStop()}},tot*1000+400);
+ const bt=document.querySelector('#vars .var:nth-child('+(i+1)+') .knp .klein');if(bt){bt.textContent='■ stop';bt.dataset.h='1'}}
 function hoorLos(ns){const ctx=ac(),sd=stapDur(),t=ctx.currentTime+.05,klank=$('klank').value;
  for(const n of ns)stem(ctx,MASTER,'mel',n.p,t+n.s*sd,n.d*sd,n.v,klank);
  if(AAN.akk)for(const n of S.akk)stem(ctx,MASTER,'akk',n.p,t+n.s*sd,n.d*sd,n.v,klank)}
@@ -266,15 +280,15 @@ function variant(bron,cr){const c=cfg(),L=smaak(),ns=bron.map(n=>({...n}));
  uit.sort((a,b)=>a.s-b.s);
  for(let i=1;i<uit.length;i++)if(uit[i].s===uit[i-1].s)uit[i].dup=1;
  return uit.filter(n=>!n.dup)}
-function maakVars(){if(!S.mel.length)maak('alles');const cr=$('creat').value/100;vars=[0,1,2,3].map(()=>variant(S.mel,cr));
+function maakVars(){hoorStop();if(!S.mel.length)maak('alles');const cr=$('creat').value/100;vars=[0,1,2,3].map(()=>variant(S.mel,cr));
  $('vars').innerHTML=vars.map((v,i)=>`<div class="var"><canvas id="vc${i}" width="460" height="70"></canvas><div class="knp">
- <button class="klein" onclick="hoorLos(vars[${i}])">▶ hoor</button><button class="klein aan" onclick="gebruik(${i})">✓ gebruik</button>
+ <button class="klein" onclick="hoorVar(${i})">▶ hoor</button><button class="klein aan" onclick="gebruik(${i})">✓ gebruik</button>
  <button class="klein" onclick="duim(${i},1)" title="dit is mijn smaak">👍</button><button class="klein" onclick="duim(${i},0)">👎</button></div></div>`).join('');
  vars.forEach((v,i)=>{const cv=$('vc'+i),g=cv.getContext('2d'),tot=cfg().maten*16,ps=v.map(n=>n.p),lo=Math.min(...ps)-2,hi2=Math.max(...ps)+2;
   g.fillStyle='#050b08';g.fillRect(0,0,cv.width,cv.height);g.fillStyle=KLR.mel;
   for(const n of v)g.fillRect(n.s/tot*cv.width,(1-(n.p-lo)/(hi2-lo))*(cv.height-6),Math.max(3,n.d/tot*cv.width-1),5)});
  st('✨ 4 varianten — ▶ hoor, ✓ gebruik, 👍 leert je smaak')}
-function gebruik(i){bewaar();S.mel=vars[i].map(n=>({...n}));bewaar();teken();sporenUI();st('✓ variant '+(i+1)+' is nu je melodie')}
+function gebruik(i){hoorStop();bewaar();S.mel=vars[i].map(n=>({...n}));bewaar();teken();sporenUI();st('✓ variant '+(i+1)+' is nu je melodie')}
 function kenm(ns){const c=cfg();let sp=0;for(let i=1;i<ns.length;i++)sp+=Math.abs(ns[i].p-ns[i-1].p);
  return{dicht:ns.length/(c.maten*5),sprong:sp/Math.max(1,ns.length-1)}}
 function duim(i,ok){const L=smaak(),k=kenm(vars[i]);L.n=(L.n||0)+1;
@@ -359,7 +373,14 @@ $('undo').onclick=()=>{if(hi>0)herstel(--hi)};$('redo').onclick=()=>{if(hi<hist.
 ['wortel','ladder','maten'].forEach(id=>$(id).onchange=nieuw);
 document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
  if(e.code==='Space'){e.preventDefault();speelt?stopSpeel():speel()}if(e.key==='n')nieuw()});
-$('genre').value='trap';$('bpm').value=140;$('ladder').value='min';nieuw();
+$('genre').value='trap';$('bpm').value=140;$('ladder').value='min';
+(function(){try{const sv=JSON.parse(localStorage.getItem('g2b_melodie_state')||'null');
+ if(sv&&sv.S&&sv.S.mel&&sv.S.mel.length){
+  if(sv.g)$('genre').value=sv.g;if(sv.w)$('wortel').value=sv.w;if(sv.lad)$('ladder').value=sv.lad;
+  if(sv.bpm)$('bpm').value=sv.bpm;if(sv.maten)$('maten').value=sv.maten;
+  S=sv.S;PROG=sv.PROG;bewaar();teken();sporenUI();
+  st('💾 je vorige melodie is terug ('+sv.S.mel.length+' noten) — ✨ VARIANTEN of 🎲 nieuw');return}}catch(e){}
+ nieuw()})();
 </script>
 <footer style="margin-top:24px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · spatie = speel/stop · N = nieuw</footer>
 <script src="/js/g2b-gate.js" data-tier="mijn"></script>
