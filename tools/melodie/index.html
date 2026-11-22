@@ -148,11 +148,19 @@ function akkTonen(c,graad){const g=gIdx(c,graad),stap=c.lad.length===7?2:1;
 let PROG=null;
 function maakProg(c){const p=R(c.g.prog);PROG=[];for(let m=0;m<c.maten;m++)PROG.push(p[m%4]);
  if(c.maten>=8&&Math.random()<.5)PROG[c.maten-1]=R([4,6,PROG[c.maten-1]])}
-function maakAkk(c){const out=[],rit=c.g.akk==='hold'?[[0,16]]:c.g.akk;
- PROG.forEach((gr,m)=>{const t=akkTonen(c,gr);
-  for(const[s,d]of rit)t.forEach((ix,k)=>{let p=lp(c,ix,48);if(p>64)p-=12;out.push({p,s:m*16+s,d:Math.min(d,16-s),v:k?70:82})})});
+function maakAkk(c){const out=[];
+ // ritme-keuze: genre-patroon, spaarzamer (om de 2 slagen), of met kleine aanzet aan het eind
+ const rit=c.g.akk==='hold'?R([[[0,16]],[[0,16]],[[0,8],[8,8]],[[0,4],[8,8]]])
+  :R([c.g.akk,c.g.akk,c.g.akk.filter((_,i)=>i%2===0),c.g.akk.concat([[15,1]])]);
+ PROG.forEach((gr,m)=>{
+  const t=akkTonen(c,gr),vt=R([0,0,1,2]); // voicing: 0=normaal, 1=omkering (grondtoon -12), 2=spreiding (top +12)
+  for(const[s,d]of rit)t.forEach((ix,k)=>{
+   let p=lp(c,ix,48);if(p>64)p-=12;
+   if(vt===1&&k===0)p-=12;
+   if(vt===2&&k===2&&p+12<=72)p+=12;
+   out.push({p,s:m*16+s,d:Math.min(d,16-s),v:k?70:82})})});
  return out}
-function maakBas(c){const out=[];PROG.forEach((gr,m)=>{const rit=c.g.bas;
+function maakBas(c){const out=[];PROG.forEach((gr,m)=>{const rit=R([c.g.bas,c.g.bas,c.g.bas.filter((_,i)=>i%2===0),c.g.bas.concat([[15,1]])]);
  rit.forEach(([s,d],i)=>{let p=lp(c,gIdx(c,gr),36);if(p>47)p-=12;
   if(i>0&&!c.g.b808&&Math.random()<.25)p+=R([7,12]);
   if(c.g.b808&&i===rit.length-1&&Math.random()<.35)p+=R([-2,3,5]);
@@ -182,6 +190,7 @@ function maakMel(c){
 function dichtst(arr,x){const nl=arr.length||1;let b=arr[0]??x,bd=99;
  for(const a of arr)for(const o of[-1,0,1]){const c=a+o*nl;if(Math.abs(c-x)<bd){bd=Math.abs(c-x);b=c}}return b}
 function maak(wat){const c=cfg();if(!PROG||PROG.length!==c.maten||wat==='alles')maakProg(c);
+ if(wat==='akk'){maakProg(c);S.akk=maakAkk(c);S.bas=maakBas(c);return} // akk-dobbel: nieuwe loop, bas volgt, melodie blijft
  if(wat==='alles'||wat==='akk')S.akk=maakAkk(c);
  if(wat==='alles'||wat==='bas')S.bas=maakBas(c);
  if(wat==='alles'||wat==='mel')S.mel=maakMel(c)}
