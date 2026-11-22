@@ -16,6 +16,8 @@ var TOOLS={
  midibib:['../midi-bib/index.html','📚 MIDI-bibliotheek'],
  laagbaas:['../laagbaas/index.html','🧠 LAAGBAAS'],
  stapel:['../../stapeldice-pro.html','🎲 STAPEL-DICE PRO'],
+ shorts:['../shorts-web/index.html','✂️ SHORTS-knipper'],
+ smash:['../../smash.html','💥 G2B SMASH'],
  airdrums:['../../airdrums.html','🥁 AIRDRUMS'],
  werkstation:['index.html','🏠 Werkstation']};
 var KEYS={c:0,'c#':1,des:1,d:2,'d#':3,es:3,e:4,f:5,'f#':6,g:7,'g#':8,as:8,a:9,'a#':10,bes:10,b:11,h:11};
@@ -56,6 +58,7 @@ function intent(t){
  if(/stapel|one.?shot/.test(t))return{a:'tool',tool:'stapel'};
  if(/airdrums|drumpad/.test(t))return{a:'tool',tool:'airdrums'};
  if(/midi.?bib|bibliotheek/.test(t))return{a:'tool',tool:'midibib'};
+ if(/short|knip|clip|promo.?video|smash/.test(t))return{a:'tool',tool:/smash/.test(t)?'smash':'shorts'};
  if(/gaw|werkplek|pianorol/.test(t))return{a:'tool',tool:'gaw'};
  for(var m2 in MOOD){if(t.indexOf(m2)>=0)return{a:'mood',mood:m2}}
  return g||bpm?{a:'beat',g:g||'house',bpm:bpm||null}:null;
@@ -103,7 +106,7 @@ function probe(){fetch('http://localhost:11434/api/tags',{method:'GET'}).then(fu
  AI=(d.models||[]).map(function(m){return m.name})[0]||null;
  var b=document.getElementById('gioAi');if(b)b.textContent=AI?('🧠 lokaal model: '+AI+' (gratis)'):'🧠 regel-parser (Ollama niet gevonden — alles werkt al)';
 }).catch(function(){var b=document.getElementById('gioAi');if(b)b.textContent='🧠 regel-parser (Ollama niet gevonden — alles werkt al)'});}
-function aiParse(t){return fetch('http://localhost:11434/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:AI,stream:false,prompt:'Vertaal deze muziek-opdracht naar JSON {actie:beat|tool|akkoorden|mood|help, genre, bpm, key, tool, mood}. Genres: '+Object.keys(GENRES).join(',')+'. Tools: master,menger,melodie,refors,laagbaas,stapel,airdrums,midibib,gaw. Alleen JSON.\n\nOpdracht: '+t})}).then(function(r){return r.json()}).then(function(d){try{return JSON.parse(d.response.match(/\{[\s\S]*\}/)[0])}catch(e){return null}}).catch(function(){return null});}
+function aiParse(t){return fetch('http://localhost:11434/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:AI,stream:false,prompt:'Vertaal deze muziek-opdracht naar JSON {actie:beat|tool|akkoorden|mood|help, genre, bpm, key, tool, mood}. Genres: '+Object.keys(GENRES).join(',')+'. Tools: master,menger,melodie,refors,laagbaas,stapel,airdrums,midibib,gaw,shorts,smash. Alleen JSON.\n\nOpdracht: '+t})}).then(function(r){return r.json()}).then(function(d){try{return JSON.parse(d.response.match(/\{[\s\S]*\}/)[0])}catch(e){return null}}).catch(function(){return null});}
 function go(){var inp=document.getElementById('gioIn');var t=(inp.value||'').trim();if(!t)return;inp.value='';say('<b style="color:#8AA">› '+t+'</b>');
  if(CTX){var low=t.toLowerCase();var S=STAP[CTX.stap];if(S.naam==='genre'){for(var gg in GENRES){if(low.indexOf(gg)>=0){kies(gg);return}}say('❓ typ een genre (bv. house, trap, soca) of klik');return}if(S.naam==='sfeer'){for(var mm in MOOD){if(low.indexOf(mm)>=0){kies(mm);return}}CTX.sfeer=t;CTX.stap++;stap();return}}
  if(AI){aiParse(t).then(function(j){if(j&&j.actie){var s=j.actie==='beat'?('maak '+(j.genre||'house')+' '+(j.bpm||'')+'bpm'):(j.actie==='tool'?j.tool:(j.actie==='akkoorden'?('akkoorden bij '+(j.key||'c')):(j.actie==='mood'?j.mood:'help')));run(s)}else run(t)})}else run(t);}

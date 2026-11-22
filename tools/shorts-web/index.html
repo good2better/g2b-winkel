@@ -1,0 +1,83 @@
+<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B SHORTS-KNIPPER — lange video → 9:16 short (in je browser)</title>
+<style>
+:root{--bg:#0a0f0a;--ka:#101a10;--lijn:#1f331f;--groen:#22c55e;--dim:#7d9b7d;--tx:#d7e8d7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,sans-serif;padding:18px;max-width:860px;margin:auto}
+h1{font-size:1.25rem;margin:0 0 4px;color:var(--groen)}h1 small{color:var(--dim);font-weight:400;font-size:.8rem}
+.ka{background:var(--ka);border:1px solid var(--lijn);border-radius:12px;padding:14px;margin:10px 0}
+.drop{border:2px dashed var(--lijn);border-radius:10px;padding:26px;text-align:center;color:var(--dim);cursor:pointer}
+.drop.over{border-color:var(--groen);color:var(--groen)}
+label{display:block;font-size:.78rem;color:var(--dim);margin:10px 0 3px}
+input[type=range]{width:100%}input[type=text]{width:100%;background:#0c140c;border:1px solid var(--lijn);color:var(--tx);border-radius:8px;padding:8px;font-size:.9rem}
+button{background:var(--groen);color:#04130a;border:0;border-radius:9px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:.9rem}
+button.sec{background:#1c2e1c;color:var(--tx)}button:disabled{opacity:.45;cursor:default}
+canvas#cv{display:block;margin:10px auto;background:#000;border-radius:8px;max-height:60vh;max-width:100%}
+video{display:none}
+.hint{font-size:.75rem;color:var(--dim)}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#st{font-size:.82rem;color:var(--groen);min-height:1.2em;margin-top:8px}
+a{color:var(--groen)}
+</style></head><body>
+<h1>G2B SHORTS-KNIPPER <small>— lange video → 9:16 short · 100% in je browser · gratis</small></h1>
+<div class="ka"><div class="hint">Sleep een video in, kies het stuk en waar hij in het beeld focust — export komt als .webm (speelt overal, YouTube pakt hem direct). Voor AI-momenten + auto-ondertiteling gebruik je NeonClipping (link onderaan).</div></div>
+<div class="drop" id="drop">🎬 Sleep hier een video (.mp4/.webm/.mov) of klik om te kiezen<input type="file" id="bestand" accept="video/*" hidden></div>
+<div class="ka" id="paneel" hidden>
+ <canvas id="cv" width="540" height="960"></canvas>
+ <div class="row"><button class="sec" id="play">▶ speel stuk</button><span class="hint" id="duur"></span></div>
+ <label>Begin (seconden)</label><input type="range" id="v0" min="0" step="0.1">
+ <label>Einde (seconden)</label><input type="range" id="v1" min="0" step="0.1">
+ <label>Focus — waar in beeld de camera staat (schuif heen/terug)</label><input type="range" id="fx" min="0" max="1" step="0.01" value="0.5">
+ <label>Titel bovenaan (optioneel — wordt erin gebrand)</label><input type="text" id="titel" placeholder="bv. G2B — nieuwe beat drop">
+ <div class="row" style="margin-top:12px"><button id="knip">✂ KNIP & DOWNLOAD</button><button class="sec" id="reset">andere video</button></div>
+ <div id="st"></div>
+</div>
+<div class="ka"><div class="hint">Tip: korte video's met gesproken woord → <a href="https://github.com/iamajmeena/neonclipping" target="_blank">NeonClipping</a> vindt de beste momenten + ondertitels automatisch. Deze knipper is voor als je zelf al weet welk stuk je wilt.</div></div>
+<script>
+const $=id=>document.getElementById(id);
+const v=document.createElement('video');v.playsInline=true;v.muted=false;v.crossOrigin='anonymous';
+let raf=null,rec=null,chunks=[],audioTracks=[];
+const cv=$('cv'),ctx=cv.getContext('2d');
+function st(t){$('st').textContent=t}
+function teken(){
+ const vw=v.videoWidth,vh=v.videoHeight;if(!vw)return;
+ // 9:16 uit de bron: crop-breedte = hoogte*9/16
+ const cw=vh*9/16,cx=Math.max(0,Math.min(vw-cw,(vw-cw)*$('fx').value));
+ ctx.drawImage(v,cx,0,cw,vh,0,0,540,960);
+ const t=$('titel').value.trim();
+ if(t){ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(0,0,540,80);
+  ctx.fillStyle='#fff';ctx.font='bold 30px system-ui';ctx.textAlign='center';ctx.fillText(t,270,52);}
+ raf=requestAnimationFrame(teken)}
+function syncRng(){const d=v.duration||0;$('v0').max=$('v1').max=d;
+ $('duur').textContent=d.toFixed(1)+'s bron — stuk: '+$('v0').value+'s → '+$('v1').value+'s'}
+$('drop').onclick=()=>$('bestand').click();
+$('bestand').onchange=e=>{if(e.target.files[0])laad(e.target.files[0])};
+$('drop').ondragover=e=>{e.preventDefault();$('drop').classList.add('over')};
+$('drop').ondragleave=()=>$('drop').classList.remove('over');
+$('drop').ondrop=e=>{e.preventDefault();$('drop').classList.remove('over');if(e.dataTransfer.files[0])laad(e.dataTransfer.files[0])};
+function laad(f){v.src=URL.createObjectURL(f);
+ v.onloadedmetadata=()=>{$('paneel').hidden=false;$('v0').value=0;$('v1').value=Math.min(30,v.duration);syncRng();
+  st('✅ '+f.name+' — stel je stuk in en druk ▶ of ✂')}}
+$('v0').oninput=syncRng;$('v1').oninput=syncRng;
+$('fx').oninput=()=>{if(v.paused){v.currentTime=+$('v0').value;cancelAnimationFrame(raf);teken()}};
+$('play').onclick=()=>{v.currentTime=+$('v0').value;
+ v.ontimeupdate=()=>{if(v.currentTime>=+$('v1').value)v.pause()};
+ v.play();teken()};
+$('reset').onclick=()=>location.reload();
+$('knip').onclick=async()=>{
+ const s=+$('v0').value,e=+$('v1').value;
+ if(e<=s){st('⚠ einde moet ná begin liggen');return}
+ const len=e-s;if(len>600){st('⚠ max 10 min per short');return}
+ st('⏺ opnemen… laat het tabblad open');
+ const stream=cv.captureStream(30);
+ try{const vs=v.captureStream?v.captureStream():v.mozCaptureStream();
+  vs.getAudioTracks().forEach(t=>stream.addTrack(t))}catch(err){}
+ rec=new MediaRecorder(stream,{mimeType:MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')?'video/webm;codecs=vp9,opus':'video/webm'});
+ chunks=[];rec.ondataavailable=ev=>{if(ev.data.size)chunks.push(ev.data)};
+ rec.onstop=()=>{const blob=new Blob(chunks,{type:'video/webm'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='g2b-short-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+'.webm';a.click();
+  st('✅ gedownload — '+((blob.size/1048576).toFixed(1))+' MB · drop er nog een voor de volgende short')};
+ v.currentTime=s;
+ v.onended=null;
+ v.ontimeupdate=()=>{if(v.currentTime>=e){v.pause();setTimeout(()=>{try{rec.stop()}catch(_){}},150)}};
+ rec.start(250);await v.play();teken()};
+</script></body></html>
