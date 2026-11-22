@@ -370,6 +370,23 @@
       "video": "https://good2better.com/tools/voicetag/"
     },
     {
+      "id": "coverart-fabriek",
+      "titel": "G2B COVER-ART FABRIEK — titel erin → cover eruit",
+      "soort": "browser-tool",
+      "beschrijving": "Beat-titel + producer-naam invullen → 6 pro-stijlen (DONKER DRILL, AFRO SUNSET, ANIME, CHROME, TRAP ROOD, LOFI) → kant-en-klare PNG-covers. 1:1 voor BeatStars én 16:9 voor YouTube. 🎲 = oneindig nieuwe varianten. 100% in je browser.",
+      "prijs": "€ 9,95",
+      "links": {
+        "browser": "tools/coverart/",
+        "koop": "bestel.html?p=coverart-fabriek",
+        "stripe": "https://buy.stripe.com/fZu7sLc764Q35fFd4p5J634"
+      },
+      "download_dir": "d/b06ba4d90ae6cc",
+      "groep": "studio-tools",
+      "badge": "NIEUW",
+      "cover": "media/g2b-coverart-cover.png",
+      "video": "https://good2better.com/tools/coverart/"
+    },
+    {
       "id": "g2bsuite1",
       "titel": "G2B SUITE — alle marketeer-tools",
       "soort": "app",

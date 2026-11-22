@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G2B COVER-ART FABRIEK — beat-covers in 1 klik</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230D0F0E'/><text x='50' y='68' font-size='52' font-weight='bold' text-anchor='middle' fill='%232FBF71' font-family='sans-serif'>G2</text></svg>">
+<style>
+:root{--bg:#0d0f0e;--panel:#171a19;--panel2:#1e2221;--line:#2a2f2d;--txt:#e8ecea;--dim:#8fa098;--accent:#2fbf71;--accent2:#1d7a48}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font:15px/1.55 'Segoe UI',system-ui,sans-serif;min-height:100vh}
+.wrap{max-width:900px;margin:0 auto;padding:22px 16px 60px}
+.back{color:var(--dim);text-decoration:none;font-size:13px}
+.back:hover{color:var(--accent)}
+h1{font-size:clamp(22px,5vw,34px);font-weight:800;letter-spacing:1px;margin:14px 0 2px}
+h1 b{color:var(--accent)}
+.sub{color:var(--dim);font-size:14px;margin-bottom:20px}
+.stap{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:18px}
+.stap h2{font-size:16px;margin-bottom:12px}
+.stap h2 .n{background:var(--accent);color:#04120a;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;margin-right:8px}
+.knop{background:var(--accent);color:#04120a;font-weight:800;border:none;border-radius:10px;padding:13px 22px;font-size:15px;cursor:pointer;font-family:inherit}
+.knop:hover{filter:brightness(1.12)}
+.knop2{background:var(--panel2);color:var(--txt);border:1px solid var(--line);font-weight:600;border-radius:10px;padding:10px 16px;font-size:13px;cursor:pointer;font-family:inherit}
+.knop2:hover{border-color:var(--accent);color:var(--accent)}
+.veld{display:flex;gap:12px;flex-wrap:wrap;align-items:end}
+.veld label{font-size:12px;color:var(--dim);display:block;margin-bottom:5px}
+.veld input{background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:11px 14px;font-size:15px;font-family:inherit;min-width:210px}
+.veld input:focus{border-color:var(--accent);outline:none}
+.fmt{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.fmt button{background:var(--panel2);color:var(--dim);border:none;padding:11px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.fmt button.on{background:var(--accent);color:#04120a}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:8px}
+.stijl{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.stijl h3{font-size:14px;font-weight:800}
+.stijl .u{color:var(--dim);font-size:11.5px;line-height:1.4}
+.stijl canvas{width:100%;border-radius:8px;background:#000;display:block}
+.stijl .rij{display:flex;gap:8px;margin-top:auto}
+.stijl .rij .knop2{flex:1;text-align:center;padding:8px 6px;font-size:12.5px}
+.status{color:var(--dim);font-size:13px;min-height:20px}
+.status b{color:var(--accent)}
+.foot{margin-top:26px;text-align:center;color:var(--dim);font-size:12px}
+a.cl{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="../../mijn-apps.html">← terug</a>
+<h1>G2B <b>COVER-ART FABRIEK</b></h1>
+<div class="sub">Titel + naam erin → kies je stijl → kant-en-klare cover als PNG.<br>
+Kijken en dobbelen is gratis — downloaden is voor kopers (licentiecode).</div>
+
+<div class="stap">
+<h2><span class="n">1</span>JOUW TEKST + FORMAAT</h2>
+<div class="veld">
+ <div><label>Beat-titel</label><input id="titel" maxlength="32" value="MIDNIGHT DRILL" placeholder="bv. MIDNIGHT DRILL"></div>
+ <div><label>Producer-naam</label><input id="naam" maxlength="32" value="PROD. G2B" placeholder="bv. PROD. G2B"></div>
+ <div><label>Formaat</label>
+  <div class="fmt">
+   <button id="f11" class="on">1:1 BeatStars</button>
+   <button id="f169">16:9 YouTube</button>
+  </div></div>
+</div>
+</div>
+
+<div class="stap">
+<h2><span class="n">2</span>KIES JE STIJL — 🎲 = nieuwe variant</h2>
+<div class="grid" id="grid"></div>
+<div class="status" id="bezig" style="margin-top:10px"></div>
+</div>
+
+<div class="stap">
+<h2><span class="n">3</span>DOWNLOAD</h2>
+<div class="sub" style="margin-bottom:10px">Elke cover is een PNG op full-res (1000×1000 of 1920×1080) — direct klaar voor BeatStars, YouTube, Spotify Canvas.</div>
+<button class="knop" id="alles">⬇ DOWNLOAD ALLE 6 (ZIP)</button>
+<div class="status" id="dlStatus" style="margin-top:10px"></div>
+</div>
+
+<div class="foot">G2B COVER-ART FABRIEK — 100% gegenereerd in je browser, niets verlaat je pc ·
+geen licentiecode? <a class="cl" href="../../p.html?id=coverart-fabriek">koop hem in de winkel (€ 9,95)</a></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+let fmt='11';
+
+/* ---------- seeded rng ---------- */
+function rng(seed){let s=seed>>>0;return()=>{s|=0;s=s+0x6D2B79F5|0;
+ let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+/* ---------- tekst-overlay ---------- */
+function titelOp(x,W,H,titel,naam,o){o=o||{};
+ const big=o.big||Math.floor(H*.11),sm=Math.floor(H*.032);
+ x.save();
+ x.textAlign='center';x.textBaseline='middle';
+ x.shadowColor=o.glow||'rgba(0,0,0,.85)';x.shadowBlur=H*.02;
+ x.fillStyle=o.tk||'#fff';
+ x.font='900 '+big+'px "Arial Black",Arial,sans-serif';
+ x.fillText(titel.toUpperCase(),W/2,o.ty||H*.56);
+ x.shadowBlur=H*.008;
+ x.font='700 '+sm+'px Arial,sans-serif';
+ x.fillStyle=o.nk||'rgba(255,255,255,.85)';
+ x.fillText(naam.toUpperCase(),W/2,(o.ty||H*.56)+big*.78);
+ x.restore()}
+
+/* ---------- 6 stijlen: tekenen op (x,W,H,r,titel,naam) ---------- */
+const STYLES=[
+{id:'drill',naam:'🌑 DONKER DRILL',u:'zwart + neon-rook — de drill-look',
+ teken:(x,W,H,r,t,n)=>{x.fillStyle='#07080a';x.fillRect(0,0,W,H);
+  for(let i=0;i<26;i++){const gx=r()*W,gy=r()*H,gr=(40+r()*140)*(W/1000);
+   const g=x.createRadialGradient(gx,gy,0,gx,gy,gr);
+   const kleur=r()<.5?'47,191,113':r()<.5?'150,60,255':'30,80,60';
+   g.addColorStop(0,'rgba('+kleur+','+(0.05+r()*.09)+')');g.addColorStop(1,'rgba(0,0,0,0)');
+   x.fillStyle=g;x.fillRect(gx-gr,gy-gr,gr*2,gr*2)}
+  x.strokeStyle='rgba(47,191,113,.9)';x.lineWidth=H*.012;
+  x.strokeRect(W*.06,H*.06,W*.88,H*.88);
+  titelOp(x,W,H,t,n,{glow:'rgba(47,191,113,.55)',ty:H*.5})}},
+{id:'afro',naam:'🌅 AFRO SUNSET',u:'warme zon + palmen — afrobeat/dancehall',
+ teken:(x,W,H,r,t,n)=>{const g=x.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#2b1055');g.addColorStop(.45,'#7597de');
+  g.addColorStop(.62,'#ff7e5f');g.addColorStop(.78,'#feb47b');
+  x.fillStyle=g;x.fillRect(0,0,W,H);
+  const sr=H*.19,sx=W*.5,sy=H*.46;
+  x.fillStyle='#ffd97b';x.beginPath();x.arc(sx,sy,sr,0,7);x.fill();
+  x.fillStyle='rgba(255,120,80,.55)';x.beginPath();x.arc(sx,sy,sr*1.25,0,7);x.fill();
+  x.fillStyle='#12081f';
+  x.fillRect(0,H*.74,W,H*.26);
+  for(let i=0;i<6;i++){const px=W*(0.05+r()*.9),ph=H*(0.28+r()*.12),pw=ph*.06;
+   x.save();x.translate(px,H*.76);x.rotate((r()-.5)*.2);
+   x.fillRect(-pw/2,0,pw,ph*-1);
+   for(let l=0;l<5;l++){x.beginPath();x.ellipse(0,-ph,pw*2.6,pw*.9,(l-2)*.5,0,7);x.fill()}
+   x.restore()}
+  titelOp(x,W,H,t,n,{tk:'#fff',glow:'rgba(20,5,40,.9)',ty:H*.28,nk:'#ffe9c9'})}},
+{id:'anime',naam:'⚡ ANIME',u:'flat kleuren + speedlines — energetic',
+ teken:(x,W,H,r,t,n)=>{const pal=[['#0d1b2e','#1b3a5c'],['#16213e','#0f3460'],['#1a1a40','#270082']][Math.floor(r()*3)];
+  x.fillStyle=pal[0];x.fillRect(0,0,W,H);
+  x.strokeStyle=pal[1];x.lineWidth=H*.004;
+  for(let i=0;i<40;i++){const a=r()*Math.PI*2,d1=H*.1,d2=H*(.4+r()*.5);
+   x.beginPath();x.moveTo(W/2+Math.cos(a)*d1,H*.45+Math.sin(a)*d1);
+   x.lineTo(W/2+Math.cos(a)*d2,H*.45+Math.sin(a)*d2);x.stroke()}
+  for(let i=0;i<60;i++){x.fillStyle='rgba(255,255,255,'+(r()*.25)+')';
+   x.beginPath();x.arc(r()*W,r()*H,H*.006+r()*H*.008,0,7);x.fill()}
+  x.save();x.translate(W/2,H*.5);x.rotate(-.04);
+  x.fillStyle='#f5d90a';x.fillRect(-W*.44,-H*.1,W*.88,H*.3);
+  x.fillStyle='#0d0f0e';x.textAlign='center';x.textBaseline='middle';
+  x.font='900 '+Math.floor(H*.105)+'px "Arial Black",Arial,sans-serif';
+  x.fillText(t.toUpperCase(),0,H*.05);
+  x.fillStyle='#0d0f0e';x.font='700 '+Math.floor(H*.03)+'px Arial,sans-serif';
+  x.fillText(n.toUpperCase(),0,H*.14);x.restore()}},
+{id:'chrome',naam:'⛓ CHROME',u:'metaal + grid-horizon — futuristic trap',
+ teken:(x,W,H,r,t,n)=>{x.fillStyle='#050507';x.fillRect(0,0,W,H);
+  const hy=H*.62;x.strokeStyle='rgba(200,220,255,.35)';x.lineWidth=1;
+  for(let i=0;i<14;i++){const y=hy+Math.pow(i/14,2.2)*(H-hy);
+   x.beginPath();x.moveTo(0,y);x.lineTo(W,y);x.stroke()}
+  for(let i=-8;i<=8;i++){x.beginPath();x.moveTo(W/2+i*W*.09,hy);x.lineTo(W/2+i*W*.35,H);x.stroke()}
+  const mg=x.createLinearGradient(0,H*.38,0,H*.58);
+  mg.addColorStop(0,'#f4f7ff');mg.addColorStop(.45,'#8b93b0');
+  mg.addColorStop(.55,'#3c415e');mg.addColorStop(1,'#dfe6ff');
+  x.textAlign='center';x.textBaseline='middle';
+  x.font='900 '+Math.floor(H*.13)+'px "Arial Black",Arial,sans-serif';
+  x.shadowColor='rgba(160,180,255,.7)';x.shadowBlur=H*.03;
+  x.fillStyle=mg;x.fillText(t.toUpperCase(),W/2,H*.48);
+  x.shadowBlur=0;x.font='700 '+Math.floor(H*.03)+'px Arial,sans-serif';
+  x.fillStyle='#aab4d6';x.fillText(n.toUpperCase(),W/2,H*.58);
+  x.fillStyle='rgba(255,255,255,.9)';x.beginPath();x.arc(W*(.15+r()*.7),H*.15,H*.006,0,7);x.fill()}},
+{id:'trap',naam:'🔥 TRAP ROOD',u:'donker rood + scanlines — agressief',
+ teken:(x,W,H,r,t,n)=>{const g=x.createRadialGradient(W/2,H*.42,H*.05,W/2,H*.42,H*.8);
+  g.addColorStop(0,'#4a0606');g.addColorStop(.6,'#160404');g.addColorStop(1,'#050202');
+  x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.fillStyle='rgba(0,0,0,.28)';
+  for(let y=0;y<H;y+=Math.floor(H*.014))x.fillRect(0,y,W,H*.005);
+  x.strokeStyle='rgba(255,40,40,.85)';x.lineWidth=H*.015;
+  x.beginPath();x.moveTo(W*.1,H*.8);x.lineTo(W*.9,H*.8);x.stroke();
+  x.fillStyle='#ffb400';
+  for(let i=0;i<14;i++){x.save();x.translate(W*.1+i*W*.057,H*.8);x.rotate(.6);
+   x.fillRect(-H*.008,-H*.035,H*.016,H*.07);x.restore()}
+  titelOp(x,W,H,t,n,{glow:'rgba(255,30,30,.8)',ty:H*.42,nk:'#ffb0b0'})}},
+{id:'lofi',naam:'☕ LOFI',u:'warm beige + vinyl — chill beats',
+ teken:(x,W,H,r,t,n)=>{x.fillStyle='#e8dcc8';x.fillRect(0,0,W,H);
+  x.fillStyle='#d8c6a8';
+  for(let i=0;i<40;i++)x.fillRect(r()*W,r()*H,H*.004+r()*H*.01,H*.004+r()*H*.01);
+  const cx=W/2,cy=H*.44;
+  x.fillStyle='#1a1a1a';x.beginPath();x.arc(cx,cy,H*.3,0,7);x.fill();
+  x.strokeStyle='rgba(255,255,255,.12)';x.lineWidth=1;
+  for(let i=0;i<12;i++){x.beginPath();x.arc(cx,cy,H*.06+i*H*.02,0,7);x.stroke()}
+  x.fillStyle='#c96f4a';x.beginPath();x.arc(cx,cy,H*.1,0,7);x.fill();
+  x.fillStyle='#1a1a1a';x.beginPath();x.arc(cx,cy,H*.02,0,7);x.fill();
+  x.fillStyle='#2b2118';x.textAlign='center';x.textBaseline='middle';
+  x.font='700 '+Math.floor(H*.075)+'px Georgia,serif';
+  x.fillText(t.toUpperCase(),W/2,H*.84);
+  x.font='italic '+Math.floor(H*.028)+'px Georgia,serif';
+  x.fillStyle='#7a6a52';x.fillText(n,W/2,H*.9)}}
+];
+
+/* ---------- canvas helpers ---------- */
+function maakCanvas(){const c=document.createElement('canvas');
+ if(fmt==='11'){c.width=1000;c.height=1000}else{c.width=1920;c.height=1080}
+ return c}
+function render(st,seed){const c=maakCanvas(),x=c.getContext('2d');
+ st.teken(x,c.width,c.height,rng(seed),$('titel').value||'JOUW TITEL',$('naam').value||'JOUW NAAM');
+ return c}
+
+/* ---------- licentie-gate (cover-art eigen, checksum) ---------- */
+function caCheck(s){const m=(s||'').toUpperCase().match(/^G2B-CA-([0-9A-F]{5})([0-9A-F])$/);
+ if(!m||/^(.)\1{4}$/.test(m[1]))return false;
+ let sum=0;for(const ch of m[1])sum+=parseInt(ch,16);
+ return parseInt(m[2],16)===(sum*5+9)%16}
+function _clubOk(v){return /^G2BCLUB-[A-Z0-9-]{2,}$/i.test(v||'')}
+function caOk(){try{
+  var v=localStorage.getItem('g2b_ca_licentie');if(v==='ok')return true;
+  var q=new URLSearchParams(location.search).get('licentie');
+  if(q&&caCheck(q)){localStorage.setItem('g2b_ca_licentie','ok');return true}
+  var a=localStorage.getItem('g2b_aura_licentie');
+  if(_clubOk(a)){localStorage.setItem('g2b_ca_licentie','ok');return true}}catch(e){}
+ const code=prompt('Downloaden is voor kopers.\nVul je G2B-CA licentiecode of G2BCLUB-code in — of koop: good2better.com/p.html?id=coverart-fabriek');
+ if(code&&(caCheck(code.trim())||_clubOk(code.trim()))){
+  try{localStorage.setItem('g2b_ca_licentie','ok')}catch(e){}return true}
+ return false}
+
+/* ---------- UI ---------- */
+const seeds={};
+STYLES.forEach((st)=>{
+ seeds[st.id]=Math.floor(Math.random()*1e9);
+ const d=document.createElement('div');d.className='stijl';
+ const cv=document.createElement('canvas');cv.width=400;cv.height=fmt==='11'?400:225;
+ d.innerHTML=`<h3>${st.naam}</h3><div class="u">${st.u}</div>`;
+ d.appendChild(cv);
+ const rij=document.createElement('div');rij.className='rij';
+ rij.innerHTML=`<button class="knop2" data-a="rol">🎲 variant</button>
+ <button class="knop2" data-a="dl">⬇ PNG</button>`;
+ d.appendChild(rij);
+ const toon=()=>{const big=render(st,seeds[st.id]);const x=cv.getContext('2d');
+  x.drawImage(big,0,0,cv.width,cv.height)};
+ toon();
+ rij.querySelector('[data-a=rol]').onclick=()=>{seeds[st.id]=Math.floor(Math.random()*1e9);toon()};
+ rij.querySelector('[data-a=dl]').onclick=async()=>{
+  if(!caOk())return;
+  const big=render(st,seeds[st.id]);
+  big.toBlob(bl=>download(bl,'G2B-COVER-'+st.id+(fmt==='11'?'-1x1':'-16x9')+'.png'),'image/png')};
+ $('grid').appendChild(d)});
+
+['titel','naam'].forEach(id=>$(id).oninput=()=>{
+ document.querySelectorAll('#grid .stijl').forEach((el,i)=>{
+  const cv=el.querySelector('canvas'),st=STYLES[i],x=cv.getContext('2d');
+  x.drawImage(render(st,seeds[st.id]),0,0,cv.width,cv.height)})});
+
+$('f11').onclick=()=>{fmt='11';$('f11').classList.add('on');$('f169').classList.remove('on');herteken()};
+$('f169').onclick=()=>{fmt='169';$('f11').classList.remove('on');$('f169').classList.add('on');herteken()};
+function herteken(){document.querySelectorAll('#grid .stijl').forEach((el,i)=>{
+ const cv=el.querySelector('canvas');cv.height=fmt==='11'?400:225;
+ cv.getContext('2d').drawImage(render(STYLES[i],seeds[STYLES[i].id]),0,0,cv.width,cv.height)})}
+
+function download(blob,nm){const a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);a.download=nm;a.style.display='none';
+ document.body.appendChild(a);a.click();
+ setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},5000)}
+function bezig(t){$('bezig').innerHTML=t?'⏳ '+t:''}
+
+/* ---------- zip ---------- */
+const _crct=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;
+ for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c}return t})();
+function _crc(u){let c=~0;for(let i=0;i<u.length;i++)c=_crct[(c^u[i])&255]^(c>>>8);return ~c>>>0}
+function zipFiles(files){const enc=new TextEncoder(),loc=[],cen=[];let off=0;
+ for(const f of files){const nm=enc.encode(f.naam),crc=_crc(f.data),L=f.data.length,
+  lh=new DataView(new ArrayBuffer(30));let p=0;
+  const u16=v=>{lh.setUint16(p,v,true);p+=2},u32=v=>{lh.setUint32(p,v,true);p+=4};
+  u32(0x04034b50);u16(20);u16(0x0800);u16(0);u16(0);u16(0);u32(crc);u32(L);u32(L);u16(nm.length);u16(0);
+  loc.push(lh.buffer,nm,f.data);
+  const ch=new DataView(new ArrayBuffer(46));p=0;
+  const w16=v=>{ch.setUint16(p,v,true);p+=2},w32=v=>{ch.setUint32(p,v,true);p+=4};
+  w32(0x02014b50);w16(20);w16(20);w16(0x0800);w16(0);w16(0);w16(0);w32(crc);w32(L);w32(L);
+  w16(nm.length);w16(0);w16(0);w16(0);w16(0);w32(0);w32(off);
+  cen.push(ch.buffer,nm);off+=30+nm.length+L}
+ const cdSize=cen.reduce((s,x)=>s+(x.byteLength||x.length),0),
+ eocd=new DataView(new ArrayBuffer(22));let p=0;
+ const u16=v=>{eocd.setUint16(p,v,true);p+=2},u32=v=>{eocd.setUint32(p,v,true);p+=4};
+ u32(0x06054b50);u16(0);u16(0);u16(files.length);u16(files.length);u32(cdSize);u32(off);u16(0);
+ return new Blob([...loc,...cen,eocd.buffer],{type:'application/zip'})}
+
+$('alles').onclick=async()=>{
+ if(!caOk())return;
+ const files=[],enc=c=>new Promise(res=>c.toBlob(async bl=>res(new Uint8Array(await bl.arrayBuffer())),'image/png'));
+ for(const st of STYLES){
+  $('dlStatus').textContent='render '+st.naam+'…';
+  files.push({naam:'G2B-COVER-'+st.id+(fmt==='11'?'-1x1':'-16x9')+'.png',data:await enc(render(st,seeds[st.id]))})}
+ download(zipFiles(files),'G2B-COVERS-alle-6-'+(fmt==='11'?'1x1':'16x9')+'.zip');
+ $('dlStatus').textContent='klaar — ZIP met 6 covers gedownload'};
+</script>
+</body>
+</html>
