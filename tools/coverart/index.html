@@ -29,6 +29,8 @@ h1 b{color:var(--accent)}
 .fmt{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .fmt button{background:var(--panel2);color:var(--dim);border:none;padding:11px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
 .fmt button.on{background:var(--accent);color:#04120a}
+.eig{border:2px dashed var(--line);border-radius:10px;padding:12px 14px;font-size:12.5px;color:var(--dim);cursor:pointer;max-width:270px;transition:.2s}
+.eig:hover{border-color:var(--accent);color:var(--accent)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:8px}
 .stijl{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
 .stijl h3{font-size:14px;font-weight:800}
@@ -59,11 +61,14 @@ Kijken en dobbelen is gratis — downloaden is voor kopers (licentiecode).</div>
    <button id="f11" class="on">1:1 BeatStars</button>
    <button id="f169">16:9 YouTube</button>
   </div></div>
+ <div><label>Eigen achtergrond (optioneel)</label>
+  <div class="eig" id="eig">🖼 sleep hier je foto of klik — wordt de achtergrond</div>
+  <input type="file" id="eigFile" accept="image/*" hidden></div>
 </div>
 </div>
 
 <div class="stap">
-<h2><span class="n">2</span>KIES JE STIJL — 🎲 = nieuwe variant</h2>
+<h2><span class="n">2</span>KIES JE STIJL — 🎲 = nieuwe variant <span id="eigInfo" style="font-size:12px;color:var(--dim);font-weight:400"></span></h2>
 <div class="grid" id="grid"></div>
 <div class="status" id="bezig" style="margin-top:10px"></div>
 </div>
@@ -82,6 +87,7 @@ ook handig: <a class="cl" href="../voicetag/">VOICETAG-STUDIO</a> — maak je pr
 <script>
 const $=id=>document.getElementById(id);
 let fmt='11';
+let ownImg=null,overlayMode=0;
 
 /* ---------- seeded rng ---------- */
 function rng(seed){let s=seed>>>0;return()=>{s|=0;s=s+0x6D2B79F5|0;
@@ -101,6 +107,26 @@ function titelOp(x,W,H,titel,naam,o){o=o||{};
  x.fillStyle=o.nk||'rgba(255,255,255,.85)';
  x.fillText(naam.toUpperCase(),W/2,(o.ty||H*.56)+big*.78);
  x.restore()}
+
+/* ---------- eigen-achtergrond overlays ---------- */
+const OVERLAYS=['donker glas','gradient onder','vignet','tekst-band','licht'];
+function tekenEigen(x,W,H,r,t,n){
+ if(!ownImg){x.fillStyle='#111';x.fillRect(0,0,W,H);return}
+ const s=Math.max(W/ownImg.width,H/ownImg.height),
+  dw=ownImg.width*s,dh=ownImg.height*s;
+ x.drawImage(ownImg,(W-dw)/2,(H-dh)/2,dw,dh);
+ const m=overlayMode%OVERLAYS.length;
+ if(m===0){x.fillStyle='rgba(0,0,0,.42)';x.fillRect(0,0,W,H)}
+ if(m===1){const g=x.createLinearGradient(0,H*.45,0,H);
+  g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.88)');
+  x.fillStyle=g;x.fillRect(0,0,W,H)}
+ if(m===2){const g=x.createRadialGradient(W/2,H/2,H*.18,W/2,H/2,H*.85);
+  g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.78)');
+  x.fillStyle=g;x.fillRect(0,0,W,H)}
+ if(m===3){x.fillStyle='rgba(0,0,0,.72)';x.fillRect(0,H*.4,W,H*.34)}
+ if(m===4){x.fillStyle='rgba(255,255,255,.18)';x.fillRect(0,0,W,H);
+  titelOp(x,W,H,t,n,{tk:'#0d0f0e',nk:'#222',glow:'rgba(255,255,255,.85)',ty:m===1?H*.72:H*.56});return}
+ titelOp(x,W,H,t,n,{glow:'rgba(0,0,0,.9)',ty:m===1?H*.72:H*.56})}
 
 /* ---------- 6 stijlen: tekenen op (x,W,H,r,titel,naam) ---------- */
 const STYLES=[
@@ -217,8 +243,13 @@ function caOk(){try{
  return false}
 
 /* ---------- UI ---------- */
+const eigen={id:'eigen',naam:'🖼 EIGEN BEELD',u:'jouw foto + pro-overlay — 🎲 wisselt overlay ('+OVERLAYS.length+'×)',
+ teken:tekenEigen};
 const seeds={};
-STYLES.forEach((st)=>{
+let lijst=STYLES;
+function toonStijl(el,st){const cv=el.querySelector('canvas'),x=cv.getContext('2d');
+ x.drawImage(render(st,seeds[st.id]),0,0,cv.width,cv.height)}
+function bouwKaart(st){
  seeds[st.id]=Math.floor(Math.random()*1e9);
  const d=document.createElement('div');d.className='stijl';
  const cv=document.createElement('canvas');cv.width=400;cv.height=fmt==='11'?400:225;
@@ -228,26 +259,42 @@ STYLES.forEach((st)=>{
  rij.innerHTML=`<button class="knop2" data-a="rol">🎲 variant</button>
  <button class="knop2" data-a="dl">⬇ PNG</button>`;
  d.appendChild(rij);
- const toon=()=>{const big=render(st,seeds[st.id]);const x=cv.getContext('2d');
-  x.drawImage(big,0,0,cv.width,cv.height)};
+ const toon=()=>toonStijl(d,st);
  toon();
- rij.querySelector('[data-a=rol]').onclick=()=>{seeds[st.id]=Math.floor(Math.random()*1e9);toon()};
+ rij.querySelector('[data-a=rol]').onclick=()=>{seeds[st.id]=Math.floor(Math.random()*1e9);
+  if(st.id==='eigen')overlayMode++;toon()};
  rij.querySelector('[data-a=dl]').onclick=async()=>{
   if(!caOk())return;
   const big=render(st,seeds[st.id]);
   big.toBlob(bl=>download(bl,'G2B-COVER-'+st.id+(fmt==='11'?'-1x1':'-16x9')+'.png'),'image/png')};
- $('grid').appendChild(d)});
+ return d}
+lijst.forEach(st=>{seeds[st.id]=Math.floor(Math.random()*1e9);$('grid').appendChild(bouwKaart(st))});
 
 ['titel','naam'].forEach(id=>$(id).oninput=()=>{
- document.querySelectorAll('#grid .stijl').forEach((el,i)=>{
-  const cv=el.querySelector('canvas'),st=STYLES[i],x=cv.getContext('2d');
-  x.drawImage(render(st,seeds[st.id]),0,0,cv.width,cv.height)})});
+ document.querySelectorAll('#grid .stijl').forEach((el,i)=>toonStijl(el,lijst[i]))});
+
+/* eigen achtergrond laden */
+function laadEigen(f){if(!f||!f.type.startsWith('image/'))return;
+ const img=new Image();img.onload=()=>{ownImg=img;
+  if(lijst.indexOf(eigen)<0){lijst=STYLES.concat([eigen]);
+   seeds.eigen=Math.floor(Math.random()*1e9);
+   $('grid').appendChild(bouwKaart(eigen))}
+  else toonStijl(document.querySelectorAll('#grid .stijl')[lijst.length-1],eigen);
+  $('eigInfo').textContent='— jouw beeld staat erbij ('+f.name+')';
+  $('alles').textContent='⬇ DOWNLOAD ALLE '+lijst.length+' (ZIP)'};
+ img.src=URL.createObjectURL(f)}
+$('eig').onclick=()=>$('eigFile').click();
+$('eigFile').onchange=e=>laadEigen(e.target.files[0]);
+$('eig').ondragover=e=>{e.preventDefault();$('eig').style.borderColor='var(--accent)'};
+$('eig').ondragleave=e=>{$('eig').style.borderColor='var(--line)'};
+$('eig').ondrop=e=>{e.preventDefault();$('eig').style.borderColor='var(--line)';
+ laadEigen(e.dataTransfer.files[0])};
 
 $('f11').onclick=()=>{fmt='11';$('f11').classList.add('on');$('f169').classList.remove('on');herteken()};
 $('f169').onclick=()=>{fmt='169';$('f11').classList.remove('on');$('f169').classList.add('on');herteken()};
 function herteken(){document.querySelectorAll('#grid .stijl').forEach((el,i)=>{
  const cv=el.querySelector('canvas');cv.height=fmt==='11'?400:225;
- cv.getContext('2d').drawImage(render(STYLES[i],seeds[STYLES[i].id]),0,0,cv.width,cv.height)})}
+ cv.getContext('2d').drawImage(render(lijst[i],seeds[lijst[i].id]),0,0,cv.width,cv.height)})}
 
 function download(blob,nm){const a=document.createElement('a');
  a.href=URL.createObjectURL(blob);a.download=nm;a.style.display='none';
@@ -279,11 +326,11 @@ function zipFiles(files){const enc=new TextEncoder(),loc=[],cen=[];let off=0;
 $('alles').onclick=async()=>{
  if(!caOk())return;
  const files=[],enc=c=>new Promise(res=>c.toBlob(async bl=>res(new Uint8Array(await bl.arrayBuffer())),'image/png'));
- for(const st of STYLES){
+ for(const st of lijst){
   $('dlStatus').textContent='render '+st.naam+'…';
   files.push({naam:'G2B-COVER-'+st.id+(fmt==='11'?'-1x1':'-16x9')+'.png',data:await enc(render(st,seeds[st.id]))})}
- download(zipFiles(files),'G2B-COVERS-alle-6-'+(fmt==='11'?'1x1':'16x9')+'.zip');
- $('dlStatus').textContent='klaar — ZIP met 6 covers gedownload'};
+ download(zipFiles(files),'G2B-COVERS-alle-'+lijst.length+'-'+(fmt==='11'?'1x1':'16x9')+'.zip');
+ $('dlStatus').textContent='klaar — ZIP met '+lijst.length+' covers gedownload'};
 </script>
 </body>
 </html>
