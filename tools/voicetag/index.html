@@ -172,6 +172,21 @@ function wavBlob(b){const ch=Math.min(2,b.numberOfChannels),sr=b.sampleRate,L=b.
  W('RIFF');u32(36+out.byteLength);W('WAVEfmt ');u32(16);u16(1);u16(ch);u32(sr);u32(sr*ch*2);u16(ch*2);u16(16);W('data');u32(out.byteLength);
  return new Blob([h.buffer,out],{type:'audio/wav'})}
 
+/* ---------- licentie-gate (voicetag-eigen, met checksum) ----------
+   code: G2B-VT-XXXXXC — laatste hex = gewogen checksum + salt */
+function vtCheck(s){const m=(s||'').toUpperCase().match(/^G2B-VT-([0-9A-F]{5})([0-9A-F])$/);
+ if(!m||/^(.)\1{4}$/.test(m[1]))return false;
+ let sum=0;for(const ch of m[1])sum+=parseInt(ch,16);
+ return parseInt(m[2],16)===(sum*3+11)%16}
+function vtOk(){try{
+  var v=localStorage.getItem('g2b_vt_licentie');if(v==='ok')return true;
+  var q=new URLSearchParams(location.search).get('licentie');
+  if(q&&vtCheck(q)){localStorage.setItem('g2b_vt_licentie','ok');return true}}catch(e){}
+ const code=prompt('Downloaden is voor kopers.\nVul je G2B-VT licentiecode in (staat op je licentiekaart) — of koop: good2better.com/p.html?id=voicetag-studio');
+ if(code&&vtCheck(code.trim())){
+  try{localStorage.setItem('g2b_vt_licentie','ok')}catch(e){}return true}
+ return false}
+
 /* ---------- UI: grid ---------- */
 STYLES.forEach((st,i)=>{
  const d=document.createElement('div');d.className='stijl';
@@ -185,7 +200,7 @@ STYLES.forEach((st,i)=>{
   bezig('');speel(cache.buf)};
  d.querySelector('[data-a=dl]').onclick=async()=>{
   if(!buf)return;
-  if(!G2BExport.ok())return;
+  if(!vtOk())return;
   if(!cache.buf){bezig('render '+st.naam+'…');cache.buf=await render(st);bezig('')}
   download(wavBlob(cache.buf),'G2B-TAG-'+st.id+'.wav')};
  $('grid').appendChild(d)});
@@ -277,7 +292,7 @@ async function u8(blob){return new Uint8Array(await blob.arrayBuffer())}
 
 $('alles').onclick=async()=>{
  if(!buf)return;
- if(!G2BExport.ok())return;
+ if(!vtOk())return;
  const files=[];
  for(const st of STYLES){
   $('dlStatus').textContent='render '+st.naam+'…';
