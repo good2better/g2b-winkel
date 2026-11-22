@@ -1,0 +1,39 @@
+{
+  "titel": "G2B SLAAPVERHALEN — Pack 1",
+  "uitleg": "8 rustige Nederlandse slaapverhalen (mp3), elk ±3,5 min: verhaal + zachte uitloopmuziek. Voor het slapengaan — telefoon of tablet naast het bed, volume zacht.",
+  "img": "media/slaapverhalen-cover.png",
+  "bestanden": [
+    {
+      "naam": "01 Keesje Konijn en het worteltje dat wilde slapen",
+      "bestand": "slaapverhaal-01.mp3"
+    },
+    {
+      "naam": "02 Ziggy Zebra en de sterren die flikkerden",
+      "bestand": "slaapverhaal-02.mp3"
+    },
+    {
+      "naam": "03 Sunny's zeilboot naar de Droomzee",
+      "bestand": "slaapverhaal-03.mp3"
+    },
+    {
+      "naam": "04 Bram en het lammetje dat de maan zocht",
+      "bestand": "slaapverhaal-04.mp3"
+    },
+    {
+      "naam": "05 Pippa en het zachte vogelnestje",
+      "bestand": "slaapverhaal-05.mp3"
+    },
+    {
+      "naam": "06 Flip en de zeehond die een liedje zong",
+      "bestand": "slaapverhaal-06.mp3"
+    },
+    {
+      "naam": "07 Louie de Leeuw en het warme kussentje",
+      "bestand": "slaapverhaal-07.mp3"
+    },
+    {
+      "naam": "08 Ollie en het muisje onder de sterren",
+      "bestand": "slaapverhaal-08.mp3"
+    }
+  ]
+}
