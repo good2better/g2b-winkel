@@ -178,12 +178,15 @@ function vtCheck(s){const m=(s||'').toUpperCase().match(/^G2B-VT-([0-9A-F]{5})([
  if(!m||/^(.)\1{4}$/.test(m[1]))return false;
  let sum=0;for(const ch of m[1])sum+=parseInt(ch,16);
  return parseInt(m[2],16)===(sum*3+11)%16}
+function _clubOk(v){return /^G2BCLUB-[A-Z0-9-]{2,}$/i.test(v||'')}
 function vtOk(){try{
   var v=localStorage.getItem('g2b_vt_licentie');if(v==='ok')return true;
   var q=new URLSearchParams(location.search).get('licentie');
-  if(q&&vtCheck(q)){localStorage.setItem('g2b_vt_licentie','ok');return true}}catch(e){}
- const code=prompt('Downloaden is voor kopers.\nVul je G2B-VT licentiecode in (staat op je licentiekaart) — of koop: good2better.com/p.html?id=voicetag-studio');
- if(code&&vtCheck(code.trim())){
+  if(q&&vtCheck(q)){localStorage.setItem('g2b_vt_licentie','ok');return true}
+  var a=localStorage.getItem('g2b_aura_licentie'); // club-leden: hun code geldt ook hier
+  if(_clubOk(a)){localStorage.setItem('g2b_vt_licentie','ok');return true}}catch(e){}
+ const code=prompt('Downloaden is voor kopers.\nVul je G2B-VT licentiecode of G2BCLUB-code in — of koop: good2better.com/p.html?id=voicetag-studio');
+ if(code&&(vtCheck(code.trim())||_clubOk(code.trim()))){
   try{localStorage.setItem('g2b_vt_licentie','ok')}catch(e){}return true}
  return false}
 
