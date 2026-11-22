@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G2B VOICETAG-STUDIO — je naam als pro-tag</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230D0F0E'/><text x='50' y='68' font-size='52' font-weight='bold' text-anchor='middle' fill='%232FBF71' font-family='sans-serif'>G2</text></svg>">
+<style>
+:root{--bg:#0d0f0e;--panel:#171a19;--panel2:#1e2221;--line:#2a2f2d;--txt:#e8ecea;--dim:#8fa098;--accent:#2fbf71;--accent2:#1d7a48}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font:15px/1.55 'Segoe UI',system-ui,sans-serif;min-height:100vh}
+.wrap{max-width:860px;margin:0 auto;padding:22px 16px 60px}
+.back{color:var(--dim);text-decoration:none;font-size:13px}
+.back:hover{color:var(--accent)}
+h1{font-size:clamp(22px,5vw,34px);font-weight:800;letter-spacing:1px;margin:14px 0 2px}
+h1 b{color:var(--accent)}
+.sub{color:var(--dim);font-size:14px;margin-bottom:20px}
+.stap{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:18px}
+.stap h2{font-size:16px;margin-bottom:12px}
+.stap h2 .n{background:var(--accent);color:#04120a;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;margin-right:8px}
+.knop{background:var(--accent);color:#04120a;font-weight:800;border:none;border-radius:10px;padding:13px 22px;font-size:15px;cursor:pointer;font-family:inherit}
+.knop:hover{filter:brightness(1.12)}
+.knop:disabled{opacity:.4;cursor:default;filter:none}
+.knop2{background:var(--panel2);color:var(--txt);border:1px solid var(--line);font-weight:600;border-radius:10px;padding:10px 16px;font-size:13px;cursor:pointer;font-family:inherit}
+.knop2:hover{border-color:var(--accent);color:var(--accent)}
+.rec{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.rec .bol{width:52px;height:52px;border-radius:50%;background:#bf5b2f;border:none;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.rec .bol:hover{transform:scale(1.08)}
+.rec .bol.aan{background:#e04f2f;animation:pul 1s infinite}
+@keyframes pul{50%{box-shadow:0 0 0 14px rgba(224,79,47,.15)}}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:18px;text-align:center;color:var(--dim);font-size:13px;cursor:pointer;transition:.2s}
+.drop:hover,.drop.over{border-color:var(--accent);color:var(--accent)}
+.wave{width:100%;height:64px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;margin-top:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-top:8px}
+.stijl{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.stijl h3{font-size:14px;font-weight:800}
+.stijl .u{color:var(--dim);font-size:11.5px;line-height:1.4;min-height:32px}
+.stijl .rij{display:flex;gap:8px;margin-top:auto}
+.stijl .rij .knop2{flex:1;text-align:center;padding:8px 6px;font-size:12.5px}
+.status{color:var(--dim);font-size:13px;min-height:20px}
+.status b{color:var(--accent)}
+.foot{margin-top:26px;text-align:center;color:var(--dim);font-size:12px}
+a.cl{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="../../mijn-apps.html">← terug</a>
+<h1>G2B <b>VOICETAG-STUDIO</b></h1>
+<div class="sub">Spreek je naam in (of drop een vocal) → kies je stijl → kant-en-klare pro-tag als .wav.<br>
+Luisteren is gratis — downloaden is voor kopers (licentiecode).</div>
+
+<div class="stap" id="s1">
+<h2><span class="n">1</span>JE STEM ERIN</h2>
+<div class="rec">
+  <button class="bol" id="recBol" title="Opnemen">🎙</button>
+  <div><b id="recTxt">Druk op de knop en spreek je naam/tag in</b><br>
+  <span class="status" id="recStatus">kort is kracht: 1–3 seconden is genoeg</span></div>
+</div>
+<div class="drop" id="drop" style="margin-top:14px">of sleep hier een vocal-audio in (wav/mp3/ogg)</div>
+<input type="file" id="bestand" accept="audio/*" hidden>
+<canvas class="wave" id="wave"></canvas>
+<div style="margin-top:10px;display:none" id="origRij">
+  <button class="knop2" id="origPlay">▶ beluister origineel</button>
+  <span class="status" id="origInfo"></span>
+</div>
+</div>
+
+<div class="stap" id="s2" style="opacity:.45;pointer-events:none">
+<h2><span class="n">2</span>KIES JE STIJL — klik ▶ om te horen</h2>
+<div class="grid" id="grid"></div>
+<div class="status" id="bezig" style="margin-top:10px"></div>
+</div>
+
+<div class="stap" id="s3" style="opacity:.45;pointer-events:none">
+<h2><span class="n">3</span>DOWNLOAD JE TAGS</h2>
+<div class="sub" style="margin-bottom:10px">Elke stijl = eigen .wav, direct in je DAW te slepen. Downloaden vraagt je licentiecode.</div>
+<button class="knop" id="alles">⬇ DOWNLOAD ALLE 8</button>
+<div class="status" id="dlStatus" style="margin-top:10px"></div>
+</div>
+
+<div class="foot">G2B VOICETAG-STUDIO — 100% in je browser, je stem verlaat je pc niet ·
+geen licentiecode? <a class="cl" href="../../p.html?id=voicetag-studio">koop hem in de winkel (€ 9,95)</a></div>
+</div>
+<script src="/js/g2b-export.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const AC=new (window.AudioContext||window.webkitAudioContext)();
+let buf=null,rec=null,recChunks=[],recStream=null;
+
+/* ---------- STYLES ---------- */
+const STYLES=[
+ {id:'diep',   naam:'🔊 DIEP',      u:'klassieke producer-tag: lager, trager, echo',
+  run:(c,s)=>{s.playbackRate.value=.72;let v=srcIn(c,s);v=bass(c,v,2);out(c,v);slap(c,v,.09,.28,.35)}},
+ {id:'arena',  naam:'🏟 ARENA',     u:'stadion-shout — grote ruimte + punch',
+  run:(c,s)=>{let v=srcIn(c,s);v=comp(c,v);out(c,v);verb(c,v,2.4,.45)}},
+ {id:'robot',  naam:'🤖 ROBOT',     u:'ring-mod + bandpass = machine-stem',
+  run:(c,s)=>{s.playbackRate.value=.9;let v=srcIn(c,s);v=bp(c,v,350,3200);v=am(c,v,38);v=crush(c,v);out(c,v)}},
+ {id:'telefoon',naam:'📞 TELEFOON', u:'oude-radio/telefoon: smal + schoftig',
+  run:(c,s)=>{let v=srcIn(c,s);v=bp(c,v,320,3400);v=crush(c,v);out(c,v)}},
+ {id:'kid',    naam:'👶 KID',       u:'hoger & helder — het beroemde kind-tag geluid',
+  run:(c,s)=>{s.playbackRate.value=1.42;let v=srcIn(c,s);v=hi(c,v,2);out(c,v)}},
+ {id:'stutter',naam:'⚡ STUTTER',   u:'G-G-G2B: eerste stuk 3× + dan je zin',
+  run:(c,s)=>{const v=stut(c,s,.11,3);out(c,v);slap(c,v,.12,.25,.25)}},
+ {id:'whisper',naam:'🌫 WHISPER',   u:'luchtig & creepy — hp + droomruimte',
+  run:(c,s)=>{let v=srcIn(c,s);v=hp(c,v,600);out(c,v);verb(c,v,1.8,.5)}},
+ {id:'droog',  naam:'🎙 DROOG',     u:'schoon & dichtbij — niets erbij, wel strak',
+  run:(c,s)=>{let v=srcIn(c,s);v=comp(c,v);out(c,v)}}
+];
+
+/* ---------- FX-bouwblokken (OfflineAudioContext) ----------
+   conventie: INSERT-helpers (filters, crush, comp, am) nemen een node en
+   geven de eind-node terug voor doorkoppeling; SEND-helpers (slap, verb)
+   tikken het signaal parallel naar de uitgang — dry blijft altijd lopen. */
+function srcIn(c,s){const g=c.createGain();s.connect(g);s.start(0);return g}
+function out(c,g){g.connect(c.destination)}
+function comp(c,g){const x=c.createDynamicsCompressor();x.threshold.value=-18;x.ratio.value=6;x.attack.value=.003;x.release.value=.2;g.connect(x);return x}
+function bass(c,g,db){const f=c.createBiquadFilter();f.type='lowshelf';f.frequency.value=150;f.gain.value=db;g.connect(f);return f}
+function hi(c,g,db){const f=c.createBiquadFilter();f.type='highshelf';f.frequency.value=3000;f.gain.value=db;g.connect(f);return f}
+function hp(c,g,hz){const f=c.createBiquadFilter();f.type='highpass';f.frequency.value=hz;g.connect(f);return f}
+function bp(c,g,lo,hiz){const a=c.createBiquadFilter();a.type='highpass';a.frequency.value=lo;const b=c.createBiquadFilter();b.type='lowpass';b.frequency.value=hiz;g.connect(a);a.connect(b);return b}
+function crush(c,g){const n=4096,curve=new Float32Array(n),step=1/12;
+ for(let i=0;i<n;i++){const x=i/(n-1)*2-1;curve[i]=Math.round(x/step)*step*.9}
+ const w=c.createWaveShaper();w.curve=curve;g.connect(w);return w}
+function am(c,g,hz){const o=c.createOscillator();o.frequency.value=hz;
+ const dg=c.createGain();dg.gain.value=.5;g.gain.value=.5;o.connect(dg);dg.connect(g.gain);o.start();return g}
+function slap(c,g,tijd,fb,wet){const d=c.createDelay(1);d.delayTime.value=tijd;
+ const f=c.createGain();f.gain.value=fb;const w=c.createGain();w.gain.value=wet;
+ g.connect(d);d.connect(f);f.connect(d);d.connect(w);w.connect(c.destination)}
+function verb(c,g,duur,wet){const len=Math.floor(c.sampleRate*duur),imp=c.createBuffer(2,len,c.sampleRate);
+ for(let ch=0;ch<2;ch++){const d=imp.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.4)}
+ const cv=c.createConvolver();cv.buffer=imp;const w=c.createGain();w.gain.value=wet;
+ g.connect(cv);cv.connect(w);w.connect(c.destination)}
+function stut(c,src,seg,n){const b=src.buffer,g=c.createGain();
+ const cut=Math.min(seg,b.duration*.4),N=Math.floor(cut*b.sampleRate),
+ slBuf=c.createBuffer(b.numberOfChannels,N,b.sampleRate);
+ for(let ch=0;ch<b.numberOfChannels;ch++)
+  slBuf.copyToChannel(b.getChannelData(ch).slice(0,N),ch);
+ for(let i=0;i<n;i++){const s=c.createBufferSource();s.buffer=slBuf;
+  s.connect(g);s.start(i*cut*1.05)}
+ src.connect(g);src.start(n*cut*1.05);return g}
+
+/* ---------- render ---------- */
+async function render(st){
+ const n=Math.ceil(buf.duration*buf.sampleRate*1.6)+buf.sampleRate*3;
+ const c=new OfflineAudioContext(2,n,44100);
+ const s=c.createBufferSource();s.buffer=buf;
+ st.run(c,s);return c.startRendering()}
+
+function wavBlob(b){const ch=Math.min(2,b.numberOfChannels),sr=b.sampleRate,L=b.length,
+ out=new Int16Array(L*ch);
+ for(let i=0;i<L;i++)for(let c=0;c<ch;c++){const v=b.getChannelData(c)[i];out[i*ch+c]=Math.max(-1,Math.min(1,v))*32767}
+ const h=new DataView(new ArrayBuffer(44));let p=0;
+ const W=(s)=>{for(let i=0;i<s.length;i++)h.setUint8(p++,s.charCodeAt(i))};
+ const u32=(v)=>{h.setUint32(p,v,true);p+=4},u16=(v)=>{h.setUint16(p,v,true);p+=2};
+ W('RIFF');u32(36+out.byteLength);W('WAVEfmt ');u32(16);u16(1);u16(ch);u32(sr);u32(sr*ch*2);u16(ch*2);u16(16);W('data');u32(out.byteLength);
+ return new Blob([h.buffer,out],{type:'audio/wav'})}
+
+/* ---------- UI: grid ---------- */
+STYLES.forEach((st,i)=>{
+ const d=document.createElement('div');d.className='stijl';
+ d.innerHTML=`<h3>${st.naam}</h3><div class="u">${st.u}</div>
+ <div class="rij"><button class="knop2" data-a="play">▶ hoor</button>
+ <button class="knop2" data-a="dl">⬇ .wav</button></div>`;
+ const cache={buf:null};
+ d.querySelector('[data-a=play]').onclick=async()=>{
+  if(!buf)return;bezig('bezig met '+st.naam+'…');
+  if(!cache.buf)cache.buf=await render(st);
+  bezig('');speel(cache.buf)};
+ d.querySelector('[data-a=dl]').onclick=async()=>{
+  if(!buf)return;
+  if(!G2BExport.ok())return;
+  if(!cache.buf){bezig('render '+st.naam+'…');cache.buf=await render(st);bezig('')}
+  download(wavBlob(cache.buf),'G2B-TAG-'+st.id+'.wav')};
+ $('grid').appendChild(d)});
+
+function speel(b){const s=AC.createBufferSource();s.buffer=b;s.connect(AC.destination);s.start()}
+function download(blob,nm){const a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);a.download=nm;a.style.display='none';
+ document.body.appendChild(a);a.click();
+ setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},5000)}
+function bezig(t){$('bezig').innerHTML=t?'⏳ '+t:''}
+
+/* ---------- input ---------- */
+$('recBol').onclick=async()=>{
+ if(rec&&rec.state==='recording'){rec.stop();return}
+ try{recStream=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){
+  $('recStatus').textContent='geen microfoon — drop een bestand hieronder';return}
+ recChunks=[];rec=new MediaRecorder(recStream);
+ rec.ondataavailable=e=>recChunks.push(e.data);
+ rec.onstop=async()=>{
+  recStream.getTracks().forEach(t=>t.stop());recStream=null;
+  $('recBol').classList.remove('aan');$('recTxt').innerHTML='Opname klaar ✓ — luister of neem opnieuw op';
+  const blob=new Blob(recChunks,{type:rec.mimeType});
+  laad(await blob.arrayBuffer())};
+ rec.start();$('recBol').classList.add('aan');
+ $('recTxt').innerHTML='<b style="color:#e04f2f">● OPNAME LOOPT — druk nogmaals om te stoppen</b>';
+ setTimeout(()=>{if(rec&&rec.state==='recording')rec.stop()},8000)};
+
+async function laad(ab){try{
+ buf=await AC.decodeAudioData(ab);
+ tekenWave();
+ $('origRij').style.display='block';
+ $('origInfo').textContent=` — ${buf.duration.toFixed(1)}s · ${buf.numberOfChannels} kanaal(s)`;
+ $('s2').style.opacity='';$('s2').style.pointerEvents='';
+ $('s3').style.opacity='';$('s3').style.pointerEvents='';
+ $('s2').scrollIntoView({behavior:'smooth'})
+}catch(e){$('recStatus').textContent='kon het bestand niet lezen — probeer wav/mp3'}}
+
+$('drop').onclick=()=>$('bestand').click();
+$('drop').ondragover=e=>{e.preventDefault();$('drop').classList.add('over')};
+$('drop').ondragleave=()=>$('drop').classList.remove('over');
+$('drop').ondrop=e=>{e.preventDefault();$('drop').classList.remove('over');
+ if(e.dataTransfer.files[0])e.dataTransfer.files[0].arrayBuffer().then(laad)};
+$('bestand').onchange=e=>{if(e.target.files[0])e.target.files[0].arrayBuffer().then(laad)};
+$('origPlay').onclick=()=>{if(buf)speel(buf)};
+
+function tekenWave(){const cv=$('wave'),x=cv.getContext('2d'),W=cv.width=cv.offsetWidth,H=cv.height=64;
+ x.fillStyle='#1e2221';x.fillRect(0,0,W,H);x.fillStyle='#2fbf71';
+ const d=buf.getChannelData(0),step=Math.floor(d.length/W);
+ for(let i=0;i<W;i++){let m=0;for(let j=0;j<step;j+=4)m=Math.max(m,Math.abs(d[i*step+j]||0));
+  const h=Math.max(2,m*H);x.fillRect(i,(H-h)/2,1,h)}}
+
+$('alles').onclick=async()=>{
+ if(!buf)return;
+ if(!G2BExport.ok())return;
+ for(const st of STYLES){
+  $('dlStatus').textContent='render '+st.naam+'…';
+  const b=await render(st);download(wavBlob(b),'G2B-TAG-'+st.id+'.wav')}
+ $('dlStatus').textContent='klaar — 8 tags gedownload'};
+</script>
+</body>
+</html>
