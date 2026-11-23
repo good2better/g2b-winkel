@@ -394,6 +394,16 @@ $('wav').onclick=async()=>{st('⏳ .wav renderen…');bereidSpelen();const c=cfg
   for(const n of ns){const dt=k==='akk'&&!ARPN?(STMP.get(n)||0)*stm:0;
    stem(ctx,m,k,n.p,.02+(n.s+dt)*sd,n.d*sd,n.v,klank)}}
  const buf=await ctx.startRendering();dl(wavBlob(buf),naam('wav'))};
+
+/* ---------- WERKSTATION-koppeling: één spoor offline renderen (voor de SONG-BOUWER) ---------- */
+window.renderSpoorBuf=async function(k){
+ bereidSpelen();const c=cfg(),sd=stapDur(),len=c.maten*16*sd+1,sr=44100,stm=(+$('strum').value||0)/1000;
+ const ctx=new OfflineAudioContext(2,Math.ceil(len*sr),sr),m=maakMaster(ctx),klank=$('klank').value;
+ const ns=(k==='akk'&&ARPN)?ARPN:S[k];
+ for(const n of ns){const dt=k==='akk'&&!ARPN?(STMP.get(n)||0)*stm:0;
+  stem(ctx,m,k,n.p,.02+(n.s+dt)*sd,n.d*sd,n.v,klank)}
+ const buf=await ctx.startRendering();
+ return{L:buf.getChannelData(0),R:buf.getChannelData(1),sr:sr,sd:sd,maten:c.maten}}
 function wavBlob(buf){const n=buf.length,ch=buf.numberOfChannels,dv=new DataView(new ArrayBuffer(44+n*ch*2));
  const w=(o,s)=>{for(let i=0;i<s.length;i++)dv.setUint8(o+i,s.charCodeAt(i))};
  w(0,'RIFF');dv.setUint32(4,36+n*ch*2,true);w(8,'WAVE');w(12,'fmt ');dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,ch,true);
@@ -525,6 +535,14 @@ $('genre').value='trap';$('bpm').value=140;$('ladder').value='min';
   st('💾 je vorige melodie is terug ('+sv.S.mel.length+' noten) — ✨ VARIANTEN of 🎲 nieuw');return}}catch(e){}
  nieuw()})();
 if(/[?&]uit=donder/.test(location.search))setTimeout(laadDonder,80);
+/* WERKSTATION → MELODIE: GIO stuurde genre/toonsoort/bpm (g2b_werk_melodie) */
+(function(){try{const wk=JSON.parse(localStorage.getItem('g2b_werk_melodie')||'null');
+ if(!wk)return;localStorage.removeItem('g2b_werk_melodie');
+ if(wk.g&&GENRES[wk.g])$('genre').value=wk.g;
+ if(wk.w!=null)$('wortel').value=wk.w;
+ if(wk.lad)$('ladder').value=wk.lad;
+ if(wk.bpm)$('bpm').value=wk.bpm;
+ nieuw();st('⚡ WERKSTATION: '+GENRES[$('genre').value].n+' · '+NOOT[+$('wortel').value]+' '+$('ladder').value+' · '+$('bpm').value+'bpm — nieuwe melodie in die stijl')}catch(e){}})();
 </script>
 <footer style="margin-top:24px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · spatie = speel/stop · N = nieuw</footer>
 <script src="/js/g2b-gate.js" data-tier="mijn"></script>

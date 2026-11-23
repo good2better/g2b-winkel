@@ -122,8 +122,18 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
 <div class="card">
   <canvas id="roll" style="cursor:crosshair"></canvas>
   <canvas id="scope" style="width:100%;height:70px;display:block;margin-top:6px"></canvas>
-  <div class="row" style="margin-top:8px;align-items:center"><span class="hint">✏️ klik=noot · rand slepen=lengte · shift+klik=glide · rechtsklik=weg · groene lanes = sub sweet-spot (E1–B1) · onder: kick/sub scope · speel live mee:</span><button class="mini" id="bOpn" title="neem je keyboard-spel op in de roll (16e-kwantisatie)">● OPN</button></div>
+  <div class="row" style="margin-top:8px;align-items:center;flex-wrap:wrap;gap:6px"><span class="hint">speel live mee:</span>
+    <button class="mini" id="bOpn" title="neem je keyboard-spel op in de roll">● OPN</button>
+    <button class="mini" id="bStap" title="stap-inspelen: elke toets schrijft een noot en schuift op">⌨ STAP-IN</button>
+    <label class="mini" style="border:none;padding:0">STAP <select id="stap" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:6px"><option value="8">1/2</option><option value="4">1/4</option><option value="2" selected>1/8</option><option value="1">1/16</option><option value="0.5">1/32</option></select></label>
+    <button class="mini" id="bRust" title="STAP-IN: sla een rust-stap over (ruimte tussen noten)">␣ RUST</button>
+    <label class="mini" style="border:none;padding:0">ARP <select id="arp" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:6px"><option>uit</option><option>1/16</option><option>1/8</option><option>bounce</option></select></label>
+    <button class="mini" id="bDub" title="speelt elke toets ook een octaaf hoger">DUBBEL: UIT</button>
+    <label class="mini" style="border:none;padding:0">QUANTIZE <select id="quant" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:6px"><option>1/2</option><option>1/4</option><option>1/8</option><option selected>1/16</option><option>1/32</option></select></label>
+    <label class="mini" style="border:none;padding:0">SOUND <select id="preset" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:6px"><option value="">— kies —</option></select></label>
+  </div>
   <div class="keys" id="keys"></div>
+  <span class="hint" style="margin-top:4px;display:block">✏️ klik=noot · rand slepen=lengte · shift+klik=glide · rechtsklik=weg · groene lanes = sub sweet-spot · toetsen A S D F G H J K (altijd in toonsoort) · STAP-IN vult stap-voor-stap</span>
   <audio id="au" controls loop></audio>
 </div>
 
@@ -629,6 +639,16 @@ $('bStuur').onclick=()=>{try{localStorage.setItem('g2b_donder_stuur',JSON.string
  $('bOpn').onclick=()=>{OPNAAN=!OPNAAN;$('bOpn').classList.toggle('on',OPNAAN);$('bOpn').textContent=OPNAAN?'● OPN AAN':'● OPN';
   if(OPNAAN){const ac=S.ctx||(S.ctx=new (window.AudioContext||window.webkitAudioContext)());OPT0=ac.currentTime;st('● OPN AAN — speel op het keyboard; elke toets wordt een noot in de roll')}
   else st('⏹ OPN uit — roll bijgewerkt')};
+$('bStap').onclick=()=>{STAPIN=!STAPIN;STAPPOS=0;$('bStap').classList.toggle('on',STAPIN);$('bStap').textContent=STAPIN?'⌨ STAP AAN':'⌨ STAP-IN';
+ st(STAPIN?'⌨ STAP-IN aan — elke toets vult de volgende 16e (wrapt per loop)':'⌨ STAP-IN uit')};
+$('bDub').onclick=()=>{DUBBEL=!DUBBEL;$('bDub').classList.toggle('on',DUBBEL);$('bDub').textContent='DUBBEL: '+(DUBBEL?'AAN':'UIT')};
+$('bRust').onclick=()=>{if(!STAPIN){st('␣ zet eerst ⌨ STAP-IN aan — RUST slaat daar een lege stap over');return}
+ const stap=+$('stap').value,tot=(+$('maten').value)*16;STAPPOS=(STAPPOS+stap)%tot;
+ st('␣ rust — volgende noot komt op stap '+STAPPOS)};
+$('preset').innerHTML='<option value="">— kies —</option>'+PRESETS.map((p,i)=>`<option value="${i}">${p[0]}</option>`).join('');
+$('preset').onchange=()=>{const i=+$('preset').value;if(!PRESETS[i])return;const pr=PRESETS[i][1];
+ if(pr.bas)$('bastype').value=pr.bas;Object.assign(S.sound,pr.sound);laagUI();renderPreview();
+ st('🎚️ SOUND '+PRESETS[i][0]+' — sub/grit/kick afgestemd')};
  $('dir').onchange=e=>laadShots([...e.target.files]);
  $('fi').onchange=e=>laadShots([...e.target.files]);
  document.querySelectorAll('.lock').forEach((b,i)=>b.onclick=()=>{S.locks[i]=!S.locks[i];laagUI()});
@@ -777,24 +797,47 @@ function renderPreview(){
 function luisterToggle(){const a=$('au');if(a.paused){a.play();$('bPlay').textContent='■ STOP'}else{a.pause();$('bPlay').textContent='▶ LUISTER'}}
 $('au').onpause=()=>{$('bPlay').textContent='▶ LUISTER'};
 /* speel één noot live (kleine offline-render → direct afspelen) */
-let OPNAAN=false,OPT0=0;
+let OPNAAN=false,OPT0=0,STAPIN=false,STAPPOS=0,DUBBEL=false;
+const PRESETS=[ /* vaste, veilige sound-presets (S.sound + bas-stijl) */
+ ['CLUB SUB',{bas:'sub',sound:{subAtk:.02,drive:1.0,klen:.09,khpf:70}}],
+ ['DRILL GLIDE',{bas:'a808',sound:{subAtk:.015,drive:1.25,klen:.05,khpf:110}}],
+ ['DONK FM',{bas:'fm',sound:{subAtk:.01,drive:1.5}}],
+ ['LOG WARM',{bas:'logdrum',sound:{subAtk:.045,drive:.8}}],
+ ['DONDER MAX',{bas:'donder',sound:{subAtk:.06,drive:1.35,gritOff:false}}],
+ ['STRAK 808',{bas:'a808',sound:{subAtk:.005,drive:1.1,klen:.045,khpf:120}}]];
 async function speelNoot(p,el){
- el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),140);
- if(OPNAAN){ // neem op in de roll: 16e-kwantisatie op de loop-klok
+ if(el){el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),140)}
+ const qMap={'1/2':8,'1/4':4,'1/8':2,'1/16':1,'1/32':.5},q=qMap[$('quant')&&$('quant').value]||1;
+ if(STAPIN){ // stap-inspelen: elke toets schrijft een noot en schuift op met de gekozen stap
+  const tot=(+$('maten').value)*16,stapEl=$('stap'),stap=stapEl?+stapEl.value:2;
+  bewaar();S.notes.push({p,s:STAPPOS,d:Math.min(2,stap)||.5,v:82});S.notes.sort((a,b)=>a.s-b.s);
+  STAPPOS=(STAPPOS+stap)%tot;teken();renderPreview()}
+ else if(OPNAAN){ // neem op in de roll: kwantisatie op de loop-klok
   const ac=S.ctx||(S.ctx=new (window.AudioContext||window.webkitAudioContext)());
   const sd=60/(+$('bpm').value)/4,tot=(+$('maten').value)*16;
-  const s=Math.round((ac.currentTime-OPT0)/sd)%tot;
+  const s=(Math.round((ac.currentTime-OPT0)/(sd*q))*q)%tot;
   bewaar();S.notes.push({p,s,d:2,v:82});teken();renderPreview()}
- const g=genre(),basType=$('bastype').value||g.bas,sr=44100,f=mf(p),dur=.7;
- let stem;
- if(SHOTLAAG.sub!=null&&SHOTS[SHOTLAAG.sub])stem=shotVoix(SHOTS[SHOTLAAG.sub],f,dur,sr);
- else stem=renderStem(basType,f,dur,sr,basType==='reese'?.0016:undefined);
- const e=envAdsr(stem.length,sr,(S.sound.subAtk!=null?S.sound.subAtk:g.subAtk),Math.min(.09,dur*.25));
- let v=stem.map((s,i)=>s*e[i]*0.85);
- const lo=lop(v,145,sr),hi=S.sound.gritOff?new Float32Array(v.length):sat(hip(v,170,sr),S.sound.drive||1.2);
+ /* live-geluid: ARP/DUBBEL maken van één toets een kleine reeks */
+ const g=genre(),basType=$('bastype').value||g.bas,sr=44100,sd=60/(+$('bpm').value)/4;
+ const av=$('arp')?$('arp').value:'uit';
+ let hits=[{p:p,o:0}];
+ if(av==='1/16')hits=[0,1,2,3,4,5,6,7].map(k=>({p,o:k}));
+ else if(av==='1/8')hits=[0,2,4,6].map(k=>({p,o:k}));
+ else if(av==='bounce')hits=[0,1,2,3,4,5,6,7].map(k=>({p:p+(k%2?12:0),o:k}));
+ if(DUBBEL)hits=hits.concat(hits.map(h=>({p:h.p+12,o:h.o})));
+ const dur=.7,n=Math.ceil((Math.max(...hits.map(h=>h.o))*sd+dur)*sr);
+ const lo=new Float32Array(n),hi=new Float32Array(n);
+ for(const h of hits){
+  const f=mf(h.p);
+  const stem=(SHOTLAAG.sub!=null&&SHOTS[SHOTLAAG.sub])?shotVoix(SHOTS[SHOTLAAG.sub],f,dur,sr):renderStem(basType,f,dur,sr,basType==='reese'?.0016:undefined);
+  const e=envAdsr(stem.length,sr,(S.sound.subAtk!=null?S.sound.subAtk:g.subAtk),Math.min(.09,dur*.25));
+  const vv=stem.map((s,i)=>s*e[i]*0.85);
+  const lo1=lop(vv,145,sr),hi1=S.sound.gritOff?null:sat(hip(vv,170,sr),S.sound.drive||1.2);
+  const st0=Math.floor(h.o*sd*sr);
+  for(let i=0;i<lo1.length&&st0+i<n;i++){lo[st0+i]+=lo1[i];if(hi1)hi[st0+i]+=hi1[i]}}
  const ac=S.ctx||(S.ctx=new (window.AudioContext||window.webkitAudioContext)());
- const buf=ac.createBuffer(2,v.length,sr),L=buf.getChannelData(0),Rr=buf.getChannelData(1);
- for(let i=0;i<v.length;i++){L[i]=Math.tanh((lo[i]+hi[i]*0.62)*0.9);Rr[i]=Math.tanh((lo[i]+hi[i]*0.62)*0.9)}
+ const buf=ac.createBuffer(2,n,sr),L=buf.getChannelData(0),Rr=buf.getChannelData(1);
+ for(let i=0;i<n;i++){L[i]=Math.tanh((lo[i]+hi[i]*0.62)*0.9);Rr[i]=Math.tanh((lo[i]+hi[i]*0.62)*0.9)}
  const src=ac.createBufferSource();src.buffer=buf;src.connect(ac.destination);src.start();
 }
 /* ================= v2.3: PRO EXPORT (stems + zip) ================= */
@@ -1052,6 +1095,18 @@ function bibUI(){
  $('bib').querySelectorAll('.shot').forEach(el=>el.onclick=()=>laadBib(BIB[+el.dataset.i],el))}
 
 uiInit();dobbelAlles();
+
+/* WERKSTATION → DONDER: GIO stuurde genre/toonsoort/bpm/bas-stijl (g2b_werk_donder) */
+(function(){try{const wk=JSON.parse(localStorage.getItem('g2b_werk_donder')||'null');
+ if(!wk)return;localStorage.removeItem('g2b_werk_donder');
+ const gi=GENRES.findIndex(g=>g.id===wk.g||g.n.toLowerCase().startsWith(wk.g));
+ if(gi>=0)$('genre').value=gi;
+ if(wk.bpm)$('bpm').value=wk.bpm;
+ if(wk.key!=null&&wk.key>=0&&wk.key<12)$('key').value=wk.key;
+ if(wk.bas&&BAS_TYPES.some(b=>b[0]===wk.bas))$('bastype').value=wk.bas;
+ if(wk.maten)$('maten').value=wk.maten;
+ bewaar();maakLijn();teken();renderPreview();
+ st('⚡ WERKSTATION: '+genre().n+' · '+NOOT[+$('key').value]+' mineur · '+$('bpm').value+'bpm — baslijn in die stijl')}catch(e){}})();
 </script>
 </body>
 </html>
