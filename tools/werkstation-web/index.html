@@ -106,10 +106,34 @@ a.app .in{color:var(--zacht);font-size:.78rem;margin-top:3px}
 <a class="app" href="../shorts-web/index.html"><span class="ic">✂️</span><span class="nm">SHORTS-knipper <span class="tag">NIEUW</span></span><div class="in">Lange video erin → 9:16 short met titel eruit — nul installatie, alles in je browser</div></a>
 </div>
 
+<div class="groep">🎬 SONG-BOUWER — van loop naar heel nummer</div>
+<p class="groep-uitleg">Bouwt uit jouw DONDER-FABRIEK- en MELODIE-engines een heel nummer in vaste blokken (geen gevaarlijke sliders): INTRO → VERSE → BUILD → DROP → BREAK → DROP 2 (met variatie). Klik vakjes aan/uit per spoor, kies je master, exporteer.</p>
+<div id="songBouwer" style="background:var(--kaart);border:1px solid var(--rand);border-radius:14px;padding:16px">
+  <div id="sbMatrix" style="overflow-x:auto;margin-bottom:10px"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+    <button id="sbBouw" style="background:#16a34a;color:#04120a;border:0;border-radius:10px;padding:11px 22px;font-weight:800;cursor:pointer;font-size:14px">🎬 BOUW FULL SONG</button>
+    <label style="font-size:12px;color:var(--zacht)">MASTER <select id="sbMaster" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:6px;padding:4px"><option value="club">CLUB (-9 LUFS)</option><option value="stream">STREAMING (-14 LUFS)</option></select></label>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+    <button class="sbVibe" data-k="grit" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:14px;padding:5px 12px;cursor:pointer;font-size:12px">🔥 meer donder</button>
+    <button class="sbVibe" data-k="groove" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:14px;padding:5px 12px;cursor:pointer;font-size:12px">🌊 meer groove</button>
+    <button class="sbVibe" data-k="rustig" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:14px;padding:5px 12px;cursor:pointer;font-size:12px">✂️ rustiger</button>
+    <button class="sbVibe" data-k="draai" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:14px;padding:5px 12px;cursor:pointer;font-size:12px">🔄 nieuwe draai</button>
+  </div>
+  <div id="sbExport" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+    <button id="sbWav" style="background:#22314d;color:#e8eef8;border:0;border-radius:10px;padding:9px 16px;cursor:pointer" title="ook sleepbaar recht in je DAW">⠿ ⬇ master .wav (44.1k)</button>
+    <button id="sbStem" style="background:#22314d;color:#e8eef8;border:0;border-radius:10px;padding:9px 16px;cursor:pointer">⬇ stems-zip</button>
+    <button id="sbMid" style="background:#22314d;color:#e8eef8;border:0;border-radius:10px;padding:9px 16px;cursor:pointer">⬇ .mid (met sectie-markers)</button>
+  </div>
+  <audio id="sbAu" controls style="width:100%;margin-bottom:8px"></audio>
+  <div id="sbStatus" style="font-size:12px;color:#7ee2a8">vul de matrix, druk op 🎬 — de echte engines renderen mee</div>
+</div>
+
 <div class="foot">WERKSTATION-web GIO — jouw privé browser-werkstation · export en download werken met jouw code · alleen voor Giorgio</div>
 </div>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 <script src="/js/g2b-gate.js" data-tier="mijn"></script>
 <script src="gio-brain.js"></script>
+<script src="song-bouwer.js"></script>
 </body>
 </html>
