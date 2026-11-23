@@ -157,7 +157,11 @@ function sporenUI(){$('sporen').innerHTML=SPOREN.map(([k,n])=>`<div class="spoor
  document.querySelectorAll('[data-dob]').forEach(b=>b.onclick=()=>{if(LOCK[b.dataset.dob]){st('🔒 '+b.dataset.dob+' staat op slot — klik 🔓 om los te maken');return}
   bewaar();maak(b.dataset.dob);teken();sporenUI();
   st(b.dataset.dob==='akk'?'🎲 akk opnieuw — bas-nootjes volgden mee, melodie & bas-ritme bleven staan':'🎲 '+b.dataset.dob+' opnieuw — de rest bleef staan')});
- document.querySelectorAll('[data-lok]').forEach(b=>b.onclick=()=>{LOCK[b.dataset.lok]^=1;sporenUI();st(LOCK[b.dataset.lok]?'🔒 '+b.dataset.lok+' vast — 🎲 NIEUW laat dit spoor staan':'🔓 '+b.dataset.lok+' dobbelt weer mee')});
+ document.querySelectorAll('[data-lok]').forEach(b=>b.onclick=()=>{LOCK[b.dataset.lok]^=1;sporenUI();
+ if(LOCK[b.dataset.lok]){try{const dna=JSON.parse(localStorage.getItem('g2b_dna')||'[]');
+  dna.unshift({g:$('genre').value,w:+$('wortel').value,lad:$('ladder').value,bpm:+$('bpm').value,klank:$('klank').value,spoor:b.dataset.lok,noten:S[b.dataset.lok].length,ts:Date.now()});
+  localStorage.setItem('g2b_dna',JSON.stringify(dna.slice(0,24)))}catch(e){}}
+ st(LOCK[b.dataset.lok]?'🔒 '+b.dataset.lok+' vast — 🎲 NIEUW laat dit spoor staan · stijl opgeslagen in MIJN-DNA':'🔓 '+b.dataset.lok+' dobbelt weer mee')});
  document.querySelectorAll('[data-vol]').forEach(r=>r.oninput=()=>VOL[r.dataset.vol]=r.value/100)}
 
 /* ---------- MUZIEK-ENGINE ---------- */
@@ -177,13 +181,18 @@ function maakAkk(c){const out=[];
  const rit=c.g.akk==='hold'?R([[[0,16]],[[0,16]],[[0,8],[8,8]],[[0,4],[8,8]]])
   :R([c.g.akk,c.g.akk,c.g.akk.filter((_,i)=>i%2===0),c.g.akk.concat([[15,1]])]);
  const vsel=$('voicing')?$('voicing').value:'auto';
+ const stemmen=(t,vt)=>t.map((ix,k)=>{let p=lp(c,ix,48);if(p>64)p-=12;if(vt===1&&k===0)p-=12;if(vt===2&&k===2&&p+12<=72)p+=12;return p});
+ const kandidaten=vsel==='auto'?[0,1,2]:vsel==='omkering'?[1]:vsel==='open'?[2]:vsel==='dicht'?[0,1]:[0];
+ let vorig=null; // auto voice-leading: kies per akkoord de voicing met de kleinste beweging
  PROG.forEach((gr,m)=>{
-  const t=akkTonen(c,gr),vt=vsel==='auto'?R([0,0,1,2]):vsel==='omkering'?1:vsel==='open'?2:vsel==='dicht'?R([0,1]):0; // voicing: 0=normaal, 1=omkering (grondtoon -12), 2=spreiding (top +12)
-  for(const[s,d]of rit)t.forEach((ix,k)=>{
-   let p=lp(c,ix,48);if(p>64)p-=12;
-   if(vt===1&&k===0)p-=12;
-   if(vt===2&&k===2&&p+12<=72)p+=12;
-   out.push({p,s:m*16+s,d:Math.min(d,16-s),v:k?70:82})})});
+  const t=akkTonen(c,gr);
+  let vt=kandidaten[0],tonen=stemmen(t,vt),best=1e9;
+  kandidaten.forEach(v2=>{const t2=stemmen(t,v2);const d=vorig?Math.min(...t2.map(p=>Math.min(...vorig.map(q=>Math.abs(p-q)))))+Math.abs(t2[0]-vorig[0]):0;
+   if(d<best){best=d;vt=v2;tonen=t2}});
+  vorig=tonen;
+  for(const[s,d]of rit)tonen.forEach((p,k)=>{
+   out.push({p,s:m*16+s,d:Math.min(d,16-s),v:k?70+R([0,6]):86+R([0,6])}); // grondtoon harder + micro-variatie (nooit robotisch)
+   if(k===0&&s===0)out.push({p:p-12,s:m*16+s,d:Math.min(d,16-s),v:64})})}); // warme octaaf-grondtoon eronder
  return out}
 function maakBas(c){const out=[];PROG.forEach((gr,m)=>{const rit=R([c.g.bas,c.g.bas,c.g.bas.filter((_,i)=>i%2===0),c.g.bas.concat([[15,1]])]);
  rit.forEach(([s,d],i)=>{let p=lp(c,gIdx(c,gr),36);if(p>47)p-=12;
