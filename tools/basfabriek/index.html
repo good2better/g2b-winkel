@@ -62,6 +62,9 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
     <label>BPM<input id="bpm" type="number" min="60" max="220" value="142"></label>
     <label>MATEN<select id="maten"><option>2</option><option selected>4</option><option>8</option></select></label>
     <label>SWING <span id="swv">10%</span><input id="swing" type="range" min="0" max="65" value="10"></label>
+    <label>GEVOEL <input id="hum" type="range" min="0" max="40" value="8" title="humanize: kleine timing- en sterkte-jitter per noot"></label>
+    <label>RUIMTE <input id="ruimte" type="range" min="0" max="100" value="14" title="reverb-send op de preview"></label>
+    <label>WARMTE <input id="warmte" type="range" min="0" max="100" value="12" title="delay-send op de preview"></label>
   </div>
   <div class="row">
     <button class="btn b1" id="bAlles">🎲 ALLES NIEUW</button>
@@ -70,6 +73,8 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
     <button class="btn b1" id="bPlay">▶ LUISTER</button>
     <button class="btn b2" id="bWav">⬇ .wav</button>
     <button class="btn b2" id="bMid">⬇ .mid</button>
+    <button class="btn b2" id="bUndo" title="vorige">↶</button>
+    <button class="btn b2" id="bRedo" title="volgende">↷</button>
     <button class="btn b2" id="bStuur" title="stuur baslijn + toonsoort + bpm naar G2B MELODIE">➡️ MELODIE</button>
     <button class="btn b2" id="bMap">📁 EIGEN SHOTS</button>
     <input type="file" id="dir" webkitdirectory hidden>
@@ -345,7 +350,7 @@ function shotVoix(shot,f,dur,sr){
  return y}
 /* Smart-Swap: kies automatisch de beste eigen shot voor deze laag (één klik = wissel synth↔shot) */
 function smartSwap(laag){
- if(SHOTLAAG[laag]!=null){SHOTLAAG[laag]=null;st('⇄ '+laag.toUpperCase()+' terug naar synth-engine');shotsUI();laagUI();renderPreview();return}
+ if(SHOTLAAG[laag]!=null){bewaar();SHOTLAAG[laag]=null;st('⇄ '+laag.toUpperCase()+' terug naar synth-engine');shotsUI();laagUI();renderPreview();return}
  if(!SHOTS.length){st('📁 koppel eerst een map met eigen shots');return}
  let best=0;
  if(laag==='kick'){ // korte, punchy transiënt
@@ -392,6 +397,7 @@ function renderLoop(){
  const sub=new Float32Array(kick.length);
  const gritL=new Float32Array(kick.length),gritR=new Float32Array(kick.length);
  const swOff=i=>(i%2===1)?sw*sd*0.6:0; /* swing: oneven 16e's later */
+ const hum=(+$('hum')?.value||0)/1000; /* humanize: ±ms timing-jitter + vel-jitter op sub/grit */
  const atk=S.sound.subAtk!=null?S.sound.subAtk:g.subAtk;
  const drive=S.sound.drive!=null?S.sound.drive:(basType==='reese'?1.3:basType==='fm'?1.2:1.0);
  /* kick-laag: eigen shot of synth */
@@ -410,20 +416,21 @@ function renderLoop(){
   if(SHOTLAAG.sub!=null&&SHOTS[SHOTLAAG.sub])stem=shotVoix(SHOTS[SHOTLAAG.sub],f,nd,sr);
   else stem=renderStem(basType,f,nd,sr,basType==='reese'?(S.sound.det||.0016):undefined);
   const e=envAdsr(stem.length,sr,atk,Math.min(.09,nd*.25));
-  let v=stem.map((s,i)=>s*e[i]*(n.v/100));
+  const vv=n.v/100*(1+(Math.random()*2-1)*hum*2);
+  let v=stem.map((s,i)=>s*e[i]*vv);
   if(n.glide){ // portamento: crossfade het note-einde naar een stem op de doeltoon
    const gN=Math.min(stem.length,Math.floor(.12*sr));
    const tStem=renderStem(basType,mf(n.p+n.glide),.15,sr,basType==='reese'?S.sound.det:undefined);
    for(let i=0;i<gN;i++){const u=i/gN,j=stem.length-gN+i;
     v[j]=v[j]*(1-u)+(tStem[i]||0)*u*e[j]*(n.v/100)} /* tStem óók door envelope — staart eindigt niet op volle amplitude */
   }
-  const st=Math.floor((n.s*sd+swOff(n.s))*sr);
+  const st=Math.floor((n.s*sd+swOff(n.s))*sr)+Math.floor((Math.random()*2-1)*hum*sr);
   const lo=lop(v,145,sr); // sub-deel: mono, LPF ~120-150
   choke(st); // monofone choke-group: vorige noot afkappen met 5ms fade
   for(let i=0;i<lo.length&&st+i<sub.length;i++)sub[st+i]+=lo[i]*0.8;
   if(gritOn){
    let gsrc=v;
-   if(SHOTLAAG.grit!=null&&SHOTS[SHOTLAAG.grit])gsrc=shotVoix(SHOTS[SHOTLAAG.grit],f,nd,sr).map((s,i)=>s*e[i]*(n.v/100));
+   if(SHOTLAAG.grit!=null&&SHOTS[SHOTLAAG.grit])gsrc=shotVoix(SHOTS[SHOTLAAG.grit],f,nd,sr).map((s,i)=>s*e[i]*vv);
    const hi=lop(lop(sat(hip(gsrc,170,sr),drive),2500,sr),2500,sr); // grit: HPF 150-200 + drive + 2×LPF 2.5k
    for(let i=0;i<hi.length&&st+i<gritL.length;i++){
     const sp=basType==='reese'?Math.sin(i*0.00021)*0.5:0; // lichte beweging voor reese
@@ -483,7 +490,7 @@ function spkOut(r,mode){ // r={buf,pre,sr} → stereo interleaved float
   l=lopV(l,6000,sr);r2=lopV(r2,6000,sr);
   const out=new Float32Array(n*2);
   for(let i=0;i<n;i++){out[i*2]=l[i];out[i*2+1]=r2[i]}
-  return out;
+  return fxBus(out,sr);
  }
  if(mode==='club'){
   const L=new Float32Array(n),R=new Float32Array(n);
@@ -491,9 +498,18 @@ function spkOut(r,mode){ // r={buf,pre,sr} → stereo interleaved float
   const l=peakEq(L,55,4,1.2,sr),r2=peakEq(R,55,4,1.2,sr); // +4dB @55Hz Q1.2 vóór clipper
   const out=new Float32Array(n*2);
   for(let i=0;i<n;i++){out[i*2]=Math.tanh(l[i]*0.85)*0.92;out[i*2+1]=Math.tanh(r2[i]*0.85)*0.92}
-  return out;
+  return fxBus(out,sr);
  }
- return r.buf; // studio
+ return fxBus(r.buf.slice(),sr); // studio + fx-sends
+}
+/* FX-sends op de preview: RUIMTE = 2 feedback-combs (smear), WARMTE = feedback-delay. Werkt op de interleaved stereo-buffer; .wav-export blijft droog. */
+function fxBus(buf,sr){
+ const room=(+$('ruimte')?.value||0)/100,warm=(+$('warmte')?.value||0)/100,n=buf.length/2;
+ if(room>0.001)for(const dd of [.037,.061]){const dN=Math.floor(dd*sr),g=room*0.38;
+  for(let c=0;c<2;c++)for(let i=dN;i<n;i++)buf[i*2+c]+=g*buf[(i-dN)*2+c]}
+ if(warm>0.001){const dN=Math.floor(.23*sr),g=warm*0.5;
+  for(let c=0;c<2;c++)for(let i=dN;i<n;i++)buf[i*2+c]+=g*buf[(i-dN)*2+c]}
+ return buf
 }
 const T2=1/44100;
 
@@ -561,9 +577,15 @@ function uiInit(){
  $('genre').onchange=()=>{const g=genre();$('bpm').value=g.bpm;$('swing').value=Math.round(g.sw*100);$('swv').textContent=Math.round(g.sw*100)+'%';dobbelAlles()};
  $('bastype').onchange=dobbelAlles;
  $('swing').oninput=()=>{$('swv').textContent=$('swing').value+'%'};
- $('bAlles').onclick=dobbelAlles;
- $('bLijn').onclick=()=>{maakLijn();teken();st('🎲 nieuwe baslijn — kicks & sounds bleven staan');renderPreview()};
- $('bSnd').onclick=()=>{dobbelSound();teken();renderPreview()};
+ /* undo/redo: snapshot van de muzikale staat (notes/kicks/locks/sound) vóór elke dobbel */
+ let HIST=[],HI=-1;
+ function bewaar(){HIST=HIST.slice(0,HI+1);HIST.push(JSON.stringify({n:S.notes,k:S.kicks,l:S.locks,s:S.sound}));if(HIST.length>40)HIST.shift();HI=HIST.length-1}
+ function herstel(d){const o=JSON.parse(HIST[d]);S.notes=o.n;S.kicks=o.k;S.locks=o.l;S.sound=o.s;teken();laagUI();renderPreview()}
+ $('bUndo').onclick=()=>{if(HI>0)herstel(--HI)};
+ $('bRedo').onclick=()=>{if(HI<HIST.length-1)herstel(++HI)};
+ $('bAlles').onclick=()=>{bewaar();dobbelAlles()};
+ $('bLijn').onclick=()=>{bewaar();maakLijn();teken();st('🎲 nieuwe baslijn — kicks & sounds bleven staan');renderPreview()};
+ $('bSnd').onclick=()=>{bewaar();dobbelSound();teken();renderPreview()};
  $('bPlay').onclick=luisterToggle;
  $('bWav').onclick=()=>{st('⏳ renderen…');setTimeout(()=>{const r=renderLoop();dl(new Blob([wavBytes(r.buf,r.sr)],{type:'audio/wav'}),naam('wav'))},30)}; // export = altijd studio-flat (speaker-check is alleen luisteren)
  document.querySelectorAll('.spk').forEach(b=>b.onclick=()=>{SPK=b.dataset.m;
