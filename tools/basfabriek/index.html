@@ -31,6 +31,8 @@ input[type=range]{accent-color:var(--groen2);width:110px}
 .laag .pr{font-size:11px;color:var(--zacht);line-height:1.55;margin-top:4px}
 .laag .lock{margin-top:8px;width:100%;padding:7px;border-radius:8px;border:1px solid #2c3f5c;background:#16223a;color:#bcd2f0;cursor:pointer;font-size:12px;font-weight:700}
 .laag.on{border-color:var(--groen2)}
+.laag.uit{opacity:.45;filter:saturate(.4)}
+.mini.mute.uit{background:#3a1620;border-color:#7f2d3e;color:#fda4af}
 .laag.on .lock{background:var(--groen2);color:#04120a}
 .status{background:#0d1526;border:1px solid var(--rand);border-radius:8px;padding:9px 13px;font-size:13px;color:#bcd2f0;width:100%;margin-top:8px}
 canvas#roll{width:100%;height:120px;background:#050b16;border-radius:10px;display:block}
@@ -112,9 +114,9 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
 
 <div class="card">
   <div class="lagen">
-    <div class="laag kick" data-i="0"><h3>KICK · attack &amp; punch</h3><div class="nm">—</div><div class="pr"></div><button class="lock">🔒 lock</button><button class="mini swap" data-l="kick">⇄ swap</button></div>
-    <div class="laag sub" data-i="1"><h3>SUB / 808 · fundament</h3><div class="nm">—</div><div class="pr"></div><button class="lock">🔒 lock</button><button class="mini swap" data-l="sub">⇄ swap</button></div>
-    <div class="laag grit" data-i="2"><h3>GRIT / MID · boventonen</h3><div class="nm">—</div><div class="pr"></div><button class="lock">🔒 lock</button><button class="mini swap" data-l="grit">⇄ swap</button></div>
+    <div class="laag kick" data-i="0"><h3>KICK · attack &amp; punch</h3><div class="nm">—</div><div class="pr"></div><button class="lock">🔒 lock</button><button class="mini mute" data-l="kick">🔇 mute</button><button class="mini swap" data-l="kick">⇄ swap</button></div>
+    <div class="laag sub" data-i="1"><h3>SUB / 808 · fundament</h3><div class="nm">—</div><div class="pr"></div><button class="lock">🔒 lock</button><button class="mini mute" data-l="sub">🔇 mute</button><button class="mini swap" data-l="sub">⇄ swap</button></div>
+    <div class="laag grit" data-i="2"><h3>GRIT / MID · boventonen</h3><div class="nm">—</div><div class="pr"></div><button class="lock">🔒 lock</button><button class="mini mute" data-l="grit">🔇 mute</button><button class="mini swap" data-l="grit">⇄ swap</button></div>
   </div>
   <div class="status" id="status">druk op 🎲 ALLES NIEUW voor je eerste stapel</div>
 </div>
@@ -129,6 +131,7 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
     <button class="mini" id="bRust" title="STAP-IN: sla een rust-stap over (ruimte tussen noten)">␣ RUST</button>
     <label class="mini" style="border:none;padding:0">ARP <select id="arp" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:6px"><option>uit</option><option>1/16</option><option>1/8</option><option>bounce</option></select></label>
     <button class="mini" id="bDub" title="speelt elke toets ook een octaaf hoger">DUBBEL: UIT</button>
+    <button class="mini" id="bWis" title="maak de roll helemaal leeg — dan speel je zelf alles in met ● OPN of ⌨ STAP-IN">⟲ WIS</button>
     <label class="mini" style="border:none;padding:0">QUANTIZE <select id="quant" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:6px"><option>1/2</option><option>1/4</option><option>1/8</option><option selected>1/16</option><option>1/32</option></select></label>
     <label class="mini" style="border:none;padding:0">SOUND <select id="preset" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:6px"><option value="">— kies —</option></select></label>
   </div>
@@ -182,7 +185,7 @@ const PROG_MIN=[0,5,3,6,0,5,3,6]; /* i - VI - III - VII */
 const PROG_AMAP=[0,0,3,4,0,0,5,4];
 
 const $=id=>document.getElementById(id);
-let S={notes:[],kicks:[],locks:[false,false,false],sound:{},wavUrl:null,playSrc:null,ctx:null};
+let S={notes:[],kicks:[],locks:[false,false,false],mute:{kick:false,sub:false,grit:false},sound:{},wavUrl:null,playSrc:null,ctx:null};
 let SHOTS=[]; // eigen one-shots: {naam,buf,f0,midi}
 let SHOTLAAG={kick:null,sub:null,grit:null}; // index in SHOTS of null = synth
 
@@ -483,6 +486,10 @@ function renderLoop(){
    sub[pos-1-i]*=u;gritL[pos-1-i]*=u;gritR[pos-1-i]*=u}
   sub.fill(0,pos);gritL.fill(0,pos);gritR.fill(0,pos); /* vorige voice stopt echt — geen staart-sprong */
  }
+ /* MUTES: individuele laag uit (kick/sub/grit) — geldt ook voor export */
+ if(S.mute.kick)kick.fill(0);
+ if(S.mute.sub)sub.fill(0);
+ if(S.mute.grit){gritL.fill(0);gritR.fill(0)}
  /* FASE-CHECK: kick vs sub op de eerste samenval (eerste 20ms) — invert sub als dat luider is */
  let t0=null;
  for(const k of S.kicks)for(const n of S.notes)if(n.s===k.s){t0=Math.floor(k.s*sd*sr);break}
@@ -653,6 +660,8 @@ $('preset').onchange=()=>{const i=+$('preset').value;if(!PRESETS[i])return;const
  $('fi').onchange=e=>laadShots([...e.target.files]);
  document.querySelectorAll('.lock').forEach((b,i)=>b.onclick=()=>{S.locks[i]=!S.locks[i];laagUI()});
  document.querySelectorAll('.swap').forEach(b=>b.onclick=()=>smartSwap(b.dataset.l));
+ document.querySelectorAll('.mute').forEach(b=>b.onclick=()=>{S.mute[b.dataset.l]=!S.mute[b.dataset.l];laagUI();renderPreview();st(S.mute[b.dataset.l]?'🔇 '+b.dataset.l.toUpperCase()+' uit':'🔊 '+b.dataset.l.toUpperCase()+' weer aan')});
+ $('bWis').onclick=()=>{bewaar();S.notes=[];S.kicks=[];teken();renderPreview();st('⟲ roll leeg — speel zelf in met ● OPN of ⌨ STAP-IN')};
  $('genre').value=0;
  /* toetsenbord */
  const keys=[['C',36],['D',38],['D#',39],['E',40],['F',41],['G',43],['A',45],['C2',48]];
@@ -677,6 +686,11 @@ function laagUI(){
  l[2].classList.toggle('on',S.locks[2]);l[2].querySelector('.lock').textContent=S.locks[2]?'🔓 vast':'🔒 lock';
  l[2].querySelector('.nm').textContent=S.sound.gritOff?'uit':((SHOTLAAG.grit!=null&&SHOTS[SHOTLAAG.grit])?('🎯 '+SHOTS[SHOTLAAG.grit].naam):('grit · drive '+(S.sound.drive!=null?S.sound.drive.toFixed(1):'auto')));
  l[2].querySelector('.pr').innerHTML=S.sound.gritOff?'mid-laag uit — alleen kick + sub':'HPF 170 Hz + saturatie · stereo alleen boven 120 Hz · hoort op kleine speakers';
+ ['kick','sub','grit'].forEach((naam,i)=>{
+  l[i].classList.toggle('uit',S.mute[naam]);
+  const mb=l[i].querySelector('.mute');
+  if(mb){mb.textContent=S.mute[naam]?'🔇 uit — klik om aan':'🔇 mute';mb.classList.toggle('uit',S.mute[naam])}
+ });
 }
 function dobbelSound(){
  const g=genre(),L=S.locks;
