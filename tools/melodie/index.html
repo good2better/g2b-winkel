@@ -72,9 +72,10 @@ canvas{width:100%;display:block;border-radius:8px;background:#050b08}
 </div>
 
 <div class="paneel">
- <b style="font-size:1rem">🎤 TOONSOORT LEREN</b>
- <div class="drop" id="drop" style="margin-top:8px">Sleep hier een beat (.wav/.mp3) of .mid — of klik om te kiezen. De app zoekt de toonsoort en zet hem meteen goed.<input type="file" id="bestand" accept="audio/*,.wav,.mp3,.ogg,.m4a,.flac,.mid,.midi" hidden></div>
- <div class="hint">Een .mid met een melodie wordt ook je startpunt: daarna maakt ✨ VARIANTEN er nieuwe versies van.</div>
+ <div class="rij"><b style="font-size:1rem">🎤 MIDI-AGENT</b><span class="hint" style="margin:0">leest melodie én stijl uit wat je geeft</span><span style="flex:1"></span>
+  <button id="mic">🎙️ NEURIË</button></div>
+ <div class="drop" id="drop" style="margin-top:8px">Sleep een beat/loop (.wav/.mp3/.flac/.ogg) of .mid — of klik om te kiezen. De agent transcribeert de melodie, zet de toonsoort goed én leert de stijl (daarna schrijft 🎲 NIEUWE MELODIE in dié smaak).<input type="file" id="bestand" accept="audio/*,.wav,.mp3,.ogg,.m4a,.flac,.mid,.midi" hidden></div>
+ <div class="hint">🎙️ Neurië/fluit je idee in de microfoon → agent maakt er een .mid-melodie van met akkoorden + bas eronder. Werkt ook op een zang- of synthlijn uit een beat.</div>
 </div>
 </div>
 <script>
@@ -167,7 +168,7 @@ function maakBas(c){const out=[];PROG.forEach((gr,m)=>{const rit=R([c.g.bas,c.g.
   if(c.g.b808&&i===rit.length-1&&Math.random()<.35)p+=R([-2,3,5]);
   out.push({p,s:m*16+s,d,v:i?92:110})})});return out}
 function maakMel(c){
- const L=smaak(),dicht=L.dicht||1,sprong=L.sprong||2;
+ const L=smaak(),dicht=L.dicht||1,sprong=L.sprong||2,durM=Math.max(.65,Math.min(1.5,(L.dur||2)/2));
  const nlad=c.lad.length,ritA=R(c.g.mel),ritB=R(c.g.mel);
  // motief = contour van ladder-stappen; herhaling = wat werkt (A A' A B)
  const motief=ritA.map((x,i)=>i===0?0:R([-2,-1,-1,1,1,2,sprong,-sprong]));
@@ -187,6 +188,7 @@ function maakMel(c){
    if(s%4===0&&!(v==='E'&&i===rit.length-1))mi=dichtst(tonen,mi); // sterke tel = akkoordtoon
    mi=Math.max(nlad-2,Math.min(nlad*2+2,mi));idx=mi;
    out.push({p:lp(c,mi,48),s:m*16+s,d:Math.min(d,16-s),v:s%4===0?108:88})})});
+ for(const n of out)n.d=Math.max(1,Math.min(8,Math.round(n.d*durM))); // stijl-lengte uit geleerde smaak
  return out}
 function dichtst(arr,x){const nl=arr.length||1;let b=arr[0]??x,bd=99;
  for(const a of arr)for(const o of[-1,0,1]){const c=a+o*nl;if(Math.abs(c-x)<bd){bd=Math.abs(c-x);b=c}}return b}
@@ -302,8 +304,13 @@ function maakVars(){hoorStop();if(!S.mel.length)maak('alles');const cr=$('creat'
   for(const n of v)g.fillRect(n.s/tot*cv.width,(1-(n.p-lo)/(hi2-lo))*(cv.height-6),Math.max(3,n.d/tot*cv.width-1),5)});
  st('✨ 4 varianten — ▶ hoor, ✓ gebruik, 👍 leert je smaak')}
 function gebruik(i){hoorStop();bewaar();S.mel=vars[i].map(n=>({...n}));bewaar();teken();sporenUI();st('✓ variant '+(i+1)+' is nu je melodie')}
-function kenm(ns){const c=cfg();let sp=0;for(let i=1;i<ns.length;i++)sp+=Math.abs(ns[i].p-ns[i-1].p);
- return{dicht:ns.length/(c.maten*5),sprong:sp/Math.max(1,ns.length-1)}}
+function kenm(ns){const c=cfg();let sp=0,du=0;for(let i=1;i<ns.length;i++)sp+=Math.abs(ns[i].p-ns[i-1].p);for(const n of ns)du+=n.d;
+ return{dicht:ns.length/(c.maten*5),sprong:sp/Math.max(1,ns.length-1),dur:du/Math.max(1,ns.length)}}
+function stijlLeer(ns,van){const L=smaak(),k=kenm(ns);L.n=(L.n||0)+1;
+ L.dicht=((L.dicht||1)*2+Math.max(.5,Math.min(1.6,k.dicht)))/3;
+ L.sprong=Math.round(((L.sprong||2)*2+Math.max(1,Math.min(4,k.sprong/2)))/3);
+ L.dur=((L.dur||2)*2+Math.max(.7,Math.min(6,k.dur)))/3;
+ L.bron=van;smaakSave(L)}
 function duim(i,ok){const L=smaak(),k=kenm(vars[i]);L.n=(L.n||0)+1;
  if(ok){L.dicht=((L.dicht||1)*2+Math.max(.6,Math.min(1.5,k.dicht)))/3;L.sprong=Math.round(((L.sprong||2)*2+Math.max(1,Math.min(4,k.sprong/2)))/3);st('👍 smaak geleerd ('+L.n+'×) — nieuwe melodieën gaan hierop lijken')}
  else{L.dicht=Math.max(.6,(L.dicht||1)-.05);st('👎 genoteerd — minder van dit soort')}
@@ -362,23 +369,69 @@ function parseMidi(ab){const u=new Uint8Array(ab),dv=new DataView(ab);let p=0;co
    else if(s===0xFF){p++;let l=0;do{b=u[p++];l=(l<<7)|(b&127)}while(b&128);p+=l}
    else if(s===0xF0||s===0xF7){let l=0;do{b=u[p++];l=(l<<7)|(b&127)}while(b&128);p+=l}}p=end}
  return ns.sort((a,b)=>a.s-b.s)}
+/* ---------- MIDI-AGENT: BasicPitch (Spotify, Apache-2.0) — lokaal in lib/bp ---------- */
+let BPjs=null,BPmod=null;
+function bpLaad(){if(!BPjs)BPjs=new Promise((ok,fail)=>{const s=document.createElement('script');
+ s.src='lib/bp/bp.bundle.js';s.onload=ok;s.onerror=()=>fail(new Error('agent-lib kon niet laden'));
+ document.head.appendChild(s)});return BPjs}
+async function bpKlaar(){await bpLaad();if(!BPmod)BPmod=new window.BP.BasicPitch('lib/bp/model/model.json');return BPmod}
+async function trans(buf){ // AudioBuffer → tijd-noten [{startTimeSeconds,durationSeconds,pitchMidi,amplitude}]
+ const bp=await bpKlaar(),len=Math.max(4410,Math.ceil(buf.duration*22050));
+ const oc=new OfflineAudioContext(1,len,22050),src=oc.createBufferSource();src.buffer=buf;src.connect(oc.destination);src.start();
+ const rb=await oc.startRendering(),x=rb.getChannelData(0),F=[],O=[],C=[];
+ await bp.evaluateModel(x,(f,o,co)=>{F.push(...f);O.push(...o);C.push(...co)},p=>st('🎤 agent transcribeert… '+Math.round(p*100)+'%'));
+ const raw=window.BP.outputToNotesPoly(F,O,.5,.35,11,true,null,null,true,11);
+ return window.BP.noteFramesToTime(window.BP.addPitchBendsToNoteEvents(C,raw,25))}
+async function leerNoten(ns,naam){ // tijd-noten → melodie + stijl + toonsoort
+ const c=cfg(),stp=60/c.bpm/4,tot=c.maten*16,map={};
+ for(const n of ns){const a=n.amplitude||0;if(a<0.15||n.pitchMidi<45||n.pitchMidi>96)continue;
+  const s=Math.round(n.startTimeSeconds/stp);if(s<0||s>=tot)continue;
+  const d=Math.max(1,Math.min(16-s,Math.round(n.durationSeconds/stp))),p=Math.round(n.pitchMidi);
+  if(!map[s]||p>map[s].p)map[s]={p,d,a}} // per stap: hoogste toon = melodie-lijn
+ const mel=Object.keys(map).sort((a,b)=>a-b).map(s=>({s:+s,p:map[s].p,d:map[s].d,v:60+Math.min(60,Math.round(map[s].a*60))}));
+ if(mel.length<3)return false;
+ const ch=new Array(12).fill(0);for(const n of ns)ch[Math.round(n.pitchMidi)%12]+=n.amplitude*n.durationSeconds;
+ const k=sleutel(ch);$('wortel').value=k.r;
+ if(k.maj)$('ladder').value='maj';else if(!['min','dor','harm','minp'].includes($('ladder').value))$('ladder').value='min';
+ maak('alles');S.mel=mel;bewaar();teken();sporenUI();stijlLeer(mel,naam);
+ st('🎤 '+naam+': '+mel.length+' noten in '+NOOT[k.r]+(k.maj?' majeur':' mineur')+' — melodie + stijl geleerd · ✨ VARIANTEN of 🎲 nieuw in die smaak');return true}
+async function leerAudioBuf(buf,naam){try{const ns=await trans(buf);if(ns&&ns.length>=3&&await leerNoten(ns,naam))return true}
+ catch(e){console.warn('agent:',e)}return false}
+let REC=null;
+async function mic(){const bt=$('mic');
+ if(REC){try{REC.stop()}catch(e){}return}
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){st('deze browser heeft geen microfoon-opname');return}
+ try{const strm=await navigator.mediaDevices.getUserMedia({audio:true});
+  const rec=new MediaRecorder(strm),parts=[];
+  rec.ondataavailable=e=>{if(e.data.size)parts.push(e.data)};
+  rec.onstop=async()=>{strm.getTracks().forEach(t=>t.stop());REC=null;bt.textContent='🎙️ NEURIË';
+   try{const buf=await ac().decodeAudioData(await new Blob(parts).arrayBuffer());
+    if(!await leerAudioBuf(buf,'jouw neurië'))st('kon geen melodie horen — probeer wat luider/langzamer')}
+   catch(e){st('opname niet te lezen — probeer opnieuw')}};
+  rec.start();REC=rec;bt.textContent='■ STOP';
+  st('🔴 neurië of fluit je idee (max 12s) — klik STOP als je klaar bent');
+  setTimeout(()=>{if(REC===rec)rec.stop()},12000)}
+ catch(e){st('geen microfoon-toegang — geef toestemming in de browser')}}
 async function leer(f){st('🎤 luisteren naar '+f.name+'…');const ab=await f.arrayBuffer();let ch,midNs=null;
  if(/\.midi?$/i.test(f.name)){midNs=parseMidi(ab);if(!midNs||!midNs.length){st('geen noten gevonden in die .mid');return}
   ch=new Array(12).fill(0);midNs.forEach(n=>ch[n.p%12]+=n.d)}
- else{try{const buf=await ac().decodeAudioData(ab.slice(0));ch=chromaAudio(buf)}catch(e){st('kon dit bestand niet lezen');return}}
+ else{try{const buf=await ac().decodeAudioData(ab.slice(0));
+   if(await leerAudioBuf(buf,f.name))return; // agent: melodie+stijl+toonsoort klaar
+   ch=chromaAudio(buf)}catch(e){st('kon dit bestand niet lezen');return}}
  const k=sleutel(ch);$('wortel').value=k.r;
  if(k.maj)$('ladder').value='maj';else if(!['min','dor','harm','minp'].includes($('ladder').value))$('ladder').value='min';
  const tag=NOOT[k.r]+(k.maj?' majeur':' mineur');
  if(midNs){const c=cfg(),tot=c.maten*16,mel=midNs.filter(n=>n.p>=55).filter(n=>n.s<tot);
   maak('alles');if(mel.length){S.mel=mel.map(n=>({p:n.p,s:n.s,d:Math.min(n.d,16),v:Math.max(60,Math.min(120,n.v))}));}
-  bewaar();teken();sporenUI();st('🎤 toonsoort: '+tag+' · jouw melodie ('+mel.length+' noten) staat erin met passende akkoorden + bas — nu ✨ VARIANTEN')}
+  stijlLeer(mel.length?mel:midNs,f.name);
+  bewaar();teken();sporenUI();st('🎤 toonsoort: '+tag+' · jouw melodie ('+mel.length+' noten) + stijl staan erin — nu ✨ VARIANTEN')}
  else{nieuw();st('🎤 toonsoort gevonden: '+tag+' — nieuwe melodie staat al in '+tag)}}
 const dz=$('drop');dz.onclick=()=>$('bestand').click();$('bestand').onchange=e=>{if(e.target.files[0])leer(e.target.files[0]);e.target.value=''};
 dz.ondragover=e=>{e.preventDefault();dz.classList.add('over')};dz.ondragleave=()=>dz.classList.remove('over');
 dz.ondrop=e=>{e.preventDefault();dz.classList.remove('over');if(e.dataTransfer.files[0])leer(e.dataTransfer.files[0])};
 
 /* ---------- knoppen ---------- */
-$('nieuw').onclick=nieuw;
+$('nieuw').onclick=nieuw;$('mic').onclick=mic;
 $('speel').onclick=()=>speelt?stopSpeel():speel();
 $('loopk').onclick=()=>$('loopk').classList.toggle('aan');
 $('varknop').onclick=maakVars;
