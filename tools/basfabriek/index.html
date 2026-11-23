@@ -603,7 +603,7 @@ function uiInit(){
  $('genre').onchange=()=>{const g=genre();$('bpm').value=g.bpm;$('swing').value=Math.round(g.sw*100);$('swv').textContent=Math.round(g.sw*100)+'%';dobbelAlles()};
  $('bastype').onchange=dobbelAlles;
  $('swing').oninput=()=>{$('swv').textContent=$('swing').value+'%'};
- $('oct').onchange=()=>{const d=+$('oct').value;if(d)octaaf(d);$('oct').value=0};
+ $('oct').onchange=()=>{const doel=+$('oct').value,nu=S.oct||0;if(doel!==nu)octaaf(doel-nu)};
  ['hum','ruimte','warmte'].forEach(id=>$(id).oninput=()=>{if(S.lastRender)renderPreview()});
  $('bUndo').onclick=()=>{if(HI>0)herstel(--HI)};
  $('bRedo').onclick=()=>{if(HI<HIST.length-1)herstel(++HI)};
@@ -658,7 +658,7 @@ function dobbelSound(){
 }
 function dobbelAlles(){
  dobbelSound(); // locked lagen behouden hun params (dobbelSound checkt locks)
- if(!S.locks[1]||!S.notes.length)maakLijn();
+ if(!S.locks[1]||!S.notes.length){S.oct=0;if($('oct'))$('oct').value='0';maakLijn()}
  teken();laagUI();renderPreview();
 }
 function teken(){ /* melodie-stijl roll: toon-lanes met ladder-kleuring + kick-rij onderaan */
@@ -745,8 +745,9 @@ function tekenScope(r){ /* dual-waveform: kick cyaan vs sub groen, eerste ~2 mat
  c.fillStyle='#22c55e';c.fillText('sub',44,12);
 }
 function octaaf(d){if(!S.notes.length)return;bewaar();
+ S.oct=(S.oct||0)+d;
  for(const n of S.notes)n.p+=d*12;teken();renderPreview();
- st('🎹 baslijn '+(d>0?'octaaf omhoog':'octaaf omlaag')+' — alle noten '+d*12+' semitones')}
+ st('🎹 baslijn staat nu op octaaf '+(S.oct>0?'+'+S.oct:S.oct)+' (verschoven '+d*12+' semitones)')}
 function renderPreview(){
  st('⏳ preview renderen…');
  setTimeout(()=>{
