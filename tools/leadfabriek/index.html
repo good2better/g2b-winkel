@@ -118,7 +118,8 @@ async function overpassKw(kw,plaats){
  const r0=await fetch('https://photon.komoot.io/api/?q='+encodeURIComponent(plaats)+'&limit=1');
  const f0=(await r0.json()).features||[];if(!f0.length)return[];
  const [lon,lat]=f0[0].geometry.coordinates;
- const rx=kwRegex(kw);
+ // woordgrens om de term: 'anana' mag niet 'Banana' raken, 'glas' niet 'Glamping'
+ const rx='(^|[^A-Za-z])('+kwRegex(kw)+')';
  const q='[out:json][timeout:25];(nwr["name"~"'+rx+'",i](around:20000,'+lat+','+lon+');'+
   'nwr["description"~"'+rx+'",i](around:20000,'+lat+','+lon+');'+
   'nwr["craft"~"'+rx+'",i](around:20000,'+lat+','+lon+');'+
@@ -152,8 +153,11 @@ async function zoek(){
      _t:t});
    }
   }catch(e){}
-  if(!n0){ // fallback: vrije tekst op naam via Photon (+meervoud)
-   const woorden=[tref]; if(!tref.endsWith('s'))woorden.push(tref+'s');
+  // Photon-naamzoek draait altijd (niet alleen als fallback): Overpass-hits zonder
+  // contactgegevens tellen niet als dekking, en Photon vangt enkelvoud/fuzzy namen
+  {
+   const woorden=[tref];
+   if(tref.endsWith('s'))woorden.push(tref.slice(0,-1)); else woorden.push(tref+'s');
    for(const w of woorden){
     try{const feats=await photon(w,plaats);
      for(const f of feats){
