@@ -32,7 +32,8 @@ a{color:var(--groen)}
 <div class="card">
 <b>1. Zoeken</b>
 <label>Plaats</label><input id="plaats" placeholder="bijv. Rotterdam">
-<label>Categorieën (leeg = alles)</label>
+<label>Trefwoord / onderwerp (vrij — bijv. producer, beatmaker, studio, dj, kapper)</label><input id="tref" placeholder="leeg = alleen categorieën hieronder">
+<label>Categorieën (leeg = alles — combineert met trefwoord)</label>
 <div class="cats" id="cats"></div>
 <label>Max. leads</label><input id="aantal" type="number" value="50" min="5" max="150">
 <button onclick="zoek()">ZOEK LEADS</button>
@@ -83,14 +84,87 @@ async function mxOk(domein){
  try{const r=await fetch('https://dns.google/resolve?name='+domein+'&type=MX');
   const d=await r.json();return !!(d.Answer&&d.Answer.length)}catch(e){return true}
 }
+// Niche-bredere regex: veel doelgroepen staan in OSM niet als categorie,
+// maar wel in naam/description/craft (bijv. craft=recording_studio)
+const SYN={"producer":"produc|beat|studio|recording|muziek|music|label",
+"beatmaker":"beat|studio|produc|recording|muziek",
+"studio":"studio|recording|muziek|music",
+"muziek":"muziek|music|studio|record|podium|pop",
+"dj":"dj|deejay|disc ?jockey|drive-?in",
+"artiest":"artiest|artist|muzikant|musician|band|zanger",
+"band":"band|muzikant|musician|ensemble|orkest",
+"zanger":"zanger|singer|vocal|artiest",
+"songwriter":"songwriter|songwrit|composer|componist|studio",
+"label":"label|platenmaatschappij|record|muziek|music",
+"gamer":"game|gamer|esport|computerspel",
+"influencer":"influencer|content|creator|marketing|social media",
+"coach":"coach|training|mentor",
+"fotograaf":"fotograaf|photo|studio",
+"video":"video|film|media|productie",
+"podcast":"podcast|studio|media",
+"dans":"dans|dance|ballet|studio",
+"kunst":"kunst|art|galerie|atelier|studio",
+"boek":"boek|book|uitgever|author|schrijver"};
+function kwRegex(kw){
+ const k=kw.trim().toLowerCase();
+ if(SYN[k])return SYN[k];
+ const base=k.replace(/s$/,'');
+ return base+'(e?s)?';
+}
+async function overpassKw(kw,plaats){
+ // 1) geocode de plaats via photon → middelpunt
+ const r0=await fetch('https://photon.komoot.io/api/?q='+encodeURIComponent(plaats)+'&limit=1');
+ const f0=(await r0.json()).features||[];if(!f0.length)return[];
+ const [lon,lat]=f0[0].geometry.coordinates;
+ const rx=kwRegex(kw);
+ const q='[out:json][timeout:25];(nwr["name"~"'+rx+'",i](around:20000,'+lat+','+lon+');'+
+  'nwr["description"~"'+rx+'",i](around:20000,'+lat+','+lon+');'+
+  'nwr["craft"~"'+rx+'",i](around:20000,'+lat+','+lon+');'+
+  'nwr["office"~"'+rx+'",i](around:20000,'+lat+','+lon+');'+
+  'nwr["shop"~"'+rx+'",i](around:20000,'+lat+','+lon+');'+
+  'nwr["amenity"~"'+rx+'",i](around:20000,'+lat+','+lon+'););out tags center 120;';
+ const r=await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q));
+ const d=await r.json();return d.elements||[];
+}
 async function zoek(){
  const plaats=document.getElementById('plaats').value.trim();
  if(!plaats){document.getElementById('status').textContent='⚠ vul een plaats in';return}
+ const tref=document.getElementById('tref').value.trim();
  const gekozen=[...document.querySelectorAll('#cats input:checked')].map(c=>c.value);
- const cats=gekozen.length?gekozen:Object.keys(CAT);
+ const cats=gekozen.length?gekozen:(tref?[]:Object.keys(CAT));
  const max=+document.getElementById('aantal').value||50;
  const st=document.getElementById('status');
  let kand=[],seen=new Set();
+ // 1) vrije trefwoord-zoek — Overpass (naam+tags, ook niches zonder OSM-categorie),
+ //    met Photon-naamzoek als fallback als Overpass niets/niet bereikt
+ if(tref){
+  st.textContent='🔎 trefwoord "'+tref+'" …';
+  let n0=0;
+  try{
+   const els=await overpassKw(tref,plaats);
+   for(const e of els){
+    const t=e.tags||{};const naam=t.name;const oid=e.type[0].toUpperCase()+''+e.id;
+    if(!naam||seen.has(oid))continue;seen.add(oid);n0++;
+    kand.push({naam,cat:tref,osm_type:e.type[0].toUpperCase(),osm_id:e.id,
+     adres:[t['addr:street'],t['addr:housenumber']].filter(Boolean).join(' '),
+     _t:t});
+   }
+  }catch(e){}
+  if(!n0){ // fallback: vrije tekst op naam via Photon (+meervoud)
+   const woorden=[tref]; if(!tref.endsWith('s'))woorden.push(tref+'s');
+   for(const w of woorden){
+    try{const feats=await photon(w,plaats);
+     for(const f of feats){
+      const p=f.properties||{};const naam=p.name;const oid=p.osm_type+''+p.osm_id;
+      if(!naam||p.osm_id==null||seen.has(oid))continue;seen.add(oid);n0++;
+      kand.push({naam,cat:tref,osm_type:p.osm_type,osm_id:p.osm_id,
+       adres:[p.street,p.housenumber].filter(Boolean).join(' ')});
+     }}catch(e){}
+    await sleep(400);
+   }
+  }
+  st.textContent='   → "'+tref+'": '+n0+' kandidaten';await sleep(600);
+ }
  for(let i=0;i<cats.length;i++){
   if(kand.length>=max*2)break;
   st.textContent='🔎 zoeken '+(i+1)+'/'+cats.length+': '+cats[i];
@@ -110,7 +184,7 @@ async function zoek(){
  for(let i=0;i<Math.min(kand.length,max*2);i++){
   if(LEADS.length>=max)break;
   st.textContent='📋 details '+(i+1)+'/'+Math.min(kand.length,max*2);
-  const k=kand[i];const t=await osmTags(k.osm_type,k.osm_id);
+  const k=kand[i];const t=k._t||await osmTags(k.osm_type,k.osm_id);
   const site=tagsSite(t),mail=tagsMail(t);
   const tel=t["contact:phone"]||t["phone"]||t["contact:mobile"]||"";
   if(site||mail||tel)LEADS.push({naam:k.naam,cat:k.cat,website:site,email:mail,tel,adres:k.adres});
