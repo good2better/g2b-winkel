@@ -70,6 +70,7 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
     <button class="btn b1" id="bPlay">▶ LUISTER</button>
     <button class="btn b2" id="bWav">⬇ .wav</button>
     <button class="btn b2" id="bMid">⬇ .mid</button>
+    <button class="btn b2" id="bStuur" title="stuur baslijn + toonsoort + bpm naar G2B MELODIE">➡️ MELODIE</button>
     <button class="btn b2" id="bMap">📁 EIGEN SHOTS</button>
     <input type="file" id="dir" webkitdirectory hidden>
     <input type="file" id="fi" accept="audio/*" multiple hidden>
@@ -503,6 +504,8 @@ function uiInit(){
  $('bPlay').onclick=luisterToggle;
  $('bWav').onclick=()=>{st('⏳ renderen…');setTimeout(()=>{const r=renderLoop();dl(new Blob([wavBytes(r.buf,r.sr)],{type:'audio/wav'}),naam('wav'))},30)};
  $('bMid').onclick=()=>dl(new Blob([midiBytes()],{type:'audio/midi'}),naam('mid'));
+$('bStuur').onclick=()=>{try{localStorage.setItem('g2b_donder_stuur',JSON.stringify({bpm:+$('bpm').value,maten:+$('maten').value,key:+$('key').value,noten:S.notes}))}catch(e){}
+ location.href='../melodie/index.html?uit=donder'};
  $('bMap').onclick=()=>{if(window.showDirectoryPicker){$('dir').click()}else $('fi').click()};
  $('dir').onchange=e=>laadShots([...e.target.files]);
  $('fi').onchange=e=>laadShots([...e.target.files]);
