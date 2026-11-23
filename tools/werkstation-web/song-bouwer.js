@@ -29,7 +29,7 @@ function mkFrame(src){return new Promise((res,rej)=>{const f=document.createElem
 async function laadEngines(){
  if(DW&&MW)return;
  st('⚙ engines laden (basfabriek + melodie)…');
- const fd=await mkFrame('/tools/basfabriek/index.html'),fm=await mkFrame('/tools/melodie/index.html');
+ const fd=await mkFrame('../basfabriek/index.html'),fm=await mkFrame('../melodie/index.html');
  DW=fd.contentWindow;MW=fm.contentWindow;
  // wacht tot engines geboot zijn (dobbelAlles geeft meteen een patroon)
  for(let i=0;i<80&&!(DW&&DW.renderLoop&&DW.S&&DW.S.notes&&DW.S.notes.length);i++)await new Promise(r=>setTimeout(r,100));
