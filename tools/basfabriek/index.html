@@ -61,6 +61,7 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
     <label>TOONSOORT<select id="key"></select></label>
     <label>BPM<input id="bpm" type="number" min="60" max="220" value="142"></label>
     <label>MATEN<select id="maten"><option>2</option><option selected>4</option><option>8</option></select></label>
+    <label>OCTAAF<select id="oct"><option value="-1">-1</option><option value="0" selected>0</option><option value="1">+1</option></select></label>
     <label>SWING <span id="swv">10%</span><input id="swing" type="range" min="0" max="65" value="10"></label>
     <label>GEVOEL <input id="hum" type="range" min="0" max="40" value="8" title="humanize: kleine timing- en sterkte-jitter per noot"></label>
     <label>RUIMTE <input id="ruimte" type="range" min="0" max="100" value="14" title="reverb-send op de preview"></label>
@@ -349,6 +350,11 @@ function shotVoix(shot,f,dur,sr){
   const u=pos-j;y[i]=src[j]*(1-u)+src[j+1]*u;pos+=step}
  return y}
 /* Smart-Swap: kies automatisch de beste eigen shot voor deze laag (één klik = wissel synth↔shot) */
+/* undo/redo: snapshot van de muzikale staat (notes/kicks/locks/sound) vóór elke dobbel — top-level zodat elke handler erbij kan */
+let HIST=[],HI=-1;
+function bewaar(){HIST=HIST.slice(0,HI+1);HIST.push(JSON.stringify({n:S.notes,k:S.kicks,l:S.locks,s:S.sound}));if(HIST.length>40)HIST.shift();HI=HIST.length-1}
+function herstel(d){const o=JSON.parse(HIST[d]);S.notes=o.n;S.kicks=o.k;S.locks=o.l;S.sound=o.s;teken();laagUI();renderPreview()}
+
 function smartSwap(laag){
  if(SHOTLAAG[laag]!=null){bewaar();SHOTLAAG[laag]=null;st('⇄ '+laag.toUpperCase()+' terug naar synth-engine');shotsUI();laagUI();renderPreview();return}
  if(!SHOTS.length){st('📁 koppel eerst een map met eigen shots');return}
@@ -577,10 +583,8 @@ function uiInit(){
  $('genre').onchange=()=>{const g=genre();$('bpm').value=g.bpm;$('swing').value=Math.round(g.sw*100);$('swv').textContent=Math.round(g.sw*100)+'%';dobbelAlles()};
  $('bastype').onchange=dobbelAlles;
  $('swing').oninput=()=>{$('swv').textContent=$('swing').value+'%'};
- /* undo/redo: snapshot van de muzikale staat (notes/kicks/locks/sound) vóór elke dobbel */
- let HIST=[],HI=-1;
- function bewaar(){HIST=HIST.slice(0,HI+1);HIST.push(JSON.stringify({n:S.notes,k:S.kicks,l:S.locks,s:S.sound}));if(HIST.length>40)HIST.shift();HI=HIST.length-1}
- function herstel(d){const o=JSON.parse(HIST[d]);S.notes=o.n;S.kicks=o.k;S.locks=o.l;S.sound=o.s;teken();laagUI();renderPreview()}
+ $('oct').onchange=()=>{const d=+$('oct').value;if(d)octaaf(d);$('oct').value=0};
+ ['hum','ruimte','warmte'].forEach(id=>$(id).oninput=()=>{if(S.lastRender)renderPreview()});
  $('bUndo').onclick=()=>{if(HI>0)herstel(--HI)};
  $('bRedo').onclick=()=>{if(HI<HIST.length-1)herstel(++HI)};
  $('bAlles').onclick=()=>{bewaar();dobbelAlles()};
@@ -637,23 +641,31 @@ function dobbelAlles(){
  if(!S.locks[1]||!S.notes.length)maakLijn();
  teken();laagUI();renderPreview();
 }
-function teken(){
- const cv=$('roll'),c=cv.getContext('2d'),tot=+$('maten').value*16;
- cv.width=cv.clientWidth*2;cv.height=240;
- const W=cv.width,H=cv.height;
+function teken(){ /* melodie-stijl roll: toon-lanes met ladder-kleuring + kick-rij onderaan */
+ const cv=$('roll'),c=cv.getContext('2d'),maten=+$('maten').value,tot=maten*16,w=+$('key').value;
+ cv.width=cv.clientWidth*2;cv.height=280;
+ const W=cv.width,H=cv.height,sw=W/tot;
+ const ps=S.notes.map(n=>n.p);
+ const lo=ps.length?Math.min(...ps)-2:30,hi=ps.length?Math.max(...ps)+3:50,rh=(H-16)/(hi-lo+1);
  c.fillStyle='#050b16';c.fillRect(0,0,W,H);
- c.strokeStyle='#1b2a44';for(let m=0;m<=+$('maten').value;m++){const x=m*16/tot*W;c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke()}
- const ps=S.notes.map(n=>n.p);if(!ps.length)return;
- const lo=Math.min(...ps)-2,hi=Math.max(...ps)+2;
- c.fillStyle='#fb923c';
- for(const k of S.kicks){const x=k.s/tot*W;c.fillRect(x,H-10,Math.max(3,W/tot*.6),8)}
+ for(let p=lo;p<=hi;p++){const pc=((p%12)+12)%12,inL=LAD.includes(((pc-w)%12+12)%12);
+  c.fillStyle=pc===w?'#10261c':inL?'#0a1812':'#060e0b';c.fillRect(0,H-16-(p-lo+1)*rh,W,rh)}
+ for(let s=0;s<=tot;s++){c.fillStyle=s%16===0?'#2f5a44':s%4===0?'#173326':'#0b1a13';c.fillRect(s*sw,0,1,H-16)}
+ c.fillStyle='#8fa89a';c.font='11px system-ui';
+ for(let m=0;m<maten;m++)c.fillText((m+1),m*16*sw+4,12);
+ for(const k of S.kicks){const x=k.s*sw;c.fillStyle='#fb923c';c.fillRect(x,H-12,Math.max(3,sw*.8),9)}
+ c.fillStyle='#fb923c';c.font='9px system-ui';c.fillText('kick',4,H-3);
  for(const n of S.notes){
-  const x=n.s/tot*W,w=Math.max(4,n.d/tot*W-2),y=(1-(n.p-lo)/(hi-lo))*(H-24);
-  c.fillStyle=n.glide?'#f472b6':'#22c55e';c.fillRect(x,y,w,7);
-  if(n.glide){const y2=(1-(n.p+n.glide-lo)/(hi-lo))*(H-24);
-   c.strokeStyle='#f472b6';c.beginPath();c.moveTo(x+w,y+3);c.lineTo(x+w+8,y2+3);c.stroke()}
+  const x=n.s*sw,w2=Math.max(4,n.d*sw-2),y=H-16-(n.p-lo+1)*rh+1;
+  c.fillStyle=n.glide?'#f472b6':'#22c55e';c.fillRect(x+1,y,w2,Math.max(4,rh-2));
+  if(n.glide){const y2=H-16-(n.p+n.glide-lo+1)*rh+rh/2;
+   c.strokeStyle='#f472b6';c.beginPath();c.moveTo(x+w2+1,y+rh/2-1);c.lineTo(x+w2+9,y2);c.stroke()}
  }
+ c.fillStyle='#f472b6';c.font='9px system-ui';c.fillText('roze = glide-noot',W-90,H-3)
 }
+function octaaf(d){if(!S.notes.length)return;bewaar();
+ for(const n of S.notes)n.p+=d*12;teken();renderPreview();
+ st('🎹 baslijn '+(d>0?'octaaf omhoog':'octaaf omlaag')+' — alle noten '+d*12+' semitones')}
 function renderPreview(){
  st('⏳ preview renderen…');
  setTimeout(()=>{
