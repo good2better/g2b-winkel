@@ -133,7 +133,8 @@ function sporenUI(){$('sporen').innerHTML=SPOREN.map(([k,n])=>`<div class="spoor
  <label style="flex-direction:row;align-items:center">vol <input type="range" min="0" max="100" value="${VOL[k]*100}" data-vol="${k}"></label>
  <span class="hint" style="margin:0">${S[k].length} noten</span></div>`).join('');
  document.querySelectorAll('[data-aan]').forEach(b=>b.onclick=()=>{AAN[b.dataset.aan]^=1;sporenUI();teken()});
- document.querySelectorAll('[data-dob]').forEach(b=>b.onclick=()=>{bewaar();maak(b.dataset.dob);teken();sporenUI();st('🎲 '+b.dataset.dob+' opnieuw — de rest bleef staan')});
+ document.querySelectorAll('[data-dob]').forEach(b=>b.onclick=()=>{bewaar();maak(b.dataset.dob);teken();sporenUI();
+  st(b.dataset.dob==='akk'?'🎲 akk opnieuw — bas-nootjes volgden mee, melodie & bas-ritme bleven staan':'🎲 '+b.dataset.dob+' opnieuw — de rest bleef staan')});
  document.querySelectorAll('[data-vol]').forEach(r=>r.oninput=()=>VOL[r.dataset.vol]=r.value/100)}
 
 /* ---------- MUZIEK-ENGINE ---------- */
@@ -190,7 +191,10 @@ function maakMel(c){
 function dichtst(arr,x){const nl=arr.length||1;let b=arr[0]??x,bd=99;
  for(const a of arr)for(const o of[-1,0,1]){const c=a+o*nl;if(Math.abs(c-x)<bd){bd=Math.abs(c-x);b=c}}return b}
 function maak(wat){const c=cfg();if(!PROG||PROG.length!==c.maten||wat==='alles')maakProg(c);
- if(wat==='akk'){maakProg(c);S.akk=maakAkk(c);S.bas=maakBas(c);return} // akk-dobbel: nieuwe loop, bas volgt, melodie blijft
+ if(wat==='akk'){maakProg(c);S.akk=maakAkk(c);
+ // bas: zelfde ritme, alleen toonhoogtes volgen de nieuwe akkoorden (geen krasende bas onder nieuwe akkoorden)
+ S.bas=S.bas.map(n=>{const gr=PROG[Math.floor(n.s/16)];let p=lp(c,gIdx(c,gr),36);if(p>47)p-=12;return{...n,p}});
+ return} // akk-dobbel: nieuwe akkoorden, bas-ritme blijft (nootjes volgen), melodie blijft
  if(wat==='alles'||wat==='akk')S.akk=maakAkk(c);
  if(wat==='alles'||wat==='bas')S.bas=maakBas(c);
  if(wat==='alles'||wat==='mel')S.mel=maakMel(c)}
