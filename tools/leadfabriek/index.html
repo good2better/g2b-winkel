@@ -108,8 +108,7 @@ const SYN={"producer":"produc|beat|studio|recording|muziek|music|label",
 function kwRegex(kw){
  const k=kw.trim().toLowerCase();
  if(SYN[k])return SYN[k];
- const base=k.replace(/s$/,'');
- return base+'(e?s)?';
+ return k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'s?';
 }
 async function overpassKw(kw,plaats){
  // 1) geocode de plaats via photon → middelpunt
@@ -134,7 +133,7 @@ async function zoek(){
  const cats=gekozen.length?gekozen:(tref?[]:Object.keys(CAT));
  const max=+document.getElementById('aantal').value||50;
  const st=document.getElementById('status');
- let kand=[],seen=new Set();
+ let kand=[],kwKand=[],catKand=[],seen=new Set();
  // 1) vrije trefwoord-zoek — Overpass (naam+tags, ook niches zonder OSM-categorie),
  //    met Photon-naamzoek als fallback als Overpass niets/niet bereikt
  if(tref){
@@ -145,7 +144,7 @@ async function zoek(){
    for(const e of els){
     const t=e.tags||{};const naam=t.name;const oid=e.type[0].toUpperCase()+''+e.id;
     if(!naam||seen.has(oid))continue;seen.add(oid);n0++;
-    kand.push({naam,cat:tref,osm_type:e.type[0].toUpperCase(),osm_id:e.id,
+    kwKand.push({naam,cat:tref,osm_type:e.type[0].toUpperCase(),osm_id:e.id,
      adres:[t['addr:street'],t['addr:housenumber']].filter(Boolean).join(' '),
      _t:t});
    }
@@ -157,7 +156,7 @@ async function zoek(){
      for(const f of feats){
       const p=f.properties||{};const naam=p.name;const oid=p.osm_type+''+p.osm_id;
       if(!naam||p.osm_id==null||seen.has(oid))continue;seen.add(oid);n0++;
-      kand.push({naam,cat:tref,osm_type:p.osm_type,osm_id:p.osm_id,
+      kwKand.push({naam,cat:tref,osm_type:p.osm_type,osm_id:p.osm_id,
        adres:[p.street,p.housenumber].filter(Boolean).join(' ')});
      }}catch(e){}
     await sleep(400);
@@ -166,7 +165,7 @@ async function zoek(){
   st.textContent='   → "'+tref+'": '+n0+' kandidaten';await sleep(600);
  }
  for(let i=0;i<cats.length;i++){
-  if(kand.length>=max*2)break;
+  if(catKand.length>=max*2)break;
   st.textContent='🔎 zoeken '+(i+1)+'/'+cats.length+': '+cats[i];
   try{
    const feats=await photon(CAT[cats[i]].split('|')[0],plaats);
@@ -174,11 +173,16 @@ async function zoek(){
     const p=f.properties||{};const naam=p.name;const oid=p.osm_type+''+p.osm_id;
     if(!naam||p.osm_id==null||seen.has(oid))continue;
     seen.add(oid);
-    kand.push({naam,cat:cats[i],osm_type:p.osm_type,osm_id:p.osm_id,
+    catKand.push({naam,cat:cats[i],osm_type:p.osm_type,osm_id:p.osm_id,
      adres:[p.street,p.housenumber].filter(Boolean).join(' ')});
    }
   }catch(e){}
   await sleep(400);
+ }
+ // afwisselend samenvoegen: trefwoord-hits mogen de categorie-hits niet verdringen
+ for(let i=0;i<Math.max(kwKand.length,catKand.length);i++){
+  if(kwKand[i])kand.push(kwKand[i]);
+  if(catKand[i])kand.push(catKand[i]);
  }
  LEADS=[];
  for(let i=0;i<Math.min(kand.length,max*2);i++){
