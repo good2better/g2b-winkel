@@ -122,7 +122,7 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
 <div class="card">
   <canvas id="roll" style="cursor:crosshair"></canvas>
   <canvas id="scope" style="width:100%;height:70px;display:block;margin-top:6px"></canvas>
-  <div class="row" style="margin-top:8px"><span class="hint">✏️ klik=noot · rand slepen=lengte · shift+klik=glide · rechtsklik=weg · groene lanes = sub sweet-spot (E1–B1) · onder: kick/sub scope · speel live mee:</span></div>
+  <div class="row" style="margin-top:8px;align-items:center"><span class="hint">✏️ klik=noot · rand slepen=lengte · shift+klik=glide · rechtsklik=weg · groene lanes = sub sweet-spot (E1–B1) · onder: kick/sub scope · speel live mee:</span><button class="mini" id="bOpn" title="neem je keyboard-spel op in de roll (16e-kwantisatie)">● OPN</button></div>
   <div class="keys" id="keys"></div>
   <audio id="au" controls loop></audio>
 </div>
@@ -626,6 +626,9 @@ $('bStuur').onclick=()=>{try{localStorage.setItem('g2b_donder_stuur',JSON.string
  location.href='../melodie/index.html?uit=donder'};
  $('bMap').onclick=()=>{if(window.showDirectoryPicker){$('dir').click()}else $('fi').click()};
  $('bBib').onclick=bibUI;
+ $('bOpn').onclick=()=>{OPNAAN=!OPNAAN;$('bOpn').classList.toggle('on',OPNAAN);$('bOpn').textContent=OPNAAN?'● OPN AAN':'● OPN';
+  if(OPNAAN){const ac=S.ctx||(S.ctx=new (window.AudioContext||window.webkitAudioContext)());OPT0=ac.currentTime;st('● OPN AAN — speel op het keyboard; elke toets wordt een noot in de roll')}
+  else st('⏹ OPN uit — roll bijgewerkt')};
  $('dir').onchange=e=>laadShots([...e.target.files]);
  $('fi').onchange=e=>laadShots([...e.target.files]);
  document.querySelectorAll('.lock').forEach((b,i)=>b.onclick=()=>{S.locks[i]=!S.locks[i];laagUI()});
@@ -774,8 +777,14 @@ function renderPreview(){
 function luisterToggle(){const a=$('au');if(a.paused){a.play();$('bPlay').textContent='■ STOP'}else{a.pause();$('bPlay').textContent='▶ LUISTER'}}
 $('au').onpause=()=>{$('bPlay').textContent='▶ LUISTER'};
 /* speel één noot live (kleine offline-render → direct afspelen) */
+let OPNAAN=false,OPT0=0;
 async function speelNoot(p,el){
  el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),140);
+ if(OPNAAN){ // neem op in de roll: 16e-kwantisatie op de loop-klok
+  const ac=S.ctx||(S.ctx=new (window.AudioContext||window.webkitAudioContext)());
+  const sd=60/(+$('bpm').value)/4,tot=(+$('maten').value)*16;
+  const s=Math.round((ac.currentTime-OPT0)/sd)%tot;
+  bewaar();S.notes.push({p,s,d:2,v:82});teken();renderPreview()}
  const g=genre(),basType=$('bastype').value||g.bas,sr=22050,f=mf(p),dur=.7;
  let stem;
  if(SHOTLAAG.sub!=null&&SHOTS[SHOTLAAG.sub])stem=shotVoix(SHOTS[SHOTLAAG.sub],f,dur,sr);
