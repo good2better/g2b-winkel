@@ -41,7 +41,7 @@ canvas{width:100%;display:block;border-radius:8px;background:#050b08}
   <option value="minp">mineur-penta (veilig)</option></select></label>
  <label>BPM<input type="number" id="bpm" min="60" max="190" value="140"></label>
  <label>Maten<select id="maten"><option>4</option><option selected>8</option><option>16</option></select></label>
- <label>Klank melodie<select id="klank"><option value="pluck">Pluck</option><option value="keys">Keys</option><option value="bel">Bel</option><option value="lead">Lead</option><option value="fluit">Fluit</option><option value="smp:piano|56">🎹 Piano</option><option value="smp:marimba|56">🎹 Marimba</option><option value="smp:har_kH_C4|60">🎹 Harp</option><option value="smp:sax_kSx50_1|50">🎹 Sax</option></select></label>
+ <label>Klank melodie<select id="klank"><option value="pluck">Pluck</option><option value="keys">Keys</option><option value="bel">Bel</option><option value="lead">Lead</option><option value="fluit">Fluit</option><option value="orgel">Orgel</option><option value="pad">Pad</option><option value="klok">Klok</option><option value="smp:piano|56">🎹 Piano</option><option value="smp:marimba|56">🎹 Marimba</option><option value="smp:har_kH_C4|60">🎹 Harp</option><option value="smp:sax_kSx50_1|50">🎹 Sax</option></select></label>
  <label>Arpeggio<select id="arp"><option value="uit">uit</option><option value="1/16">1/16</option><option value="1/8">1/8</option><option value="triplet">triplet</option></select></label>
  <label>Voicing<select id="voicing"><option value="auto">auto</option><option value="dicht">dicht</option><option value="open">open</option><option value="omkering">omkering</option></select></label>
  <span style="flex:1"></span>
@@ -300,6 +300,9 @@ function stem(ctx,dst,spoor,p,t,dur,v,klank){
  else if(klank==='keys'){osc('sine',1,.8);osc('sine',2,.25);osc('triangle',3,.06);lpf.frequency.value=4000;env(ctx,g,t,.004,.42*vel,dur,.3)}
  else if(klank==='bel'){osc('sine',1,.7);osc('sine',2.76,.18);osc('sine',5.4,.06);lpf.frequency.value=6000;env(ctx,g,t,.002,.36*vel,Math.min(dur,.5),.6)}
  else if(klank==='lead'){osc('square',1,.35,-4);osc('sawtooth',1,.35,4);lpf.frequency.value=2600;lpf.Q.value=2;env(ctx,g,t,.01,.22*vel,dur,.12)}
+ else if(klank==='orgel'){osc('sine',1,.5);osc('sine',2,.22);osc('sine',4,.1);osc('sine',3,.06);lpf.frequency.value=3800;env(ctx,g,t,.03,.4*vel,dur,.25)}
+ else if(klank==='pad'){[-6,6].forEach(dt=>{osc('sawtooth',1,.3,dt)});osc('sawtooth',.5,.2);lpf.frequency.value=1400;lpf.Q.value=.7;env(ctx,g,t,Math.min(.4,dur*.5),.3*vel,dur,.6)}
+ else if(klank==='klok'){osc('sine',2,.5);osc('sine',4.7,.12);osc('sine',6.8,.06);lpf.frequency.value=7000;env(ctx,g,t,.001,.34*vel,Math.min(dur,.4),.8)}
  else{osc('sine',1,.8);osc('triangle',2,.08);lpf.frequency.value=3000;env(ctx,g,t,.05,.4*vel,dur,.15)}}
 
 /* ---------- BEST-OF instrumenten voor preview/wav-export ---------- */
