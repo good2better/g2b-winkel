@@ -25,7 +25,7 @@ function bell(x,f0,Q,dB,sr){ // peaking EQ biquad (mono)
  for(let i=0;i<x.length;i++){const v=x[i];y[i]=bn[0]*v+bn[1]*x1+bn[2]*x2-a[0]*y1-a[1]*y2;x2=x1;x1=v;y2=y1;y1=y[i]}return y}
 /* ---------- iframe-engines ---------- */
 let DW=null,MW=null; // contentWindow van donder/melodie
-function mkFrame(src){return new Promise((res,rej)=>{const f=document.createElement('iframe');f.style.cssText='width:0;height:0;border:0;position:absolute;left:-9999px';f.src=src;f.onload=()=>res(f);f.onerror=rej;document.body.appendChild(f)})}
+function mkFrame(src){return new Promise((res,rej)=>{const f=document.createElement('iframe');f.style.cssText='width:0;height:0;border:0;position:absolute;left:-9999px';f.src=src+(src.includes('?')?'&':'?')+'v='+Date.now();f.onload=()=>res(f);f.onerror=rej;document.body.appendChild(f)})}
 async function laadEngines(){
  if(DW&&MW)return;
  st('⚙ engines laden (basfabriek + melodie)…');
@@ -128,20 +128,31 @@ const crc32=(()=>{const t=new Uint32Array(256);for(let i=0;i<256;i++){let c=i;fo
  return u=>{let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=t[(c^u[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0}})();
 function zipStore(files){
  const enc=s=>{const b=new Uint8Array(s.length);for(let i=0;i<s.length;i++)b[i]=s.charCodeAt(i)&255;return b};
- let off=0;const cent=[],parts=files.map(f=>{const nb=enc(f.naam),crc=crc32(f.data),sz=f.data.length;
-  const hdr=[0x50,0x4B,3,4,20,0,0,0,0,0,0,0,0,0,0,0,crc&255,(crc>>8)&255,(crc>>16)&255,(crc>>24)&255,
-   sz&255,(sz>>8)&255,(sz>>16)&255,(sz>>24)&255,sz&255,(sz>>8)&255,(sz>>16)&255,(sz>>24)&255,
-   nb.length&255,(nb.length>>8)&255,0,0];
-  cent.push([nb,off,crc,sz]);off+=hdr.length+nb.length+sz;return[...hdr,...nb,...f.data]});
- const cd=[];cent.forEach(([nb,o,crc,sz])=>{cd.push(0x50,0x4B,1,2,20,0,20,0,0,0,0,0,0,0,0,0,0,0,
-  crc&255,(crc>>8)&255,(crc>>16)&255,(crc>>24)&255,sz&255,(sz>>8)&255,(sz>>16)&255,(sz>>24)&255,
-  sz&255,(sz>>8)&255,(sz>>16)&255,(sz>>24)&255,nb.length&255,(nb.length>>8)&255,0,0,0,0,0,0,0,0,0,0,0,0,
-  o&255,(o>>8)&255,(o>>16)&255,(o>>24)&255,...nb)});
- const all=new Uint8Array(off+cd.length+22);let p=0;
- parts.forEach(a=>{all.set(a,p);p+=a.length});all.set(cd,p);p+=cd.length;
- const e=[0x50,0x4B,5,6,0,0,0,0,cent.length&255,(cent.length>>8)&255,cent.length&255,(cent.length>>8)&255,
-  cd.length&255,(cd.length>>8)&255,(cd.length>>16)&255,(cd.length>>24)&255,off&255,(off>>8)&255,(off>>16)&255,(off>>24)&255,0,0];
- all.set(e,p);return all}
+ const ns=files.map(f=>enc(f.naam));
+ const total=files.reduce((a,f,i)=>a+30+ns[i].length+f.data.length,0);
+ const cdLen=files.reduce((a,f,i)=>a+46+ns[i].length,0);
+ const all=new Uint8Array(total+cdLen+22);const dv=new DataView(all.buffer);
+ let p=0,off;const cent=[];
+ files.forEach((f,i)=>{const nb=ns[i],crc=crc32(f.data),sz=f.data.length;
+  cent.push(p);
+  dv.setUint32(p,0x04034b50,true);dv.setUint16(p+4,20,true);
+  dv.setUint16(p+6,0,true);dv.setUint16(p+8,0,true);dv.setUint16(p+10,0,true);dv.setUint16(p+12,0,true);
+  dv.setUint32(p+14,crc,true);dv.setUint32(p+18,sz,true);dv.setUint32(p+22,sz,true);
+  dv.setUint16(p+26,nb.length,true);dv.setUint16(p+28,0,true);
+  p+=30;all.set(nb,p);p+=nb.length;all.set(f.data,p);p+=sz});
+ const cdStart=p;
+ files.forEach((f,i)=>{const nb=ns[i],crc=crc32(f.data),sz=f.data.length;
+  dv.setUint32(p,0x02014b50,true);dv.setUint16(p+4,20,true);dv.setUint16(p+6,20,true);
+  dv.setUint16(p+8,0,true);dv.setUint16(p+10,0,true);dv.setUint16(p+12,0,true);dv.setUint16(p+14,0,true);
+  dv.setUint32(p+16,crc,true);dv.setUint32(p+20,sz,true);dv.setUint32(p+24,sz,true);
+  dv.setUint16(p+28,nb.length,true);dv.setUint16(p+30,0,true);dv.setUint16(p+32,0,true);
+  dv.setUint16(p+34,0,true);dv.setUint16(p+36,0,true);dv.setUint32(p+38,0,true);
+  dv.setUint32(p+42,cent[i],true);
+  p+=46;all.set(nb,p);p+=nb.length});
+ dv.setUint32(p,0x06054b50,true);dv.setUint16(p+4,0,true);dv.setUint16(p+6,0,true);
+ dv.setUint16(p+8,files.length,true);dv.setUint16(p+10,files.length,true);
+ dv.setUint32(p+12,cdLen,true);dv.setUint32(p+16,cdStart,true);dv.setUint16(p+20,0,true);
+ return all}
 function vlq(n){const b=[n&127];n>>=7;while(n){b.unshift((n&127)|128);n>>=7}return b}
 function midiSong(sporen,bpm,secs){ // sporen:[{naam,noten:[{p,s,d,v}],kanaal}] s=16e-steps; secs: [{naam,bar}]
  const us=Math.round(6e7/bpm),tpq=96;
@@ -271,9 +282,7 @@ async function expStems(){
  for(const[nm,sp]of SPOREN){const t=LAST.T[sp];
   files.push({naam:'g2b-song_'+sp+'.wav',data:new Uint8Array(wavBytes(t.L,t.R,SR))})}
  dlBlob(new Blob([zipStore(files)],{type:'application/zip'}),'g2b-song-stems.zip')}
-async function expMid(){
- if(!LAST){st('⚙ bouw eerst een song (🎬)');return}
- const noten=[];
+function midBytes(){const noten=[];
  try{
   /* arrangement-uitwerking: elke loop wordt getild over de secties waar zijn vakje aan staat */
   const tile=(src,cell,loopSteps,map)=>{const out=[];let bar=0;
@@ -288,7 +297,21 @@ async function expMid(){
   noten.push({naam:'akkoorden',kanaal:2,noten:tile(akkSrc,'akk',loopM,(n,s)=>({p:n.p,s,d:n.d,v:70}))});
  }catch(e){console.error(e)}
  const secs=SECTIES.reduce((a,[nm,m],i)=>{a.push({naam:nm,bar:a._b||0});a._b=(a._b||0)+m;return a},[]).map(s=>({naam:s.naam,bar:s.bar}));
- dlBlob(new Blob([midiSong(noten,LAST.bpm,secs)],{type:'audio/midi'}),'g2b-song.mid')}
+ return midiSong(noten,LAST.bpm,secs)}
+async function expMid(){
+ if(!LAST){st('⚙ bouw eerst een song (🎬)');return}
+ dlBlob(new Blob([midBytes()],{type:'audio/midi'}),'g2b-song.mid')}
+/* 1-klik RELEASE-PACK: master + alle stems + .mid + licentie in één zip */
+async function expPack(){
+ if(!LAST){st('⚙ bouw eerst een song (🎬)');return}
+ const files=[{naam:'g2b-song_MASTER.wav',data:new Uint8Array(wavBytes(LAST.L,LAST.R,SR))}];
+ for(const[nm,sp]of SPOREN){const t=LAST.T[sp];
+  files.push({naam:'stems/g2b-song_'+sp+'.wav',data:new Uint8Array(wavBytes(t.L,t.R,SR))})}
+ try{files.push({naam:'g2b-song.mid',data:new Uint8Array(midBytes())})}catch(e){console.warn('midi overgeslagen',e)}
+ files.push({naam:'LICENTIE.txt',data:new TextEncoder().encode(
+  'G2B Werkstation — RELEASE-PACK\n\nAlle audio in deze zip is 100% door jouw eigen engines en/of samples gemaakt.\nJij bezit alle rechten — commercieel gebruik, verkoop en streaming toegestaan.\nGeen derden-samples, geen copyright-claims.\n\nGood2Better High Quality Media · KvK 95199926')});
+ dlBlob(new Blob([zipStore(files)],{type:'application/zip'}),'g2b-song-RELEASE-PACK.zip');
+ st('📦 RELEASE-PACK gedownload — master + '+SPOREN.length+' stems + midi + licentie in één zip')}
 /* ---------- vibe-fixers ---------- */
 window.SONG={
  bouw,
@@ -347,6 +370,7 @@ function uiBoot(){
  grid.querySelectorAll('.sbCell').forEach(b=>b.onclick=()=>{const s=b.dataset.sec,sp=b.dataset.sp;AAN[s][sp]=AAN[s][sp]?0:1;b.style.background=AAN[s][sp]?'#22c55e':'#0a1812'});
  $('sbBouw').onclick=bouw;
  $('sbWav').onclick=expMaster;$('sbStem').onclick=expStems;$('sbMid').onclick=expMid;
+ const pk=$('sbPack');if(pk)pk.onclick=expPack;
  /* ⠿ sleep-naar-DAW grepen op alle exports */
  [['sbWav','audio/wav','g2b-song-master.wav',()=>new Blob([wavBytes(LAST.L,LAST.R,SR)])],
   ['sbMid','audio/midi','g2b-song.mid',()=>new Blob([midiSong([],120,[])])]].forEach(([id,mt,fn,mk])=>{
