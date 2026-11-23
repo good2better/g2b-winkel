@@ -186,6 +186,7 @@ const PROG_AMAP=[0,0,3,4,0,0,5,4];
 
 const $=id=>document.getElementById(id);
 let S={notes:[],kicks:[],locks:[false,false,false],mute:{kick:false,sub:false,grit:false},sound:{},wavUrl:null,playSrc:null,ctx:null};
+window.S=S;
 let SHOTS=[]; // eigen one-shots: {naam,buf,f0,midi}
 let SHOTLAAG={kick:null,sub:null,grit:null}; // index in SHOTS of null = synth
 
