@@ -91,7 +91,15 @@ async function laadVocal(bron){ /* bron: File of AudioBuffer */
   for(let i=0;i<n2;i++){const x=i*r,x0=Math.floor(x),t=x-x0;l2[i]=L[x0]*(1-t)+(L[x0+1]||0)*t;r2[i]=R[x0]*(1-t)+(R[x0+1]||0)*t}L=l2;R=r2}
  const mono=Float32Array.from(L,(v,i)=>(v+R[i])*.5);
  const bpm=bpmOf(mono,SR),{k,m}=keyOf(mono,SR);
- VOC={L,R,mono,key:k,mod:m,bpm};
+ /* MATCH-UP stap 3: eerste klemtoon (onset) vinden → op de maatlijn leggen */
+ const hop=256,nf=Math.floor(mono.length/hop);let onset=0,pk=0;
+ {const env=new Float32Array(nf);let pv=0;
+  for(let i=0;i<nf;i++){let e=0;for(let j=0;j<hop;j++)e+=mono[i*hop+j]*mono[i*hop+j];
+   env[i]=Math.max(0,e-pv);pv=e*.8}
+  let mx=0;for(let i=0;i<nf;i++)mx=Math.max(mx,env[i]);
+  for(let i=2;i<nf;i++)if(env[i]>mx*.35&&env[i]>=env[i-1]&&env[i]>0){onset=i*hop;break}
+  for(let i=0;i<nf;i++)pk=Math.max(pk,Math.abs(mono[i*hop]))}
+ VOC={L,R,mono,key:k,mod:m,bpm,onset};
  /* engines op de stem afstemmen: bpm + toonsoort doorzetten */
  try{const d=DW&&DW.document;if(d){if(d.getElementById('bpm'))d.getElementById('bpm').value=bpm;
   if(d.getElementById('key'))d.getElementById('key').value=k;DW.dobbelAlles&&DW.dobbelAlles()}}catch(e){}
@@ -200,6 +208,8 @@ async function bouw(){
  const totBars=SECTIES.reduce((a,[,m])=>a+m,0),N=totBars*barD;
  const T={};for(const[,sp]of SPOREN){T[sp]={L:new Float32Array(N),R:new Float32Array(N)}}
  st('⚙ arrangement + FX plaatsen…');
+ /* MATCH-UP: eerste VOC-sectie-maat als anker voor downbeat-align */
+ let VOC_BAR0=0;{let b=0;for(const[sec,m]of SECTIES){if(AAN[sec]&&AAN[sec].voc){VOC_BAR0=b*barD;break}b+=m}}
  let bar=0;
  for(const[sec,m]of SECTIES){
   const off=bar,isD2=sec==='DROP 2',isDrop=sec==='DROP'||isD2;
@@ -220,8 +230,9 @@ async function bouw(){
    if(sec==='INTRO'){l=lop(l,2500,SR);r2=lop(r2,2500,SR)}put('mel',l,r2,0.9)}
   if(AAN[sec].akk)put('akk',tile8(ak.L,sdM,matM),tile8(ak.R,sdM,matM),0.7);
   /* vocal-spoor: continue opname, per-sectie aan/uit */
-  if(VOC&&AAN[sec].voc){const o0=off*barD,n=Math.min(m*barD,Math.max(0,VOC.L.length-o0));
-   if(n>0)put('voc',VOC.L.subarray(o0,o0+n),VOC.R.subarray(o0,o0+n),1.0)}
+  if(VOC&&AAN[sec].voc){const o0=off*barD,base=Math.max(0,o0-(VOC.onset||0)),
+   n=Math.min(m*barD,Math.max(0,VOC.L.length-base));
+   if(n>0)put('voc',VOC.L.subarray(base,base+n),VOC.R.subarray(base,base+n),1.0)}
   /* FX */
   if(sec==='BUILD'){const rz=riser(m*4*sdD,SR);for(let i=0;i<rz.length&&off*barD+i<N;i++){T.grit.L[off*barD+i]+=rz[i]*.4;T.grit.R[off*barD+i]+=rz[i]*.4}}
   if(isDrop){const cr=crash(SR);for(let i=0;i<cr.length&&off*barD+i<N;i++){T.kick.L[off*barD+i]+=cr[i];T.kick.R[off*barD+i]+=cr[i]}}
