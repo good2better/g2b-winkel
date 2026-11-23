@@ -113,7 +113,7 @@ function kwRegex(kw){
  let toks=SYN[k]?SYN[k].split('|'):[k.length>4&&k.endsWith('s')?esc(k.slice(0,-1))+'s?':esc(k)+'s?'];
  const exact=toks.filter(t=>t[0]==='=').map(t=>esc(t.slice(1)));
  const sub=toks.filter(t=>t[0]!=='=').join('|');
- return {nm:'(^|[^A-Za-z])('+sub+')',
+ return {nm:sub?'(^|[^A-Za-z])('+sub+')':'',
   tg:[sub,exact.length?'(^|[^A-Za-z])('+exact.join('|')+')([^A-Za-z]|$)':''].filter(Boolean).join('|')};
 }
 async function overpassKw(kw,plaats){
@@ -124,13 +124,14 @@ async function overpassKw(kw,plaats){
  // woordgrens om de term in NAMEN: 'anana' mag niet 'Banana' raken, 'glas' niet 'Glamping';
  // tags/description/craft onbegrensd — 'studio' vindt daar ook 'opnamestudio';
  // '=woord' tokens in SYN matchen in tags alleen als heel woord ('art' → shop=art, niet car_parts)
- const rxO=kwRegex(kw),rx=rxO.nm,raw=rxO.tg;
- const q='[out:json][timeout:25];(nwr["name"~"'+rx+'",i](around:20000,'+lat+','+lon+');'+
-  'nwr["description"~"'+raw+'",i](around:20000,'+lat+','+lon+');'+
-  'nwr["craft"~"'+raw+'",i](around:20000,'+lat+','+lon+');'+
-  'nwr["office"~"'+raw+'",i](around:20000,'+lat+','+lon+');'+
-  'nwr["shop"~"'+raw+'",i](around:20000,'+lat+','+lon+');'+
-  'nwr["amenity"~"'+raw+'",i](around:20000,'+lat+','+lon+'););out tags center 120;';
+ const rxO=kwRegex(kw);
+ if(!rxO.nm&&!rxO.tg)return[];
+ const A='around:20000,'+lat+','+lon;
+ const parts=[];
+ if(rxO.nm)parts.push('nwr["name"~"'+rxO.nm+'",i]('+A+');');
+ if(rxO.tg)for(const tag of['description','craft','office','shop','amenity'])
+  parts.push('nwr["'+tag+'"~"'+rxO.tg+'",i]('+A+');');
+ const q='[out:json][timeout:25];('+parts.join('')+');out tags center 120;';
  const r=await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q));
  const d=await r.json();return d.elements||[];
 }
