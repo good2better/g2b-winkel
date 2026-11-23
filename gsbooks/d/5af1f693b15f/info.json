@@ -1,0 +1,15 @@
+{
+  "titel": "G2B SLAAPVERHALEN VIDEO — Pack 1",
+  "uitleg": "8 rustige Nederlandse slaapverhalen als video (mp4, 1024×1024), elk ±3,5 min: Keesje Konijn vertelt het verhaal — zijn mond beweegt mee — met zachte muziek eronder. Voor het slapengaan: tablet of telefoon naast het bed, volume zacht, scherm dimmen.",
+  "img": "media/slaapverhalen-video-cover.png",
+  "bestanden": [
+    {"naam": "01 Keesje Konijn en het worteltje dat wilde slapen (video)", "bestand": "slaapverhaal-01.mp4"},
+    {"naam": "02 Ziggy Zebra en de sterren die flikkerden (video)", "bestand": "slaapverhaal-02.mp4"},
+    {"naam": "03 Sunny's zeilboot naar de Droomzee (video)", "bestand": "slaapverhaal-03.mp4"},
+    {"naam": "04 Bram en het lammetje dat de maan zocht (video)", "bestand": "slaapverhaal-04.mp4"},
+    {"naam": "05 Pippa en het zachte vogelnestje (video)", "bestand": "slaapverhaal-05.mp4"},
+    {"naam": "06 Flip en de zeehond die een liedje zong (video)", "bestand": "slaapverhaal-06.mp4"},
+    {"naam": "07 Louie de Leeuw en het warme kussentje (video)", "bestand": "slaapverhaal-07.mp4"},
+    {"naam": "08 Ollie en het muisje onder de sterren (video)", "bestand": "slaapverhaal-08.mp4"}
+  ]
+}
