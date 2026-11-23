@@ -107,8 +107,14 @@ a.app .in{color:var(--zacht);font-size:.78rem;margin-top:3px}
 </div>
 
 <div class="groep">🎬 SONG-BOUWER — van loop naar heel nummer</div>
-<p class="groep-uitleg">Bouwt uit jouw DONDER-FABRIEK- en MELODIE-engines een heel nummer in vaste blokken (geen gevaarlijke sliders): INTRO → VERSE → BUILD → DROP → BREAK → DROP 2 (met variatie). Klik vakjes aan/uit per spoor, kies je master, exporteer.</p>
+<p class="groep-uitleg">Bouwt uit jouw DONDER-FABRIEK- en MELODIE-engines een heel nummer in vaste blokken (geen gevaarlijke sliders): INTRO → BUILD → DROP → BREAK → DROP 2 (met variatie). 🎤 Sleep je zang erin → tempo + toonsoort worden gemeten en de beat bouwt eromheen. Klik vakjes aan/uit per spoor, kies je master, exporteer.</p>
 <div id="songBouwer" style="background:var(--kaart);border:1px solid var(--rand);border-radius:14px;padding:16px">
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+    <div id="sbVocalDrop" title="sleep .wav/.mp3/.m4a van je telefoon hier — of klik om te kiezen" style="flex:1;min-width:220px;border:1px dashed #1d4a33;border-radius:10px;padding:9px 14px;color:#9fd8b4;font-size:12px;cursor:pointer;text-align:center">🎤 <b>VOCAL-COACH:</b> sleep je zang/rap hier — tempo + toonsoort worden gemeten en de beat bouwt eromheen</div>
+    <input type="file" id="sbVocalFile" accept="audio/*" style="display:none">
+    <button id="sbVocalMic" style="background:#0a1812;color:#f472b6;border:1px solid #4a1d33;border-radius:10px;padding:9px 14px;cursor:pointer;font-size:12px">🎙️ opnemen</button>
+    <span id="sbVocInfo" style="font-size:11px;color:#7ee2a8"></span>
+  </div>
   <div id="sbMatrix" style="overflow-x:auto;margin-bottom:10px"></div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
     <button id="sbBouw" style="background:#16a34a;color:#04120a;border:0;border-radius:10px;padding:11px 22px;font-weight:800;cursor:pointer;font-size:14px">🎬 BOUW FULL SONG</button>
@@ -119,11 +125,14 @@ a.app .in{color:var(--zacht);font-size:.78rem;margin-top:3px}
     <button class="sbVibe" data-k="groove" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:14px;padding:5px 12px;cursor:pointer;font-size:12px">🌊 meer groove</button>
     <button class="sbVibe" data-k="rustig" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:14px;padding:5px 12px;cursor:pointer;font-size:12px">✂️ rustiger</button>
     <button class="sbVibe" data-k="draai" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:14px;padding:5px 12px;cursor:pointer;font-size:12px">🔄 nieuwe draai</button>
+    <button id="sbHook" style="background:#0a1812;color:#facc15;border:1px solid #4a3a1d;border-radius:14px;padding:5px 12px;cursor:pointer;font-size:12px" title="nieuwe catchy refrein-melodie (4 maten)">✨ maak hook</button>
+    <select id="sbFlip" style="background:#0a1812;color:#7ee2a8;border:1px solid #1d4a33;border-radius:14px;padding:5px 10px;font-size:12px" title="zelfde vocal+key, ander genre"><option value="">🔀 flip genre…</option></select>
   </div>
   <div id="sbExport" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:10px">
     <button id="sbWav" style="background:#22314d;color:#e8eef8;border:0;border-radius:10px;padding:9px 16px;cursor:pointer" title="ook sleepbaar recht in je DAW">⠿ ⬇ master .wav (44.1k)</button>
     <button id="sbStem" style="background:#22314d;color:#e8eef8;border:0;border-radius:10px;padding:9px 16px;cursor:pointer">⬇ stems-zip</button>
     <button id="sbMid" style="background:#22314d;color:#e8eef8;border:0;border-radius:10px;padding:9px 16px;cursor:pointer">⬇ .mid (met sectie-markers)</button>
+    <button id="sbSnip" style="background:#4a1d33;color:#f9c3dd;border:0;border-radius:10px;padding:9px 16px;cursor:pointer" title="sterkste 8 maten (DROP) als social-clip">📱 hook-snippet</button>
   </div>
   <audio id="sbAu" controls style="width:100%;margin-bottom:8px"></audio>
   <div id="sbStatus" style="font-size:12px;color:#7ee2a8">vul de matrix, druk op 🎬 — de echte engines renderen mee</div>
