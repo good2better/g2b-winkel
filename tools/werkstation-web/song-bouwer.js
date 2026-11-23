@@ -242,6 +242,12 @@ function mixDown(){
     else if(isDrop){ // stem stopt → bas/grit antwoorden (call & response)
      for(const ch of['L','R'])for(let i=a;i<b;i++){T.sub[ch][i]*=1.15;T.grit[ch][i]*=1.2}}}
    bar+=m}}
+ /* prio-mixbus: kick duckt sub/grit/akk op elke aanslag — de beat pompt, nooit modderig */
+ {const tau=Math.round(.09*SR);let duck=1,prevK=0;
+  for(let i=0;i<N;i++){const k=Math.abs(T.kick.L[i])+Math.abs(T.kick.R[i]);
+   if(k>.18&&prevK<=.18)duck=Math.min(duck,.38);else duck+=(1-duck)*(1-Math.exp(-1/tau));
+   prevK=k;const g2=.45+.55*duck; // onderin blijft 45% body — pompt zonder te verdwijnen
+   for(const sp of['sub','grit','akk']){T[sp].L[i]*=g2;T[sp].R[i]*=g2}}}
  const L=new Float32Array(N),R=new Float32Array(N);
  for(const[,sp]of SPOREN){const t=T[sp];for(let i=0;i<N;i++){L[i]+=t.L[i];R[i]+=t.R[i]}}
  const loL=lop(L,120,SR),loR=lop(R,120,SR);
