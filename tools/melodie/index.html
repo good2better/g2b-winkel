@@ -228,7 +228,7 @@ function speelMel(i){const c=cfg(),p=lp(c,i,60),tot=c.maten*16;
  stem(ac(),MASTER,'mel',p,AC.currentTime+.02,.45,100,$('klank').value);
  if(M_STAPIN){const stap=+$('mstapv').value;bewaar();
   S.mel.push({p:p,s:M_STAPPOS,d:Math.min(4,stap)||.5,v:95});S.mel.sort((a,b)=>a.s-b.s);
-  M_STAPPOS=(M_STAPPOS+stap)%tot;teken();sporenUI();st('⌨ melodie-noot op stap '+M_STAPPOS)}}
+  M_STAPPOS=(M_STAPPOS+stap)%tot;bewaar();teken();sporenUI();st('⌨ melodie-noot op stap '+M_STAPPOS)}}
 function melsToetsen(){const c=cfg(),lab=c.lad.map((_,i)=>i);
  $('mkeys').innerHTML=lab.concat([lab.length]).map(i=>{const p=lp(c,i,60);const nm=NOOT[p%12]+Math.floor(p/12-1);
   return `<div class="key" data-i="${i}" style="flex:1;min-width:54px;padding:12px 4px;border-radius:9px;background:#0d1526;border:1px solid #1d4a33;color:#7ee2a8;font-weight:800;font-size:12px;cursor:pointer;text-align:center;user-select:none">${'ASDFGHJKL'[i]}<small style="display:block;font-weight:400;font-size:9px;color:#5b6d8a">${nm}</small></div>`}).join('');
@@ -375,7 +375,7 @@ function variant(bron,cr){const c=cfg(),L=smaak(),ns=bron.map(n=>({...n}));
  uit.sort((a,b)=>a.s-b.s);
  for(let i=1;i<uit.length;i++)if(uit[i].s===uit[i-1].s)uit[i].dup=1;
  return uit.filter(n=>!n.dup)}
-function maakVars(){hoorStop();if(!S.mel.length)maak('alles');const cr=$('creat').value/100;vars=[0,1,2,3].map(()=>variant(S.mel,cr));
+function maakVars(){hoorStop();if(!S.mel.length){bewaar();maak('mel')}const cr=$('creat').value/100;vars=[0,1,2,3].map(()=>variant(S.mel,cr));
  $('vars').innerHTML=vars.map((v,i)=>`<div class="var"><canvas id="vc${i}" width="460" height="70"></canvas><div class="knp">
  <button class="klein" onclick="hoorVar(${i})">▶ hoor</button><button class="klein aan" onclick="gebruik(${i})">✓ gebruik</button>
  <button class="klein" onclick="duim(${i},1)" title="dit is mijn smaak">👍</button><button class="klein" onclick="duim(${i},0)">👎</button></div></div>`).join('');
@@ -559,7 +559,7 @@ document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.
  const ki='asdfghjkl'.indexOf(e.key.toLowerCase());if(ki>=0)speelMel(ki)});
 $('genre').value='trap';$('bpm').value=140;$('ladder').value='min';
 (function(){try{const sv=JSON.parse(localStorage.getItem('g2b_melodie_state')||'null');
- if(sv&&sv.S&&sv.S.mel&&sv.S.mel.length){
+ if(sv&&sv.S&&sv.S.mel&&(sv.S.mel.length||sv.S.akk.length||sv.S.bas.length)){
   if(sv.g)$('genre').value=sv.g;if(sv.w)$('wortel').value=sv.w;if(sv.lad)$('ladder').value=sv.lad;
   if(sv.bpm)$('bpm').value=sv.bpm;if(sv.maten)$('maten').value=sv.maten;
   S=sv.S;PROG=sv.PROG;bewaar();teken();sporenUI();
