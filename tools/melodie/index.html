@@ -65,6 +65,14 @@ canvas{width:100%;display:block;border-radius:8px;background:#050b08}
   <label style="flex-direction:row;align-items:center">warmte <input type="range" id="warmte" min="0" max="100" value="15"></label>
  </div>
  <canvas id="roll" width="1060" height="300"></canvas>
+ <div class="rij" style="margin-top:6px;align-items:center;flex-wrap:wrap;gap:6px"><span class="hint" style="margin:0">speel live mee:</span>
+  <button class="klein" id="mStap" title="stap-inspelen: elke toets schrijft een melodie-noot en schuift op">⌨ STAP-IN</button>
+  <span class="hint" style="margin:0">STAP</span><select id="mstapv"><option value="8">1/2</option><option value="4">1/4</option><option value="2" selected>1/8</option><option value="1">1/16</option><option value="0.5">1/32</option></select>
+  <button class="klein" id="mRust" title="sla een rust-stap over (ruimte tussen noten)">␣ RUST</button>
+  <button class="klein" id="mWis" title="maak de melodie-roll leeg — dan speel je zelf alles in">⟲ WIS MELODIE</button>
+ </div>
+ <div class="keys" id="mkeys" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"></div>
+ <div class="hint" style="margin-top:2px">⌨ STAP-IN: toetsen A S D F G H J K = ladder-tonen · altijd in je toonsoort · ↶ herstelt</div>
  <div id="sporen" style="margin-top:8px"></div>
  <div id="st"></div>
 </div>
@@ -137,7 +145,7 @@ const st=t=>$('st').textContent=t;
 for(const k in GENRES)$('genre').add(new Option(GENRES[k].n,k));
 NOOT.forEach((n,i)=>$('wortel').add(new Option(n,i)));
 $('wortel').value=9; // A
-$('genre').onchange=()=>{const g=GENRES[$('genre').value];$('bpm').value=g.bpm;$('ladder').value=g.lad;nieuw()};
+$('genre').onchange=()=>{const g=GENRES[$('genre').value];$('bpm').value=g.bpm;$('ladder').value=g.lad;nieuw();melsToetsen()};
 function sporenUI(){$('sporen').innerHTML=SPOREN.map(([k,n])=>`<div class="spoor">
  <span class="naam"><span class="dot" style="background:${KLR[k]}"></span>${n}</span>
  <button class="klein ${AAN[k]?'aan':''}" data-aan="${k}">${AAN[k]?'AAN':'UIT'}</button>
@@ -215,6 +223,17 @@ function maak(wat){const c=cfg();if(!PROG||PROG.length!==c.maten||wat==='alles')
  if(wat==='alles'){if(!LOCK.akk)S.akk=maakAkk(c);if(!LOCK.bas)S.bas=maakBas(c);if(!LOCK.mel)S.mel=maakMel(c);return}
  if(wat==='bas'&&!LOCK.bas)S.bas=maakBas(c);
  if(wat==='mel'&&!LOCK.mel)S.mel=maakMel(c)}
+let M_STAPIN=false,M_STAPPOS=0;
+function speelMel(i){const c=cfg(),p=lp(c,i,60),tot=c.maten*16;
+ stem(ac(),MASTER,'mel',p,AC.currentTime+.02,.45,100,$('klank').value);
+ if(M_STAPIN){const stap=+$('mstapv').value;bewaar();
+  S.mel.push({p:p,s:M_STAPPOS,d:Math.min(4,stap)||.5,v:95});S.mel.sort((a,b)=>a.s-b.s);
+  M_STAPPOS=(M_STAPPOS+stap)%tot;teken();sporenUI();st('⌨ melodie-noot op stap '+M_STAPPOS)}}
+function melsToetsen(){const c=cfg(),lab=c.lad.map((_,i)=>i);
+ $('mkeys').innerHTML=lab.concat([lab.length]).map(i=>{const p=lp(c,i,60);const nm=NOOT[p%12]+Math.floor(p/12-1);
+  return `<div class="key" data-i="${i}" style="flex:1;min-width:54px;padding:12px 4px;border-radius:9px;background:#0d1526;border:1px solid #1d4a33;color:#7ee2a8;font-weight:800;font-size:12px;cursor:pointer;text-align:center;user-select:none">${'ASDFGHJKL'[i]}<small style="display:block;font-weight:400;font-size:9px;color:#5b6d8a">${nm}</small></div>`}).join('');
+ document.querySelectorAll('#mkeys .key').forEach(k=>{k.onmousedown=()=>speelMel(+k.dataset.i);
+  k.ontouchstart=e=>{e.preventDefault();speelMel(+k.dataset.i)}})}
 function bewaar(){hist=hist.slice(0,hi+1);hist.push(JSON.stringify({S,PROG}));if(hist.length>40)hist.shift();hi=hist.length-1;
  try{localStorage.setItem('g2b_melodie_state',JSON.stringify({S:S,PROG:PROG,w:$('wortel').value,lad:$('ladder').value,g:$('genre').value,bpm:$('bpm').value,maten:$('maten').value}))}catch(e){}}
 function herstel(j){const o=JSON.parse(hist[j]);S=o.S;PROG=o.PROG;teken();sporenUI()}
@@ -523,9 +542,15 @@ $('speel').onclick=()=>speelt?stopSpeel():speel();
 $('loopk').onclick=()=>$('loopk').classList.toggle('aan');
 $('varknop').onclick=maakVars;
 $('undo').onclick=()=>{if(hi>0)herstel(--hi)};$('redo').onclick=()=>{if(hi<hist.length-1)herstel(++hi)};
-['wortel','ladder','maten'].forEach(id=>$(id).onchange=nieuw);
+['wortel','ladder','maten'].forEach(id=>$(id).onchange=()=>{nieuw();melsToetsen()});
+$('mStap').onclick=()=>{M_STAPIN=!M_STAPIN;M_STAPPOS=0;$('mStap').classList.toggle('aan',M_STAPIN);
+ st(M_STAPIN?'⌨ STAP-IN aan — elke toets schrijft een melodie-noot (stap '+$('mstapv').value+'e)':'⌨ STAP-IN uit')};
+$('mRust').onclick=()=>{const stap=+$('mstapv').value,tot=(+$('maten').value)*16;M_STAPPOS=(M_STAPPOS+stap)%tot;st('␣ rust — volgende noot op stap '+M_STAPPOS)};
+$('mWis').onclick=()=>{bewaar();S.mel=[];M_STAPPOS=0;bewaar();teken();sporenUI();st('⟲ melodie-roll leeg — ↶ brengt hem terug · speel zelf in met ⌨ STAP-IN')};
+melsToetsen();
 document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
- if(e.code==='Space'){e.preventDefault();speelt?stopSpeel():speel()}if(e.key==='n')nieuw()});
+ if(e.code==='Space'){e.preventDefault();speelt?stopSpeel():speel()}if(e.key==='n')nieuw();
+ const ki='asdfghjkl'.indexOf(e.key.toLowerCase());if(ki>=0)speelMel(ki)});
 $('genre').value='trap';$('bpm').value=140;$('ladder').value='min';
 (function(){try{const sv=JSON.parse(localStorage.getItem('g2b_melodie_state')||'null');
  if(sv&&sv.S&&sv.S.mel&&sv.S.mel.length){
