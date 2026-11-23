@@ -41,7 +41,7 @@ canvas{width:100%;display:block;border-radius:8px;background:#050b08}
   <option value="minp">mineur-penta (veilig)</option></select></label>
  <label>BPM<input type="number" id="bpm" min="60" max="190" value="140"></label>
  <label>Maten<select id="maten"><option>4</option><option selected>8</option><option>16</option></select></label>
- <label>Klank melodie<select id="klank"><option value="pluck">Pluck</option><option value="keys">Keys</option><option value="bel">Bel</option><option value="lead">Lead</option><option value="fluit">Fluit</option><option value="orgel">Orgel</option><option value="pad">Pad</option><option value="klok">Klok</option><option value="smp:piano|56">🎹 Piano</option><option value="smp:marimba|56">🎹 Marimba</option><option value="smp:har_kH_C4|60">🎹 Harp</option><option value="smp:sax_kSx50_1|50">🎹 Sax</option></select></label>
+ <label style="flex-direction:row;align-items:center" title="auto-laag: octaaf boven + onder voor een volle sound">2X LAAG <input type="checkbox" id="laag"></label><label>Klank melodie<select id="klank"><option value="pluck">Pluck</option><option value="keys">Keys</option><option value="bel">Bel</option><option value="lead">Lead</option><option value="fluit">Fluit</option><option value="orgel">Orgel</option><option value="pad">Pad</option><option value="klok">Klok</option><option value="smp:piano|56">🎹 Piano</option><option value="smp:marimba|56">🎹 Marimba</option><option value="smp:har_kH_C4|60">🎹 Harp</option><option value="smp:sax_kSx50_1|50">🎹 Sax</option></select></label>
  <label>Arpeggio<select id="arp"><option value="uit">uit</option><option value="1/16">1/16</option><option value="1/8">1/8</option><option value="triplet">triplet</option></select></label>
  <label>Voicing<select id="voicing"><option value="auto">auto</option><option value="dicht">dicht</option><option value="open">open</option><option value="omkering">omkering</option></select></label>
  <span style="flex:1"></span>
@@ -292,18 +292,20 @@ function stem(ctx,dst,spoor,p,t,dur,v,klank){
   const[sf,p0]=klank.slice(4).split('|'),buf=SMPBUF[sf];
   if(!buf){laadSmp(sf);klank='pluck'} // eerste keer: laden + fallback, volgende render klinkt hij
   else{const src=ctx.createBufferSource();src.buffer=buf;src.playbackRate.value=f/hz(+p0);
-   src.connect(g);env(ctx,g,t,.005,.55*vel,Math.max(dur,.45),.45);
-   src.start(t);src.stop(t+Math.max(dur,.45)+buf.duration+.05);return}}
- const lpf=ctx.createBiquadFilter();lpf.type='lowpass';lpf.connect(g);
- const osc=(type,mul,gain,det)=>{const o=ctx.createOscillator(),og=ctx.createGain();o.type=type;o.frequency.value=f*mul;if(det)o.detune.value=det;og.gain.value=gain;o.connect(og);og.connect(lpf);o.start(t);o.stop(t+dur+.5)};
- if(klank==='pluck'){osc('sawtooth',1,.5,-6);osc('sawtooth',1,.5,6);lpf.frequency.setValueAtTime(5200,t);lpf.frequency.exponentialRampToValueAtTime(700,t+.25);env(ctx,g,t,.003,.32*vel,Math.min(dur,.35),.18)}
- else if(klank==='keys'){osc('sine',1,.8);osc('sine',2,.25);osc('triangle',3,.06);lpf.frequency.value=4000;env(ctx,g,t,.004,.42*vel,dur,.3)}
- else if(klank==='bel'){osc('sine',1,.7);osc('sine',2.76,.18);osc('sine',5.4,.06);lpf.frequency.value=6000;env(ctx,g,t,.002,.36*vel,Math.min(dur,.5),.6)}
- else if(klank==='lead'){osc('square',1,.35,-4);osc('sawtooth',1,.35,4);lpf.frequency.value=2600;lpf.Q.value=2;env(ctx,g,t,.01,.22*vel,dur,.12)}
- else if(klank==='orgel'){osc('sine',1,.5);osc('sine',2,.22);osc('sine',4,.1);osc('sine',3,.06);lpf.frequency.value=3800;env(ctx,g,t,.03,.4*vel,dur,.25)}
- else if(klank==='pad'){[-6,6].forEach(dt=>{osc('sawtooth',1,.3,dt)});osc('sawtooth',.5,.2);lpf.frequency.value=1400;lpf.Q.value=.7;env(ctx,g,t,Math.min(.4,dur*.5),.3*vel,dur,.6)}
- else if(klank==='klok'){osc('sine',2,.5);osc('sine',4.7,.12);osc('sine',6.8,.06);lpf.frequency.value=7000;env(ctx,g,t,.001,.34*vel,Math.min(dur,.4),.8)}
- else{osc('sine',1,.8);osc('triangle',2,.08);lpf.frequency.value=3000;env(ctx,g,t,.05,.4*vel,dur,.15)}}
+   const speelSmp=(fm,gf)=>{const s2=ctx.createBufferSource();s2.buffer=buf;s2.playbackRate.value=fm/hz(+p0);const g2=ctx.createGain();g2.connect(g);s2.connect(g2);env(ctx,g2,t,.005,.55*vel*gf,Math.max(dur,.45),.45);s2.start(t);s2.stop(t+Math.max(dur,.45)+buf.duration+.05)};
+   speelSmp(f,1);if($('laag')&&$('laag').checked){speelSmp(f*2,.3);speelSmp(f/2,.24)}return}}
+ const LAAG=$('laag')&&$('laag').checked;
+ const speel=(fm,gf)=>{const lpf=ctx.createBiquadFilter();lpf.type='lowpass';lpf.connect(g);
+ const osc=(type,mul,gain,det)=>{const o=ctx.createOscillator(),og=ctx.createGain();o.type=type;o.frequency.value=fm*mul;if(det)o.detune.value=det;og.gain.value=gain*gf;o.connect(og);og.connect(lpf);o.start(t);o.stop(t+dur+.5)};
+ if(klank==='pluck'){osc('sawtooth',1,.5,-6);osc('sawtooth',1,.5,6);lpf.frequency.setValueAtTime(5200,t);lpf.frequency.exponentialRampToValueAtTime(700,t+.25);env(ctx,g,t,.003,.32*vel*gf,Math.min(dur,.35),.18)}
+ else if(klank==='keys'){osc('sine',1,.8);osc('sine',2,.25);osc('triangle',3,.06);lpf.frequency.value=4000;env(ctx,g,t,.004,.42*vel*gf,dur,.3)}
+ else if(klank==='bel'){osc('sine',1,.7);osc('sine',2.76,.18);osc('sine',5.4,.06);lpf.frequency.value=6000;env(ctx,g,t,.002,.36*vel*gf,Math.min(dur,.5),.6)}
+ else if(klank==='lead'){osc('square',1,.35,-4);osc('sawtooth',1,.35,4);lpf.frequency.value=2600;lpf.Q.value=2;env(ctx,g,t,.01,.22*vel*gf,dur,.12)}
+ else if(klank==='orgel'){osc('sine',1,.5);osc('sine',2,.22);osc('sine',4,.1);osc('sine',3,.06);lpf.frequency.value=3800;env(ctx,g,t,.03,.4*vel*gf,dur,.25)}
+ else if(klank==='pad'){[-6,6].forEach(dt=>{osc('sawtooth',1,.3,dt)});osc('sawtooth',.5,.2);lpf.frequency.value=1400;lpf.Q.value=.7;env(ctx,g,t,Math.min(.4,dur*.5),.3*vel*gf,dur,.6)}
+ else if(klank==='klok'){osc('sine',2,.5);osc('sine',4.7,.12);osc('sine',6.8,.06);lpf.frequency.value=7000;env(ctx,g,t,.001,.34*vel*gf,Math.min(dur,.4),.8)}
+ else{osc('sine',1,.8);osc('triangle',2,.08);lpf.frequency.value=3000;env(ctx,g,t,.05,.4*vel*gf,dur,.15)}};
+ (LAAG?[[f,1],[f*2,.32],[f/2,.26]]:[[f,1]]).forEach(([fm,gf])=>speel(fm,gf))}
 
 /* ---------- BEST-OF instrumenten voor preview/wav-export ---------- */
 const SMPBUF={};
