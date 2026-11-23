@@ -82,8 +82,13 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
     <button class="btn b2" id="bRedo" title="volgende">↷</button>
     <button class="btn b2" id="bStuur" title="stuur baslijn + toonsoort + bpm naar G2B MELODIE">➡️ MELODIE</button>
     <button class="btn b2" id="bMap">📁 EIGEN SHOTS</button>
+    <button class="btn b2" id="bBib" title="G2B BEST-OF geluidsbank — top basses & kicks, direct laden">🎹 BIBLIOTHEEK</button>
     <input type="file" id="dir" webkitdirectory hidden>
     <input type="file" id="fi" accept="audio/*" multiple hidden>
+  </div>
+  <div class="row" id="bibRow" style="display:none">
+    <span class="hint">BEST-OF bibliotheek — klik laadt het shot in de juiste laag (grondtoon wordt zelf gemeten):</span>
+    <div class="shots" id="bib"></div>
   </div>
   <div class="row" id="shotRow" style="display:none">
     <span class="hint" id="shotInfo"></span>
@@ -620,6 +625,7 @@ function uiInit(){
 $('bStuur').onclick=()=>{try{localStorage.setItem('g2b_donder_stuur',JSON.stringify({bpm:+$('bpm').value,maten:+$('maten').value,key:+$('key').value,noten:S.notes}))}catch(e){}
  location.href='../melodie/index.html?uit=donder'};
  $('bMap').onclick=()=>{if(window.showDirectoryPicker){$('dir').click()}else $('fi').click()};
+ $('bBib').onclick=bibUI;
  $('dir').onchange=e=>laadShots([...e.target.files]);
  $('fi').onchange=e=>laadShots([...e.target.files]);
  document.querySelectorAll('.lock').forEach((b,i)=>b.onclick=()=>{S.locks[i]=!S.locks[i];laagUI()});
@@ -987,6 +993,44 @@ if($('bDrop')){
  $('bDrop').ondrop=e=>{e.preventDefault();$('bDrop').style.borderColor='#1d4a33';
   const f=e.dataTransfer.files[0];if(f)leerBas(f)}
 }
+
+/* ---------- BEST-OF BIBLIOTHEEK: site's eigen geluidsbank, geen uploads nodig ---------- */
+const BIB=[
+ {naam:'SUB 808',file:'bas_sf_sub808_1792585596',laag:'sub'},
+ {naam:'DRILLBAS',file:'g2bspecial_11',laag:'sub'},
+ {naam:'FUNKBASS',file:'g2bspecial_12',laag:'sub'},
+ {naam:'EPICBASS',file:'g2bspecial_13',laag:'grit'},
+ {naam:'LOGDRUM',file:'g2bspecial_06',laag:'sub'},
+ {naam:'DONDERPI',file:'donderpi',laag:'sub'},
+ {naam:'REGGAETONBASS',file:'reggaetonbass',laag:'sub'},
+ {naam:'SOUTHERNBASS',file:'southernbass',laag:'sub'},
+ {naam:'ROCKABILLYBASS',file:'rockabillybass',laag:'sub'},
+ {naam:'OOGSTBASS',file:'kit_oogstbass_00',laag:'sub'},
+ {naam:'KICK trap',file:'kit_trap_00',laag:'kick'},
+ {naam:'KICK drill',file:'kit_drill_00',laag:'kick'},
+ {naam:'KICK kawina',file:'kit_kawina_00',laag:'kick'},
+ {naam:'KICK soca',file:'kit_soca_00',laag:'kick'}];
+const BIBGEL={}; // file → SHOTS-index
+async function laadBib(e,el){
+ const ac=S.ctx||(S.ctx=new (window.AudioContext||window.webkitAudioContext)());
+ if(BIBGEL[e.file]!=null){SHOTLAAG[e.laag]=BIBGEL[e.file];shotsUI();laagUI();renderPreview();st('🎹 '+e.naam+' op '+e.laag.toUpperCase());return}
+ el.textContent='⏳';
+ try{
+  const ab=await (await fetch('../bestof-web/wav/'+e.file+'.wav')).arrayBuffer();
+  const buf=await ac.decodeAudioData(ab);
+  const ch0=buf.getChannelData(0),f0=pitchOf(ch0,buf.sampleRate);
+  let br=0;for(let i=1;i<ch0.length;i+=8)br+=Math.abs(ch0[i]-ch0[i-1]);br/=Math.max(1,ch0.length/8);
+  SHOTS.push({naam:'🎹 '+e.naam,buf:buf,f0:f0,midi:midiOf(f0),dur:buf.duration,bright:br});
+  BIBGEL[e.file]=SHOTS.length-1;SHOTLAAG[e.laag]=BIBGEL[e.file];
+  shotsUI();laagUI();renderPreview();
+  st('🎹 '+e.naam+' geladen op '+e.laag.toUpperCase()+' — grondtoon '+NOOT[midiOf(f0)%12]+' ('+Math.round(f0)+' Hz)');
+ }catch(err){st('⚠ kon '+e.naam+' niet laden')}
+ bibUI()}
+function bibUI(){
+ const r=$('bibRow');r.style.display=r.style.display==='none'?'flex':'none';
+ if(r.style.display==='none')return;
+ $('bib').innerHTML=BIB.map((e,i)=>`<div class="shot" data-i="${i}" style="cursor:pointer"><b>${e.naam}</b> <span class="hint">${e.laag}</span></div>`).join('');
+ $('bib').querySelectorAll('.shot').forEach(el=>el.onclick=()=>laadBib(BIB[+el.dataset.i],el))}
 
 uiInit();dobbelAlles();
 </script>

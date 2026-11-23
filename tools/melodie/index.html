@@ -41,7 +41,7 @@ canvas{width:100%;display:block;border-radius:8px;background:#050b08}
   <option value="minp">mineur-penta (veilig)</option></select></label>
  <label>BPM<input type="number" id="bpm" min="60" max="190" value="140"></label>
  <label>Maten<select id="maten"><option>4</option><option selected>8</option><option>16</option></select></label>
- <label>Klank melodie<select id="klank"><option value="pluck">Pluck</option><option value="keys">Keys</option><option value="bel">Bel</option><option value="lead">Lead</option><option value="fluit">Fluit</option></select></label>
+ <label>Klank melodie<select id="klank"><option value="pluck">Pluck</option><option value="keys">Keys</option><option value="bel">Bel</option><option value="lead">Lead</option><option value="fluit">Fluit</option><option value="smp:piano|56">🎹 Piano</option><option value="smp:marimba|56">🎹 Marimba</option><option value="smp:har_kH_C4|60">🎹 Harp</option><option value="smp:sax_kSx50_1|50">🎹 Sax</option></select></label>
  <label>Arpeggio<select id="arp"><option value="uit">uit</option><option value="1/16">1/16</option><option value="1/8">1/8</option><option value="triplet">triplet</option></select></label>
  <label>Voicing<select id="voicing"><option value="auto">auto</option><option value="dicht">dicht</option><option value="open">open</option><option value="omkering">omkering</option></select></label>
  <span style="flex:1"></span>
@@ -268,13 +268,27 @@ function stem(ctx,dst,spoor,p,t,dur,v,klank){
  if(spoor==='akk'){const lpf=ctx.createBiquadFilter();lpf.type='lowpass';lpf.frequency.value=1500;lpf.Q.value=.3;lpf.connect(g);
   [-7,7].forEach(dt=>{const o=ctx.createOscillator();o.type='sawtooth';o.frequency.value=hz(p);o.detune.value=dt;o.connect(lpf);o.start(t);o.stop(t+dur+.5)});
   env(ctx,g,t,.06,.11*vel,dur,.35);return}
- const f=hz(p),lpf=ctx.createBiquadFilter();lpf.type='lowpass';lpf.connect(g);
+ const f=hz(p);
+ if(klank.startsWith('smp:')){ // echte-instrument one-shot uit de BEST-OF bibliotheek (preview én .wav)
+  const[sf,p0]=klank.slice(4).split('|'),buf=SMPBUF[sf];
+  if(!buf){laadSmp(sf);klank='pluck'} // eerste keer: laden + fallback, volgende render klinkt hij
+  else{const src=ctx.createBufferSource();src.buffer=buf;src.playbackRate.value=f/hz(+p0);
+   src.connect(g);env(ctx,g,t,.005,.55*vel,Math.max(dur,.45),.45);
+   src.start(t);src.stop(t+Math.max(dur,.45)+buf.duration+.05);return}}
+ const lpf=ctx.createBiquadFilter();lpf.type='lowpass';lpf.connect(g);
  const osc=(type,mul,gain,det)=>{const o=ctx.createOscillator(),og=ctx.createGain();o.type=type;o.frequency.value=f*mul;if(det)o.detune.value=det;og.gain.value=gain;o.connect(og);og.connect(lpf);o.start(t);o.stop(t+dur+.5)};
  if(klank==='pluck'){osc('sawtooth',1,.5,-6);osc('sawtooth',1,.5,6);lpf.frequency.setValueAtTime(5200,t);lpf.frequency.exponentialRampToValueAtTime(700,t+.25);env(ctx,g,t,.003,.32*vel,Math.min(dur,.35),.18)}
  else if(klank==='keys'){osc('sine',1,.8);osc('sine',2,.25);osc('triangle',3,.06);lpf.frequency.value=4000;env(ctx,g,t,.004,.42*vel,dur,.3)}
  else if(klank==='bel'){osc('sine',1,.7);osc('sine',2.76,.18);osc('sine',5.4,.06);lpf.frequency.value=6000;env(ctx,g,t,.002,.36*vel,Math.min(dur,.5),.6)}
  else if(klank==='lead'){osc('square',1,.35,-4);osc('sawtooth',1,.35,4);lpf.frequency.value=2600;lpf.Q.value=2;env(ctx,g,t,.01,.22*vel,dur,.12)}
  else{osc('sine',1,.8);osc('triangle',2,.08);lpf.frequency.value=3000;env(ctx,g,t,.05,.4*vel,dur,.15)}}
+
+/* ---------- BEST-OF instrumenten voor preview/wav-export ---------- */
+const SMPBUF={};
+async function laadSmp(file){if(SMPBUF[file]||SMPBUF[file]===0)return;SMPBUF[file]=0;
+ try{const ab=await (await fetch('../bestof-web/wav/'+file+'.wav')).arrayBuffer();
+  SMPBUF[file]=await ac().decodeAudioData(ab)}catch(e){delete SMPBUF[file]}}
+$('klank').addEventListener('change',()=>{const v=$('klank').value;if(v.startsWith('smp:'))laadSmp(v.slice(4).split('|')[0])});
 
 /* ---------- AFSPELEN (vooruit-plannen = strak ritme) ---------- */
 let speelt=false,tmr=null,t0=0,volgS=0;
