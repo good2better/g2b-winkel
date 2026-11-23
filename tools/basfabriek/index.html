@@ -750,11 +750,15 @@ function octaaf(d){if(!S.notes.length)return;bewaar();
 function renderPreview(){
  st('⏳ preview renderen…');
  setTimeout(()=>{
+  const a=$('au'),wasPlaying=a&&!a.paused,pos=a?a.currentTime||0:0;
   const r=renderLoop();
   S.lastRender=r;
   const blob=new Blob([wavBytes(spkOut(r,SPK),r.sr)],{type:'audio/wav'});
   if(S.wavUrl)URL.revokeObjectURL(S.wavUrl);
   S.wavUrl=URL.createObjectURL(blob);
+  if(wasPlaying){ // live-edit: speel naadloos door vanaf dezelfde plek
+   a.onloadedmetadata=()=>{a.currentTime=pos%r.dur;a.play()};
+  }else a.onloadedmetadata=null;
   $('au').src=S.wavUrl;
   tekenScope(r);
   st('✓ klaar — ▶ luister · 🎲 opnieuw · ⬇ exporteer .wav / .mid'+(SPK!=='studio'?' · 🔊 '+SPK.toUpperCase()+'-check':'')+(S.faseFlip?' · fase-fix toegepast':''));
