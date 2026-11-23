@@ -776,7 +776,7 @@ $('au').onpause=()=>{$('bPlay').textContent='▶ LUISTER'};
 /* speel één noot live (kleine offline-render → direct afspelen) */
 async function speelNoot(p,el){
  el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),140);
- const g=genre(),basType=$('bastype').value||g.bas,sr=22050,f=mf(p),dur=.7;
+ const g=genre(),basType=$('bastype').value||g.bas,sr=44100,f=mf(p),dur=.7;
  let stem;
  if(SHOTLAAG.sub!=null&&SHOTS[SHOTLAAG.sub])stem=shotVoix(SHOTS[SHOTLAAG.sub],f,dur,sr);
  else stem=renderStem(basType,f,dur,sr,basType==='reese'?.0016:undefined);
@@ -938,14 +938,19 @@ async function leerAudioBas(buf,naam){ /* beat/loop → baslijn + kicks + bpm */
   if(lage.length>=2){
    const map={};for(const n of lage){const s=Math.round(n.startTimeSeconds/sd);if(s<0||s>=tot)continue;
     const p=snapL(Math.round(n.pitchMidi));if(!map[s]||p>map[s].p)map[s]={p,d:Math.max(1,Math.round(n.durationSeconds/sd))}}
+   // toonsoort meten: pitch-class histogram → beste mineur-fit
+   const hist=new Array(12).fill(0);for(const n of lage)hist[((Math.round(n.pitchMidi)%12)+12)%12]+=n.durationSeconds;
+   let bestK=-1,bestSc=-1;for(let k=0;k<12;k++){let sc=0;for(let i=0;i<12;i++)sc+=hist[i]*(LAD.includes((i-k+12)%12)?1:-.4);if(sc>bestSc){bestSc=sc;bestK=k}}
+   if(bestK>=0)S.geleerdeKey=bestK;
    const lijn=Object.keys(map).sort((a,b)=>a-b).map(s=>({s:+s,p:map[s].p,d:map[s].d,v:78,glide:0}));
    // glides: volgende noot binnen 2 stappen en 2..12 semitones verschil → glide
    for(let i=0;i<lijn.length-1;i++){const dp=lijn[i+1].p-lijn[i].p,gap=lijn[i+1].s-(lijn[i].s+lijn[i].d);
     if(gap<=1&&Math.abs(dp)>=2&&Math.abs(dp)<=12)lijn[i].glide=dp}
    if(lijn.length>=2){bewaar();S.notes=lijn;
     if(rawOnsets.length>=2)S.kicks=rawOnsets.filter(s=>s<tot).map(s=>({s:s}));
+    if(S.geleerdeKey!=null){$('key').value=S.geleerdeKey;S.notes=S.notes.map(n=>({...n,p:snapL(n.p)}))}
     teken();laagUI();renderPreview();
-    st('🎤 '+naam+': '+lijn.length+' basnoten + '+S.kicks.length+' kicks gelezen — lijn staat in de roll, dobbel verder of exporteer');
+    st('🎤 '+naam+': '+lijn.length+' basnoten + '+S.kicks.length+' kicks gelezen'+(S.geleerdeKey!=null?' · toonsoort gemeten: '+NOOT[S.geleerdeKey]+' mineur':'')+' — lijn staat in de roll, dobbel verder of exporteer');
     return true}}}
  st('🎤 geen baslijn gevonden in '+naam+' — probeer een loop met een duidelijke sub/808');return false}
 function parseMidiBas(ab){ /* .mid → noten (reuse van melodie-parse, lage noten = bas) */
