@@ -118,14 +118,16 @@ async function overpassKw(kw,plaats){
  const r0=await fetch('https://photon.komoot.io/api/?q='+encodeURIComponent(plaats)+'&limit=1');
  const f0=(await r0.json()).features||[];if(!f0.length)return[];
  const [lon,lat]=f0[0].geometry.coordinates;
- // woordgrens om de term: 'anana' mag niet 'Banana' raken, 'glas' niet 'Glamping'
- const rx='(^|[^A-Za-z])('+kwRegex(kw)+')';
+ // woordgrens om de term in NAMEN: 'anana' mag niet 'Banana' raken, 'glas' niet 'Glamping';
+ // tags/description/craft onbegrensd — 'studio' vindt daar ook 'opnamestudio'
+ const raw=kwRegex(kw);
+ const rx='(^|[^A-Za-z])('+raw+')';
  const q='[out:json][timeout:25];(nwr["name"~"'+rx+'",i](around:20000,'+lat+','+lon+');'+
-  'nwr["description"~"'+rx+'",i](around:20000,'+lat+','+lon+');'+
-  'nwr["craft"~"'+rx+'",i](around:20000,'+lat+','+lon+');'+
-  'nwr["office"~"'+rx+'",i](around:20000,'+lat+','+lon+');'+
-  'nwr["shop"~"'+rx+'",i](around:20000,'+lat+','+lon+');'+
-  'nwr["amenity"~"'+rx+'",i](around:20000,'+lat+','+lon+'););out tags center 120;';
+  'nwr["description"~"'+raw+'",i](around:20000,'+lat+','+lon+');'+
+  'nwr["craft"~"'+raw+'",i](around:20000,'+lat+','+lon+');'+
+  'nwr["office"~"'+raw+'",i](around:20000,'+lat+','+lon+');'+
+  'nwr["shop"~"'+raw+'",i](around:20000,'+lat+','+lon+');'+
+  'nwr["amenity"~"'+raw+'",i](around:20000,'+lat+','+lon+'););out tags center 120;';
  const r=await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q));
  const d=await r.json();return d.elements||[];
 }
