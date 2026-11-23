@@ -108,7 +108,10 @@ const SYN={"producer":"produc|beat|studio|recording|muziek|music|label",
 function kwRegex(kw){
  const k=kw.trim().toLowerCase();
  if(SYN[k])return SYN[k];
- return k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'s?';
+ // meervoud: 'boekhandels' → 'boekhandel' optioneel+s (vindt ook enkelvoud-namen);
+ // korte woorden ('glas','dans') niet strippen — 'gla' zou 'Glamping' raken
+ const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+ return k.length>4&&k.endsWith('s')?esc(k.slice(0,-1))+'s?':esc(k)+'s?';
 }
 async function overpassKw(kw,plaats){
  // 1) geocode de plaats via photon → middelpunt
