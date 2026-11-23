@@ -103,15 +103,18 @@ const SYN={"producer":"produc|beat|studio|recording|muziek|music|label",
 "video":"video|film|media|productie",
 "podcast":"podcast|studio|media",
 "dans":"dans|dance|ballet|studio",
-"kunst":"kunst|galerie|atelier|artist|artiest|schilder|beeldhouw",
+"kunst":"kunst|galerie|atelier|artist|artiest|beeldhouw|schilderij|=art",
 "boek":"boek|book|uitgever|author|schrijver"};
+// → {nm,tg}: nm = naam-regex (woordgrens links — 'Banana' raakt 'ananas' niet);
+//    tg = tag-regex (substring + =woord exact — 'art' vindt shop=art maar niet car_parts)
 function kwRegex(kw){
  const k=kw.trim().toLowerCase();
- if(SYN[k])return SYN[k];
- // meervoud: 'boekhandels' → 'boekhandel' optioneel+s (vindt ook enkelvoud-namen);
- // korte woorden ('glas','dans') niet strippen — 'gla' zou 'Glamping' raken
  const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
- return k.length>4&&k.endsWith('s')?esc(k.slice(0,-1))+'s?':esc(k)+'s?';
+ let toks=SYN[k]?SYN[k].split('|'):[k.length>4&&k.endsWith('s')?esc(k.slice(0,-1))+'s?':esc(k)+'s?'];
+ const exact=toks.filter(t=>t[0]==='=').map(t=>esc(t.slice(1)));
+ const sub=toks.filter(t=>t[0]!=='=').join('|');
+ return {nm:'(^|[^A-Za-z])('+sub+')',
+  tg:[sub,exact.length?'(^|[^A-Za-z])('+exact.join('|')+')([^A-Za-z]|$)':''].filter(Boolean).join('|')};
 }
 async function overpassKw(kw,plaats){
  // 1) geocode de plaats via photon → middelpunt
@@ -119,9 +122,9 @@ async function overpassKw(kw,plaats){
  const f0=(await r0.json()).features||[];if(!f0.length)return[];
  const [lon,lat]=f0[0].geometry.coordinates;
  // woordgrens om de term in NAMEN: 'anana' mag niet 'Banana' raken, 'glas' niet 'Glamping';
- // tags/description/craft onbegrensd — 'studio' vindt daar ook 'opnamestudio'
- const raw=kwRegex(kw);
- const rx='(^|[^A-Za-z])('+raw+')';
+ // tags/description/craft onbegrensd — 'studio' vindt daar ook 'opnamestudio';
+ // '=woord' tokens in SYN matchen in tags alleen als heel woord ('art' → shop=art, niet car_parts)
+ const rxO=kwRegex(kw),rx=rxO.nm,raw=rxO.tg;
  const q='[out:json][timeout:25];(nwr["name"~"'+rx+'",i](around:20000,'+lat+','+lon+');'+
   'nwr["description"~"'+raw+'",i](around:20000,'+lat+','+lon+');'+
   'nwr["craft"~"'+raw+'",i](around:20000,'+lat+','+lon+');'+
