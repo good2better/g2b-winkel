@@ -661,7 +661,7 @@ $('preset').onchange=()=>{const i=+$('preset').value;if(!PRESETS[i])return;const
  document.querySelectorAll('.lock').forEach((b,i)=>b.onclick=()=>{S.locks[i]=!S.locks[i];laagUI()});
  document.querySelectorAll('.swap').forEach(b=>b.onclick=()=>smartSwap(b.dataset.l));
  document.querySelectorAll('.mute').forEach(b=>b.onclick=()=>{S.mute[b.dataset.l]=!S.mute[b.dataset.l];laagUI();renderPreview();st(S.mute[b.dataset.l]?'🔇 '+b.dataset.l.toUpperCase()+' uit':'🔊 '+b.dataset.l.toUpperCase()+' weer aan')});
- $('bWis').onclick=()=>{bewaar();S.notes=[];S.kicks=[];teken();renderPreview();st('⟲ roll leeg — speel zelf in met ● OPN of ⌨ STAP-IN')};
+ $('bWis').onclick=()=>{bewaar();S.notes=[];S.kicks=[];bewaar();STAPPOS=0;teken();renderPreview();st('⟲ roll leeg — ↶ brengt je oude baslijn terug · speel in met ● OPN of ⌨ STAP-IN')};
  $('genre').value=0;
  /* toetsenbord */
  const keys=[['C',36],['D',38],['D#',39],['E',40],['F',41],['G',43],['A',45],['C2',48]];
@@ -846,9 +846,9 @@ async function speelNoot(p,el){
   const stem=(SHOTLAAG.sub!=null&&SHOTS[SHOTLAAG.sub])?shotVoix(SHOTS[SHOTLAAG.sub],f,dur,sr):renderStem(basType,f,dur,sr,basType==='reese'?.0016:undefined);
   const e=envAdsr(stem.length,sr,(S.sound.subAtk!=null?S.sound.subAtk:g.subAtk),Math.min(.09,dur*.25));
   const vv=stem.map((s,i)=>s*e[i]*0.85);
-  const lo1=lop(vv,145,sr),hi1=S.sound.gritOff?null:sat(hip(vv,170,sr),S.sound.drive||1.2);
+  const lo1=S.mute.sub?null:lop(vv,145,sr),hi1=(S.sound.gritOff||S.mute.grit)?null:sat(hip(vv,170,sr),S.sound.drive||1.2);
   const st0=Math.floor(h.o*sd*sr);
-  for(let i=0;i<lo1.length&&st0+i<n;i++){lo[st0+i]+=lo1[i];if(hi1)hi[st0+i]+=hi1[i]}}
+  if(lo1||hi1)for(let i=0;i<(lo1?lo1.length:hi1.length)&&st0+i<n;i++){if(lo1)lo[st0+i]+=lo1[i];if(hi1)hi[st0+i]+=hi1[i]}}
  const ac=S.ctx||(S.ctx=new (window.AudioContext||window.webkitAudioContext)());
  const buf=ac.createBuffer(2,n,sr),L=buf.getChannelData(0),Rr=buf.getChannelData(1);
  for(let i=0;i<n;i++){L[i]=Math.tanh((lo[i]+hi[i]*0.62)*0.9);Rr[i]=Math.tanh((lo[i]+hi[i]*0.62)*0.9)}
