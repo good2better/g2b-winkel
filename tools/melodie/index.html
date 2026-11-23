@@ -187,7 +187,7 @@ function maakAkk(c){const out=[];
  PROG.forEach((gr,m)=>{
   const t=akkTonen(c,gr);
   let vt=kandidaten[0],tonen=stemmen(t,vt),best=1e9;
-  kandidaten.forEach(v2=>{const t2=stemmen(t,v2);const d=vorig?Math.min(...t2.map(p=>Math.min(...vorig.map(q=>Math.abs(p-q)))))+Math.abs(t2[0]-vorig[0]):0;
+  kandidaten.forEach(v2=>{const t2=stemmen(t,v2);const d=vorig?t2.reduce((a,p)=>a+Math.min(...vorig.map(q=>Math.abs(p-q))),0):0;
    if(d<best){best=d;vt=v2;tonen=t2}});
   vorig=tonen;
   for(const[s,d]of rit)tonen.forEach((p,k)=>{
@@ -231,7 +231,8 @@ function maak(wat){const c=cfg();if(!PROG||PROG.length!==c.maten||wat==='alles')
  return} // akk-dobbel: nieuwe akkoorden, bas-ritme blijft (nootjes volgen), melodie blijft
  if(wat==='alles'){if(!LOCK.akk)S.akk=maakAkk(c);if(!LOCK.bas)S.bas=maakBas(c);if(!LOCK.mel)S.mel=maakMel(c);return}
  if(wat==='bas'&&!LOCK.bas)S.bas=maakBas(c);
- if(wat==='mel'&&!LOCK.mel)S.mel=maakMel(c)}
+ if(wat==='mel'&&!LOCK.mel)S.mel=maakMel(c);
+ bewaar()} // post-state: undo/redo hebben altijd twee echte standen
 let M_STAPIN=false,M_STAPPOS=0;
 function speelMel(i){const c=cfg(),p=lp(c,i,60),tot=c.maten*16;
  stem(ac(),MASTER,'mel',p,AC.currentTime+.02,.45,100,$('klank').value);
@@ -243,7 +244,7 @@ function melsToetsen(){const c=cfg(),lab=c.lad.map((_,i)=>i);
   return `<div class="key" data-i="${i}" style="flex:1;min-width:54px;padding:12px 4px;border-radius:9px;background:#0d1526;border:1px solid #1d4a33;color:#7ee2a8;font-weight:800;font-size:12px;cursor:pointer;text-align:center;user-select:none">${'ASDFGHJKL'[i]}<small style="display:block;font-weight:400;font-size:9px;color:#5b6d8a">${nm}</small></div>`}).join('');
  document.querySelectorAll('#mkeys .key').forEach(k=>{k.onmousedown=()=>speelMel(+k.dataset.i);
   k.ontouchstart=e=>{e.preventDefault();speelMel(+k.dataset.i)}})}
-function bewaar(){const j=JSON.stringify({S,PROG});hist=hist.slice(0,hi+1);if(hist[hi]===j)return;hist.push(j);if(hist.length>40)hist.shift();hi=hist.length-1;
+function bewaar(){const j=JSON.stringify({S,PROG});hist=hist.slice(0,hi+1);if(hist[hi]!==j){hist.push(j);if(hist.length>40)hist.shift();hi=hist.length-1}
  try{localStorage.setItem('g2b_melodie_state',JSON.stringify({S:S,PROG:PROG,w:$('wortel').value,lad:$('ladder').value,g:$('genre').value,bpm:$('bpm').value,maten:$('maten').value}))}catch(e){}}
 function herstel(j){const o=JSON.parse(hist[j]);S=o.S;PROG=o.PROG;teken();sporenUI()}
 function nieuw(){stopSpeel();maak('alles');bewaar();teken();sporenUI();vars=[];$('vars').innerHTML='';
@@ -552,7 +553,7 @@ dz.ondrop=e=>{e.preventDefault();dz.classList.remove('over');if(e.dataTransfer.f
 $('nieuw').onclick=nieuw;$('mic').onclick=mic;$('donder').onclick=laadDonder;
 ['hum','strum','ruimte','warmte'].forEach(id=>$(id).oninput=fxSet);
 $('arp').onchange=()=>{bereidSpelen();st('🎹 arpeggio: '+$('arp').value+' — druk ▶ SPEEL')};
-$('voicing').onchange=()=>{bewaar();S.akk=maakAkk(cfg());teken();st('🎹 voicing: '+$('voicing').value+' — akkoorden herschreven')};
+$('voicing').onchange=()=>{bewaar();S.akk=maakAkk(cfg());bewaar();teken();st('🎹 voicing: '+$('voicing').value+' — akkoorden herschreven')};
 $('speel').onclick=()=>speelt?stopSpeel():speel();
 $('loopk').onclick=()=>$('loopk').classList.toggle('aan');
 $('varknop').onclick=maakVars;
