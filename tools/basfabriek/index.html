@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B DONDER-FABRIEK — eigen 808 / sub / reese / kickbass maker</title>
+<style>
+:root{--groen:#16a34a;--groen2:#22c55e;--donker:#0b1220;--kaart:#131c2e;--rand:#22314d;--tekst:#e8eef8;--zacht:#9fb0c9;--roze:#f472b6;--oranje:#fb923c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--donker);color:var(--tekst);font:15px/1.5 system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px}
+h1{font-size:1.5rem;margin-bottom:2px}
+h1 b{color:#4ade80}
+.sub{color:var(--zacht);font-size:.85rem;margin-bottom:14px;text-align:center;max-width:760px}
+.card{background:var(--kaart);border:1px solid var(--rand);border-radius:14px;padding:14px 16px;width:min(920px,96vw);margin-bottom:12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0}
+.btn{padding:11px 20px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.5px}
+.b1{background:var(--groen2);color:#04120a}
+.b2{background:#1d2b3f;color:#bcd2f0;border:1px solid #2c3f5c}
+.btn:active{transform:scale(.96)}
+.klein{padding:6px 12px;font-size:12px;border-radius:8px}
+label{font-size:11px;color:var(--zacht);display:flex;flex-direction:column;gap:4px}
+select,input[type=number]{background:#0d1526;color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:8px;font-size:14px;font-weight:600}
+input[type=range]{accent-color:var(--groen2);width:110px}
+.lagen{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.laag{background:#0d1526;border:1px solid var(--rand);border-radius:12px;padding:12px}
+.laag h3{font-size:12px;letter-spacing:1px;margin-bottom:4px}
+.laag.kick h3{color:var(--oranje)}
+.laag.sub h3{color:var(--roze)}
+.laag.grit h3{color:#a78bfa}
+.laag .nm{font-size:13px;font-weight:700;color:#e8eef8;min-height:18px}
+.laag .pr{font-size:11px;color:var(--zacht);line-height:1.55;margin-top:4px}
+.laag .lock{margin-top:8px;width:100%;padding:7px;border-radius:8px;border:1px solid #2c3f5c;background:#16223a;color:#bcd2f0;cursor:pointer;font-size:12px;font-weight:700}
+.laag.on{border-color:var(--groen2)}
+.laag.on .lock{background:var(--groen2);color:#04120a}
+.status{background:#0d1526;border:1px solid var(--rand);border-radius:8px;padding:9px 13px;font-size:13px;color:#bcd2f0;width:100%;margin-top:8px}
+canvas#roll{width:100%;height:120px;background:#050b16;border-radius:10px;display:block}
+audio{width:100%;height:36px;margin-top:8px}
+.keys{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.key{flex:1;min-width:64px;padding:16px 4px;border-radius:10px;background:#0d1526;border:1px solid var(--rand);color:#7ee2a8;font-weight:800;font-size:13px;cursor:pointer;text-align:center;user-select:none}
+.key small{display:block;font-weight:400;color:var(--zacht);font-size:10px}
+.key.hit{background:#1d3a2a;border-color:var(--groen2);transform:scale(.96)}
+.shots{display:flex;gap:8px;flex-wrap:wrap;width:100%}
+.shot{background:#0d1526;border:1px solid var(--rand);border-radius:9px;padding:7px 10px;font-size:12px;color:#bcd2f0}
+.shot b{color:#7ee2a8}
+.shot .mini{margin-left:6px;padding:3px 7px;border-radius:6px;border:1px solid #2c3f5c;background:#16223a;color:#bcd2f0;cursor:pointer;font-size:10px;font-weight:700}
+.shot .mini.on{background:var(--groen2);color:#04120a;border-color:var(--groen2)}
+.hint{font-size:11px;color:#5b6d8a}
+a{color:#4ade80}
+</style>
+</head>
+<body>
+<h1>🌩 G2B <b>DONDER-FABRIEK</b></h1>
+<p class="sub">Maakt zélf je bas &amp; kick — 808 · sub · reese · kickbass · log drum · donk · DONDER.<br>
+1 klik = nieuwe baslijn + kick + mid-laag in jouw genre en toonsoort · speelbaar op toetsenbord · .wav + .mid eruit.<br>
+Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip bus — net zoals de Bass-Layering-regels.</p>
+
+<div class="card">
+  <div class="row">
+    <label>GENRE<select id="genre"></select></label>
+    <label>BAS-SOORT<select id="bastype"></select></label>
+    <label>TOONSOORT<select id="key"></select></label>
+    <label>BPM<input id="bpm" type="number" min="60" max="220" value="142"></label>
+    <label>MATEN<select id="maten"><option>2</option><option selected>4</option><option>8</option></select></label>
+    <label>SWING <span id="swv">10%</span><input id="swing" type="range" min="0" max="65" value="10"></label>
+  </div>
+  <div class="row">
+    <button class="btn b1" id="bAlles">🎲 ALLES NIEUW</button>
+    <button class="btn b2" id="bLijn">🎲 BASLIJN</button>
+    <button class="btn b2" id="bSnd">🎲 SOUND</button>
+    <button class="btn b1" id="bPlay">▶ LUISTER</button>
+    <button class="btn b2" id="bWav">⬇ .wav</button>
+    <button class="btn b2" id="bMid">⬇ .mid</button>
+    <button class="btn b2" id="bMap">📁 EIGEN SHOTS</button>
+    <input type="file" id="dir" webkitdirectory hidden>
+    <input type="file" id="fi" accept="audio/*" multiple hidden>
+  </div>
+  <div class="row" id="shotRow" style="display:none">
+    <span class="hint" id="shotInfo"></span>
+    <div class="shots" id="shots"></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="lagen">
+    <div class="laag kick" data-i="0"><h3>KICK · attack &amp; punch</h3><div class="nm">—</div><div class="pr"></div><button class="lock">🔒 lock</button></div>
+    <div class="laag sub" data-i="1"><h3>SUB / 808 · fundament</h3><div class="nm">—</div><div class="pr"></div><button class="lock">🔒 lock</button></div>
+    <div class="laag grit" data-i="2"><h3>GRIT / MID · boventonen</h3><div class="nm">—</div><div class="pr"></div><button class="lock">🔒 lock</button></div>
+  </div>
+  <div class="status" id="status">druk op 🎲 ALLES NIEUW voor je eerste stapel</div>
+</div>
+
+<div class="card">
+  <canvas id="roll"></canvas>
+  <div class="row" style="margin-top:8px"><span class="hint">▶ loop-preview · 🔲 = baslijn, ▬ = kick · speel live mee:</span></div>
+  <div class="keys" id="keys"></div>
+  <audio id="au" controls loop></audio>
+</div>
+
+<p class="hint">deel van de G2B toolset · maak er een melodie bij → <a href="../melodie/index.html">G2B MELODIE</a> · alles 100% eigen sound, commercieel te gebruiken</p>
+
+<script>
+/* ================= DATA ================= */
+const NOOT=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const BAS_TYPES=[
+ ['sub','PURE SUB — ronde sine, warm & diep'],
+ ['a808','808 — pitch-punch + soft-clip'],
+ ['reese','REESE — brede ontstemde saws'],
+ ['kickbass','KICKBASS — strakke 16e drive'],
+ ['fm','FM / DONK — hout & growl'],
+ ['logdrum','LOG DRUM — amapiano drop'],
+ ['pluck','PLUK — zouk/kawina percussief'],
+ ['donder','DONDER — filmische sub-impact']]
+/* genre-matrix (uit Bass-Layering-Engine + G2B Werkstation v2.0) */
+const GENRES=[
+ {id:'trap',   n:'Trap',        bpm:142,kick:{len:.050,hpf:110},subAtk:.025,rit:'follow', glide:1,bas:'a808',   sw:.08},
+ {id:'drill',  n:'UK Drill',    bpm:144,kick:{len:.050,hpf:110},subAtk:.020,rit:'follow', glide:1,glideFast:1,bas:'a808',sw:.05},
+ {id:'techno', n:'Techno',      bpm:138,kick:{len:.105,hpf:100},subAtk:.003,rit:'kbbb',   bas:'kickbass',sw:0},
+ {id:'psy',    n:'Psytrance',   bpm:140,kick:{len:.105,hpf:100},subAtk:.003,rit:'kbbb',   bas:'kickbass',sw:0},
+ {id:'hard',   n:'Hardstyle',   bpm:150,kick:{len:.110,hpf:140},subAtk:.055,rit:'beats',  bas:'kickbass',sw:0},
+ {id:'ukg',    n:'UKG / House', bpm:132,kick:{len:.130,hpf:70}, subAtk:.012,rit:'offbeat',bas:'sub',    sw:.15},
+ {id:'dnb',    n:'Drum & Bass', bpm:174,kick:{len:.060,hpf:95}, subAtk:.020,rit:'dnb',    bas:'reese',  sw:0},
+ {id:'dub',    n:'Dubstep',     bpm:145,kick:{len:.105,hpf:80}, subAtk:.025,rit:'riddim', bas:'fm',     sw:0},
+ {id:'amap',   n:'Amapiano',    bpm:112,kick:{len:.085,hpf:80}, subAtk:.002,rit:'logdrum',bas:'logdrum',sw:.10},
+ {id:'reggaeton',n:'Reggaeton', bpm:96, kick:{len:.115,hpf:80}, subAtk:.020,rit:'dembow', bas:'sub',    sw:.05},
+ {id:'zouk',   n:'Zouk / Kompa',bpm:102,kick:{len:.105,hpf:80}, subAtk:.015,rit:'zouk',   bas:'pluck',  sw:.20},
+ {id:'kawina', n:'Kawina',      bpm:120,kick:{len:.125,hpf:90}, subAtk:.008,rit:'kawina', bas:'pluck',  sw:.35},
+ {id:'bubbling',n:'Bubbling',   bpm:104,kick:{len:.080,hpf:95}, subAtk:.012,rit:'dembow', bas:'fm',     sw:.10},
+ {id:'soca',   n:'Soca',        bpm:124,kick:{len:.070,hpf:105},subAtk:.005,rit:'soca',   bas:'sub',    sw:.10},
+ {id:'donder', n:'DONDER',      bpm:75, kick:{len:.140,hpf:60}, subAtk:.040,rit:'donder', bas:'donder', sw:0}]
+const R=a=>a[Math.floor(Math.random()*a.length)];
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const mf=p=>440*Math.pow(2,(p-69)/12);
+const LAD=[0,2,3,5,7,8,10]; /* mineur ladder */
+const PROG_MIN=[0,5,3,6,0,5,3,6]; /* i - VI - III - VII */
+const PROG_AMAP=[0,0,3,4,0,0,5,4];
+
+const $=id=>document.getElementById(id);
+let S={notes:[],kicks:[],locks:[false,false,false],sound:{},wavUrl:null,playSrc:null,ctx:null};
+let SHOTS=[]; // eigen one-shots: {naam,buf,f0,midi}
+let SHOTLAAG={kick:null,sub:null,grit:null}; // index in SHOTS of null = synth
+
+/* genre + key + ladder → midi noot */
+function lp(deg){const w=+$('key').value;const n=LAD.length;const o=Math.floor(deg/n),d=((deg%n)+n)%n;return 36+w+12*o+LAD[d]}
+
+/* ================= BASLIJN-GENERATOR ================= */
+function genre(){return GENRES[+$('genre').value]}
+function maakLijn(){
+ const g=genre(),maten=+$('maten').value,tot=maten*16;
+ const prog=g.id==='amap'?PROG_AMAP:PROG_MIN;
+ const degPerMaat=m=>prog[m%prog.length];
+ let stappen=[];
+ const rit=g.rit;
+ if(rit==='follow'){ // bas volgt de kicks (trap/drill/reggaeton-subs)
+  const ks=kickStappen(g,maten);
+  stappen=ks.map(s=>[s,3+Math.floor(Math.random()*3)]);
+  // extra 16e pickups
+  for(let m=0;m<maten;m++)if(Math.random()<.45)stappen.push([m*16+R([6,7,14,15]),1]);
+ }else if(rit==='kbbb'){ // rolling: bas op elke niet-kick 16e (K-B-B-B)
+  for(let s=0;s<tot;s++)if(s%4!==0)stappen.push([s,1]);
+ }else if(rit==='beats'){ // hardstyle: elke tel + offbeat
+  for(let m=0;m<maten;m++)for(const s of [0,2,4,6,8,10,12,14])stappen.push([m*16+s,2]);
+ }else if(rit==='offbeat'){ // house/ukg: tussen de kicks
+  for(let m=0;m<maten;m++)for(const s of [2,6,10,14])stappen.push([m*16+s,2]);
+  for(let m=0;m<maten;m++)if(Math.random()<.4)stappen.push([m*16+15,1]);
+ }else if(rit==='dnb'){
+  for(let m=0;m<maten;m++)for(const [s,d] of [[0,3],[7,2],[10,3],[14,2]])stappen.push([m*16+s,d]);
+ }else if(rit==='riddim'){
+  for(let m=0;m<maten;m++)for(const s of [0,4,8,12])stappen.push([m*16+s,2]);
+ }else if(rit==='logdrum'){
+  for(let m=0;m<maten;m++)for(const [s,d] of [[0,3],[3,2],[6,3],[10,2],[12,4]])stappen.push([m*16+s,d]);
+ }else if(rit==='dembow'){
+  for(let m=0;m<maten;m++)for(const [s,d] of [[0,3],[3,1],[8,3],[11,1],[14,2]])stappen.push([m*16+s,d]);
+ }else if(rit==='zouk'){
+  for(let m=0;m<maten;m++)for(const [s,d] of [[0,3],[4,2],[7,3],[10,2],[13,3]])stappen.push([m*16+s,d]);
+ }else if(rit==='kawina'){
+  for(let m=0;m<maten;m++)for(const [s,d] of [[0,2],[2,1],[4,2],[8,2],[10,1],[12,2],[14,1]])stappen.push([m*16+s,d]);
+ }else if(rit==='soca'){
+  for(let m=0;m<maten;m++)for(const [s,d] of [[0,2],[4,2],[8,2],[12,2]])stappen.push([m*16+s,d]);
+  for(let m=1;m<maten;m+=2)stappen.push([m*16+14,1],[m*16+15,1]);
+ }else if(rit==='donder'){ // halve-tijd, enorme lange noten
+  for(let m=0;m<maten;m+=2)stappen.push([m*16,26+Math.floor(Math.random()*6)]);
+ }
+ stappen.sort((a,b)=>a[0]-b[0]);
+ /* noten: toonladder-graad per maat + octaaf-sprongen + glide */
+ const L=JSON.parse(localStorage.getItem('g2b_bas_smaak')||'{}');
+ const notes=stappen.map(([s,d])=>{
+  const m=Math.floor(s/16);
+  let deg=degPerMaat(m);
+  if(Math.random()<.3)deg+=R([7,-7,2,-2]); // vijfden/secunden
+  let p=lp(deg);
+  if(p>47)p-=12;
+  if(g.glide&&Math.random()<.3)p+=R([12,-5,7]);
+  return{p:p,s:s,d:d,v:70+Math.floor(Math.random()*30)};
+ });
+ /* octaaf-sprong smaak */
+ if(L.oct)for(const n of notes)if(Math.random()<.18&&n.p+12<=48)n.p+=12;
+ notes.sort((a,b)=>a.s-b.s);
+ /* glide-flags: legato naar volgende noot */
+ for(let i=0;i<notes.length-1;i++){
+  const n=notes[i];
+  if(g.glide&&Math.abs(notes[i+1].p-n.p)>=5&&notes[i+1].s<=n.s+n.d+1)n.glide=notes[i+1].p-n.p;
+  if(g.id==='drill'&&n.d>=4&&Math.random()<.5)n.glide=R([12,-12,7]);
+ }
+ if(g.id==='donder')notes.forEach(n=>n.glide=-2); // signature langzaam dalend
+ S.notes=notes;
+ S.kicks=kickStappen(g,maten).map(s=>({s:s}));
+ smaakBewaar({oct:1});
+}
+function kickStappen(g,maten){
+ const out=[];
+ for(let m=0;m<maten;m++){
+  const b=m*16;
+  switch(g.rit){
+   case 'follow': out.push(b,b+R([6,7]),b+10);break; // trap/drill kick
+   case 'kbbb':   for(const s of [0,4,8,12])out.push(b+s);break;
+   case 'beats':  for(const s of [0,4,8,12])out.push(b+s);break;
+   case 'offbeat':for(const s of [0,4,8,12])out.push(b+s);break;
+   case 'dnb':    out.push(b,b+10);break;
+   case 'riddim': out.push(b,b+8);break;
+   case 'logdrum':out.push(b,b+8);break;
+   case 'dembow': out.push(b,b+3,b+8,b+11);break;
+   case 'zouk':   out.push(b,b+8);break;
+   case 'kawina': out.push(b,b+6,b+8,b+14);break;
+   case 'soca':   for(const s of [0,4,8,12])out.push(b+s);break;
+   case 'donder': out.push(b);break;
+   default:       for(const s of [0,4,8,12])out.push(b+s);
+  }
+ }
+ return out;
+}
+function smaakBewaar(x){localStorage.setItem('g2b_bas_smaak',JSON.stringify(x))}
+
+/* ================= DSP: stemmen (allemaal mono-renders naar Float32Array) ================= */
+function envAdsr(N,sr,atk,rel){const e=new Float32Array(N);const a=Math.max(1,Math.floor(atk*sr)),r=Math.max(1,Math.floor(rel*sr));
+ for(let i=0;i<N;i++){let v=i<a?i/a:(i>N-r?Math.max(0,(N-i)/r):1);e[i]=v}return e}
+function renderStem(type,f,dur,sr,detune){
+ const N=Math.max(64,Math.floor(dur*sr)),y=new Float32Array(N),T=1/sr;
+ const PI2=Math.PI*2;
+ if(type==='sub'){
+  for(let i=0;i<N;i++){const t=i*T;
+   let s=Math.sin(PI2*f*t)+0.28*Math.sin(PI2*f*2*t)+0.08*Math.sin(PI2*f*3*t);
+   y[i]=Math.tanh(s*1.15)}
+ }else if(type==='a808'){
+  let ph=0;
+  for(let i=0;i<N;i++){const t=i*T;
+   const ft=f*(1+1.8*Math.exp(-t/0.013)); // pitch-punch 15-30ms
+   ph+=PI2*ft*T;
+   let s=Math.sin(ph)+0.18*Math.sin(ph*2);
+   y[i]=Math.tanh(s*1.22)}
+ }else if(type==='reese'){
+  const dt=detune||.0016,K=Math.min(220,Math.floor(sr*0.45/f),Math.max(4,Math.floor(6000/f))); // bandlimit ~6k: geen aliasing
+  for(let i=0;i<N;i++){const t=i*T;
+   let s=0;
+   for(let k=1;k<=K;k++){s+=(Math.sin(PI2*k*f*(1+dt)*t)+Math.sin(PI2*k*f*(1-dt)*t))/k}
+   y[i]=s*0.28} // 2 saws ±~14 cents
+ }else if(type==='kickbass'){
+  let ph=0;
+  for(let i=0;i<N;i++){const t=i*T;
+   const ft=f*(1+2.2*Math.exp(-t/0.006));
+   ph+=PI2*ft*T;
+   let s=Math.sin(ph)+0.35*Math.sin(ph*3)*Math.exp(-t/0.02);
+   y[i]=Math.tanh(s*1.5)}
+ }else if(type==='fm'){
+  const ratio=1.42,Imax=4.5;
+  let phc=0,phm=0;
+  for(let i=0;i<N;i++){const t=i*T;
+   phm+=PI2*f*ratio*T;
+   const I=Imax*(0.25+0.75*Math.exp(-t/0.09));
+   phc+=PI2*f*T;
+   let s=Math.sin(phc+I*Math.sin(phm));
+   s-=0.45*s; /* EQ-dip illusie rond 400Hz: haal body omlaag via lichte shaping */
+   y[i]=Math.tanh(s*2.2)*0.9}
+ }else if(type==='logdrum'){
+  let ph=0;
+  for(let i=0;i<N;i++){const t=i*T;
+   const ft=f*Math.pow(2,(12/12)*Math.exp(-t/0.025)); // +12st → 0 in ~25ms
+   ph+=PI2*ft*T;
+   let s=Math.sin(ph)+0.3*Math.sin(ph*2)*Math.exp(-t/0.05);
+   if(t<0.02)s+=0.5*Math.sin(PI2*1400*t)*Math.exp(-t/0.004); // wood click
+   y[i]=Math.tanh(s*1.3)}
+ }else if(type==='pluck'){
+  for(let i=0;i<N;i++){const t=i*T;
+   let s=Math.sin(PI2*f*t)+0.5*Math.sin(PI2*f*2*t)*Math.exp(-t/0.06)+0.2*Math.sin(PI2*f*3*t)*Math.exp(-t/0.03);
+   y[i]=Math.tanh(s*1.2)}
+ }else if(type==='donder'){
+  let ph=0,ph2=0;
+  for(let i=0;i<N;i++){const t=i*T,u=t/dur;
+   const ft=f*Math.pow(2,-2*u/12); // -2st over de noot: dalende donder
+   ph+=PI2*ft*T;ph2+=PI2*ft*0.5*T;
+   const wob=1+0.16*Math.sin(PI2*0.9*t);
+   let s=(Math.sin(ph)+0.6*Math.sin(ph2))*wob;
+   y[i]=Math.tanh(s*1.4)}
+ }
+ return y;
+}
+/* pitch-detectie eigen one-shots: genormaliseerde autocorrelatie 40-220 Hz */
+function pitchOf(x,sr){
+ /* meet de STABIELE grondtoon: sla de eerste 40ms over (pitch-drop/klik) */
+ const off=Math.min(Math.floor(.04*sr),Math.floor(x.length*.3));
+ const xx=x.subarray(off);
+ let e=0;for(let i=0;i<xx.length;i++)e+=xx[i]*xx[i];
+ if(e<1e-4)return 55;
+ const lo=Math.floor(sr/220),hi=Math.min(Math.floor(sr/40),xx.length-2);
+ let best=0,bestLag=0;
+ for(let lag=lo;lag<=hi;lag++){let c=0;const m=xx.length-lag;
+  for(let i=0;i<m;i+=4)c+=xx[i]*xx[i+lag];
+  c/=m; // genormaliseerd op overlap-lengte
+  if(c>best){best=c;bestLag=lag}}
+ return bestLag?sr/bestLag:55}
+function midiOf(f){return Math.round(69+12*Math.log2(f/440))}
+async function laadShots(files){
+ const ac=S.ctx||(S.ctx=new (window.AudioContext||window.webkitAudioContext)());
+ let n=0;
+ for(const f of files){if(!/\.(wav|mp3|ogg|flac)$/i.test(f.name))continue;
+  try{const ab=await f.arrayBuffer(),buf=await ac.decodeAudioData(ab);
+   const f0=pitchOf(buf.getChannelData(0),buf.sampleRate);
+   SHOTS.push({naam:f.name.replace(/\.\w+$/,''),buf:buf,f0:f0,midi:midiOf(f0)});n++}catch(e){}}
+ st('📁 '+n+' shots geladen — wijs toe: K=kick · S=sub · G=grit (klik = aan/uit)');shotsUI()}
+function shotsUI(){
+ $('shotRow').style.display=SHOTS.length?'flex':'none';
+ $('shotInfo').textContent=SHOTS.length+' eigen shots — wijs een laag toe (synth blijft altijd beschikbaar):';
+ $('shots').innerHTML=SHOTS.map((s,i)=>`<div class="shot"><b>${s.naam}</b> ${NOOT[s.midi%12]}${Math.floor(s.midi/12)-1} <span class="hint">${Math.round(s.f0)}Hz</span>
+  <button class="mini ${SHOTLAAG.kick===i?'on':''}" data-i="${i}" data-l="kick">K</button>
+  <button class="mini ${SHOTLAAG.sub===i?'on':''}" data-i="${i}" data-l="sub">S</button>
+  <button class="mini ${SHOTLAAG.grit===i?'on':''}" data-i="${i}" data-l="grit">G</button></div>`).join('');
+ document.querySelectorAll('.shot .mini').forEach(b=>b.onclick=()=>{
+  const i=+b.dataset.i,l=b.dataset.l;
+  SHOTLAAG[l]=SHOTLAAG[l]===i?null:i;shotsUI();renderPreview()})}
+/* shot → stem op toonhoogte f (rate-shift, lineair geïnterpoleerd) */
+function shotVoix(shot,f,dur,sr){
+ const rate=f/shot.f0,src=shot.buf.getChannelData(0),srcSr=shot.buf.sampleRate;
+ const N=Math.floor(dur*sr),y=new Float32Array(N);
+ let pos=0;const step=rate*srcSr/sr;
+ for(let i=0;i<N;i++){const j=Math.floor(pos);if(j>=src.length-1)break;
+  const u=pos-j;y[i]=src[j]*(1-u)+src[j+1]*u;pos+=step}
+ return y}
+function shotMono(shot){ // shot → mono Float32Array (gemiddelde van kanalen)
+ const b=shot.buf,L=b.getChannelData(0),Rr=b.numberOfChannels>1?b.getChannelData(1):L;
+ const y=new Float32Array(L.length);for(let i=0;i<L.length;i++)y[i]=(L[i]+Rr[i])*.5;return y}
+
+/* kick-stem (synth, genre-lengte) */
+function renderKick(dur,sr,len){
+ const N=Math.max(64,Math.floor(dur*sr)),y=new Float32Array(N),T=1/sr,PI2=Math.PI*2;
+ let ph=0;
+ for(let i=0;i<N;i++){const t=i*T;
+  const ft=140*Math.exp(-t/0.028)+42;
+  ph+=PI2*ft*T;
+  let s=Math.sin(ph);
+  if(t<0.006)s+=0.22*Math.sin(PI2*3800*t)*Math.exp(-t/0.0018); // zachte klik
+  y[i]=s*Math.exp(-t/Math.max(.02,len*.55))}
+ return y;
+}
+/* one-pole filters */
+function lop(x,fc,sr){const a=1-Math.exp(-2*Math.PI*fc/sr),y=new Float32Array(x.length);let m=0;
+ for(let i=0;i<x.length;i++){m+=a*(x[i]-m);y[i]=m}return y}
+function hip(x,fc,sr){const y=new Float32Array(x.length),l=lop(x,fc,sr);
+ for(let i=0;i<x.length;i++)y[i]=x[i]-l[i];return y}
+/* saturatie voor grit-laag */
+function sat(x,dr){const y=new Float32Array(x.length);for(let i=0;i<x.length;i++)y[i]=Math.tanh(x[i]*dr)*0.85;return y}
+
+/* ================= RENDER (3-laags, met fase-check + sidechain + soft-clip) ================= */
+function renderLoop(){
+ const g=genre(),bpm=+$('bpm').value,sw=+$('swing').value/100;
+ const sd=60/bpm/4,tot16=+$('maten').value*16,dur=tot16*sd+0.7,sr=44100;
+ const basType=$('bastype').value||g.bas;
+ const kick=new Float32Array(Math.ceil(dur*sr));
+ const sub=new Float32Array(kick.length);
+ const gritL=new Float32Array(kick.length),gritR=new Float32Array(kick.length);
+ const swOff=i=>(i%2===1)?sw*sd*0.6:0; /* swing: oneven 16e's later */
+ const atk=S.sound.subAtk!=null?S.sound.subAtk:g.subAtk;
+ const drive=S.sound.drive!=null?S.sound.drive:(basType==='reese'?1.3:basType==='fm'?1.2:1.0);
+ /* kick-laag: eigen shot of synth */
+ let kStem;
+ if(SHOTLAAG.kick!=null&&SHOTS[SHOTLAAG.kick])kStem=shotMono(SHOTS[SHOTLAAG.kick]);
+ else kStem=renderKick(0.5,sr,S.sound.klen!=null?S.sound.klen:g.kick.len);
+ const kHP=hip(kStem,S.sound.khpf!=null?S.sound.khpf:g.kick.hpf,sr);
+ for(const k of S.kicks){const st=Math.floor((k.s*sd+swOff(k.s))*sr);
+  for(let i=0;i<kHP.length&&st+i<kick.length;i++)kick[st+i]+=kHP[i]*0.95}
+ /* sub + grit lagen */
+ const gritOn=!S.sound.gritOff;
+ for(const n of S.notes){
+  const f=mf(n.p);
+  const nd=n.d*sd+0.06;
+  let stem;
+  if(SHOTLAAG.sub!=null&&SHOTS[SHOTLAAG.sub])stem=shotVoix(SHOTS[SHOTLAAG.sub],f,nd,sr);
+  else stem=renderStem(basType,f,nd,sr,basType==='reese'?(S.sound.det||.0016):undefined);
+  const e=envAdsr(stem.length,sr,atk,Math.min(.09,nd*.25));
+  let v=stem.map((s,i)=>s*e[i]*(n.v/100));
+  if(n.glide){ // portamento: crossfade het note-einde naar een stem op de doeltoon
+   const gN=Math.min(stem.length,Math.floor(.12*sr));
+   const tStem=renderStem(basType,mf(n.p+n.glide),.15,sr,basType==='reese'?S.sound.det:undefined);
+   for(let i=0;i<gN;i++){const u=i/gN,j=stem.length-gN+i;
+    v[j]=v[j]*(1-u)+(tStem[i]||0)*u*(n.v/100)}
+  }
+  const st=Math.floor((n.s*sd+swOff(n.s))*sr);
+  const lo=lop(v,145,sr); // sub-deel: mono, LPF ~120-150
+  choke(st); // monofone choke-group: vorige noot afkappen met 5ms fade
+  for(let i=0;i<lo.length&&st+i<sub.length;i++)sub[st+i]+=lo[i]*0.9;
+  if(gritOn){
+   let gsrc=v;
+   if(SHOTLAAG.grit!=null&&SHOTS[SHOTLAAG.grit])gsrc=shotVoix(SHOTS[SHOTLAAG.grit],f,nd,sr).map((s,i)=>s*e[i]*(n.v/100));
+   const hi=lop(lop(sat(hip(gsrc,170,sr),drive),2500,sr),2500,sr); // grit: HPF 150-200 + drive + 2×LPF 2.5k
+   for(let i=0;i<hi.length&&st+i<gritL.length;i++){
+    const sp=basType==='reese'?Math.sin(i*0.00021)*0.5:0; // lichte beweging voor reese
+    gritL[st+i]+=hi[i]*(0.11+sp);gritR[st+i]+=hi[i]*(0.11-sp)}
+  }
+ }
+ /* monofone choke: 5ms zero-crossing-achtige fade vlak vóór de nieuwe noot */
+ function choke(pos){
+  const M=Math.min(pos,Math.floor(.005*sr));
+  for(let i=0;i<M;i++){const u=1-i/M;
+   sub[pos-1-i]*=u;gritL[pos-1-i]*=u;gritR[pos-1-i]*=u}
+ }
+ /* FASE-CHECK: kick vs sub op de eerste samenval (eerste 20ms) — invert sub als dat luider is */
+ let t0=null;
+ for(const k of S.kicks)for(const n of S.notes)if(n.s===k.s){t0=Math.floor(k.s*sd*sr);break}
+ if(t0!=null){const M=Math.min(kick.length-t0,Math.floor(.02*sr));
+  let p1=0,p2=0;
+  for(let i=0;i<M;i++){const a=kick[t0+i]+sub[t0+i],b=kick[t0+i]-sub[t0+i];
+   p1=Math.max(p1,Math.abs(a));p2=Math.max(p2,Math.abs(b))}
+  if(p2>p1){for(let i=0;i<sub.length;i++)sub[i]=-sub[i];S.faseFlip=true}else S.faseFlip=false}
+ /* SIDECHAIN: sub-duck op elke kick (snelle dip, ~30-90ms release) */
+ const duck=genre().id==='soca'?.30:.5, rel=genre().id==='soca'?.03:.09;
+ for(const k of S.kicks){const st=Math.floor(k.s*sd*sr),relN=Math.floor(rel*sr);
+  for(let i=0;i<relN&&st+i<sub.length;i++){const u=i/relN;
+   sub[st+i]*=1-duck*Math.pow(1-u,2.2)}}
+ /* BUS: mix + mono<120 (sub&kick zijn al mono) + tanh soft-clip glue */
+ const out=new Float32Array(kick.length*2);
+ for(let i=0;i<kick.length;i++){
+  out[i*2]=Math.tanh((kick[i]+sub[i]+gritL[i])*0.85)*0.92;
+  out[i*2+1]=Math.tanh((kick[i]+sub[i]+gritR[i])*0.85)*0.92}
+ return{buf:out,sr:sr,dur:dur,sd:sd};
+}
+const T2=1/44100;
+
+/* ================= WAV encode (24-bit stereo) ================= */
+function wavBytes(buf,sr){
+ const n=buf.length/2,ba=n*6,ab=new ArrayBuffer(44+ba),v=new DataView(ab);
+ const wS=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+ wS(0,'RIFF');v.setUint32(4,36+ba,true);wS(8,'WAVE');wS(12,'fmt ');
+ v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,2,true);
+ v.setUint32(24,sr,true);v.setUint32(28,sr*6,true);v.setUint16(32,6,true);v.setUint16(34,24,true);
+ wS(36,'data');v.setUint32(40,ba,true);
+ for(let i=0;i<n;i++){
+  for(let c=0;c<2;c++){let x=Math.max(-1,Math.min(1,buf[i*2+c]));let q=Math.round(x*8388607);
+   if(q<0)q+=16777216;const o=44+i*6+c*3;
+   v.setUint8(o,q&255);v.setUint8(o+1,(q>>8)&255);v.setUint8(o+2,(q>>16)&255)}}
+ return ab;
+}
+/* ================= MIDI export (met pitch-bend glides) ================= */
+function midiBytes(){
+ const g=genre(),bpm=+$('bpm').value,TPQ=480,SPB=TPQ/4,maten=+$('maten').value;
+ const vlq=x=>{const b=[x&127];while(x>>=7)b.unshift((x&127)|128);return b};
+ const chunk=(id,d)=>[...id.split('').map(c=>c.charCodeAt(0)),(d.length>>>24)&255,(d.length>>16)&255,(d.length>>8)&255,d.length&255,...d];
+ const us=Math.round(60e6/bpm);
+ const hdr=[0,255,81,3,(us>>16)&255,(us>>8)&255,us&255,0,255,88,4,4,2,24,8,0,255,47,0];
+ const trks=[chunk('MTrk',hdr)];
+ /* track 1: kick GM 36 op ch10 (kanaal 9) */
+ const kev=[];for(const k of S.kicks){kev.push({t:k.s*SPB,b:[0x99,36,100]});kev.push({t:k.s*SPB+20,b:[0x89,36,0]})}
+ /* track 2: bas op ch1 met bend-range ±12 (RPN) + glide-bends */
+ const bev=[{t:0,b:[0xB0,101,0]},{t:0,b:[0xB0,100,0]},{t:0,b:[0xB0,6,12]},{t:0,b:[0xB0,38,0]}];
+ S.notes.forEach((n,i)=>{
+  const st=n.s*SPB,en=(n.s+n.d)*SPB;
+  if(n.glide){ // glide: note buigt op het eind omhoog/omlaag naar de volgende toon
+   bev.push({t:st,b:[0x90,n.p,n.v]});
+   const bendEnd=clamp(Math.round(8192+(8191*n.glide)/12),0,16383);
+   bev.push({t:st+1,b:[0xE0,0,64]});
+   const ramp=6,span=Math.min(120,Math.max(2,(en-st)-4));
+   for(let r=1;r<=ramp;r++){const bend=Math.round(8192+(bendEnd-8192)*r/ramp);
+    bev.push({t:en-2-span+Math.floor(span*r/ramp),b:[0xE0,bend&127,(bend>>7)&127]})}
+   bev.push({t:en-1,b:[0x80,n.p,0]});
+   bev.push({t:en,b:[0xE0,0,64]}); // reset midden
+  }else{
+   bev.push({t:st,b:[0x90,n.p,n.v]});
+   bev.push({t:Math.max(st+1,en-1),b:[0x80,n.p,0]});
+  }
+ });
+ const mkTrk=(name,ev)=>{
+  ev.sort((a,b)=>a.t-b.t||(a.b[0]&0xf0)-(b.b[0]&0xf0));
+  const tn=[...name].map(c=>c.charCodeAt(0)&127),d=[0,255,3,tn.length,...tn];
+  let lt=0;for(const e of ev){d.push(...vlq(Math.max(0,e.t-lt)),...e.b);lt=e.t}
+  d.push(0,255,47,0);return chunk('MTrk',d)};
+ trks.push(mkTrk('G2B KICK',kev),mkTrk('G2B BAS',bev));
+ const mh=chunk('MThd',[0,1,0,trks.length,(TPQ>>8)&255,TPQ&255]);
+ return new Uint8Array([...mh,...[].concat(...trks)]);
+}
+function dl(blob,fn){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fn;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000);st('⬇ '+fn+' gedownload — sleep hem in je DAW')}
+function naam(ext){const g=genre();return `G2B-DONDER-${g.n.split(' ')[0].toUpperCase()}-${NOOT[+$('key').value]}min-${$('bpm').value}bpm.${ext}`}
+
+/* ================= UI ================= */
+function st(t){$('status').textContent=t}
+function uiInit(){
+ $('genre').innerHTML=GENRES.map((g,i)=>`<option value="${i}">${g.n} (${g.bpm})</option>`).join('');
+ $('bastype').innerHTML='<option value="">— auto (genre-standaard) —</option>'+BAS_TYPES.map(([k,n])=>`<option value="${k}">${n}</option>`).join('');
+ $('key').innerHTML=NOOT.map((n,i)=>`<option value="${i}">${n} mineur</option>`).join('');
+ $('key').value=0;
+ $('genre').onchange=()=>{const g=genre();$('bpm').value=g.bpm;$('swing').value=Math.round(g.sw*100);$('swv').textContent=Math.round(g.sw*100)+'%';dobbelAlles()};
+ $('bastype').onchange=dobbelAlles;
+ $('swing').oninput=()=>{$('swv').textContent=$('swing').value+'%'};
+ $('bAlles').onclick=dobbelAlles;
+ $('bLijn').onclick=()=>{maakLijn();teken();st('🎲 nieuwe baslijn — kicks & sounds bleven staan');renderPreview()};
+ $('bSnd').onclick=()=>{dobbelSound();teken();renderPreview()};
+ $('bPlay').onclick=luisterToggle;
+ $('bWav').onclick=()=>{st('⏳ renderen…');setTimeout(()=>{const r=renderLoop();dl(new Blob([wavBytes(r.buf,r.sr)],{type:'audio/wav'}),naam('wav'))},30)};
+ $('bMid').onclick=()=>dl(new Blob([midiBytes()],{type:'audio/midi'}),naam('mid'));
+ $('bMap').onclick=()=>{if(window.showDirectoryPicker){$('dir').click()}else $('fi').click()};
+ $('dir').onchange=e=>laadShots([...e.target.files]);
+ $('fi').onchange=e=>laadShots([...e.target.files]);
+ document.querySelectorAll('.lock').forEach((b,i)=>b.onclick=()=>{S.locks[i]=!S.locks[i];laagUI()});
+ $('genre').value=0;
+ /* toetsenbord */
+ const keys=[['C',36],['D',38],['D#',39],['E',40],['F',41],['G',43],['A',45],['C2',48]];
+ $('keys').innerHTML=keys.map(([nm,p],i)=>`<div class="key" data-p="${p}" data-k="${'asdfghjk'[i]}">${'ASDFGHJK'[i]}<small>${nm}</small></div>`).join('');
+ document.querySelectorAll('.key').forEach(k=>{k.onmousedown=()=>speelNoot(+k.dataset.p,k);
+  k.ontouchstart=e=>{e.preventDefault();speelNoot(+k.dataset.p,k)}});
+ window.addEventListener('keydown',e=>{const i='asdfghjk'.indexOf(e.key.toLowerCase());
+  if(i>=0){const k=document.querySelectorAll('.key')[i];if(k)speelNoot(+k.dataset.p,k)}});
+}
+function laagUI(){
+ const g=genre(),snd=S.sound;
+ const l=document.querySelectorAll('.laag');
+ const kickNm=(SHOTLAAG.kick!=null&&SHOTS[SHOTLAAG.kick])?('🎯 '+SHOTS[SHOTLAAG.kick].naam):(S.locks[0]?'G2B kick (🔒 vast)':'G2B kick '+Math.round((snd.klen!=null?snd.klen:g.kick.len)*1000)+'ms');
+ l[0].classList.toggle('on',S.locks[0]);l[0].querySelector('.lock').textContent=S.locks[0]?'🔓 vast':'🔒 lock';
+ l[0].querySelector('.nm').textContent=kickNm;
+ l[0].querySelector('.pr').innerHTML=`HPF ${Math.round(snd.khpf!=null?snd.khpf:g.kick.hpf)} Hz · ${S.kicks.length} kicks · lengte ${Math.round((snd.klen!=null?snd.klen:g.kick.len)*1000)} ms`;
+ const bt=$('bastype').value||g.bas;
+ l[1].classList.toggle('on',S.locks[1]);l[1].querySelector('.lock').textContent=S.locks[1]?'🔓 vast':'🔒 lock';
+ const subNm=(SHOTLAAG.sub!=null&&SHOTS[SHOTLAAG.sub])?('🎯 '+SHOTS[SHOTLAAG.sub].naam):BAS_TYPES.find(b=>b[0]===bt)[1].split('—')[0].trim();
+ l[1].querySelector('.nm').textContent=subNm+(S.locks[1]?' 🔒':'');
+ l[1].querySelector('.pr').innerHTML=`attack ${Math.round((snd.subAtk!=null?snd.subAtk:g.subAtk)*1000)} ms · 100% mono onder 120 Hz · sidechain op kick${S.faseFlip?' · fase geïnverteerd ✓':''}`;
+ l[2].classList.toggle('on',S.locks[2]);l[2].querySelector('.lock').textContent=S.locks[2]?'🔓 vast':'🔒 lock';
+ l[2].querySelector('.nm').textContent=S.sound.gritOff?'uit':((SHOTLAAG.grit!=null&&SHOTS[SHOTLAAG.grit])?('🎯 '+SHOTS[SHOTLAAG.grit].naam):('grit · drive '+(S.sound.drive!=null?S.sound.drive.toFixed(1):'auto')));
+ l[2].querySelector('.pr').innerHTML=S.sound.gritOff?'mid-laag uit — alleen kick + sub':'HPF 170 Hz + saturatie · stereo alleen boven 120 Hz · hoort op kleine speakers';
+}
+function dobbelSound(){
+ const g=genre(),L=S.locks;
+ if(!L[0]){S.sound.klen=g.kick.len*(0.8+Math.random()*0.5);S.sound.khpf=g.kick.hpf*(0.85+Math.random()*0.35)}
+ if(!L[1]){S.sound.subAtk=g.subAtk*(0.6+Math.random()*1.1);S.sound.det=.0008+Math.random()*.003}
+ if(!L[2]){S.sound.drive=0.6+Math.random()*0.6;S.sound.gritOff=Math.random()<.15}
+ laagUI();st('🎲 sound gedobbeld — baslijn bleef staan');
+}
+function dobbelAlles(){
+ dobbelSound(); // locked lagen behouden hun params (dobbelSound checkt locks)
+ if(!S.locks[1]||!S.notes.length)maakLijn();
+ teken();laagUI();renderPreview();
+}
+function teken(){
+ const cv=$('roll'),c=cv.getContext('2d'),tot=+$('maten').value*16;
+ cv.width=cv.clientWidth*2;cv.height=240;
+ const W=cv.width,H=cv.height;
+ c.fillStyle='#050b16';c.fillRect(0,0,W,H);
+ c.strokeStyle='#1b2a44';for(let m=0;m<=+$('maten').value;m++){const x=m*16/tot*W;c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke()}
+ const ps=S.notes.map(n=>n.p);if(!ps.length)return;
+ const lo=Math.min(...ps)-2,hi=Math.max(...ps)+2;
+ c.fillStyle='#fb923c';
+ for(const k of S.kicks){const x=k.s/tot*W;c.fillRect(x,H-10,Math.max(3,W/tot*.6),8)}
+ for(const n of S.notes){
+  const x=n.s/tot*W,w=Math.max(4,n.d/tot*W-2),y=(1-(n.p-lo)/(hi-lo))*(H-24);
+  c.fillStyle=n.glide?'#f472b6':'#22c55e';c.fillRect(x,y,w,7);
+  if(n.glide){const y2=(1-(n.p+n.glide-lo)/(hi-lo))*(H-24);
+   c.strokeStyle='#f472b6';c.beginPath();c.moveTo(x+w,y+3);c.lineTo(x+w+8,y2+3);c.stroke()}
+ }
+}
+function renderPreview(){
+ st('⏳ preview renderen…');
+ setTimeout(()=>{
+  const r=renderLoop();
+  const blob=new Blob([wavBytes(r.buf,r.sr)],{type:'audio/wav'});
+  if(S.wavUrl)URL.revokeObjectURL(S.wavUrl);
+  S.wavUrl=URL.createObjectURL(blob);
+  $('au').src=S.wavUrl;
+  st('✓ klaar — ▶ luister · 🎲 opnieuw · ⬇ exporteer .wav / .mid'+(S.faseFlip?' · fase-fix toegepast':''));
+ },30);
+}
+function luisterToggle(){const a=$('au');if(a.paused){a.play();$('bPlay').textContent='■ STOP'}else{a.pause();$('bPlay').textContent='▶ LUISTER'}}
+$('au').onpause=()=>{$('bPlay').textContent='▶ LUISTER'};
+/* speel één noot live (kleine offline-render → direct afspelen) */
+async function speelNoot(p,el){
+ el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),140);
+ const g=genre(),basType=$('bastype').value||g.bas,sr=22050,f=mf(p),dur=.7;
+ let stem;
+ if(SHOTLAAG.sub!=null&&SHOTS[SHOTLAAG.sub])stem=shotVoix(SHOTS[SHOTLAAG.sub],f,dur,sr);
+ else stem=renderStem(basType,f,dur,sr,basType==='reese'?.0016:undefined);
+ const e=envAdsr(stem.length,sr,(S.sound.subAtk!=null?S.sound.subAtk:g.subAtk),Math.min(.09,dur*.25));
+ let v=stem.map((s,i)=>s*e[i]*0.85);
+ const lo=lop(v,145,sr),hi=S.sound.gritOff?new Float32Array(v.length):sat(hip(v,170,sr),S.sound.drive||1.2);
+ const ac=S.ctx||(S.ctx=new (window.AudioContext||window.webkitAudioContext)());
+ const buf=ac.createBuffer(2,v.length,sr),L=buf.getChannelData(0),Rr=buf.getChannelData(1);
+ for(let i=0;i<v.length;i++){L[i]=Math.tanh((lo[i]+hi[i]*0.62)*0.9);Rr[i]=Math.tanh((lo[i]+hi[i]*0.62)*0.9)}
+ const src=ac.createBufferSource();src.buffer=buf;src.connect(ac.destination);src.start();
+}
+uiInit();dobbelAlles();
+</script>
+</body>
+</html>
