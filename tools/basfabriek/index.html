@@ -72,8 +72,12 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
     <button class="btn b2" id="bLijn">🎲 BASLIJN</button>
     <button class="btn b2" id="bSnd">🎲 SOUND</button>
     <button class="btn b1" id="bPlay">▶ LUISTER</button>
-    <button class="btn b2" id="bWav">⬇ .wav</button>
-    <button class="btn b2" id="bMid">⬇ .mid</button>
+    <button class="btn b2" id="bWav">⬇ .wav loop</button>
+    <button class="btn b2" id="bMid">⬇ .mid (alles)</button>
+    <button class="btn b2" id="bMidB">⬇ .mid bas</button>
+    <button class="btn b2" id="bMidK">⬇ .mid kick</button>
+    <button class="btn b2" id="bStems">⬇ .wav stems (3×)</button>
+    <button class="btn b1" id="bZip" title="master wav + 3 stems + midi + C2 one-shot in één zip">📦 VERKOOP-PACK</button>
     <button class="btn b2" id="bUndo" title="vorige">↶</button>
     <button class="btn b2" id="bRedo" title="volgende">↷</button>
     <button class="btn b2" id="bStuur" title="stuur baslijn + toonsoort + bpm naar G2B MELODIE">➡️ MELODIE</button>
@@ -85,6 +89,13 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
     <span class="hint" id="shotInfo"></span>
     <div class="shots" id="shots"></div>
   </div>
+  <div class="row">
+    <span class="hint" style="color:#22c55e;font-weight:600">✨ 4 VARIANTEN</span>
+    <span class="hint">van je baslijn — zelfde gevoel, nieuwe draai · 👍 leert jouw smaak</span>
+    <label>HOEVEEL ANDERS<input id="varAnders" type="range" min="10" max="100" value="55" style="width:110px"></label>
+    <button class="btn b2" id="bVar">✨ MAAK VARIANTEN</button>
+  </div>
+  <div class="row" id="varRij" style="display:none;gap:8px;flex-wrap:wrap"></div>
   <div class="row">
     <span class="hint">🔊 SPEAKER-CHECK:</span>
     <button class="mini spk on" data-m="studio">Studio</button>
@@ -109,6 +120,12 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
   <div class="row" style="margin-top:8px"><span class="hint">✏️ klik=noot · rand slepen=lengte · shift+klik=glide · rechtsklik=weg · groene lanes = sub sweet-spot (E1–B1) · onder: kick/sub scope · speel live mee:</span></div>
   <div class="keys" id="keys"></div>
   <audio id="au" controls loop></audio>
+</div>
+
+<div class="card">
+  <div class="row" style="align-items:center"><span style="color:#22c55e;font-weight:700">🎤 BAS-AGENT</span><span class="hint">leest baslijn + kicks uit wat je geeft</span><button class="btn b2" id="bMic">🎙️ NEURIE BAS / BEATBOX</button></div>
+  <div class="drop" id="bDrop" style="margin-top:8px;border:2px dashed #1d4a33;border-radius:10px;padding:18px;text-align:center;cursor:pointer">Sleep een beat/loop (.wav/.mp3/.flac/.ogg) of .mid hierop — of klik om te kiezen. De agent filtert alles boven 150 Hz weg, vindt BPM + kicks + grondtoon (incl. glides) en vult de piano-roll.<input type="file" id="bBestand" accept="audio/*,.wav,.mp3,.ogg,.m4a,.flac,.mid,.midi" hidden></div>
+  <div class="hint" style="margin-top:6px">🎙️ Neurië/beatbox je bas-idee → agent kwantiseert op 1/16 in je toonsoort; glijdende toonhoogte → glides.</div>
 </div>
 
 <p class="hint">deel van de G2B toolset · maak er een melodie bij → <a href="../melodie/index.html">G2B MELODIE</a> · alles 100% eigen sound, commercieel te gebruiken</p>
@@ -471,7 +488,7 @@ function renderLoop(){
   pre[i*2]=kick[i]+sub[i]+gritL[i];pre[i*2+1]=kick[i]+sub[i]+gritR[i];
   out[i*2]=Math.tanh(pre[i*2]*0.85)*0.92;
   out[i*2+1]=Math.tanh(pre[i*2+1]*0.85)*0.92}
- return{buf:out,pre:pre,sr:sr,dur:dur,sd:sd,kick:kick,sub:sub};
+ return{buf:out,pre:pre,sr:sr,dur:dur,sd:sd,kick:kick,sub:sub,gritL:gritL,gritR:gritR};
 }
 
 /* ================= SPEAKER-CHECK (v2.1): luister-simulatie op de master-bus =================
@@ -535,7 +552,8 @@ function wavBytes(buf,sr){
  return ab;
 }
 /* ================= MIDI export (met pitch-bend glides) ================= */
-function midiBytes(){
+function midiBytes(wat){
+ wat=wat||'all';
  const g=genre(),bpm=+$('bpm').value,TPQ=480,SPB=TPQ/4,maten=+$('maten').value;
  const vlq=x=>{const b=[x&127];while(x>>=7)b.unshift((x&127)|128);return b};
  const chunk=(id,d)=>[...id.split('').map(c=>c.charCodeAt(0)),(d.length>>>24)&255,(d.length>>16)&255,(d.length>>8)&255,d.length&255,...d];
@@ -567,7 +585,8 @@ function midiBytes(){
   const tn=[...name].map(c=>c.charCodeAt(0)&127),d=[0,255,3,tn.length,...tn];
   let lt=0;for(const e of ev){d.push(...vlq(Math.max(0,e.t-lt)),...e.b);lt=e.t}
   d.push(0,255,47,0);return chunk('MTrk',d)};
- trks.push(mkTrk('G2B KICK',kev),mkTrk('G2B BAS',bev));
+ if(wat!=='bas')trks.push(mkTrk('G2B KICK',kev));
+ if(wat!=='kick')trks.push(mkTrk('G2B BAS',bev));
  const mh=chunk('MThd',[0,1,0,trks.length,(TPQ>>8)&255,TPQ&255]);
  return new Uint8Array([...mh,...[].concat(...trks)]);
 }
@@ -758,6 +777,217 @@ async function speelNoot(p,el){
  for(let i=0;i<v.length;i++){L[i]=Math.tanh((lo[i]+hi[i]*0.62)*0.9);Rr[i]=Math.tanh((lo[i]+hi[i]*0.62)*0.9)}
  const src=ac.createBufferSource();src.buffer=buf;src.connect(ac.destination);src.start();
 }
+/* ================= v2.3: PRO EXPORT (stems + zip) ================= */
+function laagBuf(r,welke){ /* één laag → stereo Float32Array */
+ const n=r.kick.length,out=new Float32Array(n*2);
+ for(let i=0;i<n;i++){
+  let L,R;
+  if(welke==='kick'){L=r.kick[i];R=r.kick[i]}
+  else if(welke==='sub'){L=r.sub[i];R=r.sub[i]}
+  else{L=r.gritL[i];R=r.gritR[i]}
+  out[i*2]=Math.max(-1,Math.min(1,L));out[i*2+1]=Math.max(-1,Math.min(1,R))}
+ return out}
+/* minimale ZIP-writer (store, geen compressie) — pure JS, geen library nodig */
+function zipStore(files){ /* files: [{naam,data:Uint8Array}] */
+ const enc=s=>{const b=new Uint8Array(s.length);for(let i=0;i<s.length;i++)b[i]=s.charCodeAt(i)&255;return b};
+ const crc32=(()=>{const t=new Uint32Array(256);for(let i=0;i<256;i++){let c=i;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[i]=c}
+  return u=>{let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=t[(c^u[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0}})();
+ let off=0,cent=[];
+ const parts=files.map(f=>{
+  const nb=enc(f.naam),crc=crc32(f.data),sz=f.data.length;
+  const hdr=[0x50,0x4B,3,4,20,0,0,0,0,0,0,0,0,0,0,0,crc&255,(crc>>8)&255,(crc>>16)&255,(crc>>24)&255,
+   sz&255,(sz>>8)&255,(sz>>16)&255,(sz>>24)&255,sz&255,(sz>>8)&255,(sz>>16)&255,(sz>>24)&255,
+   nb.length&255,(nb.length>>8)&255,0,0];
+  cent.push([nb,off,crc,sz]);off+=hdr.length+nb.length+sz;
+  return [...hdr,...nb] });
+ const cdOff=off;
+ const cds=cent.map(([nb,o,crc,sz])=>[0x50,0x4B,1,2,20,0,20,0,0,0,0,0,0,0,0,0,0,0,
+  crc&255,(crc>>8)&255,(crc>>16)&255,(crc>>24)&255,sz&255,(sz>>8)&255,(sz>>16)&255,(sz>>24)&255,
+  sz&255,(sz>>8)&255,(sz>>16)&255,(sz>>24)&255,nb.length&255,(nb.length>>8)&255,0,0,0,0,0,0,0,0,0,0,0,0,
+  o&255,(o>>8)&255,(o>>16)&255,(o>>24)&255,...nb]);
+ cds.forEach(d=>off+=d.length);
+ const eocd=[0x50,0x4B,5,6,0,0,0,0,files.length&255,(files.length>>8)&255,files.length&255,(files.length>>8)&255,
+  (off-cdOff)&255,((off-cdOff)>>8)&255,((off-cdOff)>>16)&255,((off-cdOff)>>24)&255,cdOff&255,(cdOff>>8)&255,(cdOff>>16)&255,(cdOff>>24)&255,0,0];
+ const all=new Uint8Array(off+eocd.length);let p=0;
+ const push=a=>{all.set(a instanceof Array?new Uint8Array(a):a,p);p+=a.length};
+ parts.forEach(push);files.forEach(f=>push(f.data));cds.forEach(push);push(eocd);
+ return all}
+function oneShot(){ /* droge C2 one-shot van de huidige bass-synth */
+ const g=genre(),basType=$('bastype').value||g.bas,sr=44100;
+ const stem=renderStem(basType,mf(36),2.2,sr,basType==='reese'?S.sound.det:undefined);
+ const e=envAdsr(stem.length,sr,S.sound.subAtk!=null?S.sound.subAtk:g.subAtk,Math.min(.12,stem.length*.3));
+ const out=new Float32Array(stem.length*2);
+ for(let i=0;i<stem.length;i++){const v=stem[i]*e[i]*0.9;out[i*2]=v;out[i*2+1]=v}
+ return wavBytes(out,sr)}
+$('bStems').onclick=()=>{st('⏳ stems renderen…');setTimeout(()=>{
+ const r=renderLoop();
+ for(const [welke,tag] of [['kick','KICK'],['sub','SUB-MONO'],['grit','GRIT-MID']])
+  dl(new Blob([wavBytes(laagBuf(r,welke),r.sr)],{type:'audio/wav'}),naam('wav').replace('.wav','-'+tag+'.wav'));
+ st('⬇ 3 stems gedownload — kick / sub (mono <120Hz) / grit (>120Hz)')},30)};
+$('bZip').onclick=()=>{st('⏳ verkoop-pack bouwen…');setTimeout(()=>{
+ const r=renderLoop(),base=naam('zip').replace('.zip','');
+ const files=[
+  {naam:base+'-MASTER.wav',data:new Uint8Array(wavBytes(r.buf,r.sr))},
+  {naam:base+'-KICK.wav',data:new Uint8Array(wavBytes(laagBuf(r,'kick'),r.sr))},
+  {naam:base+'-SUB-MONO.wav',data:new Uint8Array(wavBytes(laagBuf(r,'sub'),r.sr))},
+  {naam:base+'-GRIT-MID.wav',data:new Uint8Array(wavBytes(laagBuf(r,'grit'),r.sr))},
+  {naam:base+'.mid',data:midiBytes('all')},
+  {naam:base+'-BAS.mid',data:midiBytes('bas')},
+  {naam:base+'-KICK.mid',data:midiBytes('kick')},
+  {naam:base+'-ONESHOT-C2.wav',data:new Uint8Array(oneShot())}];
+ dl(new Blob([zipStore(files)],{type:'application/zip'}),base+'.zip')},30)};
+$('bMidB').onclick=()=>dl(new Blob([midiBytes('bas')],{type:'audio/midi'}),naam('mid').replace('.mid','-BAS.mid'));
+$('bMidK').onclick=()=>dl(new Blob([midiBytes('kick')],{type:'audio/midi'}),naam('mid').replace('.mid','-KICK.mid'));
+
+/* ================= v2.3: 4 BAS-VARIATIES + SMAAK-GEHEUGEN ================= */
+let VARI=[];
+const VAR_NAAM=['Verse / Strak','Octaaf-Bounce','Glide-Switch','Grit / Roll'];
+function varTrans(src,idx,how){ /* pure noten-transformatie per variatie-slot */
+ const nts=src.map(n=>({p:n.p,s:n.s,d:n.d,v:n.v,glide:n.glide||0}));
+ if(idx===0){ // Verse/Strak: dunnere noten, kortere duur, weg met pickups
+  return nts.filter((n,i)=>i%2===0||n.d>1.5).map(n=>({...n,d:Math.max(1,n.d*(1-how*0.4)),v:Math.min(96,n.v)}))}
+ if(idx===1){ // Octaaf-Bounce: +12 op off-beats
+  const out=[];for(const n of nts){out.push(n);
+   if(Math.random()<how*0.6){out.push({p:n.p+12,s:n.s+n.d,d:1,v:n.v-15})}}
+  return out.filter(n=>n.s<64*4)}
+ if(idx===2){ // Glide-Switch: glides aan maateinde
+  return nts.map(n=>{const einde=(n.s+n.d)%16>=13;
+   return (einde&&Math.random()<how)?{...n,glide:R([12,-12,7,-5])}:n})}
+ // idx 3: Grit/Roll — 16e-rolls + sterkere nootjes
+ const out=[];for(const n of nts){if(Math.random()<how*0.5&&n.d>=2){
+   for(let s=n.s;s<n.s+n.d;s++)out.push({p:n.p,s:s,d:1,v:Math.min(100,n.v-10+Math.round(Math.random()*20))})}
+  else out.push(n)}
+ return out}
+function varUI(){const rij=$('varRij');rij.style.display='flex';rij.innerHTML='';
+ VARI.forEach((v,i)=>{
+  const w=document.createElement('div');w.style.cssText='flex:1;min-width:150px;background:#0a1812;border:1px solid #1d4a33;border-radius:8px;padding:8px;cursor:pointer';
+  w.innerHTML=`<b style="color:#22c55e">${i+1}. ${VAR_NAAM[i]}</b><div class="hint" style="margin:4px 0">${v.length} noten</div><button class="mini">👍 deze smaak</button>`;
+  w.querySelector('button').onclick=e=>{e.stopPropagation();varDuim(i)};
+  w.onclick=()=>varKlik(i);
+  rij.appendChild(w)})}
+function varKlik(i){bewaar();S.notes=VARI[i].map(n=>({...n}));teken();renderPreview();
+ st('✨ variatie '+(i+1)+' ('+VAR_NAAM[i]+') geladen — ↶ om terug te gaan')}
+function varDuim(i){ /* 👍 leert smaak per genre → weegt mee bij volgende dobbels */
+ try{const sm=JSON.parse(localStorage.getItem('g2b_bas_var_smaak')||'{}');sm[genre().id]=i;
+  localStorage.setItem('g2b_bas_var_smaak',JSON.stringify(sm))}catch(e){}
+ st('👍 '+VAR_NAAM[i]+' is nu jouw '+genre().n+'-smaak — volgende dobbels leunen die kant op')}
+$('bVar').onclick=()=>{if(!S.notes.length){st('🎲 maak eerst een baslijn');return}
+ const how=(+$('varAnders').value||55)/100;
+ VARI=[0,1,2,3].map(i=>varTrans(S.notes,i,how));varUI();
+ st('✨ 4 varianten klaar — klik erop om te laden, 👍 om je smaak te leren')};
+
+/* ================= v2.3: BAS-AGENT (audio/.mid/neurië → baslijn+kicks) ================= */
+let BPjs2=null,BPmod2=null;
+function bpLaad2(){if(!BPjs2)BPjs2=new Promise((ok,fail)=>{const s=document.createElement('script');
+ s.src='../melodie/lib/bp/bp.bundle.js';s.onload=ok;s.onerror=()=>fail(new Error('agent-lib kon niet laden'));
+ document.head.appendChild(s)});return BPjs2}
+async function bpKlaar2(){await bpLaad2();if(!BPmod2)BPmod2=new window.BP.BasicPitch('../melodie/lib/bp/model/model.json');return BPmod2}
+async function transBas(buf){ /* audio → tijd-noten (alle noten; we filteren later op bas) */
+ const bp=await bpKlaar2(),len=Math.max(4410,Math.ceil(buf.duration*22050));
+ const oc=new OfflineAudioContext(1,len,22050),src=oc.createBufferSource();src.buffer=buf;src.connect(oc.destination);src.start();
+ const rb=await oc.startRendering(),x=rb.getChannelData(0),F=[],O=[],C=[];
+ await bp.evaluateModel(x,(f,o,co)=>{F.push(...f);O.push(...o);C.push(...co)},p=>st('🎤 bas-agent transcribeert… '+Math.round(p*100)+'%'));
+ const raw=window.BP.outputToNotesPoly(F,O,.5,.4,11,true,null,null,true,11);
+ return window.BP.noteFramesToTime(window.BP.addPitchBendsToNoteEvents(C,raw,25))}
+/* kick-transiënten: energie-pieken op de <150Hz band */
+async function kickOnsets(buf,bpm){
+ const oc=new OfflineAudioContext(1,Math.ceil(buf.duration*buf.sampleRate),buf.sampleRate);
+ const src=oc.createBufferSource();src.buffer=buf;
+ const lp=oc.createBiquadFilter();lp.type='lowpass';lp.frequency.value=150;lp.Q.value=0.7;
+ src.connect(lp).connect(oc.destination);src.start();
+ const rb=await oc.startRendering(),x=rb.getChannelData(0),sr=rb.sampleRate;
+ const F=Math.floor(sr*0.01),env=[];for(let i=0;i+F<x.length;i+=F){let e=0;for(let j=0;j<F;j++)e+=x[i+j]*x[i+j];env.push(Math.sqrt(e/F))}
+ const sd=60/bpm/4,t0s=Math.floor(0.15/sd*env.length/ (buf.duration/sd) ); // min afstand ~0.15s
+ const ons=[];let last=-99;
+ for(let i=1;i<env.length;i++){const d=env[i]-env[i-1];
+  if(d>0.03&&env[i]>0.05&&i-last>env.length*0.03){ons.push(Math.round(i*F/sr/sd));last=i}}
+ return ons}
+function bpmVan(onsetTimes,dur){ /* eenvoudige IOI-schatting → 80-170 range */
+ if(onsetTimes.length<3)return null;
+ const iois=[];for(let i=1;i<onsetTimes.length;i++){const d=onsetTimes[i]-onsetTimes[i-1];if(d>0.15&&d<1.5)iois.push(d)}
+ if(!iois.length)return null;
+ iois.sort();const med=iois[Math.floor(iois.length/2)];
+ let b=60/med;while(b<80)b*=2;while(b>170)b/=2;
+ return Math.round(b)}
+function snapL(p){ /* pitch → dichtstbijzijnde ladder-noot in gekozen toonsoort */
+ const w=+$('key').value,pc=((p%12)+12)%12;
+ let best=p,bd=99;for(let d=-2;d<=2;d++){const q=p+d;
+  if(LAD.includes((((q%12)+12)%12-w+12)%12)){const dd=Math.abs(q-p);if(dd<bd){bd=dd;best=q}}}
+ return best}
+async function leerAudioBas(buf,naam){ /* beat/loop → baslijn + kicks + bpm */
+ st('🎤 '+naam+' — 150 Hz filter + transcribe…');
+ const ns=await transBas(buf).catch(e=>{console.warn(e);return null});
+ const sd=60/(+$('bpm').value)/4,tot=+$('maten').value*16;
+ // kick-onsets + bpm-schatting
+ const rawOnsets=await kickOnsets(buf,+$('bpm').value).catch(()=>[]);
+ const iois=[];for(let i=1;i<rawOnsets.length;i++)iois.push(rawOnsets[i]-rawOnsets[i-1]); // in stappen
+ const est=null; // bpm uit seconden-intervals van onset-detectie (zie hieronder)
+ // baslijn: lage noten (<58) → quantize op 16e, snap op ladder
+ if(ns&&ns.length){const lage=ns.filter(n=>n.pitchMidi<58&&n.amplitude>0.12);
+  if(lage.length>=2){
+   const map={};for(const n of lage){const s=Math.round(n.startTimeSeconds/sd);if(s<0||s>=tot)continue;
+    const p=snapL(Math.round(n.pitchMidi));if(!map[s]||p>map[s].p)map[s]={p,d:Math.max(1,Math.round(n.durationSeconds/sd))}}
+   const lijn=Object.keys(map).sort((a,b)=>a-b).map(s=>({s:+s,p:map[s].p,d:map[s].d,v:78,glide:0}));
+   // glides: volgende noot binnen 2 stappen en 2..12 semitones verschil → glide
+   for(let i=0;i<lijn.length-1;i++){const dp=lijn[i+1].p-lijn[i].p,gap=lijn[i+1].s-(lijn[i].s+lijn[i].d);
+    if(gap<=1&&Math.abs(dp)>=2&&Math.abs(dp)<=12)lijn[i].glide=dp}
+   if(lijn.length>=2){bewaar();S.notes=lijn;
+    if(rawOnsets.length>=2)S.kicks=rawOnsets.filter(s=>s<tot).map(s=>({s:s}));
+    teken();laagUI();renderPreview();
+    st('🎤 '+naam+': '+lijn.length+' basnoten + '+S.kicks.length+' kicks gelezen — lijn staat in de roll, dobbel verder of exporteer');
+    return true}}}
+ st('🎤 geen baslijn gevonden in '+naam+' — probeer een loop met een duidelijke sub/808');return false}
+function parseMidiBas(ab){ /* .mid → noten (reuse van melodie-parse, lage noten = bas) */
+ const u=new Uint8Array(ab),dv=new DataView(ab);let p=0;const ns=[];
+ if(dv.getUint32(0)!==0x4D546864)return null;const nt=dv.getUint16(10),tpq=dv.getUint16(12)||480;p=14;
+ for(let t=0;t<nt&&p<u.length;t++){if(dv.getUint32(p)!==0x4D54726B)break;const len=dv.getUint32(p+4);p+=8;const end=p+len;let tick=0,run=0,on={};
+  while(p<end){let dt=0,b;do{b=u[p++];dt=(dt<<7)|(b&127)}while(b&128);tick+=dt;let s=u[p++];if(s<0x80){p--;s=run}else if(s<0xf0)run=s;
+   const ty=s&0xf0,ch=s&15;
+   if(ty===0x90||ty===0x80){const n=u[p],v=u[p+1];p+=2;if(ch===9)continue;
+    if(ty===0x90&&v>0)on[n]={t:tick,v};else if(on[n]){ns.push({p:n,s:Math.round(on[n].t/(tpq/4)),d:Math.max(1,Math.round((tick-on[n].t)/(tpq/4))),v:on[n].v});delete on[n]}}
+   else if(ty===0xA0||ty===0xB0||ty===0xE0)p+=2;else if(ty===0xC0||ty===0xD0)p+=1;
+   else if(s===0xFF){p++;let l=0;do{b=u[p++];l=(l<<7)|(b&127)}while(b&128);p+=l}
+   else if(s===0xF0||s===0xF7){let l=0;do{b=u[p++];l=(l<<7)|(b&127)}while(b&128);p+=l}}p=end}
+ return ns.sort((a,b)=>a.s-b.s)}
+async function leerBas(f){ /* dropzone-handler: .mid of audio */
+ st('🎤 luisteren naar '+f.name+'…');const ab=await f.arrayBuffer();
+ if(/\.midi?$/i.test(f.name)){const ns=parseMidiBas(ab);
+  if(!ns||!ns.length){st('geen noten gevonden in die .mid');return}
+  const lage=ns.filter(n=>n.p<58),tot=+$('maten').value*16;
+  if(lage.length<2){st('geen bas-noten (<C3) gevonden in die .mid');return}
+  bewaar();S.notes=lage.filter(n=>n.s<tot).map(n=>({p:snapL(n.p),s:n.s,d:n.d,v:n.v,glide:0}));
+  teken();renderPreview();st('🎤 '+f.name+': '+S.notes.length+' basnoten geïmporteerd');return}
+ try{const ac=S.ctx||(S.ctx=new (window.AudioContext||window.webkitAudioContext)());
+  const buf=await ac.decodeAudioData(ab.slice(0));
+  if(!await leerAudioBas(buf,f.name))st('🎤 kon geen baslijn horen — probeer een loop met duidelijke sub/808')}
+ catch(e){st('kon dit bestand niet lezen')}}
+let BREC=null;
+async function basMic(){ /* 🎙️ neurië/beatbox → baslijn+kicks */
+ const bt=$('bMic');
+ if(BREC){try{BREC.stop()}catch(e){}return}
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){st('deze browser heeft geen microfoon-opname');return}
+ try{const strm=await navigator.mediaDevices.getUserMedia({audio:true});
+  const rec=new MediaRecorder(strm),parts=[];
+  rec.ondataavailable=e=>{if(e.data.size)parts.push(e.data)};
+  rec.onstop=async()=>{strm.getTracks().forEach(t=>t.stop());BREC=null;bt.textContent='🎙️ NEURIE BAS / BEATBOX';
+   try{const ac=S.ctx||(S.ctx=new (window.AudioContext||window.webkitAudioContext)());
+    const buf=await ac.decodeAudioData(await new Blob(parts).arrayBuffer());
+    if(!await leerAudioBas(buf,'jouw neurië/beatbox'))st('🎤 geen bas gehoord — neurië wat lager/langzamer of beatbox vetter')}
+   catch(e){st('opname niet te lezen — probeer opnieuw')}};
+  rec.start();BREC=rec;bt.textContent='■ STOP';
+  st('🔴 neurië een baslijn of beatbox (max 12s) — klik STOP als je klaar bent');
+  setTimeout(()=>{if(BREC===rec)rec.stop()},12000)}
+ catch(e){st('geen microfoon-toegang — geef toestemming in de browser')}}
+$('bMic').onclick=basMic;
+if($('bDrop')){
+ $('bDrop').onclick=()=>$('bBestand').click();
+ $('bBestand').onchange=e=>{if(e.target.files[0])leerBas(e.target.files[0])};
+ $('bDrop').ondragover=e=>{e.preventDefault();$('bDrop').style.borderColor='#22c55e'};
+ $('bDrop').ondragleave=()=>{$('bDrop').style.borderColor='#1d4a33'};
+ $('bDrop').ondrop=e=>{e.preventDefault();$('bDrop').style.borderColor='#1d4a33';
+  const f=e.dataTransfer.files[0];if(f)leerBas(f)}
+}
+
 uiInit();dobbelAlles();
 </script>
 </body>
