@@ -41,7 +41,7 @@ canvas{width:100%;display:block;border-radius:8px;background:#050b08}
   <option value="minp">mineur-penta (veilig)</option></select></label>
  <label>BPM<input type="number" id="bpm" min="60" max="190" value="140"></label>
  <label>Maten<select id="maten"><option>4</option><option selected>8</option><option>16</option></select></label>
- <label>Klank melodie<select id="klank"><option value="pluck">Pluck</option><option value="keys">Keys</option><option value="bel">Bel</option><option value="lead">Lead</option><option value="fluit">Fluit</option><option value="smp:piano|56">🎹 Piano</option><option value="smp:marimba|56">🎹 Marimba</option><option value="smp:har_kH_C4|60">🎹 Harp</option><option value="smp:sax_kSx50_1|50">🎹 Sax</option></select></label>
+ <label style="flex-direction:row;align-items:center" title="auto-laag: octaaf boven + onder voor een volle sound">2X LAAG <input type="checkbox" id="laag"></label><label>Klank melodie<select id="klank"><option value="pluck">Pluck</option><option value="keys">Keys</option><option value="bel">Bel</option><option value="lead">Lead</option><option value="fluit">Fluit</option><option value="orgel">Orgel</option><option value="pad">Pad</option><option value="klok">Klok</option><option value="smp:piano|56">🎹 Piano</option><option value="smp:marimba|56">🎹 Marimba</option><option value="smp:har_kH_C4|60">🎹 Harp</option><option value="smp:sax_kSx50_1|50">🎹 Sax</option></select></label>
  <label>Arpeggio<select id="arp"><option value="uit">uit</option><option value="1/16">1/16</option><option value="1/8">1/8</option><option value="triplet">triplet</option></select></label>
  <label>Voicing<select id="voicing"><option value="auto">auto</option><option value="dicht">dicht</option><option value="open">open</option><option value="omkering">omkering</option></select></label>
  <span style="flex:1"></span>
@@ -65,6 +65,14 @@ canvas{width:100%;display:block;border-radius:8px;background:#050b08}
   <label style="flex-direction:row;align-items:center">warmte <input type="range" id="warmte" min="0" max="100" value="15"></label>
  </div>
  <canvas id="roll" width="1060" height="300"></canvas>
+ <div class="rij" style="margin-top:6px;align-items:center;flex-wrap:wrap;gap:6px"><span class="hint" style="margin:0">speel live mee:</span>
+  <button class="klein" id="mStap" title="stap-inspelen: elke toets schrijft een melodie-noot en schuift op">⌨ STAP-IN</button>
+  <span class="hint" style="margin:0">STAP</span><select id="mstapv"><option value="8">1/2</option><option value="4">1/4</option><option value="2" selected>1/8</option><option value="1">1/16</option><option value="0.5">1/32</option></select>
+  <button class="klein" id="mRust" title="sla een rust-stap over (ruimte tussen noten)">␣ RUST</button>
+  <button class="klein" id="mWis" title="maak de melodie-roll leeg — dan speel je zelf alles in">⟲ WIS MELODIE</button>
+ </div>
+ <div class="keys" id="mkeys" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"></div>
+ <div class="hint" style="margin-top:2px">⌨ STAP-IN: toetsen A S D F G H J K = ladder-tonen · altijd in je toonsoort · ↶ herstelt</div>
  <div id="sporen" style="margin-top:8px"></div>
  <div id="st"></div>
 </div>
@@ -137,7 +145,7 @@ const st=t=>$('st').textContent=t;
 for(const k in GENRES)$('genre').add(new Option(GENRES[k].n,k));
 NOOT.forEach((n,i)=>$('wortel').add(new Option(n,i)));
 $('wortel').value=9; // A
-$('genre').onchange=()=>{const g=GENRES[$('genre').value];$('bpm').value=g.bpm;$('ladder').value=g.lad;nieuw()};
+$('genre').onchange=()=>{const g=GENRES[$('genre').value];$('bpm').value=g.bpm;$('ladder').value=g.lad;nieuw();melsToetsen()};
 function sporenUI(){$('sporen').innerHTML=SPOREN.map(([k,n])=>`<div class="spoor">
  <span class="naam"><span class="dot" style="background:${KLR[k]}"></span>${n}</span>
  <button class="klein ${AAN[k]?'aan':''}" data-aan="${k}">${AAN[k]?'AAN':'UIT'}</button>
@@ -149,7 +157,11 @@ function sporenUI(){$('sporen').innerHTML=SPOREN.map(([k,n])=>`<div class="spoor
  document.querySelectorAll('[data-dob]').forEach(b=>b.onclick=()=>{if(LOCK[b.dataset.dob]){st('🔒 '+b.dataset.dob+' staat op slot — klik 🔓 om los te maken');return}
   bewaar();maak(b.dataset.dob);teken();sporenUI();
   st(b.dataset.dob==='akk'?'🎲 akk opnieuw — bas-nootjes volgden mee, melodie & bas-ritme bleven staan':'🎲 '+b.dataset.dob+' opnieuw — de rest bleef staan')});
- document.querySelectorAll('[data-lok]').forEach(b=>b.onclick=()=>{LOCK[b.dataset.lok]^=1;sporenUI();st(LOCK[b.dataset.lok]?'🔒 '+b.dataset.lok+' vast — 🎲 NIEUW laat dit spoor staan':'🔓 '+b.dataset.lok+' dobbelt weer mee')});
+ document.querySelectorAll('[data-lok]').forEach(b=>b.onclick=()=>{LOCK[b.dataset.lok]^=1;sporenUI();
+ if(LOCK[b.dataset.lok]){try{const dna=JSON.parse(localStorage.getItem('g2b_dna')||'[]');
+  dna.unshift({g:$('genre').value,w:+$('wortel').value,lad:$('ladder').value,bpm:+$('bpm').value,klank:$('klank').value,spoor:b.dataset.lok,noten:S[b.dataset.lok].length,ts:Date.now()});
+  localStorage.setItem('g2b_dna',JSON.stringify(dna.slice(0,24)))}catch(e){}}
+ st(LOCK[b.dataset.lok]?'🔒 '+b.dataset.lok+' vast — 🎲 NIEUW laat dit spoor staan · stijl opgeslagen in MIJN-DNA':'🔓 '+b.dataset.lok+' dobbelt weer mee')});
  document.querySelectorAll('[data-vol]').forEach(r=>r.oninput=()=>VOL[r.dataset.vol]=r.value/100)}
 
 /* ---------- MUZIEK-ENGINE ---------- */
@@ -169,13 +181,18 @@ function maakAkk(c){const out=[];
  const rit=c.g.akk==='hold'?R([[[0,16]],[[0,16]],[[0,8],[8,8]],[[0,4],[8,8]]])
   :R([c.g.akk,c.g.akk,c.g.akk.filter((_,i)=>i%2===0),c.g.akk.concat([[15,1]])]);
  const vsel=$('voicing')?$('voicing').value:'auto';
+ const stemmen=(t,vt)=>t.map((ix,k)=>{let p=lp(c,ix,48);if(p>64)p-=12;if(vt===1&&k===0)p-=12;if(vt===2&&k===2&&p+12<=72)p+=12;return p});
+ const kandidaten=vsel==='auto'?[0,1,2]:vsel==='omkering'?[1]:vsel==='open'?[2]:vsel==='dicht'?[0,1]:[0];
+ let vorig=null; // auto voice-leading: kies per akkoord de voicing met de kleinste beweging
  PROG.forEach((gr,m)=>{
-  const t=akkTonen(c,gr),vt=vsel==='auto'?R([0,0,1,2]):vsel==='omkering'?1:vsel==='open'?2:vsel==='dicht'?R([0,1]):0; // voicing: 0=normaal, 1=omkering (grondtoon -12), 2=spreiding (top +12)
-  for(const[s,d]of rit)t.forEach((ix,k)=>{
-   let p=lp(c,ix,48);if(p>64)p-=12;
-   if(vt===1&&k===0)p-=12;
-   if(vt===2&&k===2&&p+12<=72)p+=12;
-   out.push({p,s:m*16+s,d:Math.min(d,16-s),v:k?70:82})})});
+  const t=akkTonen(c,gr);
+  let vt=kandidaten[0],tonen=stemmen(t,vt),best=1e9;
+  kandidaten.forEach(v2=>{const t2=stemmen(t,v2);const d=vorig?t2.reduce((a,p)=>a+Math.min(...vorig.map(q=>Math.abs(p-q))),0):0;
+   if(d<best){best=d;vt=v2;tonen=t2}});
+  vorig=tonen;
+  for(const[s,d]of rit)tonen.forEach((p,k)=>{
+   out.push({p,s:m*16+s,d:Math.min(d,16-s),v:k?70+R([0,6]):86+R([0,6])}); // grondtoon harder + micro-variatie (nooit robotisch)
+   if(k===0&&s===0)out.push({p:p-12,s:m*16+s,d:Math.min(d,16-s),v:64})})}); // warme octaaf-grondtoon eronder
  return out}
 function maakBas(c){const out=[];PROG.forEach((gr,m)=>{const rit=R([c.g.bas,c.g.bas,c.g.bas.filter((_,i)=>i%2===0),c.g.bas.concat([[15,1]])]);
  rit.forEach(([s,d],i)=>{let p=lp(c,gIdx(c,gr),36);if(p>47)p-=12;
@@ -214,10 +231,24 @@ function maak(wat){const c=cfg();if(!PROG||PROG.length!==c.maten||wat==='alles')
  return} // akk-dobbel: nieuwe akkoorden, bas-ritme blijft (nootjes volgen), melodie blijft
  if(wat==='alles'){if(!LOCK.akk)S.akk=maakAkk(c);if(!LOCK.bas)S.bas=maakBas(c);if(!LOCK.mel)S.mel=maakMel(c);return}
  if(wat==='bas'&&!LOCK.bas)S.bas=maakBas(c);
- if(wat==='mel'&&!LOCK.mel)S.mel=maakMel(c)}
-function bewaar(){hist=hist.slice(0,hi+1);hist.push(JSON.stringify({S,PROG}));if(hist.length>40)hist.shift();hi=hist.length-1;
+ if(wat==='mel'&&!LOCK.mel)S.mel=maakMel(c);
+ bewaar()} // post-state: undo/redo hebben altijd twee echte standen
+let M_STAPIN=false,M_STAPPOS=0;
+function speelMel(i){const c=cfg(),p=lp(c,i,60),tot=c.maten*16;
+ stem(ac(),MASTER,'mel',p,AC.currentTime+.02,.45,100,$('klank').value);
+ if(M_STAPIN){const stap=+$('mstapv').value;bewaar();
+  S.mel.push({p:p,s:M_STAPPOS,d:Math.min(4,stap)||.5,v:95});S.mel.sort((a,b)=>a.s-b.s);
+  M_STAPPOS=(M_STAPPOS+stap)%tot;bewaar();teken();sporenUI();st('⌨ melodie-noot op stap '+M_STAPPOS)}}
+function melsToetsen(){const c=cfg(),lab=c.lad.map((_,i)=>i);
+ $('mkeys').innerHTML=lab.concat([lab.length]).map(i=>{const p=lp(c,i,60);const nm=NOOT[p%12]+Math.floor(p/12-1);
+  return `<div class="key" data-i="${i}" style="flex:1;min-width:54px;padding:12px 4px;border-radius:9px;background:#0d1526;border:1px solid #1d4a33;color:#7ee2a8;font-weight:800;font-size:12px;cursor:pointer;text-align:center;user-select:none">${'ASDFGHJKL'[i]}<small style="display:block;font-weight:400;font-size:9px;color:#5b6d8a">${nm}</small></div>`}).join('');
+ document.querySelectorAll('#mkeys .key').forEach(k=>{k.onmousedown=()=>speelMel(+k.dataset.i);
+  k.ontouchstart=e=>{e.preventDefault();speelMel(+k.dataset.i)}})}
+let GEENSAVE=false;
+function bewaar(geenSave){const j=JSON.stringify({S,PROG});hist=hist.slice(0,hi+1);if(hist[hi]!==j){hist.push(j);if(hist.length>40)hist.shift();hi=hist.length-1}
+ if(geenSave||GEENSAVE)return;try{localStorage.setItem('g2b_melodie_state',JSON.stringify({S:S,PROG:PROG,w:$('wortel').value,lad:$('ladder').value,g:$('genre').value,bpm:$('bpm').value,maten:$('maten').value}))}catch(e){}}
+function herstel(j){const o=JSON.parse(hist[j]);S=o.S;PROG=o.PROG;teken();sporenUI();
  try{localStorage.setItem('g2b_melodie_state',JSON.stringify({S:S,PROG:PROG,w:$('wortel').value,lad:$('ladder').value,g:$('genre').value,bpm:$('bpm').value,maten:$('maten').value}))}catch(e){}}
-function herstel(j){const o=JSON.parse(hist[j]);S=o.S;PROG=o.PROG;teken();sporenUI()}
 function nieuw(){stopSpeel();maak('alles');bewaar();teken();sporenUI();vars=[];$('vars').innerHTML='';
  const c=cfg();st('🎲 nieuw: '+c.g.n+' in '+NOOT[c.w]+' '+$('ladder').selectedOptions[0].text.split(' ')[0]+' — druk ▶ SPEEL')}
 
@@ -273,15 +304,21 @@ function stem(ctx,dst,spoor,p,t,dur,v,klank){
   const[sf,p0]=klank.slice(4).split('|'),buf=SMPBUF[sf];
   if(!buf){laadSmp(sf);klank='pluck'} // eerste keer: laden + fallback, volgende render klinkt hij
   else{const src=ctx.createBufferSource();src.buffer=buf;src.playbackRate.value=f/hz(+p0);
-   src.connect(g);env(ctx,g,t,.005,.55*vel,Math.max(dur,.45),.45);
-   src.start(t);src.stop(t+Math.max(dur,.45)+buf.duration+.05);return}}
- const lpf=ctx.createBiquadFilter();lpf.type='lowpass';lpf.connect(g);
- const osc=(type,mul,gain,det)=>{const o=ctx.createOscillator(),og=ctx.createGain();o.type=type;o.frequency.value=f*mul;if(det)o.detune.value=det;og.gain.value=gain;o.connect(og);og.connect(lpf);o.start(t);o.stop(t+dur+.5)};
- if(klank==='pluck'){osc('sawtooth',1,.5,-6);osc('sawtooth',1,.5,6);lpf.frequency.setValueAtTime(5200,t);lpf.frequency.exponentialRampToValueAtTime(700,t+.25);env(ctx,g,t,.003,.32*vel,Math.min(dur,.35),.18)}
- else if(klank==='keys'){osc('sine',1,.8);osc('sine',2,.25);osc('triangle',3,.06);lpf.frequency.value=4000;env(ctx,g,t,.004,.42*vel,dur,.3)}
- else if(klank==='bel'){osc('sine',1,.7);osc('sine',2.76,.18);osc('sine',5.4,.06);lpf.frequency.value=6000;env(ctx,g,t,.002,.36*vel,Math.min(dur,.5),.6)}
- else if(klank==='lead'){osc('square',1,.35,-4);osc('sawtooth',1,.35,4);lpf.frequency.value=2600;lpf.Q.value=2;env(ctx,g,t,.01,.22*vel,dur,.12)}
- else{osc('sine',1,.8);osc('triangle',2,.08);lpf.frequency.value=3000;env(ctx,g,t,.05,.4*vel,dur,.15)}}
+   const speelSmp=(fm,gf)=>{const s2=ctx.createBufferSource();s2.buffer=buf;s2.playbackRate.value=fm/hz(+p0);const g2=ctx.createGain();g2.connect(g);s2.connect(g2);env(ctx,g2,t,.005,.55*vel*gf,Math.max(dur,.45),.45);s2.start(t);s2.stop(t+Math.max(dur,.45)+buf.duration+.05)};
+   const D7=Math.pow(2,7/1200);speelSmp(f,1);if($('laag')&&$('laag').checked){speelSmp(f*2,.3);speelSmp(f*D7,.24);speelSmp(f/D7,.22)}return}}
+ const LAAG=$('laag')&&$('laag').checked;
+ const speel=(fm,gf)=>{const lpf=ctx.createBiquadFilter();lpf.type='lowpass';lpf.connect(g);
+ const osc=(type,mul,gain,det)=>{const o=ctx.createOscillator(),og=ctx.createGain();o.type=type;o.frequency.value=fm*mul;if(det)o.detune.value=det;og.gain.value=gain*gf;o.connect(og);og.connect(lpf);o.start(t);o.stop(t+dur+.5)};
+ if(klank==='pluck'){osc('sawtooth',1,.5,-6);osc('sawtooth',1,.5,6);lpf.frequency.setValueAtTime(5200,t);lpf.frequency.exponentialRampToValueAtTime(700,t+.25);env(ctx,g,t,.003,.32*vel*gf,Math.min(dur,.35),.18)}
+ else if(klank==='keys'){osc('sine',1,.8);osc('sine',2,.25);osc('triangle',3,.06);lpf.frequency.value=4000;env(ctx,g,t,.004,.42*vel*gf,dur,.3)}
+ else if(klank==='bel'){osc('sine',1,.7);osc('sine',2.76,.18);osc('sine',5.4,.06);lpf.frequency.value=6000;env(ctx,g,t,.002,.36*vel*gf,Math.min(dur,.5),.6)}
+ else if(klank==='lead'){osc('square',1,.35,-4);osc('sawtooth',1,.35,4);lpf.frequency.value=2600;lpf.Q.value=2;env(ctx,g,t,.01,.22*vel*gf,dur,.12)}
+ else if(klank==='orgel'){osc('sine',1,.5);osc('sine',2,.22);osc('sine',4,.1);osc('sine',3,.06);lpf.frequency.value=3800;env(ctx,g,t,.03,.4*vel*gf,dur,.25)}
+ else if(klank==='pad'){[-6,6].forEach(dt=>{osc('sawtooth',1,.3,dt)});osc('sawtooth',.5,.2);lpf.frequency.value=1400;lpf.Q.value=.7;env(ctx,g,t,Math.min(.4,dur*.5),.3*vel*gf,dur,.6)}
+ else if(klank==='klok'){osc('sine',2,.5);osc('sine',4.7,.12);osc('sine',6.8,.06);lpf.frequency.value=7000;env(ctx,g,t,.001,.34*vel*gf,Math.min(dur,.4),.8)}
+ else{osc('sine',1,.8);osc('triangle',2,.08);lpf.frequency.value=3000;env(ctx,g,t,.05,.4*vel*gf,dur,.15)}};
+ const D7=Math.pow(2,7/1200); // v7 laag-model: fundament + octaaf (kracht) + ±7 cent micro-detune (breedte)
+ (LAAG?[[f,1],[f*2,.3],[f*D7,.24],[f/D7,.24]]:[[f,1]]).forEach(([fm,gf])=>speel(fm,gf))}
 
 /* ---------- BEST-OF instrumenten voor preview/wav-export ---------- */
 const SMPBUF={};
@@ -350,7 +387,7 @@ function variant(bron,cr){const c=cfg(),L=smaak(),ns=bron.map(n=>({...n}));
  uit.sort((a,b)=>a.s-b.s);
  for(let i=1;i<uit.length;i++)if(uit[i].s===uit[i-1].s)uit[i].dup=1;
  return uit.filter(n=>!n.dup)}
-function maakVars(){hoorStop();if(!S.mel.length)maak('alles');const cr=$('creat').value/100;vars=[0,1,2,3].map(()=>variant(S.mel,cr));
+function maakVars(){hoorStop();if(!S.mel.length){GEENSAVE=true;maak('mel');GEENSAVE=false}const cr=$('creat').value/100;vars=[0,1,2,3].map(()=>variant(S.mel,cr));
  $('vars').innerHTML=vars.map((v,i)=>`<div class="var"><canvas id="vc${i}" width="460" height="70"></canvas><div class="knp">
  <button class="klein" onclick="hoorVar(${i})">▶ hoor</button><button class="klein aan" onclick="gebruik(${i})">✓ gebruik</button>
  <button class="klein" onclick="duim(${i},1)" title="dit is mijn smaak">👍</button><button class="klein" onclick="duim(${i},0)">👎</button></div></div>`).join('');
@@ -518,17 +555,23 @@ dz.ondrop=e=>{e.preventDefault();dz.classList.remove('over');if(e.dataTransfer.f
 $('nieuw').onclick=nieuw;$('mic').onclick=mic;$('donder').onclick=laadDonder;
 ['hum','strum','ruimte','warmte'].forEach(id=>$(id).oninput=fxSet);
 $('arp').onchange=()=>{bereidSpelen();st('🎹 arpeggio: '+$('arp').value+' — druk ▶ SPEEL')};
-$('voicing').onchange=()=>{bewaar();S.akk=maakAkk(cfg());teken();st('🎹 voicing: '+$('voicing').value+' — akkoorden herschreven')};
+$('voicing').onchange=()=>{bewaar();S.akk=maakAkk(cfg());bewaar();teken();st('🎹 voicing: '+$('voicing').value+' — akkoorden herschreven')};
 $('speel').onclick=()=>speelt?stopSpeel():speel();
 $('loopk').onclick=()=>$('loopk').classList.toggle('aan');
 $('varknop').onclick=maakVars;
 $('undo').onclick=()=>{if(hi>0)herstel(--hi)};$('redo').onclick=()=>{if(hi<hist.length-1)herstel(++hi)};
-['wortel','ladder','maten'].forEach(id=>$(id).onchange=nieuw);
+['wortel','ladder','maten'].forEach(id=>$(id).onchange=()=>{nieuw();melsToetsen()});
+$('mStap').onclick=()=>{M_STAPIN=!M_STAPIN;M_STAPPOS=0;$('mStap').classList.toggle('aan',M_STAPIN);
+ st(M_STAPIN?'⌨ STAP-IN aan — elke toets schrijft een melodie-noot (stap '+$('mstapv').value+'e)':'⌨ STAP-IN uit')};
+$('mRust').onclick=()=>{const stap=+$('mstapv').value,tot=(+$('maten').value)*16;M_STAPPOS=(M_STAPPOS+stap)%tot;st('␣ rust — volgende noot op stap '+M_STAPPOS)};
+$('mWis').onclick=()=>{bewaar();S.mel=[];M_STAPPOS=0;bewaar();teken();sporenUI();st('⟲ melodie-roll leeg — ↶ brengt hem terug · speel zelf in met ⌨ STAP-IN')};
+melsToetsen();
 document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
- if(e.code==='Space'){e.preventDefault();speelt?stopSpeel():speel()}if(e.key==='n')nieuw()});
+ if(e.code==='Space'){e.preventDefault();speelt?stopSpeel():speel()}if(e.key==='n')nieuw();
+ const ki='asdfghjkl'.indexOf(e.key.toLowerCase());if(ki>=0)speelMel(ki)});
 $('genre').value='trap';$('bpm').value=140;$('ladder').value='min';
 (function(){try{const sv=JSON.parse(localStorage.getItem('g2b_melodie_state')||'null');
- if(sv&&sv.S&&sv.S.mel&&sv.S.mel.length){
+ if(sv&&sv.S&&sv.S.mel&&(sv.S.mel.length||sv.S.akk.length||sv.S.bas.length)){
   if(sv.g)$('genre').value=sv.g;if(sv.w)$('wortel').value=sv.w;if(sv.lad)$('ladder').value=sv.lad;
   if(sv.bpm)$('bpm').value=sv.bpm;if(sv.maten)$('maten').value=sv.maten;
   S=sv.S;PROG=sv.PROG;bewaar();teken();sporenUI();

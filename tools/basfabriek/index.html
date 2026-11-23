@@ -818,7 +818,13 @@ const PRESETS=[ /* vaste, veilige sound-presets (S.sound + bas-stijl) */
  ['DONK FM',{bas:'fm',sound:{subAtk:.01,drive:1.5}}],
  ['LOG WARM',{bas:'logdrum',sound:{subAtk:.045,drive:.8}}],
  ['DONDER MAX',{bas:'donder',sound:{subAtk:.06,drive:1.35,gritOff:false}}],
- ['STRAK 808',{bas:'a808',sound:{subAtk:.005,drive:1.1,klen:.045,khpf:120}}]];
+ ['STRAK 808',{bas:'a808',sound:{subAtk:.005,drive:1.1,klen:.045,khpf:120}}],
+ ['WARM ROND',{bas:'sub',sound:{subAtk:.05,drive:.75,klen:.12,khpf:50}}],
+ ['PUNCHY 808',{bas:'a808',sound:{subAtk:.008,drive:1.3,klen:.07,khpf:95}}],
+ ['REESE DONKER',{bas:'reese',sound:{subAtk:.03,drive:1.2,det:18}}],
+ ['GROWL FM',{bas:'fm',sound:{subAtk:.02,drive:1.35,det:10}}],
+ ['ZOUK PLUK',{bas:'pluck',sound:{subAtk:.012,drive:.9}}],
+ ['KICK DRIVE',{bas:'kickbass',sound:{subAtk:.006,drive:1.15,klen:.04,khpf:100}}]];
 async function speelNoot(p,el){
  if(el){el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),140)}
  const qMap={'1/2':8,'1/4':4,'1/8':2,'1/16':1,'1/32':.5},q=qMap[$('quant')&&$('quant').value]||1;
