@@ -819,6 +819,22 @@
     "koop": "https://buy.stripe.com/eVq9ATgnmber5fF8O95J637"
    },
    "id": "slaapverhalen-video-1"
+  },
+  {
+   "beschrijving": "Dezelfde 8 nieuwe slaapverhalen als Pack 2, maar als VIDEO: Keesje Konijn vertelt elk verhaal — zijn mond beweegt echt mee. 8 mp4's (1024×1024) à ±3,5 min met zachte stem en rustige muziek. Voor tablet/telefoon naast het bed.",
+   "cover": "media/slaapverhalen-video2-cover.png",
+   "serie": "slaapverhalen",
+   "nieuw": true,
+   "titel": "G2B Slaapverhalen VIDEO — Pack 2 (8 video's)",
+   "probeer": {
+    "prijs": "",
+    "koop": "media/slaapverhaal-video2-preview.mp4"
+   },
+   "videoboek": {
+    "prijs": "14,95",
+    "koop": "https://buy.stripe.com/8x2aEX1ssdmzbE38O95J638"
+   },
+   "id": "slaapverhalen-video-2"
   }
  ]
 }

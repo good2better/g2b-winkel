@@ -1,0 +1,39 @@
+{
+ "titel": "G2B SLAAPVERHALEN VIDEO — Pack 2",
+ "uitleg": "8 rustige Nederlandse slaapverhalen als video (mp4, 1024×1024), elk ±3,5 min: Keesje Konijn vertelt het verhaal — zijn mond beweegt mee — met zachte muziek eronder. Voor het slapengaan: tablet of telefoon naast het bed, volume zacht, scherm dimmen.",
+ "img": "media/slaapverhalen-video2-cover.png",
+ "bestanden": [
+  {
+   "naam": "01 Vinnie Vliegtuig en de wolk die wilde knuffelen (video)",
+   "bestand": "slaapverhaal-01.mp4"
+  },
+  {
+   "naam": "02 Fluffy en de sok die zoek was (video)",
+   "bestand": "slaapverhaal-02.mp4"
+  },
+  {
+   "naam": "03 Lila en het eerste slaapliedje (video)",
+   "bestand": "slaapverhaal-03.mp4"
+  },
+  {
+   "naam": "04 Bodhi en de kleine koala die niet wilde loslaten (video)",
+   "bestand": "slaapverhaal-04.mp4"
+  },
+  {
+   "naam": "05 Sterre en het kuikentje dat het maanlicht wilde vasthouden (video)",
+   "bestand": "slaapverhaal-05.mp4"
+  },
+  {
+   "naam": "06 Dana en de boot die droomde van de haven (video)",
+   "bestand": "slaapverhaal-06.mp4"
+  },
+  {
+   "naam": "07 Het zwarte paard en het eerste ochtendlicht (video)",
+   "bestand": "slaapverhaal-07.mp4"
+  },
+  {
+   "naam": "08 De zeven vrienden en de tent van dekens (video)",
+   "bestand": "slaapverhaal-08.mp4"
+  }
+ ]
+}
