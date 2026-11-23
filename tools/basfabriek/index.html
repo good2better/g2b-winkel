@@ -104,8 +104,9 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
 </div>
 
 <div class="card">
-  <canvas id="roll"></canvas>
-  <div class="row" style="margin-top:8px"><span class="hint">▶ loop-preview · 🔲 = baslijn, ▬ = kick · speel live mee:</span></div>
+  <canvas id="roll" style="cursor:crosshair"></canvas>
+  <canvas id="scope" style="width:100%;height:70px;display:block;margin-top:6px"></canvas>
+  <div class="row" style="margin-top:8px"><span class="hint">✏️ klik=noot · rand slepen=lengte · shift+klik=glide · rechtsklik=weg · groene lanes = sub sweet-spot (E1–B1) · onder: kick/sub scope · speel live mee:</span></div>
   <div class="keys" id="keys"></div>
   <audio id="au" controls loop></audio>
 </div>
@@ -470,7 +471,7 @@ function renderLoop(){
   pre[i*2]=kick[i]+sub[i]+gritL[i];pre[i*2+1]=kick[i]+sub[i]+gritR[i];
   out[i*2]=Math.tanh(pre[i*2]*0.85)*0.92;
   out[i*2+1]=Math.tanh(pre[i*2+1]*0.85)*0.92}
- return{buf:out,pre:pre,sr:sr,dur:dur,sd:sd};
+ return{buf:out,pre:pre,sr:sr,dur:dur,sd:sd,kick:kick,sub:sub};
 }
 
 /* ================= SPEAKER-CHECK (v2.1): luister-simulatie op de master-bus =================
@@ -646,10 +647,16 @@ function teken(){ /* melodie-stijl roll: toon-lanes met ladder-kleuring + kick-r
  cv.width=cv.clientWidth*2;cv.height=280;
  const W=cv.width,H=cv.height,sw=W/tot;
  const ps=S.notes.map(n=>n.p);
- const lo=ps.length?Math.min(...ps)-2:30,hi=ps.length?Math.max(...ps)+3:50,rh=(H-16)/(hi-lo+1);
+ const lo=Math.min(24,ps.length?Math.min(...ps)-2:24),hi=Math.max(60,ps.length?Math.max(...ps)+3:60); /* C1–C4 focus */
+ const rh=(H-16)/(hi-lo+1);
+ S.rollGeo={lo:lo,hi:hi,rh:rh,sw:sw,tot:tot,maten:maten};
  c.fillStyle='#050b16';c.fillRect(0,0,W,H);
  for(let p=lo;p<=hi;p++){const pc=((p%12)+12)%12,inL=LAD.includes(((pc-w)%12+12)%12);
   c.fillStyle=pc===w?'#10261c':inL?'#0a1812':'#060e0b';c.fillRect(0,H-16-(p-lo+1)*rh,W,rh)}
+ /* SUB SWEET-SPOT: E1(28) t/m B1(35) — maximale club/auto sub-drukzone */
+ for(let p=28;p<=35&&p<=hi;p++){if(p<lo)continue;const y=H-16-(p-lo+1)*rh;
+  c.fillStyle='#16a34a33';c.fillRect(0,y,W,rh);
+  c.fillStyle='#22c55e';c.fillRect(0,y,3,rh);c.fillRect(W-3,y,3,rh)}
  for(let s=0;s<=tot;s++){c.fillStyle=s%16===0?'#2f5a44':s%4===0?'#173326':'#0b1a13';c.fillRect(s*sw,0,1,H-16)}
  c.fillStyle='#8fa89a';c.font='11px system-ui';
  for(let m=0;m<maten;m++)c.fillText((m+1),m*16*sw+4,12);
@@ -663,6 +670,61 @@ function teken(){ /* melodie-stijl roll: toon-lanes met ladder-kleuring + kick-r
  }
  c.fillStyle='#f472b6';c.font='9px system-ui';c.fillText('roze = glide-noot',W-90,H-3)
 }
+/* ============ INTERACTIEVE BAS-ROLL (v2.2) ============ */
+function nootOp(ev){ /* pixel → {idx, edge} of leeg */
+ const cv=$('roll'),g=S.rollGeo;if(!g)return null;
+ const r=cv.getBoundingClientRect(),x=(ev.clientX-r.left)*(cv.width/r.width),y=(ev.clientY-r.top)*(cv.height/r.height);
+ if(y>cv.height-16)return null; // kick-rij
+ const s=Math.floor(x/g.sw),p=g.hi-Math.floor(y/g.rh);
+ for(let i=S.notes.length-1;i>=0;i--){const n=S.notes[i];
+  if(n.p===p&&s>=n.s&&s<n.s+n.d)return {i:i,edge:s>=n.s+n.d-0.5,n:n}}
+ return {i:-1,s:s,p:p}
+}
+let DRAG=null;
+function rollDown(ev){
+ const h=nootOp(ev);if(!h)return;
+ if(ev.shiftKey&&h.i>=0){bewaar();const n=h.n,nx=S.notes.filter(m=>m.s>n.s).sort((a,b)=>a.s-b.s)[0];
+  n.glide=nx?nx.p-n.p:0;teken();renderPreview();ev.preventDefault();return}
+ if(h.i>=0){DRAG={i:h.i,startX:ev.clientX,d0:h.n.d,moved:false}}else if(h.s!=null){
+  bewaar();const n={p:h.p,s:h.s,d:1,v:82};S.notes.push(n);S.notes.sort((a,b)=>a.s-b.s);
+  DRAG={i:S.notes.indexOf(n),startX:ev.clientX,d0:1,moved:false,fresh:true};
+  teken();renderPreview()}
+}
+function rollMove(ev){if(!DRAG)return;
+ const g=S.rollGeo;if(!g)return;
+ const r=$('roll').getBoundingClientRect(),dx=(ev.clientX-DRAG.startX)*( $('roll').width/r.width)/g.sw;
+ const nd=Math.max(0.5,Math.min(DRAG.d0+Math.round(dx),DRAG.i>=0?S.rollGeo.tot-S.notes[DRAG.i].s:1));
+ const n=S.notes[DRAG.i];if(n&&nd!==n.d){n.d=nd;DRAG.moved=true;teken()}
+}
+function rollUp(){if(DRAG&&DRAG.moved)renderPreview();DRAG=null}
+function rollRight(ev){ev.preventDefault();
+ const h=nootOp(ev);if(h&&h.i>=0){bewaar();S.notes.splice(h.i,1);teken();renderPreview()}}
+function rollDbl(ev){rollRight(ev)}
+if($('roll')){
+ $('roll').addEventListener('mousedown',rollDown);
+ window.addEventListener('mousemove',rollMove);
+ window.addEventListener('mouseup',rollUp);
+ $('roll').addEventListener('contextmenu',rollRight);
+ $('roll').addEventListener('dblclick',rollDbl);
+}
+/* ============ KICK/SUB SCOPE (v2.2) ============ */
+function tekenScope(r){ /* dual-waveform: kick cyaan vs sub groen, eerste ~2 maten */
+ const cv=$('scope');if(!cv||!r||!r.kick)return;
+ cv.width=cv.clientWidth*2;cv.height=140;
+ const c=cv.getContext('2d'),W=cv.width,H=cv.height,N=Math.min(r.kick.length,Math.floor(2*r.sd*16*r.sr));
+ c.fillStyle='#050b16';c.fillRect(0,0,W,H);
+ c.strokeStyle='#1b2a44';c.beginPath();c.moveTo(0,H/2);c.lineTo(W,H/2);c.stroke();
+ for(const [arr,col,sc] of [[r.kick,'#22d3ee',1],[r.sub,'#22c55e',1]]){
+  c.strokeStyle=col;c.lineWidth=1.5;c.beginPath();
+  const stp=Math.max(1,Math.floor(N/W));
+  for(let x=0;x<W;x++){let mn=1,mx=-1;
+   for(let j=x*stp;j<(x+1)*stp&&j<N;j++){const v=arr[j];if(v<mn)mn=v;if(v>mx)mx=v}
+   const y1=H/2-mn*H*0.45*sc,y2=H/2-mx*H*0.45*sc;
+   c.moveTo(x,y1);c.lineTo(x,y2)}
+  c.stroke()}
+ c.fillStyle='#22d3ee';c.font='10px system-ui';c.fillText('kick',6,12);
+ c.fillStyle='#22c55e';c.fillText('sub',44,12);
+}
 function octaaf(d){if(!S.notes.length)return;bewaar();
  for(const n of S.notes)n.p+=d*12;teken();renderPreview();
  st('🎹 baslijn '+(d>0?'octaaf omhoog':'octaaf omlaag')+' — alle noten '+d*12+' semitones')}
@@ -675,6 +737,7 @@ function renderPreview(){
   if(S.wavUrl)URL.revokeObjectURL(S.wavUrl);
   S.wavUrl=URL.createObjectURL(blob);
   $('au').src=S.wavUrl;
+  tekenScope(r);
   st('✓ klaar — ▶ luister · 🎲 opnieuw · ⬇ exporteer .wav / .mid'+(SPK!=='studio'?' · 🔊 '+SPK.toUpperCase()+'-check':'')+(S.faseFlip?' · fase-fix toegepast':''));
  },30);
 }
