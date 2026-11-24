@@ -861,7 +861,7 @@
     "stripe": "https://buy.stripe.com/7sYdR9fji2HVcI74xT5J628"
    },
    "cover": "media/g2b-workstation-cover.png",
-   "video": "media/workstation-v7-promo.mp4",
+   "video": "media/workstation-v7-promo-en.mp4",
    "badge": "v7 — SPEEL-TOOLS + MIJN STEM",
    "download_dir": "d/g2b-workstation",
    "uitleg": "media/workstation-uitleg.mp4",
@@ -871,7 +871,9 @@
     "g2bsuite1",
     "g2balles"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "video_sub_nl": "media/workstation-v7.nl.vtt",
+   "video_sub_es": "media/workstation-v7.es.vtt"
   },
   {
    "id": "cursus01",
