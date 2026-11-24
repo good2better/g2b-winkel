@@ -223,7 +223,10 @@ async function laden() {
                  data-en="${esc(p.video_en || "")}"
                  data-es="${esc(p.video_es || "")}" controls playsinline
                  ${p.cover ? `poster="${esc(p.cover)}"` : ""}
-                 preload="none"></video>
+                 preload="none">
+            ${p.video_sub_nl ? `<track kind="subtitles" srclang="nl" label="Nederlands" src="${esc(p.video_sub_nl)}">` : ""}
+            ${p.video_sub_es ? `<track kind="subtitles" srclang="es" label="Español" src="${esc(p.video_sub_es)}">` : ""}
+          </video>
           <button class="vidplay" data-vidplay="${esc(p.id)}"
              aria-label="Speel video van ${esc(p._titel)}">▶</button>
         </div>` : ""}
