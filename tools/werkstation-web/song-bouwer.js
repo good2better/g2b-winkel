@@ -10,6 +10,7 @@ const $=id=>document.getElementById(id);
 const st=t=>{const e=$('sbStatus');if(e)e.textContent=t};
 /* ---------- secties & matrix ---------- */
 const SECTIES=[['INTRO',8],['BUILD',4],['DROP',8],['BREAK',4],['DROP 2',8]]; // 32 maten (v3.2)
+let CUR=SECTIES; // actieve sectielijst (Snel-Preview = alleen DROP 8)
 const SPOREN=[['VOCAAL','voc'],['KICK','kick'],['SUB','sub'],['GRIT','grit'],['MELODIE','mel'],['AKKOORDEN','akk']];
 const DEFAAN={INTRO:{voc:1,mel:1,akk:1},BUILD:{voc:1,grit:1,mel:1,akk:1},DROP:{voc:1,kick:1,sub:1,grit:1,mel:1,akk:1},BREAK:{voc:1,mel:1,akk:1},'DROP 2':{voc:1,kick:1,sub:1,grit:1,mel:1,akk:1}};
 const AAN={}; // AAN[sectie][spoor]
@@ -82,7 +83,8 @@ function bpmOf(x,sr){ // onset-envelop → IOI-histogram → bpm 60-180
    const ioi=(i-j)/hopHz;if(ioi>.3&&ioi<2){const b=Math.round(60/ioi);if(b>=60&&b<=180)hist[b]=(hist[b]||0)+env[i]}break}}
  let bb=0,bv=0;for(const b in hist)if(hist[b]>bv){bv=hist[b];bb=+b}
  return bb||120}
-async function laadVocal(bron){ /* bron: File of AudioBuffer */
+async function laadVocal(bron,retune){ /* bron: File of AudioBuffer; retune=false → alleen VOC zetten (.g2b-load) */
+ if(retune===undefined)retune=true;
  st('🎤 vocal laden + analyseren…');
  const ac=window._vocAC||(window._vocAC=new (window.AudioContext||window.webkitAudioContext)());
  let buf=bron.getChannelData?bron:await ac.decodeAudioData(await bron.arrayBuffer());
@@ -101,10 +103,10 @@ async function laadVocal(bron){ /* bron: File of AudioBuffer */
   for(let i=0;i<nf;i++)pk=Math.max(pk,Math.abs(mono[i*hop]))}
  VOC={L,R,mono,key:k,mod:m,bpm,onset};
  /* engines op de stem afstemmen: bpm + toonsoort doorzetten */
- try{const d=DW&&DW.document;if(d){if(d.getElementById('bpm'))d.getElementById('bpm').value=bpm;
+ if(retune){try{const d=DW&&DW.document;if(d){if(d.getElementById('bpm'))d.getElementById('bpm').value=bpm;
   if(d.getElementById('key'))d.getElementById('key').value=k;DW.dobbelAlles&&DW.dobbelAlles()}}catch(e){}
  try{const d=MW&&MW.document;if(d){if(d.getElementById('bpm'))d.getElementById('bpm').value=bpm;
-  if(d.getElementById('wortel'))d.getElementById('wortel').value=k;MW.maak&&MW.maak('alles')}}catch(e){}
+  if(d.getElementById('wortel'))d.getElementById('wortel').value=k;MW.maak&&MW.maak('alles')}}catch(e){}}
  st('🎤 stem gelezen: ~'+bpm+' bpm · '+NOOTNAMEN[k]+' '+m+' — engines passen zich aan; druk 🎬 BOUW');
  if($('sbVocInfo'))$('sbVocInfo').textContent='🎤 '+bpm+'bpm · '+NOOTNAMEN[k]+' '+m+' · '+Math.round(mono.length/SR)+'s'}
 const NOOTNAMEN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
@@ -176,15 +178,16 @@ function midiSong(sporen,bpm,secs){ // sporen:[{naam,noten:[{p,s,d,v}],kanaal}] 
  for(const sp of sporen){const ev=[];
   for(const n of sp.noten){const t=Math.round(n.s/4*tpq),e=Math.round((n.s+n.d)/4*tpq);
    ev.push([t,[0x90|sp.kanaal,n.p,n.v&127]],[e,[0x80|sp.kanaal,n.p,0]])}
-  ev.push([0,[0xFF,0x2F,0]]);trks.push(mTrk(ev))}
+  trks.push(mTrk(ev))}
  const h=new Uint8Array(14);const dh=new DataView(h.buffer);
  h.set([0x4D,0x54,0x68,0x64],0);dh.setUint32(4,6);dh.setUint16(8,1);dh.setUint16(10,trks.length);dh.setUint16(12,tpq);
  const tot=trks.reduce((a,t)=>a+t.length,0),out=new Uint8Array(14+tot);out.set(h,0);let o=14;
  for(const t of trks){out.set(t,o);o+=t.length}return out}
 /* ---------- mix ---------- */
 let LAST=null;
-async function bouw(){
+async function bouw(snel){
  try{
+ CUR=snel?[['DROP',8]]:SECTIES;
  await laadEngines();
  st('⚙ stems renderen via de echte engines…');
  /* donder-stems: renderLoop → kick/sub/grit (mono Float32Arrays) */
@@ -205,13 +208,13 @@ async function bouw(){
  /* per-spoor buffers van 8 maten */
  const B=k=>tile8(rD[k],sdD,matD),B2=k=>tile8((v2||rD)[k],sdD,matD);
  const barD=Math.round(sdD*16*SR),barM=Math.round(sdM*16*SR);
- const totBars=SECTIES.reduce((a,[,m])=>a+m,0),N=totBars*barD;
+ const totBars=CUR.reduce((a,[,m])=>a+m,0),N=totBars*barD;
  const T={};for(const[,sp]of SPOREN){T[sp]={L:new Float32Array(N),R:new Float32Array(N)}}
  st('⚙ arrangement + FX plaatsen…');
  /* MATCH-UP: eerste VOC-sectie-maat als anker voor downbeat-align */
- let VOC_BAR0=0;{let b=0;for(const[sec,m]of SECTIES){if(AAN[sec]&&AAN[sec].voc){VOC_BAR0=b*barD;break}b+=m}}
+ let VOC_BAR0=0;{let b=0;for(const[sec,m]of CUR){if(AAN[sec]&&AAN[sec].voc){VOC_BAR0=b*barD;break}b+=m}}
  let bar=0;
- for(const[sec,m]of SECTIES){
+ for(const[sec,m]of CUR){
   const off=bar,isD2=sec==='DROP 2',isDrop=sec==='DROP'||isD2;
   const put=(sp,src,srcR,g)=>{ // src = mono-buffer van ≥m maten
    const t=T[sp],o0=off*barD,n=Math.min(m*barD,src.length);
@@ -255,7 +258,7 @@ function mixDown(){
   const dl=Math.round(.31*SR),wet=.16;
   for(const ch of['L','R']){const src=T.voc[ch].slice();
    for(let i=dl;i<N;i++)T.voc[ch][i]+=src[i-dl]*wet}
-  for(const[sec,m]of SECTIES){const isDrop=sec==='DROP'||sec==='DROP 2';
+  for(const[sec,m]of CUR){const isDrop=sec==='DROP'||sec==='DROP 2';
    if(AAN[sec].voc)for(let s=0;s<m*16;s++){const a=(bar*16+s)*seg,b=Math.min(N,a+seg);let e=0;
     for(let i=a;i<b;i++)e+=T.voc.L[i]*T.voc.L[i]+T.voc.R[i]*T.voc.R[i];
     e=Math.sqrt(e/(2*Math.max(1,b-a))||1e-9);
@@ -281,9 +284,10 @@ function mixDown(){
  const lufs=10*Math.log10(ss/(2*N)+1e-12)-0.691,g=Math.pow(10,(target-lufs)/20);
  for(let i=0;i<N;i++){L[i]=Math.tanh(L[i]*g/ceil)*ceil;R[i]=Math.tanh(R[i]*g/ceil)*ceil}
  LAST.L=L;LAST.R=R;
- st('✅ klaar — '+LAST.totBars+' maten · '+preset.toUpperCase()+' '+target+' LUFS · ~'+Math.round(N/SR)+'s');
+ if(window._pv){const pv=window._pv;window._pv=null;for(const v of pv){try{SONG.vibe(v)}catch(e){}}}
+ st(LAST.totBars===8&&CUR!==SECTIES?'👂 snel-preview klaar (8 maten) — druk 🎬 voor de volledige song':'✅ klaar — '+LAST.totBars+' maten · '+preset.toUpperCase()+' '+target+' LUFS · ~'+Math.round(N/SR)+'s');
  $('sbExport').style.display='flex';
- if($('sbAu')){const b=new Blob([wavBytes(L,R,SR)],{type:'audio/wav'});$('sbAu').src=URL.createObjectURL(b)}
+ if($('sbAu')){const b=new Blob([wavBytes(LAST.L,LAST.R,SR)],{type:'audio/wav'});$('sbAu').src=URL.createObjectURL(b)} // uit LAST — dan speelt de player ook de vibe-bewerkte mix af na _pv-replay
 }
 /* ---------- exports ---------- */
 function dlBlob(b,fn){const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=fn;a.click();setTimeout(()=>URL.revokeObjectURL(u),5000);return u}
@@ -323,8 +327,55 @@ async function expPack(){
   'G2B Werkstation — RELEASE-PACK\n\nAlle audio in deze zip is 100% door jouw eigen engines en/of samples gemaakt.\nJij bezit alle rechten — commercieel gebruik, verkoop en streaming toegestaan.\nGeen derden-samples, geen copyright-claims.\n\nGood2Better High Quality Media · KvK 95199926')});
  dlBlob(new Blob([zipStore(files)],{type:'application/zip'}),'g2b-song-RELEASE-PACK.zip');
  st('📦 RELEASE-PACK gedownload — master + '+SPOREN.length+' stems + midi + licentie in één zip')}
+/* ---------- .G2B universeel project-bestand ---------- */
+const _safeAssign=(dst,src)=>{for(const k of Object.keys(src||{}))if(k!=='__proto__'&&k!=='constructor')dst[k]=src[k]};
+const g2bSel=(w,ids)=>{const o={};try{for(const i of ids){const el=w.document.getElementById(i);
+  if(el)o[i]=el.type==='checkbox'?!!el.checked:el.value}}catch(e){}return o};
+async function g2bSave(){
+ if(!DW||!MW){st('⚙ eerst 🎬 BOUW (dan laden de engines mee)');return}
+ const d={v:1,ts:Date.now()};
+ d.donder={ui:g2bSel(DW,['genre','bpm','key','maten','bas','sound','laag','dubbel','stap']),
+  S:{notes:DW.S.notes,kicks:DW.S.kicks,locks:DW.S.locks,sound:DW.S.sound,mute:DW.S.mute}};
+ d.melodie={ui:g2bSel(MW,['genre','bpm','maten','ladder','wortel','klank','voicing','arp','strum','hum','mstapv','laag']),
+  S:{mel:MW.S.mel,akk:MW.S.akk,bas:MW.S.bas},AAN:MW.AAN,VOL:MW.VOL,LOCK:MW.LOCK};
+ d.matrix=AAN;d.master=$('sbMaster')?$('sbMaster').value:'club';
+ d.vibes=LAST&&LAST.vibes?LAST.vibes.slice():[];
+ const jb=new TextEncoder().encode(JSON.stringify(d));
+ const voc=VOC?new Uint8Array(wavBytes(VOC.L,VOC.R,SR)):null;
+ const all=new Uint8Array(8+jb.length+(voc?voc.length:0));const dv=new DataView(all.buffer);
+ all.set([0x47,0x32,0x42,0x21],0);dv.setUint32(4,jb.length,true);all.set(jb,8);
+ if(voc)all.set(voc,8+jb.length);
+ dlBlob(new Blob([all],{type:'application/octet-stream'}),'g2b-project.g2b');
+ st('💾 project opgeslagen als .g2b — neem hem mee naar je PC-app of andere browser')}
+async function g2bOpen(file){
+ const ab=await file.arrayBuffer(),u=new Uint8Array(ab),dv=new DataView(ab);
+ if(u.length<8||u[0]!==0x47||u[1]!==0x32||u[2]!==0x42){st('⚠ geen .g2b bestand');return}
+ st('📂 .g2b lezen + engines laden…');await laadEngines();
+ const jl=dv.getUint32(4,true),d=JSON.parse(new TextDecoder().decode(u.subarray(8,8+jl)));
+ const put=(w,ui)=>{if(!ui)return;for(const i in ui){const el=w.document.getElementById(i);
+  if(!el)continue;if(el.type==='checkbox')el.checked=!!ui[i];else el.value=ui[i]}};
+ if(d.donder){put(DW,d.donder.ui);
+  if(d.donder.S)for(const k of['notes','kicks','locks','sound','mute'])if(d.donder.S[k]!==undefined)DW.S[k]=d.donder.S[k]}
+ if(d.melodie){put(MW,d.melodie.ui);
+  if(d.melodie.S)for(const k of['mel','akk','bas'])if(d.melodie.S[k]!==undefined)MW.S[k]=d.melodie.S[k];
+  if(d.melodie.AAN)_safeAssign(MW.AAN,d.melodie.AAN);
+  if(d.melodie.VOL)_safeAssign(MW.VOL,d.melodie.VOL);if(d.melodie.LOCK)_safeAssign(MW.LOCK,d.melodie.LOCK)}
+ if(d.matrix)for(const[sec]of SECTIES)for(const[,sp]of SPOREN)
+  if(Object.prototype.hasOwnProperty.call(d.matrix,sec)&&Object.prototype.hasOwnProperty.call(d.matrix[sec],sp))AAN[sec][sp]=!!d.matrix[sec][sp];
+ if(d.master&&$('sbMaster'))$('sbMaster').value=d.master;
+ try{DW.teken&&DW.teken()}catch(e){}
+ try{MW.teken&&MW.teken();MW.melsToetsen&&MW.melsToetsen()}catch(e){}
+ document.querySelectorAll('.sbCell').forEach(b=>{const on=AAN[b.dataset.sec]&&AAN[b.dataset.sec][b.dataset.sp];
+  b.style.background=on?'#22c55e':'#0a1812'});
+ LAST=null;if($('sbAu'))$('sbAu').src='';
+ window._pv=d.vibes||null;
+ if(ab.byteLength>8+jl){try{const ac=window._vocAC||(window._vocAC=new (window.AudioContext||window.webkitAudioContext)());
+  const buf=await ac.decodeAudioData(u.subarray(8+jl).slice(0).buffer);await laadVocal(buf,false)}catch(e){console.warn(e)}}
+ else{VOC=null;if($('sbVocInfo'))$('sbVocInfo').textContent=''}
+ st('📂 .g2b geladen — druk 🎬 BOUW om je song terug te renderen')}
 /* ---------- vibe-fixers ---------- */
 window.SONG={
+ save:g2bSave,open:g2bOpen,
  bouw,
  /* 🎤 vocal laden (File of AudioBuffer) */
  vocal:laadVocal,
@@ -364,6 +415,7 @@ window.SONG={
     for(let s=0;s*seg<N;s++)if(s%2===1)for(let i=s*seg;i<(s+1)*seg&&i<N;i++)T[sp][ch][i]*=.55}}
   mixDown();
   if($('sbAu')){const b=new Blob([wavBytes(LAST.L,LAST.R,SR)],{type:'audio/wav'});$('sbAu').src=URL.createObjectURL(b)}
+  if(!LAST.vibes)LAST.vibes=[];if(!LAST.vibes.includes(k))LAST.vibes.push(k);
   st('✨ vibe-fixer toegepast — luister + exporteer opnieuw als hij goed is')}};
 /* ---------- UI ---------- */
 function uiBoot(){
@@ -379,9 +431,20 @@ function uiBoot(){
   h+='</tr>'}
  grid.innerHTML=h+'</table>';
  grid.querySelectorAll('.sbCell').forEach(b=>b.onclick=()=>{const s=b.dataset.sec,sp=b.dataset.sp;AAN[s][sp]=AAN[s][sp]?0:1;b.style.background=AAN[s][sp]?'#22c55e':'#0a1812'});
- $('sbBouw').onclick=bouw;
+ $('sbBouw').onclick=()=>bouw(false);
+ const pv=$('sbPrev');if(pv)pv.onclick=()=>bouw(true);
  $('sbWav').onclick=expMaster;$('sbStem').onclick=expStems;$('sbMid').onclick=expMid;
  const pk=$('sbPack');if(pk)pk.onclick=expPack;
+ const sv=$('sbSave');if(sv)sv.onclick=g2bSave;
+ const op=$('sbOpenFile');if(op)op.onchange=()=>{if(op.files&&op.files[0])g2bOpen(op.files[0]);op.value=''};
+ const opb=$('sbOpen');if(opb)opb.onclick=()=>op&&op.click();
+ /* .g2b drag & drop op de bouwer-kaart */
+ const sc=$('songBouwer');
+ if(sc){sc.addEventListener('dragover',e=>{e.preventDefault();sc.style.outline='2px dashed #22c55e'});
+  sc.addEventListener('dragleave',()=>sc.style.outline='');
+  sc.addEventListener('drop',e=>{e.preventDefault();sc.style.outline='';
+   const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+   if(f&&/\.g2b$/i.test(f.name))g2bOpen(f);else if(f)st('⚠ sleep een .g2b bestand')})}
  /* ⠿ sleep-naar-DAW grepen op alle exports */
  [['sbWav','audio/wav','g2b-song-master.wav',()=>new Blob([wavBytes(LAST.L,LAST.R,SR)])],
   ['sbMid','audio/midi','g2b-song.mid',()=>new Blob([midiSong([],120,[])])]].forEach(([id,mt,fn,mk])=>{

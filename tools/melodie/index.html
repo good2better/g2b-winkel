@@ -134,7 +134,7 @@ const GENRES={
 const $=id=>document.getElementById(id);
 const KLR={mel:'#22c55e',akk:'#a78bfa',bas:'#f472b6'};
 const SPOREN=[['mel','MELODIE'],['akk','AKKOORDEN'],['bas','BAS / 808']];
-let S={mel:[],akk:[],bas:[]},AAN={mel:1,akk:1,bas:1},VOL={mel:.8,akk:.45,bas:.8},LOCK={mel:0,akk:0,bas:0};window.S=S;
+let S={mel:[],akk:[],bas:[]},AAN={mel:1,akk:1,bas:1},VOL={mel:.8,akk:.45,bas:.8},LOCK={mel:0,akk:0,bas:0};window.S=S;window.AAN=AAN;window.VOL=VOL;window.LOCK=LOCK;
 let hist=[],hi=-1,vars=[];
 const smaak=()=>{try{return JSON.parse(localStorage.getItem('g2b_melodie_smaak')||'{}')}catch(e){return{}}};
 const smaakSave=o=>localStorage.setItem('g2b_melodie_smaak',JSON.stringify(o));
@@ -574,7 +574,7 @@ $('genre').value='trap';$('bpm').value=140;$('ladder').value='min';
  if(sv&&sv.S&&sv.S.mel&&(sv.S.mel.length||sv.S.akk.length||sv.S.bas.length)){
   if(sv.g)$('genre').value=sv.g;if(sv.w)$('wortel').value=sv.w;if(sv.lad)$('ladder').value=sv.lad;
   if(sv.bpm)$('bpm').value=sv.bpm;if(sv.maten)$('maten').value=sv.maten;
-  S=sv.S;PROG=sv.PROG;bewaar();teken();sporenUI();
+  S.mel=sv.S.mel||[];S.akk=sv.S.akk||[];S.bas=sv.S.bas||[];PROG=sv.PROG;bewaar();teken();sporenUI();
   st('💾 je vorige melodie is terug ('+sv.S.mel.length+' noten) — ✨ VARIANTEN of 🎲 nieuw');return}}catch(e){}
  nieuw()})();
 if(/[?&]uit=donder/.test(location.search))setTimeout(laadDonder,80);
