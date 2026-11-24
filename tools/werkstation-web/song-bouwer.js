@@ -211,8 +211,10 @@ async function bouw(snel){
  const totBars=CUR.reduce((a,[,m])=>a+m,0),N=totBars*barD;
  const T={};for(const[,sp]of SPOREN){T[sp]={L:new Float32Array(N),R:new Float32Array(N)}}
  st('⚙ arrangement + FX plaatsen…');
- /* MATCH-UP: eerste VOC-sectie-maat als anker voor downbeat-align */
- let VOC_BAR0=0;{let b=0;for(const[sec,m]of CUR){if(AAN[sec]&&AAN[sec].voc){VOC_BAR0=b*barD;break}b+=m}}
+ /* MATCH-UP: anker = eerste voc-enabled sectie van de VOLLEDIGE song (SECTIES),
+   zodat ook een 8-maten preview exact dezelfde vocal-frase op die plek speelt */
+ const SOFF={};{let b=0;for(const[s,m]of SECTIES){if(!(s in SOFF))SOFF[s]=b*barD;b+=m}}
+ let VOC_BAR0=0;for(const[s]of SECTIES){if(AAN[s]&&AAN[s].voc){VOC_BAR0=SOFF[s];break}}
  let bar=0;
  for(const[sec,m]of CUR){
   const off=bar,isD2=sec==='DROP 2',isDrop=sec==='DROP'||isD2;
@@ -232,11 +234,11 @@ async function bouw(snel){
   if(AAN[sec].mel){let l=tile8(ml.L,sdM,matM).slice(),r2=tile8(ml.R,sdM,matM).slice();
    if(sec==='INTRO'){l=lop(l,2500,SR);r2=lop(r2,2500,SR)}put('mel',l,r2,0.9)}
   if(AAN[sec].akk)put('akk',tile8(ak.L,sdM,matM),tile8(ak.R,sdM,matM),0.7);
-  /* vocal-spoor: continue opname, per-sectie aan/uit — MATCH-UP:
-     take start zodat het eerste accent (VOC.onset) op positie 0 (maat 1) valt;
-     elke sectie leest zijn eigen tijdlijn-venster van de take, dus nooit een herstart
-     en geen pickup-audio vóór het accent in een eerdere (gemute) sectie */
-  if(VOC&&AAN[sec].voc){const o0=off*barD,base=o0+(VOC.onset||0),
+  /* vocal-spoor: continue opname op de song-tijdlijn — MATCH-UP:
+     take-index i hoort op song-positie VOC_BAR0+i-onset (accent op de eerste voc-maat);
+     elke sectie leest alleen zijn eigen venster — nooit herstart, geen pickup in gemute delen */
+  if(VOC&&AAN[sec].voc){const o0=off*barD,
+   base=(sec in SOFF?SOFF[sec]:o0)-VOC_BAR0+(VOC.onset||0),
    n=Math.min(m*barD,Math.max(0,VOC.L.length-base));
    if(n>0)put('voc',VOC.L.subarray(base,base+n),VOC.R.subarray(base,base+n),1.0)}
   /* FX */
