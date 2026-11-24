@@ -98,9 +98,12 @@ async function laadVocal(bron,retune){ /* bron: File of AudioBuffer; retune=fals
  {const env=new Float32Array(nf);let pv=0;
   for(let i=0;i<nf;i++){let e=0;for(let j=0;j<hop;j++)e+=mono[i*hop+j]*mono[i*hop+j];
    env[i]=Math.max(0,e-pv);pv=e*.8}
-  let mx=0;for(let i=0;i<nf;i++)mx=Math.max(mx,env[i]);
-  for(let i=2;i<nf;i++)if(env[i]>mx*.35&&env[i]>=env[i-1]&&env[i]>0){onset=i*hop;break}
-  for(let i=0;i<nf;i++)pk=Math.max(pk,Math.abs(mono[i*hop]))}
+  for(let i=0;i<nf;i++)pk=Math.max(pk,Math.abs(mono[i*hop]));
+  /* anker = eerste hoorbare frase: drempel op de ruisvloer (p75×6) of 2% piek —
+     ook een rustige opening telt mee, niet alleen de luidste accent */
+  const srt=Array.from(env).sort((a,b)=>a-b),floor=srt[Math.floor(nf*.75)]||0;
+  const th=Math.max(floor*6,pk*pk*hop*.02,1e-9);
+  for(let i=2;i<nf;i++)if(env[i]>th&&env[i]>=env[i-1]){onset=i*hop;break}}
  VOC={L,R,mono,key:k,mod:m,bpm,onset};
  /* engines op de stem afstemmen: bpm + toonsoort doorzetten */
  if(retune){try{const d=DW&&DW.document;if(d){if(d.getElementById('bpm'))d.getElementById('bpm').value=bpm;
