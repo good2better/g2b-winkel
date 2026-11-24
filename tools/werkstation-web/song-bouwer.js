@@ -232,12 +232,13 @@ async function bouw(snel){
   if(AAN[sec].mel){let l=tile8(ml.L,sdM,matM).slice(),r2=tile8(ml.R,sdM,matM).slice();
    if(sec==='INTRO'){l=lop(l,2500,SR);r2=lop(r2,2500,SR)}put('mel',l,r2,0.9)}
   if(AAN[sec].akk)put('akk',tile8(ak.L,sdM,matM),tile8(ak.R,sdM,matM),0.7);
-  /* vocal-spoor: continue opname op de tijdlijn — MATCH-UP: accent valt op maat 1.
-     take-index i hoort op out-positie (o0-onset)+i: accent (i=onset) landt exact op de sectiegrens,
-     geen herhaling of sprong bij sectie-overgangen */
-  if(VOC&&AAN[sec].voc){const dst0=off*barD-(VOC.onset||0),
-   n=Math.min(m*barD,VOC.L.length);
-   for(let i=0;i<n;i++){const p=dst0+i;if(p>=0&&p<N){T.voc.L[p]+=VOC.L[i];T.voc.R[p]+=VOC.R[i]}}}
+  /* vocal-spoor: continue opname, per-sectie aan/uit — MATCH-UP:
+     take start zodat het eerste accent (VOC.onset) op positie 0 (maat 1) valt;
+     elke sectie leest zijn eigen tijdlijn-venster van de take, dus nooit een herstart
+     en geen pickup-audio vóór het accent in een eerdere (gemute) sectie */
+  if(VOC&&AAN[sec].voc){const o0=off*barD,base=o0+(VOC.onset||0),
+   n=Math.min(m*barD,Math.max(0,VOC.L.length-base));
+   if(n>0)put('voc',VOC.L.subarray(base,base+n),VOC.R.subarray(base,base+n),1.0)}
   /* FX */
   if(sec==='BUILD'){const rz=riser(m*4*sdD,SR);for(let i=0;i<rz.length&&off*barD+i<N;i++){T.grit.L[off*barD+i]+=rz[i]*.4;T.grit.R[off*barD+i]+=rz[i]*.4}}
   if(isDrop){const cr=crash(SR);for(let i=0;i<cr.length&&off*barD+i<N;i++){T.kick.L[off*barD+i]+=cr[i];T.kick.R[off*barD+i]+=cr[i]}}
