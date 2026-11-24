@@ -118,13 +118,14 @@ async function laadVocal(bron,retune){ /* bron: File of AudioBuffer; retune=fals
    for(let j=(i+2)*hop+1;j<(i+3)*hop;j++)z2+=mono[j]>=0!==mono[j-1]>=0;
    if(z1<0.18*hop||z2<0.18*hop){i0=i;break}
    la=i}                            /* laatste overgeslagen ruis-kandidaat */
-  /* 's'/'t'-begin (ruisachtig) vlak vóór de klinker hoort bij de take → tot
-     ~116ms terugnemen, maar alleen als de energie er tussen nooit onder de
-     vloer dook — een inademing heeft vrijwel altijd een micro-gat ervoor */
+  /* 's'/'t'-begin hoort bij de take: neem het BEGIN van de aaneengesloten
+     ruis-run vlak voor de klinker (≤~116ms terug) — een adem zit er langer
+     voor of heeft een micro-gat, en ankeren op een piek erbinnen sneed de
+     consonant halverwege af */
   let anc=i0;
   if(i0!==nf&&la!==nf&&i0-la<=20){let dicht=true;
    for(let j=la;j<=i0;j++)if(e2[j]<=thE){dicht=false;break}
-   if(dicht)anc=la}
+   if(dicht){let cs=la;while(cs>0&&e2[cs-1]>lvl&&i0-cs<=30)cs--;anc=cs}}
   onset=i0===nf?(fb===nf?0:fb*hop):anc*hop}
  VOC={L,R,mono,key:k,mod:m,bpm,onset};
  /* engines op de stem afstemmen: bpm + toonsoort doorzetten */
