@@ -107,7 +107,7 @@ async function laadVocal(bron,retune){ /* bron: File of AudioBuffer; retune=fals
   const nb=Math.min(30,Math.floor(nf/4)||1),
    be=Array.from(e2.subarray(0,nb)).sort((a,b)=>a-b),
    lvl=Math.max(pk*pk*hop*.015,(be[Math.floor(be.length/2)]||0)*4),
-   thR=pk*pk*hop*.01,thE=pk*pk*hop*.015;let i0=nf,fb=nf,la=nf;
+   thR=pk*pk*hop*.01,thE=pk*pk*hop*.015;let i0=nf,fb=nf;
   for(let i=0;i+2<nf;i++){
    if(!(env[i]>thR&&e2[i]>lvl&&e2[i+1]>thE&&e2[i+2]>thE))continue;
    if(fb===nf)fb=i;                 /* eerste kandidaat = fallback */
@@ -116,16 +116,14 @@ async function laadVocal(bron,retune){ /* bron: File of AudioBuffer; retune=fals
    let z1=0,z2=0;
    for(let j=(i+1)*hop+1;j<(i+2)*hop;j++)z1+=mono[j]>=0!==mono[j-1]>=0;
    for(let j=(i+2)*hop+1;j<(i+3)*hop;j++)z2+=mono[j]>=0!==mono[j-1]>=0;
-   if(z1<0.18*hop||z2<0.18*hop){i0=i;break}
-   la=i}                            /* laatste overgeslagen ruis-kandidaat */
-  /* 's'/'t'-begin hoort bij de take: neem het BEGIN van de aaneengesloten
-     ruis-run vlak voor de klinker (≤~116ms terug) — een adem zit er langer
-     voor of heeft een micro-gat, en ankeren op een piek erbinnen sneed de
-     consonant halverwege af */
+   if(z1<0.18*hop||z2<0.18*hop){i0=i;break}}
+  /* 's'/'t'-begin hoort bij de take: loop terug tot het begin van de aaneen-
+     gesloten ruis-run en neem die mee, maar ALLEEN als hij ≤~116ms is — een
+     aanwellende adem is langer (of gescheiden) en ankeren op een piek
+     erbinnen zou de consonant halverwege afsnijden */
   let anc=i0;
-  if(i0!==nf&&la!==nf&&i0-la<=20){let dicht=true;
-   for(let j=la;j<=i0;j++)if(e2[j]<=thE){dicht=false;break}
-   if(dicht){let cs=la;while(cs>0&&e2[cs-1]>lvl&&i0-cs<=30)cs--;anc=cs}}
+  if(i0!==nf){let cs=i0;while(cs>0&&e2[cs-1]>lvl)cs--;
+   const run=i0-cs;if(run>0&&run<=16)anc=cs}
   onset=i0===nf?(fb===nf?0:fb*hop):anc*hop}
  VOC={L,R,mono,key:k,mod:m,bpm,onset};
  /* engines op de stem afstemmen: bpm + toonsoort doorzetten */
