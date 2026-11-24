@@ -95,15 +95,15 @@ async function laadVocal(bron,retune){ /* bron: File of AudioBuffer; retune=fals
  const bpm=bpmOf(mono,SR),{k,m}=keyOf(mono,SR);
  /* MATCH-UP stap 3: eerste klemtoon (onset) vinden → op de maatlijn leggen */
  const hop=256,nf=Math.floor(mono.length/hop);let onset=0,pk=0;
- {const env=new Float32Array(nf);let pv=0;
-  for(let i=0;i<nf;i++){let e=0;for(let j=0;j<hop;j++)e+=mono[i*hop+j]*mono[i*hop+j];
-   env[i]=Math.max(0,e-pv);pv=e*.8}
+ {const e2=new Float32Array(nf);
+  for(let i=0;i<nf;i++){let e=0;for(let j=0;j<hop;j++)e+=mono[i*hop+j]*mono[i*hop+j];e2[i]=e}
   for(let i=0;i<nf;i++)pk=Math.max(pk,Math.abs(mono[i*hop]));
-  /* anker = eerste hoorbare frase: drempel op de ruisvloer (p75×6) of 2% piek —
-     ook een rustige opening telt mee, niet alleen de luidste accent */
-  const srt=Array.from(env).sort((a,b)=>a-b),floor=srt[Math.floor(nf*.75)]||0;
-  const th=Math.max(floor*6,pk*pk*hop*.02,1e-9);
-  for(let i=2;i<nf;i++)if(env[i]>th&&env[i]>=env[i-1]){onset=i*hop;break}}
+  /* anker = start van de eerste hoorbare frase: 3 opeenvolgende hops boven 3%
+     van de piek-energie — een adem/ruis is korter en zachter, een rustige
+     opening telt wel mee; kan nooit 'niets vinden' (piek zelf haalt het) */
+  const thE=pk*pk*hop*.03;let i0=nf;
+  for(let i=0;i+2<nf;i++)if(e2[i]>thE&&e2[i+1]>thE&&e2[i+2]>thE){i0=i;break}
+  onset=i0===nf?0:i0*hop}
  VOC={L,R,mono,key:k,mod:m,bpm,onset};
  /* engines op de stem afstemmen: bpm + toonsoort doorzetten */
  if(retune){try{const d=DW&&DW.document;if(d){if(d.getElementById('bpm'))d.getElementById('bpm').value=bpm;
