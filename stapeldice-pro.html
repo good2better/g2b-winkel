@@ -547,6 +547,7 @@ function redoOne(r,card){if(r.kind==='stapel'){if(buffers.length<2){st('eerst sh
     const[L,R]=sRender([{t:0,nt:Math.round(r.mode)===3?45:60,vel:0.85}],4);polish(L,R);
     const buf=AC.createBuffer(2,L.length,SR);buf.getChannelData(0).set(L);buf.getChannelData(1).set(R);
     r.naam=(S.name||'sound').replace(/[^\w+\-. ]/g,'_');r.ab=wavBytes(buf);
+    r.lagen=null;r.dnaSaved=false; /* nieuwe synth-versie mag opnieuw in MIJN-DNA */
     URL.revokeObjectURL(r.url);r.url=URL.createObjectURL(new Blob([r.ab],{type:'audio/wav'}));r.state=0;
     card.querySelector('audio').src=r.url;card.querySelector('.nm').textContent=r.naam+'.wav';
     card.querySelector('.dl').href=r.url;card.querySelector('.dl').setAttribute('download',r.naam+'.wav');
