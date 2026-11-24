@@ -185,12 +185,30 @@ async function laden() {
         `(${prods.filter(p => CAT(p) === c).length})</button>`).join("");
   }
 
+  // "welke kies je"-hulp per categorie — voorkomt keuzestress
+  const KIES = {
+    instrumenten: `<div class="kies">
+      <b>Welke kies je?</b>
+      <span><b>OCHO €19,95</b> — instap: Surinaamse pads, simpel &amp; echt</span>
+      <span><b>SAMPLEX €24,95</b> — eigen .wav → speelbaar instrument</span>
+      <span><b>BEST-OF €34,95</b> — 440+ top-sounds in 28 banken</span>
+      <span><b>AURA €199</b> — de hele studio (7 modules, best deal per tool)</span>
+      <em>Twijfel je? Begin met OCHO; wil je alles → AURA.</em></div>`,
+    studiotools: `<div class="kies">
+      <b>Welke kies je?</b>
+      <span><b>MASTER €29,95</b> — master klaar in 1 klik (adaptief brein)</span>
+      <span><b>MIXER €24,95</b> — slimme channel-strip op elke spoor</span>
+      <span><b>REFORS €29,95</b> — test je mix in 1 klik (auto, club, telefoon)</span>
+      <span><b>FX-RACK €39,95</b> — complete mix/master-keten in één</span>
+      <em>Net beginnen? MASTER. Track afmaken? REFORS.</em></div>`,
+  };
   let vorigeCat = "";
   const sectieKop = c => {
     if (c === vorigeCat) return "";
     vorigeCat = c;
     const u = CAT_UITLEG[c] ? `<div class="u">${CAT_UITLEG[c]}</div>` : "";
-    return `<div class="sectie" data-cat="${c}"><h2>${CAT_NAAM[c]}</h2>${u}</div>`;
+    const k = KIES[c] || "";
+    return `<div class="sectie" data-cat="${c}"><h2>${CAT_NAAM[c]}</h2>${u}${k}</div>`;
   };
   lijst.innerHTML = prods.map(p => {
     const kop = sectieKop(CAT(p));
