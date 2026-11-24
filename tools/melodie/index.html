@@ -574,7 +574,7 @@ $('genre').value='trap';$('bpm').value=140;$('ladder').value='min';
  if(sv&&sv.S&&sv.S.mel&&(sv.S.mel.length||sv.S.akk.length||sv.S.bas.length)){
   if(sv.g)$('genre').value=sv.g;if(sv.w)$('wortel').value=sv.w;if(sv.lad)$('ladder').value=sv.lad;
   if(sv.bpm)$('bpm').value=sv.bpm;if(sv.maten)$('maten').value=sv.maten;
-  S=sv.S;PROG=sv.PROG;bewaar();teken();sporenUI();
+  S.mel=sv.S.mel||[];S.akk=sv.S.akk||[];S.bas=sv.S.bas||[];PROG=sv.PROG;bewaar();teken();sporenUI();
   st('💾 je vorige melodie is terug ('+sv.S.mel.length+' noten) — ✨ VARIANTEN of 🎲 nieuw');return}}catch(e){}
  nieuw()})();
 if(/[?&]uit=donder/.test(location.search))setTimeout(laadDonder,80);

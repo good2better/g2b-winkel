@@ -82,7 +82,8 @@ function bpmOf(x,sr){ // onset-envelop → IOI-histogram → bpm 60-180
    const ioi=(i-j)/hopHz;if(ioi>.3&&ioi<2){const b=Math.round(60/ioi);if(b>=60&&b<=180)hist[b]=(hist[b]||0)+env[i]}break}}
  let bb=0,bv=0;for(const b in hist)if(hist[b]>bv){bv=hist[b];bb=+b}
  return bb||120}
-async function laadVocal(bron){ /* bron: File of AudioBuffer */
+async function laadVocal(bron,retune){ /* bron: File of AudioBuffer; retune=false → alleen VOC zetten (.g2b-load) */
+ if(retune===undefined)retune=true;
  st('🎤 vocal laden + analyseren…');
  const ac=window._vocAC||(window._vocAC=new (window.AudioContext||window.webkitAudioContext)());
  let buf=bron.getChannelData?bron:await ac.decodeAudioData(await bron.arrayBuffer());
@@ -101,10 +102,10 @@ async function laadVocal(bron){ /* bron: File of AudioBuffer */
   for(let i=0;i<nf;i++)pk=Math.max(pk,Math.abs(mono[i*hop]))}
  VOC={L,R,mono,key:k,mod:m,bpm,onset};
  /* engines op de stem afstemmen: bpm + toonsoort doorzetten */
- try{const d=DW&&DW.document;if(d){if(d.getElementById('bpm'))d.getElementById('bpm').value=bpm;
+ if(retune){try{const d=DW&&DW.document;if(d){if(d.getElementById('bpm'))d.getElementById('bpm').value=bpm;
   if(d.getElementById('key'))d.getElementById('key').value=k;DW.dobbelAlles&&DW.dobbelAlles()}}catch(e){}
  try{const d=MW&&MW.document;if(d){if(d.getElementById('bpm'))d.getElementById('bpm').value=bpm;
-  if(d.getElementById('wortel'))d.getElementById('wortel').value=k;MW.maak&&MW.maak('alles')}}catch(e){}
+  if(d.getElementById('wortel'))d.getElementById('wortel').value=k;MW.maak&&MW.maak('alles')}}catch(e){}}
  st('🎤 stem gelezen: ~'+bpm+' bpm · '+NOOTNAMEN[k]+' '+m+' — engines passen zich aan; druk 🎬 BOUW');
  if($('sbVocInfo'))$('sbVocInfo').textContent='🎤 '+bpm+'bpm · '+NOOTNAMEN[k]+' '+m+' · '+Math.round(mono.length/SR)+'s'}
 const NOOTNAMEN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
@@ -352,7 +353,8 @@ async function g2bOpen(file){
   if(d.donder.S)for(const k of['notes','kicks','locks','sound','mute'])if(d.donder.S[k]!==undefined)DW.S[k]=d.donder.S[k]}
  if(d.melodie){put(MW,d.melodie.ui);
   if(d.melodie.S)for(const k of['mel','akk','bas'])if(d.melodie.S[k]!==undefined)MW.S[k]=d.melodie.S[k];
-  if(d.melodie.AAN)MW.AAN=d.melodie.AAN;if(d.melodie.VOL)MW.VOL=d.melodie.VOL;if(d.melodie.LOCK)MW.LOCK=d.melodie.LOCK}
+  if(d.melodie.AAN)Object.assign(MW.AAN,d.melodie.AAN);
+  if(d.melodie.VOL)Object.assign(MW.VOL,d.melodie.VOL);if(d.melodie.LOCK)Object.assign(MW.LOCK,d.melodie.LOCK)}
  if(d.matrix)for(const s in d.matrix)for(const sp in d.matrix[s])if(AAN[s]&&sp in AAN[s])AAN[s][sp]=d.matrix[s][sp];
  if(d.master&&$('sbMaster'))$('sbMaster').value=d.master;
  try{DW.teken&&DW.teken()}catch(e){}
@@ -360,7 +362,8 @@ async function g2bOpen(file){
  document.querySelectorAll('.sbCell').forEach(b=>{const on=AAN[b.dataset.sec]&&AAN[b.dataset.sec][b.dataset.sp];
   b.style.background=on?'#22c55e':'#0a1812'});
  if(ab.byteLength>8+jl){try{const ac=window._vocAC||(window._vocAC=new (window.AudioContext||window.webkitAudioContext)());
-  const buf=await ac.decodeAudioData(u.subarray(8+jl).slice(0).buffer);await laadVocal(buf)}catch(e){console.warn(e)}}
+  const buf=await ac.decodeAudioData(u.subarray(8+jl).slice(0).buffer);await laadVocal(buf,false)}catch(e){console.warn(e)}}
+ else{VOC=null;if($('sbVocInfo'))$('sbVocInfo').textContent=''}
  st('📂 .g2b geladen — druk 🎬 BOUW om je song terug te renderen')}
 /* ---------- vibe-fixers ---------- */
 window.SONG={
