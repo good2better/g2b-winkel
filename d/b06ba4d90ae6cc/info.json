@@ -1,15 +1,15 @@
 {
-  "titel": "G2B COVER-ART FABRIEK",
-  "licentie": "Levenslange licentie — onbeperkt covers maken",
-  "cover": "media/g2b-coverart-cover.png",
-  "bestanden": [
-    {
-      "naam": "🎨 Open de COVER-ART FABRIEK — je licentie zit er al in",
-      "url": "tools/coverart/index.html?licentie=G2B-CA-C0A7E0"
-    },
-    {
-      "naam": "Licentiekaart + handleiding (.txt)",
-      "bestand": "G2B-CoverArt-Licentiekaart.txt"
-    }
-  ]
+ "titel": "G2B COVER-ART FABRIEK",
+ "licentie": "Levenslange licentie — licentiecode voor export: G2B-COVERART-9M9375",
+ "cover": "media/g2b-coverart-cover.png",
+ "bestanden": [
+  {
+   "naam": "🎨 Open de COVER-ART FABRIEK — je licentie zit er al in",
+   "url": "tools/coverart/index.html?licentie=G2B-COVERART-9M9375"
+  },
+  {
+   "naam": "Licentiekaart + handleiding (.txt)",
+   "bestand": "G2B-CoverArt-Licentiekaart.txt"
+  }
+ ]
 }

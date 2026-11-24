@@ -212,11 +212,11 @@ function toWav(buf){
   v.setInt16(off,s*32767,true);off+=2;}
  return new Blob([ab],{type:'audio/wav'});}
 $('bDl').onclick=()=>{const a=document.createElement('a');
- a.href=URL.createObjectURL(toWav(mixed));a.download='G2B-mix-'+Date.now()+'.wav';a.click();};
+ a.href=URL.createObjectURL(toWav(mixed));a.download='G2B-mix-'+Date.now()+'.wav';if(G2BExport.ok('club'))a.click();};
 $('bPlay').onclick=()=>{const c=new AudioContext(),s=c.createBufferSource();
  s.buffer=mixed;s.connect(c.destination);s.start();};
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 <script src="/js/g2b-gate.js" data-tier="leden"></script>
-</body>
+<script src="/js/g2b-export.js"></script></body>
 </html>

@@ -142,7 +142,7 @@ function buildSmf(tpq,tracks,bpmv){
   out.push(0x4D,0x54,0x72,0x6B,(tr.length>>>24)&255,(tr.length>>>16)&255,(tr.length>>>8)&255,tr.length&255,...tr);}
  return new Uint8Array(out);}
 function download(u8,name){const a=document.createElement('a');
- a.href=URL.createObjectURL(new Blob([u8],{type:'audio/midi'}));a.download=name;a.click();}
+ a.href=URL.createObjectURL(new Blob([u8],{type:'audio/midi'}));a.download=name;if(G2BExport.ok('club'))a.click();}
 
 /* ============ MODE 0: SPEL (DJEBU) ============ */
 const D={held:[],root:9,minor:0,conf:0,evs:[],recEvs:[],bar:0,playing:false};
@@ -529,5 +529,5 @@ if(navigator.requestMIDIAccess)navigator.requestMIDIAccess().then(m=>{
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 <script src="/js/g2b-gate.js" data-tier="leden"></script>
-</body>
+<script src="/js/g2b-export.js"></script></body>
 </html>

@@ -201,7 +201,7 @@ async function downloadWav(ab,name){
   const end=Math.min(base+CH,n);
   for(let i=base;i<end;i++){i16(L[i]);if(ch>1)i16(R[i])}
   if(end<n)await new Promise(r=>setTimeout(r,0));}
- const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([dv.buffer],{type:'audio/wav'}));a.download=name;if(G2BExport.ok())a.click();
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([dv.buffer],{type:'audio/wav'}));a.download=name;if(G2BExport.ok('refors'))a.click();
 }
 
 function laad(file){

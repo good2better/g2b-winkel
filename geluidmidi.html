@@ -168,7 +168,7 @@ document.getElementById('bMid').onclick=()=>{
   if(!notes.length){ST.textContent='niks om te exporteren — neuri eerst';return;}
   window.g2bGate(function(){
     const b=midiBytes(notes),a=document.createElement('a');
-    a.href=URL.createObjectURL(new Blob([b],{type:'audio/midi'}));a.download='g2b-geluid.mid';if(G2BExport.ok())a.click();
+    a.href=URL.createObjectURL(new Blob([b],{type:'audio/midi'}));a.download='g2b-geluid.mid';if(G2BExport.ok('geluidmidi'))a.click();
     ST.textContent='g2b-geluid.mid gedownload — sleep hem in je DAW';
   },'geluidmidi');
 };

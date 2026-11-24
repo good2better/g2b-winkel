@@ -167,7 +167,7 @@ function midiBytes(ns){
 document.getElementById('bMid').onclick=()=>{
   if(!notes.length){ST.textContent='niks om te exporteren — neuri eerst';return;}
   const b=midiBytes(notes),a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([b],{type:'audio/midi'}));a.download='g2b-geluid.mid';a.click();
+  a.href=URL.createObjectURL(new Blob([b],{type:'audio/midi'}));a.download='g2b-geluid.mid';if(G2BExport.ok('geluidmidi'))a.click();
   ST.textContent='g2b-geluid.mid gedownload — sleep hem in je DAW';
 };
 
@@ -176,5 +176,5 @@ document.getElementById('quant').oninput=e=>document.getElementById('quantv').te
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 <script src="/js/g2b-gate.js" data-tier="leden"></script>
-</body>
+<script src="/js/g2b-export.js"></script></body>
 </html>

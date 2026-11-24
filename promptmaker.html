@@ -296,7 +296,7 @@ $('bLib').onclick=()=>{
   for(let i=0;i<n;i++){rollOnce(pool);st(`📚 ${i+1} van ${n} voor ${nm}`);}
   const ab=zipStore(libCollect.files);
   const url=URL.createObjectURL(new Blob([ab],{type:'application/zip'}));
-  const a=document.createElement('a');a.href=url;a.download=libCollect.naam+'.zip';a.click();
+  const a=document.createElement('a');a.href=url;a.download=libCollect.naam+'.zip';if(G2BExport.ok('stapel'))a.click();
   st(`📚 ${libCollect.naam}.zip klaar — ${libCollect.files.length} stapels erin`);
   libCollect=null;};
 function rollOnce(poolOverride){
@@ -518,7 +518,7 @@ $('bZipOk').onclick=()=>{const ok=RES.filter(r=>r.state===1);
   if(!ok.length){st('✗ eerst sounds goedkeuren met ✓');return;}
   const ab=zipStore(ok.map(r=>[`G2B-KEEP/${r.naam}.wav`,r.ab]));
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ab],{type:'application/zip'}));
-  a.download='G2B-KEEP.zip';a.click();st('📚 G2B-KEEP.zip — '+ok.length+' goedgekeurde sounds');};
+  a.download='G2B-KEEP.zip';if(G2BExport.ok('stapel'))a.click();st('📚 G2B-KEEP.zip — '+ok.length+' goedgekeurde sounds');};
 function redoOne(r,card){if(r.kind==='stapel'){if(buffers.length<2){st('eerst shots droppen');return;}
     const n2=rollOnce();if(n2){r.naam=n2.naam;r.ab=n2.ab;URL.revokeObjectURL(r.url);r.url=URL.createObjectURL(new Blob([r.ab],{type:'audio/wav'}));r.state=0;
       card.querySelector('audio').src=r.url;card.querySelector('.nm').textContent=r.naam+'.wav';
@@ -855,7 +855,7 @@ $('sWav').onclick=()=>{ensureAC();
   const[L,R]=sRender(evts,4);
   const buf=AC.createBuffer(2,L.length,SR);buf.getChannelData(0).set(L);buf.getChannelData(1).set(R);
   const ab=wavBytes(buf),url=URL.createObjectURL(new Blob([ab],{type:'audio/wav'}));
-  const a=document.createElement('a');a.href=url;a.download=(S.name||'dicesynth').replace(/\s+/g,'-')+'.wav';a.click();
+  const a=document.createElement('a');a.href=url;a.download=(S.name||'dicesynth').replace(/\s+/g,'-')+'.wav';if(G2BExport.ok('stapel'))a.click();
   sStat('⬇ '+(S.name||'sound')+'.wav gedownload');};
 $('sPack').onclick=()=>{ensureAC();
   const raw=$('sPackNaam').value.trim();
@@ -876,7 +876,7 @@ $('sPack').onclick=()=>{ensureAC();
     sStat(`📚 ${i+1} van ${N} — ${S.name}`);}
   const ab=zipStore(files);
   const url=URL.createObjectURL(new Blob([ab],{type:'application/zip'}));
-  const a=document.createElement('a');a.href=url;a.download=`G2B-PACK-${nm}.zip`;a.click();
+  const a=document.createElement('a');a.href=url;a.download=`G2B-PACK-${nm}.zip`;if(G2BExport.ok('stapel'))a.click();
   sStat(`📚 G2B-PACK-${nm}.zip — ${files.length} synth-sounds erin`);};
 
 /* waveform viz */
@@ -905,5 +905,5 @@ restoreRes();
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 <script src="/js/g2b-gate.js" data-tier="inner"></script>
-</body>
+<script src="/js/g2b-export.js"></script></body>
 </html>

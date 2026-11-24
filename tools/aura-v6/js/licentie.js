@@ -9,8 +9,9 @@ const G2BLic = (() => {
     code = (code || '').trim().toUpperCase();
     if (slug === 'aura' && code === 'AURA-V6') return true;          // legacy kopers
     if (slug === 'aura' && code === 'AURA') return true;             // legacy kort
-    const m = code.match(/^G2B-([A-Z]{2,8})-([A-Z0-9]{6})$/);
-    return !!m && m[1] === slug.toUpperCase() && h(code) % 512 === 42;
+    const m = code.match(/^G2B-([A-Z]{2,10})-([A-Z0-9]{6})$/);
+    // G2B-CLUB-… is de meestersleutel (club-lidmaatschap): werkt op álle modules
+    return !!m && (m[1] === slug.toUpperCase() || m[1] === 'CLUB') && h(code) % 512 === 42;
   };
   const sleutel = slug => 'g2b_lic_' + slug;
   const check = slug => {

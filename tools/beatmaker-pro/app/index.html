@@ -500,7 +500,7 @@ function midiBlob(noten){
 function melDownload(k){
  const A=NLAY[k];if(!A||!A.noten.length)return;
  const url=URL.createObjectURL(midiBlob(A.noten)),a=document.createElement('a');
- a.href=url;a.download=`G2B-${k}-${document.getElementById('bpm').value}bpm.mid`;a.click();setTimeout(()=>URL.revokeObjectURL(url),5000)}
+ a.href=url;a.download=`G2B-${k}-${document.getElementById('bpm').value}bpm.mid`;if(G2BExport.ok('beat'))a.click();setTimeout(()=>URL.revokeObjectURL(url),5000)}
 // Chrome DownloadURL-drag: sleep de ⬇-knop → OS-bestand-drag met de .mid
 function midiDrag(e,k){
  const A=NLAY[k];if(!A||!A.noten.length){e.preventDefault();return}
@@ -557,7 +557,7 @@ document.getElementById('exp').onclick=async function(){
    const g=oc.createGain();g.gain.value=a.id=='loop'?0.75:0.85;s.connect(g).connect(masterOf(oc));s.start(0)}
   const rendered=await oc.startRendering();ac=savAc;NB=savNB;
   const url=URL.createObjectURL(wavBlob(rendered)),a=document.createElement('a');
-  a.href=url;a.download=`G2B-${cur}-${bpm}bpm-${nBars}bar.wav`;a.click();
+  a.href=url;a.download=`G2B-${cur}-${bpm}bpm-${nBars}bar.wav`;if(G2BExport.ok('beat'))a.click();
   lastWav={url,nm:a.download};this.draggable=true;
   this.title='SLEEP deze knop naar je desktop/DAW-map om de .wav daar neer te zetten (Chrome)';
  }catch(e){console.error(e)}
@@ -989,7 +989,7 @@ document.getElementById('stems').onclick=async function(){
    this.textContent=`⏳ ${a.nm}...`;
    files.push({name:`G2B-PRO-${a.id}-${bpm}bpm.wav`,data:new Uint8Array(await wavBlob(a.buf).arrayBuffer())})}
   const url=URL.createObjectURL(zipStore(files)),a=document.createElement('a');
-  a.href=url;a.download=`G2B-PRO-stems-${bpm}bpm.zip`;a.click();setTimeout(()=>URL.revokeObjectURL(url),5000)
+  a.href=url;a.download=`G2B-PRO-stems-${bpm}bpm.zip`;if(G2BExport.ok('beat'))a.click();setTimeout(()=>URL.revokeObjectURL(url),5000)
  }catch(e){console.error(e)}
  this.disabled=false;this.textContent='📦 STEMS'};
 // PROJECT: alles weg als .g2bproj (audio-lagen niet — bestanden opnieuw droppen)
@@ -1091,5 +1091,5 @@ evForm.addEventListener('submit',async e=>{
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 <script src="/js/g2b-gate.js" data-tier="leden"></script>
-</body>
+<script src="/js/g2b-export.js"></script></body>
 </html>

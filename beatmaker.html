@@ -496,7 +496,7 @@ function midiBlob(noten){
 function melDownload(k){
  const A=NLAY[k];if(!A||!A.noten.length)return;
  const url=URL.createObjectURL(midiBlob(A.noten)),a=document.createElement('a');
- a.href=url;a.download=`G2B-${k}-${document.getElementById('bpm').value}bpm.mid`;if(G2BExport.ok())a.click();setTimeout(()=>URL.revokeObjectURL(url),5000)}
+ a.href=url;a.download=`G2B-${k}-${document.getElementById('bpm').value}bpm.mid`;if(G2BExport.ok('beat'))a.click();setTimeout(()=>URL.revokeObjectURL(url),5000)}
 // Chrome DownloadURL-drag: sleep de ⬇-knop → OS-bestand-drag met de .mid
 function midiDrag(e,k){
  const A=NLAY[k];if(!A||!A.noten.length){e.preventDefault();return}
@@ -553,7 +553,7 @@ async function expExport(){const btn=document.getElementById('exp');
    const g=oc.createGain();g.gain.value=a.id=='loop'?0.75:0.85;s.connect(g).connect(masterOf(oc));s.start(0)}
   const rendered=await oc.startRendering();ac=savAc;NB=savNB;
   const url=URL.createObjectURL(wavBlob(rendered)),a=document.createElement('a');
-  a.href=url;a.download=`G2B-${cur}-${bpm}bpm-${nBars}bar.wav`;if(G2BExport.ok())a.click();
+  a.href=url;a.download=`G2B-${cur}-${bpm}bpm-${nBars}bar.wav`;if(G2BExport.ok('beat'))a.click();
   lastWav={url,nm:a.download};btn.draggable=true;
   btn.title='SLEEP deze knop naar je desktop/DAW-map om de .wav daar neer te zetten (Chrome)';
  }catch(e){console.error(e)}

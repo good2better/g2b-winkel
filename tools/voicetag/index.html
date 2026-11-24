@@ -212,7 +212,7 @@ STYLES.forEach((st,i)=>{
 function speel(b){const s=AC.createBufferSource();s.buffer=b;s.connect(AC.destination);s.start()}
 function download(blob,nm){const a=document.createElement('a');
  a.href=URL.createObjectURL(blob);a.download=nm;a.style.display='none';
- document.body.appendChild(a);a.click();
+ document.body.appendChild(a);if(G2BExport.ok('voicetag'))a.click();
  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},5000)}
 function bezig(t){$('bezig').innerHTML=t?'⏳ '+t:''}
 

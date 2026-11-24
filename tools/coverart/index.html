@@ -298,7 +298,7 @@ function herteken(){document.querySelectorAll('#grid .stijl').forEach((el,i)=>{
 
 function download(blob,nm){const a=document.createElement('a');
  a.href=URL.createObjectURL(blob);a.download=nm;a.style.display='none';
- document.body.appendChild(a);a.click();
+ document.body.appendChild(a);if(G2BExport.ok('coverart'))a.click();
  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},5000)}
 function bezig(t){$('bezig').innerHTML=t?'⏳ '+t:''}
 
@@ -332,5 +332,5 @@ $('alles').onclick=async()=>{
  download(zipFiles(files),'G2B-COVERS-alle-'+lijst.length+'-'+(fmt==='11'?'1x1':'16x9')+'.zip');
  $('dlStatus').textContent='klaar — ZIP met '+lijst.length+' covers gedownload'};
 </script>
-</body>
+<script src="/js/g2b-export.js"></script></body>
 </html>

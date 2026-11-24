@@ -233,7 +233,7 @@ function bouw(k){
   $('au').src=url;$('dl').style.display='';
   $('resInfo').textContent=`${(n/SR).toFixed(2)}s · ${k} lagen · ${dubbel?'haas-dubbel':'mono'} · limiter 0.85`;
   const card=document.createElement('div');card.className='slot';card.style.marginTop='8px';
-  card.innerHTML=`<div class=nm>${naam}.wav</div><audio controls controlsList="nodownload" src="${url}" style="width:100%;margin:6px 0"></audio><a class=dl href="${url}" onclick="if(!G2BExport.ok())event.preventDefault()" download="${naam}.wav" style="display:inline-block;padding:8px 14px;font-size:12px">⬇ download</a>`;
+  card.innerHTML=`<div class=nm>${naam}.wav</div><audio controls controlsList="nodownload" src="${url}" style="width:100%;margin:6px 0"></audio><a class=dl href="${url}" onclick="if(!G2BExport.ok('stapel'))event.preventDefault()" download="${naam}.wav" style="display:inline-block;padding:8px 14px;font-size:12px">⬇ download</a>`;
   $('lijst').prepend(card);
   st('🎲 gestapeld — luister en lock wat goed is, dobbel de rest opnieuw');
 }

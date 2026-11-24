@@ -301,7 +301,7 @@ function bounce(){ // render 1 maat offline met dezelfde mini-synth
   ri[i]=Math.max(-32768,Math.min(32767,Math.round(R[i]*32767)));}
  dl(wavBlob(li,ri,sr),'g2b-breinpro-loop.wav');
  $('st').textContent='🔊 WAV-loop gedownload — '+bpm+' bpm, naadloos loopbaar';}
-function dl(b,name){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();}
+function dl(b,name){if(!G2BExport.ok('patroon'))return;const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();}
 fetch('breinpro-kits.json').then(r=>r.json()).then(k=>{KITS=k;bouwUI();kiesGenre(Object.keys(k).find(g=>k[g].length));});
 </script><script src="/js/g2b-gate.js" data-tier="leden"></script>
-</body></html>
+<script src="/js/g2b-export.js"></script></body></html>

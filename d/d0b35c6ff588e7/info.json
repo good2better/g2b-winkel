@@ -1,15 +1,15 @@
 {
-  "titel": "G2B VOICETAG-STUDIO",
-  "licentie": "Levenslange licentie — onbeperkt eigen voicetags maken",
-  "cover": "media/g2b-voicetag-cover.png",
-  "bestanden": [
-    {
-      "naam": "🎙 Open de VOICETAG-STUDIO — je licentie zit er al in",
-      "url": "tools/voicetag/index.html?licentie=G2B-VT-B4E2CC"
-    },
-    {
-      "naam": "Licentiekaart + handleiding (.txt)",
-      "bestand": "G2B-Voicetag-Licentiekaart.txt"
-    }
-  ]
+ "titel": "G2B VOICETAG-STUDIO",
+ "licentie": "Levenslange licentie — licentiecode voor export: G2B-VOICETAG-YLZT8A",
+ "cover": "media/g2b-voicetag-cover.png",
+ "bestanden": [
+  {
+   "naam": "🎙 Open de VOICETAG-STUDIO — je licentie zit er al in",
+   "url": "tools/voicetag/index.html?licentie=G2B-VOICETAG-YLZT8A"
+  },
+  {
+   "naam": "Licentiekaart + handleiding (.txt)",
+   "bestand": "G2B-Voicetag-Licentiekaart.txt"
+  }
+ ]
 }
