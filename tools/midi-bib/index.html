@@ -72,4 +72,6 @@ document.addEventListener('click',async e=>{
 });
 </script>
 <script src="/js/g2b-gate.js" data-tier="mijn"></script>
+<script src="../exportslot.js"></script>
+<script>document.addEventListener('click',function(e){var el=e.target.closest('a[download]');if(!el)return;if(window.G2B_EXPORT&&G2B_EXPORT('MIDIBIB'))return;e.preventDefault();e.stopPropagation();G2B_EXPORT_THEN('MIDIBIB',function(){el.click()})},true);</script>
 </body></html>

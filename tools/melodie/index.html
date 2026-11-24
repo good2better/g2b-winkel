@@ -687,4 +687,6 @@ if(/[?&]uit=donder/.test(location.search))setTimeout(laadDonder,80);
 </script>
 <footer style="margin-top:24px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · spatie = speel/stop · N = nieuw</footer>
 <script src="/js/g2b-gate.js" data-tier="mijn"></script>
+<script src="../exportslot.js"></script>
+<script>document.addEventListener('click',function(e){var el=e.target.closest('#midall,#midmel,#midakk,#midbas,#wav');if(!el)return;if(window.G2B_EXPORT&&G2B_EXPORT('MELODIE'))return;e.preventDefault();e.stopPropagation();G2B_EXPORT_THEN('MELODIE',function(){el.click()})},true);</script>
 </body></html>

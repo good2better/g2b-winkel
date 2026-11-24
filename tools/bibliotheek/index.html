@@ -161,4 +161,6 @@ document.querySelectorAll('.pill').forEach(b=>b.onclick=()=>{
 $('#zoek').oninput=lijst;
 $('#fAll').classList.add('on');
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&bron){bron.stop();bron=null;}});
-</script></body></html>
+</script><script src="../exportslot.js"></script>
+<script>document.addEventListener('click',function(e){var el=e.target.closest('[data-a="dl"]');if(!el)return;if(window.G2B_EXPORT&&G2B_EXPORT('BIBLIOTHEEK'))return;e.preventDefault();e.stopPropagation();G2B_EXPORT_THEN('BIBLIOTHEEK',function(){el.click()})},true);</script>
+</body></html>

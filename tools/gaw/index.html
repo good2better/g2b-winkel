@@ -1377,4 +1377,6 @@ function dl(b,n){const a=document.createElement('a');a.href=URL.createObjectURL(
 buildTraks().then(()=>document.getElementById('st').textContent='klaar — druk ▶');
 </script><script src="midi.js"></script><footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 <script src="/js/g2b-gate.js" data-tier="mijn"></script>
+<script src="../exportslot.js"></script>
+<script>document.addEventListener('click',function(e){var el=e.target.closest('[onclick^="exportMid"],[onclick^="exportWav"],[onclick^="exportStems"]');if(!el)return;if(window.G2B_EXPORT&&G2B_EXPORT('GAW'))return;e.preventDefault();e.stopPropagation();G2B_EXPORT_THEN('GAW',function(){el.click()})},true);</script>
 </body></html>

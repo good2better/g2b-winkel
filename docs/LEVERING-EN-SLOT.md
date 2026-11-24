@@ -29,3 +29,8 @@ Tools: factuurmaker, leadfabriek, crmfabriek, lijstfabriek, mailfabriek, marketi
 ## SONIC-AUDIT (nov 2026)
 - tool: tools/sonic-audit/ — meten gratis, FIX + WAV/badge-export achter code
 - code: SONICAUDIT = G2B-SONIC-A7K3V9 (exportslot.js) · levering: d/sonicaudit
+
+## ENGINE-TOOLS (nov 2026)
+- melodie, basfabriek, bibliotheek, midi-bib, laagbaas, menger-web, gaw, gaw-lite: gebruik open (demo), .mid/.wav/stems-downloads achter exportslot
+- codes in exportslot.js CODES (MELODIE, BASFABRIEK, BIBLIOTHEEK, MIDIBIB, LAAGBAAS, MENGERWEB, GAW, GAWMINI)
+- master-clubcode + member-licentie (g2b_aura_licentie) ontgrendelen alles
