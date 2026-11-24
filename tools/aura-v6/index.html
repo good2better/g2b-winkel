@@ -2,6 +2,7 @@
 <title>G2B AURA v6.0 — Master Studio</title>
 <link rel="stylesheet" href="style.css"></head><body><div class="wrap">
 <h1>G2B AURA v6.0 MASTER STUDIO <span style="float:right;font-size:11px">poort 8300 · 100% client-side · © Good2Better</span></h1>
+<div class="demo-bar">🎁 <b>GRATIS DEMO</b> — bouw, speel en ontdek alles onbeperkt · <b>Export (.mid/.wav) is voor kopers</b> — koop geeft je licentiecode + volledige versie</div>
 <div class="grid">
   <div class="card" style="grid-column:1/-1"><h2>🎹 AURA MIDI-Forge — Studio</h2>
     <div class="row">
@@ -10,9 +11,23 @@
       <button class="on" id="btnPlay">▶ Speel</button>
       <button id="btnExport">⬇ Export .mid</button>
       <label>BPM <input id="bpm" type="number" value="140" style="width:64px"></label>
+      <label>Swing <input id="swing" type="number" value="0" min="0" max="60" style="width:50px">%</label>
     </div>
-    <canvas id="roll" width="1040" height="220"></canvas>
-    <div class="row"><span class="hint">klik leeg = noot zetten · sleep noot = verplaatsen · staart = langer/korter · rechtsklik of dubbelklik = weg · export = echte .mid met watermerk</span></div>
+    <div class="row">
+      <label>Schaal <select id="schaal"><option>chromatisch</option><option>mineur pent</option><option selected>mineur</option><option>majeur</option><option>dorisch</option><option>mixolydisch</option></select>
+      <select id="grond"><option value="9">A</option><option value="0">C</option><option value="2">D</option><option value="4">E</option><option value="7">G</option><option value="10">Bb</option></select></label>
+      <button id="btnQuant" title="alles op het 16e-raster">⌗ Quantize</button>
+      <label><input id="human" type="checkbox" style="width:auto"> menselijk</label>
+      <button id="btnUndo" title="Ctrl+Z">↩</button><button id="btnRedo" title="Ctrl+Y">↪</button>
+      <button id="btnDup" title="patroon 2× achter elkaar">2× patroon</button>
+      <label>Maten <select id="bars"><option>4</option><option>8</option></select></label>
+      <button id="octUp" title="octaaf omhoog">▲</button><button id="octDn" title="octaaf omlaag">▼</button>
+      <span style="opacity:.7">slot:</span>
+      <button class="slot" data-s="0">1</button><button class="slot" data-s="1">2</button><button class="slot" data-s="2">3</button><button class="slot" data-s="3">4</button>
+      <span id="st" style="font-size:11px;opacity:.7"></span>
+    </div>
+    <canvas id="roll" width="1040" height="240"></canvas>
+    <div class="row"><span class="hint">klik leeg = noot · sleep = verplaatsen · staart = lengte · rechtsklik/dubbel = weg · <b>Shift+sleep = selecteren</b> · <b>wiel/Alt+sleep = velocity</b> · Del = verwijder · Ctrl+D = dupliceer · pijlen = nudge/octaaf · Ctrl+Z = ongedaan</span></div>
   </div>
   <div class="card"><h2>🥁 Suri-Pads &amp; World</h2><p>Pads + Surinaamse instrumenten — multi-select stacking.</p><a href="suri-pads/">Open module →</a></div>
   <div class="card"><h2>🎛 Beat Maker</h2><p>Beats bouwen in je browser — grid, lagen, eigen sounds.</p><a href="../../beatmaker-club.html">Open →</a></div>
@@ -24,48 +39,64 @@
   <div class="card"><h2>🧠 Mijn Brein</h2><div id="brainBox"></div></div>
 </div></div>
 <script src="js/aura-engine.js"></script>
-<script src="js/midi-forge-engine.js?v=3"></script>
-<script>const _gelicen = () => {
-  try {
-    if (localStorage.getItem('g2b_aura_licentie') === 'ok') return true;
-    const q = new URLSearchParams(location.search).get('licentie');
-    if (q && q.length >= 6) { localStorage.setItem('g2b_aura_licentie', 'ok'); return true; }
-  } catch (e) {}
-  return false;
-};
-</script>
+<script src="js/licentie.js"></script>
+<script src="js/midi-forge-engine.js?v=4"></script>
 <script src="js/brain-memory.js"></script>
 <script>
-const roll = new PianoRoll(document.getElementById('roll'), { bars: 4 });
+const st = document.getElementById('st');
+let _blip = false;
+const roll = new PianoRoll(document.getElementById('roll'), { bars: 4,
+  onBlip: (p, v) => { if (_blip) { try { Aura.noteOn(p, { wave: 'tri', velocity: v }); setTimeout(() => Aura.noteOff(p), 120); } catch (e) {} } } });
+roll.setScale('mineur', 9);
 const exp = new AuraMidiExporter();
-const stijl = { Trap: () => StijlGen.trap(), 'Surinaams/Kaseko': () => StijlGen.kaseko(), 'Drill Glide': () => StijlGen.drill() };
-document.getElementById('genTrap').onclick = () => { roll.notes = StijlGen.trap(); roll.draw(); };
-document.getElementById('genKaseko').onclick = () => { roll.notes = StijlGen.kaseko(); roll.draw(); };
-document.getElementById('genDrill').onclick = () => { roll.notes = StijlGen.drill(); roll.draw(); };
+document.getElementById('genTrap').onclick = () => { roll.pushHist(); roll.notes = StijlGen.trap(); roll.draw(); };
+document.getElementById('genKaseko').onclick = () => { roll.pushHist(); roll.notes = StijlGen.kaseko(); roll.draw(); };
+document.getElementById('genDrill').onclick = () => { roll.pushHist(); roll.notes = StijlGen.drill(); roll.draw(); };
+document.getElementById('schaal').onchange = e => roll.setScale(e.target.value, +document.getElementById('grond').value);
+document.getElementById('grond').onchange = e => roll.setScale(document.getElementById('schaal').value, +e.target.value);
+document.getElementById('btnQuant').onclick = () => { roll.quantize(); st.textContent = 'gequantized op 16e'; };
+document.getElementById('btnUndo').onclick = () => roll.undo();
+document.getElementById('btnRedo').onclick = () => roll.redo();
+document.getElementById('btnDup').onclick = () => { roll.dupliceerPatroon(); document.getElementById('bars').value = roll.bars; };
+document.getElementById('bars').onchange = e => roll.setBars(+e.target.value);
+document.getElementById('octUp').onclick = () => roll.oct(1);
+document.getElementById('octDn').onclick = () => roll.oct(-1);
+const slots = [null, null, null, null];
+document.querySelectorAll('.slot').forEach(b => b.onclick = e => {
+  const i = +b.dataset.s;
+  if (e.shiftKey || !slots[i]) { slots[i] = JSON.stringify(roll.notes); st.textContent = 'slot ' + (i + 1) + ' opgeslagen (' + roll.notes.length + ' noten)'; }
+  else { roll.pushHist(); roll.notes = JSON.parse(slots[i]); roll.draw(); st.textContent = 'slot ' + (i + 1) + ' geladen'; }
+});
 document.getElementById('btnExport').onclick = () => {
-  if (_gelicen()) { exp.download(roll.notes, +document.getElementById('bpm').value); return; }
-  const code = prompt('Export (.mid) is voor kopers.\nHeb je een licentiecode? Vul hem hier in — anders: koop MIDI-Forge in de winkel.');
-  if (code && code.trim().length >= 6) { try { localStorage.setItem('g2b_aura_licentie', 'ok'); } catch (e) {} exp.download(roll.notes, +document.getElementById('bpm').value); }
+  if (G2BLic.check('aura')) { exp.download(roll.notes, +document.getElementById('bpm').value, 'aura-forge', +document.getElementById('swing').value / 100); return; }
+  G2BLic.vraag('aura', st) && exp.download(roll.notes, +document.getElementById('bpm').value, 'aura-forge', +document.getElementById('swing').value / 100);
 };
-let playing = false, _timers = [];
+let playing = false, _timers = [], _ph = null;
 document.getElementById('btnPlay').onclick = async () => {
   const btn = document.getElementById('btnPlay');
   if (playing) {
     playing = false; _timers.forEach(clearTimeout); _timers = [];
+    cancelAnimationFrame(_ph); roll.playhead(-1);
     Aura.panic(); btn.textContent = '▶ Speel'; return;
   }
-  await Aura.init('js/aura-dsp-worklet.js');
+  await Aura.init('js/aura-dsp-worklet.js'); _blip = true;
   const bpm = Math.max(40, +document.getElementById('bpm').value || 140);
+  const sw = +document.getElementById('swing').value / 100;
+  const hum = document.getElementById('human').checked;
   const ms = b => b * 60000 / bpm;
+  const swingT = b => (((b * 2) % 2) === 1) ? sw * ms(0.5) : 0; // oneven 8e/16e later
   playing = true; btn.textContent = '⏸ Stop';
-  let end = 0;
+  let end = 0; const t0 = performance.now();
   for (const n of roll.notes) {
-    const t = ms(n.startBeat), dur = Math.max(80, ms(n.durationBeats));
+    const jit = hum ? (Math.random() - 0.5) * 24 : 0;
+    const t = ms(n.startBeat) + swingT(n.startBeat) + jit, dur = Math.max(80, ms(n.durationBeats));
     end = Math.max(end, t + dur);
-    _timers.push(setTimeout(() => { if (playing) Aura.noteOn(n.pitch, { wave: 'saw', velocity: n.velocity }); }, t));
-    _timers.push(setTimeout(() => { if (playing) Aura.noteOff(n.pitch); }, t + dur));
+    _timers.push(setTimeout(() => { if (playing) Aura.noteOn(n.pitch, { wave: 'saw', velocity: Math.max(1, Math.min(127, n.velocity + (hum ? (Math.random() - 0.5) * 16 : 0))) }); }, Math.max(0, t)));
+    _timers.push(setTimeout(() => { if (playing) Aura.noteOff(n.pitch); }, Math.max(0, t) + dur));
   }
-  _timers.push(setTimeout(() => { playing = false; _timers = []; btn.textContent = '▶ Speel'; }, end + 300));
+  const loop = () => { if (!playing) return; roll.playhead(((performance.now() - t0) / ms(1)) % (roll.bars * 4 || 1)); _ph = requestAnimationFrame(loop); };
+  loop();
+  _timers.push(setTimeout(() => { playing = false; _timers = []; cancelAnimationFrame(_ph); roll.playhead(-1); btn.textContent = '▶ Speel'; }, end + 300));
 };
 BrainMemory.knop(document.getElementById('brainBox'));
 </script></body></html>

@@ -3,9 +3,11 @@
    transportbalk (direct spelen/play/stop/rec/loop/step/wis/.mid/.wav).
    Noten verschijnen als groene/cyaan balkjes op toonhoogte in het raster.
    Gebruik: const panel = StudioPanel.bouw(el, {bpm:120}); panel.hit(pitch,vel) vanuit play(). */
-/* demo-gate: .mid/.wav export alleen voor kopers (licentiecode via validate.php of ?licentie= of opgeslagen) */
+/* demo-gate: .mid/.wav export alleen voor kopers — echte code-check via G2BLic
+   (fallback hieronder werkt ook als licentie.js niet geladen is) */
 const _gelicen = () => {
   try {
+    if (window.G2BLic) return G2BLic.check('aura');
     var _lv = localStorage.getItem('g2b_aura_licentie'); if (_lv === 'ok' || (_lv && _lv.length >= 4)) return true;
     const q = new URLSearchParams(location.search).get('licentie');
     if (q && q.length >= 6) { localStorage.setItem('g2b_aura_licentie', 'ok'); return true; }
@@ -13,6 +15,7 @@ const _gelicen = () => {
   return false;
 };
 const _vraagLicentie = (st) => {
+  if (window.G2BLic) return G2BLic.vraag('aura', st);
   const code = prompt('Export (.mid/.wav) is voor kopers.\nHeb je een licentiecode? Vul hem hier in — anders: koop de module in de winkel.');
   if (code && code.trim().length >= 6) { try { localStorage.setItem('g2b_aura_licentie', 'ok'); } catch (e) {} st.textContent = 'licentie ok — export werkt nu'; return true; }
   st.textContent = 'demo-modus: spelen & opnemen gratis — export alleen voor kopers';
