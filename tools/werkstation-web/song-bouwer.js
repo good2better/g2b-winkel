@@ -425,6 +425,13 @@ function uiBoot(){
  const sv=$('sbSave');if(sv)sv.onclick=g2bSave;
  const op=$('sbOpenFile');if(op)op.onchange=()=>{if(op.files&&op.files[0])g2bOpen(op.files[0]);op.value=''};
  const opb=$('sbOpen');if(opb)opb.onclick=()=>op&&op.click();
+ /* .g2b drag & drop op de bouwer-kaart */
+ const sc=$('songBouwer');
+ if(sc){sc.addEventListener('dragover',e=>{e.preventDefault();sc.style.outline='2px dashed #22c55e'});
+  sc.addEventListener('dragleave',()=>sc.style.outline='');
+  sc.addEventListener('drop',e=>{e.preventDefault();sc.style.outline='';
+   const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+   if(f&&/\.g2b$/i.test(f.name))g2bOpen(f);else if(f)st('⚠ sleep een .g2b bestand')})}
  /* ⠿ sleep-naar-DAW grepen op alle exports */
  [['sbWav','audio/wav','g2b-song-master.wav',()=>new Blob([wavBytes(LAST.L,LAST.R,SR)])],
   ['sbMid','audio/midi','g2b-song.mid',()=>new Blob([midiSong([],120,[])])]].forEach(([id,mt,fn,mk])=>{
