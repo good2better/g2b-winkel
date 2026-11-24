@@ -65,6 +65,7 @@ canvas{width:100%;display:block;border-radius:8px;background:#050b08}
   <label style="flex-direction:row;align-items:center">warmte <input type="range" id="warmte" min="0" max="100" value="15"></label>
  </div>
  <canvas id="roll" width="1060" height="300"></canvas>
+ <div class="rij" style="margin-top:5px;align-items:center;flex-wrap:wrap;gap:6px"><span class="hint" style="margin:0">✂ pas alleen dit deel aan:</span><span id="blokUI" style="display:inline-flex;gap:5px;flex-wrap:wrap"></span></div>
  <div class="rij" style="margin-top:5px;align-items:center;flex-wrap:wrap;gap:6px"><span class="hint" style="margin:0">✎ klik in het grid om een blok aan/uit te zetten — bewerk:</span>
   <button class="klein aan" id="edMel" title="klikken werkt op de melodie-sporen">MELODIE</button>
   <button class="klein" id="edAkk" title="klikken werkt op de akkoorden">AKKOORDEN</button>
@@ -253,7 +254,23 @@ function maakMel(c){
  return out}
 function dichtst(arr,x){const nl=arr.length||1;let b=arr[0]??x,bd=99;
  for(const a of arr)for(const o of[-1,0,1]){const c=a+o*nl;if(Math.abs(c-x)<bd){bd=Math.abs(c-x);b=c}}return b}
-function maak(wat){const c=cfg();if(!PROG||PROG.length!==c.maten||wat==='alles')maakProg(c);
+let BLOK=-1; // -1 = alles, 0..3 = blok van 4 maten
+function blokS(){const c=cfg();if(BLOK<0)return null;const a=BLOK*64;return[a,Math.min(c.maten*16,a+64)]}
+function blokMerge(oud,nw){const r=blokS();if(!r)return nw;const[a,b]=r;
+ return oud.filter(n=>n.s<a||n.s>=b).concat(nw.filter(n=>n.s>=a&&n.s<b)).sort((x,y)=>x.s-y.s)}
+function blokUI(){const c=cfg(),n=Math.ceil(c.maten/4);$('blokUI').innerHTML=
+ `<button class="klein ${BLOK<0?'aan':''}" data-blok="-1" title="🎲 en ⟲ werken op alles">ALLES</button>`+
+ Array.from({length:n},(_,i)=>`<button class="klein ${BLOK===i?'aan':''}" data-blok="${i}" title="alleen maat ${i*4+1} t/m ${Math.min(c.maten,(i+1)*4)} aanpassen">${i*4+1}–${Math.min(c.maten,(i+1)*4)}</button>`).join('');
+ document.querySelectorAll('[data-blok]').forEach(b=>b.onclick=()=>{BLOK=+b.dataset.blok;blokUI();teken();
+ st(BLOK<0?'✂ alles — 🎲/⟲ werken op de hele roll':'✂ alleen maat '+(BLOK*4+1)+'–'+Math.min(cfg().maten,(BLOK+1)*4)+' — 🎲/⟲ werken op dat deel, de rest blijft staan')})}
+function maak(wat){const c=cfg(),r=blokS();
+ if(r&&(wat==='alles'||wat==='akk'||wat==='bas'||wat==='mel')){ // alleen dit blok aanpassen: akkoorden & buitenstukken blijven
+  const gen=k=>k==='mel'?maakMel(c):k==='akk'?maakAkk(c):maakBas(c);
+  if(wat==='alles'){if(!LOCK.akk)S.akk=blokMerge(S.akk,gen('akk'));if(!LOCK.bas)S.bas=blokMerge(S.bas,gen('bas'));if(!LOCK.mel)S.mel=blokMerge(S.mel,gen('mel'))}
+  else if(wat!=='akk'||true){if(!LOCK[wat])S[wat]=blokMerge(S[wat],gen(wat));
+   if(wat==='akk')S.bas=blokMerge(S.bas,S.bas.map(n=>{const gr=PROG[Math.floor(n.s/16)];if(gr==null)return n;let p=lp(c,gIdx(c,gr),36);if(p>47)p-=12;return{...n,p}}))}
+  bewaar();return}
+ if(!PROG||PROG.length!==c.maten||wat==='alles')maakProg(c);
  if(wat==='akk'){maakProg(c);S.akk=maakAkk(c);
  // bas: zelfde ritme, alleen toonhoogtes volgen de nieuwe akkoorden (geen krasende bas onder nieuwe akkoorden)
  S.bas=S.bas.map(n=>{const gr=PROG[Math.floor(n.s/16)];if(gr==null)return n;let p=lp(c,gIdx(c,gr),36);if(p>47)p-=12;return{...n,p}});
@@ -318,6 +335,9 @@ function teken(){const cv=$('roll'),g=cv.getContext('2d'),gi=gridInfo(),W=gi.W,H
  for(let s=0;s<=stp;s++){g.fillStyle=s%16===0?'#2f5a44':s%4===0?'#173326':'#0b1a13';g.fillRect(s*sw,0,1,H)}
  g.fillStyle='#8fa89a';g.font='11px system-ui';
  for(let m=0;m<c.maten;m++){const gr=PROG?PROG[m]:0;g.fillText((m+1)+' · '+akkNaam(c,gr),m*16*sw+4,12)}
+ const br=blokS();if(br){g.fillStyle='rgba(34,197,94,.07)';g.fillRect(br[0]*sw,0,(br[1]-br[0])*sw,H);
+ g.strokeStyle='#22c55e';g.lineWidth=2;g.strokeRect(br[0]*sw,1,(br[1]-br[0])*sw,H-2);g.lineWidth=1;
+ g.fillStyle='#22c55e';g.fillText('✂',br[0]*sw+4,H-6)}
  for(const[k]of SPOREN){if(!AAN[k])continue;g.fillStyle=KLR[k];
   for(const n of S[k]){const p2=po(k,n.p);g.globalAlpha=.45+n.v/250;g.fillRect(n.s*sw+1,H-(p2-lo+1)*rh+1,Math.max(3,n.d*sw-2),Math.max(3,rh-2))}}
  g.globalAlpha=1;
@@ -625,7 +645,11 @@ $('undo').onclick=()=>{if(hi>0)herstel(--hi)};$('redo').onclick=()=>{if(hi<hist.
 $('mStap').onclick=()=>{M_STAPIN=!M_STAPIN;M_STAPPOS=0;$('mStap').classList.toggle('aan',M_STAPIN);
  st(M_STAPIN?'⌨ STAP-IN aan — elke toets schrijft een melodie-noot (stap '+$('mstapv').value+'e)':'⌨ STAP-IN uit')};
 $('mRust').onclick=()=>{const stap=+$('mstapv').value,tot=(+$('maten').value)*16;M_STAPPOS=(M_STAPPOS+stap)%tot;st('␣ rust — volgende noot op stap '+M_STAPPOS)};
-$('mWis').onclick=()=>{bewaar();S.mel=[];M_STAPPOS=0;bewaar();teken();sporenUI();st('⟲ melodie-roll leeg — ↶ brengt hem terug · speel zelf in met ⌨ STAP-IN')};
+$('mWis').onclick=()=>{bewaar();const r=blokS();
+ S.mel=r?S.mel.filter(n=>n.s<r[0]||n.s>=r[1]):[];M_STAPPOS=r?r[0]:0;bewaar();teken();sporenUI();
+ st(r?'⟲ blok '+((BLOK*4)+1)+'–'+Math.min(cfg().maten,(BLOK+1)*4)+' leeg — de rest staat er nog':'⟲ melodie-roll leeg — ↶ brengt hem terug · speel zelf in met ⌨ STAP-IN')};
+$('maten').addEventListener('change',()=>{BLOK=-1;blokUI()});
+blokUI();
 melsToetsen();
 $('mLeer').onclick=()=>{LEER=!LEER;$('mLeer').classList.toggle('aan',LEER);$('mLeer').textContent=LEER?'⏹ BEWAAR':'● LEER AKKOORD';
  if(LEER){LEERSET=new Set();st('● leer — speel je akkoord op de toetsen of midi-keyboard, druk opnieuw om te bewaren')}
