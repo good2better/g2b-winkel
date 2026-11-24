@@ -102,9 +102,14 @@ async function laadVocal(bron,retune){ /* bron: File of AudioBuffer; retune=fals
   /* anker = eerste energie-STIJGING met niveau: een constante achtergrond of
      adem stijgt niet/staat te laag; een rustige opening stijgt wel → nooit
      doorgesneden. Vindt niets → onset=0 (alles speelt mee, niets weg) */
-  const thR=pk*pk*hop*.01,thE=pk*pk*hop*.015;let i0=nf,fb=nf;
+  /* vloer = mediaan energie van de eerste hops: constante brom/achtergrond
+     die vanaf sample 0 meedoet telt niet als "stijging" → kan geen anker */
+  const nb=Math.min(30,Math.floor(nf/4)||1),
+   be=Array.from(e2.subarray(0,nb)).sort((a,b)=>a-b),
+   lvl=Math.max(pk*pk*hop*.015,(be[Math.floor(be.length/2)]||0)*4),
+   thR=pk*pk*hop*.01,thE=pk*pk*hop*.015;let i0=nf,fb=nf;
   for(let i=0;i+2<nf;i++){
-   if(!(env[i]>thR&&e2[i]>thE&&e2[i+1]>thE&&e2[i+2]>thE))continue;
+   if(!(env[i]>thR&&e2[i]>lvl&&e2[i+1]>thE&&e2[i+2]>thE))continue;
    if(fb===nf)fb=i;                 /* eerste kandidaat onthouden als fallback */
    /* adem/ruis = breedband zonder toon (hoge nuldoorgang) → overslaan; toon
       gemeten op de hops ná de sprong (hop i kan half-gemengd zijn) */
@@ -112,7 +117,9 @@ async function laadVocal(bron,retune){ /* bron: File of AudioBuffer; retune=fals
    for(let j=(i+1)*hop+1;j<(i+2)*hop;j++)z1+=mono[j]>=0!==mono[j-1]>=0;
    for(let j=(i+2)*hop+1;j<(i+3)*hop;j++)z2+=mono[j]>=0!==mono[j-1]>=0;
    if(z1<0.18*hop||z2<0.18*hop){i0=i;break}}
-  onset=i0===nf?(fb===nf?0:fb*hop):i0*hop}
+  /* 's'/'t'-begin (ruisachtig) vlak vóór de klinker hoort bij de take →
+     tot ~116ms terugnemen; een echte adem zit er langer voor */
+  onset=i0===nf?(fb===nf?0:fb*hop):(fb!==nf&&i0-fb<=20?fb:i0)*hop}
  VOC={L,R,mono,key:k,mod:m,bpm,onset};
  /* engines op de stem afstemmen: bpm + toonsoort doorzetten */
  if(retune){try{const d=DW&&DW.document;if(d){if(d.getElementById('bpm'))d.getElementById('bpm').value=bpm;
