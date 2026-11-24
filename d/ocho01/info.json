@@ -1,14 +1,18 @@
 {
- "titel": "G2B OCHO",
- "licentie": "Licentiecode voor .mid-export: G2B-OCHO-366YXE",
- "bestanden": [
-  {
-   "naam": "🔓 Open met jouw licentie",
-   "url": "tools/ocho-web/ocho.html?licentie=G2B-OCHO-366YXE"
-  },
-  {
-   "naam": "Jouw licentiecode",
-   "bestand": "LICENTIE.txt"
-  }
- ]
+  "titel": "G2B OCHO",
+  "licentie": "Licentiecode voor .mid-export: G2B-OCHO-366YXE",
+  "bestanden": [
+    {
+      "naam": "🔓 Open met jouw licentie",
+      "url": "tools/ocho-web/ocho.html?licentie=G2B-OCHO-366YXE"
+    },
+    {
+      "naam": "Jouw licentiecode",
+      "bestand": "LICENTIE.txt"
+    },
+    {
+      "naam": "NIEUW: Speel-functies handleiding (PDF) — blauw licht, laptop-piano, modes, REC-raster",
+      "url": "d/x73c75911ad6724f1b9f3e458/G2B-NIEUWE-SPEELFUNCTIES.pdf"
+    }
+  ]
 }

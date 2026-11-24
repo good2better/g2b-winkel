@@ -1,9 +1,19 @@
 {
- "titel": "G2B AURA Sampler — VST3 + Standalone (Windows)",
- "licentie": "Licentiecode voor export: aura-v6",
- "cover": "tools/aura-v6/img/suri-pads.png",
- "bestanden": [
-  {"naam": "AURA Sampler VST3 + packs (ZIP, Windows)", "bestand": "G2B-AURA-SAMPLER.zip"},
-  {"naam": "Nederlandse uitleg (PDF)", "url": "d/x73c75911ad6724f1b9f3e458/G2B-AURA-V6-UITLEG.pdf"}
- ]
+  "titel": "G2B AURA Sampler — VST3 + Standalone (Windows)",
+  "licentie": "Licentiecode voor export: aura-v6",
+  "cover": "tools/aura-v6/img/suri-pads.png",
+  "bestanden": [
+    {
+      "naam": "AURA Sampler VST3 + packs (ZIP, Windows)",
+      "bestand": "G2B-AURA-SAMPLER.zip"
+    },
+    {
+      "naam": "Nederlandse uitleg (PDF)",
+      "url": "d/x73c75911ad6724f1b9f3e458/G2B-AURA-V6-UITLEG.pdf"
+    },
+    {
+      "naam": "NIEUW: Speel-functies handleiding (PDF) — blauw licht, laptop-piano, modes, REC-raster",
+      "url": "d/x73c75911ad6724f1b9f3e458/G2B-NIEUWE-SPEELFUNCTIES.pdf"
+    }
+  ]
 }
