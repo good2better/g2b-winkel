@@ -4,6 +4,7 @@ Gebruik: python3 tools/portfolio-sync.py  (daarna commit+push)"""
 import re,os,json
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ZAKELIJK=[  # eerst: zakelijke tools (MKB-beslissers)
+("tools/leadradar/","B2B LEAD- & ACQUISITIE-MACHINE","live demo","Complete klant-machine: pipeline-radar, dagelijkse actielijst, offerte-PDF maker en opvolg-scripts — met demo-data."),
 ("tools/crmfabriek/","CRM-FABRIEK","live demo","Leads-bord Nieuw→Verkocht met CSV in/uit — eigen beheer, geen abonnement."),
 ("tools/factuurmaker/","FACTUURMAKER","live demo","Factuur als nette PDF in 1 minuut — lokaal, privacy-proof."),
 ("tools/imagelab-web/imagelab.html","IMAGELAB","live demo","AI-beeldbewerking met node-graph pipeline — lokaal, CPU-vriendelijk."),
@@ -33,9 +34,9 @@ VIDEOS=[("melodie-bas-club-promo.mp4","Melodie + Basfabriek + Club","promo-monta
 ("ritmosbundle-promo.mp4","Ritmos-Bundle","promo")]
 def mk(pad,naam,tag,desc):
     return f'<a class="demo" href="https://good2better.com/{pad}" target="_blank"><b>{naam}</b> — {desc}<span class="badge">{tag}</span></a>'
-demos=("<h3 style='color:#3ef26d;font-size:14px;margin:14px 0 4px'>Zakelijk & automatisering — geen abonnementen, data blijft van jou</h3>\n"
- "\n".join(mk(*x) for x in ZAKELIJK)
- +"\n<h3 style='color:#3ef26d;font-size:14px;margin:22px 0 4px'>Audio, media & educatie — bewijs van snelheid en real-time techniek</h3>\n"
+demos=("<h3 style='color:#3ef26d;font-size:14px;margin:14px 0 4px'>Zakelijk & automatisering — geen abonnementen, data blijft van jou <a href='#contact' onclick=\"vul('Acquisitie-systeem of zakelijke tool')\" style='color:#efb42c;font-size:12px'>→ vraag demo voor mijn bedrijf</a></h3>\n"
+ +"\n".join(mk(*x) for x in ZAKELIJK)
+ +"\n<h3 style='color:#3ef26d;font-size:14px;margin:22px 0 4px'>Audio, media & educatie — bewijs van snelheid en real-time techniek <a href='#contact' onclick=\"vul('Audio- of media-tool')\" style='color:#efb42c;font-size:12px'>→ vraag demo</a></h3>\n"
  +"\n".join(mk(*x) for x in AUDIO))
 vids="\n".join(f'<a class="demo" href="https://good2better.com/media/{v}" target="_blank"><b>{n}</b> — video <span class="badge">{t}</span></a>' for v,n,t in VIDEOS)
 s=open(f"{ROOT}/portfolio.html").read()

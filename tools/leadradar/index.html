@@ -1,0 +1,388 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Acquisitie-Radar — OpleverMeester + WijKopenInboedel</title>
+<style>
+:root{--bg:#fbf6f1;--panel:#ffffff;--panel2:#fffaf0;--line:#eadfce;--txt:#262421;--dim:#6b6156;--acc:#efb42c;--acc2:#d3920f}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font:14px/1.5 'Segoe UI',system-ui,sans-serif}
+header{background:var(--panel);border-bottom:1px solid var(--line);padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:19px;letter-spacing:1px}.logo b{color:var(--acc2)}.logo img{height:34px;vertical-align:middle;margin-right:10px}
+.merkbtn{background:var(--panel2);border:1px solid var(--line);color:var(--dim);border-radius:16px;padding:5px 14px;cursor:pointer;font-weight:700;font-size:12px}
+.merkbtn.on{background:#262421;color:#efb42c;border-color:#262421}
+main{max-width:1200px;margin:0 auto;padding:18px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px}
+.kpi .v{font-size:22px;font-weight:800;color:#d3920f}.kpi .l{color:var(--dim);font-size:12px}
+.vandaag{background:#fff0cf;border:1px solid #efb42c;border-radius:10px;padding:12px 16px;margin-bottom:16px}
+.vandaag h3{color:#b36f00;margin-bottom:6px;font-size:14px}
+.vandaag .t{padding:5px 0;border-bottom:1px dashed var(--line);font-size:13px;display:flex;gap:8px;align-items:center}
+.pipeline{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px}
+.col{min-width:230px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;flex:1}
+.col h4{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--dim);margin-bottom:8px}
+.card{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:9px;margin-bottom:8px;font-size:13px}
+.card .naam{font-weight:700}.card .sub{color:var(--dim);font-size:11.5px}
+.card .merk{font-size:10px;color:#d3920f;text-transform:uppercase;letter-spacing:.5px}
+.card .actie{color:#b36f00;font-size:11.5px;margin-top:4px}
+.card .knp{margin-top:6px;display:flex;gap:5px;flex-wrap:wrap}
+.card button{background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer}
+.card button:hover{border-color:var(--acc)}
+.formbox{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:16px}
+.formbox input,.formbox select,.formbox textarea{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:7px;padding:7px 10px;font:inherit;font-size:13px}
+.formbox input:focus,.formbox select:focus{border-color:var(--acc);outline:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+ .knop{background:#262421;color:#efb42c;border:0;border-radius:8px;padding:9px 18px;font-weight:800;cursor:pointer;font-size:14px}
+.knop:hover{filter:brightness(1.1)}
+.tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.tab{background:var(--panel);border:1px solid var(--line);color:var(--dim);border-radius:8px;padding:7px 16px;cursor:pointer;font-weight:700;font-size:13px}
+.tab.on{background:#262421;color:#efb42c}
+pre{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:14px;white-space:pre-wrap;font:12.5px/1.6 'Segoe UI',sans-serif}
+.hidden{display:none}
+.kanaal-t table{width:100%;border-collapse:collapse}
+.kanaal-t td,.kanaal-t th{border:1px solid var(--line);padding:5px 9px;font-size:13px;text-align:left}
+.kanaal-t th{color:var(--acc)}
+.klijst{max-height:220px;overflow:auto}
+.exp{float:right}
+</style></head><body>
+<header>
+  <div class="logo"><img src="https://www.oplevermeester.nl/brand/oplevermeester-logo.svg" alt="logo" onerror="this.style.display='none'">ACQUISITIE<b>-RADAR</b></div>
+  <button class="merkbtn on" data-m="">Beide</button>
+  <button class="merkbtn" data-m="oplevermeester">OpleverMeester</button>
+  <button class="merkbtn" data-m="wijkopeninboedel">WijKopenInboedel</button>
+  <button class="merkbtn exp" id="exp" title="alle data als .json opslaan (backup / verhuizen naar andere pc)">⬇ backup</button>
+</header>
+<main>
+<div class="kpis" id="kpis"></div>
+<div class="vandaag hidden" id="vandaag"><h3>📅 Vandaag / te laat:</h3><div id="vandaaglist"></div></div>
+<div id="vandaag" class="formbox" style="padding:10px 14px;font-size:14px"></div>
+<div class="tabs">
+  <div class="tab on" data-t="pipeline">Pipeline</div>
+  <div class="tab" data-t="nieuw">+ Nieuwe lead</div>
+  <div class="tab" data-t="kosten">Kosten & kanaal</div>
+  <div class="tab" data-t="offerte">Offerte-maker</div>
+  <div class="tab" data-t="agent">🤖 AGENT</div>
+  <div class="tab" data-t="scripts">Scripts</div>
+</div>
+<div id="t-pipeline" class="tt"><div class="pipeline" id="pipeline"></div></div>
+<div id="t-nieuw" class="tt hidden">
+  <div class="formbox"><h3>Nieuwe lead toevoegen</h3><div class="grid" style="margin-top:10px">
+    <select id="f-merk"><option value="beiden">Beide merken</option><option value="oplevermeester">OpleverMeester</option><option value="wijkopeninboedel">WijKopenInboedel</option></select>
+    <input id="f-naam" placeholder="Naam contactpersoon *">
+    <input id="f-bedrijf" placeholder="Bedrijf/organisatie">
+    <select id="f-type"></select>
+    <select id="f-kanaal"></select>
+    <input id="f-regio" placeholder="Regio (bijv. Groningen)">
+    <input id="f-telefoon" placeholder="Telefoon">
+    <input id="f-email" placeholder="E-mail">
+    <input id="f-waarde" type="number" placeholder="Geschatte waarde €">
+    <input id="f-actie" placeholder="Volgende actie (bijv. nabellen)">
+    <input id="f-actie_datum" type="date">
+    <input id="f-notities" placeholder="Notities">
+  </div>
+  <div style="margin-top:10px"><button class="knop" onclick="slaLead()">Opslaan</button></div></div>
+</div>
+<div id="t-kosten" class="tt hidden">
+  <div class="formbox"><h3>Kosten registreren</h3><div class="grid" style="margin-top:10px">
+    <select id="k-merk"><option value="beiden">Beide</option><option value="oplevermeester">OpleverMeester</option><option value="wijkopeninboedel">WijKopenInboedel</option></select>
+    <select id="k-kanaal"></select>
+    <input id="k-bedrag" type="number" placeholder="Bedrag €">
+    <input id="k-omschrijving" placeholder="Omschrijving (bijv. Marktplaats-advertentie)">
+    <input id="k-datum" type="date">
+  </div><div style="margin-top:10px"><button class="knop" onclick="slaKosten()">Registreer</button></div></div>
+  <div class="formbox kanaal-t"><h3>Leads per kanaal (aanvraag+)</h3><table id="kanaal-table"><tr><th>Kanaal</th><th>Aanvragen+</th></tr></table></div>
+  <div class="formbox kanaal-t"><h3>Laatste kosten</h3><table id="kosten-table"><tr><th>Datum</th><th>Kanaal</th><th>Wat</th><th>€</th></tr></table></div>
+</div>
+<div id="t-offerte" class="tt hidden">
+ <div class="formbox"><h3>Offerte maken (1 minuut → print als PDF)</h3><div class="grid" style="margin-top:10px">
+  <select id="o-merk"><option value="oplevermeester">OpleverMeester</option><option value="wijkopeninboedel">WijKopenInboedel</option></select>
+  <input id="o-naam" placeholder="Klantnaam *">
+  <input id="o-bedrijf" placeholder="Bedrijf/organisatie">
+  <input id="o-plaats" placeholder="Pandadres / plaats">
+  <select id="o-dienst"><option>Woningontruiming compleet</option><option>Bedrijfsontruiming</option><option>Oplevering incl. schoonmaak</option><option>Kleine herstelwerkzaamheden</option><option>Inboedel-opkoop</option><option>Ophalen + afvoeren</option></select>
+  <input id="o-m2" type="number" placeholder="Oppervlakte m² (richtprijs)">
+  <select id="o-verdieping"><option value="0">Begane grond</option><option value="1">Verdieping + lift</option><option value="2">Verdieping zonder lift</option></select>
+  <input id="o-prijs" type="number" placeholder="Prijs € (leeg = richtprijs)">
+  <input id="o-datum" type="date" placeholder="Gewenste datum">
+  <input id="o-notitie" placeholder="Toelichting op de offerte">
+ </div><div style="margin-top:10px">
+  <button class="knop" onclick="richtprijs()">💰 Richtprijs</button>
+  <button class="knop" onclick="maakOfferte()">📄 Maak offerte (print→PDF)</button>
+  <span id="o-rp" style="font-weight:800;color:#b36f00;margin-left:8px"></span></div></div>
+ <div class="callout" style="background:#fff0cf;border-left:4px solid #efb42c;padding:10px;border-radius:8px;margin-top:14px;font-size:13.5px">
+ <b>Snelheid = omzet:</b> wie binnen 1 uur een nette offerte stuurt, wint 60% van de aanvragen. Deze maker maakt een compleet verzorgde offerte in jullie huisstijl — print met Ctrl+P → "Opslaan als PDF" en mail mee.</div>
+</div>
+<div id="t-agent" class="tt hidden">
+ <div class="formbox"><h3>🤖 Lokale agent — jouw actielijst van vandaag</h3>
+ <div style="font-size:13px;color:var(--dim);margin:6px 0 10px">Leest je pipeline en maakt de slimme volgorde: spoed eerst, dan opvolging, dan nieuwe kansen.</div>
+ <div id="agentlist"></div></div></div>
+<div id="t-scripts" class="tt hidden"><pre id="scripts"></pre></div>
+</main>
+<script>
+const STAGES=["nieuw","benaderd","gesprek","aanvraag","offerte","opdracht","terugkerend"];
+const NAMEN={nieuw:"Nieuw",benaderd:"Benaderd",gesprek:"Gesprek",aanvraag:"Aanvraag",offerte:"Offerte",opdracht:"Opdracht",terugkerend:"Terugkerend"};
+const TYPES=["woningcorporatie","vastgoedbeheerder","makelaar","bewindvoerder","verhuurder","particulier-markt","aannemer","overheid","anders"];
+const KANALEN=["website","google","marktplaats","facebook","linkedin","doorverwijzing","koud-bellen","mail","anders"];
+const SEED=[
+["Nijestee","Woningcorporatie Groningen","woningcorporatie","Groningen","oplevermeester"],
+["Lefier","Woningcorporatie Groningen/Friesland","woningcorporatie","Groningen","oplevermeester"],
+["De Huismeesters","Woningcorporatie Westerkwartier","woningcorporatie","Groningen","oplevermeester"],
+["Woonservice","Woningcorporatie Drenthe","woningcorporatie","Drenthe","oplevermeester"],
+["Woonconcept","Woningcorporatie Drenthe","woningcorporatie","Drenthe","oplevermeester"],
+["Domesta","Woningcorporatie Emmen","woningcorporatie","Drenthe","oplevermeester"],
+["Actium","Woningcorporatie Assen","woningcorporatie","Drenthe","oplevermeester"],
+["Elkien","Woningcorporatie Friesland","woningcorporatie","Friesland","oplevermeester"],
+["WoonFriesland","Woningcorporatie Friesland","woningcorporatie","Friesland","oplevermeester"],
+["Thê by Wonen","Woningcorporatie Noordwest-Friesland","woningcorporatie","Friesland","oplevermeester"],
+["Accolade","Woningcorporatie Friesland","woningcorporatie","Friesland","oplevermeester"],
+["Vastgoedbeheerders regio","Lijst uit eigen netwerk","vastgoedbeheerder","Groningen","beiden"],
+["NVM-makelaars regio Noord","Makelaars die woningen moeten opleveren","makelaar","Groningen","beiden"],
+["Bewindvoerders Nederland Noord","Schoon/ontruiming na bewindvoering","bewindvoerder","Groningen","oplevermeester"],
+["Verhuurmakelaars studentenkamers","Doorlopende mutaties = vaste opdrachten","verhuurder","Groningen","oplevermeester"],
+["Particulieren via Marktplaats","Inboedel ophalen/verkopen — advertentie","particulier-markt","Noord","wijkopeninboedel"],
+["Kringloop / tweedehands partners","Reststroom inboedel afnemen","anders","Noord","wijkopeninboedel"],
+["RTV Noord nieuwsdesk","redactie@rtvnoord.nl — persbericht + foto","overheid","Groningen","beiden"],
+["DvhN nieuwsdesk","redactie@dvhn.nl — persbericht","overheid","Groningen","beiden"],
+["Leeuwarder Courant","redactie@lc.nl — persbericht","overheid","Friesland","beiden"],
+["Friesch Dagblad","redactie@frieschdagblad.nl — persbericht","overheid","Friesland","beiden"],
+["RTV Drenthe","rtvdrenthe.nl/contact — persbericht","overheid","Drenthe","beiden"],
+["Nextdoor zakelijk","nextdoor.nl — post aanbod 1x/2wk","particulier-markt","Noord","beiden"],
+["Funda-makelaars Groningen+Assen","10 makelaars mailen — template Scripts","makelaar","Groningen","beiden"],
+["Uitvaartondernemers regio","inboedel-na-overlijden partner — template Scripts","anders","Noord","wijkopeninboedel"],
+["Bewindvoerders BPBI-lijst","direct mailen — template Scripts","bewindvoerder","Noord","oplevermeester"],
+["Notarissen regio Noord","executeur nalatenschap = ontruiming + inboedel-opkoop — goldmine","anders","Noord","beiden"],
+["Leegpand-spotter routine","wekelijks leegstand meldpunten/Funda checken — eigenaar heeft NU het probleem","makelaar","Noord","beiden"]];
+const SCRIPTS=`WONINGCORPORATIE / VASTGOEDBEHEERDER — BELLEN (30 sec)
+1. "Goedemorgen, u spreekt met [naam] van OpleverMeester — wij doen woningontruimingen en opleveringen in Noord-Nederland."
+2. "Ik bel u omdat corporaties regelmatig mutaties hebben. Wij leveren bezemschoon + kleine herstelwerkzaamheden, vast tarief, binnen 48 uur."
+3. "Vraag: 'Wie is bij u verantwoordelijk voor woningmutaties / opzeggingen?' — laat doorverbinden of mail achterlaten."
+4. "Aanbod: 'Zullen we een pilot doen op één woning? Gratis proef-case, dan beoordeelt u ons zelf.'"
+5. ALTIJD: datum noteren voor follow-up binnen 7 dagen → zet in Acquisitie-Radar.
+
+————————————————————————————————————————
+
+MARKTPLAATS / PARTICULIER (inboedel) — REAGEREN
+1. Eerste 5 minuten reageren = 8x meer kans (speed-to-lead).
+2. "Hoi! Ik zag uw advertentie — wij kopen complete inboedels en halen gratis op, ook vanaf verdieping."
+3. "Kunt u mij 2-3 foto's sturen? Dan stuur ik vandaag nog een bod."
+4. Alles in WijKopenInboedel pipeline zetten met kanaal 'marktplaats'.
+
+————————————————————————————————————————
+
+MAIL B2B — ONDERWERP: Bezemschoon opleveren in Noord — pilot zonder risico
+
+Geachte [naam],
+
+OpleverMeester verzorgt woning- en bedrijfsontruimingen in Groningen, Friesland en Drenthe — inclusief schoonmaak en kleine herstelwerkzaamheden. Vaste tarieven, 48-uurs oplevering, één aanspreekpunt.
+
+Vraag: doet u ook regelmatig woningmutaties? Wij doen graag een gratis proef-case op één woning — zo beoordeelt u ons werk zonder verplichting.
+
+Met vriendelijke groet,
+[naam] · OpleverMeester.nl · [tel]
+
+————————————————————————————————————————
+
+MAKELAAR / NVM — MAIL (onderwerp: jullie opleveringen)
+"Beste [naam], bij woningoverdrachten moet het pand vaak bezemschoon op.
+Wij leveren complete ontruiming + schoonmaak + kleine herstel, vaste prijs,
+48u mogelijk. Handig als vaste partner bij spoed-opleveringen. Proef-case
+op 1 woning is gratis — mag ik u iets toesturen? [naam] · OpleverMeester.nl"
+
+BEWINDVOERDER — MAIL (onderwerp: ontruiming na bewindvoering)
+"Beste [naam], na bewindvoering moet een woning vaak snel en zorgvuldig leeg.
+Wij doen dit discreet, inclusief schoonmaak en herstel — met foto-rapportage
+voor uw dossier. Vaste tarieven, 1 aanspreekpunt. Zullen we een proef-case doen?"
+
+UITVAARTONDERNEMER / NABESTAANDEN — MAIL (onderwerp: inboedel na overlijden)
+"Beste [naam], u begeleidt nabestaanden die vaak een inboedel moeten
+ontruimen. Wij doen dit respectvol: opkoop van bruikbaar, rest afvoer,
+woning bezemschoon. Partnerschap mogelijk — interesse in een gesprek?"
+
+OFFERTE-OPVOLGING — NA 3 DAGEN (mail/app)
+"Beste [naam], vorige week stuurde ik u onze offerte voor [werk]. Zijn er
+nog vragen? De datum van [datum] kan ik nog vasthouden — laat u het weten?"
+
+OFFERTE-OPVOLGING — NA 7 DAGEN (laatste)
+"Beste [naam], ik wil u niet lastigvallen — de offerte blijft 14 dagen
+geldig. Is de timing nu niet goed, dan hoor ik het graag; anders plannen
+we graag in. Mvg [naam]"
+
+
+
+NOTARIS / EXECUTEUR — MAIL (onderwerp: nalatenschap-ontruiming + inboedel)
+"Beste [naam], als executeur regelt u woningen die ontruimd moeten worden.
+Wij nemen dat volledig over: ontruiming + schoonmaak + herstel, én wij
+kopen de inboedel op als u of de erfgenamen dat wensen. Eén aanspreekpunt,
+vaste tarieven, foto-rapportage voor het dossier. Mag ik u een proef-case
+sturen? [naam] · OpleverMeester.nl / WijKopenInboedel.nl"
+
+LEEGPAND-EIGENAAR — MAIL/APP (na spot van leegstaand pand)
+"Beste [naam], ik zag uw pand aan [adres] dat leegstaat. Voor verkoop/
+verhuur moet dat vaak snel leeg en schoon op. Wij regelen dat compleet —
+vaste prijs, 48u mogelijk. Bel even voor een offerte?"
+
+FOTO-ROUTINE NA KLUS — zelf doen, 2 minuten
+1 foto VÓÓR (rommel) + 1 foto NA (bezemschoon leeg) → zelfde hoek.
+Post op Facebook/Nextdoor: "deze week in [plaats]: van vol → leeg
+in één dag. OpleverMeester.nl" — elke week = gratis advertentie.
+
+NA KLUS — REVIEW + DOORVERWIJZING (app/mail)
+"Fijn dat het is gelukt! Zou u een Google-review willen achterlaten?
+[link] — kost 1 minuut. En kent u nog iemand die een woning of inboedel
+moet laten ontruimen? Doorverwijzers krijgen altijd voorrang bij ons."`;
+let MERK="";
+const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LSK="acq_leads_v1",KSK="acq_kosten_v1",today=()=>new Date().toISOString().slice(0,10);
+let leads=[],kosten=[],nextId=1;
+function save(){localStorage.setItem(LSK,JSON.stringify(leads));localStorage.setItem(KSK,JSON.stringify(kosten));localStorage.setItem("acq_nextid",nextId)}
+function init(){try{leads=JSON.parse(localStorage.getItem(LSK)||"[]")}catch(e){leads=[]}
+ try{kosten=JSON.parse(localStorage.getItem(KSK)||"[]")}catch(e){kosten=[]}
+ nextId=+localStorage.getItem("acq_nextid")||1;
+ if(!leads.length){leads=SEED.map((r,i)=>({id:++nextId,merk:r[4],naam:r[0],bedrijf:r[1],type:r[2],kanaal:"koud-bellen",regio:r[3],
+  telefoon:"",email:"",stage:"nieuw",waarde:0,laatste_contact:"",volgende_actie:"introductie bellen + pilot voorstellen",actie_datum:"",notities:"",aangemaakt:today()}));
+  save()}}
+function fill(sel,arr){document.getElementById(sel).innerHTML=arr.map(x=>`<option>${x}</option>`).join("")}
+fill("f-type",TYPES);fill("f-kanaal",KANALEN);fill("k-kanaal",KANALEN);
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));t.classList.add("on");
+  document.querySelectorAll(".tt").forEach(x=>x.classList.add("hidden"));
+  document.getElementById("t-"+t.dataset.t).classList.remove("hidden");
+});
+document.querySelectorAll(".merkbtn[data-m]").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".merkbtn[data-m]").forEach(x=>x.classList.remove("on"));b.classList.add("on");
+  MERK=b.dataset.m;laad();
+});
+function slaLead(){
+  const g=id=>document.getElementById(id).value;
+  if(!g("f-naam"))return alert("Vul een naam in");
+  leads.push({id:++nextId,merk:g("f-merk"),naam:g("f-naam"),bedrijf:g("f-bedrijf"),type:g("f-type"),kanaal:g("f-kanaal"),
+   regio:g("f-regio"),telefoon:g("f-telefoon"),email:g("f-email"),stage:"nieuw",waarde:+g("f-waarde")||0,
+   laatste_contact:"",volgende_actie:g("f-actie"),actie_datum:g("f-actie_datum"),notities:g("f-notities"),aangemaakt:today()});
+  save();
+  ["f-naam","f-bedrijf","f-telefoon","f-email","f-waarde","f-actie","f-actie_datum","f-notities"].forEach(i=>document.getElementById(i).value="");
+  document.querySelector('[data-t="pipeline"]').click();laad();
+}
+function slaKosten(){
+  const g=id=>document.getElementById(id).value;
+  if(!(+g("k-bedrag")>0))return alert("Vul een bedrag in");
+  kosten.push({id:++nextId,merk:g("k-merk"),kanaal:g("k-kanaal"),bedrag:+g("k-bedrag"),omschrijving:g("k-omschrijving"),datum:g("k-datum")||today()});
+  save();
+  document.getElementById("k-bedrag").value="";document.getElementById("k-omschrijving").value="";laad();
+}
+function schuif(id,richting){
+  const l=leads.find(x=>x.id===id);if(!l)return;
+  const i=STAGES.indexOf(l.stage),j=richting?i+1:i-1;
+  if(j<0||j>=STAGES.length)return;
+  l.stage=STAGES[j];l.laatste_contact=today();const sug=OPN[l.stage];if(sug&&!l.volgende_actie)l.volgende_actie=sug;save();laad();
+}
+function pin(id){const l=leads.find(x=>x.id===id);if(!l)return;
+  const a=prompt("Volgende actie:",l.volgende_actie||"");if(a===null)return;
+  l.volgende_actie=a;l.actie_datum=prompt("Datum (jjjj-mm-dd):",l.actie_datum||"")||"";save();laad();
+}
+function wis(id){if(!confirm("Verwijderen?"))return;leads=leads.filter(x=>x.id!==id);save();laad()}
+
+function richtprijs(){const m2=+document.getElementById("o-m2").value||0;
+ const v=+document.getElementById("o-verdieping").value||0;
+ const d=document.getElementById("o-dienst").value;
+ let p=0;if(d.includes("Inboedel"))p=0;else if(d.includes("Ophalen"))p=Math.max(150,m2*4);
+ else if(d.includes("Bedrijfs"))p=Math.max(950,m2*11);else if(d.includes("herstel"))p=Math.max(250,m2*6);
+ else p=Math.max(595,m2*7.5);
+ if(v===2)p*=1.15;
+ const el=document.getElementById("o-rp");
+ el.textContent=p?("richtprijs € "+Math.round(p)+" incl. btw"):"inboedel = altijd persoonlijk bod";
+ if(p)document.getElementById("o-prijs").value=Math.round(p);}
+function maakOfferte(){const g=id=>document.getElementById(id).value;
+ const naam=g("o-naam");if(!naam)return alert("Vul klantnaam in");
+ const merk=g("o-merk"),om=merk==="oplevermeester";
+ const kleur=om?"#262421":"#277a55",acc=om?"#efb42c":"#ffbf28";
+ const site=om?"www.oplevermeester.nl":"wijkopeninboedel.nl";
+ const bedrijf=om?"OpleverMeester.nl":"WijKopenInboedel.nl";
+ const slogan=om?"Wij regelen. Jij gaat verder.":"Wij kopen. Jij bent klaar.";
+ const prijs=+g("o-prijs")||0;
+ const w=window.open("","_blank");
+ w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Offerte ${esc(bedrijf)}</title>
+ <style>body{font-family:Segoe UI,sans-serif;color:#262421;max-width:700px;margin:30px auto;padding:20px}
+ .hd{display:flex;justify-content:space-between;border-bottom:3px solid ${acc};padding-bottom:14px}
+ .hd .b{font-size:24px;font-weight:800;color:${kleur}}.hd .s{color:#8a795a}
+ h2{color:${kleur};font-size:16px;margin-top:26px}
+ table{width:100%;border-collapse:collapse;margin:12px 0}
+ td,th{border:1px solid #e0d2ae;padding:9px 11px;text-align:left}th{background:${acc}22}
+ .prijs{font-size:21px;font-weight:800;color:${kleur}}
+ .vo{background:#fffaf0;border:1px solid #eadfce;border-radius:8px;padding:12px;margin-top:14px;font-size:13px}
+ .ft{margin-top:30px;font-size:12px;color:#8a795a;border-top:1px solid #e0d2ae;padding-top:10px}
+ @media print{body{margin:0}}</style></head><body>
+ <div class="hd"><div><div class="b">${esc(bedrijf)}</div><div class="s">${esc(slogan)}</div></div>
+ <div class="s">Offerte<br>${new Date().toLocaleDateString("nl-NL")}<br>geldig 14 dagen</div></div>
+ <h2>Aan: ${esc(naam)}${g("o-bedrijf")?" — "+esc(g("o-bedrijf")):""}</h2>
+ <div class="s">Betreft: ${esc(g("o-dienst"))} ${g("o-plaats")?"· "+esc(g("o-plaats")):""} ${g("o-datum")?"· gewenste datum "+g("o-datum"):""}</div>
+ <table><tr><th>Werkzaamheden</th><th>Bedrag</th></tr>
+ <tr><td>${esc(g("o-dienst"))}${g("o-m2")?" · ± "+g("o-m2")+" m²":""} ${g("o-verdieping")==="2"?"· verdieping zonder lift":""}<br>
+ <small style="color:#8a795a">Inclusief: materiaal, vervoer, afvoer en eindcontrole. Bezemschoon/volgens afspraak opgeleverd.</small>
+ ${g("o-notitie")?"<br><small>"+esc(g("o-notitie"))+"</small>":""}</td>
+ <td class="prijs">€ ${prijs?prijs.toFixed(0)+" incl. btw":"op afspraak"}</td></tr></table>
+ <div class="vo"><b>Vaste prijs vooraf — geen verrassingen.</b><br>
+ Oplevering conform afspraak, één aanspreekpunt. Bij akkoord: reageer op deze mail of bel ons — wij plannen direct.<br>
+ <b>Akkoord?</b> Stuur een reply met "AKKOORD" en wij bevestigen binnen 1 uur.</div>
+ <div class="ft">${esc(bedrijf)} · ${site} · Groningen · Friesland · Drenthe<br>
+ Deze offerte is 14 dagen geldig. Bezemschoon opgeleverd — gegarandeerd.</div></body></html>`);
+ w.document.close();setTimeout(()=>w.print(),600);
+}
+const OPN={benaderd:"terugkoppeling sturen binnen 2 dagen",gesprek:"concrete aanvraag vragen + offerte sturen",aanvraag:"offerte maken via Offerte-maker (vandaag!)",offerte:"nabellen over 3 dagen: 'zijn er vragen over de offerte?'",opdracht:"na klus: Google-review vragen + tevreden-check bellen",terugkerend:"kwartaalcontact: 'zijn er nieuwe mutaties gepland?'"};
+function gefilterd(){return MERK?leads.filter(l=>l.merk===MERK||l.merk==="beiden"):leads}
+function laad(){
+  const L=gefilterd();
+  const totaal=L.length;
+  const omzet=L.filter(l=>["opdracht","terugkerend"].includes(l.stage)).reduce((s,l)=>s+(+l.waarde||0),0);
+  const terug=L.filter(l=>l.stage==="terugkerend").length;
+  const kost=(MERK?kosten.filter(k=>k.merk===MERK||k.merk==="beiden"):kosten).reduce((s,k)=>s+(+k.bedrag||0),0);
+  const gekocht=L.filter(l=>["opdracht","terugkerend"].includes(l.stage)).length;
+  const conv=totaal?Math.round(100*gekocht/totaal*10)/10:0;
+  const cpl=gekocht?Math.round(kost/gekocht*100)/100:kost.toFixed(2);
+  const perk=KANALEN.map(k=>({kanaal:k,n:L.filter(l=>l.kanaal===k&&["aanvraag","offerte","opdracht","terugkerend"].includes(l.stage)).length})).filter(r=>r.n>0);
+  const vandaag=L.filter(l=>l.actie_datum&&l.actie_datum<=today()).sort((a,b)=>a.actie_datum<b.actie_datum?-1:1);
+  document.getElementById("kpis").innerHTML=[
+    [totaal,"Leads totaal"],["€ "+omzet.toFixed(0),"Omzet (opdracht+terug)"],
+    [terug,"Terugkerende klanten"],[conv+"%","Conversie"],
+    ["€ "+kost.toFixed(0),"Kosten"],["€ "+cpl,"Kosten/klant"]
+  ].map(x=>`<div class="kpi"><div class="v">${x[0]}</div><div class="l">${x[1]}</div></div>`).join("");
+  const vg=document.getElementById("vandaag");
+  if(vandaag.length){vg.classList.remove("hidden");document.getElementById("vandaaglist").innerHTML=vandaag.map(l=>`<div class="t"><b>${esc(l.naam)}</b> ${esc(l.bedrijf)} — ${esc(l.volgende_actie||"actie")} (${l.actie_datum}) <span style="margin-left:auto"><button onclick="schuif(${l.id},1)">→</button></span></div>`).join("")}
+  else vg.classList.add("hidden");
+  document.getElementById("pipeline").innerHTML=STAGES.map(s=>{
+    const ls=L.filter(l=>l.stage===s);
+    return `<div class="col"><h4>${NAMEN[s]} (${ls.length})</h4>${ls.map(l=>`<div class="card">
+      <div class="merk">${esc(l.merk)} · ${esc(l.kanaal)}</div>
+      <div class="naam">${esc(l.naam)}</div><div class="sub">${esc(l.bedrijf)} ${l.regio?("· "+esc(l.regio)):""}</div>
+      ${l.telefoon?`<div class="sub">☎ ${esc(l.telefoon)}</div>`:""}
+      ${l.waarde?`<div class="sub">€ ${l.waarde}</div>`:""}
+      ${l.volgende_actie?`<div class="actie">📌 ${esc(l.volgende_actie)} ${l.actie_datum?("· "+l.actie_datum):""}</div>`:""}
+      <div class="knp"><button onclick="schuif(${l.id},0)">←</button><button onclick="schuif(${l.id},1)">→</button>
+      <button onclick="pin(${l.id})">📌</button>
+      <button onclick="wis(${l.id})">✕</button></div>
+    </div>`).join("")}</div>`;
+  }).join("");
+  const vd=document.getElementById("vandaag");
+  if(vd){const a=L.filter(l=>l.stage==="aanvraag").length,b=L.filter(l=>l.stage==="nieuw").length,o=L.filter(l=>l.stage==="offerte").length,n=L.filter(l=>l.stage==="benaderd").length;
+   vd.innerHTML=`<b>VANDAAG:</b> <span style="color:var(--gold)">${a} open aanvragen</span> · ${b} nieuwe leads · ${o} offertes open · ${n} te nabellen — volg de 🤖 AGENT-lijst.`;}
+  const ag=document.getElementById("agentlist");
+  if(ag){const t=today();const items=[];
+   for(const l of L){
+    if(l.stage==="terugkerend"&&l.laatste_contact&&l.laatste_contact<t){items.push(["💼","kwartaalcontact: bel "+esc(l.naam)+" ("+esc(l.bedrijf)+") — vaste relatie warmhouden",1])}
+    if(l.stage==="offerte"&&l.laatste_contact&&l.laatste_contact<t){items.push(["📄","offerte opvolgen: "+esc(l.naam)+" — dag 3/7 script in Scripts-tab",1])}
+    if(l.stage==="opdracht"){items.push(["⭐","klus klaar: voor/na-foto + review + doorverwijzing vragen aan "+esc(l.naam),2])}
+    if(l.stage==="aanvraag"){items.push(["⚡","aanvraag NU beantwoorden: "+esc(l.naam)+" — eerste reactie wint",0])}
+    if(l.stage==="gesprek"){items.push(["📞","gesprek afmaken: "+esc(l.naam)+" → vraag om offerte-aanvraag",2])}
+    if(l.stage==="benaderd"&&(!l.laatste_contact||l.laatste_contact<t)){items.push(["🔁","nabellen: "+esc(l.naam)+" ("+esc(l.bedrijf)+")",3])}
+    if(l.stage==="nieuw"&&/notaris|leegpand|uitvaart/i.test(l.naam+" "+(l.notitie||""))){items.push(["🏆","goudmijn: "+esc(l.naam)+" — "+esc(l.volgende_actie||"notaris/leegpand-script, kans op terugkerend"),0])}
+    else if(l.stage==="nieuw"){items.push(["📞","eerste contact: "+esc(l.naam)+" — "+esc(l.volgende_actie||"bel + pilot aanbieden"),4])}
+   }
+   if(l=>{},"");items.sort((a,b)=>a[2]-b[2]);
+   ag.innerHTML=items.slice(0,15).map(x=>`<div class="t" style="margin:5px 0">${x[0]} ${x[1]}</div>`).join("")||'<div style="color:var(--dim)">Geen acties — alles bij. Koppel 1 nieuwe lead vandaag.</div>';}
+  document.getElementById("kanaal-table").innerHTML="<tr><th>Kanaal</th><th>Aanvragen+</th></tr>"+(perk.length?perk.map(r=>`<tr><td>${esc(r.kanaal)}</td><td>${r.n}</td></tr>`).join(""):"<tr><td colspan=2 style='color:var(--dim)'>Nog geen aanvragen — verplaats leads naar 'aanvraag' als ze reageren</td></tr>");
+  const klij=(MERK?kosten.filter(k=>k.merk===MERK||k.merk==="beiden"):kosten).slice(-10).reverse();
+  document.getElementById("kosten-table").innerHTML="<tr><th>Datum</th><th>Kanaal</th><th>Wat</th><th>€</th></tr>"+(klij.length?klij.map(k=>`<tr><td>${k.datum}</td><td>${esc(k.kanaal)}</td><td>${esc(k.omschrijving)}</td><td>${(+k.bedrag).toFixed(2)}</td></tr>`).join(""):"<tr><td colspan=4 style='color:var(--dim)'>Nog geen kosten geregistreerd</td></tr>");
+}
+document.getElementById("exp").onclick=()=>{
+ const b=new Blob([JSON.stringify({leads,kosten,nextId},null,2)],{type:"application/json"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="acquisitie-radar-backup-"+today()+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)};
+document.getElementById("scripts").textContent=SCRIPTS;
+init();laad();
+</script></body></html>
