@@ -1,26 +1,30 @@
 {
-  "titel": "G2B AURA v6.0 — Studio",
-  "licentie": "Licentiecode voor export: G2B-AURA-XMWDA6",
-  "bestanden": [
-    {
-      "naam": "Volledige browser-studio (ZIP)",
-      "url": "d/x73c75911ad6724f1b9f3e458/G2B-AURA-V6.zip"
-    },
-    {
-      "naam": "Nederlandse uitleg (PDF)",
-      "url": "d/x73c75911ad6724f1b9f3e458/G2B-AURA-V6-UITLEG.pdf"
-    },
-    {
-      "naam": "Windows installer (.exe)",
-      "url": "https://github.com/good2better/g2b-winkel/releases/download/aura-v6.0/G2B.AURA.v6.0_6.0.0_x64-setup.exe"
-    },
-    {
-      "naam": "Mac app (.dmg)",
-      "url": "https://github.com/good2better/g2b-winkel/releases/download/aura-v6.0/G2B.AURA.v6.0_6.0.0_aarch64.dmg"
-    },
-    {
-      "naam": "NIEUW: Speel-functies handleiding (PDF) — blauw licht, laptop-piano, modes, REC-raster",
-      "url": "d/x73c75911ad6724f1b9f3e458/G2B-NIEUWE-SPEELFUNCTIES.pdf"
-    }
-  ]
+ "titel": "G2B AURA v6.0 — Studio",
+ "licentie": "Licentiecode voor export: G2B-AURA-XMWDA6",
+ "bestanden": [
+  {
+   "naam": "Volledige browser-studio (ZIP)",
+   "url": "d/x73c75911ad6724f1b9f3e458/G2B-AURA-V6.zip"
+  },
+  {
+   "naam": "Nederlandse uitleg (PDF)",
+   "url": "d/x73c75911ad6724f1b9f3e458/G2B-AURA-V6-UITLEG.pdf"
+  },
+  {
+   "naam": "Windows installer (.exe)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/aura-v6.0/G2B.AURA.v6.0_6.0.0_x64-setup.exe"
+  },
+  {
+   "naam": "Mac app (.dmg)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/aura-v6.0/G2B.AURA.v6.0_6.0.0_aarch64.dmg"
+  },
+  {
+   "naam": "NIEUW: Speel-functies handleiding (PDF) — blauw licht, laptop-piano, modes, REC-raster",
+   "url": "d/x73c75911ad6724f1b9f3e458/G2B-NIEUWE-SPEELFUNCTIES.pdf"
+  },
+  {
+   "naam": "Handleiding AURA·STAPELDICE·FACTUUR (PDF, met plaatjes)",
+   "url": "media/G2B-HANDLEIDING-BATCH3-AURA-STAPELDICE-FACTUUR.pdf"
+  }
+ ]
 }

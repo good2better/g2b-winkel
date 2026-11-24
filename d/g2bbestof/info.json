@@ -1,18 +1,22 @@
 {
-  "titel": "G2B BEST-OF — 440+ sounds",
-  "licentie": "Licentiecode voor .mid-export: G2B-BESTOF-846QGG",
-  "bestanden": [
-    {
-      "naam": "🔓 Open met jouw licentie",
-      "url": "tools/bestof-web/bestof.html?licentie=G2B-BESTOF-846QGG"
-    },
-    {
-      "naam": "Jouw licentiecode",
-      "bestand": "LICENTIE.txt"
-    },
-    {
-      "naam": "NIEUW: Speel-functies handleiding (PDF) — blauw licht, laptop-piano, modes, REC-raster",
-      "url": "d/x73c75911ad6724f1b9f3e458/G2B-NIEUWE-SPEELFUNCTIES.pdf"
-    }
-  ]
+ "titel": "G2B BEST-OF — 440+ sounds",
+ "licentie": "Licentiecode voor .mid-export: G2B-BESTOF-846QGG",
+ "bestanden": [
+  {
+   "naam": "🔓 Open met jouw licentie",
+   "url": "tools/bestof-web/bestof.html?licentie=G2B-BESTOF-846QGG"
+  },
+  {
+   "naam": "Jouw licentiecode",
+   "bestand": "LICENTIE.txt"
+  },
+  {
+   "naam": "NIEUW: Speel-functies handleiding (PDF) — blauw licht, laptop-piano, modes, REC-raster",
+   "url": "d/x73c75911ad6724f1b9f3e458/G2B-NIEUWE-SPEELFUNCTIES.pdf"
+  },
+  {
+   "naam": "Handleiding OCHO·BEST-OF·SAMPLEX (PDF, met plaatjes)",
+   "url": "media/G2B-HANDLEIDING-BATCH1-OCHO-BESTOF-SAMPLEX.pdf"
+  }
+ ]
 }
