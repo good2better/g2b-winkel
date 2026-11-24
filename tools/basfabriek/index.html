@@ -122,6 +122,7 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
 </div>
 
 <div class="card">
+  <div class="row" style="margin:6px 0 4px;align-items:center;flex-wrap:wrap;gap:6px"><span class="hint">✂ pas alleen dit deel aan:</span><span id="blokUI" style="display:inline-flex;gap:5px;flex-wrap:wrap"></span></div>
   <canvas id="roll" style="cursor:crosshair"></canvas>
   <canvas id="scope" style="width:100%;height:70px;display:block;margin-top:6px"></canvas>
   <div class="row" style="margin-top:8px;align-items:center;flex-wrap:wrap;gap:6px"><span class="hint">speel live mee:</span>
@@ -631,7 +632,7 @@ function uiInit(){
  $('bUndo').onclick=()=>{if(HI>0)herstel(--HI)};
  $('bRedo').onclick=()=>{if(HI<HIST.length-1)herstel(++HI)};
  $('bAlles').onclick=()=>{bewaar();dobbelAlles()};
- $('bLijn').onclick=()=>{bewaar();maakLijn();teken();st('🎲 nieuwe baslijn — kicks & sounds bleven staan');renderPreview()};
+ $('bLijn').onclick=()=>{bewaar();maakLijnBlok();teken();st(blokS()?'🎲 nieuwe baslijn in het gekozen deel — de rest bleef staan':'🎲 nieuwe baslijn — kicks & sounds bleven staan');renderPreview()};
  $('bSnd').onclick=()=>{bewaar();dobbelSound();teken();renderPreview()};
  $('bPlay').onclick=luisterToggle;
  $('bWav').onclick=()=>{st('⏳ renderen…');setTimeout(()=>{const r=renderLoop();dl(new Blob([wavBytes(r.buf,r.sr)],{type:'audio/wav'}),naam('wav'))},30)}; // export = altijd studio-flat (speaker-check is alleen luisteren)
@@ -662,7 +663,11 @@ $('preset').onchange=()=>{const i=+$('preset').value;if(!PRESETS[i])return;const
  document.querySelectorAll('.lock').forEach((b,i)=>b.onclick=()=>{S.locks[i]=!S.locks[i];laagUI()});
  document.querySelectorAll('.swap').forEach(b=>b.onclick=()=>smartSwap(b.dataset.l));
  document.querySelectorAll('.mute').forEach(b=>b.onclick=()=>{S.mute[b.dataset.l]=!S.mute[b.dataset.l];laagUI();renderPreview();st(S.mute[b.dataset.l]?'🔇 '+b.dataset.l.toUpperCase()+' uit':'🔊 '+b.dataset.l.toUpperCase()+' weer aan')});
- $('bWis').onclick=()=>{bewaar();S.notes=[];S.kicks=[];bewaar();STAPPOS=0;teken();renderPreview();st('⟲ roll leeg — ↶ brengt je oude baslijn terug · speel in met ● OPN of ⌨ STAP-IN')};
+ $('bWis').onclick=()=>{bewaar();const r=blokS();
+ if(r){S.notes=S.notes.filter(n=>n.s<r[0]||n.s>=r[1]);S.kicks=S.kicks.filter(k=>k.s<r[0]||k.s>=r[1])}
+ else{S.notes=[];S.kicks=[]}
+ bewaar();STAPPOS=r?r[0]:0;teken();renderPreview();
+ st(r?'⟲ deel leeg — de rest staat er nog':'⟲ roll leeg — ↶ brengt je oude baslijn terug · speel in met ● OPN of ⌨ STAP-IN')};
  $('genre').value=0;
  /* toetsenbord */
  const keys=[['C',36],['D',38],['D#',39],['E',40],['F',41],['G',43],['A',45],['C2',48]];
@@ -700,9 +705,20 @@ function dobbelSound(){
  if(!L[2]){S.sound.drive=0.6+Math.random()*0.6;S.sound.gritOff=Math.random()<.15}
  laagUI();st('🎲 sound gedobbeld — baslijn bleef staan');
 }
+let BLOK=-1; // -1 = alles; blokken van 4 maten
+function blokS(){const m=+$('maten').value;if(BLOK<0)return null;const a=BLOK*64;return[a,Math.min(m*16,a+64)]}
+function blokMerge(oud,nw){const r=blokS();if(!r)return nw;const[a,b]=r;
+ return oud.filter(n=>n.s<a||n.s>=b).concat(nw.filter(n=>n.s>=a&&n.s<b)).sort((x,y)=>x.s-y.s)}
+function blokUI(){const m=+$('maten').value,n=Math.ceil(m/4);$('blokUI').innerHTML=
+ `<button class="mini ${BLOK<0?'aan':''}" data-blok="-1" title="🎲 en ⟲ werken op alles">ALLES</button>`+
+ Array.from({length:n},(_,i)=>`<button class="mini ${BLOK===i?'aan':''}" data-blok="${i}" title="alleen maat ${i*4+1} t/m ${Math.min(m,(i+1)*4)} aanpassen">${i*4+1}–${Math.min(m,(i+1)*4)}</button>`).join('');
+ document.querySelectorAll('[data-blok]').forEach(b=>b.onclick=()=>{BLOK=+b.dataset.blok;blokUI();teken();
+ st(BLOK<0?'✂ alles — 🎲/⟲ werken op de hele roll':'✂ alleen maat '+(BLOK*4+1)+'–'+Math.min(+$('maten').value,(BLOK+1)*4)+' — 🎲/⟲ werken op dat deel, de rest blijft staan')})}
+function maakLijnBlok(){const oudeS=S.notes,oudeK=S.kicks;maakLijn();const r=blokS();if(!r)return;
+ S.notes=blokMerge(oudeS,S.notes)} // alleen het gekozen deel nieuw dobbelen
 function dobbelAlles(){
  dobbelSound(); // locked lagen behouden hun params (dobbelSound checkt locks)
- if(!S.locks[1]||!S.notes.length){S.oct=0;if($('oct'))$('oct').value='0';maakLijn()}
+ if(!S.locks[1]||!S.notes.length){S.oct=0;if($('oct'))$('oct').value='0';maakLijnBlok()}
  teken();laagUI();renderPreview();
 }
 function teken(){ /* melodie-stijl roll: toon-lanes met ladder-kleuring + kick-rij onderaan */
@@ -723,6 +739,9 @@ function teken(){ /* melodie-stijl roll: toon-lanes met ladder-kleuring + kick-r
  for(let s=0;s<=tot;s++){c.fillStyle=s%16===0?'#2f5a44':s%4===0?'#173326':'#0b1a13';c.fillRect(s*sw,0,1,H-16)}
  c.fillStyle='#8fa89a';c.font='11px system-ui';
  for(let m=0;m<maten;m++)c.fillText((m+1),m*16*sw+4,12);
+ const br=blokS();if(br){c.fillStyle='rgba(34,197,94,.07)';c.fillRect(br[0]*sw,0,(br[1]-br[0])*sw,H-16);
+ c.strokeStyle='#22c55e';c.lineWidth=2;c.strokeRect(br[0]*sw,1,(br[1]-br[0])*sw,H-18);c.lineWidth=1;
+ c.fillStyle='#22c55e';c.fillText('✂',br[0]*sw+4,H-18)}
  for(const k of S.kicks){const x=k.s*sw;c.fillStyle='#fb923c';c.fillRect(x,H-12,Math.max(3,sw*.8),9)}
  c.fillStyle='#fb923c';c.font='9px system-ui';c.fillText('kick',4,H-3);
  for(const n of S.notes){
@@ -1131,3 +1150,6 @@ uiInit();dobbelAlles();
 </script>
 </body>
 </html>
+<script>document.querySelectorAll('#maten option').length&&(function(){
+ $('maten').addEventListener('change',()=>{BLOK=-1;blokUI()});
+ blokUI()})();</script>
