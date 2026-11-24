@@ -50,6 +50,29 @@ nav{position:sticky;top:0;z-index:50;background:rgba(8,9,10,.86);backdrop-filter
 .btn.rand:hover{border-color:var(--accent);color:var(--accent)}
 .trust{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin-top:46px;color:var(--dim);font-size:12.5px;letter-spacing:.3px}
 
+/* uniek-sectie */
+.uniek{padding:72px 20px 30px}
+.u-in{max-width:1180px;margin:0 auto}
+.u-kop{text-align:center;margin-bottom:44px}
+.u-kop h2{font-size:clamp(26px,4vw,42px);font-weight:800;margin:14px 0 10px}
+.u-kop p{color:var(--dim);max-width:620px;margin:0 auto;font-size:15.5px}
+.u-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;margin-bottom:26px}
+.u-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:10px;transition:transform .15s,border-color .15s}
+.u-card:hover{transform:translateY(-3px);border-color:var(--accent)}
+.u-nr{font-size:10.5px;font-weight:800;color:var(--accent);letter-spacing:1.6px}
+.u-card h3{font-size:18px;font-weight:700;margin:0}
+.u-card p{color:#c4d1c8;font-size:13.5px;line-height:1.55;margin:0;flex:1}
+.u-vs{background:#0c0f0d;border-left:3px solid #b3543f;border-radius:0 8px 8px 0;padding:9px 12px;font-size:12px;color:var(--dim)}
+.u-vs b{color:#e08b74;display:block;font-size:11px;letter-spacing:.4px;margin-bottom:2px}
+.u-biz{display:grid;grid-template-columns:1.3fr .7fr;gap:18px;align-items:stretch;margin-bottom:8px}
+.u-biz>div:first-child{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px}
+.u-biz h3{font-size:20px;margin:10px 0 8px}
+.u-biz p{color:#c4d1c8;font-size:13.5px;line-height:1.55;margin:0}
+.u-gar{background:rgba(47,191,113,.08);border:1px solid rgba(47,191,113,.35);border-radius:14px;padding:24px;display:flex;flex-direction:column;justify-content:center}
+.u-gar b{color:var(--accent);font-size:16px;display:block;margin-bottom:6px}
+.u-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:34px 0 0}
+@media (max-width:820px){.u-biz{grid-template-columns:1fr}}
+
 /* filters */
 .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
 .filters{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0 50px}
@@ -174,6 +197,45 @@ footer{margin-top:90px;border-top:1px solid var(--line);padding:46px 24px 36px;c
     <a class="btn rand" href="#prosuite">🔥 BEKIJK G2B PRO SUITE</a>
   </div>
   <div class="trust"><span>🔒 Veilig betalen</span><span>⬇ Direct downloaden</span><span>🎹 100% eigen geluid</span><span>📜 Commercieel gebruik inbegrepen</span></div>
+</section>
+
+<section class="uniek">
+  <div class="u-in">
+    <div class="u-kop"><span class="eyebrow">G2B EIGEN TECH · 100% LOKAAL</span>
+      <h2>Waarom Good2Better uniek is</h2>
+      <p>Geen sample-mapjes, geen cloud-credits, geen ingewikkelde routing — 6 eigen uitvindingen die je nergens anders krijgt.</p>
+    </div>
+    <div class="u-grid">
+      <div class="u-card"><span class="u-nr">UITVINDING 1</span><h3>STAPEL-DICE + DNA-Kluis</h3>
+        <p>Bakt 2-3 one-shots samen tot één nieuwe studio-klank — mono-sub, fase-fix, breedte-dubbel — en keurt zwakke combi's zelf af.</p>
+        <div class="u-vs"><b>Waar Splice tekortschiet:</b> duizenden losse samples waar je zelf doorheen spit en zelf moet EQ'en.</div></div>
+      <div class="u-card"><span class="u-nr">UITVINDING 2</span><h3>Prio-Mixbus (G2B MIXER)</h3>
+        <p>Sporen luisteren live naar elkaar: zang krijgt automatisch 2-4 kHz ruimte en de kick drukt sub/grit/akkoord strak weg per aanslag.</p>
+        <div class="u-vs"><b>Waar FL Studio / Ableton tekortschieten:</b> vereist handmatige sidechain-routing en jaren mix-ervaring.</div></div>
+      <div class="u-card"><span class="u-nr">UITVINDING 3</span><h3>GIO Commando-Brein</h3>
+        <p>Stuurt echte audio-engines en piano-rolls aan in gewoon Nederlands — "meer donder", "maak 6 stems" — 100% offline.</p>
+        <div class="u-vs"><b>Waar Suno / Udio tekortschieten:</b> alleen cloud met maandelijkse credits; geen live bijsturing per engine.</div></div>
+      <div class="u-card"><span class="u-nr">UITVINDING 4</span><h3>.G2B Web ↔ PC Sync</h3>
+        <p>Begin onderweg in je browser, sleep hetzelfde .g2b-bestand thuis in je PC-app voor zware AI en Release-Pack ZIP.</p>
+        <div class="u-vs"><b>Waar BandLab / desktop-DAW's tekortschieten:</b> of lichte browser zonder zware AI, of zware installatie zonder snelle schets.</div></div>
+      <div class="u-card"><span class="u-nr">UITVINDING 5</span><h3>Surinaamse & Caribische Ritme-DNA</h3>
+        <p>Echte ritme- en instrument-engines voor Kawina, Kaseko, Zouk, Bubbling, Dembow en Soca — naast Trap, Drill en Afro.</p>
+        <div class="u-vs"><b>Waar Native Instruments / Arturia tekortschieten:</b> bijna alleen US Trap, EDM en Pop.</div></div>
+      <div class="u-card"><span class="u-nr">UITVINDING 6</span><h3>1-Klik Release-Pack + REFORS</h3>
+        <p>Checkt je mix eerst op Telefoon/Auto/Club en exporteert in één klik: master, instrumental, acapella, stems, MIDI + licentie-PDF.</p>
+        <div class="u-vs"><b>Waar LANDR / DistroKid tekortschieten:</b> aparte abonnementen voor mastering, stems en promo-exports.</div></div>
+    </div>
+    <div class="u-biz">
+      <div><span class="eyebrow">OOK VOOR ONDERNEMERS</span>
+        <h3>Zakelijke software zonder abonnement</h3>
+        <p>Dezelfde 100% lokale techniek als kant-en-klare bedrijfs-tools: CRM-Fabriek, Lead-Fabriek, Factuurmaker, Juridisch-Engine — één keer kopen, voor altijd van jou, AVG-proof.</p></div>
+      <div class="u-gar"><b>🛡 Altijd-Goed Garantie</b><p>Elke G2B-tool draait volledig op jouw eigen systeem. Geen cloud-accounts, geen verborgen credits, geen maandelijkse kosten.</p></div>
+    </div>
+    <div class="u-cta">
+      <a class="btn vol" href="p.html?id=g2b-workstation">PROBEER G2B WORKSTATION DIRECT</a>
+      <a class="btn rand" href="#winkel">NIEUW: G2B SONIC-AUDIT (BINNENKORT)</a>
+    </div>
+  </div>
 </section>
 
 <main class="wrap" id="winkel">

@@ -25,3 +25,7 @@ python3 -c "import json,os,urllib.request" + HEAD op elke info.json url → 200 
 Codes per tool (ook in info.json → kopers zien hem op bedankt-pagina):
 LEAD `G2B-LEAD-L7Q2MW` · CRM `G2B-CRM-C8X4RT` · LIJST `G2B-LIJST-V5N9KD` · MAIL `G2B-MAIL-M2F7HB` · SEQ `G2B-SEQ-S9W4JC` · SHEET `G2B-SHEET-H4R8VG` · SEO `G2B-SEO-E8K5TD` · WATCH `G2B-WATCH-W9C4NB` · FLOW `G2B-FLOW-F7M6PL` · KANAAL `G2B-KANAAL-K4T8DW` · GAME `G2B-GAME-G3J7QF` · FACTUUR `G2B-FACTUUR-D3K91P` · MARK `G2B-MARK-P6T3ZN` · RADAR `G2B-RADAR-R6D2KX` · AGENCY `G2B-AGENCY-A2V9SR` · club-master `G2B-CLUB-KVJF1N`.
 Tools: factuurmaker, leadfabriek, crmfabriek, lijstfabriek, mailfabriek, marketingfabriek, sequentiefabriek, sheetfabriek, gamefabriek, leadradar.
+
+## SONIC-AUDIT (nov 2026)
+- tool: tools/sonic-audit/ — meten gratis, FIX + WAV/badge-export achter code
+- code: SONICAUDIT = G2B-SONIC-A7K3V9 (exportslot.js) · levering: d/sonicaudit

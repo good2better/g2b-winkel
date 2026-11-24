@@ -1,0 +1,357 @@
+<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>G2B SONIC-AUDIT — score + auto-fix</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#0c0f0c;--kaart:#141a15;--rand:#223227;--groen:#19c37d;--tekst:#e8f0e9;--dim:#8fa395;--rood:#e06655;--goud:#d9a94a}
+body{background:var(--bg);color:var(--tekst);font-family:system-ui;margin:0;padding:14px;max-width:980px}
+h1{font-size:20px;margin:4px 0 10px}h1 small{color:var(--groen);font-size:.55em}
+.rij{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+button.uit{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}
+button.uit:hover{border-color:var(--groen)}
+button.go{background:var(--groen);color:#04130b;border:0;font-weight:700}
+button:disabled{opacity:.45;cursor:default}
+#st{color:var(--dim);font-size:13px}
+#drop{border:2px dashed var(--rand);border-radius:12px;padding:22px;text-align:center;color:var(--dim);cursor:pointer;margin-bottom:12px;background:var(--kaart)}
+#drop.over,#drop:hover{border-color:var(--groen);color:var(--tekst)}
+.kaart{background:var(--kaart);border:1px solid var(--rand);border-radius:10px;padding:14px;margin-top:10px;font-size:13px;color:var(--dim)}
+.kaart b{color:var(--tekst)}
+#scoreWrap{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+#ring{width:150px;height:150px}
+#scoreNum{font-size:34px;font-weight:800}
+.issue{padding:6px 0;border-bottom:1px solid var(--rand);font-size:13px}
+.issue:last-child{border-bottom:0}
+.issue .p{float:right;color:var(--rood);font-weight:700}
+.issue.ok{color:var(--groen)}
+.issue.ok .p{color:var(--groen)}
+#balk{width:100%;height:14px;background:var(--kaart);border:1px solid var(--rand);border-radius:99px;overflow:hidden;margin:8px 0}
+#balkIn{height:100%;width:0%;background:var(--groen);transition:width .15s}
+.speler{width:100%;margin-top:6px}
+a.dl{color:var(--groen);font-weight:700}
+.cert{background:linear-gradient(135deg,#0d1a12,#12241a);border:2px solid var(--goud);border-radius:14px;padding:18px;text-align:center;margin-top:10px}
+.cert .cbadge{font-size:26px;font-weight:800;color:var(--goud);letter-spacing:2px}
+.cert .csc{font-size:15px;color:var(--tekst);margin:6px 0}
+.cert .cc{font-size:12px;color:var(--dim);letter-spacing:1px}
+.vs{font-size:12px;color:var(--dim)}
+body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#12231a;--dim:#5c6b61}
+</style></head><body>
+<h1>G2B SONIC-AUDIT <small>sleep je track erin → eerlijke score → 1-klik fix → G2B Certified badge</small></h1>
+<div id="drop">🎧 Sleep je mix/master hierheen (wav/mp3/ogg/flac — max ~10 min)<input type="file" id="file" accept="audio/*" hidden></div>
+<div class="rij">
+<button class="uit go" id="bMeet" onclick="meet()" disabled>🔬 MEET JE TRACK</button>
+<button class="uit" id="bFix" onclick="fix()" disabled>⚡ FIX NAAR 85+ SCORE</button>
+<button class="uit" id="bDemo" onclick="demo()">▶ probeer met demo-track</button>
+<button class="uit" onclick="document.body.classList.toggle('licht')">◐</button>
+<span id="st">meten is gratis — fix + downloads vragen je licentiecode</span>
+</div>
+<div id="balk"><div id="balkIn"></div></div>
+<div class="kaart" id="rapport" hidden>
+ <div id="scoreWrap">
+  <canvas id="ring" width="300" height="300"></canvas>
+  <div style="flex:1;min-width:260px" id="issues"></div>
+ </div>
+</div>
+<div class="kaart" id="uit" hidden>
+<b>VÓÓR</b> <span class="vs">(zelfde volume — eerlijk vergelijk)</span>:<audio class="speler" id="prePlay" controls controlsList="nodownload"></audio>
+<b>NÁ FIX:</b><audio class="speler" id="postPlay" controls controlsList="nodownload"></audio>
+<div class="rij" style="margin-top:10px">
+ <button class="uit go" onclick="dlWav()">⬇ DOWNLOAD 48kHz/24bit WAV</button>
+ <button class="uit" onclick="dlBadge()" id="bBadge" disabled>📜 DOWNLOAD CERTIFIED-BADGE</button>
+</div>
+<div id="certbox"></div>
+</div>
+<div class="kaart">Wat hij meet: <b>mono-sub</b> (&lt;110 Hz moet gecentreerd zijn, anders fase-ellende in de club) · <b>helderheid</b> (2–4 kHz aanwezigheid voor stem/leads) · <b>luidheid</b> (geschikt voor Spotify/club) · <b>clipping</b> · <b>stereo-fase</b>. Score ≥85 = <b>G2B Certified</b> met unieke badge-code. De fix gebruikt dezelfde DSP als G2B MASTER + mono-sub correctie. Alles draait in je browser — je audio gaat nergens heen.</div>
+<script src="../exportslot.js"></script>
+<script>
+const DOEL=-6;let ctx=null,buf=null,inL=null,inR=null,sr=44100;
+let uitL=null,uitR=null,lastScore=0,lastVoor=null;
+const $=id=>document.getElementById(id);
+function ac(){if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();if(ctx.state=='suspended')ctx.resume();return ctx}
+// licentie via url: ?licentie=G2B-SONIC-...
+(()=>{const q=new URLSearchParams(location.search).get('licentie');
+ if(q&&q.toUpperCase()===(G2B_EXPORT_CODES.SONICAUDIT||'').toUpperCase())sessionStorage.setItem('g2b_export_SONICAUDIT','1');})();
+
+// demo-track: kick+hat+zaag-bas met express defecten: stereo-sub (fase-rotzooi) + dof middengebied + zacht
+function demo(){
+ const SR=44100,BPM=140,stap=60/BPM/4,n=Math.floor(stap*16*2*SR);
+ inL=new Float32Array(n);inR=new Float32Array(n);sr=SR;
+ const nt=[55,0,0,55,0,0,65.41,0,55,0,0,55,0,49,0,58.27,55,0,0,55,0,0,65.41,0,55,0,73.42,0,65.41,0,49];
+ let phs=0;
+ for(let i=0;i<n;i++){
+  const t=i/SR,pos=t/stap,st=Math.floor(pos),ph=(pos-st)*stap;
+  let s=0;
+  const kp=t%(stap*4);
+  s+=Math.sin(2*Math.PI*(48+140*Math.exp(-kp*40))*kp)*Math.exp(-kp*18)*0.85;
+  const hp=t%(stap*2);
+  if(hp>stap)s+=(Math.random()*2-1)*Math.exp(-(hp-stap)*90)*0.10;
+  const f=nt[st];if(f>0)s+=(2*(t*f%1)-1)*Math.exp(-ph*7)*0.20;
+  // dun melodielijntje in het middengebied (2-4kHz) — bewust te zwak gemixt
+  if(st%2===0){const mf=f*36;const mp=Math.sin(2*Math.PI*mf*t)*Math.exp(-ph*7)*0.075;
+   inL[i]+=mp;inR[i]+=mp*0.85}
+  inL[i]+=s*0.40;
+  // sub-bas wijdt express naar stereo: verschillende fase per kanaal
+  phs+=2*Math.PI*55/SR;
+  const sub=Math.sin(phs)*0.28;
+  inR[i]=s*0.40 - sub*0.9; inL[i]+=sub; inR[i]+=sub*0.1;
+ }
+ buf=null;$('st').textContent='✔ demo-track geladen (bewust met fouten: stereo-sub, dof, zacht) — klik 🔬 MEET';
+ $('bMeet').disabled=false;$('rapport').hidden=true;$('uit').hidden=true;
+}
+function laad(file){
+ $('st').textContent='laden: '+file.name+'…';
+ file.arrayBuffer().then(ab=>ac().decodeAudioData(ab)).then(b=>{
+  if(b.duration>640){$('st').textContent='✖ te lang (max ~10 min)';return}
+  buf=b;sr=b.sampleRate;inL=new Float32Array(b.length);inR=new Float32Array(b.length);
+  inL.set(b.getChannelData(0));inR.set(b.getChannelData(b.numberOfChannels>1?1:0));
+  $('st').textContent='✔ '+file.name+' · '+b.duration.toFixed(1)+' s · '+sr+' Hz — klik 🔬 MEET';
+  $('bMeet').disabled=false;$('rapport').hidden=true;$('uit').hidden=true;
+ }).catch(e=>{$('st').textContent='✖ kan dit bestand niet lezen ('+e.message+')'});
+}
+
+// ==== de meting — volledige track, gechunkte 1-polige filters ====
+function meetTrack(L,R,sr){
+ const n=L.length;
+ const a110=1-Math.exp(-2*Math.PI*110/sr), a2k=1-Math.exp(-2*Math.PI*2000/sr), a4k=1-Math.exp(-2*Math.PI*4000/sr);
+ let sL=0,sR=0,p2L=0,p2R=0,p4L=0,p4R=0;
+ let eSubL=0,eSubR=0,eSubLR=0,ePres=0,eAll=0,pk=0,clips=0,sLR=0,eSub=0;
+ for(let i=0;i<n;i++){
+  const l=L[i],r=R[i];
+  sL+=a110*(l-sL);sR+=a110*(r-sR);
+  p2L+=a2k*(l-p2L);p2R+=a2k*(r-p2R);p4L+=a4k*(l-p4L);p4R+=a4k*(r-p4R);
+  const bL=p4L-p2L,bR=p4R-p2R;
+  eSubL+=sL*sL;eSubR+=sR*sR;eSubLR+=sL*sR;eSub+=(sL*sL+sR*sR)*0.5;
+  ePres+=(bL*bL+bR*bR)*0.5;eAll+=(l*l+r*r)*0.5;
+  sLR+=l*r;
+  const a=Math.max(Math.abs(l),Math.abs(r));if(a>pk)pk=a;
+  if(a>0.98)clips++;
+ }
+ const den=Math.sqrt(eSubL*eSubR)+1e-12;
+ return{subCorr:eSubLR/den, subShare:eSub/(eAll+1e-12), pres:ePres/(eAll+1e-12),
+  rms:Math.sqrt(eAll/n), lufs:20*Math.log10(Math.sqrt(eAll/n)+1e-9), pk, clips,
+  corr:sLR/(eAll+1e-12), n};
+}
+function scoreVan(m){
+ let sc=100,iss=[];
+ const add=(t,p,ok)=>iss.push({t,p,ok});
+ // mono-sub
+ if(m.subCorr<0){sc-=22;add('Sub-bas is in tegenfase — verdwijnt in de club/auto (-22)',0,false)}
+ else if(m.subCorr<0.3){sc-=12;add('Sub-bas lekt naar stereo — minder punch (-12)',0,false)}
+ else if(m.subCorr<0.55){sc-=5;add('Sub-bas deels breed — kan strakker (-5)',0,false)}
+ else add('Sub-bas netjes mono',0,true);
+ // sub-share
+ if(m.subShare<0.04){sc-=8;add('Bijna geen sub — track klinkt dun (-8)',0,false)}
+ else if(m.subShare>0.55){sc-=8;add('Sub overheerst — boeierig (-8)',0,false)}
+ else add('Sub-hoeveelheid goed',0,true);
+ // helderheid 2-4k
+ const dev=Math.abs(m.pres-0.20);
+ if(dev>0.16){sc-=16;add(m.pres<0.20?'Te dof — stem/leads verdrinken (-16)':'Te scherp/hard in het midden (-16)',0,false)}
+ else if(dev>0.08){sc-=8;add(m.pres<0.20?'Wat dof — mist aanwezigheid (-8)':'Wat vooruit in het midden (-8)',0,false)}
+ else add('Helderheid goed',0,true);
+ // luidheid
+ if(m.lufs<-25){sc-=14;add('Veel te zacht voor Spotify/club (-14)',0,false)}
+ else if(m.lufs<-18){sc-=6;add('Zacht — kan luider (-6)',0,false)}
+ else if(m.lufs>-7){sc-=10;add('Overstuurd/platgelimiteerd — geen ademruimte (-10)',0,false)}
+ else add('Luidheid oké',0,true);
+ // clipping
+ if(m.pk>=0.995||m.clips>m.n/50){sc-=14;add('Clipping — harde pieken over 0 dBFS (-14)',0,false)}
+ else if(m.pk>=0.98){sc-=6;add('Piek zit tegen het plafond (-6)',0,false)}
+ else add('Geen clipping',0,true);
+ // stereo-fase
+ if(m.corr<-0.05){sc-=14;add('Brede stereo maar uit fase — klappert op mono-systemen (-14)',0,false)}
+ else if(m.corr<0.05){sc-=4;add('Stereobeeld erg wijd — check mono (-4)',0,false)}
+ else add('Fase oké',0,true);
+ return{score:Math.max(3,Math.round(sc)),iss};
+}
+// ==== DSP: mono-sub fix (4e-orde Linkwitz-split) + G2B MASTER-keten ====
+function biLP(sr,f){const w=2*Math.PI*f/sr,c=Math.cos(w),a=Math.sin(w)/1.4142;
+ return{b0:(1-c)/2/(1+a),b1:(1-c)/(1+a),b2:(1-c)/2/(1+a),a1:-2*c/(1+a),a2:(1-a)/(1+a)}}
+function biHP(sr,f){const w=2*Math.PI*f/sr,c=Math.cos(w),a=Math.sin(w)/1.4142;
+ return{b0:(1+c)/2/(1+a),b1:-(1+c)/(1+a),b2:(1+c)/2/(1+a),a1:-2*c/(1+a),a2:(1-a)/(1+a)}}
+function bi(x,B,s){const y=B.b0*x+B.b1*s[0]+B.b2*s[1]-B.a1*s[2]-B.a2*s[3];
+ s[1]=s[0];s[0]=x;s[3]=s[2];s[2]=y;return y}
+function biPeak(sr,f,db,Q){const w=2*Math.PI*f/sr,A=Math.pow(10,db/40),al=Math.sin(w)/(2*(Q||1)),c=Math.cos(w);
+ return{b0:(1+al*A)/(1+al/A),b1:-2*c/(1+al/A),b2:(1-al*A)/(1+al/A),a1:-2*c/(1+al/A),a2:(1-al/A)/(1+al/A)}}
+async function renderFix(uitL,uitR,P,prog){
+ const n=inL.length,LP=biLP(sr,110),HP=biHP(sr,110);
+ // stap 1: sub-split — onder 110Hz wordt het mono-midden (× subGain), de rest blijft stereo
+ let a=[0,0,0,0],b=[0,0,0,0],c1=[0,0,0,0],d=[0,0,0,0],e=[0,0,0,0],f=[0,0,0,0],g1=[0,0,0,0],h=[0,0,0,0];
+ for(let i=0;i<n;i++){
+  const sl=bi(bi(inL[i],LP,a),LP,b),srr=bi(bi(inR[i],LP,c1),LP,d);
+  const hl=bi(bi(inL[i],HP,e),HP,f),hr=bi(bi(inR[i],HP,g1),HP,h);
+  const m=(sl+srr)*0.5*P.subGain;
+  uitL[i]=hl+m;uitR[i]=hr+m;
+ }
+ // stap 2: master-keten
+ const hpA=1-Math.exp(-2*Math.PI*28/sr),tiltA=1-Math.exp(-2*Math.PI*700/sr);
+ const t=P.tilt/50,gLoT=Math.pow(10,(t*7)*0.05),gHiT=Math.pow(10,(-t*7)*0.05);
+ const thr=0.126,ratio=1+(P.glue/100)*3;
+ const cAtt=1-Math.exp(-1/(0.010*sr)),cRel=1-Math.exp(-1/(0.160*sr));
+ const gAtt=1-Math.exp(-1/(0.004*sr)),gRel=1-Math.exp(-1/(0.200*sr));
+ const drv=1+(P.warmte/100)*4,satMix=P.warmte/100*0.6,satLpA=1-Math.exp(-2*Math.PI*8000/sr);
+ const preG=Math.pow(10,(P.luid/100)*9*0.05),ceil=0.891,limRel=Math.exp(-1/(0.050*sr));
+ let fHpL=0,fHpR=0,fTiltLpL=0,fTiltLpR=0,fEnv=1e-6,fGain=1,fSatLpL=0,fSatLpR=0,fLimEnv=0;
+ const PK=P.presDb>0?biPeak(sr,3000,P.presDb,1):null,spL=[0,0,0,0],spR=[0,0,0,0];
+ const CH=1<<16;
+ for(let base=0;base<n;base+=CH){
+  const end=Math.min(base+CH,n);
+  for(let i=base;i<end;i++){
+   let L=uitL[i],R=uitR[i];
+   fHpL+=hpA*(L-fHpL);fHpR+=hpA*(R-fHpR);L-=fHpL;R-=fHpR;
+   fTiltLpL+=tiltA*(L-fTiltLpL);fTiltLpR+=tiltA*(R-fTiltLpR);
+   {const loL=fTiltLpL,loR=fTiltLpR,hiL=L-loL,hiR=R-loR;
+    L=loL*gLoT+hiL*gHiT;R=loR*gLoT+hiR*gHiT;}
+   if(PK){L=bi(L,PK,spL);R=bi(R,PK,spR);}
+   const m2=(L*L+R*R)*0.5,dc=1e-5;
+   fEnv+=((m2>fEnv)?cAtt:cRel)*(m2+dc-fEnv);
+   {const rms=Math.sqrt(fEnv);
+    if(rms>thr){const target=Math.pow(rms/thr,-(1-1/ratio));
+     fGain+=((target<fGain)?gAtt:gRel)*(target-fGain);
+    }else fGain+=gRel*(1-fGain);
+    L*=fGain;R*=fGain;}
+   {const sLL=Math.tanh(L*drv),sRR=Math.tanh(R*drv);
+    fSatLpL+=satLpA*(sLL-fSatLpL);fSatLpR+=satLpA*(sRR-fSatLpR);
+    L=L*(1-satMix)+fSatLpL*satMix;R=R*(1-satMix)+fSatLpR*satMix;}
+   L*=preG;R*=preG;
+   {const pk=Math.max(Math.abs(L),Math.abs(R));
+    fLimEnv=Math.max(pk,fLimEnv*limRel);
+    const g=(fLimEnv>ceil)?ceil/fLimEnv:1;
+    L*=g;R*=g;}
+   uitL[i]=L;uitR[i]=R;
+  }
+  if(prog)prog(end/n);
+  if(end<n)await new Promise(r=>setTimeout(r,0));
+ }
+}
+// knoppen kiezen op basis van de meting — elke poging scherper gesteld
+function fixKnobs(m,tr){
+ const base=m.pres<0.12?30:m.pres<0.20?14:m.pres>0.36?-20:0;
+ const tilt=Math.min(50,base+tr*10);
+ const luid=Math.max(10,Math.min(100,(DOEL-m.lufs)/9*100));
+ const subGain=m.subShare>0.55?[0.5,0.38,0.3][tr]||0.3:m.subShare>0.45?0.7:1;
+ const warmte=Math.min(75,(m.lufs<-15?35:28)+ (m.pres<0.10?20+tr*15:tr*8));
+ const presDb=m.pres<0.03?[14,18,22][tr]||22:m.pres<0.10?[8,12,16][tr]||16:m.pres<0.16?4:0;
+ return{tilt,glue:62,warmte,luid,subGain,presDb};
+}
+function tekenRing(sc){
+ const c=$('ring'),g=c.getContext('2d');g.clearRect(0,0,300,300);
+ const kleur=sc>=85?'#19c37d':sc>=60?'#d9a94a':'#e06655';
+ g.lineWidth=22;g.strokeStyle='#223227';g.beginPath();g.arc(150,150,120,0,6.283);g.stroke();
+ g.strokeStyle=kleur;g.lineCap='round';g.beginPath();g.arc(150,150,120,-1.571,-1.571+6.283*sc/100);g.stroke();
+ g.fillStyle=kleur;g.font='800 64px system-ui';g.textAlign='center';g.textBaseline='middle';
+ g.fillText(sc,150,140);g.font='700 22px system-ui';g.fillStyle='#8fa395';g.fillText(sc>=85?'CERTIFIED':sc>=60?'NET NIET':'WERK NODIG',150,190);
+}
+function certCode(sc){
+ const s='g2bcert::'+(inL?inL.length:0)+'::'+sc+'::'+new Date().toISOString().slice(0,10);
+ let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;
+ return'G2B-'+h.toString(36).toUpperCase().padStart(7,'0');
+}
+function meet(){
+ if(!inL)return;$('st').textContent='meten…';
+ setTimeout(()=>{
+  const m=meetTrack(inL,inR,sr),r=scoreVan(m);lastVoor=m;lastScore=r.score;
+  tekenRing(r.score);
+  $('issues').innerHTML='<div class="issue" style="border:0;padding-bottom:10px"><b style="font-size:15px">G2B Sonic Score: '+r.score+'/100</b><br><span style="color:var(--dim);font-size:12px">'+(r.score>=85?'Sterk — je track haalt het keurmerk.':r.score>=60?'Redelijk — maar er zitten fouten in.':'Veel werk nodig — klik ⚡ FIX.')+'</span></div>'
+   +r.iss.map(i=>'<div class="issue'+(i.ok?' ok':'')+'">'+(i.ok?'✔ ':'✖ ')+i.t+'<span class="p">'+(i.ok?'':'')+'</span></div>').join('');
+  $('rapport').hidden=false;
+  $('bFix').disabled=(r.score>=85);
+  $('st').textContent=r.score>=85?'✔ score ≥85 — download je badge + WAV':'score '+r.score+' — klik ⚡ FIX NAAR 85+';
+  if(r.score>=85)toonCert(r.score,false);
+ },30);
+}
+async function fix(){
+ if(!inL)return;
+ if(!G2B_EXPORT('SONICAUDIT'))return;
+ $('bFix').disabled=true;
+ const n=inL.length;uitL=new Float32Array(n);uitR=new Float32Array(n);
+ // fix-lus: meet opnieuw en stel scherper bij tot score ≥85 (max 3 rondes)
+ let m2=lastVoor,r2=scoreVan(lastVoor),best=null,bestSc=r2.score,tr=0;
+ const tL=new Float32Array(n),tR=new Float32Array(n);
+ for(tr=0;tr<3;tr++){
+  $('st').textContent='fixen ronde '+(tr+1)+': mono-sub + master-keten…';
+  await renderFix(tL,tR,fixKnobs(m2,tr),f=>{$('balkIn').style.width=(f*100).toFixed(0)+'%'});
+  $('st').textContent='na-meten ronde '+(tr+1)+'…';
+  m2=meetTrack(tL,tR,sr);r2=scoreVan(m2);
+  if(r2.score>bestSc){bestSc=r2.score;best=r2;uitL.set(tL);uitR.set(tR)}
+  if(r2.score>=85)break;
+ }
+ r2=best||r2;
+ $('st').textContent='na-meten…';
+ tekenRing(r2.score);lastScore=r2.score;
+ $('issues').innerHTML='<div class="issue" style="border:0;padding-bottom:10px"><b style="font-size:15px">NÁ FIX: '+r2.score+'/100</b> <span class="vs">(was '+scoreVan(lastVoor).score+')</span></div>'
+  +r2.iss.map(i=>'<div class="issue'+(i.ok?' ok':'')+'">'+(i.ok?'✔ ':'✖ ')+i.t+'</div>').join('');
+ // spelers vullen
+ let eIn=0,eUit=0;for(let i=0;i<n;i++){eIn+=inL[i]*inL[i]+inR[i]*inR[i];eUit+=uitL[i]*uitL[i]+uitR[i]*uitR[i]}
+ let g=Math.sqrt(eUit/(eIn+1e-9));if(!(g>0.25))g=1;if(g>4)g=4;
+ const preL=new Float32Array(n),preR=new Float32Array(n);
+ for(let i=0;i<n;i++){preL[i]=inL[i]*g;preR[i]=inR[i]*g}
+ const preBlob=wavBlob(preL,preR,sr,16),postBlob=wavBlob(uitL,uitR,sr,16);
+ if(window._p1)URL.revokeObjectURL(window._p1);if(window._p2)URL.revokeObjectURL(window._p2);
+ window._p1=URL.createObjectURL(preBlob);window._p2=URL.createObjectURL(postBlob);
+ $('prePlay').src=window._p1;$('postPlay').src=window._p2;
+ $('uit').hidden=false;$('balkIn').style.width='100%';
+ $('st').textContent='✔ fix klaar — score '+r2.score+' — luister en download';
+ if(r2.score>=85)toonCert(r2.score,true);
+}
+function toonCert(sc,fixed){
+ const cc=certCode(sc);
+ $('certbox').innerHTML='<div class="cert"><div class="cbadge">✦ G2B CERTIFIED ✦</div>'+
+ '<div class="csc">SONIC SCORE '+(sc>=100?'100':sc)+' / 100'+(fixed?' — AUTO-FIXED':'')+'</div>'+
+ '<div class="cc">'+cc+' · good2better.com</div></div>';
+ $('bBadge').disabled=false;
+}
+// ==== WAV: 48kHz / 24-bit (of 16 voor preview) ====
+function resample48(L,R){
+ if(sr===48000)return[L,R];
+ const n=inL.length,out=Math.round(n*48000/sr),oL=new Float32Array(out),oR=new Float32Array(out);
+ for(let i=0;i<out;i++){const p=i*sr/48000,j=p|0,f=p-j;
+  oL[i]=L[j]+(L[Math.min(j+1,n-1)]-L[j])*f;oR[i]=R[j]+(R[Math.min(j+1,n-1)]-R[j])*f}
+ return[oL,oR];
+}
+function wavBlob(L,R,rate,bits){
+ const n=L.length,bps=bits/8,ab=new ArrayBuffer(44+n*bps*2),v=new DataView(ab);
+ const W=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+ W(0,'RIFF');v.setUint32(4,36+n*bps*2,true);W(8,'WAVE');W(12,'fmt ');
+ v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,2,true);
+ v.setUint32(24,rate,true);v.setUint32(28,rate*bps*2,true);v.setUint16(32,bps*2,true);v.setUint16(34,bits,true);
+ W(36,'data');v.setUint32(40,n*bps*2,true);
+ let o=44;
+ for(let i=0;i<n;i++){
+  for(const x of[L[i],R[i]]){
+   const s=Math.max(-1,Math.min(1,x));
+   if(bits===24){const q=Math.round(s*8388607);v.setUint8(o,q&255);v.setUint8(o+1,(q>>8)&255);v.setUint8(o+2,(q>>16)&255);o+=3}
+   else{const q=Math.round(s*32767);v.setInt16(o,q,true);o+=2}
+  }
+ }
+ return new Blob([ab],{type:'audio/wav'});
+}
+function dlWav(){
+ if(!uitL)return;
+ G2B_EXPORT_THEN('SONICAUDIT',()=>{
+  const [L,R]=resample48(uitL,uitR);
+  const b=wavBlob(L,R,48000,24),a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download='G2B-SONIC-AUDIT-48k24.wav';a.click();
+ });
+}
+function dlBadge(){
+ G2B_EXPORT_THEN('SONICAUDIT',()=>{
+  const c=document.createElement('canvas');c.width=800;c.height=450;const g=c.getContext('2d');
+  g.fillStyle='#0b0f0c';g.fillRect(0,0,800,450);
+  g.strokeStyle='#d9a94a';g.lineWidth=6;g.strokeRect(14,14,772,422);
+  g.strokeStyle='#19c37d';g.lineWidth=2;g.strokeRect(24,24,752,402);
+  g.fillStyle='#d9a94a';g.font='800 64px system-ui';g.textAlign='center';
+  g.fillText('✦ G2B CERTIFIED ✦',400,140);
+  g.fillStyle='#e8f0e9';g.font='700 46px system-ui';
+  g.fillText('SONIC SCORE '+lastScore+' / 100',400,225);
+  g.fillStyle='#8fa395';g.font='600 24px system-ui';
+  g.fillText('geauditeerd & gefixt met G2B SONIC-AUDIT',400,285);
+  g.fillStyle='#d9a94a';g.font='700 26px system-ui';
+  g.fillText(certCode(lastScore)+'  ·  good2better.com',400,355);
+  const a=document.createElement('a');a.href=c.toDataURL('image/png');
+  a.download='G2B-CERTIFIED-'+certCode(lastScore)+'.png';a.click();
+ });
+}
+const drop=$('drop');
+drop.onclick=()=>$('file').click();$('file').onchange=e=>{if(e.target.files[0])laad(e.target.files[0])};
+drop.ondragover=e=>{e.preventDefault();drop.classList.add('over')};drop.ondragleave=()=>drop.classList.remove('over');
+drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');const f=e.dataTransfer.files[0];if(f)laad(f)};
+</script>
+<footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
+</body></html>
