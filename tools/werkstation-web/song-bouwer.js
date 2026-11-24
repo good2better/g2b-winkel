@@ -10,6 +10,7 @@ const $=id=>document.getElementById(id);
 const st=t=>{const e=$('sbStatus');if(e)e.textContent=t};
 /* ---------- secties & matrix ---------- */
 const SECTIES=[['INTRO',8],['BUILD',4],['DROP',8],['BREAK',4],['DROP 2',8]]; // 32 maten (v3.2)
+let CUR=SECTIES; // actieve sectielijst (Snel-Preview = alleen DROP 8)
 const SPOREN=[['VOCAAL','voc'],['KICK','kick'],['SUB','sub'],['GRIT','grit'],['MELODIE','mel'],['AKKOORDEN','akk']];
 const DEFAAN={INTRO:{voc:1,mel:1,akk:1},BUILD:{voc:1,grit:1,mel:1,akk:1},DROP:{voc:1,kick:1,sub:1,grit:1,mel:1,akk:1},BREAK:{voc:1,mel:1,akk:1},'DROP 2':{voc:1,kick:1,sub:1,grit:1,mel:1,akk:1}};
 const AAN={}; // AAN[sectie][spoor]
@@ -184,8 +185,9 @@ function midiSong(sporen,bpm,secs){ // sporen:[{naam,noten:[{p,s,d,v}],kanaal}] 
  for(const t of trks){out.set(t,o);o+=t.length}return out}
 /* ---------- mix ---------- */
 let LAST=null;
-async function bouw(){
+async function bouw(snel){
  try{
+ CUR=snel?[['DROP',8]]:SECTIES;
  await laadEngines();
  st('⚙ stems renderen via de echte engines…');
  /* donder-stems: renderLoop → kick/sub/grit (mono Float32Arrays) */
@@ -206,13 +208,13 @@ async function bouw(){
  /* per-spoor buffers van 8 maten */
  const B=k=>tile8(rD[k],sdD,matD),B2=k=>tile8((v2||rD)[k],sdD,matD);
  const barD=Math.round(sdD*16*SR),barM=Math.round(sdM*16*SR);
- const totBars=SECTIES.reduce((a,[,m])=>a+m,0),N=totBars*barD;
+ const totBars=CUR.reduce((a,[,m])=>a+m,0),N=totBars*barD;
  const T={};for(const[,sp]of SPOREN){T[sp]={L:new Float32Array(N),R:new Float32Array(N)}}
  st('⚙ arrangement + FX plaatsen…');
  /* MATCH-UP: eerste VOC-sectie-maat als anker voor downbeat-align */
- let VOC_BAR0=0;{let b=0;for(const[sec,m]of SECTIES){if(AAN[sec]&&AAN[sec].voc){VOC_BAR0=b*barD;break}b+=m}}
+ let VOC_BAR0=0;{let b=0;for(const[sec,m]of CUR){if(AAN[sec]&&AAN[sec].voc){VOC_BAR0=b*barD;break}b+=m}}
  let bar=0;
- for(const[sec,m]of SECTIES){
+ for(const[sec,m]of CUR){
   const off=bar,isD2=sec==='DROP 2',isDrop=sec==='DROP'||isD2;
   const put=(sp,src,srcR,g)=>{ // src = mono-buffer van ≥m maten
    const t=T[sp],o0=off*barD,n=Math.min(m*barD,src.length);
@@ -256,7 +258,7 @@ function mixDown(){
   const dl=Math.round(.31*SR),wet=.16;
   for(const ch of['L','R']){const src=T.voc[ch].slice();
    for(let i=dl;i<N;i++)T.voc[ch][i]+=src[i-dl]*wet}
-  for(const[sec,m]of SECTIES){const isDrop=sec==='DROP'||sec==='DROP 2';
+  for(const[sec,m]of CUR){const isDrop=sec==='DROP'||sec==='DROP 2';
    if(AAN[sec].voc)for(let s=0;s<m*16;s++){const a=(bar*16+s)*seg,b=Math.min(N,a+seg);let e=0;
     for(let i=a;i<b;i++)e+=T.voc.L[i]*T.voc.L[i]+T.voc.R[i]*T.voc.R[i];
     e=Math.sqrt(e/(2*Math.max(1,b-a))||1e-9);
@@ -283,7 +285,7 @@ function mixDown(){
  for(let i=0;i<N;i++){L[i]=Math.tanh(L[i]*g/ceil)*ceil;R[i]=Math.tanh(R[i]*g/ceil)*ceil}
  LAST.L=L;LAST.R=R;
  if(window._pv){const pv=window._pv;window._pv=null;for(const v of pv){try{SONG.vibe(v)}catch(e){}}}
- st('✅ klaar — '+LAST.totBars+' maten · '+preset.toUpperCase()+' '+target+' LUFS · ~'+Math.round(N/SR)+'s');
+ st(LAST.totBars===8&&CUR!==SECTIES?'👂 snel-preview klaar (8 maten) — druk 🎬 voor de volledige song':'✅ klaar — '+LAST.totBars+' maten · '+preset.toUpperCase()+' '+target+' LUFS · ~'+Math.round(N/SR)+'s');
  $('sbExport').style.display='flex';
  if($('sbAu')){const b=new Blob([wavBytes(L,R,SR)],{type:'audio/wav'});$('sbAu').src=URL.createObjectURL(b)}
 }
@@ -429,7 +431,8 @@ function uiBoot(){
   h+='</tr>'}
  grid.innerHTML=h+'</table>';
  grid.querySelectorAll('.sbCell').forEach(b=>b.onclick=()=>{const s=b.dataset.sec,sp=b.dataset.sp;AAN[s][sp]=AAN[s][sp]?0:1;b.style.background=AAN[s][sp]?'#22c55e':'#0a1812'});
- $('sbBouw').onclick=bouw;
+ $('sbBouw').onclick=()=>bouw(false);
+ const pv=$('sbPrev');if(pv)pv.onclick=()=>bouw(true);
  $('sbWav').onclick=expMaster;$('sbStem').onclick=expStems;$('sbMid').onclick=expMid;
  const pk=$('sbPack');if(pk)pk.onclick=expPack;
  const sv=$('sbSave');if(sv)sv.onclick=g2bSave;
