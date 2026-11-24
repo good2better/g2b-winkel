@@ -236,7 +236,7 @@ function dichtst(arr,x){const nl=arr.length||1;let b=arr[0]??x,bd=99;
 function maak(wat){const c=cfg();if(!PROG||PROG.length!==c.maten||wat==='alles')maakProg(c);
  if(wat==='akk'){maakProg(c);S.akk=maakAkk(c);
  // bas: zelfde ritme, alleen toonhoogtes volgen de nieuwe akkoorden (geen krasende bas onder nieuwe akkoorden)
- S.bas=S.bas.map(n=>{const gr=PROG[Math.floor(n.s/16)];let p=lp(c,gIdx(c,gr),36);if(p>47)p-=12;return{...n,p}});
+ S.bas=S.bas.map(n=>{const gr=PROG[Math.floor(n.s/16)];if(gr==null)return n;let p=lp(c,gIdx(c,gr),36);if(p>47)p-=12;return{...n,p}});
  return} // akk-dobbel: nieuwe akkoorden, bas-ritme blijft (nootjes volgen), melodie blijft
  if(wat==='alles'){if(!LOCK.akk)S.akk=maakAkk(c);if(!LOCK.bas)S.bas=maakBas(c);if(!LOCK.mel)S.mel=maakMel(c);return}
  if(wat==='bas'&&!LOCK.bas)S.bas=maakBas(c);
@@ -268,7 +268,7 @@ function mijnPasst(){if(!MIJN||!MIJN.idx.length){st('geen akkoord — druk ● L
     altijd naast passen (onder kwint, boven kwint, parallel) */
  const buur=R([[graad,3,4,graad],[graad,4,0,graad],[graad,5,3,graad],[graad,1,4,graad]].map(p=>p.map(g=>(g+nlad)%nlad)));
  bewaar();PROG=[];for(let m=0;m<c.maten;m++)PROG.push(buur[m%4]);S.akk=maakAkk(c);
- S.bas=S.bas.map(n=>{const gr=PROG[Math.floor(n.s/16)];let p=lp(c,gIdx(c,gr),36);if(p>47)p-=12;return{...n,p}});
+ S.bas=S.bas.map(n=>{const gr=PROG[Math.floor(n.s/16)];if(gr==null)return n;let p=lp(c,gIdx(c,gr),36);if(p>47)p-=12;return{...n,p}});
  bewaar();teken();sporenUI();st('🎲 helper: progressie rond jouw akkoord — bas nootjes volgden mee')}
 function melsToetsen(){const c=cfg(),lab=c.lad.map((_,i)=>i);
  $('mkeys').innerHTML=lab.concat([lab.length]).map(i=>{const p=lp(c,i,60);const nm=NOOT[p%12]+Math.floor(p/12-1);
@@ -451,7 +451,7 @@ function midiBytes(sporen){const TPQ=480,SPB=TPQ/4,vlq=x=>{const b=[x&127];while
  const chunk=(id,d)=>[...id.split('').map(c=>c.charCodeAt(0)),(d.length>>>24)&255,(d.length>>16)&255,(d.length>>8)&255,d.length&255,...d];
  const us=Math.round(60e6/+$('bpm').value);
  const trks=[chunk('MTrk',[0,255,81,3,(us>>16)&255,(us>>8)&255,us&255,0,255,88,4,4,2,24,8,0,255,47,0])];
- sporen.forEach(([k,nm],ch)=>{const ev=[];for(const n of S[k]){const p=po(k,n.p);ev.push({t:n.s*SPB,b:[0x90|ch,p,n.v]});ev.push({t:(n.s+n.d)*SPB-1,b:[0x80|ch,p,0]})}
+ sporen.forEach(([k,nm],ch)=>{const ev=[];for(const n of S[k]){const p=Math.max(0,Math.min(127,po(k,n.p)));ev.push({t:n.s*SPB,b:[0x90|ch,p,n.v]});ev.push({t:(n.s+n.d)*SPB-1,b:[0x80|ch,p,0]})}
   ev.sort((a,b)=>a.t-b.t||(a.b[0]&0xf0)-(b.b[0]&0xf0));
   const tn=[...('G2B '+nm)].map(c=>c.charCodeAt(0)&127),d=[0,255,3,tn.length,...tn];let lt=0;
   for(const e of ev){d.push(...vlq(e.t-lt),...e.b);lt=e.t}d.push(0,255,47,0);trks.push(chunk('MTrk',d))});
@@ -617,7 +617,7 @@ document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.
 /* Web MIDI: echte midi-keyboard speelt mee (note-on → dichtstbijzijnde ladder-toon) */
 if(navigator.requestMIDIAccess)navigator.requestMIDIAccess().then(m=>{
  const upd=()=>{m.inputs.forEach(inp=>{inp.onmidimessage=e=>{const d0=e.data;if(d0&&(d0[0]&0xf0)===0x90&&d0[2]>0){
-  const c=cfg(),n=d0[1];let bi=0,bd=99;for(let i=-14;i<30;i++){const d=Math.abs(lp(c,i,60)-n);if(d<bd){bd=d;bi=i}}speelMel(bi)}}})};
+  const c=cfg(),n=d0[1];let bi=0,bd=99;for(let i=-26;i<40;i++){const d=Math.abs(lp(c,i,60)-n);if(d<bd){bd=d;bi=i}}speelMel(bi)}}})};
  upd();m.onstatechange=()=>{upd();st(m.inputs.size?'🎹 midi-keyboard verbonden — speel mee op de ladder':'🎹 midi-keyboard weg')}}).catch(()=>{});
 $('genre').value='trap';$('bpm').value=140;$('ladder').value='min';
 (function(){try{const sv=JSON.parse(localStorage.getItem('g2b_melodie_state')||'null');
