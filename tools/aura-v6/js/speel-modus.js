@@ -158,8 +158,32 @@ const SpeelModus = {
         <option value="cloud">AMBIENT CLOUD</option></select>
       <button id="smDice" class="sm">🎲 DICE</button>
       <button id="smScale" class="sm">NOOIT VALS: UIT</button>
-      <select id="smKey" class="sm-sel"></select>`;
+      <select id="smKey" class="sm-sel"></select>
+      <button id="smKeys" class="sm" title="speel met je laptop-toetsen: A W S E D F T G Y H U J K = piano · Z..M octaaf lager · [ ] octaaf schuiven — modi gelden ook">⌨ TOETSEN: UIT</button>`;
     el.appendChild(bar);
+
+    // --- laptop-toetsenbord als piano: gaat door dezelfde wire() → modi gelden ook ---
+    let keysOn = false, keysOct = 0; const keysDown = {};
+    const KMAP = { a:0,w:1,s:2,e:3,d:4,f:5,t:6,g:7,y:8,h:9,u:10,j:11,k:12,o:13,l:14,p:15,';':16,z:-12,x:-11,c:-10,v:-9,b:-8,n:-7,m:-6 };
+    const keysBtn = bar.querySelector('#smKeys');
+    keysBtn.onclick = () => { keysOn = !keysOn; keysBtn.textContent = '⌨ TOETSEN: ' + (keysOn ? 'AAN' : 'UIT'); keysBtn.classList.toggle('on', keysOn); };
+    document.addEventListener('keydown', e => {
+      if (!keysOn || e.repeat || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      const k = e.key.toLowerCase();
+      if (k === '[') { keysOct = Math.max(-3, keysOct - 1); return; }
+      if (k === ']') { keysOct = Math.min(3, keysOct + 1); return; }
+      if (!(k in KMAP) || keysDown[k]) return; keysDown[k] = true;
+      const p = 60 + KMAP[k] + keysOct * 12;
+      if (typeof InstrumentMatrix !== 'undefined' && InstrumentMatrix.play) InstrumentMatrix.play(p, {});
+    });
+    document.addEventListener('keyup', e => {
+      if (!keysOn) return;
+      const k = e.key.toLowerCase();
+      if (!(k in KMAP)) return; delete keysDown[k];
+      const p = 60 + KMAP[k] + keysOct * 12;
+      if (typeof SpeelModus !== 'undefined' && SpeelModus.release) SpeelModus.release(p);
+      if (typeof Aura !== 'undefined' && Aura.noteOff) Aura.noteOff(p);
+    });
 
     bar.querySelectorAll('button.sm[data-m]').forEach(b => b.onclick = () => {
       const m = b.dataset.m;
