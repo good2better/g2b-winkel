@@ -117,9 +117,14 @@ async function laadVocal(bron,retune){ /* bron: File of AudioBuffer; retune=fals
    for(let j=(i+1)*hop+1;j<(i+2)*hop;j++)z1+=mono[j]>=0!==mono[j-1]>=0;
    for(let j=(i+2)*hop+1;j<(i+3)*hop;j++)z2+=mono[j]>=0!==mono[j-1]>=0;
    if(z1<0.18*hop||z2<0.18*hop){i0=i;break}}
-  /* 's'/'t'-begin (ruisachtig) vlak vóór de klinker hoort bij de take →
-     tot ~116ms terugnemen; een echte adem zit er langer voor */
-  onset=i0===nf?(fb===nf?0:fb*hop):(fb!==nf&&i0-fb<=20?fb:i0)*hop}
+  /* 's'/'t'-begin (ruisachtig) vlak vóór de klinker hoort bij de take → tot
+     ~116ms terugnemen, maar alleen als de energie er tussen nooit onder de
+     vloer dook — een inademing heeft vrijwel altijd een micro-gat ervoor */
+  let anc=i0;
+  if(i0!==nf&&fb!==nf&&i0-fb<=20){let dicht=true;
+   for(let j=fb;j<=i0;j++)if(e2[j]<=thE){dicht=false;break}
+   if(dicht)anc=fb}
+  onset=i0===nf?(fb===nf?0:fb*hop):anc*hop}
  VOC={L,R,mono,key:k,mod:m,bpm,onset};
  /* engines op de stem afstemmen: bpm + toonsoort doorzetten */
  if(retune){try{const d=DW&&DW.document;if(d){if(d.getElementById('bpm'))d.getElementById('bpm').value=bpm;
