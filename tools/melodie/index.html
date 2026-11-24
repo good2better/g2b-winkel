@@ -65,6 +65,11 @@ canvas{width:100%;display:block;border-radius:8px;background:#050b08}
   <label style="flex-direction:row;align-items:center">warmte <input type="range" id="warmte" min="0" max="100" value="15"></label>
  </div>
  <canvas id="roll" width="1060" height="300"></canvas>
+ <div class="rij" style="margin-top:5px;align-items:center;flex-wrap:wrap;gap:6px"><span class="hint" style="margin:0">✎ klik in het grid om een blok aan/uit te zetten — bewerk:</span>
+  <button class="klein aan" id="edMel" title="klikken werkt op de melodie-sporen">MELODIE</button>
+  <button class="klein" id="edAkk" title="klikken werkt op de akkoorden">AKKOORDEN</button>
+  <button class="klein" id="edBas" title="klikken werkt op de bas">BAS</button>
+ </div>
  <div class="rij" style="margin-top:6px;align-items:center;flex-wrap:wrap;gap:6px"><span class="hint" style="margin:0">speel live mee:</span>
   <button class="klein" id="mStap" title="stap-inspelen: elke toets schrijft een melodie-noot en schuift op">⌨ STAP-IN</button>
   <span class="hint" style="margin:0">STAP</span><select id="mstapv"><option value="8">1/2</option><option value="4">1/4</option><option value="2" selected>1/8</option><option value="1">1/16</option><option value="0.5">1/32</option></select>
@@ -172,6 +177,21 @@ function sporenUI(){$('sporen').innerHTML=SPOREN.map(([k,n])=>`<div class="spoor
  document.querySelectorAll('[data-vol]').forEach(r=>r.oninput=()=>VOL[r.dataset.vol]=r.value/100);
  document.querySelectorAll('[data-oct]').forEach(b=>b.onclick=()=>{const[k,d]=b.dataset.oct.split('|');OCT[k]=Math.max(-2,Math.min(2,OCT[k]+(+d)));sporenUI();teken();
   st((OCT[k]?(OCT[k]>0?'O+'+OCT[k]:'O'+OCT[k]):'O0')+' — '+k+' klinkt nu '+Math.abs(OCT[k])+' octaaf '+(OCT[k]>0?'hoger':'lager')+(OCT[k]===0?' (origineel)':''))})}
+let EDIT='mel';
+[['edMel','mel'],['edAkk','akk'],['edBas','bas']].forEach(([id,k])=>$(id).onclick=()=>{EDIT=k;
+ ['edMel','edAkk','edBas'].forEach(x=>$(x).classList.toggle('aan',x===id));
+ st('✎ bewerk '+({mel:'MELODIE',akk:'AKKOORDEN',bas:'BAS'}[k])+' — klik een blok in het grid aan/uit')});
+$('roll').addEventListener('mousedown',e=>{
+ const gi=gridInfo(),r=e.currentTarget.getBoundingClientRect();
+ const x=(e.clientX-r.left)*(gi.W/r.width),y=(e.clientY-r.top)*(gi.H/r.height);
+ const s=Math.max(0,Math.min(gi.stp-1,Math.floor(x/gi.sw)));
+ const p2=Math.min(gi.hiP,Math.max(gi.lo,gi.lo+Math.floor((gi.H-y)/gi.rh)));
+ const k=EDIT,arr=S[k];
+ const i=arr.findIndex(n=>s>=n.s-1e-6&&s<n.s+n.d&&po(k,n.p)===p2);
+ if(i>=0){arr.splice(i,1);st('✎ blok uit '+({mel:'melodie',akk:'akkoorden',bas:'bas'}[k]))}
+ else{arr.push({p:p2-12*(OCT[k]||0),s,d:1,v:k==='mel'?95:k==='akk'?70:100});arr.sort((a,b)=>a.s-b.s);
+  st('✎ blok aan '+({mel:'melodie',akk:'akkoorden',bas:'bas'}[k]))}
+ bewaar();teken();sporenUI()});
 
 /* ---------- MUZIEK-ENGINE ---------- */
 function cfg(){const g=GENRES[$('genre').value],lad=LAD[$('ladder').value];
@@ -285,9 +305,13 @@ function nieuw(){stopSpeel();maak('alles');bewaar();teken();sporenUI();vars=[];$
 
 /* ---------- PIANO-ROLL TEKENEN ---------- */
 let kop=-1;
-function teken(){const cv=$('roll'),g=cv.getContext('2d'),W=cv.width,H=cv.height,c=cfg(),stp=c.maten*16;
+function gridInfo(){const cv=$('roll'),c=cfg(),stp=c.maten*16;
  const alle=[].concat(...SPOREN.map(([k])=>AAN[k]?S[k].map(n=>({...n,p:po(k,n.p)})):[]));
- const lo=Math.min(34,...alle.map(n=>n.p))-1,hiP=Math.max(84,...alle.map(n=>n.p))+1,rh=H/(hiP-lo+1),sw=W/stp;
+ const lo=Math.min(34,...alle.map(n=>n.p))-1,hiP=Math.max(84,...alle.map(n=>n.p))+1;
+ return{W:cv.width,H:cv.height,stp,lo,hiP,rh:cv.height/(hiP-lo+1),sw:cv.width/stp}}
+function teken(){const cv=$('roll'),g=cv.getContext('2d'),gi=gridInfo(),W=gi.W,H=gi.H,c=cfg(),stp=gi.stp;
+ const alle=[].concat(...SPOREN.map(([k])=>AAN[k]?S[k].map(n=>({...n,p:po(k,n.p)})):[]));
+ const lo=gi.lo,hiP=gi.hiP,rh=gi.rh,sw=gi.sw;
  g.fillStyle='#050b08';g.fillRect(0,0,W,H);
  for(let p=lo;p<=hiP;p++){const pc=((p%12)+12)%12,inL=c.lad.includes(((pc-c.w)%12+12)%12);
   g.fillStyle=pc===c.w?'#0f2a1c':inL?'#08140e':'#040806';g.fillRect(0,H-(p-lo+1)*rh,W,rh)}
