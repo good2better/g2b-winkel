@@ -367,6 +367,7 @@ function bouw(k){
     }else el.style.display='none';});
   const naam=layers.map(l=>l.b.naam).join('+').replace(/[^\w+\-.]/g,'_').slice(0,60);
   const wavAb=wavBytes(out);
+  const LAGEN=layers.map(l=>l.b.naam); // snapshot — rolls[] is gedeeld en verandert bij de volgende dobbel
   if(libCollect){let ln=`${libCollect.naam}/${naam}.wav`,c=2;
     while(libCollect.files.some(f=>f[0]===ln))ln=`${libCollect.naam}/${naam}-${c++}.wav`;
     libCollect.files.push([ln,wavAb]);}
@@ -375,6 +376,7 @@ function bouw(k){
   $('resInfo').textContent=`${(n/SR).toFixed(2)}s · ${k} lagen · ${dubbel?'haas-dubbel':'mono'} · limiter 0.85`;
   drawViz(out);
   const r=resCard(naam,wavAb,'stapel');
+  if(r)r.lagen=LAGEN;
   st('🎲 gestapeld — luister en lock wat goed is, dobbel de rest opnieuw');
   return {naam,ab:wavAb};
 }
@@ -507,10 +509,11 @@ function buildCard(r){const naam=r.naam,ab=r.ab,url=r.url;
       <button class="mbtn rmor">⚗ morph</button><button class="mbtn rnew">🔁 nieuwe</button><button class="mbtn rdel">✕</button></div>`;
   card.querySelector('.rk').onclick=()=>{r.state=1;paintCard();idbPut(r);
     /* MIJN-DNA-kluis: goedgekeurde stapels tellen mee als jouw stijl (deelt g2b_dna met MELODIE/GIO) */
-    try{const dna=JSON.parse(localStorage.getItem('g2b_dna')||'[]');
-      dna.push({kind:r.kind||'stapel',naam:r.naam,lagen:(rolls||[]).filter(Boolean).map(x=>x.b&&x.b.naam),ts:Date.now()});
-      while(dna.length>24)dna.shift();localStorage.setItem('g2b_dna',JSON.stringify(dna));
-      st('🧬 in MIJN-DNA bewaard ('+dna.length+' klanken)')}catch(e){}};
+    if(!r.dnaSaved){r.dnaSaved=true;
+     try{const dna=JSON.parse(localStorage.getItem('g2b_dna')||'[]');
+      dna.unshift({kind:r.kind||'stapel',naam:r.naam,lagen:r.lagen||[],ts:Date.now()});
+      localStorage.setItem('g2b_dna',JSON.stringify(dna.slice(0,24)));
+      st('🧬 in MIJN-DNA bewaard ('+dna.length+' klanken)')}catch(e){}}};
   card.querySelector('.rx').onclick=()=>{r.state=2;paintCard();idbPut(r);};
   card.querySelector('.rdel').onclick=()=>{idbDel(r.id);URL.revokeObjectURL(r.url);RES.splice(RES.indexOf(r),1);card.remove();paintLijst();};
   card.querySelector('.rnew').onclick=()=>redoOne(r,card);
@@ -535,7 +538,8 @@ $('bZipOk').onclick=()=>{const ok=RES.filter(r=>r.state===1);
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ab],{type:'application/zip'}));
   a.download='G2B-KEEP.zip';a.click();st('📚 G2B-KEEP.zip — '+ok.length+' goedgekeurde sounds');};
 function redoOne(r,card){if(r.kind==='stapel'){if(buffers.length<2){st('eerst shots droppen');return;}
-    const n2=rollOnce();if(n2){r.naam=n2.naam;r.ab=n2.ab;URL.revokeObjectURL(r.url);r.url=URL.createObjectURL(new Blob([r.ab],{type:'audio/wav'}));r.state=0;
+    const n2=rollOnce();if(n2){r.naam=n2.naam;r.ab=n2.ab;r.lagen=rolls.filter(Boolean).map(x=>x.b&&x.b.naam);r.dnaSaved=false;
+      URL.revokeObjectURL(r.url);r.url=URL.createObjectURL(new Blob([r.ab],{type:'audio/wav'}));r.state=0;
       card.querySelector('audio').src=r.url;card.querySelector('.nm').textContent=r.naam+'.wav';
       card.querySelector('.dl').href=r.url;card.querySelector('.dl').setAttribute('download',r.naam+'.wav');
       card.style.borderColor='var(--rand)';card.style.opacity='1';paintLijst();idbPut(r);}}
