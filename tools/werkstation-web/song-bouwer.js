@@ -323,8 +323,48 @@ async function expPack(){
   'G2B Werkstation — RELEASE-PACK\n\nAlle audio in deze zip is 100% door jouw eigen engines en/of samples gemaakt.\nJij bezit alle rechten — commercieel gebruik, verkoop en streaming toegestaan.\nGeen derden-samples, geen copyright-claims.\n\nGood2Better High Quality Media · KvK 95199926')});
  dlBlob(new Blob([zipStore(files)],{type:'application/zip'}),'g2b-song-RELEASE-PACK.zip');
  st('📦 RELEASE-PACK gedownload — master + '+SPOREN.length+' stems + midi + licentie in één zip')}
+/* ---------- .G2B universeel project-bestand ---------- */
+const g2bSel=(w,ids)=>{const o={};try{for(const i of ids){const el=w.document.getElementById(i);
+  if(el)o[i]=el.type==='checkbox'?!!el.checked:el.value}}catch(e){}return o};
+async function g2bSave(){
+ if(!DW||!MW){st('⚙ eerst 🎬 BOUW (dan laden de engines mee)');return}
+ const d={v:1,ts:Date.now()};
+ d.donder={ui:g2bSel(DW,['genre','bpm','key','maten','bas','sound','laag','dubbel','stap']),
+  S:{notes:DW.S.notes,kicks:DW.S.kicks,locks:DW.S.locks,sound:DW.S.sound,mute:DW.S.mute}};
+ d.melodie={ui:g2bSel(MW,['genre','bpm','maten','ladder','wortel','klank','voicing','arp','strum','hum','mstapv','laag']),
+  S:{mel:MW.S.mel,akk:MW.S.akk,bas:MW.S.bas},AAN:MW.AAN,VOL:MW.VOL,LOCK:MW.LOCK};
+ d.matrix=AAN;d.master=$('sbMaster')?$('sbMaster').value:'club';
+ const jb=new TextEncoder().encode(JSON.stringify(d));
+ const voc=VOC?new Uint8Array(wavBytes(VOC.L,VOC.R,SR)):null;
+ const all=new Uint8Array(8+jb.length+(voc?voc.length:0));const dv=new DataView(all.buffer);
+ all.set([0x47,0x32,0x42,0x21],0);dv.setUint32(4,jb.length,true);all.set(jb,8);
+ if(voc)all.set(voc,8+jb.length);
+ dlBlob(new Blob([all],{type:'application/octet-stream'}),'g2b-project.g2b');
+ st('💾 project opgeslagen als .g2b — neem hem mee naar je PC-app of andere browser')}
+async function g2bOpen(file){
+ const ab=await file.arrayBuffer(),u=new Uint8Array(ab),dv=new DataView(ab);
+ if(u.length<8||u[0]!==0x47||u[1]!==0x32||u[2]!==0x42){st('⚠ geen .g2b bestand');return}
+ st('📂 .g2b lezen + engines laden…');await laadEngines();
+ const jl=dv.getUint32(4,true),d=JSON.parse(new TextDecoder().decode(u.subarray(8,8+jl)));
+ const put=(w,ui)=>{if(!ui)return;for(const i in ui){const el=w.document.getElementById(i);
+  if(!el)continue;if(el.type==='checkbox')el.checked=!!ui[i];else el.value=ui[i]}};
+ if(d.donder){put(DW,d.donder.ui);
+  if(d.donder.S)for(const k of['notes','kicks','locks','sound','mute'])if(d.donder.S[k]!==undefined)DW.S[k]=d.donder.S[k]}
+ if(d.melodie){put(MW,d.melodie.ui);
+  if(d.melodie.S)for(const k of['mel','akk','bas'])if(d.melodie.S[k]!==undefined)MW.S[k]=d.melodie.S[k];
+  if(d.melodie.AAN)MW.AAN=d.melodie.AAN;if(d.melodie.VOL)MW.VOL=d.melodie.VOL;if(d.melodie.LOCK)MW.LOCK=d.melodie.LOCK}
+ if(d.matrix)for(const s in d.matrix)for(const sp in d.matrix[s])if(AAN[s]&&sp in AAN[s])AAN[s][sp]=d.matrix[s][sp];
+ if(d.master&&$('sbMaster'))$('sbMaster').value=d.master;
+ try{DW.teken&&DW.teken()}catch(e){}
+ try{MW.teken&&MW.teken();MW.melsToetsen&&MW.melsToetsen()}catch(e){}
+ document.querySelectorAll('.sbCell').forEach(b=>{const on=AAN[b.dataset.sec]&&AAN[b.dataset.sec][b.dataset.sp];
+  b.style.background=on?'#22c55e':'#0a1812'});
+ if(ab.byteLength>8+jl){try{const ac=window._vocAC||(window._vocAC=new (window.AudioContext||window.webkitAudioContext)());
+  const buf=await ac.decodeAudioData(u.subarray(8+jl).slice(0).buffer);await laadVocal(buf)}catch(e){console.warn(e)}}
+ st('📂 .g2b geladen — druk 🎬 BOUW om je song terug te renderen')}
 /* ---------- vibe-fixers ---------- */
 window.SONG={
+ save:g2bSave,open:g2bOpen,
  bouw,
  /* 🎤 vocal laden (File of AudioBuffer) */
  vocal:laadVocal,
@@ -382,6 +422,9 @@ function uiBoot(){
  $('sbBouw').onclick=bouw;
  $('sbWav').onclick=expMaster;$('sbStem').onclick=expStems;$('sbMid').onclick=expMid;
  const pk=$('sbPack');if(pk)pk.onclick=expPack;
+ const sv=$('sbSave');if(sv)sv.onclick=g2bSave;
+ const op=$('sbOpenFile');if(op)op.onchange=()=>{if(op.files&&op.files[0])g2bOpen(op.files[0]);op.value=''};
+ const opb=$('sbOpen');if(opb)opb.onclick=()=>op&&op.click();
  /* ⠿ sleep-naar-DAW grepen op alle exports */
  [['sbWav','audio/wav','g2b-song-master.wav',()=>new Blob([wavBytes(LAST.L,LAST.R,SR)])],
   ['sbMid','audio/midi','g2b-song.mid',()=>new Blob([midiSong([],120,[])])]].forEach(([id,mt,fn,mk])=>{
