@@ -62,7 +62,7 @@ label{font-size:12px;color:var(--dim)}
 <div id="prevwrap" style="display:none">
 <div id="prev"></div>
 <div class="card">
-<button onclick="window.print()">🖨 PRINT / OPSLAAN ALS PDF</button>
+<button onclick="if(G2B_EXPORT('FACTUURMAKER'))window.print()">🖨 PRINT / OPSLAAN ALS PDF</button>
 <button class="klein" onclick="dlHtml()" style="margin-top:8px">⬇ download als bestand</button>
 </div>
 </div>
@@ -107,12 +107,12 @@ function maak(){
  document.getElementById('prevwrap').style.display='block';
  document.getElementById('prevwrap').scrollIntoView();
 }
-function dlHtml(){
+function dlHtml(){if(!G2B_EXPORT('FACTUURMAKER'))return;
  const a=document.createElement('a');
- a.href=URL.createObjectURL(new Blob(['<!DOCTYPE html><html><body style="font-family:sans-serif">'+document.getElementById('prev').innerHTML+'</body></html>'],{type:'text/html'}));
+ a.href=URL.createObjectURL(new Blob(['<!DOCTYPE html><html><body style="font-family:sans-serif">'+document.getElementById('prev').innerHTML+'<script src="../exportslot.js"></script></body></html>'],{type:'text/html'}));
  a.download='factuur-'+(v('nummer')||'g2b')+'.html';a.click();
 }
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
-<script src="/js/g2b-gate.js" data-tier="inner"></script>
+<script src="/js/g2b-gate.js" data-tier="inner" data-demo="1"></script>
 </body></html>

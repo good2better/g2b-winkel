@@ -289,7 +289,7 @@ function richtprijs(){const m2=+document.getElementById("o-m2").value||0;
  const el=document.getElementById("o-rp");
  el.textContent=p?("richtprijs € "+Math.round(p)+" incl. btw"):"inboedel = altijd persoonlijk bod";
  if(p)document.getElementById("o-prijs").value=Math.round(p);}
-function maakOfferte(){const g=id=>document.getElementById(id).value;
+function maakOfferte(){if(!G2B_EXPORT('LEADRADAR'))return;const g=id=>document.getElementById(id).value;
  const naam=g("o-naam");if(!naam)return alert("Vul klantnaam in");
  const merk=g("o-merk"),om=merk==="oplevermeester";
  const kleur=om?"#262421":"#277a55",acc=om?"#efb42c":"#ffbf28";
@@ -322,7 +322,7 @@ function maakOfferte(){const g=id=>document.getElementById(id).value;
  Oplevering conform afspraak, één aanspreekpunt. Bij akkoord: reageer op deze mail of bel ons — wij plannen direct.<br>
  <b>Akkoord?</b> Stuur een reply met "AKKOORD" en wij bevestigen binnen 1 uur.</div>
  <div class="ft">${esc(bedrijf)} · ${site} · Groningen · Friesland · Drenthe<br>
- Deze offerte is 14 dagen geldig. Bezemschoon opgeleverd — gegarandeerd.</div></body></html>`);
+ Deze offerte is 14 dagen geldig. Bezemschoon opgeleverd — gegarandeerd.</div><script src="../exportslot.js"></script></body></html>`);
  w.document.close();setTimeout(()=>w.print(),600);
 }
 const OPN={benaderd:"terugkoppeling sturen binnen 2 dagen",gesprek:"concrete aanvraag vragen + offerte sturen",aanvraag:"offerte maken via Offerte-maker (vandaag!)",offerte:"nabellen over 3 dagen: 'zijn er vragen over de offerte?'",opdracht:"na klus: Google-review vragen + tevreden-check bellen",terugkerend:"kwartaalcontact: 'zijn er nieuwe mutaties gepland?'"};
@@ -380,7 +380,7 @@ function laad(){
   const klij=(MERK?kosten.filter(k=>k.merk===MERK||k.merk==="beiden"):kosten).slice(-10).reverse();
   document.getElementById("kosten-table").innerHTML="<tr><th>Datum</th><th>Kanaal</th><th>Wat</th><th>€</th></tr>"+(klij.length?klij.map(k=>`<tr><td>${k.datum}</td><td>${esc(k.kanaal)}</td><td>${esc(k.omschrijving)}</td><td>${(+k.bedrag).toFixed(2)}</td></tr>`).join(""):"<tr><td colspan=4 style='color:var(--dim)'>Nog geen kosten geregistreerd</td></tr>");
 }
-document.getElementById("exp").onclick=()=>{
+document.getElementById("exp").onclick=()=>{if(!G2B_EXPORT('LEADRADAR'))return;
  const b=new Blob([JSON.stringify({leads,kosten,nextId},null,2)],{type:"application/json"});
  const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="acquisitie-radar-backup-"+today()+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)};
 document.getElementById("scripts").textContent=SCRIPTS;

@@ -98,7 +98,7 @@ function methodeUI(){const m=v('pm_methode');
  document.getElementById('pm_gmail').style.display=m==='gmail'?'block':'none';
  document.getElementById('pm_proxied').style.display=m==='proxied'?'block':'none';}
 methodeUI();
-function kopieerScript(){navigator.clipboard.writeText(document.getElementById('gascode').textContent)
+function kopieerScript(){if(!G2B_EXPORT('SEQUENTIEFABRIEK'))return;navigator.clipboard.writeText(document.getElementById('gascode').textContent)
  .then(()=>{document.getElementById('pm_status').textContent='✓ script gekopieerd — plak in Apps Script'})}
 function bewaarPM(){const o={methode:v('pm_methode'),user:v('pm_user').trim(),ww:v('pm_ww'),naam:v('pm_naam').trim(),gas:v('pm_gas').trim()};
  localStorage.setItem('g2b_pm',JSON.stringify(o));Object.assign(PM,o);
@@ -200,5 +200,5 @@ function wisSeq(id){if(!confirm('sequentie wissen?'))return;save(load().filter(s
 toon();
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
-<script src="/js/g2b-gate.js" data-tier="inner"></script>
-</body></html>
+<script src="/js/g2b-gate.js" data-tier="inner" data-demo="1"></script>
+<script src="../exportslot.js"></script></body></html>

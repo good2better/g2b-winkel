@@ -1,9 +1,10 @@
 {
-  "titel": "G2B WATCHER-FABRIEK",
-  "bestanden": [
-    {
-      "naam": "G2B-WATCHERFABRIEK.zip",
-      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-WATCHERFABRIEK.zip"
-    }
-  ]
+ "titel": "G2B WATCHER-FABRIEK",
+ "bestanden": [
+  {
+   "naam": "G2B-WATCHERFABRIEK.zip",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-WATCHERFABRIEK.zip"
+  }
+ ],
+ "licentie": "Export-code online demo: G2B-WATCH-W9C4NB"
 }

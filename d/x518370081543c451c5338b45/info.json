@@ -1,9 +1,10 @@
 {
-  "titel": "G2B MAIL-FABRIEK",
-  "bestanden": [
-    {
-      "naam": "G2B-MAILFABRIEK.zip",
-      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-MAILFABRIEK.zip"
-    }
-  ]
+ "titel": "G2B MAIL-FABRIEK",
+ "bestanden": [
+  {
+   "naam": "G2B-MAILFABRIEK.zip",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-MAILFABRIEK.zip"
+  }
+ ],
+ "licentie": "Export-code online demo: G2B-MAIL-M2F7HB"
 }

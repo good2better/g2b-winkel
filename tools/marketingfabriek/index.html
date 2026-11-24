@@ -182,11 +182,11 @@ function verstuurStap(){
  document.getElementById('k-log').textContent='Mailprogramma geopend met '+Math.min(50,l.mails.length)+' ontvangers in BCC.'+(l.mails.length>50?' Tip: mailtjes boven 50 beter in delen versturen.':'')+' {naam} werkt alleen bij handmatig aanpassen per mail.';
  zeg('Campagne gestart naar lijst "'+l.naam+'" ('+l.mails.length+' ontvangers)')}
 
-function kopieerCampagne(){
+function kopieerCampagne(){if(!G2B_EXPORT('MARKETINGFABRIEK'))return;
  const o=document.getElementById('k-onderwerp').value,t=document.getElementById('k-tekst').value;
  navigator.clipboard.writeText('Onderwerp: '+o+'\n\n'+t).then(()=>zeg('Campagne-tekst gekopieerd'))}
 
-function exportCSV(){
+function exportCSV(){if(!G2B_EXPORT('MARKETINGFABRIEK'))return;
  const csv='naam,email,tags,notitie\n'+DB.contacten.map(c=>[c.naam,c.mail,c.tags.join('|'),c.notitie].map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\n');
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='g2b-contacten.csv';a.click();
  zeg('CSV geëxporteerd: '+DB.contacten.length+' contacten')}
@@ -220,6 +220,6 @@ const esc=(s)=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':
 teken();
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
-<script src="/js/g2b-gate.js" data-tier="inner"></script>
-</body>
+<script src="/js/g2b-gate.js" data-tier="inner" data-demo="1"></script>
+<script src="../exportslot.js"></script></body>
 </html>

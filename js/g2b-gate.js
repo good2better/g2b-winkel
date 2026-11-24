@@ -134,6 +134,41 @@
     return false;
   }
 
-  function boot() { tryStored().then(function (ok) { if (!ok) show(); }); }
+  /* data-demo="1": pagina open als demo (geen blokkade) — kleine banner +
+     code-veld rechtsboven voor wie de volledige versie heeft. Export/download
+     blijft apart op slot via tools/exportslot.js. */
+  var demo = document.currentScript && document.currentScript.dataset.demo === '1';
+  function showDemoBar() {
+    var b = document.createElement('div');
+    b.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:99998;background:#0d1a12;border-top:1px solid #2f5b41;color:#9fc;display:flex;gap:8px;align-items:center;justify-content:center;padding:7px 12px;font:12px sans-serif;flex-wrap:wrap';
+    b.innerHTML = '<span>👀 DEMO — alles werkt, alleen <b>exporteren/downloaden</b> vraagt je licentiecode</span>' +
+      '<input id="g2bdemo" placeholder="code" style="padding:4px 8px;border-radius:6px;border:1px solid #2f5b41;background:#08110b;color:#fff;width:130px">' +
+      '<button id="g2bdemogo" style="padding:4px 10px;border:0;border-radius:6px;background:#2fbf71;color:#04120a;font-weight:700;cursor:pointer">ontgrendel</button>';
+    document.body.appendChild(b);
+    b.querySelector('#g2bdemogo').onclick = async function () {
+      var v = b.querySelector('#g2bdemo').value.trim().toLowerCase(); if (!v) return;
+      var h = await hex(v);
+      if (ALLOWED.indexOf(h) >= 0 || await isClubCode(v)) {
+        try { localStorage.setItem('g2b_aura_licentie', v); } catch (e) {}
+        b.innerHTML = '<span style="color:#35d07f">✓ volledige versie ontgrendeld</span>';
+        return;
+      }
+      /* product-code van een fabriek (uit exportslot.js) → export vrij */
+      var codes = window.G2B_EXPORT_CODES || {}, hit = '';
+      var cv = v.toUpperCase();
+      for (var k in codes) if (codes[k] === cv) hit = k;
+      if (hit) {
+        try { sessionStorage.setItem('g2b_export_' + hit, '1'); } catch (e) {}
+        b.innerHTML = '<span style="color:#35d07f">✓ export ontgrendeld voor ' + hit + '</span>';
+      } else { b.querySelector('#g2bdemo').value = ''; b.querySelector('#g2bdemo').placeholder = 'code klopt niet'; }
+    };
+  }
+  function boot() {
+    tryStored().then(function (ok) {
+      if (ok) return;
+      if (demo) { if (!sessionStorage.getItem('g2b_demo_bar')) showDemoBar(); }
+      else show();
+    });
+  }
   if (document.body) boot(); else document.addEventListener('DOMContentLoaded', boot);
 })();

@@ -119,7 +119,7 @@ function methodeUI(){
  document.getElementById('pm_proxied').style.display=m==='proxied'?'block':'none';
  document.getElementById('pm_knop').textContent=m==='gmail'?'📨 ALLES VERSTUREN VIA GMAIL':'📨 ALLES VERSTUREN VIA PROXIEDMAIL';
 }
-function kopieerScript(){
+function kopieerScript(){if(!G2B_EXPORT('MAILFABRIEK'))return;
  const t=document.getElementById('gascode').textContent;
  navigator.clipboard.writeText(t).then(()=>{document.getElementById('pm_status').textContent='✓ script gekopieerd — plak in Apps Script'});
 }
@@ -208,5 +208,5 @@ function bcc(){
 methodeUI();
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
-<script src="/js/g2b-gate.js" data-tier="inner"></script>
-</body></html>
+<script src="/js/g2b-gate.js" data-tier="inner" data-demo="1"></script>
+<script src="../exportslot.js"></script></body></html>

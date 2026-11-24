@@ -1,9 +1,10 @@
 {
-  "titel": "G2B LIJST-FABRIEK",
-  "bestanden": [
-    {
-      "naam": "G2B-LIJSTFABRIEK.zip",
-      "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-LIJSTFABRIEK.zip"
-    }
-  ]
+ "titel": "G2B LIJST-FABRIEK",
+ "bestanden": [
+  {
+   "naam": "G2B-LIJSTFABRIEK.zip",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-LIJSTFABRIEK.zip"
+  }
+ ],
+ "licentie": "Export-code online demo: G2B-LIJST-V5N9KD"
 }
