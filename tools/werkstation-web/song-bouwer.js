@@ -125,7 +125,7 @@ async function laadVocal(bron,retune){ /* bron: File of AudioBuffer; retune=fals
   if(i0!==nf){let cs=i0;while(cs>0&&e2[cs-1]>lvl)cs--;
    const run=i0-cs;if(run>0&&run<=16)anc=cs}
   onset=i0===nf?(fb===nf?0:fb*hop):anc*hop}
- VOC={L,R,mono,key:k,mod:m,bpm,onset};
+ VOC={L,R,mono,key:k,mod:m,bpm,onset};window.VOC=VOC;
  /* engines op de stem afstemmen: bpm + toonsoort doorzetten */
  if(retune){try{const d=DW&&DW.document;if(d){if(d.getElementById('bpm'))d.getElementById('bpm').value=bpm;
   if(d.getElementById('key'))d.getElementById('key').value=k;DW.dobbelAlles&&DW.dobbelAlles()}}catch(e){}
@@ -400,7 +400,7 @@ async function g2bOpen(file){
  window._pv=d.vibes||null;
  if(ab.byteLength>8+jl){try{const ac=window._vocAC||(window._vocAC=new (window.AudioContext||window.webkitAudioContext)());
   const buf=await ac.decodeAudioData(u.subarray(8+jl).slice(0).buffer);await laadVocal(buf,false)}catch(e){console.warn(e)}}
- else{VOC=null;if($('sbVocInfo'))$('sbVocInfo').textContent=''}
+ else{VOC=null;window.VOC=null;if($('sbVocInfo'))$('sbVocInfo').textContent=''}
  st('📂 .g2b geladen — druk 🎬 BOUW om je song terug te renderen')}
 /* ---------- vibe-fixers ---------- */
 window.SONG={
