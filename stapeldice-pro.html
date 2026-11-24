@@ -505,7 +505,12 @@ function buildCard(r){const naam=r.naam,ab=r.ab,url=r.url;
       <button class="mbtn rk" data-a="1">✓ goed</button><button class="mbtn rx" data-a="2">✗ slecht</button>
       <a class=dl href="${url}" download="${naam}.wav" style="padding:7px 13px;font-size:12px">⬇</a>
       <button class="mbtn rmor">⚗ morph</button><button class="mbtn rnew">🔁 nieuwe</button><button class="mbtn rdel">✕</button></div>`;
-  card.querySelector('.rk').onclick=()=>{r.state=1;paintCard();idbPut(r);};
+  card.querySelector('.rk').onclick=()=>{r.state=1;paintCard();idbPut(r);
+    /* MIJN-DNA-kluis: goedgekeurde stapels tellen mee als jouw stijl (deelt g2b_dna met MELODIE/GIO) */
+    try{const dna=JSON.parse(localStorage.getItem('g2b_dna')||'[]');
+      dna.push({kind:r.kind||'stapel',naam:r.naam,lagen:(rolls||[]).filter(Boolean).map(x=>x.b&&x.b.naam),ts:Date.now()});
+      while(dna.length>24)dna.shift();localStorage.setItem('g2b_dna',JSON.stringify(dna));
+      st('🧬 in MIJN-DNA bewaard ('+dna.length+' klanken)')}catch(e){}};
   card.querySelector('.rx').onclick=()=>{r.state=2;paintCard();idbPut(r);};
   card.querySelector('.rdel').onclick=()=>{idbDel(r.id);URL.revokeObjectURL(r.url);RES.splice(RES.indexOf(r),1);card.remove();paintLijst();};
   card.querySelector('.rnew').onclick=()=>redoOne(r,card);
