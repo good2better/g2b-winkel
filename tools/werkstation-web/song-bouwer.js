@@ -177,7 +177,7 @@ function midiSong(sporen,bpm,secs){ // sporen:[{naam,noten:[{p,s,d,v}],kanaal}] 
  for(const sp of sporen){const ev=[];
   for(const n of sp.noten){const t=Math.round(n.s/4*tpq),e=Math.round((n.s+n.d)/4*tpq);
    ev.push([t,[0x90|sp.kanaal,n.p,n.v&127]],[e,[0x80|sp.kanaal,n.p,0]])}
-  ev.push([0,[0xFF,0x2F,0]]);trks.push(mTrk(ev))}
+  trks.push(mTrk(ev))}
  const h=new Uint8Array(14);const dh=new DataView(h.buffer);
  h.set([0x4D,0x54,0x68,0x64],0);dh.setUint32(4,6);dh.setUint16(8,1);dh.setUint16(10,trks.length);dh.setUint16(12,tpq);
  const tot=trks.reduce((a,t)=>a+t.length,0),out=new Uint8Array(14+tot);out.set(h,0);let o=14;
@@ -282,6 +282,7 @@ function mixDown(){
  const lufs=10*Math.log10(ss/(2*N)+1e-12)-0.691,g=Math.pow(10,(target-lufs)/20);
  for(let i=0;i<N;i++){L[i]=Math.tanh(L[i]*g/ceil)*ceil;R[i]=Math.tanh(R[i]*g/ceil)*ceil}
  LAST.L=L;LAST.R=R;
+ if(window._pv){const pv=window._pv;window._pv=null;for(const v of pv){try{SONG.vibe(v)}catch(e){}}}
  st('✅ klaar — '+LAST.totBars+' maten · '+preset.toUpperCase()+' '+target+' LUFS · ~'+Math.round(N/SR)+'s');
  $('sbExport').style.display='flex';
  if($('sbAu')){const b=new Blob([wavBytes(L,R,SR)],{type:'audio/wav'});$('sbAu').src=URL.createObjectURL(b)}
@@ -325,6 +326,7 @@ async function expPack(){
  dlBlob(new Blob([zipStore(files)],{type:'application/zip'}),'g2b-song-RELEASE-PACK.zip');
  st('📦 RELEASE-PACK gedownload — master + '+SPOREN.length+' stems + midi + licentie in één zip')}
 /* ---------- .G2B universeel project-bestand ---------- */
+const _safeAssign=(dst,src)=>{for(const k of Object.keys(src||{}))if(k!=='__proto__'&&k!=='constructor')dst[k]=src[k]};
 const g2bSel=(w,ids)=>{const o={};try{for(const i of ids){const el=w.document.getElementById(i);
   if(el)o[i]=el.type==='checkbox'?!!el.checked:el.value}}catch(e){}return o};
 async function g2bSave(){
@@ -335,6 +337,7 @@ async function g2bSave(){
  d.melodie={ui:g2bSel(MW,['genre','bpm','maten','ladder','wortel','klank','voicing','arp','strum','hum','mstapv','laag']),
   S:{mel:MW.S.mel,akk:MW.S.akk,bas:MW.S.bas},AAN:MW.AAN,VOL:MW.VOL,LOCK:MW.LOCK};
  d.matrix=AAN;d.master=$('sbMaster')?$('sbMaster').value:'club';
+ d.vibes=LAST&&LAST.vibes?LAST.vibes.slice():[];
  const jb=new TextEncoder().encode(JSON.stringify(d));
  const voc=VOC?new Uint8Array(wavBytes(VOC.L,VOC.R,SR)):null;
  const all=new Uint8Array(8+jb.length+(voc?voc.length:0));const dv=new DataView(all.buffer);
@@ -353,14 +356,17 @@ async function g2bOpen(file){
   if(d.donder.S)for(const k of['notes','kicks','locks','sound','mute'])if(d.donder.S[k]!==undefined)DW.S[k]=d.donder.S[k]}
  if(d.melodie){put(MW,d.melodie.ui);
   if(d.melodie.S)for(const k of['mel','akk','bas'])if(d.melodie.S[k]!==undefined)MW.S[k]=d.melodie.S[k];
-  if(d.melodie.AAN)Object.assign(MW.AAN,d.melodie.AAN);
-  if(d.melodie.VOL)Object.assign(MW.VOL,d.melodie.VOL);if(d.melodie.LOCK)Object.assign(MW.LOCK,d.melodie.LOCK)}
- if(d.matrix)for(const s in d.matrix)for(const sp in d.matrix[s])if(AAN[s]&&sp in AAN[s])AAN[s][sp]=d.matrix[s][sp];
+  if(d.melodie.AAN)_safeAssign(MW.AAN,d.melodie.AAN);
+  if(d.melodie.VOL)_safeAssign(MW.VOL,d.melodie.VOL);if(d.melodie.LOCK)_safeAssign(MW.LOCK,d.melodie.LOCK)}
+ if(d.matrix)for(const[sec]of SECTIES)for(const[,sp]of SPOREN)
+  if(Object.prototype.hasOwnProperty.call(d.matrix,sec)&&Object.prototype.hasOwnProperty.call(d.matrix[sec],sp))AAN[sec][sp]=!!d.matrix[sec][sp];
  if(d.master&&$('sbMaster'))$('sbMaster').value=d.master;
  try{DW.teken&&DW.teken()}catch(e){}
  try{MW.teken&&MW.teken();MW.melsToetsen&&MW.melsToetsen()}catch(e){}
  document.querySelectorAll('.sbCell').forEach(b=>{const on=AAN[b.dataset.sec]&&AAN[b.dataset.sec][b.dataset.sp];
   b.style.background=on?'#22c55e':'#0a1812'});
+ LAST=null;if($('sbAu'))$('sbAu').src='';
+ window._pv=d.vibes||null;
  if(ab.byteLength>8+jl){try{const ac=window._vocAC||(window._vocAC=new (window.AudioContext||window.webkitAudioContext)());
   const buf=await ac.decodeAudioData(u.subarray(8+jl).slice(0).buffer);await laadVocal(buf,false)}catch(e){console.warn(e)}}
  else{VOC=null;if($('sbVocInfo'))$('sbVocInfo').textContent=''}
@@ -407,6 +413,7 @@ window.SONG={
     for(let s=0;s*seg<N;s++)if(s%2===1)for(let i=s*seg;i<(s+1)*seg&&i<N;i++)T[sp][ch][i]*=.55}}
   mixDown();
   if($('sbAu')){const b=new Blob([wavBytes(LAST.L,LAST.R,SR)],{type:'audio/wav'});$('sbAu').src=URL.createObjectURL(b)}
+  if(!LAST.vibes)LAST.vibes=[];if(!LAST.vibes.includes(k))LAST.vibes.push(k);
   st('✨ vibe-fixer toegepast — luister + exporteer opnieuw als hij goed is')}};
 /* ---------- UI ---------- */
 function uiBoot(){
