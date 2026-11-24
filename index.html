@@ -421,5 +421,11 @@ document.getElementById('ev-form').addEventListener('submit', async e => {
 });
 </script>
 <script src="cookie.js"></script>
+<div id="tosmodal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;align-items:center;justify-content:center"><div style="background:#111a14;border:1px solid #2a4a35;border-radius:14px;max-width:400px;padding:22px;color:#e8f5ec;font-family:system-ui"><b>Bijna klaar</b><p style="font-size:14px;color:#9db8a6;margin:10px 0">Bij aankoop ga je akkoord met de <a href="licentie.html" style="color:#3ef26d">voorwaarden</a> en dat het herroepingsrecht vervalt (directe digitale levering).</p><label style="display:flex;gap:8px;font-size:14px;margin:8px 0"><input type="checkbox" id="tosok"> Ik ga akkoord</label><div style="display:flex;gap:8px;margin-top:14px"><button id="tosgo" disabled style="flex:1;background:#3ef26d;color:#06130a;border:0;border-radius:8px;padding:11px;font-weight:700;cursor:pointer;opacity:.5">Doorgaan →</button><button onclick="tosmodal.style.display='none'" style="background:transparent;border:1px solid #2a4a35;color:#9db8a6;border-radius:8px;padding:11px 14px;cursor:pointer">Annuleren</button></div></div></div>
+<script>
+let tosurl="";document.addEventListener("click",e=>{const a=e.target.closest("a.k-koop");if(!a)return;const h=a.getAttribute("href")||"";if(!h.includes("buy.stripe"))return;e.preventDefault();tosurl=h;document.getElementById("tosok").checked=false;document.getElementById("tosgo").disabled=true;document.getElementById("tosgo").style.opacity=".5";document.getElementById("tosmodal").style.display="flex"});
+document.getElementById("tosok").addEventListener("change",e=>{document.getElementById("tosgo").disabled=!e.target.checked;document.getElementById("tosgo").style.opacity=e.target.checked?"1":".5"});
+document.getElementById("tosgo").addEventListener("click",()=>{location.href=tosurl});
+</script>
 </body>
 </html>
