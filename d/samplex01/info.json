@@ -1,0 +1,14 @@
+{
+ "titel": "G2B SAMPLE-X",
+ "licentie": "Licentiecode voor .mid-export: G2B-SAMPLEX-N2CG80",
+ "bestanden": [
+  {
+   "naam": "🔓 Open met jouw licentie",
+   "url": "tools/samplex-web/samplex.html?licentie=G2B-SAMPLEX-N2CG80"
+  },
+  {
+   "naam": "Jouw licentiecode",
+   "bestand": "LICENTIE.txt"
+  }
+ ]
+}

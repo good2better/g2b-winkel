@@ -83,6 +83,21 @@
   else{rec=false;bRec.classList.remove('on');bRec.textContent='● REC';gridStop();
    if(take.length)bLoop.style.display='';}};
  // hooks die midi.js aanroept bij elke noot-aan / noot-uit
+
+ // --- laptop-toetsenbord als piano (geen midi-keyboard nodig) ---
+ const kmap={a:0,w:1,s:2,e:3,d:4,f:5,t:6,g:7,y:8,h:9,u:10,j:11,k:12,o:13,l:14,p:15,';':16,z:-12,x:-11,c:-10,v:-9,b:-8,n:-7,m:-6};
+ const kbOct={v:0},kbDown={};
+ document.addEventListener('keydown',e=>{
+  if(!G2BKB.on||e.repeat||e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  const k=e.key.toLowerCase();
+  if(k==='['){kbOct.v=Math.max(-3,kbOct.v-1);return;}
+  if(k===']'){kbOct.v=Math.min(3,kbOct.v+1);return;}
+  if(!(k in kmap)||kbDown[k])return;kbDown[k]=true;
+  window.onMidiNote&&window.onMidiNote(60+kmap[k]+kbOct.v*12,0,100);});
+ document.addEventListener('keyup',e=>{
+  const k=e.key.toLowerCase();
+  if(!(k in kmap))return;delete kbDown[k];
+  window.onMidiOff&&window.onMidiOff(60+kmap[k]+kbOct.v*12);});
  window.onMidiNote=function(n,i,v){if(!G2BKB.on)return;
   sel.forEach(s=>{try{speel(s,n-60)}catch(e){}}); // meerdere groene = gestapeld
   if(rec&&sel.size)take.push({n:n,t:performance.now()-t0,v:v||100});};
@@ -105,5 +120,5 @@
   const hdr=[0x4D,0x54,0x68,0x64,0,0,0,6,0,0,0,1,0x01,0xF4,0x4D,0x54,0x72,0x6B,
    (trk.length>>24)&255,(trk.length>>16)&255,(trk.length>>8)&255,trk.length&255];
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([new Uint8Array(hdr),new Uint8Array(trk)],{type:'audio/midi'}));
-  a.download='g2b-opname.mid';a.click();};
+  a.download='g2b-opname.mid';if(window.G2BExport&&!G2BExport.ok(window.G2B_KB_SLUG||'club'))return;a.click();};
 })();
