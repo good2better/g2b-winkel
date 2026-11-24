@@ -862,8 +862,6 @@
    },
    "cover": "media/g2b-workstation-cover.png",
    "video": "media/workstation-v7-promo.mp4",
-   "video_en": "media/workstation-demo-en.mp4",
-   "video_es": "media/workstation-demo-es.mp4",
    "badge": "v7 — SPEEL-TOOLS + MIJN STEM",
    "download_dir": "d/g2b-workstation",
    "uitleg": "media/workstation-uitleg.mp4",
