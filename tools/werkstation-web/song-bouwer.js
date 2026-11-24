@@ -486,9 +486,9 @@ function uiBoot(){
  if(dz){dz.ondragover=e=>{e.preventDefault();dz.style.borderColor='#22c55e'};
   dz.ondragleave=()=>dz.style.borderColor='';
   dz.ondrop=e=>{e.preventDefault();dz.style.borderColor='';
-   const f=e.dataTransfer.files&&e.dataTransfer.files[0];if(f)laadVocal(f)};
+   const f=e.dataTransfer.files&&e.dataTransfer.files[0];if(f)window.SONG.vocal(f)};
   dz.onclick=()=>fi&&fi.click()}
- if(fi)fi.onchange=()=>{if(fi.files&&fi.files[0])laadVocal(fi.files[0])};
+ if(fi)fi.onchange=()=>{if(fi.files&&fi.files[0])window.SONG.vocal(fi.files[0])};
  const mic=$('sbVocalMic');
  if(mic){let rec=null;
   mic.onclick=async()=>{
@@ -498,7 +498,7 @@ function uiBoot(){
     const ch=[];rec=new MediaRecorder(ms);
     rec.ondataavailable=e=>ch.push(e.data);
     rec.onstop=async()=>{ms.getTracks().forEach(t=>t.stop());mic.textContent='🎙️ opnemen';
-     const blob=new Blob(ch,{type:rec.mimeType||'audio/webm'});laadVocal(blob);rec=null};
+     const blob=new Blob(ch,{type:rec.mimeType||'audio/webm'});window.SONG.vocal(blob);rec=null};
     st('🎙 neem je hook op… klik opnieuw om te stoppen');
     mic.textContent='■ STOP';rec.start();
    }catch(e){st('❌ microfoon niet bereikbaar: '+e.message)}}}
