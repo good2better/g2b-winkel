@@ -95,12 +95,36 @@ async function laadVocal(bron,retune){ /* bron: File of AudioBuffer; retune=fals
  const bpm=bpmOf(mono,SR),{k,m}=keyOf(mono,SR);
  /* MATCH-UP stap 3: eerste klemtoon (onset) vinden → op de maatlijn leggen */
  const hop=256,nf=Math.floor(mono.length/hop);let onset=0,pk=0;
- {const env=new Float32Array(nf);let pv=0;
+ {const e2=new Float32Array(nf),env=new Float32Array(nf);let pv=0;
   for(let i=0;i<nf;i++){let e=0;for(let j=0;j<hop;j++)e+=mono[i*hop+j]*mono[i*hop+j];
-   env[i]=Math.max(0,e-pv);pv=e*.8}
-  let mx=0;for(let i=0;i<nf;i++)mx=Math.max(mx,env[i]);
-  for(let i=2;i<nf;i++)if(env[i]>mx*.35&&env[i]>=env[i-1]&&env[i]>0){onset=i*hop;break}
-  for(let i=0;i<nf;i++)pk=Math.max(pk,Math.abs(mono[i*hop]))}
+   e2[i]=e;env[i]=Math.max(0,e-pv);pv=Math.max(pv*.6,e)}
+  for(let i=0;i<nf;i++)pk=Math.max(pk,Math.abs(mono[i*hop]));
+  /* anker = eerste energie-STIJGING met niveau: een constante achtergrond of
+     adem stijgt niet/staat te laag; een rustige opening stijgt wel → nooit
+     doorgesneden. Vindt niets → onset=0 (alles speelt mee, niets weg) */
+  /* vloer = mediaan energie van de eerste hops: constante brom/achtergrond
+     die vanaf sample 0 meedoet telt niet als "stijging" → kan geen anker */
+  const nb=Math.min(30,Math.floor(nf/4)||1),
+   be=Array.from(e2.subarray(0,nb)).sort((a,b)=>a-b),
+   lvl=Math.max(pk*pk*hop*.015,(be[Math.floor(be.length/2)]||0)*4),
+   thR=pk*pk*hop*.01,thE=pk*pk*hop*.015;let i0=nf,fb=nf;
+  for(let i=0;i+2<nf;i++){
+   if(!(env[i]>thR&&e2[i]>lvl&&e2[i+1]>thE&&e2[i+2]>thE))continue;
+   if(fb===nf)fb=i;                 /* eerste kandidaat = fallback */
+   /* adem/ruis = breedband zonder toon (hoge nuldoorgang) → overslaan; toon
+      gemeten op de hops ná de sprong (hop i kan half-gemengd zijn) */
+   let z1=0,z2=0;
+   for(let j=(i+1)*hop+1;j<(i+2)*hop;j++)z1+=mono[j]>=0!==mono[j-1]>=0;
+   for(let j=(i+2)*hop+1;j<(i+3)*hop;j++)z2+=mono[j]>=0!==mono[j-1]>=0;
+   if(z1<0.18*hop||z2<0.18*hop){i0=i;break}}
+  /* 's'/'t'-begin hoort bij de take: loop terug tot het begin van de aaneen-
+     gesloten ruis-run en neem die mee, maar ALLEEN als hij ≤~116ms is — een
+     aanwellende adem is langer (of gescheiden) en ankeren op een piek
+     erbinnen zou de consonant halverwege afsnijden */
+  let anc=i0;
+  if(i0!==nf){let cs=i0;while(cs>0&&e2[cs-1]>lvl)cs--;
+   const run=i0-cs;if(run>0&&run<=16)anc=cs}
+  onset=i0===nf?(fb===nf?0:fb*hop):anc*hop}
  VOC={L,R,mono,key:k,mod:m,bpm,onset};
  /* engines op de stem afstemmen: bpm + toonsoort doorzetten */
  if(retune){try{const d=DW&&DW.document;if(d){if(d.getElementById('bpm'))d.getElementById('bpm').value=bpm;
@@ -211,8 +235,10 @@ async function bouw(snel){
  const totBars=CUR.reduce((a,[,m])=>a+m,0),N=totBars*barD;
  const T={};for(const[,sp]of SPOREN){T[sp]={L:new Float32Array(N),R:new Float32Array(N)}}
  st('⚙ arrangement + FX plaatsen…');
- /* MATCH-UP: eerste VOC-sectie-maat als anker voor downbeat-align */
- let VOC_BAR0=0;{let b=0;for(const[sec,m]of CUR){if(AAN[sec]&&AAN[sec].voc){VOC_BAR0=b*barD;break}b+=m}}
+ /* MATCH-UP: anker = eerste voc-enabled sectie van de VOLLEDIGE song (SECTIES),
+   zodat ook een 8-maten preview exact dezelfde vocal-frase op die plek speelt */
+ const SOFF={};{let b=0;for(const[s,m]of SECTIES){if(!(s in SOFF))SOFF[s]=b*barD;b+=m}}
+ let VOC_BAR0=0;for(const[s]of SECTIES){if(AAN[s]&&AAN[s].voc){VOC_BAR0=SOFF[s];break}}
  let bar=0;
  for(const[sec,m]of CUR){
   const off=bar,isD2=sec==='DROP 2',isDrop=sec==='DROP'||isD2;
@@ -232,8 +258,11 @@ async function bouw(snel){
   if(AAN[sec].mel){let l=tile8(ml.L,sdM,matM).slice(),r2=tile8(ml.R,sdM,matM).slice();
    if(sec==='INTRO'){l=lop(l,2500,SR);r2=lop(r2,2500,SR)}put('mel',l,r2,0.9)}
   if(AAN[sec].akk)put('akk',tile8(ak.L,sdM,matM),tile8(ak.R,sdM,matM),0.7);
-  /* vocal-spoor: continue opname, per-sectie aan/uit */
-  if(VOC&&AAN[sec].voc){const o0=off*barD,base=Math.max(0,o0-(VOC.onset||0)),
+  /* vocal-spoor: continue opname op de song-tijdlijn — MATCH-UP:
+     take-index i hoort op song-positie VOC_BAR0+i-onset (accent op de eerste voc-maat);
+     elke sectie leest alleen zijn eigen venster — nooit herstart, geen pickup in gemute delen */
+  if(VOC&&AAN[sec].voc){const o0=off*barD,
+   base=(sec in SOFF?SOFF[sec]:o0)-VOC_BAR0+(VOC.onset||0),
    n=Math.min(m*barD,Math.max(0,VOC.L.length-base));
    if(n>0)put('voc',VOC.L.subarray(base,base+n),VOC.R.subarray(base,base+n),1.0)}
   /* FX */
