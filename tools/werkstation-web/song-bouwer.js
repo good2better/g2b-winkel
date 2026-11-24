@@ -287,7 +287,7 @@ function mixDown(){
  if(window._pv){const pv=window._pv;window._pv=null;for(const v of pv){try{SONG.vibe(v)}catch(e){}}}
  st(LAST.totBars===8&&CUR!==SECTIES?'👂 snel-preview klaar (8 maten) — druk 🎬 voor de volledige song':'✅ klaar — '+LAST.totBars+' maten · '+preset.toUpperCase()+' '+target+' LUFS · ~'+Math.round(N/SR)+'s');
  $('sbExport').style.display='flex';
- if($('sbAu')){const b=new Blob([wavBytes(L,R,SR)],{type:'audio/wav'});$('sbAu').src=URL.createObjectURL(b)}
+ if($('sbAu')){const b=new Blob([wavBytes(LAST.L,LAST.R,SR)],{type:'audio/wav'});$('sbAu').src=URL.createObjectURL(b)} // uit LAST — dan speelt de player ook de vibe-bewerkte mix af na _pv-replay
 }
 /* ---------- exports ---------- */
 function dlBlob(b,fn){const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=fn;a.click();setTimeout(()=>URL.revokeObjectURL(u),5000);return u}
