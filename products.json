@@ -420,52 +420,6 @@
    "cover": "media/covers/g2bsuite1.png"
   },
   {
-   "id": "seofabriek1",
-   "titel": "G2B SEO-Fabriek",
-   "prijs": 49,
-   "beschrijving": "Volledige SEO-site-audit in één klik. Crawlt ALLE pagina's: titels, meta descriptions, H1-structuur, alt-teksten, laadtijd, kapotte links, canonicals, og-tags, structured data, sitemap, robots. Score 0-100 + printbaar audit-rapport om zelf aan klanten te verkopen. Zelfde checks als tools van EUR30+/maand — bij jou eenmalig, onbeperkt, 100% lokaal. Windows.",
-   "download": "d/seofabriek1/",
-   "groep": "tools",
-   "badge": "NIEUW",
-   "video": "media/seofabriek-demo.mp4",
-   "video_en": "media/seofabriek-demo-en.mp4",
-   "video_es": "media/seofabriek-demo-es.mp4",
-   "links": {
-    "koop": "bestel.html?p=seofabriek1",
-    "stripe": "https://buy.stripe.com/bJedR9efefuHdMbggB5J61U"
-   },
-   "uitleg": "media/seofabriek1-uitleg.mp4",
-   "sub_nl": "media/seofabriek1-uitleg.nl.vtt",
-   "sub_es": "media/seofabriek1-uitleg.es.vtt",
-   "upsell": [
-    "marketerbundel1",
-    "g2bsuite1"
-   ],
-   "cover": "media/covers/seofabriek1.png"
-  },
-  {
-   "id": "agency1",
-   "titel": "G2B AGENCY-LICENTIE",
-   "soort": "licentie",
-   "video": "media/g2bagency-demo.mp4",
-   "beschrijving": "Voor bureaus: gebruik de hele G2B Suite (alle 9 tools) voor max. 10 eigen klanten, 1 jaar. Inclusief alle Suite-downloads + codes per klant. €299/jaar.",
-   "prijs": 299,
-   "links": {
-    "koop": "bestel.html?p=agency1",
-    "stripe": "https://buy.stripe.com/bJe00j4EEgyL0Zp6G15J61V"
-   },
-   "groep": "tools",
-   "badge": "AGENCY",
-   "uitleg": "media/agency1-uitleg.mp4",
-   "sub_nl": "media/agency1-uitleg.nl.vtt",
-   "sub_es": "media/agency1-uitleg.es.vtt",
-   "upsell": [
-    "g2bsuite1"
-   ],
-   "specs": "📄 Digitaal licentie-bestand (PDF) · geen software nodig",
-   "cover": "media/covers/agency1.png"
-  },
-  {
    "id": "marketerbundel1",
    "titel": "G2B MARKETER-BUNDEL",
    "soort": "bundle",
@@ -588,80 +542,6 @@
    "cover": "media/covers/crmfabriek1.png"
   },
   {
-   "id": "watcherfabriek1",
-   "titel": "G2B WATCHER-FABRIEK",
-   "soort": "app",
-   "beschrijving": "Site- en prijs-alarm: volg elke URL (of alleen een prijs/tekst) en zie meteen wanneer iets verandert. Melding in de app + optioneel per mail. 100% lokaal.",
-   "prijs": 29,
-   "links": {
-    "koop": "bestel.html?p=watcherfabriek1",
-    "stripe": "https://buy.stripe.com/28EfZh8UUciveQf3tP5J621"
-   },
-   "groep": "tools",
-   "badge": "NIEUW",
-   "video": "media/watcherfabriek-demo.mp4",
-   "video_en": "media/watcherfabriek-demo-en.mp4",
-   "video_es": "media/watcherfabriek-demo-es.mp4",
-   "uitleg": "media/watcherfabriek1-uitleg.mp4",
-   "sub_nl": "media/watcherfabriek1-uitleg.nl.vtt",
-   "sub_es": "media/watcherfabriek1-uitleg.es.vtt",
-   "upsell": [
-    "flowfabriek1",
-    "g2bsuite1"
-   ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/watcherfabriek1.png"
-  },
-  {
-   "id": "flowfabriek1",
-   "titel": "G2B FLOW-FABRIEK",
-   "soort": "app",
-   "beschrijving": "Jouw eigen Zapier, 100% lokaal: triggers (nieuw bestand, schema, webhook, handmatig) + acties (zip-backup, kopiëren, CSV-log, mail via eigen smtp, melding). Geen cloud, geen abonnement — Zapier kost €240+/jaar, dit is éénmalig.",
-   "prijs": 39,
-   "links": {
-    "koop": "bestel.html?p=flowfabriek1",
-    "stripe": "https://buy.stripe.com/bJe14n7QQber0Zp4xT5J622"
-   },
-   "groep": "tools",
-   "badge": "NIEUW",
-   "video": "media/flowfabriek-demo.mp4",
-   "video_en": "media/flowfabriek-demo-en.mp4",
-   "video_es": "media/flowfabriek-demo-es.mp4",
-   "uitleg": "media/flowfabriek1-uitleg.mp4",
-   "sub_nl": "media/flowfabriek1-uitleg.nl.vtt",
-   "sub_es": "media/flowfabriek1-uitleg.es.vtt",
-   "upsell": [
-    "watcherfabriek1",
-    "g2bsuite1"
-   ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/flowfabriek1.png"
-  },
-  {
-   "id": "kanaalfabriek1",
-   "titel": "G2B KANAAL-FABRIEK — complete video-studio",
-   "soort": "app",
-   "beschrijving": "Maak complete YouTube/TikTok-kanalen zonder camera: script erin → aflevering eruit met AI-stem in 14 talen (NL/EN/ES/DE/FR/IT/PT/PL/RU/ZH/TR/AR/SV + Sranan). SEIZOEN-FABRIEK maakt een hele serie in 1 klik, TAAL-FABRIEK vertaalt elke aflevering automatisch, VERTEL-MODUS maakt voorlees-video's, auto-shorts 9:16 voor Shorts/Reels/TikTok, greenscreen, karakter-pops, live-webcam-studio, intro-fabriek. 100% LOKAAL op je pc — geen abonnement, geen credits, geen cloud. 1-klik installer + handleiding + licentiecode per koper.",
-   "prijs": "€ 79,00",
-   "links": {
-    "koop": "bestel.html?p=kanaalfabriek1",
-    "stripe": "https://buy.stripe.com/9B6eVd5IIaanfUjfcx5J623"
-   },
-   "groep": "tools",
-   "badge": "NIEUW",
-   "cover": "media/covers/kanaalfabriek1.png",
-   "demo": "media/kanaalfabriek-demo.mp4",
-   "video": "media/kanaalfabriek-demo.mp4",
-   "uitleg": "media/kanaalfabriek1-uitleg.mp4",
-   "sub_nl": "media/kanaalfabriek1-uitleg.nl.vtt",
-   "sub_es": "media/kanaalfabriek1-uitleg.es.vtt",
-   "upsell": [
-    "leadfabriek1",
-    "g2bsuite1"
-   ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
-  },
-  {
    "id": "leadfabriek1",
    "titel": "G2B LEAD-FABRIEK",
    "soort": "app",
@@ -782,7 +662,6 @@
    "sub_nl": "media/oneshots-uitleg.nl.vtt",
    "sub_es": "media/oneshots-uitleg.es.vtt",
    "upsell": [
-    "g2bbd1",
     "g2balles"
    ],
    "specs": "📦 WAV-bestanden · werkt in elke DAW · Windows / macOS / Linux"
@@ -1461,31 +1340,6 @@
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
    "cover": "media/covers/school1.png",
    "verborgen": true
-  },
-  {
-   "id": "g2bbd1",
-   "titel": "G2B Bassdrum",
-   "soort": "plugin",
-   "beschrijving": "Jouw eigen kick-machine: 661 ECHTE G2B-kicks, verdeeld over 15 genre-banks x 16 pads (BOOMBAP, TRAP, DRILL, RNB, AFROBEAT, PHONK, LOFI, FUNK, EPIC, DROOM, POP, ROCKABILLY, SOUTHERN, CORPORATE, REGGAETON). Speel ze live op pads of MIDI-noten 36-51. TUNE/DECAY/LO/HI per hit, DIMENTIES ruimte, 8 skins. Deze kicks zijn uniek voor G2B — niemand anders heeft ze. VST3 + CLAP + standalone.",
-   "prijs": "€ 19,95",
-   "links": {
-    "koop": "bestel.html?p=g2bbd1",
-    "stripe": "https://buy.stripe.com/00w8wP8UU1DR4bBfcx5J61M"
-   },
-   "groep": "plugins",
-   "badge": "NIEUW",
-   "cover": "media/g2bbd-cover.png",
-   "demo": "media/g2bbd-demo.mp4",
-   "video": "media/g2bbd-demo.mp4",
-   "uitleg": "media/bd1-uitleg.mp4",
-   "sub_nl": "media/bd1-uitleg.nl.vtt",
-   "sub_es": "media/bd1-uitleg.es.vtt",
-   "preview": "media/g2bbd1-preview.mp3",
-   "upsell": [
-    "g2b-oneshots",
-    "g2balles"
-   ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
   },
   {
    "id": "steun-3",
