@@ -9,12 +9,13 @@
     vriend: ['70f0dc433307319601a029cee9e9e03d98a6d0678bc70a704f810c0303f36842',
              'a7e537756133cb285d3fa7c170b680623a851a203ea520d052f6c514c2e0c306'],
     club:   ['9d61007b8a32bcce2ae1c1d8b35a5d90457ec99875c1fd33122c72419a1940e7','812a199d4a4024b7a5449886a886c464e3113868277798accb8aa8e6426be87d','57907b5fa536b2a1a5c8b836b59244e2c0c49bc7e789711599d1bb9fa24530bf','3ff318d111b2245269d1e17c58cac35a4fc64d47a992191e609412da86e28194'],
-    prod:   ['35d48104a2c5f22b42ed0c829df3a466e00b5aecbd77debc90b59f91b7c20916','f20a6b30af1aa2249787b0aa0d3e375f2fe57ca25dc39a6e0b5774cae0f788fb','d55765eb7b66f780e2ae34c0702ce140ed887259067229836e53a0690ec86945','f727e344ebae061cac250ec604dd2a575c8e25d02d845b10f3cb209f1cfe0619','cc05223989168da35d2d6b66cc5c92babe5873ae5a7ea445e9dc8019e97d63c6','8172b0fc783fd6647a014565def50e7fa7adde4b5d4a309380ef2b8873124512','2fced2786530c9cb9f32170bff51efe9c6a91807dda2b226f1b5ab877b716c85','c4337391b00fd456db70874573248fdb55e83f604a85518d9dc4d3c82dab5786','f891cc26f01d455607a304a807526f17ba182ad46741babee48c5578ab5e03c2']
+    prod:   {smash:'35d48104a2c5f22b42ed0c829df3a466e00b5aecbd77debc90b59f91b7c20916',koor:'f20a6b30af1aa2249787b0aa0d3e375f2fe57ca25dc39a6e0b5774cae0f788fb',stapeldicepro:'d55765eb7b66f780e2ae34c0702ce140ed887259067229836e53a0690ec86945',beatmakerpro:'f727e344ebae061cac250ec604dd2a575c8e25d02d845b10f3cb209f1cfe0619',airdrums:'cc05223989168da35d2d6b66cc5c92babe5873ae5a7ea445e9dc8019e97d63c6',geluidmidi:'8172b0fc783fd6647a014565def50e7fa7adde4b5d4a309380ef2b8873124512',mixer:'2fced2786530c9cb9f32170bff51efe9c6a91807dda2b226f1b5ab877b716c85',band:'c4337391b00fd456db70874573248fdb55e83f604a85518d9dc4d3c82dab5786',cursus:'f891cc26f01d455607a304a807526f17ba182ad46741babee48c5578ab5e03c2'}
   };
   /* CLUB = maand-code: g2b-<8 hex uit sha256(salt+JJJJMM)> — huidige + vorige maand geldig.
      Zo verloopt een gedeelde/opgezegde code vanzelf; nieuwe code staat op club-code.html. */
   var CLUB_SALT = 'g2bklub::rot::v1::';
   var tier = (document.currentScript && document.currentScript.dataset.tier) || 'inner';
+  window.G2B_THISPROD=(document.currentScript&&document.currentScript.dataset.prod)||'';
   var ALLOWED = tier === 'mijn' ? HASHES.mijn
     : HASHES.mijn.concat(HASHES.vriend).concat(HASHES.club);
 
@@ -116,7 +117,7 @@
     async function unlock() {
       var v = inp.value.trim().toLowerCase(); if (!v) return;
       var h = await hex(v);
-      if (ALLOWED.indexOf(h) >= 0 || HASHES.prod.indexOf(await hex(v.toUpperCase())) >= 0 || (tier === 'leden' && await isClubCode(v))) {
+      if (ALLOWED.indexOf(h) >= 0 || (window.G2B_THISPROD&&(await hex(v.toUpperCase()))===HASHES.prod[window.G2B_THISPROD]) || (tier === 'leden' && await isClubCode(v))) {
         try { localStorage.setItem('g2b_aura_licentie', v); sessionStorage.setItem('g2b_gate_' + tier, '1'); } catch (e) {}
         g.remove();
       } else { g.querySelector('#g2berr').style.display = 'block'; inp.value = ''; inp.focus(); }
@@ -129,7 +130,7 @@
     try {
       var v = (localStorage.getItem('g2b_aura_licentie') || '').trim().toLowerCase();
       if (v && v !== 'ok' && v.length >= 4)
-        return ALLOWED.indexOf(await hex(v)) >= 0 || HASHES.prod.indexOf(await hex(v.toUpperCase())) >= 0 || (tier === 'leden' && await isClubCode(v));
+        return ALLOWED.indexOf(await hex(v)) >= 0 || (window.G2B_THISPROD&&(await hex(v.toUpperCase()))===HASHES.prod[window.G2B_THISPROD]) || (tier === 'leden' && await isClubCode(v));
       if (sessionStorage.getItem('g2b_gate_' + tier) === '1') return true;
     } catch (e) {}
     return false;

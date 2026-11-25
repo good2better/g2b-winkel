@@ -45,7 +45,8 @@
     "g2bbestof",
     "g2balles"
    ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
+   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download",
+   "download_dir": "d/ced9702425be6c89"
   },
   {
    "id": "stapeldice",
@@ -143,7 +144,8 @@
     "g2bmaster",
     "g2bstarter"
    ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
+   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download",
+   "download_dir": "d/3eed529a2df334a3"
   },
   {
    "id": "g2bmixer",
@@ -757,7 +759,8 @@
     "g2bfx1",
     "g2balles"
    ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
+   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download",
+   "download_dir": "d/13e5558429d6991d"
   },
   {
    "id": "g2bbestof",
@@ -809,7 +812,8 @@
     "g2bbd1",
     "g2balles"
    ],
-   "specs": "📦 WAV-bestanden · werkt in elke DAW · Windows / macOS / Linux"
+   "specs": "📦 WAV-bestanden · werkt in elke DAW · Windows / macOS / Linux",
+   "download_dir": "d/33f5aa68a7666f3b"
   },
   {
    "id": "g2b-juridisch",
@@ -891,7 +895,8 @@
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
    "video_sub_nl": "media/workstation-v7.nl.vtt",
-   "video_sub_es": "media/workstation-v7.es.vtt"
+   "video_sub_es": "media/workstation-v7.es.vtt",
+   "download_dir": "d/db500c763dc6a678"
   },
   {
    "id": "cursus01",
@@ -1362,7 +1367,8 @@
    "upsell": [
     "g2b-oneshots"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "download_dir": "d/29a5cb064bcf914b"
   },
   {
    "id": "g2bfx1",
@@ -1387,7 +1393,8 @@
     "g2bvibe1",
     "g2balles"
    ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
+   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download",
+   "download_dir": "d/d2a70629b387b6e8"
   },
   {
    "id": "ocho01",
@@ -1450,7 +1457,8 @@
    "upsell": [
     "g2b-juridisch"
    ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
+   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download",
+   "download_dir": "d/bb2c863c4563ba31"
   },
   {
    "id": "sp00ky",
@@ -1475,7 +1483,8 @@
     "g2b-oneshots",
     "g2balles"
    ],
-   "specs": "📦 WAV-bestanden · werkt in elke DAW · Windows / macOS / Linux"
+   "specs": "📦 WAV-bestanden · werkt in elke DAW · Windows / macOS / Linux",
+   "download_dir": "d/894ca0b2e72a7d1e"
   },
   {
    "id": "school1",
