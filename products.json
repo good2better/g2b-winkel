@@ -19,7 +19,7 @@
     "stapeldicefull"
    ],
    "specs": "🌐 Elke moderne browser · geen installatie · 100% lokaal — audio verlaat je apparaat niet",
-   "download_dir": "d/sonicaudit",
+   "download_dir": "d/f1e070052773714a",
    "video": "media/sonicaudit-promo.mp4"
   },
   {
@@ -92,7 +92,7 @@
     "g2bstarter"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "download_dir": "d/stapeldicefull"
+   "download_dir": "d/d0a26d8ccb0b0d49"
   },
   {
    "id": "g2bmaster",
@@ -159,7 +159,7 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/g2bmixer-cover.png",
-   "download_dir": "d/g2bmixer",
+   "download_dir": "d/3eb3552ecfc852be",
    "demo": "media/g2bmixer-demo.mp4",
    "video": "media/g2bmixer-demo.mp4",
    "uitleg": "media/mixerv2-uitleg.mp4",
@@ -185,7 +185,7 @@
    "groep": "plugins",
    "badge": "NIEUW — 3 IN 1",
    "cover": "media/g2bgeluidmidi-cover.png",
-   "download_dir": "d/g2bgeluidmidi",
+   "download_dir": "d/7b0f10e606332965",
    "video": "media/g2bgeluidmidi-demo.mp4",
    "demo": "media/g2bgeluidmidi-demo.mp4",
    "uitleg": "media/geluidmidi-uitleg.mp4",
@@ -262,7 +262,8 @@
     "g2bstudio",
     "g2balles"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "download_dir": "d/684450e28e34a1ea"
   },
   {
    "id": "g2bstudio",
@@ -280,7 +281,8 @@
    "upsell": [
     "g2balles"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "download_dir": "d/86813382673d3ca1"
   },
   {
    "id": "g2balles",
@@ -298,7 +300,8 @@
    "upsell": [
     "g2bclub"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "download_dir": "d/6f963dc5d92c171b"
   },
   {
    "id": "beatmakerpro",
@@ -321,7 +324,7 @@
    "demo": "media/beatmakerpro-demo.mp4",
    "video": "media/beatmakerpro-demo.mp4",
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "download_dir": "d/beatmakerpro"
+   "download_dir": "d/76045d7832d91250"
   },
   {
    "id": "g2bsmash",
@@ -346,7 +349,8 @@
     "g2bairdrums",
     "g2b-workstation"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · werkt offline uit ZIP · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · werkt offline uit ZIP · Windows / macOS / Linux",
+   "download_dir": "d/47844c004534ee95"
   },
   {
    "id": "g2bairdrums",
@@ -361,7 +365,7 @@
    "groep": "studio-tools",
    "badge": "NIEUW",
    "cover": "media/g2bairdrums-cover.png",
-   "download_dir": "d/g2bairdrums/",
+   "download_dir": "d/ec1c5a8ec52050ae",
    "demo": "media/g2bairdrums-demo.mp4",
    "video": "media/g2bairdrums-demo.mp4",
    "uitleg": "media/airdrums-uitleg.mp4",
@@ -428,7 +432,8 @@
     "g2b-workstation"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/g2bsuite1.png"
+   "cover": "media/covers/g2bsuite1.png",
+   "download_dir": "d/bff46d6b38f8418e"
   },
   {
    "id": "seofabriek1",
@@ -496,7 +501,8 @@
     "g2bsuite1"
    ],
    "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW",
-   "cover": "media/covers/marketerbundel1.png"
+   "cover": "media/covers/marketerbundel1.png",
+   "download_dir": "d/440d945c35ed4033"
   },
   {
    "id": "mailfabriek1",
@@ -521,7 +527,8 @@
     "g2bsuite1"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/mailfabriek1.png"
+   "cover": "media/covers/mailfabriek1.png",
+   "download_dir": "d/f05acd80e554f48b"
   },
   {
    "id": "sheetfabriek1",
@@ -546,7 +553,8 @@
     "g2bsuite1"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/sheetfabriek1.png"
+   "cover": "media/covers/sheetfabriek1.png",
+   "download_dir": "d/8840331b2d61cedc"
   },
   {
    "id": "sequentiefabriek1",
@@ -571,7 +579,8 @@
     "g2bsuite1"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/sequentiefabriek1.png"
+   "cover": "media/covers/sequentiefabriek1.png",
+   "download_dir": "d/8398584c69954eaf"
   },
   {
    "id": "crmfabriek1",
@@ -596,7 +605,8 @@
     "g2bsuite1"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/crmfabriek1.png"
+   "cover": "media/covers/crmfabriek1.png",
+   "download_dir": "d/e85a819d057271c5"
   },
   {
    "id": "watcherfabriek1",
@@ -695,7 +705,8 @@
     "g2bsuite1"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/leadfabriek1.png"
+   "cover": "media/covers/leadfabriek1.png",
+   "download_dir": "d/c6e517b46a1e88bc"
   },
   {
    "id": "lijstfabriek1",
@@ -720,7 +731,8 @@
     "g2bsuite1"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/lijstfabriek1.png"
+   "cover": "media/covers/lijstfabriek1.png",
+   "download_dir": "d/a5ee5eab37e39d81"
   },
   {
    "id": "g2bvibe1",
@@ -901,7 +913,8 @@
    "upsell": [
     "beatmakerpro"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "download_dir": "d/b0a2e0ddc4343684"
   },
   {
    "id": "g2b-bedrijfsmiddelen",
@@ -1582,7 +1595,8 @@
     "g2bclub",
     "g2balles"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "download_dir": "d/d38178041c705560"
   },
   {
    "id": "ocholite",
@@ -1639,7 +1653,8 @@
     "stripe": "https://buy.stripe.com/bJeeVd8UU4Q37nN2pL5J62R"
    },
    "groep": "plugins",
-   "cover": "media/covers/g2bkoor.png"
+   "cover": "media/covers/g2bkoor.png",
+   "download_dir": "d/4651545fa79c4823"
   },
   {
    "id": "aura-midiforge",
