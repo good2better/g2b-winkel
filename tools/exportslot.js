@@ -96,17 +96,46 @@
     d.querySelector('#g2bxno').onclick=close;
     d.querySelector('#g2bxok').onclick=function(){
       var c=d.querySelector('#g2bxcode').value.trim().toUpperCase();
-      if(check(tool,c)){sessionStorage.setItem('g2b_export_'+tool,'1');close();cb(true)}
+      if(check(tool,c)){sessionStorage.setItem('g2b_export_'+tool,'1');try{localStorage.setItem('g2b_code_'+tool,c)}catch(e){}close();cb(true);setTimeout(badge,100)}
       else d.querySelector('#g2bxerr').textContent='code klopt niet — check je bedankt-pagina';
     };
     d.querySelector('#g2bxcode').addEventListener('keydown',function(e){if(e.key==='Enter')d.querySelector('#g2bxok').click()});
     setTimeout(function(){var i=d.querySelector('#g2bxcode');i&&i.focus()},50);
   }
+  function badge(){
+    if(document.getElementById('g2bxbadge'))return;
+    var actief=null;
+    try{
+      var lv=(localStorage.getItem('g2b_aura_licentie')||'').trim().toLowerCase();
+      if(lv&&lv!=='ok'&&lv.length>=4&&LIDHASH.indexOf(sha(lv))>=0)actief='LIDMAATSCHAP';
+      if(!actief){
+        var hv=(localStorage.getItem('g2b_aura_licentie')||'').trim();
+        if(hv&&which(hv.toUpperCase())==='MASTER')actief='MASTER';
+      }
+      if(!actief){
+        for(var i=0;i<localStorage.length;i++){
+          var k=localStorage.key(i);
+          if(k&&k.indexOf('g2b_code_')===0){
+            var t=k.slice(9),c=localStorage.getItem(k);
+            if(c&&check(t,c)){actief=t;break}
+          }
+        }
+      }
+    }catch(e){}
+    if(!actief)return;
+    var b=document.createElement('div');
+    b.id='g2bxbadge';
+    b.style.cssText='position:fixed;right:10px;bottom:10px;z-index:99990;background:rgba(6,20,12,.85);border:1px solid #2f5b41;color:#35d07f;font:600 11px/1 sans-serif;padding:6px 10px;border-radius:99px;opacity:.75;font-family:sans-serif;pointer-events:none';
+    b.textContent='\u2713 GEACTIVEERD \u00b7 '+actief;
+    document.body.appendChild(b);
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(badge,600)})}else{setTimeout(badge,600)}
   window.G2B_EXPORT_CHECK=check;
   window.G2B_EXPORT_WHICH=which;
   window.G2B_EXPORT=function(tool){
     tool=String(tool||'').toUpperCase();
     if(sessionStorage.getItem('g2b_export_'+tool)==='1')return true;
+    try{var sc=localStorage.getItem('g2b_code_'+tool);if(sc&&check(tool,sc))return true}catch(e){}
     if(licOk())return true;
     modal(tool,function(){});return false;
   };
