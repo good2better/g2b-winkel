@@ -19,7 +19,6 @@
     "stapeldicefull"
    ],
    "specs": "🌐 Elke moderne browser · geen installatie · 100% lokaal — audio verlaat je apparaat niet",
-   "download_dir": "d/f1e070052773714a",
    "video": "media/sonicaudit-promo.mp4"
   },
   {
@@ -45,8 +44,7 @@
     "g2bbestof",
     "g2balles"
    ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download",
-   "download_dir": "d/ced9702425be6c89"
+   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
   },
   {
    "id": "stapeldice",
@@ -92,8 +90,7 @@
     "beatmakerpro",
     "g2bstarter"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "download_dir": "d/d0a26d8ccb0b0d49"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
   },
   {
    "id": "g2bmaster",
@@ -109,7 +106,6 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/g2bmaster-cover.png",
-   "download_dir": "d/g2bmaster",
    "demo": "media/g2bmaster-demo.mp4",
    "video": "media/g2bmaster-demo.mp4",
    "uitleg": "media/master-uitleg.mp4",
@@ -144,8 +140,7 @@
     "g2bmaster",
     "g2bstarter"
    ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download",
-   "download_dir": "d/3eed529a2df334a3"
+   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
   },
   {
    "id": "g2bmixer",
@@ -161,7 +156,6 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/g2bmixer-cover.png",
-   "download_dir": "d/3eb3552ecfc852be",
    "demo": "media/g2bmixer-demo.mp4",
    "video": "media/g2bmixer-demo.mp4",
    "uitleg": "media/mixerv2-uitleg.mp4",
@@ -187,7 +181,6 @@
    "groep": "plugins",
    "badge": "NIEUW — 3 IN 1",
    "cover": "media/g2bgeluidmidi-cover.png",
-   "download_dir": "d/7b0f10e606332965",
    "video": "media/g2bgeluidmidi-demo.mp4",
    "demo": "media/g2bgeluidmidi-demo.mp4",
    "uitleg": "media/geluidmidi-uitleg.mp4",
@@ -213,7 +206,6 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/g2brefors-cover.png",
-   "download_dir": "d/g2brefors",
    "demo": "media/g2brefors-demo.mp4",
    "video": "media/g2brefors-demo.mp4",
    "uitleg": "media/refors-uitleg.mp4",
@@ -244,8 +236,7 @@
     "g2balles"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "eerst": 1,
-   "download_dir": "d/g2bclub"
+   "eerst": 1
   },
   {
    "id": "g2bstarter",
@@ -264,8 +255,7 @@
     "g2bstudio",
     "g2balles"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "download_dir": "d/684450e28e34a1ea"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
   },
   {
    "id": "g2bstudio",
@@ -283,8 +273,7 @@
    "upsell": [
     "g2balles"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "download_dir": "d/86813382673d3ca1"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
   },
   {
    "id": "g2balles",
@@ -302,8 +291,7 @@
    "upsell": [
     "g2bclub"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "download_dir": "d/6f963dc5d92c171b"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
   },
   {
    "id": "beatmakerpro",
@@ -325,8 +313,7 @@
    ],
    "demo": "media/beatmakerpro-demo.mp4",
    "video": "media/beatmakerpro-demo.mp4",
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "download_dir": "d/76045d7832d91250"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
   },
   {
    "id": "g2bsmash",
@@ -351,8 +338,7 @@
     "g2bairdrums",
     "g2b-workstation"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · werkt offline uit ZIP · Windows / macOS / Linux",
-   "download_dir": "d/47844c004534ee95"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · werkt offline uit ZIP · Windows / macOS / Linux"
   },
   {
    "id": "g2bairdrums",
@@ -367,7 +353,6 @@
    "groep": "studio-tools",
    "badge": "NIEUW",
    "cover": "media/g2bairdrums-cover.png",
-   "download_dir": "d/ec1c5a8ec52050ae",
    "demo": "media/g2bairdrums-demo.mp4",
    "video": "media/g2bairdrums-demo.mp4",
    "uitleg": "media/airdrums-uitleg.mp4",
@@ -391,7 +376,6 @@
     "koop": "bestel.html?p=voicetag-studio",
     "stripe": "https://buy.stripe.com/cNibJ1b3282f4bBfcx5J633"
    },
-   "download_dir": "d/d0b35c6ff588e7",
    "groep": "studio-tools",
    "badge": "NIEUW",
    "cover": "media/g2b-voicetag-cover.png",
@@ -408,7 +392,6 @@
     "koop": "bestel.html?p=coverart-fabriek",
     "stripe": "https://buy.stripe.com/fZu7sLc764Q35fFd4p5J634"
    },
-   "download_dir": "d/b06ba4d90ae6cc",
    "groep": "studio-tools",
    "badge": "NIEUW",
    "cover": "media/g2b-coverart-cover.png",
@@ -434,8 +417,7 @@
     "g2b-workstation"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/g2bsuite1.png",
-   "download_dir": "d/bff46d6b38f8418e"
+   "cover": "media/covers/g2bsuite1.png"
   },
   {
    "id": "seofabriek1",
@@ -503,8 +485,7 @@
     "g2bsuite1"
    ],
    "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW",
-   "cover": "media/covers/marketerbundel1.png",
-   "download_dir": "d/440d945c35ed4033"
+   "cover": "media/covers/marketerbundel1.png"
   },
   {
    "id": "mailfabriek1",
@@ -529,8 +510,7 @@
     "g2bsuite1"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/mailfabriek1.png",
-   "download_dir": "d/f05acd80e554f48b"
+   "cover": "media/covers/mailfabriek1.png"
   },
   {
    "id": "sheetfabriek1",
@@ -555,8 +535,7 @@
     "g2bsuite1"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/sheetfabriek1.png",
-   "download_dir": "d/8840331b2d61cedc"
+   "cover": "media/covers/sheetfabriek1.png"
   },
   {
    "id": "sequentiefabriek1",
@@ -581,8 +560,7 @@
     "g2bsuite1"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/sequentiefabriek1.png",
-   "download_dir": "d/8398584c69954eaf"
+   "cover": "media/covers/sequentiefabriek1.png"
   },
   {
    "id": "crmfabriek1",
@@ -607,8 +585,7 @@
     "g2bsuite1"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/crmfabriek1.png",
-   "download_dir": "d/e85a819d057271c5"
+   "cover": "media/covers/crmfabriek1.png"
   },
   {
    "id": "watcherfabriek1",
@@ -707,8 +684,7 @@
     "g2bsuite1"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/leadfabriek1.png",
-   "download_dir": "d/c6e517b46a1e88bc"
+   "cover": "media/covers/leadfabriek1.png"
   },
   {
    "id": "lijstfabriek1",
@@ -733,8 +709,7 @@
     "g2bsuite1"
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "cover": "media/covers/lijstfabriek1.png",
-   "download_dir": "d/a5ee5eab37e39d81"
+   "cover": "media/covers/lijstfabriek1.png"
   },
   {
    "id": "g2bvibe1",
@@ -759,8 +734,7 @@
     "g2bfx1",
     "g2balles"
    ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download",
-   "download_dir": "d/13e5558429d6991d"
+   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
   },
   {
    "id": "g2bbestof",
@@ -776,7 +750,6 @@
    "badge": "TOPPER",
    "cover": "media/bestof-cover.png",
    "preview": "media/bestof-demo.mp3",
-   "download_dir": "d/g2bbestof",
    "demo": "media/bestof-demo-v3.mp4",
    "video": "media/bestof-demo-v3.mp4",
    "uitleg": "media/bestof-uitleg.mp4",
@@ -812,8 +785,7 @@
     "g2bbd1",
     "g2balles"
    ],
-   "specs": "📦 WAV-bestanden · werkt in elke DAW · Windows / macOS / Linux",
-   "download_dir": "d/33f5aa68a7666f3b"
+   "specs": "📦 WAV-bestanden · werkt in elke DAW · Windows / macOS / Linux"
   },
   {
    "id": "g2b-juridisch",
@@ -829,7 +801,6 @@
    "duur": 0,
    "groep": "tools",
    "cover": "media/g2b-juridisch-cover.png",
-   "download_dir": "d/12f11d0fe3c348",
    "demo": "media/juridisch-demo.mp4",
    "video": "media/juridisch-demo.mp4",
    "video_en": "media/juridisch-demo-en.mp4",
@@ -857,7 +828,6 @@
    "duur": 0,
    "groep": "tools",
    "cover": "media/g2b-psychologie-cover.png",
-   "download_dir": "d/eff2f763bada21",
    "demo": "media/psychologie-demo.mp4",
    "video": "media/psychologie-demo.mp4",
    "video_en": "media/psychologie-demo-en.mp4",
@@ -895,8 +865,7 @@
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
    "video_sub_nl": "media/workstation-v7.nl.vtt",
-   "video_sub_es": "media/workstation-v7.es.vtt",
-   "download_dir": "d/db500c763dc6a678"
+   "video_sub_es": "media/workstation-v7.es.vtt"
   },
   {
    "id": "cursus01",
@@ -918,8 +887,7 @@
    "upsell": [
     "beatmakerpro"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "download_dir": "d/b0a2e0ddc4343684"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
   },
   {
    "id": "g2b-bedrijfsmiddelen",
@@ -935,7 +903,6 @@
    "duur": 0,
    "groep": "tools",
    "cover": "media/g2b-bedrijfsmiddelen-cover.png",
-   "download_dir": "d/f481c3d2e1e330",
    "demo": "media/bedrijfsmiddelen-demo.mp4",
    "video": "media/bedrijfsmiddelen-demo.mp4",
    "video_en": "media/bedrijfsmiddelen-demo-en.mp4",
@@ -971,7 +938,6 @@
    "groep": "house",
    "cover": "media/2878e291-cover.png",
    "preview": "media/2878e291-preview.mp3",
-   "download_dir": "d/2878e291",
    "bpm": 124,
    "moods": [
     "energisch",
@@ -1004,7 +970,6 @@
    "groep": "drill",
    "cover": "media/d9d479ab-cover.png",
    "preview": "media/d9d479ab-preview.mp3",
-   "download_dir": "d/d9d479ab",
    "bpm": 152,
    "moods": [
     "donker",
@@ -1037,7 +1002,6 @@
    "groep": "dembow",
    "cover": "media/7fe03e5c-cover.png",
    "preview": "media/7fe03e5c-preview.mp3",
-   "download_dir": "d/7fe03e5c",
    "bpm": 133,
    "moods": [
     "party",
@@ -1070,7 +1034,6 @@
    "groep": "rnb",
    "cover": "media/0ef9a078-cover.png",
    "preview": "media/0ef9a078-preview.mp3",
-   "download_dir": "d/0ef9a078",
    "bpm": 133,
    "moods": [
     "zacht",
@@ -1103,7 +1066,6 @@
    "groep": "g2b",
    "cover": "media/8171e455-cover.png",
    "preview": "media/8171e455-preview.mp3",
-   "download_dir": "d/8171e455",
    "bpm": 136,
    "moods": [
     "episch",
@@ -1136,7 +1098,6 @@
    "groep": "trap",
    "cover": "media/266054dc-cover.png",
    "preview": "media/266054dc-preview.mp3",
-   "download_dir": "d/266054dc",
    "bpm": 126,
    "moods": [
     "hard",
@@ -1169,7 +1130,6 @@
    "groep": "house",
    "cover": "media/53c9dc1f-cover.png",
    "preview": "media/53c9dc1f-preview.mp3",
-   "download_dir": "d/53c9dc1f",
    "bpm": 136,
    "moods": [
     "energisch",
@@ -1202,7 +1162,6 @@
    "groep": "dancehall",
    "cover": "media/054630ff-cover.png",
    "preview": "media/054630ff-preview.mp3",
-   "download_dir": "d/054630ff",
    "bpm": 92,
    "moods": [
     "zomer",
@@ -1235,7 +1194,6 @@
    "groep": "drill",
    "cover": "media/3083f3d3-cover.png",
    "preview": "media/3083f3d3-preview.mp3",
-   "download_dir": "d/3083f3d3",
    "bpm": 112,
    "moods": [
     "donker",
@@ -1268,7 +1226,6 @@
    "groep": "dembow",
    "cover": "media/600fb829-cover.png",
    "preview": "media/600fb829-preview.mp3",
-   "download_dir": "d/600fb829",
    "bpm": 123,
    "moods": [
     "party",
@@ -1301,7 +1258,6 @@
    "groep": "dembow",
    "cover": "media/f92b4951-cover.png",
    "preview": "media/f92b4951-preview.mp3",
-   "download_dir": "d/f92b4951",
    "bpm": 123,
    "moods": [
     "party",
@@ -1333,7 +1289,6 @@
    "groep": "muziek",
    "cover": "media/0b5647bf-cover.png",
    "preview": "media/0b5647bf-preview.mp3",
-   "download_dir": "d/0b5647bf",
    "bpm": 152,
    "moods": [
     "chill",
@@ -1367,8 +1322,7 @@
    "upsell": [
     "g2b-oneshots"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "download_dir": "d/29a5cb064bcf914b"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
   },
   {
    "id": "g2bfx1",
@@ -1393,8 +1347,7 @@
     "g2bvibe1",
     "g2balles"
    ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download",
-   "download_dir": "d/d2a70629b387b6e8"
+   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
   },
   {
    "id": "ocho01",
@@ -1410,7 +1363,6 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/ocho-cover.png",
-   "download_dir": "d/ocho01",
    "demo": "media/ocho-demo.mp4",
    "video": "media/ocho-demo.mp4",
    "uitleg": "media/ocho-uitleg.mp4",
@@ -1457,8 +1409,7 @@
    "upsell": [
     "g2b-juridisch"
    ],
-   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download",
-   "download_dir": "d/bb2c863c4563ba31"
+   "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
   },
   {
    "id": "sp00ky",
@@ -1483,8 +1434,7 @@
     "g2b-oneshots",
     "g2balles"
    ],
-   "specs": "📦 WAV-bestanden · werkt in elke DAW · Windows / macOS / Linux",
-   "download_dir": "d/894ca0b2e72a7d1e"
+   "specs": "📦 WAV-bestanden · werkt in elke DAW · Windows / macOS / Linux"
   },
   {
    "id": "school1",
@@ -1604,8 +1554,7 @@
     "g2bclub",
     "g2balles"
    ],
-   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
-   "download_dir": "d/d38178041c705560"
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
   },
   {
    "id": "ocholite",
@@ -1646,7 +1595,6 @@
    "groep": "plugins",
    "badge": "NIEUW",
    "cover": "media/g2b-samplex-cover.png",
-   "download_dir": "d/samplex01",
    "demo": "media/samplex-demo-v3.mp4",
    "video": "media/samplex-demo-v3.mp4",
    "specs": "💻 Windows 10/11 (64-bit) · 🧩 VST3 + CLAP + standalone EXE · 🎹 werkt in elke DAW · werkt offline na download"
@@ -1662,8 +1610,7 @@
     "stripe": "https://buy.stripe.com/bJeeVd8UU4Q37nN2pL5J62R"
    },
    "groep": "plugins",
-   "cover": "media/covers/g2bkoor.png",
-   "download_dir": "d/4651545fa79c4823"
+   "cover": "media/covers/g2bkoor.png"
   },
   {
    "id": "aura-midiforge",
@@ -1678,8 +1625,7 @@
     "stripe": "https://buy.stripe.com/6oU00j2ww0zNazZfcx5J62S"
    },
    "video": "media/aura-midiforge-demo.mp4",
-   "demo": "media/aura-midiforge-demo.mp4",
-   "download_dir": "d/aura-midiforge"
+   "demo": "media/aura-midiforge-demo.mp4"
   },
   {
    "id": "aura-suripads",
@@ -1695,8 +1641,7 @@
    },
    "video": "media/aura-suripads-demo.mp4",
    "demo": "media/aura-suripads-demo.mp4",
-   "eerst": true,
-   "download_dir": "d/aura-suripads"
+   "eerst": true
   },
   {
    "id": "aura-allinstr",
@@ -1711,8 +1656,7 @@
     "stripe": "https://buy.stripe.com/cNi8wP1sseqD9vV2pL5J62U"
    },
    "video": "media/aura-allinstr-demo.mp4",
-   "demo": "media/aura-allinstr-demo.mp4",
-   "download_dir": "d/aura-allinstr"
+   "demo": "media/aura-allinstr-demo.mp4"
   },
   {
    "id": "aura-bassdrum",
@@ -1727,8 +1671,7 @@
     "stripe": "https://buy.stripe.com/00w14n0oo2HV5fF5BX5J62V"
    },
    "video": "media/aura-bassdrum-demo.mp4",
-   "demo": "media/aura-bassdrum-demo.mp4",
-   "download_dir": "d/aura-bassdrum"
+   "demo": "media/aura-bassdrum-demo.mp4"
   },
   {
    "id": "aura-dicesynth",
@@ -1753,8 +1696,7 @@
    "sub_nl": "media/aura-dicesynth-promo.nl.vtt",
    "sub_es": "media/aura-dicesynth-promo.es.vtt",
    "demo": "media/aura-dicesynth-demo.mp4",
-   "eerst": true,
-   "download_dir": "d/aura-dicesynth"
+   "eerst": true
   },
   {
    "id": "aura-dren",
@@ -1769,8 +1711,7 @@
     "stripe": "https://buy.stripe.com/8x27sL5IIeqD7nN9Sd5J62X"
    },
    "video": "media/aura-dren-demo.mp4",
-   "demo": "media/aura-dren-demo.mp4",
-   "download_dir": "d/aura-dren"
+   "demo": "media/aura-dren-demo.mp4"
   },
   {
    "id": "aura-fxrack",
@@ -1785,8 +1726,7 @@
     "stripe": "https://buy.stripe.com/cNi8wP6MM1DRfUjc0l5J62Y"
    },
    "video": "media/aura-fxrack-demo.mp4",
-   "demo": "media/aura-fxrack-demo.mp4",
-   "download_dir": "d/aura-fxrack"
+   "demo": "media/aura-fxrack-demo.mp4"
   }
  ]
 }
