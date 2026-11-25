@@ -154,9 +154,8 @@
         return;
       }
       /* product-code van een fabriek (uit exportslot.js) → export vrij */
-      var codes = window.G2B_EXPORT_CODES || {}, hit = '';
-      var cv = v.toUpperCase();
-      for (var k in codes) if (codes[k] === cv) hit = k;
+      var hit = window.G2B_EXPORT_WHICH ? window.G2B_EXPORT_WHICH(v) : '';
+      if (hit === 'MASTER') hit = '';
       if (hit) {
         try { sessionStorage.setItem('g2b_export_' + hit, '1'); } catch (e) {}
         b.innerHTML = '<span style="color:#35d07f">✓ export ontgrendeld voor ' + hit + '</span>';

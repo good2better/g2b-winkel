@@ -145,7 +145,7 @@ function _g2b_sha256(ascii){
  return result;
 }
 async function _g2b_hex(s){if(crypto.subtle&&crypto.subtle.digest){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}return _g2b_sha256(s)}
-const HASHES=['f0b9b68f41a25aee79b21cc1e0c1309b9c683b1d3f300d1dca427cd653c157c0','a5e7193175ccdc423ce1a4a31b5856456c4e3cffb147a09a8fd9a608bbbd4a89']; // gio-vriend01 = eerste vriend · g2bvrienden = reserve; codes per vriend toe te voegen/verwijderen
+const HASHES=['f0b9b68f41a25aee79b21cc1e0c1309b9c683b1d3f300d1dca427cd653c157c0','a5e7193175ccdc423ce1a4a31b5856456c4e3cffb147a09a8fd9a608bbbd4a89']  // hashes per vriend toe te voegen/verwijderen — plaintext-codes nooit in dit bestand zetten
 async function unlock(){
   const v=document.getElementById('code').value.trim().toLowerCase();
   const hex=await _g2b_hex(v);

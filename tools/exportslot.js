@@ -1,18 +1,83 @@
 // G2B export-slot: demo open, export/download/print/copy achter licentiecode.
-// Gebruik: if(!G2B_EXPORT('LEADFABRIEK'))return; bovenin de export-functie.
+// v2: codes staan als SHA-256-hashes in de bron — niet meer plaintext leesbaar op GitHub.
+// Nieuwe tool-code toevoegen: sha256(code in HOOFDLETTERS) hier plakken.
 (function(){
-  var CODES={
-    FACTUURMAKER:'G2B-FACTUUR-D3K91P', LEADFABRIEK:'G2B-LEAD-L7Q2MW', CRMFABRIEK:'G2B-CRM-C8X4RT',
-    LIJSTFABRIEK:'G2B-LIJST-V5N9KD', MAILFABRIEK:'G2B-MAIL-M2F7HB', MARKETINGFABRIEK:'G2B-MARK-P6T3ZN',
-    SEQUENTIEFABRIEK:'G2B-SEQ-S9W4JC', SHEETFABRIEK:'G2B-SHEET-H4R8VG', LEADRADAR:'G2B-RADAR-R6D2KX',
-    GAMEFABRIEK:'G2B-GAME-G3J7QF', SEOFABRIEK:'G2B-SEO-E8K5TD', WATCHERFABRIEK:'G2B-WATCH-W9C4NB',
-    FLOWFABRIEK:'G2B-FLOW-F7M6PL', AGENCY:'G2B-AGENCY-A2V9SR', KANAALFABRIEK:'G2B-KANAAL-K4T8DW',
-    SONICAUDIT:'G2B-SONIC-A7K3V9',
-    MELODIE:'G2B-MELODIE-M8P4XT', BASFABRIEK:'G2B-BASFAB-B6R3QN', BIBLIOTHEEK:'G2B-BIB-K9W7FD',
-    MIDIBIB:'G2B-MIDIBIB-P4T8JX', LAAGBAAS:'G2B-LAAG-L3V6HM', MENGERWEB:'G2B-MENGER-Q2X9ZB',
-    GAW:'G2B-GAW-C5N8KR', GAWMINI:'G2B-GAWMINI-S4Y7LP',
+  var THASH={
+    FACTUURMAKER:'e4b52b892b120e0ffd6594e59f61f3657e210baab82d0d04f92d1646ad3c8a9b',
+    LEADFABRIEK:'22a1400bae7f22a005505638effa64f72332bac914179db68711749adc66cf3b',
+    CRMFABRIEK:'26e4c1219822298b59774b2eb47d9ab186f502d0906caea3c77a3eef3fec4c3a',
+    LIJSTFABRIEK:'3dd71d9fa0061c1eaf1617506facdb23f3af9ce34bab6cdb6ec993aecec9810a',
+    MAILFABRIEK:'7aa2b446ad9e72a2b167c9205b1f04c1b7b2fd8f2cdd6a3f3de26fb0aa093386',
+    MARKETINGFABRIEK:'d6f3865f71d079eb512ee228ea6e4b4cdac9321334d60463b76b951d3b39f568',
+    SEQUENTIEFABRIEK:'838efd3edffba8fcc92bf2d6adcc42f67283c0fcb4904bd3674628818871ee77',
+    SHEETFABRIEK:'39da276bb4a573667f7d50adba2c70274bac2273f2bab8164531b7be1cfb017f',
+    LEADRADAR:'3b1a79c7793ceef37da276994657a02e7d573e22b066c10d1a4d924859dd1e25',
+    GAMEFABRIEK:'1ebcf672d396a273834ac4fc88050e3c24586740684f87f2256f0531efd2dee2',
+    SEOFABRIEK:'64dc6eab8b0c6ad7edcbc82a6d95436780bb4cff0b70fc43f7f064edcf0b55de',
+    WATCHERFABRIEK:'756ffba70aa36d8052f360c91478e004bb665530261bdf3910155c01f280983e',
+    FLOWFABRIEK:'0adb5696e21db85ccfc90762a8571c0d23c2801b173013c58a2dfa575de24010',
+    AGENCY:'ea601aa5b57e53b0085065045b1d21f9f81ea439505bd6a2f1b87936df7a0c40',
+    KANAALFABRIEK:'6592c966a5a9135cd4712c10ae978af86d64b67258ff0f1021832aa68ad685ec',
+    SONICAUDIT:'97c014705cbad523dfee993b79aaf2de38bea93025865d6eebbb08172e139cee',
+    MELODIE:'d1601949c9d2117e077728a283e046e28d7b735051770c8fcae420ff506cd4e9',
+    BASFABRIEK:'926a43dbaf2a0447edd1b6d86da48702b233f70430f1439d2740e82327220427',
+    BIBLIOTHEEK:'ab2b92b50e1472096a3339531b6faab877faa8a76625dbb60ce88f8bc5fdd002',
+    MIDIBIB:'49535746066e3319bde5d4b807c1610eb3f4ac3ec33895d59c21c62f95c929a0',
+    LAAGBAAS:'52a51c76168884acd6804b22ebd18789b127a1d0e21b8e5edf6882f01671cf7b',
+    MENGERWEB:'5b1eafa122cecc67b90ac079d61a495d479df4566dfd7a0885b8600eda19a607',
+    GAW:'8594293a12de60194e052b30538d2d0f226ad77c31716ac861d9aca3023b0209',
+    GAWMINI:'bd726ba978dfda3947b6e69b3f230f851ffdcdafec28ce223c1f5dad9623407b'
   };
-  var MASTER=['G2B-CLUB-KVJF1N'];
+  var MHASH=['0609f1262c69b7dce9451e229e3da4f9fd40ff7f23ea1e9ded2c89f473b7a917'];
+  // lidmaatschap-licenties (mijn-apps + club + vrienden) — lowercase genormaliseerd
+  var LIDHASH=['a6027a131916280eab4a9f091cf28b36eb1dc59285023ce8c2403a76f24ff982','cff60c87705041c98f762c822d780d4a2076f2c747240a62e1f71f340fca3b34','95b714bba3b80d76c800206ade5dfe20e189ef16d5313ec59d54672fa1efc7cf','22985a253e7a7ca83f454c7c5e4f5ace779b007fe333c70d13a9cf4c007b22d6','9233b46e6bdc591cee681f100d0e360ba9062ec04c16946d62c723bd95a7334d','f0b9b68f41a25aee79b21cc1e0c1309b9c683b1d3f300d1dca427cd653c157c0','a5e7193175ccdc423ce1a4a31b5856456c4e3cffb147a09a8fd9a608bbbd4a89'];
+  function rr(v,a){return (v>>>a)|(v<<(32-a))}
+  function sha(ascii){
+   var mp=Math.pow,mx=mp(2,32),ln=ascii.length*8,result='',words=[];
+   var hash=[0x6A09E667,0xBB67AE85,0x3C6EF372,0xA54FF53A,0x510E527F,0x9B05688C,0x1F83D9AB,0x5BE0CD19];
+   var k=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+   ascii=unescape(encodeURIComponent(ascii));
+   ascii+='\x80';
+   while(ascii.length%64-56)ascii+='\x00';
+   for(var i=0;i<ascii.length;i++){var j=ascii.charCodeAt(i);words[i>>2]|=j<<((3-i)%4)*8}
+   words[words.length]=((ln/mx)|0);words[words.length]=(ln);
+   for(var j=0;j<words.length;){
+    var w=words.slice(j,j+=16),o=hash;hash=hash.slice(0,8);
+    for(var i=0;i<64;i++){
+     var w15=w[i-15],w2=w[i-2];
+     var a=hash[0],e=hash[4];
+     var t1=hash[7]+(rr(e,6)^rr(e,11)^rr(e,25))+((e&hash[5])^(~e&hash[6]))+k[i]
+      +(w[i]=i<16?w[i]:(w[i-16]+(rr(w15,7)^rr(w15,18)^(w15>>>3))+w[i-7]+(rr(w2,17)^rr(w2,19)^(w2>>>10)))|0);
+     var t2=(rr(a,2)^rr(a,13)^rr(a,22))+((a&hash[1])^(a&hash[2])^(hash[1]&hash[2]));
+     hash=[(t1+t2)|0].concat(hash);hash[4]=(hash[4]+t1)|0;
+    }
+    for(var i=0;i<8;i++)hash[i]=(hash[i]+o[i])|0;
+   }
+   for(var i=0;i<8;i++)for(var j=3;j+1;j--){var b=(hash[i]>>(j*8))&255;result+=((b<16)?0:'')+b.toString(16)}
+   return result;
+  }
+  function licOk(){
+   try{
+    var v=(localStorage.getItem('g2b_aura_licentie')||'').trim().toLowerCase();
+    if(v&&v!=='ok'&&v.length>=4)return LIDHASH.indexOf(sha(v))>=0;
+   }catch(e){}
+   return false;
+  }
+  function check(tool,code){
+   tool=String(tool||'').toUpperCase();
+   var c=String(code||'').trim().toUpperCase();
+   if(!c)return false;
+   var h=sha(c);
+   return h===THASH[tool]||MHASH.indexOf(h)>=0;
+  }
+  function which(code){
+   var c=String(code||'').trim().toUpperCase();
+   if(!c)return '';
+   var h=sha(c);
+   if(MHASH.indexOf(h)>=0)return 'MASTER';
+   for(var k in THASH)if(THASH[k]===h)return k;
+   return '';
+  }
   function modal(tool,cb){
     if(document.getElementById('g2bxslot'))return;
     var d=document.createElement('div');d.id='g2bxslot';
@@ -31,24 +96,24 @@
     d.querySelector('#g2bxno').onclick=close;
     d.querySelector('#g2bxok').onclick=function(){
       var c=d.querySelector('#g2bxcode').value.trim().toUpperCase();
-      if(c===CODES[tool]||MASTER.indexOf(c)>-1){sessionStorage.setItem('g2b_export_'+tool,'1');close();cb(true)}
+      if(check(tool,c)){sessionStorage.setItem('g2b_export_'+tool,'1');close();cb(true)}
       else d.querySelector('#g2bxerr').textContent='code klopt niet — check je bedankt-pagina';
     };
     d.querySelector('#g2bxcode').addEventListener('keydown',function(e){if(e.key==='Enter')d.querySelector('#g2bxok').click()});
     setTimeout(function(){var i=d.querySelector('#g2bxcode');i&&i.focus()},50);
   }
-  window.G2B_EXPORT_CODES=CODES;
+  window.G2B_EXPORT_CHECK=check;
+  window.G2B_EXPORT_WHICH=which;
   window.G2B_EXPORT=function(tool){
     tool=String(tool||'').toUpperCase();
     if(sessionStorage.getItem('g2b_export_'+tool)==='1')return true;
-    try{if(localStorage.getItem('g2b_aura_licentie'))return true;}catch(e){}
+    if(licOk())return true;
     modal(tool,function(){});return false;
   };
-  // async variant voor gebruik binnen handlers die mogen wachten
   window.G2B_EXPORT_THEN=function(tool,cb){
     tool=String(tool||'').toUpperCase();
     if(sessionStorage.getItem('g2b_export_'+tool)==='1'){cb();return}
-    try{if(localStorage.getItem('g2b_aura_licentie')){cb();return}}catch(e){}
+    if(licOk()){cb();return}
     modal(tool,function(ok){if(ok)cb()});
   };
 })();
