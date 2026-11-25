@@ -1,0 +1,11 @@
+G2B SEO-FABRIEK — volledige site-audit voor je website
+
+Jouw licentiecode: SO-D5CM-RMPY-G5T5
+
+Zo start je:
+1. Pak de zip uit
+2. Dubbelklik START-SEOFABRIEK.bat
+3. De eerste keer installeert hij zelf python-onderdelen (~2 min)
+4. Vul je licentiecode in als hij daarom vraagt
+
+Bewaar deze code goed — hij is persoonlijk.

@@ -1,0 +1,11 @@
+G2B WATCHER-FABRIEK — alarm bij elke site-verandering
+
+Jouw licentiecode: WF-WA7F-75FJ-RV6G
+
+Zo start je:
+1. Pak de zip uit
+2. Dubbelklik START-WATCHERFABRIEK.bat
+3. De eerste keer installeert hij zelf python-onderdelen (~2 min)
+4. Vul je licentiecode in als hij daarom vraagt
+
+Bewaar deze code goed — hij is persoonlijk.

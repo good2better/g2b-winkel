@@ -1,0 +1,11 @@
+G2B FLOW-FABRIEK — je eigen automatisering, 100% lokaal
+
+Jouw licentiecode: FL-JZVQ-6ATR-DOCD
+
+Zo start je:
+1. Pak de zip uit
+2. Dubbelklik START-FLOWFABRIEK.bat
+3. De eerste keer installeert hij zelf python-onderdelen (~2 min)
+4. Vul je licentiecode in als hij daarom vraagt
+
+Bewaar deze code goed — hij is persoonlijk.

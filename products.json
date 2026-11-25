@@ -1581,6 +1581,104 @@
    },
    "video": "media/aura-fxrack-demo.mp4",
    "demo": "media/aura-fxrack-demo.mp4"
+  },
+  {
+   "id": "seofabriek1",
+   "titel": "G2B SEO-Fabriek",
+   "prijs": 49,
+   "beschrijving": "Volledige SEO-site-audit in één klik. Crawlt ALLE pagina's: titels, meta descriptions, H1-structuur, alt-teksten, laadtijd, kapotte links, canonicals, og-tags, structured data, sitemap, robots. Score 0-100 + printbaar audit-rapport om zelf aan klanten te verkopen. Zelfde checks als tools van EUR30+/maand — bij jou eenmalig, onbeperkt, 100% lokaal. Windows. — Windows-app: downloaden, dubbelklikken, klaar.",
+   "download": "d/seofabriek1/",
+   "groep": "tools",
+   "badge": "NIEUW",
+   "video": "media/seofabriek-demo.mp4",
+   "video_en": "media/seofabriek-demo-en.mp4",
+   "video_es": "media/seofabriek-demo-es.mp4",
+   "links": {
+    "koop": "bestel.html?p=seofabriek1",
+    "stripe": "https://buy.stripe.com/bJedR9efefuHdMbggB5J61U"
+   },
+   "uitleg": "media/seofabriek1-uitleg.mp4",
+   "sub_nl": "media/seofabriek1-uitleg.nl.vtt",
+   "sub_es": "media/seofabriek1-uitleg.es.vtt",
+   "upsell": [
+    "marketerbundel1",
+    "g2bsuite1"
+   ],
+   "cover": "media/covers/seofabriek1.png"
+  },
+  {
+   "id": "watcherfabriek1",
+   "titel": "G2B WATCHER-FABRIEK",
+   "soort": "app",
+   "beschrijving": "Site- en prijs-alarm: volg elke URL (of alleen een prijs/tekst) en zie meteen wanneer iets verandert. Melding in de app + optioneel per mail. 100% lokaal. — Windows-app: downloaden, dubbelklikken, klaar.",
+   "prijs": 29,
+   "links": {
+    "koop": "bestel.html?p=watcherfabriek1",
+    "stripe": "https://buy.stripe.com/28EfZh8UUciveQf3tP5J621"
+   },
+   "groep": "tools",
+   "badge": "NIEUW",
+   "video": "media/watcherfabriek-demo.mp4",
+   "video_en": "media/watcherfabriek-demo-en.mp4",
+   "video_es": "media/watcherfabriek-demo-es.mp4",
+   "uitleg": "media/watcherfabriek1-uitleg.mp4",
+   "sub_nl": "media/watcherfabriek1-uitleg.nl.vtt",
+   "sub_es": "media/watcherfabriek1-uitleg.es.vtt",
+   "upsell": [
+    "flowfabriek1",
+    "g2bsuite1"
+   ],
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "cover": "media/covers/watcherfabriek1.png"
+  },
+  {
+   "id": "flowfabriek1",
+   "titel": "G2B FLOW-FABRIEK",
+   "soort": "app",
+   "beschrijving": "Jouw eigen Zapier, 100% lokaal: triggers (nieuw bestand, schema, webhook, handmatig) + acties (zip-backup, kopiëren, CSV-log, mail via eigen smtp, melding). Geen cloud, geen abonnement — Zapier kost €240+/jaar, dit is éénmalig. — Windows-app: downloaden, dubbelklikken, klaar.",
+   "prijs": 39,
+   "links": {
+    "koop": "bestel.html?p=flowfabriek1",
+    "stripe": "https://buy.stripe.com/bJe14n7QQber0Zp4xT5J622"
+   },
+   "groep": "tools",
+   "badge": "NIEUW",
+   "video": "media/flowfabriek-demo.mp4",
+   "video_en": "media/flowfabriek-demo-en.mp4",
+   "video_es": "media/flowfabriek-demo-es.mp4",
+   "uitleg": "media/flowfabriek1-uitleg.mp4",
+   "sub_nl": "media/flowfabriek1-uitleg.nl.vtt",
+   "sub_es": "media/flowfabriek1-uitleg.es.vtt",
+   "upsell": [
+    "watcherfabriek1",
+    "g2bsuite1"
+   ],
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
+   "cover": "media/covers/flowfabriek1.png"
+  },
+  {
+   "id": "kanaalfabriek1",
+   "titel": "G2B KANAAL-FABRIEK — complete video-studio",
+   "soort": "app",
+   "beschrijving": "Maak complete YouTube/TikTok-kanalen zonder camera: script erin → aflevering eruit met AI-stem in 14 talen (NL/EN/ES/DE/FR/IT/PT/PL/RU/ZH/TR/AR/SV + Sranan). SEIZOEN-FABRIEK maakt een hele serie in 1 klik, TAAL-FABRIEK vertaalt elke aflevering automatisch, VERTEL-MODUS maakt voorlees-video's, auto-shorts 9:16 voor Shorts/Reels/TikTok, greenscreen, karakter-pops, live-webcam-studio, intro-fabriek. 100% LOKAAL op je pc — geen abonnement, geen credits, geen cloud. 1-klik installer + handleiding + licentiecode per koper. — Windows-app: downloaden, dubbelklikken, klaar.",
+   "prijs": "€ 79,00",
+   "links": {
+    "koop": "bestel.html?p=kanaalfabriek1",
+    "stripe": "https://buy.stripe.com/9B6eVd5IIaanfUjfcx5J623"
+   },
+   "groep": "tools",
+   "badge": "NIEUW",
+   "cover": "media/covers/kanaalfabriek1.png",
+   "demo": "media/kanaalfabriek-demo.mp4",
+   "video": "media/kanaalfabriek-demo.mp4",
+   "uitleg": "media/kanaalfabriek1-uitleg.mp4",
+   "sub_nl": "media/kanaalfabriek1-uitleg.nl.vtt",
+   "sub_es": "media/kanaalfabriek1-uitleg.es.vtt",
+   "upsell": [
+    "leadfabriek1",
+    "g2bsuite1"
+   ],
+   "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux"
   }
  ]
 }

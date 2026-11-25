@@ -1,0 +1,14 @@
+{
+ "titel": "G2B WATCHER-FABRIEK \u2014 alarm bij elke site-verandering",
+ "licentie": "Jouw licentiecode: WF-Y3ZZ-HM35-7ZGE",
+ "bestanden": [
+  {
+   "naam": "\u2b07 Download de app (Windows-pc)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-WATCHER-FABRIEK.zip"
+  },
+  {
+   "naam": "Jouw licentiecode (bewaar goed)",
+   "bestand": "LICENTIE.txt"
+  }
+ ]
+}

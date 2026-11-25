@@ -1,0 +1,11 @@
+G2B KANAAL-FABRIEK — complete video-studio op je eigen pc
+
+Jouw licentiecode: KF-35YB-OS5P-J3YA
+
+Zo start je:
+1. Pak de zip uit
+2. Dubbelklik START-KANAALFABRIEK.bat
+3. De eerste keer installeert hij zelf python-onderdelen
+4. Vul je licentiecode in als hij daarom vraagt
+
+Bewaar deze code goed — hij is persoonlijk.
