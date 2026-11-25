@@ -1,6 +1,28 @@
 {
  "producten": [
   {
+   "id": "sonicaudit",
+   "titel": "G2B SONIC-AUDIT — score + auto-fix + certified badge",
+   "prijs": "€ 59,95",
+   "badge": "NIEUW • GRATIS DEMO",
+   "groep": "apps",
+   "soort": "digitaal",
+   "cover": "media/sonicaudit-cover.png",
+   "beschrijving": "Sleep je mix erin → eerlijke G2B Sonic Score (0-100) op 6 punten: mono-sub, sub-hoeveelheid, helderheid (2-4 kHz), luidheid, clipping en stereo-fase. ⚡ FIX NAAR 85+ repareert automatisch (mono-sub + G2B MASTER-keten) en exporteert 48kHz/24-bit WAV. Score ≥85 = 📜 G2B CERTIFIED badge met unieke code voor je beat-pagina/Instagram. Werkt volledig in je browser — je audio gaat nergens heen.",
+   "links": {
+    "browser": "tools/sonic-audit/",
+    "koop": "bestel.html?p=sonicaudit"
+   },
+   "uitgelicht": true,
+   "upsell": [
+    "g2bmaster",
+    "stapeldicefull"
+   ],
+   "specs": "🌐 Elke moderne browser · geen installatie · 100% lokaal — audio verlaat je apparaat niet",
+   "download_dir": "d/sonicaudit",
+   "video": "media/sonicaudit-promo.mp4"
+  },
+  {
    "id": "g2bdicesynth",
    "titel": "G2B DICE-SYNTH — 1 klik = nieuwe sound",
    "soort": "plugin",
@@ -71,28 +93,6 @@
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
    "download_dir": "d/stapeldicefull"
-  },
-  {
-   "id": "sonicaudit",
-   "titel": "G2B SONIC-AUDIT — score + auto-fix + certified badge",
-   "prijs": "€ 59,95",
-   "badge": "NIEUW",
-   "groep": "apps",
-   "soort": "digitaal",
-   "cover": "media/sonicaudit-cover.png",
-   "beschrijving": "Sleep je mix erin → eerlijke G2B Sonic Score (0-100) op 6 punten: mono-sub, sub-hoeveelheid, helderheid (2-4 kHz), luidheid, clipping en stereo-fase. ⚡ FIX NAAR 85+ repareert automatisch (mono-sub + G2B MASTER-keten) en exporteert 48kHz/24-bit WAV. Score ≥85 = 📜 G2B CERTIFIED badge met unieke code voor je beat-pagina/Instagram. Werkt volledig in je browser — je audio gaat nergens heen.",
-   "links": {
-    "browser": "tools/sonic-audit/",
-    "koop": "bestel.html?p=sonicaudit"
-   },
-   "uitgelicht": true,
-   "upsell": [
-    "g2bmaster",
-    "stapeldicefull"
-   ],
-   "specs": "🌐 Elke moderne browser · geen installatie · 100% lokaal — audio verlaat je apparaat niet",
-   "download_dir": "d/sonicaudit",
-   "video": "media/sonicaudit-promo.mp4"
   },
   {
    "id": "g2bmaster",

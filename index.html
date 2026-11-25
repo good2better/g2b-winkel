@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="p:domain_verify" content="043a7e665d6dc7ffd59d20bbbb191750"/>
-<title>G2B Studio — plugins & instrumenten, direct in je browser en DAW</title>
-<meta name="description" content="G2B AURA v6.1: studio-instrumenten en effecten die direct in je browser werken — en als VST3 + desktop-app in je DAW. Probeer gratis.">
+<title>Good2Better (G2B) — Offline AI Muzieksoftware, Mastering &amp; Zakelijke Tools</title>
+<meta name="description" content="G2B: 100% lokale muzieksoftware zonder abonnement — SONIC-AUDIT mix-keurmerk (scan gratis, fix naar 85+ Certified), STAPEL-DICE, AURA-studio, beatmaker en offline zakelijke tools (CRM, factuur, juridisch). Direct downloaden, commercieel gebruik inbegrepen.">
 <meta property="og:title" content="G2B Studio — de toekomst van muziekproductie">
 <meta property="og:description" content="Direct in je browser & studio. Probeer de AURA v6.1-modules gratis.">
 <meta property="og:type" content="website">
@@ -172,29 +172,59 @@ footer{margin-top:90px;border-top:1px solid var(--line);padding:46px 24px 36px;c
   .news form{flex-direction:column}
   .actie{font-size:11.5px}
 }
+
+/* voor/na bewijs */
+.voorna{margin:26px 0 8px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+.vn-kop{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.vn-toggle{display:flex;gap:6px}
+.vn-btn{background:transparent;border:1px solid var(--line);color:var(--dim);padding:7px 14px;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer}
+.vn-btn.vn-act{background:var(--accent);color:#03140a;border-color:var(--accent)}
+.vn-body{display:flex;align-items:center;gap:22px;margin-top:16px;flex-wrap:wrap}
+.vn-ring{width:110px;height:110px;border-radius:50%;border:6px solid #e0604f;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .3s}
+.vn-ring b{font-size:34px;line-height:1}
+.vn-ring span{font-size:11px;color:var(--dim)}
+.vn-ring.vn-goed{border-color:var(--accent)}
+.vn-txt{flex:1;min-width:220px}
+.vn-txt p{color:#c4d1c8;font-size:13.5px;line-height:1.55;margin:6px 0 0}
+.vn-badge{border:2px solid #f0b429;border-radius:12px;padding:14px 20px;text-align:center;color:#f0b429;font-weight:800;letter-spacing:1.5px;font-size:15px}
+.vn-badge span{display:block;font-weight:400;font-size:11px;color:var(--dim);margin-top:4px;letter-spacing:0}
+/* 3-staps ladder */
+.ladder{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0 22px}
+.lad{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;position:relative}
+.lad .stap{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--accent)}
+.lad h3{font-size:18px;margin:8px 0 6px}
+.lad .pr{font-size:22px;font-weight:800;margin:4px 0}
+.lad p{color:#c4d1c8;font-size:13px;line-height:1.5;margin:0 0 12px}
+.lad a{display:block;text-align:center;text-decoration:none}
+.lad-hot{border-color:var(--accent);box-shadow:0 0 24px rgba(47,191,113,.15)}
+@media(max-width:820px){.ladder{grid-template-columns:1fr}}
+/* nieuw-badge op filtertab */
+.fb .tabnieuw{background:var(--accent);color:#03140a;font-size:9px;font-weight:800;border-radius:5px;padding:1px 5px;margin-left:5px;vertical-align:middle;letter-spacing:.5px}
 </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"G2B Sonic-Audit","applicationCategory":"MultimediaApplication","operatingSystem":"Web browser","offers":{"@type":"Offer","price":"59.95","priceCurrency":"EUR"},"description":"Mix/master-keurmerk in de browser: eerlijke score 0-100, auto-fix naar 85+ G2B Certified en 48kHz/24-bit master-export. 100% lokaal, zonder abonnement.","url":"https://good2better.com/tools/sonic-audit/"}</script>
 </head>
 <body>
 
-<div class="actie" id="actiebalk">🎁 TIJDELIJKE ACTIE: Gratis G2B Exclusive 808 &amp; Drum Pack bij elke aankoop — Actie eindigt over <span class="klok" data-klok>…</span></div>
+<div class="actie" id="actiebalk" style="cursor:pointer" onclick="document.getElementById('winkel').scrollIntoView({behavior:'smooth'});setTimeout(()=>document.querySelector('[data-f=bundels]').click(),400)">🎁 TIJDELIJKE ACTIE: Gratis G2B Exclusive 808 &amp; Drum Pack bij elke aankoop — Actie eindigt over <span class="klok" data-klok>…</span></div>
 
 <nav><div class="nav-in">
   <a class="logo" href="index.html">G2B <b>STUDIO</b></a>
   <div class="menu">
     <a href="#winkel">PLUGINS &amp; STUDIO</a>
     <a href="library.html">BEATS &amp; PACKS</a>
+    <a href="#winkel" onclick="setTimeout(()=>document.querySelector('[data-f=tools]').click(),60)">ZAKELIJKE SOFTWARE</a>
     <a href="tools/aura-v6/">GRATIS DEMO</a>
     <a class="acc" href="account.html">MIJN ACCOUNT / LICENTIE</a>
   </div>
 </div></nav>
 
 <section class="hero">
-  <div class="eyebrow">G2B AURA v6.1 · NU BESCHIKBAAR</div>
-  <h1>DE TOEKOMST VAN MUZIEKPRODUCTIE —<br><span>DIRECT IN JE BROWSER &amp; STUDIO</span></h1>
-  <p>Studio-instrumenten en effecten die meteen in je browser spelen — en als VST3-plugin en desktop-app in je eigen DAW.</p>
+  <div class="eyebrow">⚡ NIEUW: G2B SONIC-AUDIT — MIX-KEURMERK · NU BESCHIKBAAR</div>
+  <h1>Jouw complete geluidstudio &amp; mix-keurmerk —<br><span>100% lokaal, zonder abonnement</span></h1>
+  <p>Bouw studio-klanken met STAPEL-DICE, mix automatisch met Prio-Mixbus en keur of repareer je master naar 85+ G2B Certified kwaliteit.</p>
   <div class="cta">
-    <a class="btn vol" href="tools/aura-v6/">▶ PROBEER GRATIS DEMO</a>
-    <a class="btn rand" href="#prosuite">🔥 BEKIJK G2B PRO SUITE</a>
+    <a class="btn vol" href="tools/sonic-audit/">⚡ SCAN JE TRACK GRATIS (SONIC-AUDIT)</a>
+    <a class="btn rand" href="tools/aura-v6/">🎛 START GRATIS BEATMAKER / DEMO</a>
   </div>
   <div class="trust"><span>🔒 Veilig betalen</span><span>⬇ Direct downloaden</span><span>🎹 100% eigen geluid</span><span>📜 Commercieel gebruik inbegrepen</span></div>
 </section>
@@ -225,27 +255,41 @@ footer{margin-top:90px;border-top:1px solid var(--line);padding:46px 24px 36px;c
         <p>Checkt je mix eerst op Telefoon/Auto/Club en exporteert in één klik: master, instrumental, acapella, stems, MIDI + licentie-PDF.</p>
         <div class="u-vs"><b>Waar LANDR / DistroKid tekortschieten:</b> aparte abonnementen voor mastering, stems en promo-exports.</div></div>
     </div>
+<div class="voorna" id="voorna">
+      <div class="vn-kop"><span class="eyebrow">HET BEWIJS · ÉCHT GEMETEN IN SONIC-AUDIT</span>
+        <div class="vn-toggle"><button class="vn-btn vn-act" id="vn-zonder" onclick="vnToon(0)">ZONDER G2B</button><button class="vn-btn" id="vn-met" onclick="vnToon(1)">NA ⚡ FIX</button></div></div>
+      <div class="vn-body">
+        <div class="vn-ring" id="vn-ring"><b id="vn-score">40</b><span id="vn-lab">/ 100</span></div>
+        <div class="vn-txt" id="vn-txt"><b style="color:#e0604f">Score 40 — afgekeurd</b><p>Sub-bas lekt naar stereo (-22) · mist helderheid (-16) · te zacht (-6) — zo klinkt een ongekeurde mix op club-installaties en telefoons.</p></div>
+        <div class="vn-badge" id="vn-badge" hidden>✦ G2B CERTIFIED ✦<span>85+ kwaliteit — met unieke code</span></div>
+      </div>
+    </div>
     <div class="u-biz">
       <div><span class="eyebrow">OOK VOOR ONDERNEMERS</span>
         <h3>Zakelijke software zonder abonnement</h3>
-        <p>Dezelfde 100% lokale techniek als kant-en-klare bedrijfs-tools: CRM-Fabriek, Lead-Fabriek, Factuurmaker, Juridisch-Engine — één keer kopen, voor altijd van jou, AVG-proof.</p></div>
+        <p>Dezelfde 100% lokale techniek als kant-en-klare bedrijfs-tools: CRM-Fabriek, Lead-Fabriek, Factuurmaker, Juridisch-Engine — één keer kopen, voor altijd van jou, AVG-proof.</p><a class="btn vol" style="margin-top:14px;display:inline-block" href="#winkel" onclick="setTimeout(()=>document.querySelector('[data-f=tools]').click(),60)">💼 BEKIJK OFFLINE BEDRIJFSTOOLS (CRM, FACTUUR &amp; JURIDISCH) →</a></div>
       <div class="u-gar"><b>🛡 Altijd-Goed Garantie</b><p>Elke G2B-tool draait volledig op jouw eigen systeem. Geen cloud-accounts, geen verborgen credits, geen maandelijkse kosten.</p></div>
     </div>
     <div class="u-cta">
       <a class="btn vol" href="p.html?id=g2b-workstation">PROBEER G2B WORKSTATION DIRECT</a>
-      <a class="btn rand" href="#winkel">NIEUW: G2B SONIC-AUDIT (BINNENKORT)</a>
+      <a class="btn vol" href="tools/sonic-audit/">⚡ TEST JE MIX GRATIS: G2B SONIC-AUDIT →</a>
     </div>
   </div>
 </section>
 
 <main class="wrap" id="winkel">
+  <div class="ladder">
+    <div class="lad"><span class="stap">STAP 1 · GRATIS KENNISMAKEN</span><h3>Gratis scan &amp; demo</h3><div class="pr">€ 0</div><p>Scan je track gratis in SONIC-AUDIT (6 studiopunten) of speel met de gratis beatmaker-demo.</p><a class="btn rand" href="tools/sonic-audit/">⚡ SCAN JE TRACK GRATIS</a></div>
+    <div class="lad lad-hot"><span class="stap">STAP 2 · DIRECT RESULTAAT</span><h3>G2B SONIC-AUDIT</h3><div class="pr">€ 59,95</div><p>Volledige licentie: ⚡ auto-fix naar 85+, 48kHz/24-bit master-export én jouw G2B Certified badge met unieke code.</p><a class="btn vol" href="bestel.html?p=sonicaudit">⚡ BESTEL SONIC-AUDIT</a></div>
+    <div class="lad"><span class="stap">STAP 3 · ALLES-IN-ÉÉN STUDIO</span><h3>G2B PRO SUITE / ALL-ACCESS</h3><div class="pr">€ 199</div><p>Alles in één pakket — ontgrendelt álle plugins, apps, AURA v6.1-modules &amp; STAPEL-DICE in één keer.</p><a class="btn rand" href="p.html?id=g2balles">🔥 BEKIJK PRO SUITE</a></div>
+  </div>
   <div class="filters" id="filters">
     <button class="fb aan" data-f="uitgelicht">UITGELICHT</button>
     <button class="fb" data-f="alles">ALLES</button>
     <button class="fb" data-f="instrumenten">INSTRUMENTEN</button>
     <button class="fb" data-f="effecten">EFFECTEN</button>
     <button class="fb" data-f="packs">BEATS &amp; PACKS</button>
-    <button class="fb" data-f="apps">MUZIEK-APPS</button>
+    <button class="fb" data-f="apps">MUZIEK-APPS<span class="tabnieuw">NIEUW</span></button>
     <button class="fb" data-f="bundels">BUNDELS &amp; LIDMAATSCHAP</button>
     <button class="fb" data-f="tools">ANDERE TOOLS</button>
     <button class="fb" data-f="demo">GRATIS DEMO</button>
@@ -289,6 +333,16 @@ footer{margin-top:90px;border-top:1px solid var(--line);padding:46px 24px 36px;c
 </footer>
 
 <script src="actie.js"></script>
+<script>
+function vnToon(met){
+ var r=document.getElementById('vn-ring'),s=document.getElementById('vn-score'),t=document.getElementById('vn-txt'),b=document.getElementById('vn-badge');
+ document.getElementById('vn-zonder').classList.toggle('vn-act',!met);
+ document.getElementById('vn-met').classList.toggle('vn-act',!!met);
+ if(met){r.classList.add('vn-goed');s.textContent='92';t.innerHTML='<b style="color:var(--accent)">Score 92 — G2B CERTIFIED</b><p>Mono-sub, helderheid en luidheid automatisch gerepareerd door ⚡ FIX — de echte meetwaarden van de ingebouwde demo-track. Export: 48kHz/24-bit master.</p>';b.hidden=false}
+ else{r.classList.remove('vn-goed');s.textContent='40';t.innerHTML='<b style="color:#e0604f">Score 40 — afgekeurd</b><p>Sub-bas lekt naar stereo (-22) · mist helderheid (-16) · te zacht (-6) — zo klinkt een ongekeurde mix op club-installaties en telefoons.</p>';b.hidden=true}
+}
+</script>
+
 <script>
 // categorie per product-id; alles komt uit products.json (één bron van waarheid)
 const CATMAP = {
