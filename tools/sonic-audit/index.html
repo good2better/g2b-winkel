@@ -176,6 +176,8 @@ function bi(x,B,s){const y=B.b0*x+B.b1*s[0]+B.b2*s[1]-B.a1*s[2]-B.a2*s[3];
  s[1]=s[0];s[0]=x;s[3]=s[2];s[2]=y;return y}
 function biPeak(sr,f,db,Q){const w=2*Math.PI*f/sr,A=Math.pow(10,db/40),al=Math.sin(w)/(2*(Q||1)),c=Math.cos(w);
  return{b0:(1+al*A)/(1+al/A),b1:-2*c/(1+al/A),b2:(1-al*A)/(1+al/A),a1:-2*c/(1+al/A),a2:(1-al/A)/(1+al/A)}}
+function biHS(sr,f,db){const w=2*Math.PI*f/sr,A=Math.pow(10,db/40),c=Math.cos(w),S=1,al=Math.sin(w)/2*Math.sqrt((A+1/A)*(1/S-1)+2),sq=2*Math.sqrt(A)*al;
+ return{b0:A*((A+1)+(A-1)*c+sq)/( (A+1)-(A-1)*c+sq),b1:-2*A*((A-1)+(A+1)*c)/((A+1)-(A-1)*c+sq),b2:A*((A+1)+(A-1)*c-sq)/((A+1)-(A-1)*c+sq),a1:-2*((A-1)-(A+1)*c)/((A+1)-(A-1)*c+sq),a2:((A+1)-(A-1)*c-sq)/((A+1)-(A-1)*c+sq)}}
 async function renderFix(uitL,uitR,P,prog){
  const n=inL.length,LP=biLP(sr,110),HP=biHP(sr,110);
  // stap 1: sub-split — onder 110Hz wordt het mono-midden (× subGain), de rest blijft stereo
@@ -195,7 +197,7 @@ async function renderFix(uitL,uitR,P,prog){
  const drv=1+(P.warmte/100)*4,satMix=P.warmte/100*0.6,satLpA=1-Math.exp(-2*Math.PI*8000/sr);
  const preG=Math.pow(10,(P.luid/100)*9*0.05),ceil=0.891,limRel=Math.exp(-1/(0.050*sr));
  let fHpL=0,fHpR=0,fTiltLpL=0,fTiltLpR=0,fEnv=1e-6,fGain=1,fSatLpL=0,fSatLpR=0,fLimEnv=0;
- const PK=P.presDb>0?biPeak(sr,3000,P.presDb,1):null,spL=[0,0,0,0],spR=[0,0,0,0];
+ const PK=P.presDb>0?biPeak(sr,3000,P.presDb,1):null,HS=P.hsDb>0?biHS(sr,2200,P.hsDb):null,spL=[0,0,0,0],spR=[0,0,0,0],shL=[0,0,0,0],shR=[0,0,0,0];
  const CH=1<<16;
  for(let base=0;base<n;base+=CH){
   const end=Math.min(base+CH,n);
@@ -206,6 +208,7 @@ async function renderFix(uitL,uitR,P,prog){
    {const loL=fTiltLpL,loR=fTiltLpR,hiL=L-loL,hiR=R-loR;
     L=loL*gLoT+hiL*gHiT;R=loR*gLoT+hiR*gHiT;}
    if(PK){L=bi(L,PK,spL);R=bi(R,PK,spR);}
+   if(HS){L=bi(L,HS,shL);R=bi(R,HS,shR);}
    const m2=(L*L+R*R)*0.5,dc=1e-5;
    fEnv+=((m2>fEnv)?cAtt:cRel)*(m2+dc-fEnv);
    {const rms=Math.sqrt(fEnv);
@@ -235,7 +238,8 @@ function fixKnobs(m,tr){
  const subGain=m.subShare>0.55?[0.5,0.38,0.3][tr]||0.3:m.subShare>0.45?0.7:1;
  const warmte=Math.min(75,(m.lufs<-15?35:28)+ (m.pres<0.10?20+tr*15:tr*8));
  const presDb=m.pres<0.03?[14,18,22][tr]||22:m.pres<0.10?[8,12,16][tr]||16:m.pres<0.16?4:0;
- return{tilt,glue:62,warmte,luid,subGain,presDb};
+ const hsDb=m.pres<0.03?[8,12,16][tr]||16:m.pres<0.10?[5,8,12][tr]||12:m.pres<0.16?3:0;
+ return{tilt,glue:62,warmte,luid,subGain,presDb,hsDb};
 }
 function tekenRing(sc){
  const c=$('ring'),g=c.getContext('2d');g.clearRect(0,0,300,300);
