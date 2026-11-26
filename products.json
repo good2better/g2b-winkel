@@ -11,7 +11,8 @@
    "beschrijving": "Sleep je mix erin → eerlijke G2B Sonic Score (0-100) op 6 punten: mono-sub, sub-hoeveelheid, helderheid (2-4 kHz), luidheid, clipping en stereo-fase. ⚡ FIX NAAR 85+ repareert automatisch (mono-sub + G2B MASTER-keten) en exporteert 48kHz/24-bit WAV. Score ≥85 = 📜 G2B CERTIFIED badge met unieke code voor je beat-pagina/Instagram. Werkt volledig in je browser — je audio gaat nergens heen.",
    "links": {
     "browser": "tools/sonic-audit/",
-    "koop": "bestel.html?p=sonicaudit"
+    "koop": "bestel.html?p=sonicaudit",
+    "stripe": "https://buy.stripe.com/dRm9AT5II5U7bE3fcx5J639"
    },
    "uitgelicht": true,
    "upsell": [
@@ -1350,7 +1351,8 @@
    "prijs": "€ 3,00",
    "beschrijving": "Trakteer de maker — steun G2B met een bijdrage. Geen product-download; wij bedanken je met een mailtje.",
    "links": {
-    "koop": "bestel.html?p=steun-3"
+    "koop": "bestel.html?p=steun-3",
+    "stripe": "https://buy.stripe.com/4gM5kD5IIgyL4bB6G15J63a"
    },
    "uitleg": "media/steun3-uitleg.mp4",
    "sub_nl": "media/steun3-uitleg.nl.vtt",
@@ -1365,7 +1367,8 @@
    "prijs": "€ 5,00",
    "beschrijving": "Trakteer de maker — steun G2B met een bijdrage. Geen product-download; wij bedanken je met een mailtje.",
    "links": {
-    "koop": "bestel.html?p=steun-5"
+    "koop": "bestel.html?p=steun-5",
+    "stripe": "https://buy.stripe.com/7sY4gzefecivdMb7K55J63b"
    },
    "uitleg": "media/steun5-uitleg.mp4",
    "sub_nl": "media/steun5-uitleg.nl.vtt",
@@ -1380,7 +1383,8 @@
    "prijs": "€ 10,00",
    "beschrijving": "Trakteer de maker — steun G2B met een bijdrage. Geen product-download; wij bedanken je met een mailtje.",
    "links": {
-    "koop": "bestel.html?p=steun-10"
+    "koop": "bestel.html?p=steun-10",
+    "stripe": "https://buy.stripe.com/9B614nfji82f23t0hD5J63c"
    },
    "uitleg": "media/steun10-uitleg.mp4",
    "sub_nl": "media/steun10-uitleg.nl.vtt",

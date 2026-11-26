@@ -1,10 +1,15 @@
 {
- "titel": "G2B FLOW-FABRIEK",
+ "titel": "G2B FLOW-FABRIEK — automatische taken op je pc",
+ "uitleg": "Automatiseer terugkerende computerwerk: backups, mails, bestanden.",
+ "licentie": "Jouw licentiecode: FL-4HP3-Q4OS-Z2BP",
  "bestanden": [
   {
-   "naam": "G2B-FLOWFABRIEK.zip",
-   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-FLOWFABRIEK.zip"
+   "naam": "⬇ Download de app (Windows-pc)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-FLOW-FABRIEK.zip"
+  },
+  {
+   "naam": "Jouw licentiecode (bewaar goed)",
+   "bestand": "LICENTIE.txt"
   }
- ],
- "licentie": "Export-code online demo: G2B-FLOW-MEWZ3V"
+ ]
 }

@@ -1,10 +1,15 @@
 {
- "titel": "G2B WATCHER-FABRIEK",
+ "titel": "G2B WATCHER-FABRIEK — verandering-alarm voor websites",
+ "uitleg": "Houdt webpaginas in de gaten en waarschuwt bij elke verandering.",
+ "licentie": "Jouw licentiecode: WF-77UN-VMH4-KQ23",
  "bestanden": [
   {
-   "naam": "G2B-WATCHERFABRIEK.zip",
-   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-WATCHERFABRIEK.zip"
+   "naam": "⬇ Download de app (Windows-pc)",
+   "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-WATCHER-FABRIEK.zip"
+  },
+  {
+   "naam": "Jouw licentiecode (bewaar goed)",
+   "bestand": "LICENTIE.txt"
   }
- ],
- "licentie": "Export-code online demo: G2B-WATCH-T3ZN5C"
+ ]
 }

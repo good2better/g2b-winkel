@@ -1,10 +1,15 @@
 {
- "titel": "G2B KANAAL-FABRIEK — complete video-studio (Windows)",
+ "titel": "G2B KANAAL-FABRIEK — complete video-studio op je eigen pc",
+ "uitleg": "Tekst naar complete aflevering met AI-stem in 14 talen, auto-shorts voor TikTok/Reels/Shorts.",
+ "licentie": "Jouw licentiecode: KF-P4HT-JRNK-NJL4",
  "bestanden": [
   {
-   "naam": "G2B-KANAALFABRIEK.zip — app + installer + LEESMIJ (licentiecode in je mail)",
+   "naam": "⬇ Download de app (Windows-pc)",
    "url": "https://github.com/good2better/g2b-winkel/releases/download/downloads-v1/G2B-KANAALFABRIEK.zip"
+  },
+  {
+   "naam": "Jouw licentiecode (bewaar goed)",
+   "bestand": "LICENTIE.txt"
   }
- ],
- "licentie": "Export-code online demo: G2B-KANAAL-MUDFPQ"
+ ]
 }
