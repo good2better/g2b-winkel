@@ -35,6 +35,14 @@
   <canvas id="cv" width="960" height="720"></canvas>
   <div id="laden">even laden…</div>
 </div>
+<div class="row" id="extra" style="display:none">
+  <label style="padding:10px 14px;background:#122019;border:2px solid #2f5b41;border-radius:10px;cursor:pointer;font-weight:700;font-size:14px">📁 eigen karakter<input type="file" id="up" accept="image/png,image/webp" style="display:none"></label>
+  <button id="snap" style="background:#122019;border:2px solid #2f5b41;color:#e8f5ee">📸 foto</button>
+</div>
+<div class="row" id="sliders" style="display:none;font-size:12px;opacity:.9">
+  <label>grootte <input type="range" id="sc" min="1.8" max="5" step="0.1" value="3.1" style="width:90px"></label>
+  <label>omhoog <input type="range" id="up2" min="0" max="0.7" step="0.02" value="0.28" style="width:90px"></label>
+</div>
 <div class="row">
   <button id="start">📷 START JE WEBCAM</button>
   <button id="rec" style="display:none">⏺ NEEM OP</button>
@@ -76,6 +84,8 @@ document.getElementById('start').onclick=async()=>{
     document.getElementById('start').style.display='none';
     document.getElementById('rec').style.display='';
     document.getElementById('kars').style.display='flex';
+    document.getElementById('extra').style.display='flex';
+    document.getElementById('sliders').style.display='flex';
     document.getElementById('status').textContent='';
   }catch(e){document.getElementById('status').textContent='geen webcam-toestemming — klik opnieuw en kies toestaan';}
 };
@@ -104,9 +114,9 @@ function onFace(res){
     sm=sm?{x:lerp(sm.x,tgt.x,.35),y:lerp(sm.y,tgt.y,.35),w:lerp(sm.w,tgt.w,.35),r:lerp(sm.r,tgt.r,.35)}:tgt;
     const img=KARS[kar];
     if(img.complete&&img.naturalWidth){
-      const kw=sm.w*3.1,kh=kw*img.naturalHeight/img.naturalWidth;
+      const kw=sm.w*parseFloat(document.getElementById("sc").value),kh=kw*img.naturalHeight/img.naturalWidth;
       cx.save();
-      cx.translate(sm.x,sm.y-kh*0.28);
+      cx.translate(sm.x,sm.y-kh*parseFloat(document.getElementById("up2").value));
       cx.rotate(-sm.r);
       // lip-beweeg: karakter wiebelt licht mee op je stem
       const prat=1+micLevel*0.06*Math.sin(performance.now()/60);
@@ -117,6 +127,27 @@ function onFace(res){
   }
   cx.restore();
 }
+
+
+// eigen karakter uploaden — wordt direct een knop
+document.getElementById('up').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const img=new Image();img.src=URL.createObjectURL(f);
+  const naam=f.name.replace(/\.[^.]+$/,'').slice(0,10);
+  img.onload=()=>{
+    KARS[naam]=img;
+    const b=document.createElement('button');b.className='kar';b.dataset.k=naam;
+    b.textContent='⭐ '+naam;
+    b.onclick=()=>{document.querySelectorAll('.kar').forEach(x=>x.classList.remove('act'));b.classList.add('act');kar=naam;};
+    document.getElementById('kars').appendChild(b);
+    b.click();
+  };
+};
+// snapshot: huidig beeld als png downloaden
+document.getElementById('snap').onclick=()=>{
+  const a=document.createElement('a');a.href=cv.toDataURL('image/png');
+  a.download='g2b-masker-foto.png';a.click();
+};
 
 // karakter-keuze
 document.querySelectorAll('.kar').forEach(b=>b.onclick=()=>{
