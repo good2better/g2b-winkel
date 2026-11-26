@@ -55,7 +55,8 @@ a.app.lokaal{opacity:.75;border-style:dashed}
 
 <div class="groep">🎵 Muziek maken</div>
 <div class="grid">
-<a class="app" href="tools/werkstation-web/index.html"><img src="apps-img/gaw-lite.jpg" alt="" loading="lazy"><span class="ic">🎛️</span><span class="nm">WERKSTATION-web GIO <span class="tag prive">PRIVÉ</span></span><div class="in">Alles-in-één studio: maken → inspelen → vocal MATCH-UP → 📦 RELEASE-PACK → 💾 .g2b opslaan → delen</div></a>
+<a class="app" href="tools/werkstation-web/index.html"><img src="apps-img/gaw-lite.jpg" alt="" loading="lazy"><span class="ic">🎛️</span><span class="nm">GIO-STUDIO web <span class="tag prive">PRIVÉ</span></span><div class="in">Privé browser-hub: kies je stap van maken → spelen → mix/master → delen. Niet hetzelfde als het losse G2B Workstation-product.</div></a>
+<a class="app" href="tools/drums-web/index.html"><span class="ic">🥁</span><span class="nm">G2B DRUMS <span class="tag">NIEUW</span></span><div class="in">Browser drum-machine — 17 stijlen, eigen samples/MIJN-map, MIDI-import/export en WAV-export</div></a>
 <a class="app" href="beatmaker-club.html"><img src="apps-img/beatmaker.jpg" alt="" loading="lazy"><span class="ic">🥁</span><span class="nm">Beat Maker</span><div class="in">Beats bouwen in je browser — grid, lagen, eigen sounds</div></a>
 <a class="app" href="tools/beatmaker-gio/app/index.html"><img src="apps-img/bm-gio.jpg" alt="" loading="lazy"><span class="ic">🔥</span><span class="nm">Beat Maker GIO <span class="tag prive">PRIVÉ</span></span><div class="in">Jouw privé-versie met alles erop en eraan</div></a>
 <a class="app" href="tools/lagen.html?tool=beatmaker-gio/app/index.html&naam=BEAT+MAKER+GIO"><img src="apps-img/bm-gio.jpg" alt="" loading="lazy"><span class="ic">🧅</span><span class="nm">Beat Maker GIO · LAGEN <span class="tag prive">PRIVÉ</span></span><div class="in">+ = extra machine eronder — laag voor laag je beat stapelen</div></a>
@@ -213,15 +214,15 @@ h7=h6;h6=h5;h5=h4;h4=h3+t1>>>0;h3=h2;h2=h1;h1=h0;h0=t1+t2>>>0}
 f[0]=[(f[0][0]+h0)>>>0,(f[0][1]+h1)>>>0,(f[0][2]+h2)>>>0,(f[0][3]+h3)>>>0,(f[0][4]+h4)>>>0,(f[0][5]+h5)>>>0,(f[0][6]+h6)>>>0,(f[0][7]+h7)>>>0]}
 return f[0].map(function(b){return('00000000'+b.toString(16)).slice(-8)}).join('')}
 async function _g2b_hex(s){if(crypto.subtle&&crypto.subtle.digest){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}return _g2b_sha256(s)}
-const HASH='a6027a131916280eab4a9f091cf28b36eb1dc59285023ce8c2403a76f24ff982';
+const HASHES=['8dee5d5f72c007732cd652780f9648d114644e4ed0c07d706653b3b0bd039c65'];
 async function unlock(){
   const v=document.getElementById('code').value.trim().toLowerCase();
   const hex=await _g2b_hex(v);
-  if(hex===HASH){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';sessionStorage.g2bmijn='1';try{localStorage.setItem('g2b_aura_licentie',v)}catch(e){}}
+  if(HASHES.includes(hex)){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';sessionStorage.g2bmijn='1';try{localStorage.setItem('g2b_aura_licentie',v)}catch(e){}}
   else document.getElementById('err').style.display='block';
 }
 if(sessionStorage.g2bmijn==='1'){document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';}
-(async()=>{try{const sv=(localStorage.getItem('g2b_aura_licentie')||'').trim().toLowerCase();if(sv&&sv!=='ok'&&await _g2b_hex(sv)===HASH){sessionStorage.g2bmijn='1';document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';}}catch(e){}})();
+(async()=>{try{const sv=(localStorage.getItem('g2b_aura_licentie')||'').trim().toLowerCase();if(sv&&sv!=='ok'&&HASHES.includes(await _g2b_hex(sv))){sessionStorage.g2bmijn='1';document.getElementById('gate').style.display='none';document.getElementById('page').style.display='block';}}catch(e){}})();
 document.getElementById('code').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
 document.getElementById('zoek').addEventListener('input',e=>{
   const q=e.target.value.trim().toLowerCase();
@@ -234,6 +235,7 @@ document.getElementById('zoek').addEventListener('input',e=>{
   });
 });
 </script>
+<script src="/js/g2b-hub.js"></script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 </body>
 </html>

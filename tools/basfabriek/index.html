@@ -1146,7 +1146,7 @@ uiInit();dobbelAlles();
  if(wk.bas&&BAS_TYPES.some(b=>b[0]===wk.bas))$('bastype').value=wk.bas;
  if(wk.maten)$('maten').value=wk.maten;
  bewaar();maakLijn();teken();renderPreview();
- st('⚡ WERKSTATION: '+genre().n+' · '+NOOT[+$('key').value]+' mineur · '+$('bpm').value+'bpm — baslijn in die stijl')}catch(e){}})();
+ st('⚡ GIO-STUDIO: '+genre().n+' · '+NOOT[+$('key').value]+' mineur · '+$('bpm').value+'bpm — baslijn in die stijl')}catch(e){}})();
 </script>
 <script src="../exportslot.js"></script>
 <script>document.addEventListener('click',function(e){var el=e.target.closest('#bWav,#bMid,#bMidB,#bMidK,#bStems');if(!el)return;if(window.G2B_EXPORT&&G2B_EXPORT('BASFABRIEK'))return;e.preventDefault();e.stopPropagation();G2B_EXPORT_THEN('BASFABRIEK',function(){el.click()})},true);</script>

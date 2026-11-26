@@ -26,7 +26,7 @@ var TOOLS={
  airdrums:['../../airdrums.html','🥁 AIRDRUMS'],
  voicetag:['../voicetag/index.html','🎙️ VOICETAG-STUDIO'],
  coverart:['../coverart/index.html','🎨 COVER-ART FABRIEK'],
- werkstation:['index.html','🏠 Werkstation']};
+ werkstation:['index.html','🏠 GIO-STUDIO']};
 var KEYS={c:0,'c#':1,des:1,d:2,'d#':3,es:3,e:4,f:5,'f#':6,g:7,'g#':8,as:8,a:9,'a#':10,bes:10,b:11,h:11};
 var NOTEN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 var MAJ=[0,2,4,5,7,9,11],MIN=[0,2,3,5,7,8,10];
