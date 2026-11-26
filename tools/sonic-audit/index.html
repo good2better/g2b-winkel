@@ -37,7 +37,8 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <div id="drop">🎧 Sleep je mix/master hierheen (wav/mp3/ogg/flac — max ~10 min)<input type="file" id="file" accept="audio/*" hidden></div>
 <div class="rij">
 <button class="uit go" id="bMeet" onclick="meet()" disabled>🔬 MEET JE TRACK</button>
-<button class="uit" id="bFix" onclick="fix()" disabled>⚡ FIX NAAR 85+ SCORE</button>
+<button class="uit" id="bFix" onclick="fix('clean')" disabled>🧼 BEHOUDEND FIX — zelfde karakter</button>
+<button class="uit" id="bFixStrong" onclick="fix('strong')" disabled>⚡ STERKE FIX — creatieve master</button>
 <button class="uit" id="bDemo" onclick="demo()">▶ probeer met demo-track</button>
 <button class="uit" onclick="document.body.classList.toggle('licht')">◐</button>
 <span id="st">meten én de fix proberen is gratis — downloads vragen je licentiecode</span>
@@ -65,7 +66,7 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 </video></div>
 <div id="certbox"></div>
 </div>
-<div class="kaart">Wat hij meet: <b>mono-sub</b> (&lt;110 Hz moet gecentreerd zijn, anders fase-ellende in de club) · <b>helderheid</b> (2–4 kHz aanwezigheid voor stem/leads) · <b>luidheid</b> (geschikt voor Spotify/club) · <b>clipping</b> · <b>stereo-fase</b>. Score ≥85 = <b>G2B Certified</b> met unieke badge-code. De fix gebruikt dezelfde DSP als G2B MASTER + mono-sub correctie. Alles draait in je browser — je audio gaat nergens heen.</div>
+<div class="kaart">Wat hij meet: <b>mono-sub</b> (&lt;110 Hz moet gecentreerd zijn, anders fase-ellende in de club) · <b>helderheid</b> (2–4 kHz aanwezigheid voor stem/leads) · <b>luidheid</b> (geschikt voor Spotify/club) · <b>clipping</b> · <b>stereo-fase</b>. Score ≥85 = <b>G2B Certified</b> met unieke badge-code. <b>Behoudend</b> repareert alleen wat de scan echt ziet — zelfde karakter, balans en stereo zo veel mogelijk behouden. <b>Sterk</b> is de oude creatieve master-fix en kan de mix duidelijk veranderen. Alles draait in je browser — je audio gaat nergens heen.</div>
 <script src="../exportslot.js"></script>
 <script>
 const DOEL=-6;let ctx=null,buf=null,inL=null,inR=null,sr=44100;
@@ -178,6 +179,33 @@ function biPeak(sr,f,db,Q){const w=2*Math.PI*f/sr,A=Math.pow(10,db/40),al=Math.s
  return{b0:(1+al*A)/(1+al/A),b1:-2*c/(1+al/A),b2:(1-al*A)/(1+al/A),a1:-2*c/(1+al/A),a2:(1-al/A)/(1+al/A)}}
 function biHS(sr,f,db){const w=2*Math.PI*f/sr,A=Math.pow(10,db/40),c=Math.cos(w),S=1,al=Math.sin(w)/2*Math.sqrt((A+1/A)*(1/S-1)+2),sq=2*Math.sqrt(A)*al;
  return{b0:A*((A+1)+(A-1)*c+sq)/( (A+1)-(A-1)*c+sq),b1:-2*A*((A-1)+(A+1)*c)/((A+1)-(A-1)*c+sq),b2:A*((A+1)+(A-1)*c-sq)/((A+1)-(A-1)*c+sq),a1:2*((A-1)-(A+1)*c)/((A+1)-(A-1)*c+sq),a2:((A+1)-(A-1)*c-sq)/((A+1)-(A-1)*c+sq)}}
+function applyLookaheadLimiter(L,R,sr,ceil){
+ const n=L.length,look=Math.max(1,Math.round(sr*0.005));
+ // kleine circulaire deque: geen extra gigabyte-array voor lange tracks
+ const q=new Int32Array(look+2);let qh=0,qt=0,next=0;
+ const empty=()=>qh===qt;
+ const pk=i=>Math.max(Math.abs(L[i]),Math.abs(R[i]));
+ const push=i=>{q[qt]=i;qt=(qt+1)%q.length};
+ const popBack=()=>{qt=(qt-1+q.length)%q.length};
+ const popFront=()=>{qh=(qh+1)%q.length};
+ const back=()=>q[(qt-1+q.length)%q.length];
+ const add=i=>{const v=pk(i);while(!empty()&&pk(back())<=v)popBack();push(i)};
+ const firstEnd=Math.min(look,n-1);
+ for(;next<=firstEnd;next++)add(next);
+ const att=1-Math.exp(-1/(0.002*sr)),rel=1-Math.exp(-1/(0.080*sr));
+ let env=1;
+ for(let i=0;i<n;i++){
+  while(!empty()&&q[qh]<i)popFront();
+  while(next<=i+look&&next<n){add(next);next++}
+  const mp=empty()?0:pk(q[qh]);
+  const target=mp>ceil?ceil/mp:1;
+  if(target<env)env+=(target-env)*att;else env+=(target-env)*rel;
+  L[i]*=env;R[i]*=env;
+ }
+ // laatste veiligheid: als de envelope ergens net te laat was, alleen lineair bijsturen
+ let peak=0;for(let i=0;i<n;i++)peak=Math.max(peak,Math.abs(L[i]),Math.abs(R[i]));
+ if(peak>ceil){const g=ceil/peak;for(let i=0;i<n;i++){L[i]*=g;R[i]*=g}}
+}
 async function renderFix(uitL,uitR,P,prog){
  const n=inL.length,LP=biLP(sr,110),HP=biHP(sr,110);
  // stap 1: sub-split — onder 110Hz wordt het mono-midden (× subGain), de rest blijft stereo
@@ -191,13 +219,12 @@ async function renderFix(uitL,uitR,P,prog){
  // stap 2: master-keten
  const hpA=1-Math.exp(-2*Math.PI*28/sr),tiltA=1-Math.exp(-2*Math.PI*700/sr);
  const t=P.tilt/50,gLoT=Math.pow(10,(t*7)*0.05),gHiT=Math.pow(10,(-t*7)*0.05);
- const thr=0.126,ratio=1+(P.glue/100)*3;
+ const thr=0.126,ratio=1+(P.glue/100)*2;
  const cAtt=1-Math.exp(-1/(0.010*sr)),cRel=1-Math.exp(-1/(0.160*sr));
  const gAtt=1-Math.exp(-1/(0.004*sr)),gRel=1-Math.exp(-1/(0.200*sr));
- const drv=1+(P.warmte/100)*4,satMix=P.warmte/100*0.6,satLpA=1-Math.exp(-2*Math.PI*8000/sr);
- const preG=Math.pow(10,(P.luid/100)*9*0.05),ceil=0.891,limRel=Math.exp(-1/(0.050*sr));
- let fHpL=0,fHpR=0,fTiltLpL=0,fTiltLpR=0,fEnv=1e-6,fGain=1,fSatLpL=0,fSatLpR=0,fLimEnv=0;
- const PK=P.presDb>0?biPeak(sr,3000,P.presDb,1):null,HS=P.hsDb>0?biHS(sr,2200,P.hsDb):null,spL=[0,0,0,0],spR=[0,0,0,0],shL=[0,0,0,0],shR=[0,0,0,0];
+ const preG=Math.pow(10,(P.luid/100)*9*0.05),ceil=0.891;
+ let fHpL=0,fHpR=0,fTiltLpL=0,fTiltLpR=0,fEnv=1e-6,fGain=1;
+ const PK=P.presDb?biPeak(sr,3000,P.presDb,1):null,HS=P.hsDb?biHS(sr,2200,P.hsDb):null,spL=[0,0,0,0],spR=[0,0,0,0],shL=[0,0,0,0],shR=[0,0,0,0];
  const CH=1<<16;
  for(let base=0;base<n;base+=CH){
   const end=Math.min(base+CH,n);
@@ -216,30 +243,77 @@ async function renderFix(uitL,uitR,P,prog){
      fGain+=((target<fGain)?gAtt:gRel)*(target-fGain);
     }else fGain+=gRel*(1-fGain);
     L*=fGain;R*=fGain;}
-   {const sLL=Math.tanh(L*drv),sRR=Math.tanh(R*drv);
-    fSatLpL+=satLpA*(sLL-fSatLpL);fSatLpR+=satLpA*(sRR-fSatLpR);
-    L=L*(1-satMix)+fSatLpL*satMix;R=R*(1-satMix)+fSatLpR*satMix;}
    L*=preG;R*=preG;
-   {const pk=Math.max(Math.abs(L),Math.abs(R));
-    fLimEnv=Math.max(pk,fLimEnv*limRel);
-    const g=(fLimEnv>ceil)?ceil/fLimEnv:1;
-    L*=g;R*=g;}
    uitL[i]=L;uitR[i]=R;
   }
   if(prog)prog(end/n);
   if(end<n)await new Promise(r=>setTimeout(r,0));
  }
+ applyLookaheadLimiter(uitL,uitR,sr,ceil);
+}
+// behoudende correctie: repareer alleen gemeten fouten, zonder karakter om te bouwen
+async function renderCleanFix(uitL,uitR,m,prog){
+ const n=inL.length,LP=biLP(sr,110),HP=biHP(sr,110);
+ // Alleen ingrijpen als de scan het echt ziet. Geen saturatie, geen glue-compressor,
+ // geen grote tilt en geen automaat die per se naar 85 punten toe stuurt.
+ const fixSub=m.subCorr<0.55;
+ const corrAbs=Math.min(.95,Math.abs(m.subCorr));
+ const monoSign=m.subCorr<0?-1:1;
+ // compensatie zodat mono maken niet zomaar sub-energie weggooit
+ const monoComp=fixSub?Math.min(1.35,Math.sqrt(2/(1+corrAbs))):1;
+ const lowDb=m.subShare<0.04?1.2:m.subShare>0.55?-2:m.subShare>0.45?-1:0;
+ const lowGain=Math.pow(10,lowDb/20);
+ const presDb=m.pres<0.03?3:m.pres<0.10?2:m.pres<0.16?1:m.pres>0.36?-2:m.pres>0.28?-1:0;
+ const gainDb=m.lufs<-25?2:m.lufs<-18?1:m.lufs>-7?-1:0;
+ const outGain=Math.pow(10,gainDb/20);
+ const sideGain=m.corr<-0.05?0.82:m.corr<0.05?0.9:1;
+ const PK=presDb?biPeak(sr,3000,presDb,0.9):null;
+ let a=[0,0,0,0],b=[0,0,0,0],c1=[0,0,0,0],d=[0,0,0,0],e=[0,0,0,0],f=[0,0,0,0],g1=[0,0,0,0],h=[0,0,0,0],spL=[0,0,0,0],spR=[0,0,0,0],peak=0;
+ const CH=1<<16;
+ for(let base=0;base<n;base+=CH){
+  const end=Math.min(base+CH,n);
+  for(let i=base;i<end;i++){
+   // Alleen als er echt een laag/subcorrectie nodig is gebruiken we een echte LP/HP-split.
+   // Zonder die correctie blijft het signaal bitgewijs hetzelfde.
+   const needLow=fixSub||lowDb!==0;
+   let L=inL[i],R=inR[i];
+   if(needLow){
+    const lowL=bi(bi(inL[i],LP,a),LP,b),lowR=bi(bi(inR[i],LP,c1),LP,d);
+    const highL=bi(bi(inL[i],HP,e),HP,f),highR=bi(bi(inR[i],HP,g1),HP,h);
+    let ll=lowL,lr=lowR;
+    if(fixSub){
+     const mono=(lowL+monoSign*lowR)*0.5*monoComp;
+     ll=mono;lr=mono;
+    }
+    L=highL+ll*lowGain;R=highR+lr*lowGain;
+   }
+   if(PK){L=bi(L,PK,spL);R=bi(R,PK,spR)}
+   if(sideGain!==1){
+    const mid=(L+R)*0.5,side=(L-R)*0.5*sideGain;
+    L=mid+side;R=mid-side;
+   }
+   L*=outGain;R*=outGain;
+   uitL[i]=L;uitR[i]=R;
+   const pk=Math.max(Math.abs(L),Math.abs(R));if(pk>peak)peak=pk;
+  }
+  if(prog)prog(end/n);
+  if(end<n)await new Promise(r=>setTimeout(r,0));
+ }
+ // Geen limiter-distortion: als het plafond wordt geraakt, alleen lineair iets zachter.
+ let safety=1;
+ if(peak>0.95){safety=0.95/peak;for(let i=0;i<n;i++){uitL[i]*=safety;uitR[i]*=safety}}
+ return{fixSub,lowDb,presDb,gainDb,sideGain,safety};
 }
 // knoppen kiezen op basis van de meting — elke poging scherper gesteld
 function fixKnobs(m,tr){
- const base=m.pres<0.12?30:m.pres<0.20?14:m.pres>0.36?-20:0;
- const tilt=Math.min(50,base+tr*10);
- const luid=Math.max(10,Math.min(100,(DOEL-m.lufs)/9*100));
- const subGain=m.subShare>0.55?[0.5,0.38,0.3][tr]||0.3:m.subShare>0.45?0.7:1;
- const warmte=Math.min(75,(m.lufs<-15?35:28)+ (m.pres<0.10?20+tr*15:tr*8));
- const presDb=m.pres<0.03?[14,18,22][tr]||22:m.pres<0.10?[8,12,16][tr]||16:m.pres<0.16?4:0;
- const hsDb=m.pres<0.03?[8,12,16][tr]||16:m.pres<0.10?[5,8,12][tr]||12:m.pres<0.16?3:0;
- return{tilt,glue:62,warmte,luid,subGain,presDb,hsDb};
+ const base=m.pres<0.12?24:m.pres<0.20?10:m.pres>0.36?-18:0;
+ const tilt=Math.max(-24,Math.min(34,base+tr*5));
+ const luid=Math.max(0,Math.min(50,(DOEL-m.lufs)/9*100));
+ const subGain=m.subShare>0.55?[0.62,0.52,0.45][tr]||0.45:m.subShare>0.45?0.78:1;
+ const warmte=0; // geen tanh/gruis meer in de verbeterde sterke keten
+ const presDb=m.pres<0.03?[5,6,7][tr]||7:m.pres<0.10?[3,4,5][tr]||5:m.pres<0.16?2:m.pres>0.36?-3:m.pres>0.28?-1:0;
+ const hsDb=m.pres<0.03?[2,3,4][tr]||4:m.pres<0.10?[1.5,2.5,3.5][tr]||3.5:m.pres<0.16?1:m.pres>0.36?-2:m.pres>0.28?-1:0;
+ return{tilt,glue:42,warmte,luid,subGain,presDb,hsDb};
 }
 function tekenRing(sc){
  const c=$('ring'),g=c.getContext('2d');g.clearRect(0,0,300,300);
@@ -262,30 +336,37 @@ function meet(){
   $('issues').innerHTML='<div class="issue" style="border:0;padding-bottom:10px"><b style="font-size:15px">G2B Sonic Score: '+r.score+'/100</b><br><span style="color:var(--dim);font-size:12px">'+(r.score>=85?'Sterk — je track haalt het keurmerk.':r.score>=60?'Redelijk — maar er zitten fouten in.':'Veel werk nodig — klik ⚡ FIX.')+'</span></div>'
    +r.iss.map(i=>'<div class="issue'+(i.ok?' ok':'')+'">'+(i.ok?'✔ ':'✖ ')+i.t+'<span class="p">'+(i.ok?'':'')+'</span></div>').join('');
   $('rapport').hidden=false;
-  $('bFix').disabled=(r.score>=85);
+  $('bFix').disabled=(r.score>=85);if($('bFixStrong'))$('bFixStrong').disabled=(r.score>=85);
   $('st').textContent=r.score>=85?'✔ score ≥85 — download je badge + WAV':'score '+r.score+' — klik ⚡ FIX NAAR 85+';
   if(r.score>=85)toonCert(r.score,false);
  },30);
 }
-async function fix(){
+async function fix(mode){
+ mode=mode||'clean';
  if(!inL)return;
- $('bFix').disabled=true;
+ $('bFix').disabled=true;if($('bFixStrong'))$('bFixStrong').disabled=true;
  const n=inL.length;uitL=new Float32Array(n);uitR=new Float32Array(n);
- // fix-lus: meet opnieuw en stel scherper bij tot score ≥85 (max 3 rondes)
- let m2=lastVoor,r2=scoreVan(lastVoor),best=null,bestSc=r2.score,tr=0;
+ let m2=lastVoor,r2=scoreVan(lastVoor),best=null,bestSc=r2.score,tr=0,cleanInfo=null;
  const tL=new Float32Array(n),tR=new Float32Array(n);
- for(tr=0;tr<3;tr++){
-  $('st').textContent='fixen ronde '+(tr+1)+': mono-sub + master-keten…';
-  await renderFix(tL,tR,fixKnobs(m2,tr),f=>{$('balkIn').style.width=(f*100).toFixed(0)+'%'});
-  $('st').textContent='na-meten ronde '+(tr+1)+'…';
-  m2=meetTrack(tL,tR,sr);r2=scoreVan(m2);
-  if(r2.score>bestSc){bestSc=r2.score;best=r2;uitL.set(tL);uitR.set(tR)}
-  if(r2.score>=85)break;
+ if(mode==='clean'){
+  $('st').textContent='behoudende fix: alleen gemeten fouten zachtjes repareren…';
+  cleanInfo=await renderCleanFix(tL,tR,lastVoor,f=>{$('balkIn').style.width=(f*100).toFixed(0)+'%'});
+  m2=meetTrack(tL,tR,sr);r2=scoreVan(m2);uitL.set(tL);uitR.set(tR);
+ }else{
+  // sterke fix-lus: meet opnieuw en stel scherper bij tot score ≥85 (max 3 rondes)
+  for(tr=0;tr<3;tr++){
+   $('st').textContent='sterke fix ronde '+(tr+1)+': mono-sub + creatieve master-keten…';
+   await renderFix(tL,tR,fixKnobs(m2,tr),f=>{$('balkIn').style.width=(f*100).toFixed(0)+'%'});
+   $('st').textContent='na-meten ronde '+(tr+1)+'…';
+   m2=meetTrack(tL,tR,sr);r2=scoreVan(m2);
+   if(r2.score>bestSc){bestSc=r2.score;best=r2;uitL.set(tL);uitR.set(tR)}
+   if(r2.score>=85)break;
+  }
+  r2=best||r2;
  }
- r2=best||r2;
  $('st').textContent='na-meten…';
  tekenRing(r2.score);lastScore=r2.score;
- $('issues').innerHTML='<div class="issue" style="border:0;padding-bottom:10px"><b style="font-size:15px">NÁ FIX: '+r2.score+'/100</b> <span class="vs">(was '+scoreVan(lastVoor).score+')</span></div>'
+ $('issues').innerHTML='<div class="issue" style="border:0;padding-bottom:10px"><b style="font-size:15px">'+(mode==='clean'?'NÁ BEHOUDENDE FIX':'NÁ STERKE FIX')+': '+r2.score+'/100</b> <span class="vs">(was '+scoreVan(lastVoor).score+')</span></div>'
   +r2.iss.map(i=>'<div class="issue'+(i.ok?' ok':'')+'">'+(i.ok?'✔ ':'✖ ')+i.t+'</div>').join('');
  // spelers vullen
  let eIn=0,eUit=0;for(let i=0;i<n;i++){eIn+=inL[i]*inL[i]+inR[i]*inR[i];eUit+=uitL[i]*uitL[i]+uitR[i]*uitR[i]}
@@ -297,7 +378,8 @@ async function fix(){
  window._p1=URL.createObjectURL(preBlob);window._p2=URL.createObjectURL(postBlob);
  $('prePlay').src=window._p1;$('postPlay').src=window._p2;
  $('uit').hidden=false;$('balkIn').style.width='100%';
- $('st').textContent='✔ fix klaar — score '+r2.score+' — luister en download';
+ $('st').textContent='✔ '+(mode==='clean'?'behoudende':'sterke')+' fix klaar — score '+r2.score+' — luister en download';
+ $('bFix').disabled=false;if($('bFixStrong'))$('bFixStrong').disabled=false;
  if(r2.score>=85)toonCert(r2.score,true);
 }
 function toonCert(sc,fixed){

@@ -90,7 +90,7 @@
  // neem ook toetsenbord-noten mee in de opname (als de tool speel(i,semi) aanroept)
  window.G2BKB.log=function(n,semi,v){if(rec&&sel.size)take.push({n:n,t:performance.now()-t0,v:v||100});};
  function vlq(x){const b=[x&127];while(x>>=7)b.unshift((x&127)|128);return b}
- bDl.onclick=()=>{
+ function doDl(){
   const open={},ev=[];
   take.sort((a,b)=>a.t-b.t).forEach(e=>{
    if(e.v>0){(open[e.n]=open[e.n]||[]).push(e)}
@@ -106,4 +106,5 @@
    (trk.length>>24)&255,(trk.length>>16)&255,(trk.length>>8)&255,trk.length&255];
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([new Uint8Array(hdr),new Uint8Array(trk)],{type:'audio/midi'}));
   a.download='g2b-opname.mid';a.click();};
+ bDl.onclick=()=>{if(window.G2B_EXPORT_THEN)G2B_EXPORT_THEN((window.G2B_KB_SLUG||'DRUMS').toUpperCase(),doDl);else doDl();};
 })();

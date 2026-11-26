@@ -153,7 +153,7 @@ select{background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);b
  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.7rem">
   <label>creativiteit <span id="recv">50</span><input type="range" id="recr" min="0" max="100" value="50" oninput="recv.textContent=this.value" style="width:90px"></label>
   <label>ladder <select id="rescl" style="background:#0d1512;color:#dfe;border:1px solid #345;padding:3px"><option value="minp">mineur-penta</option><option value="min">mineur</option><option value="maj">majeur</option><option value="dor">dorian</option></select></label>
-  <label>wortel <select id="rewrt" style="background:#0d1512;color:#dfe;border:1px solid #345;padding:3px">${KEYS.map((k,i)=>`<option value="${i}"${k==='A'?' selected':''}>${k}</option>`).join('')}</select></label>
+  <label>wortel <select id="rewrt" style="background:#0d1512;color:#dfe;border:1px solid #345;padding:3px"><option value="0">C</option><option value="1">C#</option><option value="2">D</option><option value="3">D#</option><option value="4">E</option><option value="5">F</option><option value="6">F#</option><option value="7">G</option><option value="8">G#</option><option value="9" selected>A</option><option value="10">A#</option><option value="11">B</option></select></label>
   <button class="uit" onclick="reGen()" style="border-color:var(--groen);color:var(--groen)">✨ RE-IMAGINE</button>
  </div>
  <input type="file" id="refile" accept=".mid,.midi" style="display:none" onchange="reFile(event)">

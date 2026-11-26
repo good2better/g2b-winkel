@@ -41,12 +41,12 @@ const setUI = p => {
   InstrumentMatrix.build(document.createElement('div'), []);
   InstrumentMatrix.play = (p, o = {}) => {
     const pr = presets[idx];
-    Aura.noteOn(p, { wave: pr.wave, tone: (o.tone || 1) * +$('#toneSl').value, decay: 0.9999 }); // lengte vast op vol
+    Aura.noteOn(p, { wave: $('#wave').value || pr.wave, tone: (o.tone || 1) * +$('#toneSl').value, decay: 0.9999 }); // lengte vast op vol; golf = preset, maar gebruiker kan bewust overrulen
   };
   bouwKeyboard($('#kbd'), 3, 2);
   knipRij(document.createElement('div')); // knipSl zit in de UI-rij zelf
   $('#knipSl').oninput = e => Aura.setKnip(+e.target.value);
-  const load = i => { idx = ((i % N) + N) % N; setUI(presets[idx]); };
+  const load = i => { idx = ((i % N) + N) % N; setUI(presets[idx]); Aura.setKnip(presets[idx].knip); };
   $('#next').onclick = () => load(idx + 1);
   $('#prev').onclick = () => load(idx - 1);
   $('#dice').onclick = () => load(Math.floor(Math.random() * N));

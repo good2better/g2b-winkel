@@ -109,7 +109,7 @@ function maak(){
 }
 function dlHtml(){if(!G2B_EXPORT('FACTUURMAKER'))return;
  const a=document.createElement('a');
- a.href=URL.createObjectURL(new Blob(['<!DOCTYPE html><html><body style="font-family:sans-serif">'+document.getElementById('prev').innerHTML+'<script src="../exportslot.js"></script></body></html>'],{type:'text/html'}));
+ a.href=URL.createObjectURL(new Blob(['<!DOCTYPE html><html><body style="font-family:sans-serif">'+document.getElementById('prev').innerHTML+'<script src="../exportslot.js"><\/script></body></html>'],{type:'text/html'}));
  a.download='factuur-'+(v('nummer')||'g2b')+'.html';a.click();
 }
 </script>

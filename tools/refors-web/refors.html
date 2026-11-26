@@ -45,10 +45,10 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <label>KRACHT <b id="vKracht">100%</b><input type="range" id="kracht" min="0" max="100" value="100"></label>
 </div>
 <canvas id="meter" width="900" height="90"></canvas>
-<div class="info">Kies een ruimte: STUDIO = plat (referentie) · CLUB = grote PA + zaal · AUTO = basbult + cabine · TELEFOON = smal, mono, krakerig · AIRPODS = dun maar clean · FESTIVAL = buiten, top valt weg · TV = boxy midden · TIENTJE = goedkope oordopjes.<br>AFSTAND = verder weg (minder top, zachter, meer ruimte) · KAMER = hoeveel echo van de ruimte · MENIGTE = publiek-geruis · VOLUME = hoe hard de speaker staat · KRACHT = 0% je originele track, 100% volle simulatie · 🤖 AUTO meet je track en kiest zelf de slimste testruimte + afstand. Luisteren is gratis; ↓ DOWNLOAD .WAV vraagt je G2B-abonnement/licentiecode. Alles draait in je browser — niks gaat naar internet.</div>
+<div class="info">Kies een ruimte: STUDIO = plat (referentie) · CLUB = grote PA + zaal · AUTO = basbult + cabine · TELEFOON = smal, mono, krakerig · AIRPODS = dun maar clean · FESTIVAL = buiten, top valt weg · TV = boxy midden · TIENTJE = goedkope oordopjes · KELDER = donkere boomy fuif · STRAAT = ghettoblaster. Kiezen zet de knoppen eerst op een passende basisstand; daarna kun je ze zelf veranderen.<br>AFSTAND = verder weg (minder top, zachter, meer ruimte) · KAMER = hoeveel echo van de ruimte · MENIGTE = publiek-geruis · VOLUME = hoe hard de speaker staat · KRACHT = 0% je originele track, 100% volle simulatie · 🤖 AUTO meet je track en kiest zelf de slimste testruimte + afstand. Luisteren is gratis; ↓ DOWNLOAD .WAV vraagt je G2B-abonnement/licentiecode. Alles draait in je browser — niks gaat naar internet.</div>
 <script>
 // --- poort van ReforsPlugin.cpp ---
-const NAMEN=["STUDIO","CLUB","AUTO","TELEFOON","AIRPODS","FESTIVAL","TV","TIENTJE"];
+const NAMEN=["STUDIO","CLUB","AUTO","TELEFOON","AIRPODS","FESTIVAL","TV","TIENTJE","KELDER","STRAAT"];
 // per ruimte: loHz, hiHz, bassDb(@120Hz), presDb, drive, echoMs, echoFb, echoMix, width(0=mono..1), gainDb
 const ENV=[
  [ 20,19000, 0, 0,0.00,  0,0.00,0.00,1.0 , 0], // STUDIO
@@ -59,8 +59,14 @@ const ENV=[
  [ 30, 9000, 6, 0,0.08,350,0.45,0.35,1.0 ,-1], // FESTIVAL
  [150, 8000,-2, 4,0.12, 90,0.20,0.10,0.7 , 0], // TV
  [ 90,11000,-2, 3,0.25,  0,0.00,0.00,0.8 ,-1], // TIENTJE
+ [ 40, 8000, 8, 0,0.12,140,0.50,0.45,0.8 ,-1], // KELDER — donker+boomy fuif (GIO)
+ [120,12000,-4, 5,0.18, 80,0.30,0.15,0.85,-2], // STRAAT — ghettoblaster (GIO)
 ];
-const P={afst:0,kamer:55,menigte:0,vol:80,kracht:100,ruimte:0,aan:true};
+const SUGGEST=[
+ [0,20,0,85],[25,70,45,80],[30,40,20,75],[60,15,10,70],[40,15,5,75],
+ [50,80,70,80],[35,30,15,75],[45,25,10,70],[55,75,60,75],[45,55,40,80]
+];
+const P={afst:0,kamer:100,menigte:0,vol:80,kracht:100,ruimte:0,aan:true};
 let ctx=null,buf=null,src=null,G=null,seed=777>>>0,lastDrv=-1;
 const $=id=>document.getElementById(id);
 
@@ -102,9 +108,9 @@ function bouwGraafOp(c){
   const nb=c.createBuffer(1,c.sampleRate*4,c.sampleRate),nd=nb.getChannelData(0);
   for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;
   const n=c.createBufferSource(); n.buffer=nb; n.loop=true;
-  const hp=c.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=300;
-  const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=3000;
-  const pk=c.createBiquadFilter(); pk.type='peaking'; pk.frequency.value=900; pk.Q.value=1; pk.gain.value=2;
+  const hp=c.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=220;
+  const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1800;
+  const pk=c.createBiquadFilter(); pk.type='peaking'; pk.frequency.value=750; pk.Q.value=1; pk.gain.value=1;
   const sw=c.createGain(); sw.gain.value=0.65;
   const lfo=c.createOscillator(); lfo.frequency.value=hz; const lg=c.createGain(); lg.gain.value=0.35;
   lfo.connect(lg); lg.connect(sw.gain);
@@ -175,8 +181,12 @@ function demoOk(){
  if(code&&code.trim().length>=6){try{localStorage.setItem('g2b_aura_licentie','ok')}catch(e){}$('st').textContent='licentie ok — download werkt nu';return true}
  return false;
 }
+function exportOk(){
+ if(window.G2BExport&&typeof G2BExport.ok==='function')return G2BExport.ok('refors');
+ return demoOk();
+}
 async function exportWav(){
- if(!buf)return; if(!demoOk())return;
+ if(!buf)return; if(!exportOk())return;
  $('bWav').disabled=true;
  $('st').textContent='renderen… lange track kan ~30-60 s duren — pagina blijft werken';
  await new Promise(r=>setTimeout(r,30));
@@ -195,13 +205,13 @@ async function downloadWav(ab,name){
  const W=(s)=>{for(const c of s)dv.setUint8(o++,c.charCodeAt(0))};
  const u32=v=>{dv.setUint32(o,v,true);o+=4},u16=v=>{dv.setUint16(o,v,true);o+=2},i16=v=>{dv.setInt16(o,Math.max(-32768,Math.min(32767,Math.round(v*32767))),true);o+=2};
  W('RIFF');u32(36+n*ch*2);W('WAVEfmt ');u32(16);u16(1);u16(ch);u32(sr);u32(sr*ch*2);u16(ch*2);u16(16);W('data');u32(n*ch*2);
- const L=ab.getChannelData(0),R=ch>1?ab.getChannelData(1):L;
+ const kanalen=[];for(let c=0;c<ch;c++)kanalen.push(ab.getChannelData(c));
  const CH=1<<18;
  for(let base=0;base<n;base+=CH){
   const end=Math.min(base+CH,n);
-  for(let i=base;i<end;i++){i16(L[i]);if(ch>1)i16(R[i])}
+  for(let i=base;i<end;i++)for(let c=0;c<ch;c++)i16(kanalen[c][i]);
   if(end<n)await new Promise(r=>setTimeout(r,0));}
- const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([dv.buffer],{type:'audio/wav'}));a.download=name;if(G2BExport.ok('refors'))a.click();
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([dv.buffer],{type:'audio/wav'}));a.download=name;a.click();
 }
 
 function laad(file){
@@ -217,7 +227,15 @@ function speel(){
  $('bPlay').disabled=true; $('bStop').disabled=false;
 }
 function stop(){if(src){try{src.stop()}catch(e){}src.disconnect();src=null}$('bPlay').disabled=!buf;$('bStop').disabled=true}
-function kiesRuimte(i){P.ruimte=i;document.querySelectorAll('.pill').forEach((b,j)=>b.classList.toggle('on',j===i));update()}
+function kiesRuimte(i,metSuggestie=true){
+ P.ruimte=i;
+ if(metSuggestie){
+  const s=SUGGEST[i]; P.afst=s[0]; P.kamer=s[1]; P.menigte=s[2]; P.vol=s[3];
+  for(const k of ['afst','kamer','menigte','vol'])$(k).value=Math.round(P[k]);
+  toonWaardes();
+ }
+ document.querySelectorAll('.pill').forEach((b,j)=>b.classList.toggle('on',j===i));update()
+}
 
 // AUTO: meet je track (bas/hoog, dynamiek, helderheid) en kiest de testruimte
 // waar je het belangrijkste probleem het eerst hoort — plus passende afstand.
@@ -268,7 +286,7 @@ function auto(){
    waarom='gemiddelde mix → CLUB op afstand: de echte-luisteraar test';
    tip='Club-ready? Maak je track verkoopklaar in G2B MASTER.';
   }
-  kiesRuimte(ruimte);
+  kiesRuimte(ruimte,false);
   P.afst=afst;P.kamer=kamer;P.menigte=menigte;P.vol=vol;
   for(const k of ['afst','kamer','menigte','vol'])$(k).value=Math.round(P[k]);
   toonWaardes(); update();
@@ -280,7 +298,7 @@ function dice(){
  let sd=seed=(Math.imul(seed,1664525)+1013904223)>>>0;
  const rng=()=>{sd^=sd<<13;sd>>>=0;sd^=sd>>>17;sd^=sd<<5;sd>>>=0;return (sd&0xFFFF)/65536};
  P.afst=rng()*60; P.kamer=50+rng()*50;
- P.menigte=(P.ruimte===1||P.ruimte===5)?rng()*70:rng()*30; P.vol=60+rng()*40;
+ P.menigte=(P.ruimte===1||P.ruimte===5||P.ruimte===8||P.ruimte===9)?rng()*70:rng()*30; P.vol=60+rng()*40;
  for(const k of ['afst','kamer','menigte','vol'])$(k).value=Math.round(P[k]); toonWaardes(); update();
 }
 function toonWaardes(){$('vAfst').textContent=Math.round(P.afst)+'%';$('vKamer').textContent=Math.round(P.kamer)+'%';

@@ -31,13 +31,14 @@ select{background:#16201A;color:#BFE8CE;border:1px solid #2C4A38;border-radius:6
 </head>
 <body>
 <h1>G2B MIXER v2</h1>
-<div class="sub">sporen luisteren naar élkaar — PRIO + M/S-ontmaskering → MASTER → schone mix.wav eruit</div>
+<div class="sub">sporen luisteren naar élkaar — behoudend = zelfde balans, lichte correctie · creatief = sterkere M/S-ontmaskering</div>
 
 <div class="card">
   <div class="drop" id="drop">🎚️ Sleep hier je stems (wav/mp3) — elke file = 1 spoor<br><small>kies daarna per spoor zijn rol</small>
     <input type="file" id="file" multiple accept="audio/*" style="display:none"></div>
   <table id="tracks"><tr><th>SPOOR</th><th>ROL (wie gaat vooraan?)</th><th>HOORT</th><th>AANPASSING</th></tr></table>
   <div class="row">
+    <select id="mixMode"><option value="clean">BEHOUDEND — zelfde balans/karakter</option><option value="creative">CREATIEF — sterke ontmaskering/master</option></select>
     <button class="btn b1" id="bMix" disabled>▶ LUISTER + MAAK MIX</button>
     <button class="btn b2" id="bDl" disabled>↓ DOWNLOAD mix.wav</button>
     <button class="btn b2" id="bPlay" disabled>▶ BELUISTER</button>
@@ -111,8 +112,34 @@ function renderTable(){
   r.insertCell().innerHTML='<span class="pill p'+Math.min(3,Math.ceil(tr.rol))+'">—</span>';
   r.insertCell().textContent='—';});}
 
+function applyLookaheadLimiter(L,R,sr,ceil){
+ const n=L.length,look=Math.max(1,Math.round(sr*0.005));
+ const q=new Int32Array(look+2);let qh=0,qt=0,next=0;
+ const empty=()=>qh===qt;
+ const pk=i=>Math.max(Math.abs(L[i]),Math.abs(R[i]));
+ const push=i=>{q[qt]=i;qt=(qt+1)%q.length};
+ const popBack=()=>{qt=(qt-1+q.length)%q.length};
+ const popFront=()=>{qh=(qh+1)%q.length};
+ const back=()=>q[(qt-1+q.length)%q.length];
+ const add=i=>{const v=pk(i);while(!empty()&&pk(back())<=v)popBack();push(i)};
+ const firstEnd=Math.min(look,n-1);
+ for(;next<=firstEnd;next++)add(next);
+ const att=1-Math.exp(-1/(0.002*sr)),rel=1-Math.exp(-1/(0.080*sr));
+ let env=1;
+ for(let i=0;i<n;i++){
+  while(!empty()&&q[qh]<i)popFront();
+  while(next<=i+look&&next<n){add(next);next++}
+  const mp=empty()?0:pk(q[qh]);
+  const target=mp>ceil?ceil/mp:1;
+  if(target<env)env+=(target-env)*att;else env+=(target-env)*rel;
+  L[i]*=env;R[i]*=env;
+ }
+ let peak=0;for(let i=0;i<n;i++)peak=Math.max(peak,Math.abs(L[i]),Math.abs(R[i]));
+ if(peak>ceil){const g=ceil/peak;for(let i=0;i<n;i++){L[i]*=g;R[i]*=g}}
+}
 $('bMix').onclick=async()=>{
  $('bMix').disabled=true;$('status').textContent='LUISTEREN… elk spoor wordt gemeten';
+ const mode=$('mixMode').value;
  // 1) spectrum per spoor
  for(const tr of tracks){
   const mono=tr.buf.getChannelData(0);
@@ -126,53 +153,67 @@ $('bMix').onclick=async()=>{
   for(const hi of tracks){if(hi===tr||hi.rol>=tr.rol)continue;
    for(let b=0;b<8;b++){
     const over=hi.rel[b]-tr.rel[b]*0.6;
-    if(over>0.02)tr.red[b]=Math.min(6,over*40);}}}
+    const maxDip=mode==='clean'?2:4,scale=mode==='clean'?20:30,need=mode==='clean'?0.04:0.02;
+    if(over>need)tr.red[b]=Math.min(maxDip,over*scale);}}}
  // 3) render via OfflineAudioContext — spoor-bus → master-comp → limiter → out
  const dur=Math.max(...tracks.map(t=>t.buf.duration));
  const sr=44100,ctx=new OfflineAudioContext(2,sr*dur+sr,sr);
  const bus=ctx.createGain();
- const comp=ctx.createDynamicsCompressor();
- comp.threshold.value=-14;comp.knee.value=8;comp.ratio.value=3;
- comp.attack.value=.01;comp.release.value=.16;
- const lim=ctx.createDynamicsCompressor();
- lim.threshold.value=-2;lim.knee.value=0;lim.ratio.value=20;
- lim.attack.value=.002;lim.release.value=.1;
- bus.connect(comp);comp.connect(lim);lim.connect(ctx.destination);
+ if(mode==='creative'){
+  // creatief mag lijmen, maar niet plat: mildere buscompressie; piekcontrole gebeurt na render met lookahead
+  const comp=ctx.createDynamicsCompressor();
+  comp.threshold.value=-18;comp.knee.value=10;comp.ratio.value=2;
+  comp.attack.value=.012;comp.release.value=.18;
+  bus.connect(comp);comp.connect(ctx.destination);
+ }else bus.connect(ctx.destination);
  let totCut=0;
  for(const tr of tracks){
   const src=ctx.createBufferSource();src.buffer=tr.buf;
   const lines=[];
-  // M/S-splitsing: midden dipt waar een belangrijker spoor zit,
-  // zijkant krijgt 0.35× de boost -> spoor vlucht naar de zijkant, blijft breed
-  const split=ctx.createChannelSplitter(2);
-  src.connect(split);
-  // MID = 0.5L + 0.5R
-  const midSum=ctx.createGain();midSum.gain.value=1;
-  const mL=ctx.createGain();mL.gain.value=0.5;split.connect(mL,0);mL.connect(midSum);
-  const mR=ctx.createGain();mR.gain.value=0.5;split.connect(mR,1);mR.connect(midSum);
-  let midNode=midSum;
-  // SIDE = 0.5L - 0.5R
-  const sideSum=ctx.createGain();sideSum.gain.value=1;
-  const sL=ctx.createGain();sL.gain.value=0.5;split.connect(sL,0);sL.connect(sideSum);
-  const sR=ctx.createGain();sR.gain.value=-0.5;split.connect(sR,1);sR.connect(sideSum);
-  let sideNode=sideSum;
-  BANDS.forEach((hz,b)=>{
-   const dip=tr.red[b]; if(dip<=0.3)return;
-   const fM=ctx.createBiquadFilter();fM.type='peaking';
-   fM.frequency.value=hz;fM.Q.value=1.2;fM.gain.value=-dip;
-   midNode.connect(fM);midNode=fM;
-   const fS=ctx.createBiquadFilter();fS.type='peaking';
-   fS.frequency.value=hz;fS.Q.value=1.2;fS.gain.value=dip*0.35;
-   sideNode.connect(fS);sideNode=fS;
-   lines.push(hz+'Hz '+dip.toFixed(1)+'dB → zijkant');totCut+=dip;});
-  // terug naar stereo: L = mid+side, R = mid-side
-  const merge=ctx.createChannelMerger(2);
-  midNode.connect(merge,0,0);midNode.connect(merge,0,1);
-  const sPos=ctx.createGain();sPos.gain.value=1;sideNode.connect(sPos);sPos.connect(merge,0,0);
-  const sNeg=ctx.createGain();sNeg.gain.value=-1;sideNode.connect(sNeg);sNeg.connect(merge,0,1);
-  const g=ctx.createGain();
-  g.gain.value=tr.rol>=2?.8:(tr.rol>=1?.9:1.0);
-  merge.connect(g);g.connect(bus);src.start();
+  if(mode==='clean'){
+   // Behoudend: geen M/S-verplaatsing, geen compressor, geen balansverandering.
+   // Alleen kleine stereo-peaking-cuts waar twee sporen elkaar echt maskeren.
+   let chain=src;
+   BANDS.forEach((hz,b)=>{
+    const dip=tr.red[b]; if(dip<=0.35)return;
+    const f=ctx.createBiquadFilter();f.type='peaking';
+    f.frequency.value=hz;f.Q.value=1.0;f.gain.value=-dip;
+    chain.connect(f);chain=f;
+    lines.push(hz+'Hz -'+dip.toFixed(1)+'dB zacht');totCut+=dip;});
+   chain.connect(bus);src.start();
+  }else{
+   // Creatief: midden dipt waar een belangrijker spoor zit,
+   // zijkant krijgt 0.35× de boost -> spoor vlucht naar de zijkant, blijft breed
+   const split=ctx.createChannelSplitter(2);
+   src.connect(split);
+   // MID = 0.5L + 0.5R
+   const midSum=ctx.createGain();midSum.gain.value=1;
+   const mL=ctx.createGain();mL.gain.value=0.5;split.connect(mL,0);mL.connect(midSum);
+   const mR=ctx.createGain();mR.gain.value=0.5;split.connect(mR,1);mR.connect(midSum);
+   let midNode=midSum;
+   // SIDE = 0.5L - 0.5R
+   const sideSum=ctx.createGain();sideSum.gain.value=1;
+   const sL=ctx.createGain();sL.gain.value=0.5;split.connect(sL,0);sL.connect(sideSum);
+   const sR=ctx.createGain();sR.gain.value=-0.5;split.connect(sR,1);sR.connect(sideSum);
+   let sideNode=sideSum;
+   BANDS.forEach((hz,b)=>{
+    const dip=tr.red[b]; if(dip<=0.3)return;
+    const fM=ctx.createBiquadFilter();fM.type='peaking';
+    fM.frequency.value=hz;fM.Q.value=1.2;fM.gain.value=-dip;
+    midNode.connect(fM);midNode=fM;
+    const fS=ctx.createBiquadFilter();fS.type='peaking';
+    fS.frequency.value=hz;fS.Q.value=1.2;fS.gain.value=dip*0.20;
+    sideNode.connect(fS);sideNode=fS;
+    lines.push(hz+'Hz '+dip.toFixed(1)+'dB → zijkant');totCut+=dip;});
+   // terug naar stereo: L = mid+side, R = mid-side
+   const merge=ctx.createChannelMerger(2);
+   midNode.connect(merge,0,0);midNode.connect(merge,0,1);
+   const sPos=ctx.createGain();sPos.gain.value=1;sideNode.connect(sPos);sPos.connect(merge,0,0);
+   const sNeg=ctx.createGain();sNeg.gain.value=-1;sideNode.connect(sNeg);sNeg.connect(merge,0,1);
+   const g=ctx.createGain();
+   g.gain.value=tr.rol>=2?.9:(tr.rol>=1?.95:1.0);
+   merge.connect(g);g.connect(bus);src.start();
+  }
   const row=$('tracks').rows[tracks.indexOf(tr)+1];
   row.cells[2].innerHTML='<span class="pill p'+Math.min(3,Math.ceil(tr.rol))+'">'+(lines.length?lines.length+' bands':'schoon')+'</span>';
   row.cells[3].textContent=lines.join(' · ')||'past al goed';
@@ -180,12 +221,20 @@ $('bMix').onclick=async()=>{
   log('→ '+tr.name+': '+(lines.join(' · ')||'geen dip nodig'));}
  $('status').textContent='MASTEREN… limiter + balans';
  mixed=await ctx.startRendering();
- // normaliseer naar ~-1dBFS
+ // eerlijke piekcontrole: behoudend alleen zachter als het echt clippt;
+ // creatief maximaal +3 dB makeup en daarna een echte lookahead-limiter.
  let pk=0;for(let c=0;c<mixed.numberOfChannels;c++){const d=mixed.getChannelData(c);
   for(let i=0;i<d.length;i++)if(Math.abs(d[i])>pk)pk=Math.abs(d[i]);}
- const gn=pk>0?.891/pk:1;
- for(let c=0;c<mixed.numberOfChannels;c++){const d=mixed.getChannelData(c);
-  for(let i=0;i<d.length;i++)d[i]*=gn;}
+ if(mode==='clean'){
+  const gn=pk>0.95?0.95/pk:1;
+  for(let c=0;c<mixed.numberOfChannels;c++){const d=mixed.getChannelData(c);
+   for(let i=0;i<d.length;i++)d[i]*=gn;}
+ }else{
+  const makeup=pk>0?Math.min(1.41,0.891/pk):1;
+  const L=mixed.getChannelData(0),R=mixed.getChannelData(mixed.numberOfChannels>1?1:0);
+  for(let i=0;i<L.length;i++){L[i]*=makeup;R[i]*=makeup}
+  applyLookaheadLimiter(L,R,mixed.sampleRate,0.891);
+ }
  // bars tonen: totale dip visual
  const bars=$('bars');bars.innerHTML='';
  const tr_max=Math.max(...tracks.map(t=>Math.max(...t.red)))||1;
@@ -194,7 +243,7 @@ $('bMix').onclick=async()=>{
   d.style.height=Math.max(4,v*44)+'px';if(v>.4)d.classList.add('hi');
   d.title=BANDS[b]+' Hz';bars.appendChild(d);}
  $('bDl').disabled=false;$('bPlay').disabled=false;
- $('status').textContent='KLAAR — '+totCut.toFixed(1)+' dB ruimte gemaakt (naar de zijkant!) + genormaliseerd naar -1dB';
+ $('status').textContent='KLAAR — '+(mode==='clean'?'behoudend: zelfde balans, alleen lichte correcties':'creatief: '+totCut.toFixed(1)+' dB ruimte naar de zijkant + milder gemasterd');
  log('✓ mix klaar — '+mixed.duration.toFixed(1)+'s, '+tracks.length+' sporen');};
 
 function toWav(buf){

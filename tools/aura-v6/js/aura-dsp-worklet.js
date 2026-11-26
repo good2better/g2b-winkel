@@ -68,9 +68,29 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
     if (x < -0.95) { const d = x + 0.95;  return -0.95 + d - Math.pow(d, 3); }
     return x;
   }
-  osc(type, ph) {
-    if (type === 'square') return ph < 0.5 ? 1 : -1;
-    if (type === 'saw')    return 2 * (ph - Math.floor(ph + 0.5));
+  polyblep(t, dt) {
+    if (dt <= 0 || dt >= 0.5) return 0;
+    if (t < dt) {
+      const x = t / dt;
+      return x + x - x * x - 1;
+    }
+    if (t > 1 - dt) {
+      const x = (t - 1) / dt;
+      return x * x + x + x + 1;
+    }
+    return 0;
+  }
+  osc(type, ph, dt) {
+    if (type === 'square') {
+      let v = ph < 0.5 ? 1 : -1;
+      v += this.polyblep(ph, dt);
+      v -= this.polyblep((ph + 0.5) % 1, dt);
+      return v;
+    }
+    if (type === 'saw') {
+      const t = (ph + 0.5) % 1;
+      return 2 * t - 1 - this.polyblep(t, dt);
+    }
     if (type === 'tri')    return 2 * Math.abs(2 * (ph - Math.floor(ph + 0.5))) - 1;
     return Math.sin(2 * Math.PI * ph);
   }
@@ -100,8 +120,8 @@ class AuraMasterWorklet extends AudioWorkletProcessor {
         const att = v.age < 192 ? v.age / 192 : 1;                     // 4ms fade-in = 0 clicks, zachtere aanslag
         const punch = glueOn && v.age < 720 ? 1 + (v.low ? 0.45 : 0.18) * (1 - v.age / 720) : 1; // lage noten: punch; hoge: zacht
         const amp = v.env * v.gain * att * punch;
-        s += this.osc(v.waveType, v.phase) * amp;
-        if (v.det !== 1) s += this.osc(v.waveType, v.phase2) * amp * 0.45; // 2e osc -7dB: dikte zonder ruis
+        s += this.osc(v.waveType, v.phase, v.freq / sr) * amp;
+        if (v.det !== 1) s += this.osc(v.waveType, v.phase2, (v.freq * v.det) / sr) * amp * 0.45; // 2e osc -7dB: dikte zonder ruis
         if (v.subGain) { // schone sub-osc onder C3: sinus + warme 2e harmonische
           v.subPhase += v.freq / sr; if (v.subPhase > 1) v.subPhase -= 1;
           s += (Math.sin(2 * Math.PI * v.subPhase) + 0.3 * Math.sin(4 * Math.PI * v.subPhase))
