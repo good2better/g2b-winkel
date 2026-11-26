@@ -98,7 +98,7 @@ async function main(){
   const vids=[];
   if(p.video) vids.push({lbl:p.video_lbl||"▶ demo — hoort hoe het klinkt",src:p.video,sub_nl:p.video_sub_nl||p.sub_nl,sub_es:p.video_sub_es||p.sub_es});
   if(p.uitleg) vids.push({lbl:"▶ uitleg — EN stem, NL/ES ondertiteling",src:p.uitleg,sub_nl:p.sub_nl,sub_es:p.sub_es});
-  (p.video_extra||[]).forEach((x,i)=>vids.push({lbl:"▶ "+(p.video_extra_lbls?.[i]||"extra versie"),src:x}));
+  (p.video_extra||[]).forEach((x,i)=>vids.push({lbl:"▶ "+(p.video_extra_lbls?.[i]||"extra versie"),src:x,sub_nl:p.video_extra_sub_nl?.[i],sub_es:p.video_extra_sub_es?.[i]}));
   const punten=[];
   if(gratis) punten.push("Gratis download — geen account nodig");
   else punten.push("Directe download na betaling");
