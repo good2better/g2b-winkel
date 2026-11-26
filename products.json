@@ -745,7 +745,19 @@
    ],
    "specs": "🌐 Elke moderne browser (Chrome/Edge) · geen installatie · Windows / macOS / Linux",
    "video_sub_nl": "media/workstation-v7.nl.vtt",
-   "video_sub_es": "media/workstation-v7.es.vtt"
+   "video_sub_es": "media/workstation-v7.es.vtt",
+   "video_extra": [
+    "media/workstation-app-demo-en.mp4"
+   ],
+   "video_extra_lbls": [
+    "app demo — hoe het werkt"
+   ],
+   "video_extra_sub_nl": [
+    "media/workstation-app-demo.nl.vtt"
+   ],
+   "video_extra_sub_es": [
+    "media/workstation-app-demo.es.vtt"
+   ]
   },
   {
    "id": "cursus01",
