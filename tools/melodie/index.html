@@ -561,8 +561,8 @@ function bpLaad(){if(!BPjs)BPjs=new Promise((ok,fail)=>{const s=document.createE
  document.head.appendChild(s)});return BPjs}
 async function bpKlaar(){await bpLaad();if(!BPmod)BPmod=new window.BP.BasicPitch('lib/bp/model/model.json');return BPmod}
 async function trans(buf){ // AudioBuffer → tijd-noten [{startTimeSeconds,durationSeconds,pitchMidi,amplitude}]
- const bp=await bpKlaar(),len=Math.max(4410,Math.ceil(buf.duration*22050));
- const oc=new OfflineAudioContext(1,len,22050),src=oc.createBufferSource();src.buffer=buf;src.connect(oc.destination);src.start();
+ const bp=await bpKlaar(),len=Math.max(8820,Math.ceil(buf.duration*44100));
+ const oc=new OfflineAudioContext(1,len,44100),src=oc.createBufferSource();src.buffer=buf;src.connect(oc.destination);src.start();
  const rb=await oc.startRendering(),x=rb.getChannelData(0),F=[],O=[],C=[];
  await bp.evaluateModel(x,(f,o,co)=>{F.push(...f);O.push(...o);C.push(...co)},p=>st('🎤 agent transcribeert… '+Math.round(p*100)+'%'));
  const raw=window.BP.outputToNotesPoly(F,O,.5,.35,11,true,null,null,true,11);

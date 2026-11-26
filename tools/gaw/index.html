@@ -1303,7 +1303,7 @@ function abWav(rb){ // stereo interleaved PCM16
 function clearOcCh(){TR.forEach(t=>t._occh=null)}
 async function exportWav(){clearOcCh();if(!licOk())return;
  const bpm=+document.getElementById('bpm').value,dur=16*(60/bpm/4)+0.3;
- const oc=new OfflineAudioContext(2,Math.ceil(dur*22050),22050);
+ const oc=new OfflineAudioContext(2,Math.ceil(dur*44100),44100);
  oc._mb=null;if(MAST.fx.length){const _mch=chainFor(oc,MAST.fx);_mch.out.connect(oc.destination);oc._mb=_mch.in}
  for(let t=0;t<8;t++){
   if(TR[t].muted)continue;
@@ -1328,7 +1328,7 @@ async function exportWav(){clearOcCh();if(!licOk())return;
 async function renderStem(t,bpm,dur){
   TR[t]._occh=null;
   if(TR[t].type==='audio'){const c=TR[t].clip;if(!c||!c.buf)return null;
-   const oc=new OfflineAudioContext(2,Math.ceil(dur*22050),22050);
+   const oc=new OfflineAudioContext(2,Math.ceil(dur*44100),44100);
    const sc=oc.createBufferSource();sc.buffer=c.buf;
    const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;
    const pn=oc.createStereoPanner?oc.createStereoPanner():null;
@@ -1336,7 +1336,7 @@ async function renderStem(t,bpm,dur){
    sc.start(c.pos*60/bpm/4,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)));
    const rb=await oc.startRendering();return abWav(rb)}
   const b=TR[t].buffers[TR[t].pad];if(!b)return null;
-  const oc=new OfflineAudioContext(2,Math.ceil(dur*22050),22050);
+  const oc=new OfflineAudioContext(2,Math.ceil(dur*44100),44100);
   const vol=+document.getElementById('vol'+t).value/100;
   const hit=(s,p,d)=>{ // één hit: stap s, optioneel pitch p (toon-tracks), optionele duur d in stappen
    const sc=oc.createBufferSource();sc.buffer=b;

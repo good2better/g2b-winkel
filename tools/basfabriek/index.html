@@ -986,8 +986,8 @@ function bpLaad2(){if(!BPjs2)BPjs2=new Promise((ok,fail)=>{const s=document.crea
  document.head.appendChild(s)});return BPjs2}
 async function bpKlaar2(){await bpLaad2();if(!BPmod2)BPmod2=new window.BP.BasicPitch('../melodie/lib/bp/model/model.json');return BPmod2}
 async function transBas(buf){ /* audio → tijd-noten (alle noten; we filteren later op bas) */
- const bp=await bpKlaar2(),len=Math.max(4410,Math.ceil(buf.duration*22050));
- const oc=new OfflineAudioContext(1,len,22050),src=oc.createBufferSource();src.buffer=buf;src.connect(oc.destination);src.start();
+ const bp=await bpKlaar2(),len=Math.max(8820,Math.ceil(buf.duration*44100));
+ const oc=new OfflineAudioContext(1,len,44100),src=oc.createBufferSource();src.buffer=buf;src.connect(oc.destination);src.start();
  const rb=await oc.startRendering(),x=rb.getChannelData(0),F=[],O=[],C=[];
  await bp.evaluateModel(x,(f,o,co)=>{F.push(...f);O.push(...o);C.push(...co)},p=>st('🎤 bas-agent transcribeert… '+Math.round(p*100)+'%'));
  const raw=window.BP.outputToNotesPoly(F,O,.5,.4,11,true,null,null,true,11);

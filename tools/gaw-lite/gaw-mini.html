@@ -123,7 +123,7 @@ document.getElementById('bpm').onchange=()=>{if(playing){clearInterval(timer);ti
 // ---- .WAV export: 1 ronde (4 maten van 16 stappen) offline renderen ----
 async function exportWav(){
  const bpm=+document.getElementById('bpm').value,dur=16*(60/bpm/4)+0.3;
- const oc=new OfflineAudioContext(1,Math.ceil(dur*22050),22050);
+ const oc=new OfflineAudioContext(1,Math.ceil(dur*44100),44100);
  for(let t=0;t<4;t++){
   const b=TR[t].buffers[TR[t].pad];if(!b)continue;
   for(let s=0;s<16;s++)if(TR[t].grid[s]){
@@ -136,7 +136,7 @@ async function exportWav(){
  const d=rb.getChannelData(0),n=d.length,ab=new ArrayBuffer(44+n*2),v=new DataView(ab);
  const ws=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
  ws(0,'RIFF');v.setUint32(4,36+n*2,true);ws(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
- v.setUint32(24,22050,true);v.setUint32(28,44100,true);v.setUint16(32,2,true);v.setUint16(34,16,true);
+ v.setUint32(24,44100,true);v.setUint32(28,88200,true);v.setUint16(32,2,true);v.setUint16(34,16,true);
  ws(36,'data');v.setUint32(40,n*2,true);
  for(let i=0;i<n;i++)v.setInt16(44+i*2,Math.max(-32768,Math.min(32767,d[i]*32767)),true);
  dl(new Blob([ab],{type:'audio/wav'}),'g2b-gaw-lite.wav');
@@ -148,7 +148,7 @@ async function naarLaagbaas(){
  const stash=[];
  for(let t=0;t<4;t++){
   const b=TR[t].buffers[TR[t].pad];if(!b)continue;
-  const oc=new OfflineAudioContext(1,Math.ceil(dur*22050),22050);
+  const oc=new OfflineAudioContext(1,Math.ceil(dur*44100),44100);
   for(let s=0;s<16;s++)if(TR[t].grid[s]){
    const sc=oc.createBufferSource();sc.buffer=b;
    const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;
@@ -158,7 +158,7 @@ async function naarLaagbaas(){
   const d=rb.getChannelData(0),n=d.length,ab=new ArrayBuffer(44+n*2),v=new DataView(ab);
   const ws=(o,s2)=>{for(let i=0;i<s2.length;i++)v.setUint8(o+i,s2.charCodeAt(i))};
   ws(0,'RIFF');v.setUint32(4,36+n*2,true);ws(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
-  v.setUint32(24,22050,true);v.setUint32(28,44100,true);v.setUint16(32,2,true);v.setUint16(34,16,true);
+  v.setUint32(24,44100,true);v.setUint32(28,88200,true);v.setUint16(32,2,true);v.setUint16(34,16,true);
   ws(36,'data');v.setUint32(40,n*2,true);
   for(let i=0;i<n;i++)v.setInt16(44+i*2,Math.max(-32768,Math.min(32767,d[i]*32767)),true);
   const nm=(document.getElementById('src'+t).value||('track'+(t+1)))+''+(t+1);
