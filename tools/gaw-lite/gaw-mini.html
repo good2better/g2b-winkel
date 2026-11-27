@@ -101,7 +101,7 @@ async function trackBank(t){
 function speel(t){
  const b=TR[t].buffers[TR[t].pad];if(!b)return;
  const s=ac().createBufferSource();s.buffer=b;
- const g=ac().createGain();g.gain.value=+document.getElementById('vol'+t).value/100;
+ const g=ac().createGain(),vol=+document.getElementById('vol'+t).value/100,tn=ac().currentTime;g.gain.setValueAtTime(0,tn);g.gain.linearRampToValueAtTime(vol,tn+.002);
  s.connect(g).connect(ac().destination);s.start();
 }
 function tick(){
@@ -128,8 +128,8 @@ async function exportWav(){
   const b=TR[t].buffers[TR[t].pad];if(!b)continue;
   for(let s=0;s<16;s++)if(TR[t].grid[s]){
    const src=oc.createBufferSource();src.buffer=b;
-   const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;
-   src.connect(g).connect(oc.destination);src.start(s*60/bpm/4);
+   const g=oc.createGain(),vol=+document.getElementById('vol'+t).value/100,st=s*60/bpm/4;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(vol,st+.002);
+   src.connect(g).connect(oc.destination);src.start(st);
   }
  }
  const rb=await oc.startRendering();
@@ -151,8 +151,8 @@ async function naarLaagbaas(){
   const oc=new OfflineAudioContext(1,Math.ceil(dur*44100),44100);
   for(let s=0;s<16;s++)if(TR[t].grid[s]){
    const sc=oc.createBufferSource();sc.buffer=b;
-   const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;
-   sc.connect(g).connect(oc.destination);sc.start(s*60/bpm/4);
+   const g=oc.createGain(),vol=+document.getElementById('vol'+t).value/100,st=s*60/bpm/4;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(vol,st+.002);
+   sc.connect(g).connect(oc.destination);sc.start(st);
   }
   const rb=await oc.startRendering();
   const d=rb.getChannelData(0),n=d.length,ab=new ArrayBuffer(44+n*2),v=new DataView(ab);

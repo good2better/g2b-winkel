@@ -399,7 +399,7 @@ function lesVorige(){if(LESI>0)LESI--;lesToon()}
 function lesSluit(){document.getElementById('lespan').style.display='none';LES=null;LESI=0}
 let CLICK=false;
 function clickToggle(){CLICK=!CLICK;document.getElementById('clk').style.borderColor=CLICK?'var(--groen)':'';document.getElementById('clk').style.color=CLICK?'var(--groen)':''}
-function clickPlay(){const c=ac(),o=c.createOscillator(),g=c.createGain();o.frequency.value=step%4===0?1500:1000;o.type='square';g.gain.setValueAtTime(0.08,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.03);o.connect(g).connect(c.destination);o.start(c.currentTime);o.stop(c.currentTime+0.04)}
+function clickPlay(){const c=ac(),o=c.createOscillator(),g=c.createGain();o.frequency.value=step%4===0?1500:1000;o.type='square';g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(0.08,c.currentTime+0.001);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+0.03);o.connect(g).connect(c.destination);o.start(c.currentTime);o.stop(c.currentTime+0.04)}
 let REC=false;function rec(){REC=!REC;document.getElementById('rec').style.background=REC?'#d33':'';document.getElementById('rec').style.color=REC?'#fff':''}
 // 🕘 TERUG (retrospective record): buffer luistert altijd mee tijdens SPEEL —
 // pak je improvisatie terug ook als REC uitstond. Laatste pass wint per (noot,stap).
@@ -912,7 +912,7 @@ function speelClip(t){
  const vol=+document.getElementById('vol'+t).value/100;
  const g=ac().createGain(),pn=ac().createStereoPanner?ac().createStereoPanner():null;
  if(pn)pn.pan.value=+document.getElementById('pan'+t).value/100;
- g.gain.value=vol;
+ const tn=ac().currentTime;g.gain.setValueAtTime(0,tn);g.gain.linearRampToValueAtTime(vol,tn+.003);
  if(pn)s.connect(g).connect(pn).connect(busOf(t));else s.connect(g).connect(busOf(t));
  s.start(0,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)));
 }
@@ -1307,16 +1307,16 @@ async function exportWav(){clearOcCh();if(!licOk())return;
  oc._mb=null;if(MAST.fx.length){const _mch=chainFor(oc,MAST.fx);_mch.out.connect(oc.destination);oc._mb=_mch.in}
  for(let t=0;t<8;t++){
   if(TR[t].muted)continue;
-  if(TR[t].type==='audio'){const c=TR[t].clip;if(c&&c.buf){const sc=oc.createBufferSource();sc.buffer=c.buf;const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;const pn=oc.createStereoPanner?oc.createStereoPanner():null;if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(ocIn(oc,t,oc._mb))}else sc.connect(g).connect(ocIn(oc,t,oc._mb));sc.start(c.pos*60/bpm/4,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)))}continue}
+  if(TR[t].type==='audio'){const c=TR[t].clip;if(c&&c.buf){const sc=oc.createBufferSource();sc.buffer=c.buf;const g=oc.createGain(),vol=+document.getElementById('vol'+t).value/100;const pn=oc.createStereoPanner?oc.createStereoPanner():null;if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(ocIn(oc,t,oc._mb))}else sc.connect(g).connect(ocIn(oc,t,oc._mb));const st=c.pos*60/bpm/4;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(vol,st+.003);sc.start(st,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)))}continue}
   const b=TR[t].buffers[TR[t].pad];if(!b)continue;
   const hit=(s,p,d)=>{
    const src=oc.createBufferSource();src.buffer=b;
    if(p!=null)src.playbackRate.value=Math.pow(2,(p-60)/12);
-   const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;
+   const g=oc.createGain(),vol=+document.getElementById('vol'+t).value/100;
    const pn=oc.createStereoPanner?oc.createStereoPanner():null;
    if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;src.connect(g).connect(pn).connect(ocIn(oc,t,oc._mb))}
    else src.connect(g).connect(ocIn(oc,t,oc._mb));
-   const sw=(s%2===1)?(+document.getElementById('swing').value/100)*(60/bpm/4):0;src.start(s*60/bpm/4+sw);if(d)src.stop(s*60/bpm/4+sw+d*60/bpm/4+0.05);
+   const sw=(s%2===1)?(+document.getElementById('swing').value/100)*(60/bpm/4):0,st=s*60/bpm/4+sw;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(vol,st+.002);src.start(st);if(d)src.stop(st+d*60/bpm/4+0.05);
   };
   if(TR[t].notes){for(const n of TR[t].notes)hit(n.s,n.p,n.d)}
   else for(let s=0;s<16;s++)if(TR[t].grid[s])hit(s);
@@ -1330,10 +1330,10 @@ async function renderStem(t,bpm,dur){
   if(TR[t].type==='audio'){const c=TR[t].clip;if(!c||!c.buf)return null;
    const oc=new OfflineAudioContext(2,Math.ceil(dur*44100),44100);
    const sc=oc.createBufferSource();sc.buffer=c.buf;
-   const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;
+   const g=oc.createGain(),vol=+document.getElementById('vol'+t).value/100;
    const pn=oc.createStereoPanner?oc.createStereoPanner():null;
    if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(ocIn(oc,t,oc._mb))}else sc.connect(g).connect(ocIn(oc,t,oc._mb));
-   sc.start(c.pos*60/bpm/4,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)));
+   const st=c.pos*60/bpm/4;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(vol,st+.003);sc.start(st,c.trim0||0,Math.max(0.05,(c.trim1||c.buf.duration)-(c.trim0||0)));
    const rb=await oc.startRendering();return abWav(rb)}
   const b=TR[t].buffers[TR[t].pad];if(!b)return null;
   const oc=new OfflineAudioContext(2,Math.ceil(dur*44100),44100);
@@ -1341,11 +1341,11 @@ async function renderStem(t,bpm,dur){
   const hit=(s,p,d)=>{ // één hit: stap s, optioneel pitch p (toon-tracks), optionele duur d in stappen
    const sc=oc.createBufferSource();sc.buffer=b;
    if(p!=null)sc.playbackRate.value=Math.pow(2,(p-60)/12);
-   const g=oc.createGain();g.gain.value=vol;
+   const g=oc.createGain();
    const pn=oc.createStereoPanner?oc.createStereoPanner():null;
    if(pn){pn.pan.value=+document.getElementById('pan'+t).value/100;sc.connect(g).connect(pn).connect(ocIn(oc,t,oc._mb))}
    else sc.connect(g).connect(ocIn(oc,t,oc._mb));
-   const sw=(s%2===1)?(+document.getElementById('swing').value/100)*(60/bpm/4):0;sc.start(s*60/bpm/4+sw);if(d)sc.stop(s*60/bpm/4+sw+d*60/bpm/4+0.05);
+   const sw=(s%2===1)?(+document.getElementById('swing').value/100)*(60/bpm/4):0,st=s*60/bpm/4+sw;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(vol,st+.002);sc.start(st);if(d)sc.stop(st+d*60/bpm/4+0.05);
   };
   if(TR[t].notes){for(const n of TR[t].notes)hit(n.s,n.p,n.d);}
   else for(let s=0;s<16;s++)if(TR[t].grid[s])hit(s);

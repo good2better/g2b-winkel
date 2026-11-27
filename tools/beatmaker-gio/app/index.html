@@ -342,23 +342,23 @@ function speel(r,t,v){
   if(r=='shkr'){const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=450;s.connect(f).connect(g).connect(out);
    // Decay Tail Trap: staart klemt op 85% van het vakje (BPM-gekoppeld)
    const bpm=+document.getElementById('bpm').value||120,stp=240/bpm/nSub,cl=Math.min(dur,stp*0.85)*dec;
-   g.gain.setValueAtTime(g0,t);g.gain.setValueAtTime(g0,t+Math.max(0,cl-0.03));g.gain.exponentialRampToValueAtTime(0.001,t+cl);
+   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(g0,t+.002);g.gain.setValueAtTime(g0,t+Math.max(0,cl-0.03));g.gain.exponentialRampToValueAtTime(0.001,t+cl);
    s.start(t);s.stop(t+cl+0.01);return}
   // choke-groep: dichte hat kapt de staart van een lopende open-hat af (5ms, geen klik)
   if(r=='hat'){const t0=a.currentTime;OH=OH.filter(e=>e.t>t0-4);for(const e of OH){e.g.gain.cancelScheduledValues(t);e.g.gain.setTargetAtTime(0,t,0.005)}}
-  g.gain.value=g0;s.connect(g).connect(out);s.start(t);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(g0,t+.002);s.connect(g).connect(out);s.start(t);
   if(fx.decay<1){g.gain.setValueAtTime(g0,t+dur*dec*0.6);g.gain.exponentialRampToValueAtTime(0.001,t+dur*dec);s.stop(t+dur*dec+0.02)}
   if(r=='hat2')OH.push({g,t:t+dur});
   return}
  const TMr=(GENRES[cur]&&GENRES[cur].tim)||{kf:150,ke:45,kd:.3,sd:.18,hc:7000,hd:.05,pf:520,pd:.12};
  const TM={...TMr,kf:TMr.kf*fx.pitch,ke:TMr.ke*Math.min(fx.pitch,1.5),kd:TMr.kd*fx.decay,sd:TMr.sd*fx.decay,hd:TMr.hd*fx.decay,pf:TMr.pf*fx.pitch,pd:TMr.pd*fx.decay};
- if(r=='kick'){const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(TM.kf,t);o.frequency.exponentialRampToValueAtTime(TM.ke,t+0.12);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.kd);o.connect(g).connect(dst);o.start(t);o.stop(t+TM.kd+0.02)}
- if(r=='snare'){const s=a.createBufferSource();s.buffer=NB;const g=a.createGain();g.gain.setValueAtTime(0.7,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.sd);s.connect(g).connect(dst);s.start(t);s.stop(t+TM.sd+0.02)}
- if(r=='hat'||r=='hat2'||r=='shkr'){const s=a.createBufferSource();s.buffer=NB;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=r=='shkr'?450:TM.hc;const g=a.createGain();g.gain.setValueAtTime(0.3,t);g.gain.exponentialRampToValueAtTime(0.001,t+(r=='shkr'?0.08:r=='hat2'?TM.hd*4:TM.hd));let tail=g;
+ if(r=='kick'){const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(TM.kf,t);o.frequency.exponentialRampToValueAtTime(TM.ke,t+0.12);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(1,t+.002);g.gain.exponentialRampToValueAtTime(0.001,t+TM.kd);o.connect(g).connect(dst);o.start(t);o.stop(t+TM.kd+0.02)}
+ if(r=='snare'){const s=a.createBufferSource();s.buffer=NB;const f=a.createBiquadFilter();f.type='bandpass';f.frequency.value=1800;f.Q.value=.8;const g=a.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.7,t+.002);g.gain.exponentialRampToValueAtTime(0.001,t+TM.sd);s.connect(f).connect(g).connect(dst);s.start(t);s.stop(t+TM.sd+0.02)}
+ if(r=='hat'||r=='hat2'||r=='shkr'){const s=a.createBufferSource();s.buffer=NB;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=r=='shkr'?450:TM.hc;const g=a.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.3,t+.0015);g.gain.exponentialRampToValueAtTime(0.001,t+(r=='shkr'?0.08:r=='hat2'?TM.hd*4:TM.hd));let tail=g;
   if(r=='shkr'&&a.createStereoPanner){const p=a.createStereoPanner();p.pan.value=0.6;tail=p}
   if(r=='hat2'&&a.createStereoPanner){const p=a.createStereoPanner();p.pan.value=0.65;tail=p}
   s.connect(f).connect(g).connect(tail).connect(dst);s.start(t);s.stop(t+(r=='shkr'?0.08:r=='hat2'?TM.hd*4:TM.hd)+0.02)}
- if(r=='perc'||r=='perc2'){const o=a.createOscillator(),g=a.createGain();o.frequency.value=TM.pf*(r=='perc2'?1.5:1);o.type='triangle';g.gain.setValueAtTime(0.5,t);g.gain.exponentialRampToValueAtTime(0.001,t+TM.pd);o.connect(g).connect(dst);o.start(t);o.stop(t+TM.pd+0.01)}
+ if(r=='perc'||r=='perc2'){const o=a.createOscillator(),g=a.createGain();o.frequency.value=TM.pf*(r=='perc2'?1.5:1);o.type='triangle';g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.5,t+.0025);g.gain.exponentialRampToValueAtTime(0.001,t+TM.pd);o.connect(g).connect(dst);o.start(t);o.stop(t+TM.pd+0.01)}
 }
 function tik(){
  const a=ac,bpm=+document.getElementById('bpm').value,stap=240/bpm/nSub;
@@ -467,7 +467,7 @@ function startALaag(a){
  if(!ac||a.mute||!a.buf)return;
  if(a.src){try{a.src.stop()}catch(e){}a.src=null}
  const s=ac.createBufferSource();s.buffer=a.buf;s.loop=true;
- const g=ac.createGain();g.gain.value=a.id=='loop'?0.75:0.85;
+ const g=ac.createGain(),gv=a.id=='loop'?0.75:0.85,t0=ac.currentTime;g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(gv,t0+.004);
  s.connect(g).connect(masterOf(ac));
  const off=Math.max(0,(ac.currentTime-playT0)%a.buf.duration);
  s.start(0,off);a.src=s;
@@ -585,7 +585,7 @@ document.getElementById('exp').onclick=async function(){
    for(const r of RIJEN)if(!MUTED.has(r)&&state[r].has(gs))speel(r,r=='shkr'&&gs%2==1?t+stap*0.10:t,VEL[r+':'+gs]);
    const tw=s*stap;for(const k in NLAY){const A=NLAY[k];if(!A.mute&&A.noten.length&&A.len)speelLaag(A,tw,stap,masterOf(oc),0)}}
   for(const a of ALAY)if(!a.mute&&a.buf){const s=oc.createBufferSource();s.buffer=a.buf;s.loop=true;
-   const g=oc.createGain();g.gain.value=a.id=='loop'?0.75:0.85;s.connect(g).connect(masterOf(oc));s.start(0)}
+   const g=oc.createGain(),gv=a.id=='loop'?0.75:0.85;g.gain.setValueAtTime(0,0);g.gain.linearRampToValueAtTime(gv,.004);s.connect(g).connect(masterOf(oc));s.start(0)}
   const rendered=await oc.startRendering();ac=savAc;NB=savNB;
   const url=URL.createObjectURL(wavBlob(rendered)),a=document.createElement('a');
   a.href=url;a.download=`G2B-${cur}-${bpm}bpm-${nBars}bar.wav`;a.click();
@@ -981,7 +981,7 @@ async function renderMix(rij,laagK){
   const tw=s*stap;for(const k in NLAY){const A=NLAY[k];
    if(layOK(k)&&!A.mute&&A.noten.length&&A.len)speelLaag(A,tw,stap,masterOf(oc),0)}}
  if(laagK==null)for(const a of ALAY)if(!a.mute&&a.buf&&(rij==null)){const s=oc.createBufferSource();s.buffer=a.buf;s.loop=true;
-  const g=oc.createGain();g.gain.value=a.id=='loop'?0.75:0.85;s.connect(g).connect(masterOf(oc));s.start(0)}
+  const g=oc.createGain(),gv=a.id=='loop'?0.75:0.85;g.gain.setValueAtTime(0,0);g.gain.linearRampToValueAtTime(gv,.004);s.connect(g).connect(masterOf(oc));s.start(0)}
  const rendered=await oc.startRendering();ac=savAc;NB=savNB;return rendered}
 // mini-ZIP (STORE, geen compressie) — geen externe lib nodig
 function zipStore(files){

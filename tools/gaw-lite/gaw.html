@@ -224,8 +224,8 @@ async function exportWav(){if(!licOk())return;
   const b=TR[t].buffers[TR[t].pad];if(!b)continue;
   for(let s=0;s<16;s++)if(TR[t].grid[s]){
    const src=oc.createBufferSource();src.buffer=b;
-   const g=oc.createGain();g.gain.value=+document.getElementById('vol'+t).value/100;
-   src.connect(g).connect(oc.destination);src.start(s*60/bpm/4);
+   const g=oc.createGain(),vol=+document.getElementById('vol'+t).value/100,st=s*60/bpm/4;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(vol,st+.002);
+   src.connect(g).connect(oc.destination);src.start(st);
   }
  }
  const rb=await oc.startRendering();

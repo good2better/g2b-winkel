@@ -308,10 +308,11 @@ function mixDown(){
  for(let i=0;i<N;i++){const m2=(loL[i]+loR[i])*0.5;L[i]+=m2-loL[i];R[i]+=m2-loR[i]}
  const preset=$('sbMaster')?$('sbMaster').value:'club';
  const target=preset==='stream'?-14:-9,ceil=preset==='stream'?0.891:0.966;
- for(let i=0;i<N;i++){L[i]=Math.tanh(L[i]);R[i]=Math.tanh(R[i])}
  let ss=0;for(let i=0;i<N;i++)ss+=L[i]*L[i]+R[i]*R[i];
  const lufs=10*Math.log10(ss/(2*N)+1e-12)-0.691,g=Math.pow(10,(target-lufs)/20);
- for(let i=0;i<N;i++){L[i]=Math.tanh(L[i]*g/ceil)*ceil;R[i]=Math.tanh(R[i]*g/ceil)*ceil}
+ for(let i=0;i<N;i++){L[i]*=g;R[i]*=g}
+ let pk=0;for(let i=0;i<N;i++)pk=Math.max(pk,Math.abs(L[i]),Math.abs(R[i]));
+ if(pk>ceil){const trim=ceil/pk;for(let i=0;i<N;i++){L[i]*=trim;R[i]*=trim}}
  LAST.L=L;LAST.R=R;
  if(window._pv){const pv=window._pv;window._pv=null;for(const v of pv){try{SONG.vibe(v)}catch(e){}}}
  st(LAST.totBars===8&&CUR!==SECTIES?'👂 snel-preview klaar (8 maten) — druk 🎬 voor de volledige song':'✅ klaar — '+LAST.totBars+' maten · '+preset.toUpperCase()+' '+target+' LUFS · ~'+Math.round(N/SR)+'s');
@@ -420,7 +421,7 @@ window.SONG={
   for(let i=0;i<f&&i<n;i++){const g=i/f;L[i]*=g;R[i]*=g}
   for(let i=0;i<f&&i<n;i++){const g=i/f;L[n-1-i]*=g;R[n-1-i]*=g}
   let pk=0;for(let i=0;i<n;i++)pk=Math.max(pk,Math.abs(L[i]),Math.abs(R[i]));
-  const g=pk>0?.9/pk:1;for(let i=0;i<n;i++){L[i]=Math.tanh(L[i]*g);R[i]=Math.tanh(R[i]*g)}
+  const g=pk>0?.9/pk:1;for(let i=0;i<n;i++){L[i]*=g;R[i]*=g}
   dlBlob(new Blob([wavBytes(L,R,SR)],{type:'audio/wav'}),'g2b-hook-snippet.wav');
   st('📱 hook-snippet gedownload — '+Math.round(n/SR)+'s, fade in/out, klaar voor socials')},
  vibe(k){

@@ -81,10 +81,10 @@ function speel(i,semi){
  const f=+document.getElementById('filt').value;
  let node=s;
  if(f>0){const lp=a.createBiquadFilter();lp.type='lowpass';lp.frequency.value=f;s.connect(lp);node=lp}
- const g=a.createGain();g.gain.value=(+document.getElementById('vol').value)/100;
+ const g=a.createGain(),vol=(+document.getElementById('vol').value)/100;
  node.connect(g);g.connect(master());
  const len=Math.min(b.duration,b.duration*(+document.getElementById('leng').value)/100);
- g.gain.setValueAtTime(g.gain.value,t);
+ g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0001,vol),t+.003);
  g.gain.setTargetAtTime(0,t+len,0.03);
  s.start(t);s.stop(t+len+0.2);voices[i]=s;
  const el=document.getElementById('p'+i);el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),120);

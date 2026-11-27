@@ -148,7 +148,7 @@ document.getElementById('hs').textContent=SPELERS=='beurt'?'👤 P'+beurtNr+(_bv
 const lvs=()=>document.getElementById('lvs').textContent='❤️'.repeat(lev);lvs();
 const A=new(window.AudioContext||window.webkitAudioContext)();
 /* kids: zachte marimba-achtige tonen (sine), grotere kids: arcade-square */
-const blip=(f,d=.08,type,v=.15)=>{type=type||(D.kid?'sine':'square');const o=A.createOscillator(),g=A.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,A.currentTime);g.gain.exponentialRampToValueAtTime(.001,A.currentTime+d);o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
+const blip=(f,d=.08,type,v=.15)=>{type=type||(D.kid?'sine':'square');const o=A.createOscillator(),g=A.createGain();o.type=type;o.frequency.value=f;const t0=A.currentTime;g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(v,t0+.0015);g.gain.exponentialRampToValueAtTime(.001,t0+d);o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
 /* stijgende belonings-pling voor kids */
 const pling=()=>{blip(660,.07,'sine',.12);setTimeout(()=>blip(880,.09,'sine',.12),75)};
 let _lastLv=1;
@@ -283,7 +283,7 @@ let kaarten=T.items.slice(0,8);kaarten=kaarten.concat(kaarten).sort(()=>Math.ran
 let open=[],klaar=0,zet=0,score=0,blok=false;
 const B=document.getElementById('b');
 const A=new(window.AudioContext||window.webkitAudioContext)();
-const blip=f=>{const o=A.createOscillator(),g=A.createGain();o.frequency.value=f;g.gain.value=.15;o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+.1)};
+const blip=f=>{const o=A.createOscillator(),g=A.createGain();o.frequency.value=f;const t0=A.currentTime;g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.15,t0+.0015);g.gain.exponentialRampToValueAtTime(.001,t0+.1);o.connect(g);g.connect(A.destination);o.start();o.stop(t0+.1)};
 const FOTOS=${JSON.stringify('FOTOS')};const FITEMS=(FOTOS.items||[]).map(u=>{const i=new Image();i.src=u;return i});
 kaarten.forEach((e,i)=>{const k=document.createElement('div');k.className='k';k.textContent='❓';
  k.onclick=()=>{if(blok||k.classList.contains('open'))return;k.classList.add('open');
@@ -383,7 +383,7 @@ const _TI='THEMA_ID';const vr=VR[_TI].sort(()=>Math.random()-.5).slice(0,10);
 {const ITS={dieren:['🐶','🐱','🐰','🦁'],ruimte:['⭐','🪐','🚀','🌙'],zee:['🐟','🐠','🦀','🐬'],snoep:['🍬','🍭','🧁','🍩'],sport:['⚽','🏀','🎾','🏈'],muziek:['🎵','🎶','🎸','🥁']};const IT=ITS[_TI]||ITS.dieren;
  const bgx=document.getElementById('bgx');for(let i=0;i<9;i++){const s=document.createElement('span');s.className='bge';s.textContent=IT[i%IT.length];s.style.left=(4+i*11)+'vw';s.style.top=(10+((i*37)%80))+'vh';s.style.setProperty('--d',(5+i*1.3).toFixed(1)+'s');s.style.fontSize=(1.4+(i%3)*.5)+'rem';bgx.appendChild(s)}}
 let n=0,score=0;const A=new(window.AudioContext||window.webkitAudioContext)();
-const blip=(f,d=.1)=>{const o=A.createOscillator(),g=A.createGain();o.frequency.value=f;g.gain.value=.15;o.connect(g);g.connect(A.destination);o.start();o.stop(A.currentTime+d)};
+const blip=(f,d=.1)=>{const o=A.createOscillator(),g=A.createGain();o.frequency.value=f;const t0=A.currentTime;g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.15,t0+.0015);g.gain.exponentialRampToValueAtTime(.001,t0+d);o.connect(g);g.connect(A.destination);o.start();o.stop(t0+d)};
 function vraag(){const[q,goed,fout]=vr[n];document.getElementById('v').textContent=q;document.getElementById('vn').textContent=n+1;let foutN=0;
  const ant=[goed,...fout].sort(()=>Math.random()-.5);const A2=document.getElementById('ant');A2.innerHTML='';
  ant.forEach(a=>{const d=document.createElement('div');d.className='a';d.textContent=a;if(a==goed)d.dataset.g='1';
@@ -490,9 +490,9 @@ function __spelmetmuziek(){}
 const BPM=100+30*(D.snel-0.7),SPB=60/BPM,N=4,LY=Hh-110,LW=W/N;
 const TOETS=['D','F','J','K'],KL=['#f472b6','#22d3ee','#a3e635','#fbbf24'];
 /* eigen beat: kick op beat, hat offbeat, snare op 2&4 (WebAudio) */
-const kick=t=>{const o=A.createOscillator(),g=A.createGain();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(40,t+.1);g.gain.setValueAtTime(.5,t);g.gain.exponentialRampToValueAtTime(.001,t+.15);o.connect(g);g.connect(A.destination);o.start(t);o.stop(t+.16)};
-const hat=t=>{const b=A.createBuffer(1,800,A.sampleRate),s=A.createBufferSource(),g=A.createGain(),f=A.createBiquadFilter();const dd=b.getChannelData(0);for(let i=0;i<800;i++)dd[i]=(Math.random()*2-1)*Math.pow(1-i/800,2);s.buffer=b;f.type='highpass';f.frequency.value=8000;g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.001,t+.03);s.connect(f);f.connect(g);g.connect(A.destination);s.start(t)};
-const snare=t=>{const b=A.createBuffer(1,2200,A.sampleRate),s=A.createBufferSource(),g=A.createGain(),f=A.createBiquadFilter();const dd=b.getChannelData(0);for(let i=0;i<2200;i++)dd[i]=(Math.random()*2-1)*Math.pow(1-i/2200,2);s.buffer=b;f.type='bandpass';f.frequency.value=1800;g.gain.setValueAtTime(.3,t);g.gain.exponentialRampToValueAtTime(.001,t+.1);s.connect(f);f.connect(g);g.connect(A.destination);s.start(t)};
+const kick=t=>{const o=A.createOscillator(),g=A.createGain();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(40,t+.1);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.5,t+.002);g.gain.exponentialRampToValueAtTime(.001,t+.15);o.connect(g);g.connect(A.destination);o.start(t);o.stop(t+.16)};
+const hat=t=>{const b=A.createBuffer(1,800,A.sampleRate),s=A.createBufferSource(),g=A.createGain(),f=A.createBiquadFilter();const dd=b.getChannelData(0);for(let i=0;i<800;i++)dd[i]=(Math.random()*2-1)*Math.pow(1-i/800,2);s.buffer=b;f.type='highpass';f.frequency.value=8000;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.12,t+.0015);g.gain.exponentialRampToValueAtTime(.001,t+.03);s.connect(f);f.connect(g);g.connect(A.destination);s.start(t)};
+const snare=t=>{const b=A.createBuffer(1,2200,A.sampleRate),s=A.createBufferSource(),g=A.createGain(),f=A.createBiquadFilter();const dd=b.getChannelData(0);for(let i=0;i<2200;i++)dd[i]=(Math.random()*2-1)*Math.pow(1-i/2200,2);s.buffer=b;f.type='bandpass';f.frequency.value=1800;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.3,t+.002);g.gain.exponentialRampToValueAtTime(.001,t+.1);s.connect(f);f.connect(g);g.connect(A.destination);s.start(t)};
 /* noot-map: 4 banen × 48 beats, gegenereerd patroon */
 const noten=[];
 for(let b=0;b<48;b++){const r=Math.random();
