@@ -69,6 +69,21 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
     <label>RUIMTE <input id="ruimte" type="range" min="0" max="100" value="14" title="reverb-send op de preview"></label>
     <label>WARMTE <input id="warmte" type="range" min="0" max="100" value="12" title="delay-send op de preview"></label>
   </div>
+  <div class="row" style="border-top:1px solid #123124;padding-top:8px;margin-top:8px">
+    <span class="hint" style="color:#22c55e;font-weight:700">🌩 DONDER ENGINE</span>
+    <label>VOET<select id="dmode" title="muzikale karaktervoet van de bas-engine"><option value="auto">AUTO</option><option value="zuiver">Zuiver</option><option value="club">Club</option><option value="schuifel">Schuifel</option><option value="donker">Donker</option><option value="a808">808</option><option value="hybride">Hybride</option></select></label>
+    <label>GRIT-BRON<select id="grittype" title="eigen karakter-instrument: dit is een klankbron, geen mixing-effect"><option value="auto">AUTO</option><option value="metaal">Metaal</option><option value="hout">Hout</option><option value="noise">Noise</option><option value="vocaal">Vocaal-textuur</option><option value="snaar">Snaar</option></select></label>
+    <label>DRAGER <span id="dvdrager">45%</span><input id="ldrager" type="range" min="0" max="100" value="45" title="extra fundament/subdrager onder de bas"></label>
+    <label>SLAG <span id="dvslag">35%</span><input id="lslag" type="range" min="0" max="100" value="35" title="korte kick-impact in de bas zelf"></label>
+    <label>KARAKTER <span id="dvkarakter">35%</span><input id="lkarakter" type="range" min="0" max="100" value="35" title="hogere harmonischen voor kleine speakers"></label>
+    <label>BEWEGING <span id="dvbeweging">20%</span><input id="lbeweging" type="range" min="0" max="100" value="20" title="subtiele adem/beweging zonder stereo-laag te verbreken"></label>
+    <button class="btn b2" id="bEngine" title="dobbel een muzikaal passende laag-combinatie in de gekozen voet">🎲 ENGINE</button>
+  </div>
+  <div class="row" style="align-items:center;gap:7px">
+    <span class="hint" style="color:#22c55e;font-weight:700">🧠 BREIN COMMANDO</span>
+    <input id="brainCmd" type="text" placeholder="typ bijv: warme schuifel zouk bass met rust · of donkere 808 meer slag 142 bpm" style="flex:1;min-width:260px;background:#0a1812;color:#d8ffe6;border:1px solid #1d4a33;border-radius:8px;padding:9px 10px">
+    <button class="btn b1" id="bBrain" title="vertaal tekst naar genre, voet, engine-lagen en arrangementactie">DOEN</button>
+  </div>
   <div class="row">
     <button class="btn b1" id="bAlles">🎲 ALLES NIEUW</button>
     <button class="btn b2" id="bLijn">🎲 BASLIJN</button>
@@ -85,8 +100,15 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
     <button class="btn b2" id="bStuur" title="stuur baslijn + toonsoort + bpm naar G2B MELODIE">➡️ MELODIE</button>
     <button class="btn b2" id="bMap">📁 EIGEN SHOTS</button>
     <button class="btn b2" id="bBib" title="G2B BEST-OF geluidsbank — top basses & kicks, direct laden">🎹 BIBLIOTHEEK</button>
+    <button class="btn b2" id="bLK" title="koppel map 1 als impact/kick-laag">📁 LAAG KICK</button>
+    <button class="btn b2" id="bLS" title="koppel map 2 als body/sub-laag">📁 LAAG SUB</button>
+    <button class="btn b2" id="bLG" title="koppel map 3 als karakter/grit-laag">📁 LAAG GRIT</button>
+    <button class="btn b1" id="bLayerDice" title="dobbel een nieuwe combinatie uit de gekoppelde laagmappen">🎲 LAYERS</button>
     <input type="file" id="dir" webkitdirectory hidden>
     <input type="file" id="fi" accept="audio/*" multiple hidden>
+    <input type="file" id="dirKick" webkitdirectory hidden>
+    <input type="file" id="dirSub" webkitdirectory hidden>
+    <input type="file" id="dirGrit" webkitdirectory hidden>
   </div>
   <div class="row" id="bibRow" style="display:none">
     <span class="hint">BEST-OF bibliotheek — klik laadt het shot in de juiste laag (grondtoon wordt zelf gemeten):</span>
@@ -101,6 +123,7 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
     <span class="hint">van je baslijn — zelfde gevoel, nieuwe draai · 👍 leert jouw smaak</span>
     <label>HOEVEEL ANDERS<input id="varAnders" type="range" min="10" max="100" value="55" style="width:110px"></label>
     <button class="btn b2" id="bVar">✨ MAAK VARIANTEN</button>
+    <button class="btn b2" id="bArr" title="maak een 8-bars arrangement: eerste helft strakker, tweede helft energieker met finale-aanzet">🧩 ARRANGE 8</button>
   </div>
   <div class="row" id="varRij" style="display:none;gap:8px;flex-wrap:wrap"></div>
   <div class="row">
@@ -125,6 +148,8 @@ Onder 120&nbsp;Hz altijd mono · fase-check kick↔sub · sidechain · soft-clip
   <div class="row" style="margin:6px 0 4px;align-items:center;flex-wrap:wrap;gap:6px"><span class="hint">✂ pas alleen dit deel aan:</span><span id="blokUI" style="display:inline-flex;gap:5px;flex-wrap:wrap"></span></div>
   <canvas id="roll" style="cursor:crosshair"></canvas>
   <canvas id="scope" style="width:100%;height:70px;display:block;margin-top:6px"></canvas>
+  <div id="dnaMeter" class="hint" style="margin-top:6px;padding:7px 9px;border:1px solid #1d4a33;border-radius:9px;background:#07130d">🧠 DONDER-DNA meter: rendert…</div>
+  <div class="row" style="margin-top:6px;align-items:center;flex-wrap:wrap;gap:6px"><button class="mini" id="bDnaFix" title="laat Quality Brain voorzichtig toonladder, subzone en ademruimte corrigeren; undo brengt terug">🧠 DNA-FIX</button><span class="hint">corrigeert alleen voorzichtig: toonladder · te hoge sub · te weinig ademruimte · glide-relaties</span></div>
   <div class="row" style="margin-top:8px;align-items:center;flex-wrap:wrap;gap:6px"><span class="hint">speel live mee:</span>
     <button class="mini" id="bOpn" title="neem je keyboard-spel op in de roll">● OPN</button>
     <button class="mini" id="bStap" title="stap-inspelen: elke toets schrijft een noot en schuift op">⌨ STAP-IN</button>
@@ -360,15 +385,44 @@ function pitchOf(x,sr){
   if(c>best){best=c;bestLag=lag}}
  return bestLag?sr/bestLag:55}
 function midiOf(f){return Math.round(69+12*Math.log2(f/440))}
+async function decodeShot(f,ac){
+ if(!/\.(wav|mp3|ogg|flac)$/i.test(f.name))return null;
+ try{const ab=await f.arrayBuffer(),buf=await ac.decodeAudioData(ab);
+  const ch0=buf.getChannelData(0),f0=pitchOf(ch0,buf.sampleRate);
+  let br=0;for(let i=1;i<ch0.length;i+=8)br+=Math.abs(ch0[i]-ch0[i-1]);br/=Math.max(1,ch0.length/8);
+  return{naam:f.name.replace(/\.\w+$/,''),buf:buf,f0:f0,midi:midiOf(f0),dur:buf.duration,bright:br};
+ }catch(e){return null}
+}
 async function laadShots(files){
  const ac=S.ctx||(S.ctx=new (window.AudioContext||window.webkitAudioContext)());
  let n=0;
- for(const f of files){if(!/\.(wav|mp3|ogg|flac)$/i.test(f.name))continue;
-  try{const ab=await f.arrayBuffer(),buf=await ac.decodeAudioData(ab);
-   const ch0=buf.getChannelData(0),f0=pitchOf(ch0,buf.sampleRate);
-   let br=0;for(let i=1;i<ch0.length;i+=8)br+=Math.abs(ch0[i]-ch0[i-1]);br/=Math.max(1,ch0.length/8);
-   SHOTS.push({naam:f.name.replace(/\.\w+$/,''),buf:buf,f0:f0,midi:midiOf(f0),dur:buf.duration,bright:br});n++}catch(e){}}
+ for(const f of files){const s=await decodeShot(f,ac);if(s){SHOTS.push(s);n++}}
  st('📁 '+n+' shots geladen — wijs toe: K=kick · S=sub · G=grit (klik = aan/uit)');shotsUI()}
+/* 3-mappen LAYER BRAIN: gebruiker koppelt bewust een map aan een muzikale rol;
+   de tool meet pitch/duur/helderheid en kiest daarna slimme combinaties per laag. */
+let LAAGBANK={kick:[],sub:[],grit:[]};
+function bestShotForLayer(indices,laag){
+ if(!indices.length)return null;
+ let best=indices[0],bs=1e18;
+ for(const i of indices){const s=SHOTS[i];let sc=0;
+  if(laag==='kick')sc=Math.abs(s.dur-.28)*5-s.bright*45+(s.dur>1.2?2:0);
+  else if(laag==='sub')sc=Math.abs((s.f0||55)-52)/28-s.dur*.35+s.bright*18;
+  else sc=Math.abs(s.dur-.55)*2-s.bright*60;
+  if(sc<bs){bs=sc;best=i}}
+ return best}
+async function laadLaagMap(files,laag){
+ const ac=S.ctx||(S.ctx=new (window.AudioContext||window.webkitAudioContext)());
+ const start=SHOTS.length,inds=[];let n=0;
+ for(const f of files){const s=await decodeShot(f,ac);if(s){SHOTS.push(s);inds.push(SHOTS.length-1);n++}}
+ LAAGBANK[laag]=[...new Set([...LAAGBANK[laag],...inds])];
+ const best=bestShotForLayer(inds,laag);if(best!=null)SHOTLAAG[laag]=best;
+ st('📁 '+laag.toUpperCase()+'-laag: '+n+' sounds gegroepeerd · beste start: '+(best!=null?SHOTS[best].naam:'geen leesbare')+' · 🎲 LAYERS maakt combinaties');
+ shotsUI();laagUI();renderPreview()}
+function dobbelLayers(){
+ const gekozen=[];
+ for(const laag of ['kick','sub','grit']){const bank=LAAGBANK[laag];if(bank.length){SHOTLAAG[laag]=bank[Math.floor(Math.random()*bank.length)];gekozen.push(laag+'='+SHOTS[SHOTLAAG[laag]].naam)}}
+ if(!gekozen.length){st('📁 koppel eerst LAAG KICK + LAAG SUB + LAAG GRIT mappen — dan dobbel ik echte stacks');return}
+ shotsUI();laagUI();renderPreview();st('🎲 LAYER STACK — '+gekozen.join(' · ')+' · Quality Brain houdt mono/fase/sidechain in de gaten')}
 function shotsUI(){
  $('shotRow').style.display=SHOTS.length?'flex':'none';
  $('shotInfo').textContent=SHOTS.length+' eigen shots — wijs een laag toe (synth blijft altijd beschikbaar):';
@@ -432,6 +486,157 @@ function hip(x,fc,sr){const y=new Float32Array(x.length),l=lop(x,fc,sr);
 /* saturatie voor grit-laag */
 function sat(x,dr){const y=new Float32Array(x.length);for(let i=0;i<x.length;i++)y[i]=Math.tanh(x[i]*dr)*0.85;return y}
 
+/* ============ GRIT-BRON: eigen karakter-instrumenten, geen nabewerking ============
+   Deze stemmen worden per noot opnieuw gevormd. Daarna mag filtering/drive alleen polish zijn. */
+function gritAuto(basType){return{reese:'snaar',fm:'metaal',logdrum:'hout',a808:'noise',donder:'metaal',pluck:'hout'}[basType]||'vocaal'}
+function currentGritType(){return S.sound.gritType||'auto'}
+function resolvedGritType(basType){const gt=currentGritType();return gt==='auto'?gritAuto(basType):gt}
+function setGritType(v){S.sound.gritType=v||'auto';if($('grittype'))$('grittype').value=S.sound.gritType}
+function detNoise(i,seed){const x=Math.sin(i*12.9898+seed*78.233)*43758.5453;return (x-Math.floor(x))*2-1}
+function renderGritStem(type,f,dur,sr,n){
+ const N=Math.max(64,Math.floor(dur*sr)),y=new Float32Array(N),T=1/sr,PI2=Math.PI*2,seed=n?seed01(n):.37;
+ if(type==='auto')type='vocaal';
+ if(type==='metaal'){
+  const ratios=[1.98,2.76,4.07,5.43,7.11],amps=[.55,.42,.28,.18,.1];
+  for(let i=0;i<N;i++){const t=i*T;let s=0;
+   for(let h=0;h<ratios.length;h++){const dec=.08+h*.045+seed*.02;s+=Math.sin(PI2*f*ratios[h]*t+seed*h*1.7)*amps[h]*Math.exp(-t/dec)}
+   if(t<.012)s+=.25*detNoise(i,seed)*Math.exp(-t/.004);
+   y[i]=Math.tanh(s*.85)}
+ }else if(type==='hout'){
+  for(let i=0;i<N;i++){const t=i*T;
+   const r1=Math.sin(PI2*720*t+seed)*Math.exp(-t/.045),r2=Math.sin(PI2*1380*t+seed*2)*Math.exp(-t/.028),kn=.5*detNoise(i,seed)*Math.exp(-t/.006);
+   const sub=Math.sin(PI2*f*3*t)*Math.exp(-t/.12)*.18;
+   y[i]=(r1*.42+r2*.28+kn+sub)*Math.min(1,t*900)}
+ }else if(type==='noise'){
+  let lp=0,bp=0;const drive=.5+seed*.2;
+  for(let i=0;i<N;i++){const t=i*T,nn=detNoise(i,seed);
+   lp+=(nn-lp)*.075;bp+=(nn-lp-bp)*.22;
+   const env=Math.exp(-t/(.055+seed*.04))*Math.min(1,t*1200);
+   y[i]=Math.tanh(bp*env*drive*2.2)}
+ }else if(type==='snaar'){
+  for(let i=0;i<N;i++){const t=i*T;let s=0;
+   for(let h=2;h<=9;h++){const det=1+(h%2?1:-1)*(.0007+seed*.0009)*h;s+=Math.sin(PI2*f*h*det*t)*(1/(h*.75))*Math.exp(-t/(.18+h*.035))}
+   y[i]=Math.tanh(s*.95)*Math.min(1,t*500)}
+ }else{ // vocaal-textuur: formantachtige harmonische stem, geen gesamplede voice
+  for(let i=0;i<N;i++){const t=i*T;let s=0;
+   for(let h=2;h<=16;h++){const hf=f*h;
+    const form=Math.exp(-Math.pow((hf-620)/330,2))*.75+Math.exp(-Math.pow((hf-1220)/420,2))*.55+Math.exp(-Math.pow((hf-2380)/650,2))*.3;
+    s+=Math.sin(PI2*hf*t+seed*h*.31)*(form+.035)/(h*.42)}
+   const open=.65+.35*Math.sin(PI2*(1.1+seed)*t+seed);
+   y[i]=Math.tanh(s*open*.85)*Math.min(1,t*420)}
+ }
+ /* zachte eindfade: broninstrument zelf moet netjes stoppen */
+ const fade=Math.min(N,Math.floor(.035*sr));
+ for(let i=0;i<fade;i++){const u=1-i/fade;y[N-1-i]*=u}
+ return y;
+}
+
+/* ================= DONDER ENGINE: gestapelde bas-motor =================
+   Niet random stacken: drager/slag/karakter/beweging zijn gescheiden muzikale lagen. Grit is een eigen broninstrument; filters/drive zijn nabewerking.
+   Laag blijft mono; karakter mag stereo worden pas via de bestaande grit-split. */
+function layerVals(){return{mode:$('dmode')?$('dmode').value:'auto',drager:(+$('ldrager')?.value||0)/100,slag:(+$('lslag')?.value||0)/100,karakter:(+$('lkarakter')?.value||0)/100,beweging:(+$('lbeweging')?.value||0)/100}}
+function modeMul(mode){return{
+ zuiver:{drager:.75,slag:.45,karakter:.55,beweging:.45},
+ club:{drager:1,slag:1.25,karakter:1,beweging:.8},
+ schuifel:{drager:1.15,slag:.45,karakter:.6,beweging:1.2},
+ donker:{drager:1.1,slag:.85,karakter:1.3,beweging:1},
+ a808:{drager:.9,slag:1.3,karakter:.9,beweging:.7},
+ hybride:{drager:1,slag:1,karakter:1,beweging:1},
+ auto:{drager:1,slag:1,karakter:1,beweging:1}
+}[mode]||{drager:1,slag:1,karakter:1,beweging:1}}
+function seed01(n){const x=Math.sin(n.p*12.9898+n.s*78.233+n.d*4.113)*43758.5453;return x-Math.floor(x)}
+function engineApply(v,e,f,nd,sr,n){
+ const lv=layerVals(),mm=modeMul(lv.mode),N=v.length,y=new Float32Array(v),T=1/sr;
+ const drager=lv.drager*mm.drager,slag=lv.slag*mm.slag,karakter=lv.karakter*mm.karakter,beweging=lv.beweging*mm.beweging;
+ if(drager>0){ /* fundament-versterker: zuivere sine onder de eigen sound, nooit stereo */
+  const amp=.16*drager;
+  for(let i=0;i<N;i++){const t=i*T;y[i]+=amp*Math.sin(Math.PI*2*f*t)*e[i]}
+ }
+ if(slag>0){ /* korte pitch-impact in de bas zelf: kickgevoel zonder de echte kick te verdubbelen */
+  const M=Math.min(N,Math.floor(.09*sr));let ph=0;
+  for(let i=0;i<M;i++){const t=i*T,ft=f*(1+2.8*Math.exp(-t/.018));ph+=Math.PI*2*ft*T;
+   y[i]+=.22*slag*Math.sin(ph)*Math.exp(-t/.035)*e[i]}
+ }
+ if(karakter>0){ /* harmonische handtekening: voor kleine speakers, laag genoeg om de sub niet te vervuilen */
+  for(let i=0;i<N;i++){const t=i*T;
+   y[i]+=.055*karakter*(Math.sin(Math.PI*2*f*2*t)*Math.exp(-t/.16)+.55*Math.sin(Math.PI*2*f*3*t)*Math.exp(-t/.09))*e[i]}
+ }
+ if(beweging>0){ /* adem/beweging: deterministisch per noot, geen random wobble per render */
+  const rate=.25+1.6*beweging,depth=.025+.09*beweging,ph=seed01(n)*Math.PI*2;
+  for(let i=0;i<N;i++){const t=i*T;y[i]*=1+depth*Math.sin(Math.PI*2*rate*t+ph)*Math.min(1,t/.05)}
+ }
+ return y}
+function setEngineSlider(id,val){const el=$(id);if(el)el.value=Math.round(val);const lab=$('dv'+id.slice(1));if(lab)lab.textContent=Math.round(val)+'%'}
+function dobbelEngine(){
+ const mode=$('dmode')?.value||'auto',gid=genre().id;
+ const prof=mode==='zuiver'?{d:[25,55],s:[5,25],k:[10,35],b:[0,20]}:
+  mode==='club'?{d:[45,80],s:[45,90],k:[25,65],b:[5,35]}:
+  mode==='schuifel'?{d:[55,90],s:[5,35],k:[15,45],b:[25,70]}:
+  mode==='donker'?{d:[45,85],s:[20,65],k:[45,90],b:[15,60]}:
+  mode==='a808'?{d:[35,70],s:[55,100],k:[20,60],b:[5,40]}:
+  (gid==='zouk'||gid==='kawina'?{d:[55,90],s:[10,40],k:[15,50],b:[25,70]}:
+   gid==='trap'||gid==='drill'?{d:[35,70],s:[55,100],k:[25,65],b:[10,45]}:
+   gid==='donder'?{d:[55,95],s:[25,70],k:[35,85],b:[20,70]}:{d:[35,75],s:[25,75],k:[20,70],b:[10,50]});
+ const rr=x=>Math.round(x[0]+Math.random()*(x[1]-x[0]));
+ setEngineSlider('ldrager',rr(prof.d));setEngineSlider('lslag',rr(prof.s));setEngineSlider('lkarakter',rr(prof.k));setEngineSlider('lbeweging',rr(prof.b));
+ st('🎲 DONDER ENGINE — drager/slag/karakter/beweging gestapeld in voet '+mode);
+}
+
+/* ================= BREIN COMMANDO v1 — lokale tekst→sound regie =================
+   Bewust offline/regelgebaseerd: voorspelbaar, geen cloud, geen API-kosten.
+   Later kan het lerende brein deze zelfde commando-taak overnemen. */
+function clamp100(x){return Math.max(0,Math.min(100,Math.round(x)))}
+function setEngineValues(d,s,k,b){if(d!=null)setEngineSlider('ldrager',clamp100(d));if(s!=null)setEngineSlider('lslag',clamp100(s));if(k!=null)setEngineSlider('lkarakter',clamp100(k));if(b!=null)setEngineSlider('lbeweging',clamp100(b))}
+function breinCommando(txt){
+ const q=(txt||'').toLowerCase(),act=[];
+ const gmap={zouk:'zouk',kompa:'zouk',kawina:'kawina',bubbling:'bubbling',trap:'trap',drill:'drill',techno:'techno',psy:'psy',psytrance:'psy',hardstyle:'hard',ukg:'ukg',house:'ukg','drum & bass':'dnb','drum and bass':'dnb',dnb:'dnb',dubstep:'dub',amapiano:'amap',logdrum:'amap',reggaeton:'reggaeton',dembow:'reggaeton',soca:'soca',donder:'donder'};
+ let gekozenGenre=null;
+ for(const [word,gid] of Object.entries(gmap))if(q.includes(word)){gekozenGenre=gid;break}
+ if(gekozenGenre){const gi=GENRES.findIndex(g=>g.id===gekozenGenre);if(gi>=0){$('genre').value=gi;const g=genre();$('bpm').value=g.bpm;$('swing').value=Math.round(g.sw*100);$('swv').textContent=Math.round(g.sw*100)+'%';act.push('genre '+g.n)}}
+ const bm=q.match(/\b(\d{2,3})\s*bpm\b/);if(bm){$('bpm').value=Math.max(60,Math.min(220,+bm[1]));act.push('bpm '+$('bpm').value)}
+ let bas=null;
+ if(/\b808\b/.test(q))bas='a808';else if(q.includes('reese'))bas='reese';else if(q.includes('kickbass')||q.includes('rolling bass'))bas='kickbass';else if(q.includes('log drum')||q.includes('logdrum'))bas='logdrum';else if(q.includes('pluk')||q.includes('pluck'))bas='pluck';else if(q.includes('fm')||q.includes('donk'))bas='fm';else if(q.includes('pure sub')||q.includes('sub'))bas='sub';else if(q.includes('donder'))bas='donder';
+ if(bas){$('bastype').value=bas;act.push('bas '+bas)}
+ let mode=null;
+ if(q.includes('schuifel')||q.includes('intiem')||q.includes('romant'))mode='schuifel';
+ else if(q.includes('donker')||q.includes('dark')||q.includes('filmisch')||q.includes('cinematic'))mode='donker';
+ else if(q.includes('club')||q.includes('festival')||q.includes('dans'))mode='club';
+ else if(q.includes('zuiver')||q.includes('schoon')||q.includes('clean'))mode='zuiver';
+ else if(/\b808\b/.test(q))mode='a808';
+ else if(q.includes('hybride')||q.includes('hybrid'))mode='hybride';
+ if(mode){$('dmode').value=mode;act.push('voet '+mode)}
+ let gritBron=null;
+ if(q.includes('metaal')||q.includes('metal')||q.includes('bell'))gritBron='metaal';
+ else if(q.includes('hout')||q.includes('wood')||q.includes('log'))gritBron='hout';
+ else if(q.includes('noise')||q.includes('ruis')||q.includes('industri'))gritBron='noise';
+ else if(q.includes('vocaal')||q.includes('vocal')||q.includes('stem')||q.includes('choir'))gritBron='vocaal';
+ else if(q.includes('snaar')||q.includes('string')||q.includes('reese'))gritBron='snaar';
+ if(gritBron){setGritType(gritBron);act.push('grit-bron '+gritBron)}
+ /* startpunt per intentie; niet random maar vertaalde sound-regie */
+ let d=45,s=35,k=35,b=20;
+ if(mode==='schuifel'){d=78;s=18;k=28;b=56}
+ if(mode==='donker'){d=68;s=42;k=72;b=38}
+ if(mode==='club'){d=64;s=72;k=48;b=24}
+ if(mode==='a808'){d=52;s=82;k=42;b=22}
+ if(mode==='zuiver'){d=42;s=16;k=18;b=8}
+ if(q.includes('warm')||q.includes('rond')){d+=14;k-=8;act.push('warm/rond')}
+ if(q.includes('diep')||q.includes('sub')||q.includes('laag')){d+=18;act.push('meer drager/sub')}
+ if(q.includes('slag')||q.includes('punch')||q.includes('hard')||q.includes('impact')){s+=20;act.push('meer slag')}
+ if(q.includes('zacht')||q.includes('rustig')||q.includes('rust')){s-=14;b+=10;act.push('zachter/meer rust')}
+ if(q.includes('karakter')||q.includes('growl')||q.includes('metaal')||q.includes('scherp')){k+=20;act.push('meer karakter')}
+ if(q.includes('schoon')||q.includes('clean')){k-=14;act.push('schoner')}
+ if(q.includes('beweeg')||q.includes('adem')||q.includes('glide')||q.includes('mov')){b+=18;act.push('meer beweging')}
+ /* muzikale veiligheidsbegrenzing: intentie stuurt, maar mag geen modder/levenloosheid worden */
+ d=Math.max(25,Math.min(82,d));s=Math.max(8,Math.min(88,s));k=Math.max(8,Math.min(88,k));b=Math.max(0,Math.min(82,b));
+ setEngineValues(d,s,k,b);
+ if(q.includes('arrange')||q.includes('arrangement')||q.includes('8 bar')||q.includes('8 bars')){arrange8();act.push('arrangement 8 bars')}
+ else if(q.includes('nieuw')||q.includes('maak')||q.includes('dobbel')||q.includes('random')){dobbelAlles();setEngineValues(d,s,k,b);act.push('nieuwe lijn+sound')}
+ if(q.includes('rust')||q.includes('ademruimte')||q.includes('ruimte tussen')){dnaFix();act.push('Quality Brain rust/subzone')}
+ renderPreview();
+ const msg='🧠 BREIN COMMANDO — '+(act.length?act.join(' · '):'nog geen herkende soundwoorden')+' · drager '+$('ldrager').value+' · slag '+$('lslag').value+' · karakter '+$('lkarakter').value+' · beweging '+$('lbeweging').value;
+ st(msg);return{act,mode,bas,gritBron:currentGritType()+(currentGritType()==='auto'?' → '+resolvedGritType($('bastype').value||genre().bas):''),genre:gekozenGenre,values:{drager:+$('ldrager').value,slag:+$('lslag').value,karakter:+$('lkarakter').value,beweging:+$('lbeweging').value},status:msg};
+}
+
 /* ================= RENDER (3-laags, met fase-check + sidechain + soft-clip) ================= */
 function renderLoop(){
  const g=genre(),bpm=+$('bpm').value,sw=+$('swing').value/100;
@@ -468,14 +673,19 @@ function renderLoop(){
    for(let i=0;i<gN;i++){const u=i/gN,j=stem.length-gN+i;
     v[j]=v[j]*(1-u)+(tStem[i]||0)*u*e[j]*(n.v/100)} /* tStem óók door envelope — staart eindigt niet op volle amplitude */
   }
+  v=engineApply(v,e,f,nd,sr,n);
   const st=Math.floor((n.s*sd+swOff(n.s))*sr)+Math.floor((Math.random()*2-1)*hum*sr);
   const lo=lop(v,145,sr); // sub-deel: mono, LPF ~120-150
   choke(st); // monofone choke-group: vorige noot afkappen met 5ms fade
   for(let i=0;i<lo.length&&st+i<sub.length;i++)sub[st+i]+=lo[i]*0.8;
   if(gritOn){
-   let gsrc=v;
+   let gsrc;
    if(SHOTLAAG.grit!=null&&SHOTS[SHOTLAAG.grit])gsrc=shotVoix(SHOTS[SHOTLAAG.grit],f,nd,sr).map((s,i)=>s*e[i]*vv);
-   const hi=lop(lop(sat(hip(gsrc,170,sr),drive),2500,sr),2500,sr); // grit: HPF 150-200 + drive + 2×LPF 2.5k
+   else{
+    const gt=currentGritType();
+    gsrc=renderGritStem(resolvedGritType(basType),f,nd,sr,n).map((s,i)=>s*e[i]*vv);
+   }
+   const hi=lop(lop(sat(hip(gsrc,170,sr),drive),2500,sr),2500,sr); // polish op de grit-BRON: HPF + drive + LPF, niet de bron zelf
    for(let i=0;i<hi.length&&st+i<gritL.length;i++){
     const sp=basType==='reese'?Math.sin(i*0.00021)*0.5:0; // lichte beweging voor reese
     gritL[st+i]+=hi[i]*(0.11+sp);gritR[st+i]+=hi[i]*(0.11-sp)}
@@ -500,12 +710,16 @@ function renderLoop(){
   for(let i=0;i<M;i++){const a=kick[t0+i]+sub[t0+i],b=kick[t0+i]-sub[t0+i];
    p1=Math.max(p1,Math.abs(a));p2=Math.max(p2,Math.abs(b))}
   if(p2>p1){for(let i=0;i<sub.length;i++)sub[i]=-sub[i];S.faseFlip=true}else S.faseFlip=false}
- /* SIDECHAIN: sub-duck op elke kick (snelle dip, ~30-90ms release) */
+ /* SIDECHAIN: frequentie-selectief — diepe kickband harder ducken, karakterharmonischen bewaren */
  const duck=genre().id==='soca'?.30:.5, rel=genre().id==='soca'?.03:.09;
  const rampN=Math.floor(.004*sr); /* duck-in over 4ms: voorkomt amplitude-sprong = klik */
+ const subLo=lop(sub,85,sr),subHi=new Float32Array(sub.length);
+ for(let i=0;i<sub.length;i++)subHi[i]=sub[i]-subLo[i];
  for(const k of S.kicks){const st=Math.floor(k.s*sd*sr),relN=Math.floor(rel*sr);
-  for(let i=0;i<relN&&st+i<sub.length;i++){const u=i/relN;
-   sub[st+i]*=1-duck*Math.min(i/rampN,1)*Math.pow(1-u,2.2)}}
+  for(let i=0;i<relN&&st+i<sub.length;i++){const u=i/relN,shape=Math.min(i/rampN,1)*Math.pow(1-u,2.2);
+   subLo[st+i]*=1-duck*shape;
+   subHi[st+i]*=1-duck*.28*shape}}
+ for(let i=0;i<sub.length;i++)sub[i]=subLo[i]+subHi[i];
  /* BUS: mix + mono<120 (sub&kick zijn al mono) + tanh soft-clip glue */
  const out=new Float32Array(kick.length*2),pre=new Float32Array(kick.length*2);
  for(let i=0;i<kick.length;i++){
@@ -629,11 +843,18 @@ function uiInit(){
  $('swing').oninput=()=>{$('swv').textContent=$('swing').value+'%'};
  $('oct').onchange=()=>{const doel=+$('oct').value,nu=S.oct||0;if(doel!==nu)octaaf(doel-nu)};
  ['hum','ruimte','warmte'].forEach(id=>$(id).oninput=()=>{if(S.lastRender)renderPreview()});
+ ['ldrager','lslag','lkarakter','lbeweging'].forEach(id=>$(id).oninput=()=>{const lab=$('dv'+id.slice(1));if(lab)lab.textContent=$(id).value+'%';if(S.lastRender)renderPreview()});
+ $('dmode').onchange=()=>{if(S.lastRender)renderPreview()};
+ if($('grittype'))$('grittype').onchange=()=>{S.sound.gritType=$('grittype').value;laagUI();renderPreview()};
+ $('bEngine').onclick=()=>{dobbelEngine();renderPreview()};
+ $('bBrain').onclick=()=>breinCommando($('brainCmd').value);
+ $('brainCmd').addEventListener('keydown',e=>{if(e.key==='Enter')breinCommando($('brainCmd').value)});
  $('bUndo').onclick=()=>{if(HI>0)herstel(--HI)};
  $('bRedo').onclick=()=>{if(HI<HIST.length-1)herstel(++HI)};
  $('bAlles').onclick=()=>{bewaar();dobbelAlles()};
  $('bLijn').onclick=()=>{bewaar();maakLijnBlok();teken();st(blokS()?'🎲 nieuwe baslijn in het gekozen deel — de rest bleef staan':'🎲 nieuwe baslijn — kicks & sounds bleven staan');renderPreview()};
  $('bSnd').onclick=()=>{bewaar();dobbelSound();teken();renderPreview()};
+ $('bDnaFix').onclick=dnaFix;
  $('bPlay').onclick=luisterToggle;
  $('bWav').onclick=()=>{st('⏳ renderen…');setTimeout(()=>{const r=renderLoop();dl(new Blob([wavBytes(r.buf,r.sr)],{type:'audio/wav'}),naam('wav'))},30)}; // export = altijd studio-flat (speaker-check is alleen luisteren)
  document.querySelectorAll('.spk').forEach(b=>b.onclick=()=>{SPK=b.dataset.m;
@@ -644,6 +865,10 @@ function uiInit(){
 $('bStuur').onclick=()=>{try{localStorage.setItem('g2b_donder_stuur',JSON.stringify({bpm:+$('bpm').value,maten:+$('maten').value,key:+$('key').value,noten:S.notes}))}catch(e){}
  location.href='../melodie/index.html?uit=donder'};
  $('bMap').onclick=()=>{if(window.showDirectoryPicker){$('dir').click()}else $('fi').click()};
+ $('bLK').onclick=()=>$('dirKick').click();
+ $('bLS').onclick=()=>$('dirSub').click();
+ $('bLG').onclick=()=>$('dirGrit').click();
+ $('bLayerDice').onclick=dobbelLayers;
  $('bBib').onclick=bibUI;
  $('bOpn').onclick=()=>{OPNAAN=!OPNAAN;$('bOpn').classList.toggle('on',OPNAAN);$('bOpn').textContent=OPNAAN?'● OPN AAN':'● OPN';
   if(OPNAAN){const ac=S.ctx||(S.ctx=new (window.AudioContext||window.webkitAudioContext)());OPT0=ac.currentTime;st('● OPN AAN — speel op het keyboard; elke toets wordt een noot in de roll')}
@@ -660,6 +885,9 @@ $('preset').onchange=()=>{const i=+$('preset').value;if(!PRESETS[i])return;const
  st('🎚️ SOUND '+PRESETS[i][0]+' — sub/grit/kick afgestemd')};
  $('dir').onchange=e=>laadShots([...e.target.files]);
  $('fi').onchange=e=>laadShots([...e.target.files]);
+ $('dirKick').onchange=e=>laadLaagMap([...e.target.files],'kick');
+ $('dirSub').onchange=e=>laadLaagMap([...e.target.files],'sub');
+ $('dirGrit').onchange=e=>laadLaagMap([...e.target.files],'grit');
  document.querySelectorAll('.lock').forEach((b,i)=>b.onclick=()=>{S.locks[i]=!S.locks[i];laagUI()});
  document.querySelectorAll('.swap').forEach(b=>b.onclick=()=>smartSwap(b.dataset.l));
  document.querySelectorAll('.mute').forEach(b=>b.onclick=()=>{S.mute[b.dataset.l]=!S.mute[b.dataset.l];laagUI();renderPreview();st(S.mute[b.dataset.l]?'🔇 '+b.dataset.l.toUpperCase()+' uit':'🔊 '+b.dataset.l.toUpperCase()+' weer aan')});
@@ -690,8 +918,9 @@ function laagUI(){
  l[1].querySelector('.nm').textContent=subNm+(S.locks[1]?' 🔒':'');
  l[1].querySelector('.pr').innerHTML=`attack ${Math.round((snd.subAtk!=null?snd.subAtk:g.subAtk)*1000)} ms · 100% mono onder 120 Hz · sidechain op kick${S.faseFlip?' · fase geïnverteerd ✓':''}`;
  l[2].classList.toggle('on',S.locks[2]);l[2].querySelector('.lock').textContent=S.locks[2]?'🔓 vast':'🔒 lock';
- l[2].querySelector('.nm').textContent=S.sound.gritOff?'uit':((SHOTLAAG.grit!=null&&SHOTS[SHOTLAAG.grit])?('🎯 '+SHOTS[SHOTLAAG.grit].naam):('grit · drive '+(S.sound.drive!=null?S.sound.drive.toFixed(1):'auto')));
- l[2].querySelector('.pr').innerHTML=S.sound.gritOff?'mid-laag uit — alleen kick + sub':'HPF 170 Hz + saturatie · stereo alleen boven 120 Hz · hoort op kleine speakers';
+ if($('grittype')&&$('grittype').value!==currentGritType())$('grittype').value=currentGritType();
+ l[2].querySelector('.nm').textContent=S.sound.gritOff?'uit':((SHOTLAAG.grit!=null&&SHOTS[SHOTLAAG.grit])?('🎯 '+SHOTS[SHOTLAAG.grit].naam):('grit-bron '+currentGritType()+(currentGritType()==='auto'?' → '+resolvedGritType(bt):'')+' · drive '+(S.sound.drive!=null?S.sound.drive.toFixed(1):'auto')));
+ l[2].querySelector('.pr').innerHTML=S.sound.gritOff?'mid-laag uit — alleen kick + sub':'eigen broninstrument eerst · HPF/drive/LPF daarna alleen polish · stereo boven 120 Hz';
  ['kick','sub','grit'].forEach((naam,i)=>{
   l[i].classList.toggle('uit',S.mute[naam]);
   const mb=l[i].querySelector('.mute');
@@ -702,7 +931,7 @@ function dobbelSound(){
  const g=genre(),L=S.locks;
  if(!L[0]){S.sound.klen=g.kick.len*(0.8+Math.random()*0.5);S.sound.khpf=g.kick.hpf*(0.85+Math.random()*0.35)}
  if(!L[1]){S.sound.subAtk=g.subAtk*(0.6+Math.random()*1.1);S.sound.det=.0008+Math.random()*.003}
- if(!L[2]){S.sound.drive=0.6+Math.random()*0.6;S.sound.gritOff=Math.random()<.15}
+ if(!L[2]){S.sound.drive=0.6+Math.random()*0.6;S.sound.gritOff=Math.random()<.15;const pool=g.id==='amap'||g.id==='kawina'?['hout','vocaal','snaar','auto']:g.id==='dub'||g.id==='dnb'?['metaal','noise','snaar','auto']:['auto','metaal','hout','vocaal','snaar','noise'];setGritType(pool[Math.floor(Math.random()*pool.length)])}
  laagUI();st('🎲 sound gedobbeld — baslijn bleef staan');
 }
 let BLOK=-1; // -1 = alles; blokken van 4 maten
@@ -811,6 +1040,76 @@ function octaaf(d){if(!S.notes.length)return;bewaar();
  S.oct=(S.oct||0)+d;
  for(const n of S.notes)n.p+=d*12;teken();renderPreview();
  st('🎹 baslijn staat nu op octaaf '+(S.oct>0?'+'+S.oct:S.oct)+' (verschoven '+d*12+' semitones)')}
+function dnaMeter(r){
+ const el=$('dnaMeter');if(!el||!r)return;
+ const sr=r.sr,n=r.kick.length,mix=new Float32Array(n);
+ for(let i=0;i<n;i++)mix[i]=(r.kick[i]+r.sub[i]+(r.gritL[i]+r.gritR[i])*.5)*.55;
+ const low=lop(mix,120,sr),e=x=>{let s=0;for(let i=0;i<x.length;i++)s+=x[i]*x[i];return s/x.length};
+ const lowR=e(low)/(e(mix)+1e-12);
+ let pk=0,endPk=0,subPk=0,subRms=0,maxStep=0;
+ for(let i=0;i<n;i++){const a=Math.abs(mix[i]);if(a>pk)pk=a;if(i&&Math.abs(mix[i]-mix[i-1])>maxStep)maxStep=Math.abs(mix[i]-mix[i-1]);const b=Math.abs(r.sub[i]);if(b>subPk)subPk=b;subRms+=r.sub[i]*r.sub[i]}
+ subRms=Math.sqrt(subRms/n);
+ for(let i=Math.max(0,n-Math.floor(sr*.01));i<n;i++)endPk=Math.max(endPk,Math.abs(mix[i]));
+ const crest=subPk/(subRms+1e-12),tot=(+$('maten').value)*16,bezet=new Set();
+ for(const x of S.notes)for(let s=x.s;s<x.s+x.d&&s<tot;s++)bezet.add(Math.floor(s));
+ const rust=1-bezet.size/Math.max(1,tot);
+ const keyW=+$('key').value,N=Math.max(1,S.notes.length),kickSet=new Set(S.kicks.map(k=>k.s)),pitches=new Set();
+ let inKey=0,subZone=0,highSub=0,glides=0,coll=0,offbeat=0;
+ for(const x of S.notes){
+  const pc=p=>((p-keyW)%12+12)%12,ok=LAD.includes(pc(x.p))||(x.glide&&LAD.includes(pc(x.p+x.glide)));
+  if(ok)inKey++;
+  if(x.p>=28&&x.p<=44)subZone++;
+  if(x.p>44)highSub++;
+  if(x.glide)glides++;
+  if(kickSet.has(x.s)||kickSet.has(x.s-1)||kickSet.has(x.s+1))coll++;
+  if(x.s%4!==0)offbeat++;
+  pitches.add(x.p);
+ }
+ inKey/=N;subZone/=N;highSub/=N;glides/=N;coll/=N;offbeat/=N;
+ const variety=pitches.size,groove=Math.round(clamp(offbeat*45+rust*35+Math.min(variety,8)/8*20,0,100));
+ let score=100,warn=[];
+ if(pk>.92){score-=18;warn.push('pieken heet')}
+ if(lowR<.38){score-=16;warn.push('weinig echt laag')}
+ if(lowR>.72){score-=10;warn.push('laag kan modderen')}
+ if(endPk>.015){score-=12;warn.push('eind niet strak')}
+ if(maxStep>.34){score-=8;warn.push('harde sample-sprong')}
+ if(rust<.12){score-=10;warn.push('te weinig ademruimte')}
+ if(crest>8){score-=6;warn.push('sub erg piekig/clicky')}
+ if(inKey<.72){score-=10;warn.push('toonladder onrustig')}
+ if(highSub>.35){score-=8;warn.push('sub vaak te hoog')}
+ if(subZone<.3){score-=6;warn.push('weinig sub-sweetspot')}
+ /* hoge kick/sub-overlap is hier geen automatische straf: de frequentie-selectieve sidechain behandelt die relatie bewust */
+ if(variety<2&&S.notes.length>6){score-=4;warn.push('melodisch erg vlak')}
+ const kleur=score>=85?'#22c55e':score>=68?'#facc15':'#fb7185';
+ el.innerHTML=`🧠 <b style="color:${kleur}">DONDER-DNA ${score}</b> · laag ${(lowR*100).toFixed(0)}% · piek ${pk.toFixed(2)} · key ${(inKey*100).toFixed(0)}% · subzone ${(subZone*100).toFixed(0)}% · glide ${(glides*100).toFixed(0)}% · groove ${groove} · rust ${(rust*100).toFixed(0)}% · kick↔sub ${(coll*100).toFixed(0)}% · einde ${endPk.toFixed(3)}${warn.length?' · ⚠ '+warn.join(', '):' · ✓ technisch en muzikaal schoon'}`;
+}
+function dnaFix(){
+ if(!S.notes.length){st('🧠 geen noten om te fixen — maak of speel eerst een baslijn');return}
+ bewaar();
+ const fixes=[],tot=(+$('maten').value)*16;
+ let octaved=0,snapped=0,removed=0;
+ const highRatio=S.notes.filter(n=>n.p>44).length/Math.max(1,S.notes.length);
+ if(highRatio>.35){for(const n of S.notes)if(n.p>44&&n.p-12>=28){n.p-=12;octaved++}if(octaved)fixes.push(octaved+'x sub octaaf lager')}
+ for(const n of S.notes){const q=snapL(n.p);if(q!==n.p&&Math.abs(q-n.p)<=2){n.p=q;snapped++}}
+ if(snapped)fixes.push(snapped+'x toonladder gesnappt');
+ const bezet=new Set();for(const x of S.notes)for(let s=x.s;s<x.s+x.d&&s<tot;s++)bezet.add(Math.floor(s));
+ const rust=1-bezet.size/Math.max(1,tot);
+ if(rust<.1){let c=0,keep=[];
+  for(const n of S.notes){if(n.d<=1&&n.s%4!==0){c++;if(c%2===0){removed++;continue}}keep.push(n)}
+  if(removed){S.notes=keep;fixes.push(removed+'x korte pickup uitgedund voor ademruimte')}
+ }
+ if(octaved||snapped||removed){
+  let gl=0;S.notes.sort((a,b)=>a.s-b.s);
+  for(let i=0;i<S.notes.length;i++){const n=S.notes[i],nx=S.notes[i+1];
+   if(n.glide&&nx&&nx.s<=n.s+n.d+1){n.glide=nx.p-n.p;gl++}
+   else if(n.glide&&Math.abs(n.glide)<2)delete n.glide;
+   if(genre().id==='donder'&&!n.glide)n.glide=-2}
+  if(gl)fixes.push(gl+'x bestaande glide-relatie bijgewerkt');
+ }
+ teken();renderPreview();
+ const msg=fixes.length?'🧠 DNA-FIX — '+fixes.join(' · ')+' · ↶ undo brengt terug':'🧠 DNA-FIX — geen veilige correctie nodig';
+ setTimeout(()=>st(msg),120);
+}
 function renderPreview(){
  st('⏳ preview renderen…');
  setTimeout(()=>{
@@ -824,7 +1123,7 @@ function renderPreview(){
    a.onloadedmetadata=()=>{a.currentTime=pos%r.dur;a.play()};
   }else a.onloadedmetadata=null;
   $('au').src=S.wavUrl;
-  tekenScope(r);
+  tekenScope(r);dnaMeter(r);
   st('✓ klaar — ▶ luister · 🎲 opnieuw · ⬇ exporteer .wav / .mid'+(SPK!=='studio'?' · 🔊 '+SPK.toUpperCase()+'-check':'')+(S.faseFlip?' · fase-fix toegepast':''));
  },30);
 }
@@ -978,6 +1277,27 @@ $('bVar').onclick=()=>{if(!S.notes.length){st('🎲 maak eerst een baslijn');ret
  const how=(+$('varAnders').value||55)/100;
  VARI=[0,1,2,3].map(i=>varTrans(S.notes,i,how));varUI();
  st('✨ 4 varianten klaar — klik erop om te laden, 👍 om je smaak te leren')};
+function arrange8(){
+ if(!S.notes.length){st('🧩 maak eerst een baslijn');return}
+ bewaar();
+ const curSteps=(+$('maten').value)*16,srcSteps=Math.min(curSteps,64);
+ const src=S.notes.filter(n=>n.s<srcSteps).map(n=>({p:n.p,s:n.s,d:n.d,v:n.v,glide:n.glide||0}));
+ if(!src.length){st('🧩 geen noten in de eerste loophelft gevonden');return}
+ const base4=[];
+ for(let off=0;off<64;off+=srcSteps)for(const n of src)base4.push({...n,s:n.s+off});
+ const verse=varTrans(base4,0,.45).filter(n=>n.s<64).map(n=>({...n,d:Math.min(n.d,64-n.s)}));
+ const dropBase=varTrans(base4,1,.68).filter(n=>n.s<64).map(n=>({...n,d:Math.min(n.d,64-n.s)}));
+ const drop=dropBase.map(n=>({...n,s:n.s+64}));
+ const last=drop.filter(n=>n.s>=112).sort((a,b)=>b.s-a.s)[0];
+ if(last&&!drop.some(n=>n.s>=126))drop.push({p:Math.min(48,last.p+12),s:126,d:1,v:72});
+ else if(!last){const root=src[0].p;drop.push({p:root,s:112,d:3,v:84},{p:Math.min(48,root+7),s:120,d:2,v:78},{p:Math.min(48,root+12),s:124,d:2,v:74})}
+ $('maten').value='8';
+ S.notes=verse.concat(drop).filter(n=>n.s<128).sort((a,b)=>a.s-b.s);
+ S.kicks=kickStappen(genre(),8).map(s=>({s:s}));
+ teken();renderPreview();
+ setTimeout(()=>st('🧩 ARRANGE 8 — eerste 4 maten strakker, tweede 4 energieker · finale-aanzet aan einde · ↶ undo brengt terug'),120);
+}
+$('bArr').onclick=arrange8;
 
 /* ================= v2.3: BAS-AGENT (audio/.mid/neurië → baslijn+kicks) ================= */
 let BPjs2=null,BPmod2=null;
