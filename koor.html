@@ -38,6 +38,7 @@ audio{width:100%}
 <div class="card">
   <div class="drop" id="drop">sleep hier je VOCAL heen (wav/mp3/ogg) — of klik om te kiezen<input type="file" id="fi" accept="audio/*" hidden></div>
   <div class="drop small" id="dropKey">optioneel: drop je TRACK/beat hier — dan leert hij de toonsoort van de muziek ipv je stem<input type="file" id="fk" accept="audio/*" hidden></div>
+  <div class="row" style="margin-top:8px"><button class="btn b1" id="bRec">● NEEM VOCAL OP</button><span class="hint" id="recHint">zing/neurië direct in de tool → daarna meteen MAAK KOOR</span></div>
   <div class="samples" id="samples"></div>
   <div class="hint">Geen track gedropt? Dan meet hij de toonsoort van je vocal zelf (Krumhansl-analyse, dezelfde als je SLEUTEL-plugin).</div>
 </div>
@@ -46,17 +47,27 @@ audio{width:100%}
   <div class="row">
     <label>toonsoort<select id="keySel"><option value="auto">AUTO (detectie)</option></select></label>
     <label>koor-type<select id="preset">
-      <option value="duo">DUO — lead + terts</option>
+      <option value="duo">INTIEM — lead + terts</option>
       <option value="triad" selected>TRIAK — lead + terts + kwint</option>
-      <option value="gospel">GOSPEL — +terts +kwint +octaaf</option>
+      <option value="gospel">GOSPEL — volle terts/kwint/octaaf</option>
       <option value="cathedral">CATHEDRAL — 5 stemmen, breed</option>
+      <option value="film">FILMISCH — laag bed + hoge stralen</option>
       <option value="dice">🎲 DICE — verrassing in toonsoort</option>
     </select></label>
     <label>podium-breedte<input type="range" id="breed" min="0" max="100" value="70"></label>
+    <label>menselijkheid<input type="range" id="mens" min="0" max="100" value="58" title="timing-, detune- en kleurverschillen tussen stemmen"></label>
+    <label>ruimte<input type="range" id="ruimte" min="0" max="100" value="22" title="eigen koorruimte na de dry stemmen"></label>
+    <label>lucht<input type="range" id="lucht" min="0" max="100" value="28" title="zachte open klank op achtergronden; lead blijft helder"></label>
     <button class="btn b1" id="bKoor">🎤 MAAK KOOR</button>
     <button class="btn" id="bStem" style="display:none">⬇ STEMS .zip</button>
   </div>
+  <div class="row" style="align-items:center">
+    <span class="hint" style="color:#3DDC84;font-weight:700">🧠 BREIN COMMANDO</span>
+    <input id="brainCmd" type="text" placeholder="typ bijv: filmisch breed koor met veel ruimte · of intiem gospel niet te scherp" style="flex:1;min-width:240px;background:#0D140F;color:#DFFFE9;border:1px solid #2C4A38;border-radius:8px;padding:9px 10px">
+    <button class="btn b1" id="bBrain">DOEN</button>
+  </div>
   <div id="stage"></div>
+  <div class="hint" id="dna" style="border:1px solid #1E2E24;border-radius:9px;padding:7px 9px;background:#0D140F">🧠 KOOR-DNA: maak eerst een koor</div>
   <div class="status" id="status">drop eerst je vocal</div>
 </div>
 
@@ -146,15 +157,108 @@ function mono(buf){const n=buf.length,ch=buf.numberOfChannels,o=new Float32Array
 function onepole(y,fc,high){const a=Math.exp(-2*Math.PI*fc/SR),o=new Float32Array(y.length);let s=0;
   for(let i=0;i<y.length;i++){s=a*s+(1-a)*y[i];o[i]=high?y[i]-s:s;}return o;}
 function pad(y,pre){const o=new Float32Array(y.length+pre);o.set(y,pre);return o;}
+function mixAdd(dst,src,g){for(let i=0;i<src.length&&i<dst.length;i++)dst[i]+=src[i]*g;return dst}
+function seed01(i,salt){const x=Math.sin(i*127.1+salt*311.7)*43758.5453123;return x-Math.floor(x)}
+function rmsActive(y){let e=0,n=0;for(let i=0;i<y.length;i+=2){const a=Math.abs(y[i]);if(a>.006){e+=y[i]*y[i];n++}}return n?Math.sqrt(e/n):0}
+function gainMatchVoice(sh,leadRms,ratio){
+ const r=rmsActive(sh);if(r<=0||leadRms<=0)return sh;
+ const target=leadRms*ratio,g=Math.max(.25,Math.min(8,target/r));
+ if(Math.abs(g-1)<.04)return sh;
+ const o=new Float32Array(sh.length);for(let i=0;i<sh.length;i++)o[i]=sh[i]*g;
+ return o}
+function voiceTone(sh,isLead,human,air,i){
+ /* geen nep-formantclaims: dit is wel echte onafhankelijke kleurspreiding per achtergrondstem */
+ const hp=isLead?65:105+seed01(i,2)*70;
+ let y=onepole(sh,hp,true);
+ const rawTop=onepole(y,6200,true),airG=isLead?.035+.07*air:.02+.09*air;
+ if(isLead)return mixAdd(y.slice(),rawTop,airG);
+ const cutoff=1800+seed01(i,3)*3300+air*1200;
+ y=onepole(y,cutoff,false);
+ return mixAdd(y.slice(),rawTop,airG);
+}
+function humanDrift(y,human,i){
+ /* minimale tijdsmodulatie alsof een echte zanger nooit sample-perfect meezingt; alleen achtergronden */
+ const depth=(1.1+human*3.8)*SR/1000,base=(1.2+human*2.2)*SR/1000,rate=.11+seed01(i,91)*.24,ph=seed01(i,92)*Math.PI*2;
+ const o=new Float32Array(y.length);
+ for(let n=0;n<y.length;n++){const d=base+depth*(0.5+0.5*Math.sin(2*Math.PI*rate*n/SR+ph));
+  const x=n-d,j=Math.floor(x),fr=x-j;
+  o[n]=(j>=0?(y[j]||0)*(1-fr)+(y[j+1]||0)*fr:0)}
+ return o}
+function makeImpulse(ctx,amt){
+ const dur=.65+amt*1.15,n=Math.floor(dur*SR),buf=ctx.createBuffer(2,n,SR);
+ for(let c=0;c<2;c++){const d=buf.getChannelData(c);let lp=0;
+  for(let i=0;i<n;i++){const t=i/SR,noise=Math.random()*2-1;lp+=.22*(noise-lp);
+   const early=(i<SR*.045?1.8:1);
+   d[i]=lp*early*Math.exp(-t*(3.2-amt*1.1))/Math.max(1,n/SR*.12);}}
+ return buf}
+async function applyRoom(L,R,amt){
+ if(amt<=0.01)return[L,R];
+ const tail=Math.floor(SR*(.7+amt*1.2)),len=L.length+tail;
+ const off=new OfflineAudioContext(2,len,SR);
+ const dryBuf=off.createBuffer(2,L.length,SR);dryBuf.getChannelData(0).set(L);dryBuf.getChannelData(1).set(R);
+ const src=off.createBufferSource();src.buffer=dryBuf;
+ const dry=off.createGain(),wet=off.createGain(),conv=off.createConvolver();
+ conv.buffer=makeImpulse(off,amt);dry.gain.value=1-amt*.18;wet.gain.value=amt*.52;
+ src.connect(dry);dry.connect(off.destination);src.connect(conv);conv.connect(wet);wet.connect(off.destination);
+ src.start();const rb=await off.startRendering();
+ return [rb.getChannelData(0),rb.getChannelData(1)];}
+function bandEnergy(y,hp){const x=hp?onepole(y,hp,true):y;let e=0;for(let i=0;i<x.length;i+=4)e+=x[i]*x[i];return e}
+function choirDna(L,R,dbg){
+ const n=Math.min(L.length,R.length);let peak=0,midE=0,sideE=0;
+ const mono=new Float32Array(n);
+ for(let i=0;i<n;i++){const l=L[i],r=R[i],m=(l+r)*.5,s=(l-r)*.5;mono[i]=m;peak=Math.max(peak,Math.abs(l),Math.abs(r));midE+=m*m;sideE+=s*s}
+ const width=sideE/(midE+1e-12),bedWidth=dbg?.bgWidthRatio||0,hf=bandEnergy(mono,6500)/(bandEnergy(mono)+1e-12),low=(()=>{const x=onepole(mono,180,false);let e=0;for(let i=0;i<x.length;i+=4)e+=x[i]*x[i];return e})()/(bandEnergy(mono)+1e-12);
+ let score=100,warn=[];
+ if(peak>.98){score-=18;warn.push('piek te heet')}
+ else if(peak>.9){score-=6;warn.push('weinig headroom')}
+ if(width<.025&&bedWidth<.22){score-=14;warn.push('achtergrondbed te smal')}
+ else if(width<.012){score-=5;warn.push('podium heel voorzichtig')}
+ if(width>.75){score-=10;warn.push('midden kan verzwakken')}
+ if(bedWidth>.9){score-=6;warn.push('koorbed te afhankelijk van stereo')}
+ if(hf>.08){score-=12;warn.push('scherp/harsh')}
+ if(low>.42){score-=8;warn.push('laag/mud in koor')}
+ const kleur=score>=90?'#3DDC84':score>=72?'#F5A623':'#ff6b6b';
+ $('dna').innerHTML=`🧠 <b style="color:${kleur}">KOOR-DNA ${score}</b> · totaalwidth ${(width*100).toFixed(0)}% · bedwidth ${(bedWidth*100).toFixed(0)}% · piek ${peak.toFixed(2)} · lucht/harsh ${(hf*100).toFixed(1)}% · mud ${(low*100).toFixed(0)}%`+(warn.length?` · ⚠ ${warn.join(' · ')}`:' · ✓ lead centraal, achtergrondbed breed en open');
+ return{score,width,bedWidth,peak,hf,low,warn};}
 
 /* ---------- koor ---------- */
 const PRESETS={
   duo:k=>[0,tertsFor(k)],
   triad:k=>[0,tertsFor(k),7],
-  gospel:k=>[0,tertsFor(k),7,12],
-  cathedral:k=>[0,tertsFor(k),7,12,-12],
-  dice:k=>{const sc=scaleFor(k),v=[0];while(v.length<4)v.push(sc[Math.floor(Math.random()*sc.length)]+12*(Math.random()<.5?1:0));return v;}
+  gospel:k=>[0,tertsFor(k),7,12,-12],
+  cathedral:k=>[0,-12,tertsFor(k),7,12],
+  film:k=>[0,-12,tertsFor(k),7,12,tertsFor(k)+12],
+  dice:k=>{const sc=scaleFor(k),pool=[...new Set([sc[1],sc[2],sc[4],7,12,-12,sc[1]+12,sc[2]+12])],v=[0];
+    while(v.length<5&&pool.length){const x=pool.splice(Math.floor(Math.random()*pool.length),1)[0];if(!v.includes(x))v.push(x)}return v;}
 };
+function setRange(id,v){const el=$(id);if(el)el.value=Math.max(+el.min||0,Math.min(+el.max||100,Math.round(v)))}
+function breinCommandoKoor(txt){
+ const q=(txt||'').toLowerCase(),act=[];
+ let preset=null;
+ if(q.includes('intiem')||q.includes('duo')||q.includes('klein'))preset='duo';
+ else if(q.includes('gospel'))preset='gospel';
+ else if(q.includes('cathedral')||q.includes('kathedraal')||q.includes('kerk'))preset='cathedral';
+ else if(q.includes('film')||q.includes('cinematic')||q.includes('episch'))preset='film';
+ else if(q.includes('dice')||q.includes('verras')||q.includes('random'))preset='dice';
+ else if(q.includes('triad')||q.includes('triak')||q.includes('simpel'))preset='triad';
+ if(preset){$('preset').value=preset;act.push('type '+preset)}
+ if(q.includes('breed')||q.includes('groot podium')||q.includes('wide')){setRange('breed',92);act.push('breed podium')}
+ if(q.includes('smal')||q.includes('dichtbij')){setRange('breed',38);act.push('smal podium')}
+ if(q.includes('veel ruimte')||q.includes('kerk')||q.includes('hall')||q.includes('cathedral')||q.includes('film')){setRange('ruimte',58);act.push('meer ruimte')}
+ if(q.includes('droog')||q.includes('strak')){setRange('ruimte',8);act.push('droger/strakker')}
+ if(q.includes('menselijk')||q.includes('echt')||q.includes('human')){setRange('mens',76);act.push('meer menselijkheid')}
+ if(q.includes('strak')||q.includes('exact')){setRange('mens',22);act.push('strakkere stemmen')}
+ if(q.includes('lucht')||q.includes('open')){setRange('lucht',62);act.push('meer lucht')}
+ if(q.includes('niet scherp')||q.includes('warm')||q.includes('zacht')){setRange('lucht',22);act.push('warmer/minder scherp')}
+ const km=q.match(/\bin\s+([a-g](#|b)?)(m| mineur| minor)?\b/);
+ if(km){let nn=km[1].toUpperCase();const map={CB:'B',DB:'C#',EB:'D#',FB:'E',GB:'F#',AB:'G#',BB:'A#'};nn=map[nn]||nn;const val=nn+(km[3]?'m':'');if([...$('keySel').options].some(o=>o.value===val)){$('keySel').value=val;act.push('toonsoort '+val)}}
+ const msg='🧠 BREIN COMMANDO KOOR — '+(act.length?act.join(' · '):'nog geen herkende koorkwoorden');
+ st(msg);
+ if(q.includes('maak')||q.includes('render')||q.includes('koor'))$('bKoor').click();
+ return{act,preset,status:msg,values:{breed:+$('breed').value,mens:+$('mens').value,ruimte:+$('ruimte').value,lucht:+$('lucht').value,key:$('keySel').value,type:$('preset').value}};
+}
+$('bBrain').onclick=()=>breinCommandoKoor($('brainCmd').value);
+$('brainCmd').addEventListener('keydown',e=>{if(e.key==='Enter')breinCommandoKoor($('brainCmd').value)});
 let voices=[];
 $('bKoor').onclick=async()=>{
   if(!lead){st('drop eerst je vocal');return;}
@@ -166,38 +270,57 @@ $('bKoor').onclick=async()=>{
   const offs=PRESETS[preset](key);
   const w=+$('breed').value/100;
   voices=[];
-  const n=lead.y.length;
-  const L=new Float32Array(n+SR),R=new Float32Array(n+SR);
+  const n=lead.y.length,human=+$('mens').value/100,air=+$('lucht').value/100,room=+$('ruimte').value/100;
+  let L=new Float32Array(n+SR),R=new Float32Array(n+SR);
+  const leadL=new Float32Array(n+SR),leadR=new Float32Array(n+SR),bgL=new Float32Array(n+SR),bgR=new Float32Array(n+SR);
+  const leadRms=rmsActive(lead.y);
   stemFiles=[];
   const dots=[];
   for(let i=0;i<offs.length;i++){const semi=offs[i];
     const isLead=semi===0&&i===0;
-    const det=isLead?0:(Math.random()*16-8);          // ±8 cents speling
-    const dly=isLead?0:Math.floor((15+Math.random()*30)*SR/1000); // 15-45ms
-    const pan=isLead?0:((i%2?1:-1)*(0.3+0.7*Math.random()))*w;    // afwisselend L/R
-    const g=isLead?1.0:0.45+Math.random()*0.25;
+    const r1=seed01(i,semi+11),r2=seed01(i,semi+23),r3=seed01(i,semi+37),r4=seed01(i,semi+51);
+    const det=isLead?0:(r1*2-1)*(3+human*11);              // menselijke cents-speling
+    const dly=isLead?0:Math.floor((8+r2*(12+human*30))*SR/1000); // strak tot losser koor
+    const pan=isLead?0:((i%2?1:-1)*(0.24+0.76*r3))*w;      // afwisselend L/R podium
+    const g=isLead?1.0:(0.34+r4*.18)/Math.sqrt(Math.max(1,offs.length-1))*2.15;
     st(`🎤 stem ${i+1}/${offs.length}: ${semi>0?'+':''}${semi} semitones…`);
-    const sh=isLead?lead.y:await pitchShift(lead.y,semi,det,`🎤 stem ${i+1}/${offs.length} verschuiven…`);
-    const body=onepole(sh,isLead?9000:2500+Math.random()*3000); // achtergrond-stemmen dofder
-    const seg=pad(body,dly);
+    let sh=isLead?lead.y:await pitchShift(lead.y,semi,det,`🎤 stem ${i+1}/${offs.length} verschuiven…`);
+    if(!isLead)sh=gainMatchVoice(sh,leadRms,.58); /* WSOLA/resample verliest energie; achtergrond moet bewust hoorbaar blijven */
+    let body=voiceTone(sh,isLead,human,air,i);
+    if(!isLead)body=humanDrift(body,human,i);
+    const micro=isLead?0:Math.floor((1.2+human*3.2)*SR/1000);
+    const seg=pad(body,dly),segL=pad(body,dly+(pan<0?0:micro)),segR=pad(body,dly+(pan>0?0:micro));
     const gl=g*Math.cos((pan+1)*Math.PI/4),gr=g*Math.sin((pan+1)*Math.PI/4);
-    for(let j=0;j<seg.length&&j<L.length;j++){L[j]+=seg[j]*gl;R[j]+=seg[j]*gr;}
+    const dL=isLead?leadL:bgL,dR=isLead?leadR:bgR;
+    for(let j=0;j<seg.length&&j<dL.length;j++){dL[j]+=(segL[j]||0)*gl;dR[j]+=(segR[j]||0)*gr;}
     if(!isLead)stemFiles.push([`koor-stem-${i}_${semi>0?'+':''}${semi}.wav`,await wavBytesAsync(monoBuf(seg))]);
     voices.push({semi,det:Math.round(det),pan:+pan.toFixed(2),dly:Math.round(dly/SR*1000)});
     dots.push({x:50+pan*42,y:isLead?45:70,lead:isLead,semi});
     await tick();
   }
-  // normalize 0.85
+  /* lead blijft centraal; alleen het achtergrondbed krijgt extra mono-compatibele side-width */
+  const sideBoost=1.05+w*2.25;
+  let leadE=0,bgMidE=0,bgSideE=0;
+  for(let i=0;i<L.length;i++){
+   const bm=(bgL[i]+bgR[i])*.5,bs0=(bgL[i]-bgR[i])*.5,bs=bs0*sideBoost;
+   leadE+=(leadL[i]*leadL[i]+leadR[i]*leadR[i])*.5;bgMidE+=bm*bm;bgSideE+=bs0*bs0;
+   L[i]=leadL[i]+bm+bs;R[i]=leadR[i]+bm-bs;
+  }
+  window.__KOOR_DEBUG={leadE,bgMidE,bgSideE,bgWidthRatio:bgSideE/(bgMidE+1e-12),sideBoost};
+  st('🎤 ruimte en podium renderen…');await tick();
+  [L,R]=await applyRoom(L,R,room);
+  // normalize 0.85 ná ruimte: piek blijft veilig zonder de lead kaal te maken
   let m=0;for(let i=0;i<L.length;i++)m=Math.max(m,Math.abs(L[i]),Math.abs(R[i]));
   if(m>0){for(let i=0;i<L.length;i++){L[i]/=m/0.85;R[i]/=m/0.85;}}
+  const dna=choirDna(L,R,window.__KOOR_DEBUG);
   const out=AC.createBuffer(2,L.length,SR);out.getChannelData(0).set(L);out.getChannelData(1).set(R);
   lastMix=out;
   const url=URL.createObjectURL(new Blob([await wavBytesAsync(out)],{type:'audio/wav'}));
   $('au').src=url;$('dl').href=url;$('dl').download=`koor-${key}-${preset}.wav`;$('dl').style.display='';
   $('bStem').style.display='';
-  $('resInfo').textContent=`${key} · ${preset} · ${offs.length} stemmen · breedte ${Math.round(w*100)}%`;
+  $('resInfo').textContent=`${key} · ${preset} · ${offs.length} stemmen · breedte ${Math.round(w*100)}% · KOOR-DNA ${dna.score}`;
   $('stage').innerHTML=dots.map(d=>`<div class="dot${d.lead?' lead':''}" style="left:${d.x}%;top:${d.y}%">${d.lead?'♪':(d.semi>0?'+':'')+d.semi}<small>${d.semi===0?'lead':(d.semi>0?'+':'')+d.semi+' st'}</small></div>`).join('');
-  st(`🎤 koor klaar in ${key} — ${offs.length} stemmen op het podium`);
+  st(`🎤 koor klaar in ${key} — ${offs.length} stemmen op het podium · KOOR-DNA ${dna.score}`);
 };
 
 $('bStem').onclick=()=>{
@@ -213,6 +336,26 @@ async function loadVocal(f){ensureAC();
     lead={naam:f.name.replace(/\.[^.]+$/,''),y:mono(buf)};
     renderSamples();st(`vocal "${lead.naam}" geladen (${(lead.y.length/SR).toFixed(1)}s) — druk 🎤 MAAK KOOR`);
   }catch(e){st('⚠ niet leesbaar: '+f.name);}}
+let REC=null,RECSTREAM=null,RECCH=[];
+async function recToggle(){
+ if(REC&&REC.state==='recording'){REC.stop();return}
+ if(!navigator.mediaDevices?.getUserMedia){st('⚠ deze browser heeft geen microfoon-opname');return}
+ try{
+  RECSTREAM=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:false}});
+  RECCH=[];REC=new MediaRecorder(RECSTREAM);
+  REC.ondataavailable=e=>{if(e.data?.size)RECCH.push(e.data)};
+  REC.onstop=async()=>{try{
+    const blob=new Blob(RECCH,{type:REC.mimeType||'audio/webm'});
+    RECSTREAM.getTracks().forEach(t=>t.stop());RECSTREAM=null;$('bRec').textContent='● NEEM VOCAL OP';$('bRec').classList.add('b1');$('recHint').textContent='opname verwerken…';
+    const ab=await blob.arrayBuffer();ensureAC();const buf=await AC.decodeAudioData(ab);
+    lead={naam:'opname-'+new Date().toISOString().slice(11,19).replace(/:/g,''),y:mono(buf)};
+    renderSamples();st(`● opname klaar (${(lead.y.length/SR).toFixed(1)}s) — druk 🎤 MAAK KOOR`);$('recHint').textContent='opname is je nieuwe leadvocal';
+   }catch(e){st('⚠ opname niet leesbaar — probeer opnieuw');$('recHint').textContent='opname mislukt'}};
+  REC.start();$('bRec').textContent='■ STOP OPNAME';$('bRec').classList.remove('b1');$('recHint').textContent='opname loopt — zing/neurië je lead en klik STOP';
+  st('● opname loopt — klik ■ STOP OPNAME als je klaar bent');
+ }catch(e){st('⚠ microfoon niet toegestaan of niet beschikbaar');}
+}
+$('bRec').onclick=recToggle;
 async function loadKey(f){ensureAC();
   try{const ab=await f.arrayBuffer(),buf=await AC.decodeAudioData(ab);
     keyTrack={naam:f.name,y:mono(buf)};
