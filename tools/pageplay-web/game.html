@@ -69,8 +69,36 @@ h1 { font-size:22px; margin-bottom:10px; }
 .piece.sel { border-color:#818cf8; box-shadow:0 0 0 2px #818cf8; }
 .piece.ok { border-color:#34d399; }
 .hint { color:#94a3b8; font-size:12px; margin-top:8px; }
+.storywrap { max-width:860px; margin:0 auto; }
+.storystage { position:relative; height:330px; border-radius:18px; overflow:hidden; border:1px solid #334155;
+  background:radial-gradient(circle at 30% 20%,#334155,#0f172a 70%); box-shadow:0 18px 50px rgba(0,0,0,.28); cursor:pointer; }
+.storystage img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.78;
+  animation:kenburns 16s ease-in-out infinite alternate; transform-origin:center; }
+.storystage::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,transparent 45%,rgba(2,6,23,.82)); pointer-events:none; }
+@keyframes kenburns { from{transform:scale(1.02) translate(-1.2%,-.8%)} to{transform:scale(1.13) translate(1.4%,1%)} }
+.orb { position:absolute; width:9px; height:9px; border-radius:50%; background:#f7c948; opacity:.55; filter:blur(.3px); animation:floaty 7s ease-in-out infinite; pointer-events:none; }
+@keyframes floaty { 50%{transform:translateY(-28px) translateX(16px);opacity:.18} }
+.sparkfx { position:absolute; width:12px; height:12px; border-radius:50%; pointer-events:none; background:radial-gradient(circle,#fff7ad 0 20%,#f7c948 45%,transparent 72%); animation:sparkout .8s forwards; z-index:4; }
+@keyframes sparkout { to{transform:scale(3.4) translateY(-28px);opacity:0} }
+.storycap { position:absolute; left:18px; right:18px; bottom:16px; z-index:3; color:#fff; }
+.storycap .scn { color:#f7c948; font-size:12px; font-weight:800; letter-spacing:1px; text-transform:uppercase; }
+.storytxt { background:#1e293b; border:1px solid #334155; border-radius:14px; padding:16px; margin-top:12px;
+  font-size:17px; line-height:1.55; }
+.storytask { margin-top:10px; color:#fbbf24; font-weight:700; }
+.storyctrl { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; align-items:center; }
+.prog { flex:1; min-width:130px; height:8px; background:#0f172a; border-radius:99px; overflow:hidden; border:1px solid #334155; }
+.prog i { display:block; height:100%; background:linear-gradient(90deg,#6366f1,#4ade80); }
+.ocards { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:9px; max-width:860px; margin:0 auto; }
+.ocard { min-height:120px; border:2px solid #334155; border-radius:12px; background:#1e293b; color:#e2e8f0; padding:12px;
+  cursor:pointer; text-align:left; font-size:13px; line-height:1.35; }
+.ocard:hover { border-color:#818cf8; }
+.ocard.picked { border-color:#34d399; opacity:.58; cursor:default; }
+.ocard.bad { border-color:#f87171; }
+.oseq { max-width:860px; margin:0 auto 12px; display:flex; gap:6px; flex-wrap:wrap; }
+.oseq span { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#0f172a; border:1px solid #334155; font-weight:800; }
+.oseq span.fill { background:#14532d; border-color:#34d399; }
 footer { text-align:center; margin-top:20px; font-size:11px; color:#64748b; }
-@media(max-width:640px){ .grid{grid-template-columns:repeat(4,1fr);} .mem{grid-template-columns:repeat(4,1fr);} }
+@media(max-width:640px){ .grid{grid-template-columns:repeat(4,1fr);} .mem{grid-template-columns:repeat(4,1fr);} .storystage{height:250px} }
 </style>
 </head>
 <body>
@@ -78,12 +106,15 @@ footer { text-align:center; margin-top:20px; font-size:11px; color:#64748b; }
   <div class="brand"><b>ANIMAL HEROES</b> · animalheroes.club</div>
   <h1 id="title"></h1>
   <div class="menu">
-    <button id="mBoard" class="on">🎲 Bordspel</button>
+    <button id="mStory" class="on">📖 Verhaal</button>
+    <button id="mBoard">🎲 Bordspel</button>
     <button id="mMem">🃏 Memory</button>
     <button id="mQuiz">❓ Plaatjes-quiz</button>
     <button id="mPuz">🧩 Puzzel</button>
     <button id="mZoom">🔎 Raad-het-plaatje</button>
+    <button id="mOrder">🔀 Volgorde</button>
     <button id="mTQuiz" style="display:none">✏️ Verhaal-quiz</button>
+    <button id="btnVoice">🔊 voorlezen aan</button>
     <button id="btnReset">↺ Opnieuw</button>
   </div>
   <div id="game"></div>
@@ -102,13 +133,32 @@ var TILES = DATA.tiles;
 var COLORS = ['#f87171','#60a5fa','#4ade80','#facc15','#c084fc','#fb923c'];
 var NAMES  = ['Rood','Blauw','Groen','Geel','Paars','Oranje'];
 var COLS = 6;
-var mode = 'board';
+var mode = 'story';
 var players, turn, phase, winner, dice;
+var VOICE = true;
 
 function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function speak(txt){
+  if(!VOICE)return;
   try{ var u = new SpeechSynthesisUtterance(txt); u.lang='nl-NL';
        speechSynthesis.cancel(); speechSynthesis.speak(u); }catch(e){}
+}
+function blip(freq){
+  try{
+    var ac=blip._ac||(blip._ac=new (window.AudioContext||window.webkitAudioContext)());
+    var o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;
+    o.type='sine';o.frequency.value=freq||660;
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.045,t+.012);g.gain.exponentialRampToValueAtTime(.0005,t+.18);
+    o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.2);
+  }catch(e){}
+}
+function importantWord(txt){
+  var words=String(txt||'').toLowerCase().match(/[a-zà-ÿ]{5,18}/g)||[];
+  var stop={de:1,het:1,een:1,van:1,voor:1,met:1,zijn:1,was:1,is:1,dat:1,die:1,deze:1,dit:1,naar:1,door:1,maar:1,ook:1,niet:1,werd:1,wordt:1,hun:1,haar:1,hem:1,ze:1,zij:1,wij:1,jij:1,ik:1,en:1,in:1,op:1,aan:1,te:1,om:1,bij:1,uit:1,over:1,onder:1,werden:1,kunnen:1,zullen:1,want:1,toen:1,hier:1,daar:1,ergens:1,alles:1,iets:1};
+  words=words.filter(function(w){return !stop[w]});
+  words.sort(function(a,b){return b.length-a.length});
+  return words[0]||'verhaal';
 }
 function tileCoord(i){ var r=Math.floor(i/COLS); var c = r%2===0 ? i%COLS : COLS-1-i%COLS;
                        return {row:r,col:c}; }
@@ -183,8 +233,8 @@ function roll(pi){
 }
 function showPopup(t){
   $('popup').innerHTML = (t.image?'<img src="'+t.image+'">':'')
-    + '<p style="font-size:14px">'+t.text+'</p>'
-    + '<p class="task">🎯 '+t.assignment+'</p>'
+    + '<p style="font-size:14px">'+esc(t.text)+'</p>'
+    + '<p class="task">🎯 '+esc(t.assignment)+'</p>'
     + '<button class="btn main" style="width:100%" id="btnDone">Klaar!</button>';
   $('overlay').style.display='flex';
   $('btnDone').onclick=closePopup;
@@ -197,7 +247,7 @@ function showQuizPopup(pl){
   var q=qs[Math.floor(Math.random()*qs.length)];
   $('popup').innerHTML='<div class="win">'
     +'<p style="font-size:17px;font-weight:700;margin-bottom:6px">⭐ Quizvak!</p>'
-    +'<p style="font-size:14px;margin-bottom:12px">'+q.q+'</p>'
+    +'<p style="font-size:14px;margin-bottom:12px">'+esc(q.q)+'</p>'
     +'<input id="bqIn" class="tqin" style="width:100%;margin-bottom:8px" '
     +'placeholder="Typ je antwoord…" autocomplete="off">'
     +'<div id="bqFb" style="min-height:20px;font-size:13px;margin-bottom:8px"></div>'
@@ -217,7 +267,7 @@ function showQuizPopup(pl){
     var ok=tqGoed($('bqIn').value,q.a);
     $('bqGo').disabled=true; $('bqIn').disabled=true;
     if(ok){ $('bqFb').innerHTML='<span style="color:#4ade80">✔ Goed! +2 stappen</span>'; speak('Goed zo, twee extra stappen!'); }
-    else{ $('bqFb').innerHTML='<span style="color:#f87171">✘ Het was: '+q.a+'</span>'; }
+    else{ $('bqFb').innerHTML='<span style="color:#f87171">✘ Het was: '+esc(q.a)+'</span>'; }
     setTimeout(function(){done(ok);}, ok?1200:2400);
   };
   $('bqIn').onkeydown=function(e){ if(e.key==='Enter') $('bqGo').click(); };
@@ -301,7 +351,7 @@ function renderQuiz(){
   shuffle(others);
   var opts=shuffle([t,others[0],others[1]].filter(Boolean));
   quiz.opts=opts; quiz.locked=false;
-  var html='<div class="qwrap"><div class="qtxt">📖 '+t.text+'</div>'
+  var html='<div class="qwrap"><div class="qtxt">📖 '+esc(t.text)+'</div>'
     +'<div class="qopts">'+opts.map(function(o,i){
       return '<button class="qopt" data-i="'+i+'">'
         +(o.image?'<img src="'+o.image+'">':'<span>'+(o.idx+1)+'</span>')+'</button>';}).join('')
@@ -355,7 +405,7 @@ function renderTQuiz(){
     return;
   }
   var q=tq.qs[tq.i];
-  $('game').innerHTML='<div class="qwrap"><div class="qtxt">✏️ '+q.q+'</div>'
+  $('game').innerHTML='<div class="qwrap"><div class="qtxt">✏️ '+esc(q.q)+'</div>'
     +'<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">'
     +'<input id="tqIn" class="tqin" placeholder="Typ je antwoord…" autocomplete="off">'
     +'<button class="btn main" id="tqGo">Controleren</button></div>'
@@ -368,7 +418,7 @@ function renderTQuiz(){
     var inp=$('tqIn').value;
     var ok=tqGoed(inp,q.a);
     if(ok){ tq.score++; $('tqFb').innerHTML='<span style="color:#4ade80">✔ Goed zo!</span>'; speak('Goed zo!'); }
-    else{ $('tqFb').innerHTML='<span style="color:#f87171">✘ Het antwoord was: <b>'+q.a+'</b></span>'; }
+    else{ $('tqFb').innerHTML='<span style="color:#f87171">✘ Het antwoord was: <b>'+esc(q.a)+'</b></span>'; }
     $('tqGo').disabled=true; $('tqIn').disabled=true;
     setTimeout(function(){ tq.i++; renderTQuiz(); }, ok?1100:2600);
   };
@@ -471,7 +521,7 @@ function renderZoom(){
     +'<p class="qtxt" style="font-size:14px">Welke tekst hoort bij dit plaatje? '
     +'<span style="color:#f59e0b">(te sterk ingezoomd? raad — fout = uitzoomen)</span></p>'
     +opts.map(function(o,i){ return '<button class="qopt" data-i="'+i+'">'
-      +(o.text||'').slice(0,140)+'</button>'; }).join('')
+      +esc((o.text||'').slice(0,140))+'</button>'; }).join('')
     +'<p class="qscore">Plaatje '+(zoom.i+1)+'/'+zoom.order.length
     +' · score '+zoom.score+'</p></div>';
   $('hint').textContent='Het plaatje is vergroot — kies de tekst die erbij hoort. Fout raden = verder uitzoomen.';
@@ -502,33 +552,150 @@ function zoomPick(i,el){
   }
 }
 
+/* ---------- Levend verhaal: scène-wereld met interactie ---------- */
+var story={i:0,spark:0};
+function renderStory(){
+  if(!TILES.length){
+    $('game').innerHTML='<p class="qtxt">Geen scènes gevonden. Maak eerst een boek in PagePlay.</p>';
+    $('hint').textContent='';return;
+  }
+  story.i=Math.max(0,Math.min(story.i,TILES.length-1));
+  var t=TILES[story.i],pct=Math.round(((story.i+1)/TILES.length)*100);
+  var orbs='';
+  for(var oi=0;oi<7;oi++)orbs+='<span class="orb" style="left:'+(8+oi*14)+'%;top:'+(18+((oi*23)%55))+'%;animation-delay:'+(oi*.55)+'s"></span>';
+  $('game').innerHTML='<div class="storywrap">'
+    +'<div class="storystage" id="storyStage" title="Klik in de wereld voor glinsteringen">'
+    +(t.image?'<img src="'+t.image+'" alt="scène '+(story.i+1)+'">':'')
+    +orbs
+    +'<div class="storycap"><div class="scn">Scène '+(story.i+1)+' / '+TILES.length+'</div>'
+    +'<div style="font-size:13px;opacity:.88">levende boekwereld · klik voor magie</div></div></div>'
+    +'<div class="storytxt">'+esc(t.text||'Deze scène heeft alleen beeld.')
+    +(t.assignment?'<div class="storytask">🎯 '+esc(t.assignment)+'</div>':'')
+    +'</div>'
+    +'<div class="storyctrl">'
+    +'<button class="btn" id="stPrev"'+(story.i===0?' disabled':'')+'>← vorige</button>'
+    +'<button class="btn main" id="stNext">'+(story.i===TILES.length-1?'🏁 verhaal afronden':'volgende →')+'</button>'
+    +'<button class="btn" id="stRead">🔊 lees voor</button>'
+    +'<div class="prog"><i style="width:'+pct+'%"></i></div>'
+    +'</div></div>';
+  $('hint').textContent='Loop door het verhaal. Klik in het beeld: de wereld reageert met glinsteringen.';
+  $('stPrev').onclick=function(){story.i--;renderStory();blip(420)};
+  $('stNext').onclick=function(){
+    if(story.i>=TILES.length-1){showStoryEnd();return}
+    story.i++;renderStory();blip(620);
+  };
+  $('stRead').onclick=function(){speak((t.text||'')+' '+(t.assignment||''))};
+  $('storyStage').onclick=function(e){
+    var st=$('storyStage'),r=st.getBoundingClientRect();
+    var sp=document.createElement('span');sp.className='sparkfx';
+    sp.style.left=(e.clientX-r.left-6)+'px';sp.style.top=(e.clientY-r.top-6)+'px';
+    st.appendChild(sp);setTimeout(function(){sp.remove()},850);
+    story.spark++;blip(740+(story.spark%5)*55);
+    if(story.spark%4===0)$('hint').textContent='De wereld reageert… je vond magie rond «'+importantWord(t.text)+'».';
+  };
+}
+function showStoryEnd(){
+  $('popup').innerHTML='<div class="win"><div class="cup">📖</div>'
+    +'<p style="font-size:19px;font-weight:700;margin:8px 0">Verhaal afgerond!</p>'
+    +'<p style="font-size:13px;color:#94a3b8;margin-bottom:14px">Je hebt alle '+TILES.length+' scènes gezien en '+story.spark+' glinsteringen ontdekt.</p>'
+    +'<button class="btn main" id="stBoard" style="width:100%;margin-bottom:8px">🎲 speel het bordspel</button>'
+    +'<button class="btn" id="stAgain" style="width:100%">nog een keer lezen</button></div>';
+  $('overlay').style.display='flex';
+  $('stBoard').onclick=function(){$('overlay').style.display='none';setMode('board')};
+  $('stAgain').onclick=function(){$('overlay').style.display='none';story={i:0,spark:0};renderStory()};
+}
+document.addEventListener('keydown',function(e){
+  if(mode!=='story'||/INPUT|TEXTAREA/.test((e.target||{}).tagName||''))return;
+  if(e.key==='ArrowRight'){var n=$('stNext');if(n)n.click()}
+  if(e.key==='ArrowLeft'){var b=$('stPrev');if(b&&!b.disabled)b.click()}
+});
+
+/* ---------- Volgorde: zet het verhaal weer goed ---------- */
+var ord={ready:false,correct:[],display:[],picked:[],misses:0};
+function initOrder(){
+  var n=Math.min(5,TILES.length);
+  if(n<3){ord={ready:false,correct:[],display:[],picked:[],misses:0};return}
+  var start=Math.floor(Math.random()*(TILES.length-n+1));
+  var correct=TILES.slice(start,start+n);
+  var display=correct.slice();shuffle(display);
+  ord={ready:true,correct:correct,display:display,picked:[],misses:0};
+}
+function renderOrder(){
+  if(!ord.ready){
+    $('game').innerHTML='<p class="qtxt">Voor het volgorde-spel zijn minimaal 3 scènes nodig.</p>';
+    $('hint').textContent='';return;
+  }
+  var seq='';
+  for(var i=0;i<ord.correct.length;i++)seq+='<span class="'+(ord.picked.length>i?'fill':'')+'">'+(ord.picked.length>i?'✓':(i+1))+'</span>';
+  $('game').innerHTML='<div class="oseq">'+seq+'</div><div class="ocards">'
+    +ord.display.map(function(t,i){
+      var picked=ord.picked.indexOf(i)>=0;
+      return '<button class="ocard'+(picked?' picked':'')+'" data-i="'+i+'">'+esc(trimGameText(t.text||'[alleen plaatje]',150))+'</button>';
+    }).join('')
+    +'</div><p class="qscore">Klik de stukjes in de goede verhaalvolgorde · missers '+ord.misses+'</p>';
+  $('hint').textContent='Welke scène komt eerst? En wat gebeurde daarna? Alleen de juiste volgende scène blijft groen.';
+  [].forEach.call(document.querySelectorAll('.ocard'),function(el){
+    el.onclick=function(){orderPick(parseInt(el.dataset.i),el)};
+  });
+}
+function trimGameText(s,n){s=String(s||'').replace(/\s+/g,' ').trim();return s.length>n?s.slice(0,n).replace(/\s+\S*$/,'')+'…':s}
+function orderPick(i,el){
+  if(!ord.ready||ord.picked.indexOf(i)>=0)return;
+  var step=ord.picked.length,tile=ord.display[i],expected=ord.correct[step];
+  if(tile.idx!==expected.idx){
+    ord.misses++;el.classList.add('bad');blip(190);speak('Nog niet — zoek de scène die hier echt past');
+    setTimeout(function(){el.classList.remove('bad')},520);return;
+  }
+  ord.picked.push(i);blip(680);
+  if(ord.picked.length>=ord.correct.length){
+    renderOrder();
+    setTimeout(function(){
+      var stars=ord.misses===0?'⭐⭐⭐':ord.misses<=2?'⭐⭐':'⭐';
+      $('popup').innerHTML='<div class="win"><div class="cup">🔀</div>'
+        +'<p style="font-size:19px;font-weight:700;margin:8px 0">Volgorde goed!</p>'
+        +'<p style="font-size:13px;color:#94a3b8;margin-bottom:14px">'+stars+' · missers '+ord.misses+'</p>'
+        +'<button class="btn main" id="ordAgain">Nieuwe volgorde-puzzel</button></div>';
+      $('overlay').style.display='flex';
+      $('ordAgain').onclick=function(){$('overlay').style.display='none';initOrder();renderOrder()};
+    },450);
+  }else renderOrder();
+}
+
 /* ---------- shell ---------- */
 function setMode(m){
   mode=m;
+  $('mStory').className = m==='story'?'on':'';
   $('mBoard').className = m==='board'?'on':'';
   $('mMem').className   = m==='mem'?'on':'';
   $('mQuiz').className  = m==='quiz'?'on':'';
   $('mPuz').className   = m==='puz'?'on':'';
   $('mTQuiz').className = m==='tquiz'?'on':'';
   $('mZoom').className  = m==='zoom'?'on':'';
-  $('overlay').style.display='none';
-  if(m==='board'){ initBoard(); renderBoard(); }
+  $('mOrder').className = m==='order'?'on':'';
+  $('overlay').style.display='none';$('popup').innerHTML='';
+  try{speechSynthesis.cancel()}catch(e){}
+  if(m==='story'){ renderStory(); }
+  else if(m==='board'){ initBoard(); renderBoard(); }
   else if(m==='mem'){ initMem(); renderMem(); }
   else if(m==='puz'){ initPuz(); renderPuz(); }
   else if(m==='tquiz'){ initTQuiz(); renderTQuiz(); }
   else if(m==='zoom'){ initZoom(); renderZoom(); }
+  else if(m==='order'){ initOrder(); renderOrder(); }
   else { initQuiz(); renderQuiz(); }
 }
 $('title').textContent = DATA.title;
 if((DATA.quiz||[]).length){ $('mTQuiz').style.display=''; }
+$('mStory').onclick=function(){setMode('story');};
 $('mBoard').onclick=function(){setMode('board');};
 $('mMem').onclick=function(){setMode('mem');};
 $('mQuiz').onclick=function(){setMode('quiz');};
 $('mPuz').onclick=function(){setMode('puz');};
 $('mTQuiz').onclick=function(){setMode('tquiz');};
 $('mZoom').onclick=function(){setMode('zoom');};
-$('btnReset').onclick=function(){setMode(mode);};
-setMode('board');
+$('mOrder').onclick=function(){setMode('order');};
+$('btnVoice').onclick=function(){VOICE=!VOICE;$('btnVoice').textContent=VOICE?'🔊 voorlezen aan':'🔇 voorlezen uit';if(!VOICE)try{speechSynthesis.cancel()}catch(e){}};
+$('btnReset').onclick=function(){if(mode==='story')story={i:0,spark:0};setMode(mode);};
+setMode('story');
 </script>
 </body>
 </html>

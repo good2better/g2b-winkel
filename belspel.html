@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>G2B BEL+SPEL — bellen en spelen met je groep</title>
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="/js/vendor/peerjs.min.js"></script>
 <style>
   :root{--grn:#075E54;--grn2:#128C7E;--grn3:#25D366;--lgt:#DCF8C6;--bg:#ECE5DD;--ink:#111;}
   *{box-sizing:border-box;margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif}
@@ -27,10 +27,13 @@
   .deli{display:flex;gap:8px;align-items:center;color:#999;font-size:12px;margin:6px 0 12px}
   .deli hr{flex:1;border:none;border-top:1px solid #e5e5e5}
   #room{flex-direction:row}
-  .stage{flex:1;display:flex;flex-direction:column;min-width:0;background:#0b141a}
+  .stage{flex:1;display:flex;flex-direction:column;min-width:0;background:#0b141a;position:relative}
   .topbar{background:var(--grn);color:#fff;padding:10px 14px;display:flex;align-items:center;gap:12px;font-size:14px}
   .topbar .code{background:rgba(255,255,255,.15);padding:3px 10px;border-radius:8px;font-weight:700;letter-spacing:2px;cursor:pointer}
-  .topbar button{margin-left:auto;background:rgba(255,255,255,.18);border:none;color:#fff;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px}
+  .topbar button{background:rgba(255,255,255,.18);border:none;color:#fff;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px}
+  .topbar button.off{background:rgba(229,57,53,.72)}
+  .topbar button:disabled{opacity:.38;cursor:default}
+  .topbar #leave{margin-left:auto}
   .grid{flex:1;display:grid;gap:10px;padding:12px;overflow:auto;align-content:center;justify-items:center;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
   .tile{position:relative;width:100%;max-width:420px;aspect-ratio:4/3;background:#1c2833;border-radius:12px;overflow:hidden;border:3px solid transparent}
   .tile video{width:100%;height:100%;object-fit:cover;background:#000}
@@ -42,8 +45,10 @@
   .gbar{background:#111b21;padding:12px 14px;display:flex;align-items:center;gap:12px;color:#fff;flex-wrap:wrap}
   .woord{background:var(--lgt);color:#111;font-size:17px;font-weight:700;padding:8px 16px;border-radius:10px}
   .geheim{background:#2a3942;color:#8aa;padding:8px 16px;border-radius:10px;font-size:13px}
-  .timer{flex:1;min-width:120px;height:8px;background:#2a3942;border-radius:6px;overflow:hidden}
+  .timerwrap{flex:1;min-width:140px;display:flex;align-items:center;gap:8px}
+  .timer{flex:1;min-width:80px;height:8px;background:#2a3942;border-radius:6px;overflow:hidden}
   .timer i{display:block;height:100%;background:var(--grn3);width:100%;transition:width .5s linear}
+  #tnum{font-variant-numeric:tabular-nums;font-size:12px;color:#ffd54a;min-width:32px;text-align:right;font-weight:800}
   .gbar .btn{width:auto;margin:0;padding:9px 16px;font-size:14px}
   .btn-y{background:#ffd54a;color:#111}
   aside{width:320px;background:#fff;display:flex;flex-direction:column;border-left:1px solid #ddd}
@@ -92,17 +97,18 @@
   <header><div class="logo">📞</div><h1>G2B BEL+SPEL</h1></header>
   <div class="box">
     <h2>Bellen en spelen met je groep</h2>
-    <p class="sub">Gratis · geen account · video + chat + 3 spellen: <b>SPOTLIGHT!</b>, <b>30 SECONDEN</b> en <b>UITBEELDEN</b>. Deel de link, speel direct.</p>
+    <p class="sub">Gratis · geen account · video + chat + 3 spellen: <b>KAARTACTIE</b>, <b>TEKEN!</b> en <b>SPOTLIGHT!</b>. Deel de link, speel direct.</p>
+    <p class="sub" style="margin-top:-10px;font-size:11px">Privacy: video/geluid gaat direct tussen de toestellen; alleen de kamer-matching loopt via de PeerJS-signalingbroker.</p>
     <input type="text" id="naam" placeholder="Jouw naam" maxlength="20">
     <div class="gcards">
-      <div class="gcard sel" data-g="kaart"><div class="t">🃏 30S ACTIE & KAARTEN</div><div class="d">Blauw omschrijven · groen uitbeelden · rood DUEL</div><span class="b">👥 teams</span><span class="b">⏱ 30s</span></div>
+      <div class="gcard sel" data-g="kaart"><div class="t">🃏 KAARTACTIE</div><div class="d">Blauw omschrijven · groen uitbeelden · rood DUEL</div><span class="b">👥 teams</span><span class="b">⏱ 30s</span></div>
       <div class="gcard" data-g="teken"><div class="t">✏️ TEKEN!</div><div class="d">Teken het woord live — de rest raadt in de chat</div><span class="b">🎮 ieder voor zich</span><span class="b">⏳ 90s</span></div>
       <div class="gcard" data-g="spot"><div class="t">🎯 SPOTLIGHT!</div><div class="d">Iedereen ziet het woord behalve de spotlight — hij raadt</div><span class="b">👥 groep</span><span class="b">⏱ 60s</span></div>
       <div class="gcard dis"><div class="t">🔗 DE KETEN</div><div class="d">Zin → tekening → zin… binnenkort!</div><span class="b">🔒 binnenkort</span></div>
     </div>
     <button class="btn btn-g" id="mk">▶ Nieuwe kamer starten</button>
     <div class="deli"><hr>of<hr></div>
-    <input type="text" id="code" placeholder="Kamer-code (bijv. ABCD)" maxlength="6" style="text-transform:uppercase">
+    <input type="text" id="code" placeholder="Kamer-code (bijv. K7P2QX)" maxlength="6" style="text-transform:uppercase">
     <button class="btn btn-o" id="jn">Deelnemen aan kamer</button>
   </div>
 </section>
@@ -112,6 +118,8 @@
       <span>📞 <b id="roomcode">—</b></span>
       <span class="code" id="codetile" title="klik om link te kopieren">DEEL LINK</span>
       <span id="who" style="font-size:12px;opacity:.8"></span>
+      <button id="micbtn" title="microfoon aan/uit">🎙️</button>
+      <button id="cambtn" title="camera aan/uit">📷</button>
       <button id="mutebtn" title="muziek aan/uit">🔊</button>
       <button id="leave">Verlaten</button>
     </div>
@@ -125,6 +133,7 @@
           <button class="pen" data-c="#25d366" style="background:#25d366"></button>
           <button class="pen" data-c="#ffd54a" style="background:#ffd54a"></button>
           <button id="gum" style="margin-left:6px">🩹 gum</button>
+          <button id="undocv">↩︎ undo</button>
           <button id="clearcv">🗑 leeg</button>
         </div>
         <canvas id="drawcv" width="640" height="430" style="display:block;border-radius:8px;background:#fff;touch-action:none;max-width:78vw;cursor:crosshair"></canvas>
@@ -133,13 +142,13 @@
     <div class="winov" id="winov"><div class="card"><div class="big"></div><div class="w2"></div></div></div>
     <div class="gbar">
       <select id="gamesel" style="background:#1c2833;color:#fff;border:1px solid #2a3942;border-radius:8px;padding:8px;font-size:13px;font-weight:700">
-        <option value="kaart">🃏 30S ACTIE & KAARTEN</option>
+        <option value="kaart">🃏 KAARTACTIE</option>
         <option value="teken">✏️ TEKEN!</option>
         <option value="spot">🎯 SPOTLIGHT!</option>
       </select>
       <span id="woordbox" class="geheim">druk START om te spelen</span>
       <span id="teamscore" style="font-size:13px;font-weight:700;color:#ffd54a"></span>
-      <div class="timer"><i id="tbar"></i></div>
+      <div class="timerwrap"><div class="timer"><i id="tbar"></i></div><span id="tnum">--</span></div>
       <button class="btn btn-g" id="startbtn">▶ START</button>
       <button class="btn btn-y" id="goedbtn" disabled>✔ GOED GERADEN</button>
     </div>
@@ -157,158 +166,333 @@
 const $=id=>document.getElementById(id);
 const toast=t=>{const e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),2400)};
 const HOSTP="g2b-belspel-v1-";
+const MAXPEERS=6;
+const PEERCFG={
+  host:"0.peerjs.com",port:443,secure:true,debug:0,
+  config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"}]}
+};
 const WOORDEN=["een dansende aap","robot die pizza bakt","Sinterklaas op een surfplank","een muis die karate doet","oma op de skateboard","een kip die dirigeert","elfje dat belasting invult","piraat met angst voor water","penguin in pak","draak met verkoudheid","tovenaar die zijn staf kwijt is","clown op de fiets","viking in de keuken","astronaut op de boerderij","zombie op school","een kat die taxichauffeur is","superheld die zijn cape verliest","robot op vakantie","sneeuwpop in de sauna","cowboy op een zebrapad","een beer die borduurt","koning zonder kroon","ballerina op het ijs","spook dat zich verstopt","reus in een miniatuurhuis","hond die koffie drinkt","papegaai die nieuws leest","giraf in een auto","wolf met een slaapmasker","alien die friet bestelt","danser op een trampoline","tovenaar met pech","ridder op een step","visser in de woestijn","muzikant zonder instrument","chef die alles verbrandt","baby als baas","duiker in de badkuip","slang met een hoed","hamster op marathon","spin die web designer is","vampier met tandpijn","prinses op de bouwplaats","tijger die verstopt speelt","olifant in een lift","agent die ijs uitdeelt","heks op de scooter","marsmannetje in de supermarkt","goochelaar die zichzelf verdwijnt"];
 const KAARTEN=[
-  {type:"blauw",title:"30 Seconds — Snel praten!",tasks:["Formule 1","Zonnebril","Supermarkt","Pannenkoek","TikTok"]},
+  {type:"blauw",title:"Snel omschrijven — 30 seconden!",tasks:["Raceauto","Zonnebril","Supermarkt","Pannenkoek","Smartphone"]},
   {type:"groen",title:"Stilte! Beeld dit uit:",tasks:["Een tandenborstel gebruiken","Gitaar spelen","Een zware koffer tillen"]},
   {type:"rood",title:"DUEL — toon dit als eerste op camera!",tasks:["Een sleutelbos","Een glas water","Iets dat blauw is"]},
   {type:"groen",title:"Stilte! Beeld dit uit:",tasks:["Koffie morsen","Een selfie maken","Skeeleren"]},
-  {type:"blauw",title:"30 Seconds — Snel praten!",tasks:["Eiffeltoren","Stofzuiger","Kerstman","Hond","Smartphone"]},
+  {type:"blauw",title:"Snel omschrijven — 30 seconden!",tasks:["Eiffeltoren","Stofzuiger","Kerstman","Hond","Bibliotheek"]},
   {type:"rood",title:"DUEL — toon dit als eerste op camera!",tasks:["Een lepel","Iets roods","Een sok op je hoofd"]},
   {type:"groen",title:"Stilte! Beeld dit uit:",tasks:["Een lekke band oppompen","Haren kammen","Een vlieg wegjagen"]},
-  {type:"blauw",title:"30 Seconds — Snel praten!",tasks:["Brandweer","IJsje","Voetbal","Bibliotheek","Carnaval"]},
+  {type:"blauw",title:"Snel omschrijven — 30 seconden!",tasks:["Brandweer","IJsje","Voetbal","Carnaval","Regenboog"]},
   {type:"rood",title:"DUEL — ren en haal dit!",tasks:["Een toiletrol","Een kussen","Iets dat begint met een B"]},
   {type:"groen",title:"Stilte! Beeld dit uit:",tasks:["In de file staan","Frieten eten","Aap nadoen"]},
-  {type:"blauw",title:"30 Seconds — Snel praten!",tasks:["Sinterklaas","Trampoline","Kapper","Vlieger","Pinguïn"]},
-  {type:"rood",title:"DUEL — doe dit als eerste!",tasks:["Raak je neus aan","Sta op één been","Wijs iets groens aan"]}];
+  {type:"blauw",title:"Snel omschrijven — 30 seconden!",tasks:["Sinterklaas","Trampoline","Kapper","Vlieger","Pinguïn"]},
+  {type:"rood",title:"DUEL — doe dit als eerste!",tasks:["Raak je neus aan","Sta op één been","Wijs iets groens aan"]},
+  {type:"blauw",title:"Snel omschrijven — 30 seconden!",tasks:["Zeepbel","Tandarts","Zandkasteel","Kameel","Onderzeeër"]},
+  {type:"groen",title:"Stilte! Beeld dit uit:",tasks:["Een baby wiegen","Een ballon opblazen","Een boom planten"]},
+  {type:"rood",title:"DUEL — toon dit als eerste op camera!",tasks:["Een horloge","Iets dat rond is","Een telefoonoplader"]},
+  {type:"blauw",title:"Snel omschrijven — 30 seconden!",tasks:["Vulkaan","Oase","Scheermes","Hoge hoed","Schildpad"]},
+  {type:"groen",title:"Stilte! Beeld dit uit:",tasks:["Touwtjespringen","Een ei bakken","Een hond uitlaten"]},
+  {type:"rood",title:"DUEL — doe dit als eerste!",tasks:["Trek een gek gezicht","Balanceer een pen","Wijs iets geels aan"]},
+  {type:"blauw",title:"Snel omschrijven — 30 seconden!",tasks:["Draaimolen","Saxofoon","Pinguïn","Tovenaar","Bessenstruik"]},
+  {type:"groen",title:"Stilte! Beeld dit uit:",tasks:["Een vis vangen","Een deur openen zonder handen","Een kat aanhalen"]},
+  {type:"rood",title:"DUEL — ren en haal dit!",tasks:["Een handdoek","Iets zachts","Iets dat begint met een S"]},
+  {type:"blauw",title:"Snel omschrijven — 30 seconden!",tasks:["Klimwand","Brandladder","Mummie","Zonnestraal","Watermeloen"]},
+  {type:"groen",title:"Stilte! Beeld dit uit:",tasks:["Verstoppertje spelen","Een langzame slak zijn","Een robot dansen"]},
+  {type:"rood",title:"DUEL — toon dit als eerste op camera!",tasks:["Een bril","Een knoop","Iets dat piept"]},
+  {type:"blauw",title:"Snel omschrijven — 30 seconden!",tasks:["Gondel","Regenlaarzen","Helikopter","Koekenpan","Molen"]},
+  {type:"groen",title:"Stilte! Beeld dit uit:",tasks:["Een superheld landing maken","Een tafel dekken","Een luchtballon sturen"]},
+  {type:"rood",title:"DUEL — doe dit als eerste!",tasks:["Knipog met één oog","Raak je elleboog aan je knie","Wijs iets paars aan"]},
+  {type:"blauw",title:"Snel omschrijven — 30 seconden!",tasks:["Sahara","Torenkraan","Pedaal","Microscoop","Glijbaan"]},
+  {type:"groen",title:"Stilte! Beeld dit uit:",tasks:["Een grote spin zijn","Een geheime agent begroeten","Een marshmallow roosteren"]},
+  {type:"rood",title:"DUEL — ren en haal dit!",tasks:["Een plant","Een muts","Iets dat begint met een R"]}
+];
 const TEKENWOORDEN=[
   {w:"banaan",d:"makkelijk",h:["geel","fruit","krom"]},
   {w:"tandenborstel",d:"gemiddeld",h:["badkamer","poetsen","borstel"]},
-  {w:"vliegtuig",d:"makkelijk",h:["lucht","reizen","vliegen"]},
+  {w:"vliegtuig",d:"makkelijk",h:["lucht","reizen","vleugels"]},
   {w:"stofzuiger",d:"gemiddeld",h:["schoonmaken","slang","geluid"]},
   {w:"hangmat",d:"moeilijk",h:["slapen","tuin","bomen"]},
-  {w:"spongebob",d:"makkelijk",h:["geel","zee","ananas"]},
-  {w:"harry potter",d:"gemiddeld",h:["bril","tovenaar","litteken"]},
-  {w:"donald duck",d:"makkelijk",h:["eend","matroos","strip"]},
-  {w:"titanic",d:"gemiddeld",h:["schip","ijsberg","film"]},
-  {w:"star wars",d:"moeilijk",h:["ruimte","laser","kracht"]},
+  {w:"spons",d:"makkelijk",h:["bubbels","afwassen","zacht"]},
+  {w:"tovenaar",d:"gemiddeld",h:["staf","hoed","spreuk"]},
+  {w:"eend",d:"makkelijk",h:["water","snavel","kwak"]},
+  {w:"schip",d:"makkelijk",h:["zee","anker","zeil"]},
+  {w:"ruimteschip",d:"moeilijk",h:["sterren","astronaut","lancering"]},
   {w:"skeeleren",d:"gemiddeld",h:["wielen","buiten","snel"]},
   {w:"koffie morsen",d:"moeilijk",h:["heet","vlek","ochtend"]},
   {w:"selfie maken",d:"makkelijk",h:["telefoon","foto","gezicht"]},
   {w:"haren föhnen",d:"gemiddeld",h:["warm","lucht","badkamer"]},
   {w:"touwtjespringen",d:"makkelijk",h:["sport","springen","touw"]},
   {w:"pizza",d:"makkelijk",h:["rond","kaas","eten"]},
-  {w:"hamburger",d:"makkelijk",h:["broodje","vlees","fastfood"]},
+  {w:"hamburger",d:"makkelijk",h:["broodje","laagjes","fastfood"]},
   {w:"pannenkoek",d:"gemiddeld",h:["pan","stroop","plat"]},
   {w:"sinterklaas",d:"gemiddeld",h:["december","pakjes","mijter"]},
-  {w:"kampvuur",d:"moeilijk",h:["hout","warm","nacht"]}];
-const state={peer:null,myId:null,naam:"",room:"",isHost:false,selGame:"kaart",conns:{},calls:{},peers:{},spot:null,woord:"",game:"kaart",card:null,teams:{},tLeft:0,tInt:null,hints:[],hintT:[],scores:{},tscores:{A:0,B:0},playing:false};
+  {w:"kampvuur",d:"moeilijk",h:["hout","warm","nacht"]},
+  {w:"giraf",d:"makkelijk",h:["nek","vlekken","hoog"]},
+  {w:"octopus",d:"gemiddeld",h:["acht","armen","zee"]},
+  {w:"robot",d:"makkelijk",h:["metaal","knoppen","machine"]},
+  {w:"draak",d:"gemiddeld",h:["vuur","vleugels","sprookje"]},
+  {w:"eenhoorn",d:"gemiddeld",h:["paard","hoorn","regenboog"]},
+  {w:"piramide",d:"gemiddeld",h:["zand","driehoek","Egypte"]},
+  {w:"vulkaan",d:"moeilijk",h:["lava","berg","rook"]},
+  {w:"regenboog",d:"makkelijk",h:["kleuren","regen","boog"]},
+  {w:"sneeuwpop",d:"makkelijk",h:["winter","wortel","ballen"]},
+  {w:"zeepbel",d:"gemiddeld",h:["rond","zweven","klappen"]},
+  {w:"brandweerwagen",d:"makkelijk",h:["rood","ladder","sirene"]},
+  {w:"tractor",d:"makkelijk",h:["boerderij","veld","wielen"]},
+  {w:"luchtballon",d:"gemiddeld",h:["mand","zweven","vlam"]},
+  {w:"onderzeeër",d:"moeilijk",h:["water","diep","periscoop"]},
+  {w:"gitaar",d:"makkelijk",h:["snaren","muziek","hout"]},
+  {w:"drumstel",d:"gemiddeld",h:["stokken","ritme","bekkens"]},
+  {w:"microscoop",d:"moeilijk",h:["klein","lens","laboratorium"]},
+  {w:"telescoop",d:"gemiddeld",h:["sterren","kijken","nacht"]},
+  {w:"voetbal",d:"makkelijk",h:["rond","doel","schoppen"]},
+  {w:"basketbal",d:"makkelijk",h:["oranje","net","stuiten"]},
+  {w:"meditatie",d:"moeilijk",h:["stilte","adem","zitten"]},
+  {w:"tandarts",d:"gemiddeld",h:["tanden","stoel","spiegeltje"]},
+  {w:"kapper",d:"makkelijk",h:["schaar","haar","spiegel"]},
+  {w:"bakker",d:"makkelijk",h:["brood","oven","deeg"]},
+  {w:"tuinieren",d:"gemiddeld",h:["aarde","planten","water"]},
+  {w:"schilderij",d:"gemiddeld",h:["kwast","lijst","kunst"]},
+  {w:"spin",d:"makkelijk",h:["acht","web","klein"]},
+  {w:"paraplu",d:"makkelijk",h:["regen","open","droog"]}
+];
+const state={peer:null,myId:null,naam:"",room:"",isHost:false,selGame:"kaart",conns:{},calls:{},peers:{},spot:null,woord:"",game:"kaart",card:null,teams:{},tLeft:0,tInt:null,hints:[],hintT:[],scores:{},tscores:{A:0,B:0},playing:false,lastStart:null,drawOps:[],drawSeq:0,leaving:false,reconnects:0,wakelock:null,hostConn:null,userMic:true,recent:null,roundNo:0};
 let stream=null;
-function code(n=4){const c="ABCDEFGHJKMNPQRSTUVWXYZ23456789";let s="";for(let i=0;i<n;i++)s+=c[Math.floor(Math.random()*c.length)];return s}
+function code(n=6){const c="ABCDEFGHJKMNPQRSTUVWXYZ23456789";let s="";for(let i=0;i<n;i++)s+=c[Math.floor(Math.random()*c.length)];return s}
 $("mk").onclick=()=>{state.naam=$("naam").value.trim()||"Speler";state.room=code();openPeer(HOSTP+state.room,true)};
 $("jn").onclick=()=>{state.naam=$("naam").value.trim()||"Speler";const c=$("code").value.trim().toUpperCase();if(c.length<3){toast("vul een kamer-code in");return}state.room=c;openPeer(null,false)};
 {const k=new URLSearchParams(location.search).get("k");if(k){$("code").value=k.toUpperCase();toast("deel-link gevonden — vul je naam in en klik Deelnemen")}}
-$("codetile").onclick=()=>{const u=location.origin+location.pathname+"?k="+state.room;navigator.clipboard?.writeText(u).then(()=>toast("link gekopieerd — stuur 'm naar je groep"))};
+function copyText(t){
+  if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(t);
+  return new Promise((res,rej)=>{const ta=document.createElement("textarea");ta.value=t;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy")?res():rej(new Error("copy mislukt"))}catch(e){rej(e)}finally{ta.remove()}})
+}
+$("codetile").onclick=()=>{const u=location.origin+location.pathname+"?k="+state.room;copyText(u).then(()=>toast("link gekopieerd — stuur 'm naar je groep"),()=>toast("kon link niet kopieren — code: "+state.room))};
+function syncMediaButtons(){
+  const at=stream&&stream.getAudioTracks()[0],vt=stream&&stream.getVideoTracks()[0];
+  const mb=$("micbtn"),cb=$("cambtn");
+  mb.disabled=!at;cb.disabled=!vt;
+  mb.classList.toggle("off",!!at&&!at.enabled);cb.classList.toggle("off",!!vt&&!vt.enabled);
+  mb.textContent=at&&at.enabled?"🎙️":"🔇";cb.textContent=vt&&vt.enabled?"📷":"🚫";
+  if(!at)mb.textContent="🎙️";if(!vt)cb.textContent="📷";
+}
+function stopLocalMedia(){
+  if(stream)stream.getTracks().forEach(t=>{try{t.stop()}catch(e){}});
+  stream=null;$("me").srcObject=null;syncMediaButtons();
+}
+async function releaseWakeLock(){try{if(state.wakelock)await state.wakelock.release()}catch(e){}state.wakelock=null}
+$("micbtn").onclick=()=>{const t=stream&&stream.getAudioTracks()[0];if(!t)return;if(!t.enabled&&state.playing&&state.game==="teken"&&state.spot===state.myId){toast("als tekenaar blijft je mic tijdens deze ronde uit");return}t.enabled=!t.enabled;state.userMic=t.enabled;syncMediaButtons();toast(t.enabled?"microfoon aan":"microfoon uit")};
+$("cambtn").onclick=()=>{const t=stream&&stream.getVideoTracks()[0];if(!t)return;t.enabled=!t.enabled;syncMediaButtons();toast(t.enabled?"camera aan":"camera uit")};
+syncMediaButtons();
 async function openPeer(hostId,asHost){
-  const aud={echoCancellation:true,noiseSuppression:true,autoGainControl:true};
-  try{stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:640}},audio:aud})}catch(e){try{stream=await navigator.mediaDevices.getUserMedia({audio:aud})}catch(e2){stream=null;toast("geen camera/mic — je kijkt en chat mee")}}
+  state.leaving=false;state.reconnects=0;
+  const aud={echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:{ideal:1}};
+  const vid={width:{ideal:640},height:{ideal:360},frameRate:{ideal:24,max:30},facingMode:"user"};
+  try{stream=await navigator.mediaDevices.getUserMedia({video:vid,audio:aud})}
+  catch(e){try{stream=await navigator.mediaDevices.getUserMedia({audio:aud})}catch(e2){stream=null;toast("geen camera/mic — je kijkt en chat mee")}}
   try{state.wakelock=await navigator.wakeLock.request("screen")}catch(e){}
   if(stream)$("me").srcObject=stream;
+  syncMediaButtons();
   state.isHost=asHost;
-  state.peer=new Peer(hostId||undefined,{debug:0,config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"}]}});
+  state.peer=new Peer(hostId||undefined,PEERCFG);
   state.peer.on("open",id=>{state.myId=id;
     if(asHost){enterRoom()}
-    else{state.hostConn=state.peer.connect(HOSTP+state.room,{reliable:true});
-      state.hostConn.on("open",()=>{enterRoom();sendHost({t:"join",name:state.naam})});
-      state.hostConn.on("data",d=>handleData(state.hostConn,d));
-      state.hostConn.on("close",()=>{toast("host heeft de kamer verlaten");leaveRoom()});
-      setTimeout(()=>{if(!state.hostConn.open)toast("kamer niet gevonden — check de code")},6000);
+    else{const conn=state.peer.connect(HOSTP+state.room,{reliable:true});state.hostConn=conn;
+      conn.on("open",()=>{enterRoom();sendHost({t:"join",name:state.naam,media:!!stream})});
+      conn.on("data",d=>handleData(conn,d));
+      conn.on("close",()=>{if(!state.leaving){toast("host heeft de kamer verlaten");leaveRoom(true)}});
+      setTimeout(()=>{if(state.hostConn===conn&&!conn.open){toast("kamer niet gevonden — check de code");leaveRoom(true)}},6500);
     }});
   state.peer.on("connection",c=>{wireConn(c)});
-  state.peer.on("call",call=>{call.answer(stream);wireCall(call)});
-  state.peer.on("error",e=>{if(e.type==="peer-unavailable")toast("kamer bestaat niet");else if(e.type==="unavailable-id")toast("kamer-netwerk hikt — probeer opnieuw");else console.warn(e)});
-  state.peer.on("disconnected",()=>{toast("verbinding hikt — herverbinden…");try{state.peer.reconnect()}catch(e){}});
-  document.addEventListener("visibilitychange",async()=>{if(document.visibilityState==="visible")try{state.wakelock=await navigator.wakeLock.request("screen")}catch(e){}});
+  state.peer.on("call",call=>{call.answer(stream||undefined);wireCall(call)});
+  state.peer.on("error",e=>{
+    if(e.type==="peer-unavailable"){toast("kamer bestaat niet");if(!asHost)leaveRoom(true)}
+    else if(e.type==="unavailable-id"){toast("kamercode was net bezet — probeer opnieuw");if(asHost)leaveRoom(true)}
+    else console.warn(e)
+  });
+  state.peer.on("disconnected",()=>{
+    if(state.leaving)return;
+    if(state.reconnects<2){state.reconnects++;toast("verbinding hikt — herverbinden…");try{state.peer.reconnect()}catch(e){}}
+    else toast("signalingverbinding weg — ververs en probeer opnieuw")
+  });
 }
+document.addEventListener("visibilitychange",async()=>{if(document.visibilityState==="visible"&&state.peer)try{state.wakelock=await navigator.wakeLock.request("screen")}catch(e){}});
 document.querySelectorAll(".gcard:not(.dis)").forEach(c=>c.onclick=()=>{document.querySelectorAll(".gcard").forEach(x=>x.classList.remove("sel"));c.classList.add("sel");state.selGame=c.dataset.g});
 const lobbyMus=new Audio("belspel-lobby.mp3");lobbyMus.loop=true;lobbyMus.volume=.15;
 function fadeMus(to){const step=()=>{const v=lobbyMus.volume;if(Math.abs(v-to)>.02){lobbyMus.volume=Math.min(1,Math.max(0,v+(to>v?.02:-.02)));requestAnimationFrame(step)}else lobbyMus.volume=to};step()}
 $("mutebtn").onclick=()=>{lobbyMus.muted=!lobbyMus.muted;$("mutebtn").textContent=lobbyMus.muted?"🔇":"🔊"};
-function winChime(){try{const ac=new (window.AudioContext||window.webkitAudioContext)();[523,659,784].forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.type="triangle";g.gain.setValueAtTime(.14,ac.currentTime+i*.09);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+i*.09+.5);o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+i*.09);o.stop(ac.currentTime+i*.09+.5)})}catch(e){}}
+function winChime(){try{const ac=new (window.AudioContext||window.webkitAudioContext)();[523,659,784].forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain(),t0=ac.currentTime+i*.09;o.frequency.value=f;o.type="triangle";g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.12,t0+.018);g.gain.exponentialRampToValueAtTime(.001,t0+.5);o.connect(g);g.connect(ac.destination);o.start(t0);o.stop(t0+.52)});setTimeout(()=>{try{ac.close()}catch(e){}},1400)}catch(e){}}
 function enterRoom(){
+  state.leaving=false;
   $("home").classList.remove("on");$("room").classList.add("on");
   lobbyMus.play().catch(()=>{});
   $("gamesel").value=state.selGame||"kaart";
   $("roomcode").textContent="kamer "+state.room;
   addTile(state.myId,state.naam+" (jij)",true,stream);
-  if(state.isHost){state.peers[state.myId]={name:state.naam,team:"A"};state.scores[state.myId]=0;
+  syncMediaButtons();
+  if(state.isHost){state.peers[state.myId]={name:state.naam,team:"A",media:!!stream};state.scores[state.myId]=0;
     state.hostConn={send:()=>{},open:true,peer:state.myId};
-    sys("jij bent de host — deel de link")}
+    sys("jij bent de host — deel de link");updWho()}
 }
 function wireConn(c){
   state.conns[c.peer]=c;
   c.on("data",d=>handleData(c,d));
-  c.on("close",()=>{dropPeer(c.peer)});
+  c.on("close",()=>{if(state.isHost&&state.peers[c.peer])dropPeer(c.peer)});
 }
 function wireCall(call){
+  if(state.calls[call.peer]&&state.calls[call.peer]!==call){try{state.calls[call.peer].close()}catch(e){}}
+  state.calls[call.peer]=call;
   call.on("stream",rs=>{const info=state.peers[call.peer];addTile(call.peer,info?info.name:"…",false,rs)});
-  call.on("close",()=>{dropPeer(call.peer)});
+  call.on("close",()=>{
+    if(state.calls[call.peer]===call)delete state.calls[call.peer];
+    if(state.peers[call.peer]&&!state.leaving)setTimeout(ensureMediaCalls,1600);
+  });
   call.on("error",()=>{});
 }
 function sendHost(d){if(state.isHost)hostRelay(null,d);else if(state.hostConn&&state.hostConn.open)state.hostConn.send(d)}
-function bcast(d,except){for(const id in state.conns){const c=state.conns[id];if(c.open&&id!==except)c.send(d)}}
-function dropPeer(id){
-  if(state.isHost)delete state.conns[id];
-  delete state.peers[id];delete state.scores[id];delete state.calls[id];
+function bcast(d,except){for(const id in state.conns){const c=state.conns[id];if(c.open&&id!==except)try{c.send(d)}catch(e){}}}
+function removePeerLocal(id){
+  delete state.peers[id];delete state.scores[id];
+  const call=state.calls[id];delete state.calls[id];
+  if(call)try{call.close()}catch(e){}
   const t=document.getElementById("t-"+id);if(t)t.remove();
-  if(state.isHost)bcast({t:"leave",id});
+}
+function dropPeer(id){
+  const wasSpot=state.playing&&state.spot===id;
+  if(state.isHost)delete state.conns[id];
+  removePeerLocal(id);
+  if(state.isHost){bcast({t:"leave",id});if(wasSpot)endRound(null)}
   updWho();
 }
 function addTile(id,name,me,ms){
-  if(document.getElementById("t-"+id))return;
-  const el=document.createElement("div");el.className="tile";el.id="t-"+id;
-  const v=document.createElement("video");v.autoplay=true;v.playsInline=true;if(me)v.muted=true;
-  el.appendChild(v);
-  const nm=document.createElement("div");nm.className="nm";nm.textContent=name;el.appendChild(nm);
-  const sc=document.createElement("div");sc.className="scr3";sc.textContent="0";sc.id="sc-"+id;el.appendChild(sc);
-  const bl=document.createElement("div");bl.className="blind";bl.style.display="none";bl.textContent="🎯 JIJ BENT DE SPOTLIGHT — raad het woord!";el.appendChild(bl);
-  $("grid").appendChild(el);
-  if(ms)v.srcObject=ms;
+  let el=document.getElementById("t-"+id),v;
+  if(!el){
+    el=document.createElement("div");el.className="tile";el.id="t-"+id;
+    v=document.createElement("video");v.autoplay=true;v.playsInline=true;if(me)v.muted=true;
+    el.appendChild(v);
+    const nm=document.createElement("div");nm.className="nm";nm.textContent=name;el.appendChild(nm);
+    const sc=document.createElement("div");sc.className="scr3";sc.textContent="0";sc.id="sc-"+id;el.appendChild(sc);
+    const bl=document.createElement("div");bl.className="blind";bl.style.display="none";bl.textContent="🎯 JIJ BENT DE SPOTLIGHT — raad het woord!";el.appendChild(bl);
+    $("grid").appendChild(el);
+  }
+  v=el.querySelector("video");
+  if(ms&&v.srcObject!==ms)v.srcObject=ms;
   updWho();
 }
 function updWho(){const n=Object.keys(state.peers).length;$("who").textContent=n+" speler"+(n==1?"":"s")}
 function teamTiles(){for(const id in state.peers){const t=document.getElementById("t-"+id);if(t){t.classList.remove("tA","tB");const tm=state.peers[id].team;if(tm)t.classList.add("t"+tm)}}}
+function shouldCall(id){
+  const mine=!!stream,other=!!(state.peers[id]&&state.peers[id].media);
+  if(mine&&!other)return true;
+  if(!mine&&other)return false;
+  if(!mine&&!other)return false;
+  return String(state.myId)<String(id);
+}
+function ensureMediaCalls(){
+  if(!state.peer||!state.myId)return;
+  for(const id in state.peers)if(id!==state.myId&&shouldCall(id)&&!state.calls[id])callPeer(id);
+}
 function handleData(c,d){
+  if(!d||typeof d!=="object")return;
   if(state.isHost&&c.peer!==state.myId)return hostRelay(c.peer,d);
   switch(d.t){
     case "roster":{
-      for(const p of d.peers){if(!state.peers[p.id]){state.peers[p.id]={name:p.name,team:p.team};if(p.id!==state.myId)callPeer(p.id)}}
-      for(const id in d.scores)state.scores[id]=d.scores[id];
-      if(d.tscores)state.tscores=d.tscores;refreshScores();updWho();
+      if(!Array.isArray(d.peers))break;
+      const seen={};
+      for(const p of d.peers){
+        if(!p||!p.id)continue;seen[p.id]=1;
+        state.peers[p.id]={name:String(p.name||"speler").slice(0,20),team:p.team==="B"?"B":"A",media:!!p.media};
+        addTile(p.id,state.peers[p.id].name+(p.id===state.myId?" (jij)":""),p.id===state.myId,p.id===state.myId?stream:null);
+      }
+      for(const id in state.peers)if(!seen[id])removePeerLocal(id);
+      if(d.scores&&typeof d.scores==="object")for(const id in d.scores)state.scores[id]=d.scores[id];
+      if(d.tscores)state.tscores=d.tscores;
+      refreshScores();updWho();ensureMediaCalls();
       if(d.gamepack)applyGame(d.gamepack);break}
-    case "chat":{addMsg(d.name,d.txt,d.pid===state.myId);break}
+    case "chat":{if(typeof d.txt==="string")addMsg(d.name,d.txt.slice(0,300),d.pid===state.myId);break}
     case "game":{if(d.act==="ts"){state.tscores=d.tscores;refreshTeams()}else applyGame(d);break}
     case "draw":{applyDraw(d.seg);break}
-    case "leave":{delete state.peers[d.id];const t=document.getElementById("t-"+d.id);if(t)t.remove();updWho();break}
+    case "leave":{removePeerLocal(d.id);updWho();break}
+    case "roomclosed":{if(!state.leaving){toast("host heeft de kamer gesloten");leaveRoom(true)}break}
+    case "reject":{toast(d.reason||"deze kamer laat je niet toe");leaveRoom(true);break}
   }
 }
 function callPeer(id){
-  if(id===state.myId||state.calls[id])return;
-  const call=state.peer.call(id,stream);state.calls[id]=call;wireCall(call);
+  if(id===state.myId||state.calls[id]||!state.peer)return;
+  const call=state.peer.call(id,stream||undefined);state.calls[id]=call;wireCall(call);
+}
+function currentGamepack(){
+  if(!state.playing||!state.lastStart)return null;
+  const pack=Object.assign({},state.lastStart);
+  pack.secs=Math.max(1,state.tLeft||pack.secs||1);
+  if(state.game==="teken")pack.drawOps=state.drawOps;
+  return pack;
 }
 function hostRelay(fromId,d){
+  if(!d||typeof d!=="object")return;
+  const actorId=fromId||state.myId;
   switch(d.t){
     case "join":{
-      state.peers[fromId]={name:d.name||"speler",team:Object.keys(state.peers).length%2?"B":"A"};state.scores[fromId]=0;
-      bcast({t:"roster",peers:roster(),scores:state.scores,tscores:state.tscores,gamepack:state.playing?state.lastStart:null});
-      sys((d.name||"speler")+" is erbij");
-      const call=state.peer.call(fromId,stream);state.calls[fromId]=call;wireCall(call);
-      updWho();refreshScores();break}
-    case "chat":{d.pid=fromId;
-      if(state.playing&&state.game==="teken"&&state.spot!==fromId&&matchWoord(d.txt)){endRound(fromId);break}
+      const conn=state.conns[fromId];
+      if(Object.keys(state.peers).length>=MAXPEERS){
+        if(conn&&conn.open)conn.send({t:"reject",reason:"deze kamer zit vol (maximaal "+MAXPEERS+" spelers)"});
+        setTimeout(()=>{try{if(conn)conn.close()}catch(e){}},180);
+        break}
+      const nm=String(d.name||"speler").slice(0,20);
+      state.peers[fromId]={name:nm,team:Object.keys(state.peers).length%2?"B":"A",media:!!d.media};state.scores[fromId]=0;
+      addTile(fromId,nm,false,null);
+      bcast({t:"roster",peers:roster(),scores:state.scores,tscores:state.tscores,gamepack:currentGamepack()});
+      sys(nm+" is erbij");
+      ensureMediaCalls();updWho();refreshScores();break}
+    case "chat":{if(typeof d.txt!=="string")break;d.txt=d.txt.slice(0,300);d.pid=actorId;
+      if(state.playing&&state.game==="teken"&&state.spot!==actorId&&matchWoord(d.txt)){endRound(actorId);break}
       bcast(d);addMsg(d.name,d.txt,false);break}
-    case "draw":{bcast(d,fromId);applyDraw(d.seg);break}
+    case "draw":{
+      if(!state.playing||state.game!=="teken"||actorId!==state.spot)break;
+      bcast(d,fromId);
+      if(fromId)applyDraw(d.seg);
+      break}
+    case "leave":{sys((state.peers[fromId]?state.peers[fromId].name:"speler")+" ging weg");dropPeer(fromId);break}
     case "goed":{if(state.playing){
-      const g=state.game,card=state.card;
+      const g=state.game;
       if(g==="kaart"){
-        const winTeam=state.peers[fromId]&&state.peers[fromId].team||"A";
+        const winTeam=state.peers[actorId]&&state.peers[actorId].team||"A";
         state.tscores[winTeam]=(state.tscores[winTeam]||0)+1;
-        endRound(fromId);bcast({t:"game",act:"ts",tscores:state.tscores});
-      }else endRound(g==="teken"?fromId:state.spot);
+        endRound(actorId);bcast({t:"game",act:"ts",tscores:state.tscores});
+      }else endRound(g==="teken"?actorId:state.spot);
     }break}
   }
 }
-function roster(){return Object.keys(state.peers).map(id=>({id,name:state.peers[id].name,team:state.peers[id].team}))}
+function roster(){return Object.keys(state.peers).map(id=>({id,name:state.peers[id].name,team:state.peers[id].team,media:!!state.peers[id].media}))}
+function leaveRoom(silent){
+  if(state.leaving)return;
+  state.leaving=true;
+  try{
+    if(state.isHost)bcast({t:"roomclosed"});
+    else if(state.hostConn&&state.hostConn.open)state.hostConn.send({t:"leave"});
+  }catch(e){}
+  const oldPeer=state.peer,oldConns=Object.values(state.conns),oldCalls=Object.values(state.calls),oldHostConn=state.hostConn;
+  clearInterval(state.tInt);state.tInt=null;
+  state.hintT.forEach(t=>clearTimeout(t));state.hintT=[];
+  state.peer=null;state.hostConn=null;state.myId=null;state.room="";state.isHost=false;
+  state.conns={};state.calls={};state.peers={};state.scores={};state.tscores={A:0,B:0};
+  state.spot=null;state.woord="";state.card=null;state.lastStart=null;state.playing=false;
+  state.drawOps=[];state.drawSeq=0;state.reconnects=0;state.recent=null;state.roundNo=0;
+  $("grid").innerHTML="";$("chatlog").innerHTML="";$("teamscore").textContent="";
+  const wb=$("woordbox");wb.className="geheim";wb.style.background="";wb.style.color="";wb.textContent="druk START om te spelen";
+  $("startbtn").disabled=false;$("goedbtn").disabled=true;$("tbar").style.width="100%";$("tnum").textContent="--";
+  hideDraw();document.querySelectorAll(".tile").forEach(t=>t.remove());
+  lobbyMus.pause();lobbyMus.currentTime=0;lobbyMus.volume=.15;
+  stopLocalMedia();releaseWakeLock();
+  $("room").classList.remove("on");$("home").classList.add("on");
+  setTimeout(()=>{
+    for(const c of oldConns)try{c.close()}catch(e){}
+    for(const c of oldCalls)try{c.close()}catch(e){}
+    try{if(oldHostConn&&oldHostConn.close)oldHostConn.close()}catch(e){}
+    try{if(oldPeer)oldPeer.destroy()}catch(e){}
+  },160);
+  if(!silent)toast("je hebt de kamer verlaten");
+}
+$("leave").onclick=()=>leaveRoom(false);
+window.addEventListener("beforeunload",()=>{try{if(state.isHost)bcast({t:"roomclosed"});else if(state.hostConn&&state.hostConn.open)state.hostConn.send({t:"leave"});if(state.peer)state.peer.destroy()}catch(e){}});
 function addMsg(name,txt,me){
   const l=$("chatlog"),e=document.createElement("div");
   if(/^\*\*\*/.test(txt)){e.className="msg gold";e.textContent=txt.replace(/\*\*\*/g,"")}
@@ -327,32 +511,65 @@ function lev(a,b){const m=a.length,n=b.length;if(Math.abs(m-n)>2)return 9;const 
 function matchWoord(txt){if(!state.woord)return false;const w=state.woord.toLowerCase(),t=txt.toLowerCase();
   if(t.includes(w))return true;
   return t.split(/\s+/).some(x=>x.length>3&&lev(x,w)<=Math.max(1,Math.floor(w.length/5)))}
+function ensureRecent(){if(!state.recent)state.recent={kaart:[],teken:[],spot:[],spotIds:[]};return state.recent}
+function pickNoRepeat(arr,key,keep){
+  const rec=ensureRecent(),used=rec[key]||(rec[key]=[]);
+  const all=arr.map((_,i)=>i);
+  let pool=all.filter(i=>!used.includes(i));
+  if(!pool.length&&arr.length>1)pool=all.filter(i=>i!==used[used.length-1]);
+  if(!pool.length)pool=all;
+  const idx=pool[Math.floor(Math.random()*pool.length)];
+  used.push(idx);rec[key]=used.slice(-Math.min(keep,Math.max(1,arr.length-1)));
+  return {item:arr[idx],idx};
+}
+function pickTekenWord(round){
+  const rec=ensureRecent(),used=rec.teken||(rec.teken=[]);
+  const target=round<=2?"makkelijk":round<=5?"gemiddeld":null;
+  let pool=TEKENWOORDEN.map((item,idx)=>({item,idx})).filter(x=>!target||x.item.d===target);
+  if(pool.length>1){const fresh=pool.filter(x=>!used.includes(x.idx));if(fresh.length)pool=fresh}
+  if(!pool.length)pool=TEKENWOORDEN.map((item,idx)=>({item,idx}));
+  const chosen=pool[Math.floor(Math.random()*pool.length)];
+  used.push(chosen.idx);rec.teken=used.slice(-Math.min(12,TEKENWOORDEN.length-1));
+  return chosen;
+}
+function pickSpot(ids){
+  const rec=ensureRecent(),used=rec.spotIds||(rec.spotIds=[]);
+  let pool=ids.filter(id=>!used.includes(id));
+  if(!pool.length)pool=ids.slice();
+  const spot=pool[Math.floor(Math.random()*pool.length)];
+  used.push(spot);rec.spotIds=used.slice(-Math.min(3,Math.max(1,ids.length-1)));
+  return spot;
+}
 $("chatfab").onclick=()=>$("chatside").classList.toggle("open");
+$("gamesel").addEventListener("change",()=>{state.selGame=$("gamesel").value});
 $("startbtn").onclick=()=>{if(state.isHost)startRound();else toast("alleen de host kan starten")};
 $("goedbtn").onclick=()=>{sendHost({t:"goed"})};
 function startRound(){
   const ids=Object.keys(state.peers);if(ids.length<2){toast("minstens 2 spelers nodig");return}
   const g=$("gamesel").value;
-  const spot=ids[Math.floor(Math.random()*ids.length)];
+  state.roundNo=(state.roundNo||0)+1;
+  const spot=pickSpot(ids);
   if(g==="kaart"){
-    const card=KAARTEN[Math.floor(Math.random()*KAARTEN.length)];
-    const pack={t:"game",act:"start",spot,secs:30,game:g,card};
+    const cp=pickNoRepeat(KAARTEN,"kaart",10),card=cp.item;
+    const pack={t:"game",act:"start",spot,secs:30,game:g,card,cardIdx:cp.idx,round:state.roundNo};
     applyGame(pack);bcast(pack);return;
   }
   if(g==="teken"){
-    const e=TEKENWOORDEN[Math.floor(Math.random()*TEKENWOORDEN.length)];
-    const pack={t:"game",act:"start",spot,woord:e.w,diff:e.d,hints:e.h,secs:90,game:g};
+    const tw=pickTekenWord(state.roundNo),e=tw.item;
+    const pack={t:"game",act:"start",spot,woord:e.w,diff:e.d,hints:e.h,secs:90,game:g,wordIdx:tw.idx,round:state.roundNo};
     applyGame(pack);bcast(pack);return;
   }
-  const w=WOORDEN[Math.floor(Math.random()*WOORDEN.length)];
-  const pack={t:"game",act:"start",spot,woord:w,secs:60,game:g};
+  const wp=pickNoRepeat(WOORDEN,"spot",12),w=wp.item;
+  const pack={t:"game",act:"start",spot,woord:w,secs:60,game:g,wordIdx:wp.idx,round:state.roundNo};
   applyGame(pack);bcast(pack);
 }
 function applyGame(d){
+  if(!d||typeof d!=="object")return;
   if(d.act==="start"){
     fadeMus(0);
     state.playing=true;state.spot=d.spot;state.game=d.game||"spot";state.card=d.card||null;state.woord=d.woord||"";state.lastStart=d;
     const g=state.game,card=state.card;
+    if(g==="kaart"&&!card){state.playing=false;return}
     const isRed=g==="kaart"&&card.type==="rood";
     $("startbtn").disabled=true;$("goedbtn").disabled=(d.spot===state.myId&&!isRed);
     document.querySelectorAll(".tile").forEach(t=>t.classList.remove("spot"));
@@ -361,6 +578,7 @@ function applyGame(d){
     if(st){st.classList.add("spot");if(d.spot===state.myId&&g==="spot")st.querySelector(".blind").style.display="flex"}
     const wb=$("woordbox");
     const nm=state.peers[d.spot]?state.peers[d.spot].name:"?";
+    state.drawOps=[];state.drawSeq=0;
     if(g==="kaart"){
       const kleur={blauw:"#2196f3",groen:"#25d366",rood:"#e53935"}[card.type];
       wb.style.background=kleur;wb.style.color="#fff";wb.className="woord";
@@ -381,28 +599,30 @@ function applyGame(d){
       wb.style.background="";wb.style.color="";state.hints=d.hints||[];
       showDraw(d.spot===state.myId);
       if(d.spot===state.myId){wb.className="woord";wb.textContent="✏️ teken: «"+d.woord+"» ("+(d.diff||"")+")";
-        if(stream){stream.getAudioTracks().forEach(t=>t.enabled=false);toast("🤫 mic uit — alleen tekenen!")}}
+        if(stream){stream.getAudioTracks().forEach(t=>t.enabled=false);syncMediaButtons();toast("🤫 mic uit — alleen tekenen!")}}
       else{wb.className="geheim";wb.textContent="🤫 "+nm+" tekent… "+mask(d.woord)}
       sys("✏️ TEKEN! "+nm+" gaat tekenen ("+(d.diff||"")+") — typ je gok in de chat!");
       state.hintT.forEach(t=>clearTimeout(t));state.hintT=[];
-      (d.hints||[]).forEach((h,i)=>state.hintT.push(setTimeout(()=>sys("💡 hint "+(i+1)+": "+h),25000+i*20000)));
+      const hintSecs=d.secs||90;(d.hints||[]).forEach((h,i)=>state.hintT.push(setTimeout(()=>sys("💡 hint "+(i+1)+": "+h),Math.max(8,Math.round(hintSecs*(.32+i*.22)))*1000)));
     }else{
       wb.style.background="";wb.style.color="";
       if(d.spot===state.myId){wb.className="geheim";wb.textContent="🤫 jij raadt…"}
       else{wb.className="woord";wb.textContent="«"+d.woord+"»"}
       sys("SPOTLIGHT op "+nm+" — "+d.secs+" seconden!");
     }
+    if(g==="teken"&&Array.isArray(d.drawOps))d.drawOps.forEach(applyDraw);
     runTimer(d.secs);
   }
   if(d.act==="end"){
     state.playing=false;state.lastStart=null;$("startbtn").disabled=false;$("goedbtn").disabled=true;hideDraw();
     state.hintT.forEach(t=>clearTimeout(t));state.hintT=[];
-    if(stream)stream.getAudioTracks().forEach(t=>t.enabled=true);
+    if(stream)stream.getAudioTracks().forEach(t=>t.enabled=state.userMic!==false);syncMediaButtons();
+    state.drawOps=[];state.drawSeq=0;
     if(d.win){const tw=document.getElementById("t-"+d.win);if(tw){const p=document.createElement("div");p.className="pts";p.textContent="+1";tw.appendChild(p);setTimeout(()=>p.remove(),1600)}}
     document.querySelectorAll(".tile").forEach(t=>t.classList.remove("spot"));
     document.querySelectorAll(".tile .blind").forEach(b=>b.style.display="none");
     const wb2=$("woordbox");wb2.className="geheim";wb2.style.background="";wb2.style.color="";wb2.textContent="ronde klaar — START voor de volgende";
-    clearInterval(state.tInt);$("tbar").style.width="100%";
+    clearInterval(state.tInt);$("tbar").style.width="100%";$("tnum").textContent="--";
     for(const id in d.scores)state.scores[id]=d.scores[id];if(d.tscores)state.tscores=d.tscores;refreshScores();
     const rev=d.woord||"";
     if(d.win)addMsg("","*** 🎉 "+(state.peers[d.win]?state.peers[d.win].name:"?")+" raadde het!"+(rev?(" Het was: "+rev):"")+" ***",false);
@@ -413,6 +633,7 @@ function applyGame(d){
   }
 }
 function endRound(winId){
+  if(!state.playing)return;
   if(winId&&state.scores[winId]!=null)state.scores[winId]++;
   const rev=state.game==="kaart"&&state.card?state.card.tasks.join(" · "):state.woord;
   const pack={t:"game",act:"end",scores:state.scores,tscores:state.tscores,woord:rev,win:winId||null};
@@ -420,9 +641,9 @@ function endRound(winId){
 }
 function refreshTeams(){const e=$("teamscore");if(e)e.textContent="🔵 A: "+(state.tscores.A||0)+"  ·  🔴 B: "+(state.tscores.B||0);teamTiles()}
 function runTimer(secs){
-  clearInterval(state.tInt);state.tLeft=secs;
-  state.tInt=setInterval(()=>{state.tLeft--;$("tbar").style.width=Math.max(0,state.tLeft/secs*100)+"%";
-    if(state.tLeft<=0){clearInterval(state.tInt);if(state.isHost)endRound(null)}},1000);
+  clearInterval(state.tInt);state.tLeft=secs;$("tbar").style.width="100%";$("tnum").textContent=secs+"s";
+  state.tInt=setInterval(()=>{state.tLeft--;$("tbar").style.width=Math.max(0,state.tLeft/secs*100)+"%";$("tnum").textContent=Math.max(0,state.tLeft)+"s";
+    if(state.tLeft<=0){clearInterval(state.tInt);$("tnum").textContent="0s";if(state.isHost)endRound(null)}},1000);
 }
 function showWin(t,w){const o=$("winov");o.style.display="flex";o.querySelector(".big").textContent="🎉 "+t;o.querySelector(".w2").textContent=w?("het was: "+w):"";clearTimeout(o._t);o._t=setTimeout(()=>o.style.display="none",3500)}
 function confetti(){const o=$("winov"),cols=["#25d366","#ffd54a","#2196f3","#e53935","#ff8ac2"];
@@ -430,30 +651,84 @@ function confetti(){const o=$("winov"),cols=["#25d366","#ffd54a","#2196f3","#e53
 function refreshScores(){for(const id in state.scores){const e=document.getElementById("sc-"+id);if(e)e.textContent=state.scores[id]+(state.peers[id]&&state.peers[id].team?("·"+state.peers[id].team):"")}refreshTeams()}
 /* --- TEKEN! --- */
 const cv=document.getElementById("drawcv"),cx2=cv.getContext("2d");
-let drawing=false,myDraw=false,pen="#111",penW=5,curSeg=null;
+let drawing=false,myDraw=false,pen="#111",penW=5,curSeg=null,curSid=null,drawStroke=0,liveBuf=null,liveTimer=null;
 function showDraw(amDrawer){
   $("drawwrap").style.display="flex";myDraw=amDrawer;
   $("drawtools").style.display=amDrawer?"flex":"none";
   cv.style.cursor=amDrawer?"crosshair":"default";
   cx2.fillStyle="#fff";cx2.fillRect(0,0,cv.width,cv.height);
 }
-function hideDraw(){$("drawwrap").style.display="none";myDraw=false;drawing=false}
+function hideDraw(){$("drawwrap").style.display="none";myDraw=false;drawing=false;curSeg=null;curSid=null;liveBuf=null;if(liveTimer){clearTimeout(liveTimer);liveTimer=null}}
+function validPts(p){return Array.isArray(p)&&p.every(x=>Array.isArray(x)&&isFinite(x[0])&&isFinite(x[1]))}
 function segDraw(seg){
+  if(!seg||!validPts(seg.p)||!seg.p.length)return;
   cx2.strokeStyle=seg.c;cx2.lineWidth=seg.w;cx2.lineCap="round";cx2.lineJoin="round";
   cx2.beginPath();cx2.moveTo(seg.p[0][0],seg.p[0][1]);
   for(let i=1;i<seg.p.length;i++)cx2.lineTo(seg.p[i][0],seg.p[i][1]);
   cx2.stroke();
 }
-function applyDraw(seg){if(seg.c==="CLR"){cx2.fillStyle="#fff";cx2.fillRect(0,0,cv.width,cv.height);return}segDraw(seg)}
-function cvPos(e){const r=cv.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return[(t.clientX-r.left)*cv.width/r.width,(t.clientY-r.top)*cv.height/r.height]}
-function dn(e){if(!myDraw)return;e.preventDefault();drawing=true;const p=cvPos(e);curSeg={c:pen,w:penW,p:[p]};segDraw({c:pen,w:penW,p:[p,[p[0]+.1,p[1]]]})}
-function mv(e){if(!drawing||!myDraw)return;e.preventDefault();const p=cvPos(e);curSeg.p.push(p);segDraw({c:curSeg.c,w:curSeg.w,p:[curSeg.p[curSeg.p.length-2],p]})}
-function up(){if(!drawing)return;drawing=false;if(curSeg&&curSeg.p.length>0){sendHost({t:"draw",seg:curSeg})}curSeg=null}
+function recordDraw(seg){
+  if(!seg)return;
+  if(seg.c==="CLR")state.drawOps=[seg];
+  else{state.drawOps.push(seg);if(state.drawOps.length>6000)state.drawOps.splice(0,state.drawOps.length-6000)}
+}
+function redrawCanvas(){
+  cx2.fillStyle="#fff";cx2.fillRect(0,0,cv.width,cv.height);
+  for(const op of state.drawOps){
+    if(!op)continue;
+    if(op.c==="CLR"){cx2.fillStyle="#fff";cx2.fillRect(0,0,cv.width,cv.height);continue}
+    if(op.c!=="UNDO")segDraw(op)
+  }
+}
+function applyDraw(seg){
+  if(!seg||typeof seg!=="object")return;
+  if(seg.c==="UNDO"){state.drawOps=state.drawOps.filter(x=>x.sid!==seg.sid);redrawCanvas();return}
+  if(seg.c==="CLR"){recordDraw(seg);cx2.fillStyle="#fff";cx2.fillRect(0,0,cv.width,cv.height);return}
+  if(!validPts(seg.p))return;
+  recordDraw(seg);segDraw(seg)
+}
+function lastDrawSid(){for(let i=state.drawOps.length-1;i>=0;i--){const op=state.drawOps[i];if(op&&op.sid)return op.sid}return null}
+function emitDrawSeg(seg){
+  seg.seq=++state.drawSeq;
+  recordDraw(seg);
+  sendHost({t:"draw",seg});
+}
+function flushLive(){
+  if(liveTimer){clearTimeout(liveTimer);liveTimer=null}
+  if(liveBuf&&validPts(liveBuf.p)&&liveBuf.p.length>1)emitDrawSeg(liveBuf);
+  liveBuf=null;
+}
+function queueLive(){if(!liveTimer)liveTimer=setTimeout(flushLive,35)}
+function roundPt(p){return[Math.round(p[0]*10)/10,Math.round(p[1]*10)/10]}
+function cvPos(e){const r=cv.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return roundPt([(t.clientX-r.left)*cv.width/r.width,(t.clientY-r.top)*cv.height/r.height])}
+function dn(e){
+  if(!myDraw)return;e.preventDefault();drawing=true;const p=cvPos(e);
+  curSid="st"+state.myId+"-"+(++drawStroke);
+  curSeg={c:pen,w:penW,p:[p],sid:curSid};
+  liveBuf={c:pen,w:penW,p:[p,[p[0]+.1,p[1]]],sid:curSid};
+  segDraw({c:pen,w:penW,p:[p,[p[0]+.1,p[1]]]});queueLive();
+}
+function mv(e){
+  if(!drawing||!myDraw||!curSeg)return;e.preventDefault();const p=cvPos(e),prev=curSeg.p[curSeg.p.length-1];
+  if(Math.abs(p[0]-prev[0])+Math.abs(p[1]-prev[1])<.4)return;
+  curSeg.p.push(p);
+  if(!liveBuf)liveBuf={c:curSeg.c,w:curSeg.w,p:[prev,p],sid:curSeg.sid};else liveBuf.p.push(p);
+  segDraw({c:curSeg.c,w:curSeg.w,p:[prev,p]});queueLive();
+}
+function up(){if(!drawing)return;drawing=false;flushLive();curSeg=null;curSid=null}
 cv.addEventListener("mousedown",dn);cv.addEventListener("mousemove",mv);window.addEventListener("mouseup",up);
 cv.addEventListener("touchstart",dn,{passive:false});cv.addEventListener("touchmove",mv,{passive:false});window.addEventListener("touchend",up);
 document.querySelectorAll(".pen").forEach(b=>b.onclick=()=>{document.querySelectorAll(".pen").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");pen=b.dataset.c;penW=4});
 $("gum").onclick=()=>{pen="#fff";penW=18;document.querySelectorAll(".pen").forEach(x=>x.classList.remove("sel"))};
-$("clearcv").onclick=()=>{if(myDraw)sendHost({t:"draw",seg:{c:"CLR"}})};
+$("clearcv").onclick=()=>{if(!myDraw)return;cx2.fillStyle="#fff";cx2.fillRect(0,0,cv.width,cv.height);emitDrawSeg({c:"CLR"})};
+$("undocv").onclick=()=>{
+  if(!myDraw)return;
+  if(drawing){drawing=false;flushLive();curSeg=null;curSid=null}
+  const sid=lastDrawSid();
+  if(!sid){toast("nog niets om ongedaan te maken");return}
+  const seg={c:"UNDO",sid,seq:++state.drawSeq};
+  applyDraw(seg);sendHost({t:"draw",seg});
+};
 </script>
 <script src="/js/g2b-gate.js" data-tier="inner"></script>
 </body>

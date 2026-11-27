@@ -1,0 +1,14 @@
+{
+  "component": "peerjs",
+  "version": "1.5.4",
+  "license": "MIT",
+  "note": "lokaal gevendord voor belspel.html \u2014 geen CDN-afhankelijkheid meer; MIT = commercieel verkoopbaar. Signaling via gratis peerjs-cloud broker want WebRTC heeft signaling nodig en de shop is statisch; media zelf gaat peer-to-peer, niet via de broker.",
+  "files": {
+    "peerjs.min.js": {
+      "bytes": 92865
+    },
+    "LICENSE-PEERJS-MIT.txt": {
+      "bytes": 1108
+    }
+  }
+}

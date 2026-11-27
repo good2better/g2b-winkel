@@ -1,0 +1,29 @@
+{
+  "title": "Animal Heroes — het verstopte bos",
+  "scenes": [
+    {
+      "text": "Vosje rent door het maanlichtbos. Ergens tussen de bladeren zit Konijn verstopt. Klik zachtjes in de wereld als je hem ziet.",
+      "art": "🦊",
+      "pal": ["#12355c", "#07111f"],
+      "friend": {"e": "🐰", "n": "Konijn", "x": 72, "y": 43, "hint": "Konijn houdt van hoge plekken."}
+    },
+    {
+      "text": "Bij de rivier glinsteren sterren in het water. Egel heeft zich onder een blad verstopt, maar zijn neusje steekt er bijna uit.",
+      "art": "🌊",
+      "pal": ["#0e4b61", "#07111f"],
+      "friend": {"e": "🦔", "n": "Egel", "x": 28, "y": 66, "hint": "Kijk laag bij de waterkant."}
+    },
+    {
+      "text": "In de oude eik kraakt een tak. Uil ziet alles, maar zelf wil hij juist niet gezien worden.",
+      "art": "🌳",
+      "pal": ["#21451f", "#07111f"],
+      "friend": {"e": "🦉", "n": "Uil", "x": 50, "y": 22, "hint": "Uil kijkt van bovenaf toe."}
+    },
+    {
+      "text": "Het bosfeest begint. Alle vrienden komen tevoorschijn en samen maken ze van de nacht een lichtfeest.",
+      "art": "🎉",
+      "pal": ["#5b2b67", "#07111f"],
+      "friend": {"e": "🦡", "n": "Das", "x": 82, "y": 72, "hint": "Das blijft graag bij de rand van het feest."}
+    }
+  ]
+}

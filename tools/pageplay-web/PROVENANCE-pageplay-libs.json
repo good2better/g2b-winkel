@@ -1,0 +1,34 @@
+{
+  "created": "2026-11-27",
+  "scope": "PagePlay browser vendored libraries",
+  "libraries": [
+    {
+      "name": "fflate",
+      "usage": "EPUB zip-decodering, ingebed in index.html",
+      "license": "MIT",
+      "source": "https://github.com/101arrowz/fflate",
+      "licenseFile": "LICENSE-FFLATE-MIT.txt",
+      "commercialUse": "ja, volgens MIT"
+    },
+    {
+      "name": "pdf.js / pdfjs-dist",
+      "usage": "PDF-lezing in browser",
+      "license": "Apache-2.0",
+      "source": "https://github.com/mozilla/pdfjs-dist",
+      "licenseFile": "LICENSE-PDFJS-APACHE-2.0.txt",
+      "commercialUse": "ja, volgens Apache-2.0",
+      "files": [
+        {
+          "path": "pdfjs/pdf.min.js",
+          "bytes": 320025,
+          "sha256": "86791280654fb3403853a2e3a39212941fd1c4af0c7e3608ae8f85cead458be0"
+        },
+        {
+          "path": "pdfjs/pdf.worker.min.js",
+          "bytes": 1087233,
+          "sha256": "6195a19b81679dfb8fbd6c387aa37cf212c83f02628d768d142925fddc3d88fb"
+        }
+      ]
+    }
+  ]
+}

@@ -1,43 +1,55 @@
 <!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>G2B QR-maker — gratis QR-codes</title>
+<title>G2B QR-Studio — premium QR-codes met logo, kleur en printkwaliteit</title>
 <style>
-:root{--bg:#0d0f0e;--panel:#141815;--panel2:#181d19;--line:#263028;--txt:#eef4f0;--dim:#93a69b;--accent:#2fbf71;--accent2:#1d7a48}
-*{box-sizing:border-box}
-body{margin:0;background:linear-gradient(180deg,#101512 0%,var(--bg) 100%);color:var(--txt);font:15px/1.6 'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:18px}
-.wrap{max-width:640px;margin:0 auto}
-h1{color:var(--accent);font-size:24px;margin:6px 0 2px}
-.sub{color:var(--dim);font-size:13px;margin-bottom:14px}
-a{color:var(--accent)}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
-button{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer}
-button.big{background:var(--accent);color:#04120a;font-weight:800;font-size:16px;padding:12px 22px;border:0}
-input{width:100%;background:#0a0c0b;border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:12px;font-size:15px}
-#qrbox{background:#fff;border-radius:12px;padding:18px;display:inline-block;margin:14px 0}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:14px;font-size:12px;color:var(--dim)}
+:root{--bg:#0d0f0e;--panel:#141815;--panel2:#181d19;--line:#263028;--txt:#eef4f0;--dim:#93a69b;--accent:#2fbf71;--accent2:#1d7a48;--gold:#f2c14e}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#101512 0%,var(--bg) 100%);color:var(--txt);font:15px/1.55 'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:18px}.wrap{max-width:1020px;margin:0 auto}.grid{display:grid;grid-template-columns:1fr 390px;gap:16px}h1{color:var(--accent);font-size:25px;margin:6px 0 2px}.sub{color:var(--dim);font-size:13px;margin-bottom:14px}a{color:var(--accent)}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:12px}.row{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0}.row>*{flex:1}label{display:block;font-size:12px;color:var(--dim);margin:9px 0 4px}input,select,textarea{width:100%;background:#0a0c0b;border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:10px;font:inherit}textarea{min-height:84px;resize:vertical}input[type=color]{height:38px;padding:2px}button{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:10px 13px;font-size:14px;cursor:pointer}button.big{background:var(--accent);color:#04120a;font-weight:800;border:0}button.gold{background:var(--gold);color:#251700;border:0;font-weight:800}.seg{display:flex;gap:6px;flex-wrap:wrap}.seg button{flex:1;padding:8px 7px}.seg button.on{background:var(--accent);color:#04120a;border-color:var(--accent);font-weight:800}#qrbox{background:#fff;border-radius:16px;padding:16px;display:flex;justify-content:center;align-items:center;min-height:420px;box-shadow:0 18px 55px rgba(0,0,0,.28)}canvas{max-width:100%;height:auto!important}.status{color:var(--accent);font-size:12px;min-height:20px}.tip{font-size:12px;color:var(--dim)}.tip b{color:var(--gold)}.small{font-size:12px;color:var(--dim)}@media(max-width:820px){.grid{grid-template-columns:1fr}#qrbox{min-height:300px}}
 </style></head><body><div class="wrap">
 <a href="index.html" style="text-decoration:none;font-size:13px">← G2B Winkel</a>
-<h1>▦ G2B QR-maker</h1>
-<div class="sub">Maak een QR-code van elke link of tekst — voor flyers, je steunactie, productkaartjes. Gratis, onbeperkt, alles blijft in je browser.</div>
-<input id="txt" placeholder="https://good2better.com of je eigen tekst…" value="https://good2better.com">
-<div class="row">
-<button id="go" class="big">Maak QR</button>
-<button id="dl">⬇ download PNG</button>
+<h1>▦ G2B QR-STUDIO</h1><div class="sub">Premium QR-codes voor flyers, steunacties, wifi, WhatsApp en productkaartjes — met stille rand, logo, kleuren, PNG én SVG. Gratis en alles blijft lokaal in je browser.</div>
+<div class="grid"><div>
+<div class="card"><label>Type QR</label><div class="seg" id="modes"><button data-m="url" class="on">🔗 link</button><button data-m="text">✍ tekst</button><button data-m="wifi">📶 wifi</button><button data-m="wa">💬 WhatsApp</button><button data-m="mail">✉ e-mail</button></div>
+<div id="f-url"><label>Link</label><input id="url" value="https://good2better.com" placeholder="https://…"></div>
+<div id="f-text" hidden><label>Tekst</label><textarea id="text" placeholder="Je eigen tekst…"></textarea></div>
+<div id="f-wifi" hidden><div class="row"><div><label>Netwerknaam (SSID)</label><input id="ssid" placeholder="MijnWifi"></div><div><label>Beveiliging</label><select id="wenc"><option>WPA</option><option>WEP</option><option value="">geen</option></select></div></div><label>Wachtwoord</label><input id="wpass" type="text" placeholder="wachtwoord"></div>
+<div id="f-wa" hidden><label>Telefoonnummer internationaal</label><input id="wanr" placeholder="31645288465"><label>Eerste bericht</label><textarea id="wamsg" placeholder="Hoi, ik interesseer me voor…"></textarea></div>
+<div id="f-mail" hidden><label>E-mailadres</label><input id="mto" placeholder="info@good2better.com"><label>Onderwerp</label><input id="msub" placeholder="Vraag over G2B"><label>Bericht</label><textarea id="mbody"></textarea></div>
 </div>
-<div id="qrbox"><canvas id="cv"></canvas></div>
-<div class="card">Tip: test je QR altijd met je telefoon-camera vóórdat je print. Grote flyers? Kies een groot canvas (stel px-grootte in onder het canvas).</div>
-<div class="row"><label style="font-size:13px;color:var(--dim)">Grootte: <select id="sz"><option>256</option><option selected>512</option><option>1024</option></select> px</label></div>
+<div class="card"><b>Stijl</b><div class="row"><div><label>QR-kleur</label><input type="color" id="fg" value="#101010"></div><div><label>Achtergrond</label><input type="color" id="bg" value="#ffffff"></div><div><label>Grootte</label><select id="sz"><option>512</option><option selected>1024</option><option>2048</option></select></div></div><div class="row"><div><label>Foutcorrectie</label><select id="ec"><option value="M">M — normaal</option><option value="Q">Q — sterker</option><option value="H" selected>H — beste met logo</option></select></div><div><label>Logo uploaden</label><input type="file" id="logo" accept="image/*"></div></div><button id="nologo">logo weghalen</button><div class="small">Houd het logo klein in het midden. De studio gebruikt automatisch een witte achtergrond onder je logo en echte stille rand.</div></div>
+<div class="card tip"><b>Printpro-tips:</b> test altijd eerst met je telefoon · gebruik hoge contrastkleuren · print niet kleiner dan 2×2 cm · download 2048 px voor posters · SVG blijft oneindig scherp.</div>
+</div><div><div class="card"><div id="qrbox"><canvas id="cv"></canvas></div><div class="status" id="status"></div><div class="row"><button class="big" id="png">⬇ PNG</button><button class="gold" id="svg">⬇ SVG</button><button id="copy">kopieer data</button></div></div></div></div>
 </div>
 <script src="qr-lib.js"></script><script src="cookie.js"></script>
 <script>
-function draw(){const v=document.getElementById('txt').value.trim();if(!v)return;
-const q=qrcode(0,'M');q.addData(v);q.make();
-const n=q.getModuleCount(),size=parseInt(document.getElementById('sz').value);
-const cv=document.getElementById('cv');cv.width=cv.height=size;
-const c=cv.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,size,size);c.fillStyle='#000';
-const s=size/n;for(let r=0;r<n;r++)for(let col=0;col<n;col++)if(q.isDark(r,col))c.fillRect(col*s,r*s,s,s)}
-document.getElementById('go').onclick=draw;
-document.getElementById('dl').onclick=()=>{const a=document.createElement('a');a.download='g2b-qr.png';a.href=document.getElementById('cv').toDataURL();a.click()};
-draw();
+"use strict";
+const $=id=>document.getElementById(id);let mode='url',logoImg=null,logoName='logo';
+function qEsc(s){return String(s||'').replace(/([\\;,"])/g,'\\$1')}
+function payload(){
+ if(mode==='url'){let v=$('url').value.trim();if(v&&!/^https?:\/\//i.test(v))v='https://'+v;return v}
+ if(mode==='text')return $('text').value.trim();
+ if(mode==='wifi')return 'WIFI:T:'+qEsc($('wenc').value)+';S:'+qEsc($('ssid').value)+';P:'+qEsc($('wpass').value)+';;';
+ if(mode==='wa'){const n=$('wanr').value.replace(/\D/g,''),t=encodeURIComponent($('wamsg').value.trim());return n?'https://wa.me/'+n+(t?'?text='+t:''):''}
+ if(mode==='mail'){const q=[];if($('msub').value)q.push('subject='+encodeURIComponent($('msub').value));if($('mbody').value)q.push('body='+encodeURIComponent($('mbody').value));return $('mto').value.trim()?('mailto:'+$('mto').value.trim()+(q.length?'?'+q.join('&'):'')):''}
+ return ''}
+function roundRect(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function draw(){
+ const val=payload(),cv=$('cv'),c=cv.getContext('2d');cv.width=cv.height=parseInt($('sz').value,10);const size=cv.width;c.clearRect(0,0,size,size);c.fillStyle=$('bg').value;c.fillRect(0,0,size,size);
+ if(!val){$('status').textContent='⚠ vul eerst je QR-inhoud in';return null}
+ let q;try{q=qrcode(0,$('ec').value);q.addData(val);q.make()}catch(e){$('status').textContent='⚠ te veel tekst voor deze foutcorrectie';return null}
+ const n=q.getModuleCount(),quiet=4,total=n+quiet*2,cell=size/total;c.fillStyle=$('fg').value;
+ for(let r=0;r<n;r++)for(let col=0;col<n;col++)if(q.isDark(r,col))c.fillRect((col+quiet)*cell,(r+quiet)*cell,Math.ceil(cell),Math.ceil(cell));
+ if(logoImg){const box=size*.24,pad=size*.018,x=(size-box)/2,y=(size-box)/2;c.fillStyle='#fff';roundRect(c,x-pad,y-pad,box+pad*2,box+pad*2,size*.025);c.fill();c.save();roundRect(c,x,y,box,box,size*.018);c.clip();c.drawImage(logoImg,x,y,box,box);c.restore()}
+ $('status').textContent='✅ QR klaar · '+val.length+' tekens · '+n+'×'+n+' modules · stille rand actief';return {q,n,quiet,val,size}
+}
+function svg(){const d=draw();if(!d)return'';const cell=1000/(d.n+d.quiet*2);let out='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><rect width="1000" height="1000" fill="'+$('bg').value+'"/><path fill="'+$('fg').value+'" d="';for(let r=0;r<d.n;r++)for(let col=0;col<d.n;col++)if(d.q.isDark(r,col))out+='M'+((col+d.quiet)*cell).toFixed(2)+' '+((r+d.quiet)*cell).toFixed(2)+'h'+cell.toFixed(2)+'v'+cell.toFixed(2)+'h-'+cell.toFixed(2)+'z ';out+='"/>';if(logoImg&&logoImg.src){const box=240,x=(1000-box)/2;out+='<rect x="'+(x-18)+'" y="'+(x-18)+'" width="'+(box+36)+'" height="'+(box+36)+'" rx="28" fill="#fff"/><image href="'+logoImg.src+'" x="'+x+'" y="'+x+'" width="'+box+'" height="'+box+'"/>'}return out+'</svg>'}
+function dl(name,mime,data){const a=document.createElement('a');a.download=name;a.href=data;a.click()}
+document.querySelectorAll('#modes button').forEach(b=>b.onclick=()=>{mode=b.dataset.m;document.querySelectorAll('#modes button').forEach(x=>x.classList.toggle('on',x===b));['url','text','wifi','wa','mail'].forEach(k=>$('f-'+k).hidden=k!==mode);draw()});
+document.querySelectorAll('input,textarea,select').forEach(el=>{if(el.id!=='logo')el.addEventListener('input',()=>draw())});
+$('logo').onchange=e=>{const f=e.target.files[0];if(!f)return;logoName=f.name.replace(/\.[^.]+$/,'');const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{logoImg=im;$('ec').value='H';draw()};im.src=rd.result};rd.readAsDataURL(f)};
+$('nologo').onclick=()=>{logoImg=null;$('logo').value='';draw()};
+$('png').onclick=()=>{if(draw())dl('g2b-qr-'+mode+'-'+$('sz').value+'.png','image/png',$('cv').toDataURL('image/png'))};
+$('svg').onclick=()=>{const s=svg();if(s)dl('g2b-qr-'+mode+'.svg','image/svg+xml','data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s))};
+$('copy').onclick=async()=>{try{await navigator.clipboard.writeText(payload());$('status').textContent='📋 QR-inhoud gekopieerd'}catch(e){$('status').textContent='⚠ kopiëren niet gelukt'}};
+window.QRStudio={payload,draw,svg,get mode(){return mode}};draw();
 </script><footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 <script src="/js/g2b-gate.js" data-tier="leden"></script>
 </body></html>

@@ -37,7 +37,7 @@ footer{text-align:center;margin-top:18px;font-size:11px;color:#64748b}
 <div class="wrap">
   <div class="brand"><b>PAGEPLAY LITE</b> · good2better.com</div>
   <h1>📚 → 🎮 Boek wordt spel — in je browser</h1>
-  <p class="sub">Zet een <b>.epub</b> of <b>.pdf</b> hier neer → scènes met tekst en plaatjes → meteen spelen of exporteren als één zelfstandig .html-spel (offline, deelbaar). Alles blijft op jouw pc — er gaat niets naar een server.</p>
+  <p class="sub">Zet een <b>.epub</b> of <b>.pdf</b> hier neer → PagePlay maakt scènes, opdrachten en quizvragen → speel direct of exporteer als één zelfstandig offline .html-spel. Alles blijft op jouw pc — er gaat niets naar een server.</p>
 
   <div class="card">
     <div class="drop" id="drop">
@@ -54,8 +54,11 @@ footer{text-align:center;margin-top:18px;font-size:11px;color:#64748b}
       <div class="st"><b id="nSc">0</b>scènes</div>
       <div class="st"><b id="nImg">0</b>plaatjes</div>
       <div class="st"><b id="nWords">0</b>woorden</div>
+      <div class="st"><b id="nQuiz">0</b>quizvragen</div>
+      <div class="st"><b id="nAct">0</b>opdrachten</div>
     </div>
     <div class="tiles" id="tiles"></div>
+    <div id="scenePreview" style="margin-top:12px;font-size:12px;color:#94a3b8;line-height:1.45"></div>
     <div class="row">
       <a class="btn" id="btnPlay" href="#">🎮 Speel nu</a>
       <button class="btn sec" id="btnExp">⬇ Exporteer spel (.html)</button>
@@ -74,219 +77,371 @@ window.fflate=fflate;</script>
 if(window.pdfjsLib){ pdfjsLib.GlobalWorkerOptions.workerSrc='pdfjs/pdf.worker.min.js'; }
 var DATA = null;
 var EPUB_NAME = 'boek';
+var MAX_SCENES = 30;
+var MAX_FILE_MB = 80;
 function $(id){return document.getElementById(id)}
 function err(m){$('err').textContent=m}
 function log(m){$('log').textContent=m}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function safeDecode(s){ try{return decodeURIComponent(s)}catch(e){return s} }
+function trimText(s,n){
+  s=String(s||'').replace(/\s+/g,' ').trim();
+  if(s.length<=n)return s;
+  var cut=s.slice(0,n);
+  var end=Math.max(cut.lastIndexOf('. '),cut.lastIndexOf('! '),cut.lastIndexOf('? '));
+  if(end>n*.55)return cut.slice(0,end+1).trim();
+  return cut.replace(/[ ,;:.!?-]+$/,'').trim()+'…';
+}
+function sentenceSplit(txt){
+  var m=String(txt||'').match(/[^.!?]+[.!?]+(?:\s+|$)|[^.!?]+$/g);
+  return (m||[]).map(function(x){return x.replace(/\s+/g,' ').trim()}).filter(Boolean);
+}
+function smartChunks(txt,maxLen){
+  maxLen=maxLen||620;
+  var src=String(txt||'').replace(/[ \t]+/g,' ').replace(/\n{2,}/g,'\n').trim();
+  if(!src)return[];
+  var units=[];
+  src.split(/\n+/).forEach(function(part){
+    part=part.trim();
+    if(!part)return;
+    sentenceSplit(part).forEach(function(x){units.push(x)});
+  });
+  if(!units.length)units=[src];
+  var out=[],cur='';
+  units.forEach(function(u){
+    while(u.length>maxLen){
+      var piece=trimText(u,maxLen);
+      if(cur){out.push(cur.trim());cur=''}
+      out.push(piece);
+      u=u.slice(piece.length).trim();
+    }
+    if(!u)return;
+    if((cur+' '+u).trim().length>maxLen&&cur){out.push(cur.trim());cur=u}
+    else cur=(cur?cur+' '+u:u);
+  });
+  if(cur)out.push(cur.trim());
+  return out.filter(Boolean);
+}
+function normalizeTiles(tiles,max){
+  max=max||MAX_SCENES;
+  tiles=(tiles||[]).filter(function(t){return t&&(t.text||t.image)});
+  if(tiles.length<=max){
+    return tiles.map(function(t,i){t.idx=i;t.text=trimText(t.text,1100);return t});
+  }
+  var out=[];
+  for(var slot=0;slot<max;slot++){
+    var a=Math.floor(slot*tiles.length/max),b=Math.floor((slot+1)*tiles.length/max);
+    if(b<=a)b=a+1;
+    var part=tiles.slice(a,b),img='',art=0,texts=[];
+    part.forEach(function(t){
+      if(t.text)texts.push(t.text);
+      if(!img&&t.image){img=t.image;art=t.art?1:0}
+    });
+    var text=trimText(texts.join(' '),1100);
+    if(text||img)out.push({idx:out.length,text:text,assignment:'',image:img,art:art});
+  }
+  return out;
+}
+var STOPWOORDEN = {};
+('de het een en van in op te is zijn dat die voor met als aan niet ook maar naar uit door over om bij dan wat je hij zij we wij jij ze ik u hun haar hem ons deze dit deze die daar hier toen nu nog wel geen veel meer heel erg zeer werd worden was waren heeft hebben heb had als toen toenmaals onder tussen tegen zonder tijdens na voorbij zelf samen weer maar omdat zodat terwijl alsook waar wie hoe wanneer welke welk dit deze dat die mijn jouw zijn haar onze jullie hun mij me jou je hen ze zich er hier daar ergens iets niets alles iemand niemand men menig').split(/\s+/).forEach(function(w){STOPWOORDEN[w]=1});
+function escapeReg(s){return String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function keywordsFromText(text,count){
+  count=count||5;
+  var raw=String(text||'').match(/[A-Za-zÀ-ÿ]{4,18}/g)||[];
+  var freq={},cap={};
+  raw.forEach(function(w0){
+    var w=w0.toLowerCase();
+    if(STOPWOORDEN[w]||/^\d+$/.test(w))return;
+    freq[w]=(freq[w]||0)+1;
+    if(/^[A-ZÀ-Þ]/.test(w0))cap[w]=(cap[w]||0)+.35;
+  });
+  return Object.keys(freq).sort(function(a,b){
+    var sa=freq[a]+(cap[a]||0)+(a.length>=7?.25:0),sb=freq[b]+(cap[b]||0)+(b.length>=7?.25:0);
+    return sb-sa || a.localeCompare(b);
+  }).slice(0,count);
+}
+function assignmentFor(text,i){
+  var kw=keywordsFromText(text,1)[0]||'verhaal';
+  var acts=[
+    'Lees dit stukje hardop en wijs daarna het belangrijkste woord aan.',
+    '{naam}, doe 10 seconden alsof je zelf in deze scène bent.',
+    'Vertel in één zin wat hier gebeurt — alsof je het aan iemand doorvertelt.',
+    'Zoek samen een woord dat rijmt op «'+kw+'».',
+    'Bedenk samen een nieuwe titel voor dit stukje.',
+    '{naam}, laat met je gezicht zien hoe deze scène voelt.',
+    'Noem iets dat je zelf zou doen als je in deze scène was.',
+    'Zoek in de tekst een woord dat met dezelfde letter begint als «'+kw+'».',
+    'Doe een mini-voorspelling: wat gebeurt er straks?'
+  ];
+  return acts[i%acts.length];
+}
+function generateQuiz(tiles,max){
+  max=max||12;
+  var out=[],usedQ={},usedA={};
+  (tiles||[]).forEach(function(t){
+    if(out.length>=max)return;
+    var kws=keywordsFromText(t.text,4);
+    for(var ki=0;ki<kws.length&&out.length<max;ki++){
+      var word=kws[ki];
+      if(usedA[word])continue;
+      var sentences=sentenceSplit(t.text);
+      for(var si=0;si<sentences.length&&out.length<max;si++){
+        var sentence=sentences[si];
+        if(sentence.length<35||sentence.length>240)continue;
+        var rx=new RegExp('(^|[^A-Za-zÀ-ÿ])('+escapeReg(word)+')(?=[^A-Za-zÀ-ÿ]|$)','i');
+        if(!rx.test(sentence))continue;
+        var masked=sentence.replace(rx,function(m,pre){return pre+'_____'});
+        if(masked===sentence)continue;
+        var q='Welk woord ontbreekt in deze zin?\n«'+trimText(masked,230)+'»';
+        if(usedQ[q])continue;
+        usedQ[q]=1;usedA[word]=1;
+        out.push({q:q,a:word,scene:t.idx});
+        break;
+      }
+    }
+  });
+  return out;
+}
+function finishTiles(tiles){
+  tiles.forEach(function(t,i){t.idx=i;t.assignment=assignmentFor(t.text,i)});
+  return tiles;
+}
 
 /* ---------- EPUB parse ---------- */
 async function parseEpub(file){
-  EPUB_NAME = file.name.replace(/\.epub$/i,'');
-  var buf = new Uint8Array(await file.arrayBuffer());
-  var zip = fflate.unzipSync(buf);
-  var dec = new TextDecoder();
-  function ztext(p){ var f=zip[p]; return f?dec.decode(f):null; }
-  function norm(p){ // resolve ../ and ./
-    var parts=p.split('/'),out=[];
+  EPUB_NAME=file.name.replace(/\.epub$/i,'');
+  var buf=new Uint8Array(await file.arrayBuffer());
+  var zip=fflate.unzipSync(buf);
+  var dec=new TextDecoder();
+  function ztext(path){var f=zip[path];return f?dec.decode(f):null}
+  function norm(path){
+    var parts=path.split('/'),out=[];
     for(var i=0;i<parts.length;i++){var s=parts[i];
       if(s==='..'&&out.length)out.pop();else if(s!=='.'&&s!=='')out.push(s);}
     return out.join('/');
   }
-  var cont = ztext('META-INF/container.xml');
-  if(!cont) throw 'Geen geldig EPUB (container.xml ontbreekt)';
-  var cd = new DOMParser().parseFromString(cont,'application/xml');
-  var rootfile = cd.querySelector('rootfile').getAttribute('full-path');
-  var opfDir = rootfile.indexOf('/')>=0 ? rootfile.slice(0,rootfile.lastIndexOf('/')+1) : '';
-  var opf = ztext(rootfile);
-  if(!opf) throw 'OPF niet gevonden';
-  var od = new DOMParser().parseFromString(opf,'application/xml');
-  var title = (od.querySelector('title')||{}).textContent || EPUB_NAME;
-  // manifest: id -> {href, type}
-  var man = {};
+  var cont=ztext('META-INF/container.xml');
+  if(!cont)throw 'Geen geldig EPUB (container.xml ontbreekt)';
+  var cd=new DOMParser().parseFromString(cont,'application/xml');
+  var rootEl=cd.querySelector('rootfile');
+  if(!rootEl)throw 'Geen geldig EPUB (rootfile ontbreekt)';
+  var rootfile=rootEl.getAttribute('full-path');
+  var opfDir=rootfile.indexOf('/')>=0?rootfile.slice(0,rootfile.lastIndexOf('/')+1):'';
+  var opf=ztext(rootfile);
+  if(!opf)throw 'OPF niet gevonden';
+  var od=new DOMParser().parseFromString(opf,'application/xml');
+  var title=(od.querySelector('title')||{}).textContent||EPUB_NAME;
+  var man={};
   [].forEach.call(od.querySelectorAll('manifest item'),function(it){
-    man[it.getAttribute('id')] = {href:it.getAttribute('href'), type:it.getAttribute('media-type')||''};
+    man[it.getAttribute('id')]={href:it.getAttribute('href'),type:it.getAttribute('media-type')||''};
   });
-  // spine order
-  var spine = [].map.call(od.querySelectorAll('spine itemref'),function(r){return r.getAttribute('idref');});
-  if(!spine.length) spine = Object.keys(man);
-  var coverHref = '';
-  var meta = od.querySelector('meta[name="cover"]');
-  if(meta) coverHref = (man[meta.getAttribute('content')]||{}).href||'';
-
-  var tiles=[], nw=0, nImg=0;
+  var spine=[].map.call(od.querySelectorAll('spine itemref'),function(r){return r.getAttribute('idref')});
+  if(!spine.length)spine=Object.keys(man);
+  var coverHref='';
+  var meta=od.querySelector('meta[name="cover"]');
+  if(meta)coverHref=(man[meta.getAttribute('content')]||{}).href||'';
+  var coverUri='';
+  if(coverHref){
+    var cp=norm(opfDir+coverHref),cf=zip[cp];
+    if(cf&&/\.(png|jpe?g|webp|gif|bmp)$/i.test(cp))coverUri=await blobToDataUri(new Blob([cf],{type:mimeOf(cp)}));
+  }
+  var tiles=[],nw=0,nImg=0;
   for(var i=0;i<spine.length;i++){
-    var it = man[spine[i]]; if(!it) continue;
-    var path = norm(opfDir + it.href);
-    var xhtml = ztext(path); if(!xhtml) continue;
-    var doc = new DOMParser().parseFromString(xhtml,'application/xhtml+xml');
-    if(!doc.documentElement || doc.querySelector('parsererror'))
-      doc = new DOMParser().parseFromString(xhtml,'text/html');
-    var txt = (doc.body ? doc.body.textContent : '').replace(/\s+/g,' ').trim();
-    nw += txt.split(' ').length;
-    // eerste afbeelding in het doc
-    var imgEl = doc.querySelector('img[src], image');
-    var imgUri = '';
+    var it=man[spine[i]];if(!it)continue;
+    var path=norm(opfDir+it.href);
+    var xhtml=ztext(path);if(!xhtml)continue;
+    var doc=new DOMParser().parseFromString(xhtml,'application/xhtml+xml');
+    if(!doc.documentElement||doc.querySelector('parsererror'))doc=new DOMParser().parseFromString(xhtml,'text/html');
+    var blocks=[];
+    if(doc.body){
+      [].forEach.call(doc.body.querySelectorAll('h1,h2,h3,p,li'),function(el){
+        var tx=(el.textContent||'').replace(/\s+/g,' ').trim();
+        if(tx.length>2)blocks.push(tx);
+      });
+    }
+    var txt=(blocks.length?blocks.join('\n'):(doc.body?doc.body.textContent:'')).replace(/[ \t]+/g,' ').trim();
+    nw+=txt.split(/\s+/).filter(Boolean).length;
+    var imgEl=doc.querySelector('img[src], image');
+    var imgUri='';
     if(imgEl){
-      var src = imgEl.getAttribute('src') || imgEl.getAttribute('xlink:href') || '';
+      var src=imgEl.getAttribute('src')||imgEl.getAttribute('xlink:href')||(imgEl.getAttributeNS?imgEl.getAttributeNS('http://www.w3.org/1999/xlink','href'):'')||'';
       if(src){
-        var docDir = path.slice(0,path.lastIndexOf('/')+1);
-        var ipath = norm(docDir + decodeURIComponent(src.split('#')[0]));
-        var f = zip[ipath];
-        if(f && /\.(png|jpe?g|webp|gif|bmp)$/i.test(ipath)){
-          imgUri = await blobToDataUri(new Blob([f],{type: mimeOf(ipath)}));
-          if(imgUri) nImg++;
+        var docDir=path.slice(0,path.lastIndexOf('/')+1);
+        var ipath=norm(docDir+safeDecode(src.split('#')[0]));
+        var f=zip[ipath];
+        if(f&&/\.(png|jpe?g|webp|gif|bmp)$/i.test(ipath)){
+          imgUri=await blobToDataUri(new Blob([f],{type:mimeOf(ipath)}));
+          if(imgUri)nImg++;
         }
       }
     }
-    if(txt.length>12 || imgUri){
-      tiles.push({idx: tiles.length, text: txt.slice(0,700),
-                  assignment:'', image: imgUri, art: imgUri?1:0});
-    }
+    var chunks=smartChunks(txt,620);
+    if(!chunks.length&&imgUri)chunks=[''];
+    chunks.forEach(function(chunk,ci){
+      var useImg=ci===0?imgUri:'';
+      tiles.push({idx:tiles.length,text:trimText(chunk,1000),assignment:'',image:useImg,art:useImg?1:0});
+    });
   }
-  if(!tiles.length) throw 'Geen leesbare scènes gevonden in dit boek';
-  return {title:title, tiles:tiles, quiz:[], nImg:nImg, nWords:nw};
+  if(!tiles.length)throw 'Geen leesbare scènes gevonden in dit boek';
+  tiles=finishTiles(normalizeTiles(tiles,MAX_SCENES));
+  if(coverUri&&!tiles[0].image){tiles[0].image=coverUri;tiles[0].art=1;nImg++}
+  return {title:title,tiles:tiles,quiz:generateQuiz(tiles),nImg:nImg,nWords:nw};
 }
-function mimeOf(p){ return /\.png$/i.test(p)?'image/png':/\.gif$/i.test(p)?'image/gif':/\.webp$/i.test(p)?'image/webp':'image/jpeg'; }
+function mimeOf(path){return /\.png$/i.test(path)?'image/png':/\.gif$/i.test(path)?'image/gif':/\.webp$/i.test(path)?'image/webp':'image/jpeg'}
 
 /* ---------- PDF parse (pdf.js, Apache-2.0) ---------- */
 function pdfImgToDataUri(obj,w,h){
   return new Promise(function(res){
     var c=document.createElement('canvas');
-    var max=560, s=Math.min(1,max/Math.max(w,h));
-    c.width=Math.max(1,Math.round(w*s)); c.height=Math.max(1,Math.round(h*s));
+    var max=560,sc=Math.min(1,max/Math.max(w,h));
+    c.width=Math.max(1,Math.round(w*sc));c.height=Math.max(1,Math.round(h*sc));
     var ctx=c.getContext('2d');
-    ctx.fillStyle='#fff'; ctx.fillRect(0,0,c.width,c.height);
-    if(obj.bitmap){ ctx.drawImage(obj.bitmap,0,0,c.width,c.height); res(c.toDataURL('image/jpeg',0.72)); return; }
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);
+    if(obj.bitmap){ctx.drawImage(obj.bitmap,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.72));return}
     if(obj.data){
-      var src=document.createElement('canvas');
-      src.width=w; src.height=h;
-      var sctx=src.getContext('2d');
-      var id=sctx.createImageData(w,h);
-      var d=obj.data, o=id.data;
-      if(d.length===w*h*4){ o.set(d); }
-      else if(d.length===w*h*3){ for(var i=0,j=0;i<d.length;i+=3,j+=4){o[j]=d[i];o[j+1]=d[i+1];o[j+2]=d[i+2];o[j+3]=255;} }
-      else if(d.length===w*h){ for(var i2=0,j2=0;i2<d.length;i2++,j2+=4){o[j2]=o[j2+1]=o[j2+2]=d[i2];o[j2+3]=255;} }
-      else { res(''); return; }
-      sctx.putImageData(id,0,0);
-      ctx.drawImage(src,0,0,c.width,c.height);
-      res(c.toDataURL('image/jpeg',0.72)); return;
+      var src=document.createElement('canvas');src.width=w;src.height=h;
+      var sctx=src.getContext('2d'),id=sctx.createImageData(w,h),d=obj.data,o=id.data;
+      if(d.length===w*h*4)o.set(d);
+      else if(d.length===w*h*3){for(var i=0,j=0;i<d.length;i+=3,j+=4){o[j]=d[i];o[j+1]=d[i+1];o[j+2]=d[i+2];o[j+3]=255}}
+      else if(d.length===w*h){for(var i2=0,j2=0;i2<d.length;i2++,j2+=4){o[j2]=o[j2+1]=o[j2+2]=d[i2];o[j2+3]=255}}
+      else{res('');return}
+      sctx.putImageData(id,0,0);ctx.drawImage(src,0,0,c.width,c.height);
+      res(c.toDataURL('image/jpeg',.72));return;
     }
     res('');
   });
 }
 async function parsePdf(file){
-  EPUB_NAME = file.name.replace(/\.pdf$/i,'');
-  var buf = new Uint8Array(await file.arrayBuffer());
-  var pdf = await pdfjsLib.getDocument({data:buf}).promise;
-  var meta = null; try{ meta = await pdf.getMetadata(); }catch(e){}
-  var title = (meta && meta.info && meta.info.Title && String(meta.info.Title).trim()) || EPUB_NAME;
-  var tiles=[], nw=0, nImg=0;
+  EPUB_NAME=file.name.replace(/\.pdf$/i,'');
+  var buf=new Uint8Array(await file.arrayBuffer());
+  var pdf=await pdfjsLib.getDocument({data:buf}).promise;
+  var meta=null;try{meta=await pdf.getMetadata()}catch(e){}
+  var title=(meta&&meta.info&&meta.info.Title&&String(meta.info.Title).trim())||EPUB_NAME;
+  var tiles=[],nw=0,nImg=0;
   for(var p=1;p<=pdf.numPages;p++){
-    var page = await pdf.getPage(p);
-    var tc = await page.getTextContent();
+    var page=await pdf.getPage(p);
+    var tc=await page.getTextContent();
     var txt='';
-    for(var k=0;k<tc.items.length;k++){ txt += tc.items[k].str + (tc.items[k].hasEOL?'\n':' '); }
-    txt = txt.replace(/[ \t]+/g,' ').trim();
-    nw += txt.split(/\s+/).filter(Boolean).length;
+    for(var k=0;k<tc.items.length;k++)txt+=tc.items[k].str+(tc.items[k].hasEOL?'\n':' ');
+    txt=txt.replace(/[ \t]+/g,' ').trim();
+    nw+=txt.split(/\s+/).filter(Boolean).length;
     var imgUri='';
     try{
-      var ops = await page.getOperatorList();
-      var best=null;
+      var ops=await page.getOperatorList(),best=null;
       for(var j=0;j<ops.fnArray.length;j++){
         var fn=ops.fnArray[j];
-        if(fn!==pdfjsLib.OPS.paintImageXObject && fn!==pdfjsLib.OPS.paintJpegXObject) continue;
-        var obj=null; try{ obj=page.objs.get(ops.argsArray[j][0]); }catch(e){}
-        if(!obj || obj.isMask || (!obj.data && !obj.bitmap)) continue;
-        var w=obj.width||(obj.bitmap&&obj.bitmap.width)||0, h=obj.height||(obj.bitmap&&obj.bitmap.height)||0;
-        if(w>=80 && h>=80 && (!best || w*h>best.w*best.h)) best={o:obj,w:w,h:h};
+        if(fn!==pdfjsLib.OPS.paintImageXObject&&fn!==pdfjsLib.OPS.paintJpegXObject)continue;
+        var obj=null;try{obj=page.objs.get(ops.argsArray[j][0])}catch(e){}
+        if(!obj||obj.isMask||(!obj.data&&!obj.bitmap))continue;
+        var w=obj.width||(obj.bitmap&&obj.bitmap.width)||0,h=obj.height||(obj.bitmap&&obj.bitmap.height)||0;
+        if(w>=80&&h>=80&&(!best||w*h>best.w*best.h))best={o:obj,w:w,h:h};
       }
-      if(best){ imgUri = await pdfImgToDataUri(best.o,best.w,best.h); if(imgUri) nImg++; }
+      if(best){imgUri=await pdfImgToDataUri(best.o,best.w,best.h);if(imgUri)nImg++}
     }catch(e){}
-    if(txt.length>12 || imgUri){
-      tiles.push({idx:tiles.length, text:txt.replace(/\n/g,' ').slice(0,700), assignment:'', image:imgUri, art:imgUri?1:0});
-    }
+    var chunks=smartChunks(txt,760);
+    if(!chunks.length&&imgUri)chunks=[''];
+    chunks.forEach(function(chunk,ci){
+      var useImg=ci===0?imgUri:'';
+      tiles.push({idx:tiles.length,text:trimText(chunk,1000),assignment:'',image:useImg,art:useImg?1:0});
+    });
   }
-  if(!tiles.length) throw 'Geen leesbare pagina\'s gevonden in deze pdf';
-  return {title:title, tiles:tiles, quiz:[], nImg:nImg, nWords:nw};
+  if(!tiles.length)throw 'Geen leesbare pagina\'s gevonden in deze pdf';
+  tiles=finishTiles(normalizeTiles(tiles,MAX_SCENES));
+  return {title:title,tiles:tiles,quiz:generateQuiz(tiles),nImg:nImg,nWords:nw};
 }
 function blobToDataUri(blob){
   return new Promise(function(res){
-    var im = new Image();
-    var url = URL.createObjectURL(blob);
-    im.onload = function(){
-      var max=560, w=im.width, h=im.height;
-      var s = Math.min(1, max/Math.max(w,h));
-      var c = document.createElement('canvas');
-      c.width=Math.round(w*s); c.height=Math.round(h*s);
-      var ctx=c.getContext('2d');
-      ctx.fillStyle='#fff'; ctx.fillRect(0,0,c.width,c.height);
-      ctx.drawImage(im,0,0,c.width,c.height);
-      URL.revokeObjectURL(url);
-      res(c.toDataURL('image/jpeg',0.72));
+    var im=new Image(),url=URL.createObjectURL(blob);
+    im.onload=function(){
+      var max=560,w=im.width,h=im.height,sc=Math.min(1,max/Math.max(w,h));
+      var c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*sc));c.height=Math.max(1,Math.round(h*sc));
+      var ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(im,0,0,c.width,c.height);
+      URL.revokeObjectURL(url);res(c.toDataURL('image/jpeg',.72));
     };
-    im.onerror = function(){ URL.revokeObjectURL(url); res(''); };
-    im.src = url;
+    im.onerror=function(){URL.revokeObjectURL(url);res('')};
+    im.src=url;
   });
 }
 
-/* ---------- UI ---------- */
-async function onFile(file){
-  err(''); $('result').style.display='none';
-  if(!file) return;
-  var isPdf=/\.pdf$/i.test(file.name);
-  if(!isPdf && !/\.epub$/i.test(file.name)){ err('Kies een .epub- of .pdf-bestand'); return; }
-  if(isPdf && !window.pdfjsLib){ err('PDF-lezer niet geladen — ververs de pagina'); return; }
-  log('Lezen…');
-  try{
-    var d = isPdf ? await parsePdf(file) : await parseEpub(file);
-    DATA = {title:d.title, tiles:d.tiles, quiz:[]};
-    $('nSc').textContent = d.tiles.length;
-    $('nImg').textContent = d.nImg;
-    $('nWords').textContent = d.nWords;
-    $('tiles').innerHTML = d.tiles.slice(0,24).map(function(t){
-      return '<div class="tl">'+(t.image?'<img src="'+t.image+'">':'')+'<span>'+(t.idx+1)+'</span></div>';
-    }).join('');
-    $('result').style.display='';
-    log('Klaar — speel of exporteer.');
-  }catch(e){ log(''); err('Mislukt: '+e); }
+/* ---------- personaliseren/export ---------- */
+function personalizeData(base,nm){
+  var d=JSON.parse(JSON.stringify(base));
+  nm=String(nm||'').trim().slice(0,30);
+  if(nm)d.title=base.title+' — voor '+nm;
+  var who=nm||'speler';
+  d.tiles.forEach(function(t){t.assignment=String(t.assignment||'').replace(/\{naam\}/g,who)});
+  (d.quiz||[]).forEach(function(q){q.q=String(q.q||'').replace(/\{naam\}/g,who)});
+  d.childName=nm;
+  return d;
 }
-$('drop').onclick = function(){ $('file').click(); };
-$('file').onchange = function(e){ onFile(e.target.files[0]); };
-$('drop').ondragover = function(e){ e.preventDefault(); this.classList.add('over'); };
-$('drop').ondragleave = function(){ this.classList.remove('over'); };
-$('drop').ondrop = function(e){ e.preventDefault(); this.classList.remove('over'); onFile(e.dataTransfer.files[0]); };
-// ?f=<pad> → boek direct laden vanaf een url (zelfde origin)
-var _qf = new URLSearchParams(location.search).get('f');
-if(_qf){ fetch(_qf).then(function(r){return r.blob()}).then(function(b){
-  onFile(new File([b], _qf.split('/').pop()||'boek.epub')); }).catch(function(e){err('Laden mislukt: '+e)}); }
+function buildExportHtml(tpl,d){
+  var inject='var DATA = '+JSON.stringify(d).replace(/<\//g,'<\\/')+';';
+  var html=tpl.replace(/var DATA = JSON\.parse\(localStorage[^;]+;/,inject);
+  if(html===tpl)throw 'spel-template niet herkend';
+  return html.replace('<title>PagePlay spel</title>','<title>'+esc(d.title)+' — PagePlay</title>');
+}
 
-$('btnPlay').onclick = function(){
-  if(!DATA) return;
-  var nm = $('qName').value.trim();
-  var d = DATA;
-  if(nm){ d = JSON.parse(JSON.stringify(DATA)); d.title = DATA.title+' — voor '+nm; }
-  localStorage.setItem('pp_data', JSON.stringify(d));
-  location.href = 'game.html';
+/* ---------- UI ---------- */
+function renderResult(d){
+  $('nSc').textContent=d.tiles.length;
+  $('nImg').textContent=d.nImg;
+  $('nWords').textContent=d.nWords;
+  $('nQuiz').textContent=(d.quiz||[]).length;
+  $('nAct').textContent=d.tiles.filter(function(t){return t.assignment}).length;
+  $('tiles').innerHTML=d.tiles.slice(0,24).map(function(t){
+    return '<div class="tl">'+(t.image?'<img src="'+t.image+'" alt="scène '+(t.idx+1)+'">':'')+'<span>'+(t.idx+1)+'</span></div>';
+  }).join('');
+  $('scenePreview').innerHTML='<b>Eerste scènes:</b><br>'+d.tiles.slice(0,4).map(function(t){
+    return '• <b>'+(t.idx+1)+'.</b> '+esc(trimText(t.text,150))+'<br><span style="color:#f7c948">opdracht:</span> '+esc(t.assignment);
+  }).join('<br>');
+  $('result').style.display='';
+}
+async function onFile(file){
+  err('');$('result').style.display='none';$('scenePreview').innerHTML='';
+  if(!file)return;
+  var isPdf=/\.pdf$/i.test(file.name);
+  if(!isPdf&&!/\.epub$/i.test(file.name)){err('Kies een .epub- of .pdf-bestand');return}
+  if(file.size>MAX_FILE_MB*1024*1024){err('Dit bestand is groter dan '+MAX_FILE_MB+' MB — te zwaar voor de lichte browserversie');return}
+  if(isPdf&&!window.pdfjsLib){err('PDF-lezer niet geladen — ververs de pagina');return}
+  log('Lezen en spelwereld bouwen…');
+  try{
+    var d=isPdf?await parsePdf(file):await parseEpub(file);
+    DATA={title:d.title,tiles:d.tiles,quiz:d.quiz||[],stats:{images:d.nImg,words:d.nWords}};
+    renderResult({title:d.title,tiles:d.tiles,quiz:d.quiz||[],nImg:d.nImg,nWords:d.nWords});
+    log('Klaar — speel of exporteer. Quizvragen en opdrachten zijn automatisch uit het boek gebouwd.');
+  }catch(e){log('');err('Mislukt: '+e)}
+}
+$('drop').onclick=function(){$('file').click()};
+$('file').onchange=function(e){onFile(e.target.files[0])};
+$('drop').ondragover=function(e){e.preventDefault();this.classList.add('over')};
+$('drop').ondragleave=function(){this.classList.remove('over')};
+$('drop').ondrop=function(e){e.preventDefault();this.classList.remove('over');onFile(e.dataTransfer.files[0])};
+var _qf=new URLSearchParams(location.search).get('f');
+if(_qf){fetch(_qf).then(function(r){return r.blob()}).then(function(b){
+  onFile(new File([b],_qf.split('/').pop()||'boek.epub'));}).catch(function(e){err('Laden mislukt: '+e)})}
+$('btnPlay').onclick=function(){
+  if(!DATA)return;
+  var d=personalizeData(DATA,$('qName').value);
+  localStorage.setItem('pp_data',JSON.stringify(d));
+  location.href='game.html';
 };
-$('btnExp').onclick = async function(){
-  if(!DATA) return;
-  var nm = $('qName').value.trim();
-  var d = DATA;
-  if(nm){ d = JSON.parse(JSON.stringify(DATA)); d.title = DATA.title+' — voor '+nm; }
+$('btnExp').onclick=async function(){
+  if(!DATA)return;
+  var d=personalizeData(DATA,$('qName').value);
   log('Spel-bestand maken…');
   try{
-    var tpl = await fetch('game.html').then(function(r){return r.text()});
-    var inject = 'var DATA = '+JSON.stringify(d).replace(/<\//g,'<\\/')+';';
-    var html = tpl.replace(/var DATA = JSON\.parse\(localStorage[^;]+;/, inject);
-    html = html.replace('<title>PagePlay spel</title>', '<title>'+esc(d.title)+' — Animal Heroes</title>');
-    var blob = new Blob([html],{type:'text/html'});
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = (d.title||'boek').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')+'-spel.html';
-    a.click(); URL.revokeObjectURL(a.href);
+    var tpl=await fetch('game.html').then(function(r){return r.text()});
+    var html=buildExportHtml(tpl,d);
+    var blob=new Blob([html],{type:'text/html'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=(d.title||'boek').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')+'-spel.html';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
     log('Gedownload: '+a.download+' — dubbelklik om te spelen, werkt offline.');
-  }catch(e){ err('Export mislukt: '+e); }
+  }catch(e){err('Export mislukt: '+e)}
 };
+window.PP={smartChunks:smartChunks,normalizeTiles:normalizeTiles,keywordsFromText:keywordsFromText,generateQuiz:generateQuiz,assignmentFor:assignmentFor,personalizeData:personalizeData,buildExportHtml:buildExportHtml,trimText:trimText};
 </script>
 </body>
 </html>
