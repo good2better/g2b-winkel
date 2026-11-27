@@ -20,6 +20,8 @@ h1 b{color:#4ade80}
 .pad{aspect-ratio:1.35;background:var(--kaart);border:1px solid var(--rand);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;user-select:none;transition:.06s;font-weight:800;font-size:.8rem;letter-spacing:.5px;color:#7ee2a8;position:relative}
 .pad small{color:var(--zacht);font-weight:400;font-size:.62rem;margin-top:3px}
 .pad.hit{background:#1d3a2a;border-color:var(--groen);transform:scale(.96);box-shadow:0 0 18px #16a34a66}
+.pad.dup{border-color:#f59e0b;box-shadow:inset 0 0 0 1px #f59e0b66}
+.pad.dup small{color:#fbbf24}
 .ctrls{display:flex;gap:18px;margin-top:20px;width:min(560px,95vw);flex-wrap:wrap}
 .ctrl{flex:1;min-width:110px;background:var(--kaart);border:1px solid var(--rand);border-radius:12px;padding:10px 14px}
 .ctrl label{display:flex;justify-content:space-between;font-size:.72rem;color:var(--zacht);margin-bottom:6px}
@@ -32,7 +34,7 @@ h1 b{color:#4ade80}
 <body>
 <h1>🎻 G2B <b>BEST-OF</b></h1>
 <p class="sub">440+ top-sounds in 29 banken — instrumenten, genre-kits en G2B signature.<br>Klik pads of gebruik toetsenbord (Q W E R … Z X C V + 1-4).</p>
-<div class="sets"><select id="bank" onchange="setSet(this.selectedIndex)" style="padding:9px 14px;border-radius:10px;background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);font-weight:700;font-size:.9rem"></select></div>
+<div class="sets"><select id="bank" onchange="setSet(this.selectedIndex)" style="padding:9px 14px;border-radius:10px;background:var(--kaart);color:var(--tekst);border:1px solid var(--rand);font-weight:700;font-size:.9rem"></select><button id="stack" style="padding:9px 14px;border-radius:10px;border:1px solid var(--rand);background:linear-gradient(180deg,#22c55e,#15803d);color:#031108;font-weight:900;cursor:pointer">🎲 BEST STACK</button></div>
 <div class="pads" id="pads"></div>
 <div class="ctrls">
 <div class="ctrl"><label>TOON <b id="vp">0</b></label><input id="pitch" type="range" min="-12" max="12" step="1" value="0"></div>
@@ -40,7 +42,7 @@ h1 b{color:#4ade80}
 <div class="ctrl"><label>FILTER <b id="vf">uit</b></label><input id="filt" type="range" min="0" max="12000" step="100" value="0"></div>
 <div class="ctrl"><label>VOLUME <b id="vv">80%</b></label><input id="vol" type="range" min="0" max="100" step="1" value="80"></div>
 </div>
-<p class="foot">⚡ Geladen sounds: <span id="st">…</span></p>
+<p class="foot">⚡ Geladen sounds: <span id="st">…</span><br><span id="stackinfo">BEST STACK kiest impact + body + karakter + lucht als één instrument/groove-laag.</span></p>
 <div id="wm">⚡ G2B BEST-OF</div>
 <script>
 let SETS=[],BANKS=[],FILES=[];
@@ -52,15 +54,16 @@ fetch('pads-meta.json').then(r=>r.json()).then(m=>{
  build();load(0);
 });
 const KEYS='qwerasdfzxcv1234'.split('');
-let cur=0,buffers=[],ctx=null,geladen=0;
+let cur=0,buffers=[],feats=[],ctx=null,geladen=0;
 function ac(){if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume();return ctx}
 async function load(i){
- geladen=0;document.getElementById('st').textContent='laden…';buffers=[];
+ geladen=0;document.getElementById('st').textContent='laden…';buffers=[];feats=[];
  for(let i2=0;i2<FILES[cur].length;i2++){
-  try{const r=await fetch('wav/'+FILES[cur][i2]+'.wav');const ab=await r.arrayBuffer();buffers.push(await ac().decodeAudioData(ab));geladen++}
-  catch(e){buffers.push(null)}
+  try{const r=await fetch('wav/'+FILES[cur][i2]+'.wav');const ab=await r.arrayBuffer();const buf=await ac().decodeAudioData(ab);buffers.push(buf);feats.push(analyseerSound(buf));geladen++}
+  catch(e){buffers.push(null);feats.push(null)}
  }
  document.getElementById('st').textContent=geladen+'/'+FILES[cur].length;
+ markeerDuplicaten();
 }
 function build(){
  const p=document.getElementById('pads');p.innerHTML='';
@@ -71,7 +74,7 @@ function build(){
   p.appendChild(d);
  });
 }
-function setSet(i){cur=i;build();load(i)}
+function setSet(i){cur=i;build();return load(i)}
 const voices={};
 let _mst=null;
 function master(){ if(!_mst){ const a=ac(); _mst=a.createDynamicsCompressor();
@@ -94,9 +97,159 @@ function speel(i,semi){
  s.start(t);s.stop(t+len+0.2);voices[i]=s;
  const el=document.getElementById('p'+i);el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),120);
 }
+function fftMagnitude(x){
+ const n=x.length,re=new Float32Array(n),im=new Float32Array(n);re.set(x);
+ for(let i=1,j=0;i<n;i++){let bit=n>>1;for(;j&bit;bit>>=1)j^=bit;j^=bit;if(i<j){let t=re[i];re[i]=re[j];re[j]=t;t=im[i];im[i]=im[j];im[j]=t}}
+ for(let len=2;len<=n;len<<=1){const ang=-2*Math.PI/len,wr=Math.cos(ang),wi=Math.sin(ang);
+  for(let i=0;i<n;i+=len){let cwr=1,cwi=0;
+   for(let j=0;j<len/2;j++){const u=i+j,v=i+j+len/2,vr=re[v]*cwr-im[v]*cwi,vi=re[v]*cwi+im[v]*cwr;
+    re[v]=re[u]-vr;im[v]=im[u]-vi;re[u]+=vr;im[u]+=vi;const nwr=cwr*wr-cwi*wi;cwi=cwr*wi+cwi*wr;cwr=nwr}}}
+ const out=new Float32Array(n/2);for(let i=0;i<n/2;i++)out[i]=Math.hypot(re[i],im[i]);return out;
+}
+function pcmFingerprint(a,b){
+ let h=2166136261;
+ const n=a.length,step=Math.max(1,Math.floor(n/192));
+ for(let i=0;i<n;i+=step){
+  const q=Math.round((a[i]+b[i])*.5*32768);
+  h^=(q&0xffff);h=Math.imul(h,16777619)>>>0;
+  h^=((q>>16)&0xffff);h=Math.imul(h,16777619)>>>0;
+ }
+ h^=a.length;h=Math.imul(h,16777619)>>>0;
+ return h.toString(16);
+}
+function naamFamilie(n){
+ n=(n||'').toLowerCase();
+ if(/bas|808|sub|logdrum|donder|surdo/.test(n))return 'body';
+ if(/openhat|hat|rim|clave|shake|perc/.test(n))return 'lucht';
+ if(/kick|snare|klap|timbal|conga/.test(n))return 'impact';
+ if(/piano|mel|keys|git|harp|lead|marimba|mbira|kalimba|steel|akk|bangi|koti|stab/.test(n))return 'kar';
+ return 'onbekend';
+}
+function audioFamilie(f){
+ const bodyLow=(f.lowRatio||0)+(f.loMidRatio||0)*.55,short=Math.max(0,1-f.dur/.55);
+ if(f.brightness>.55&&short>.08)return 'lucht';
+ if(bodyLow>.48&&(f.transient||0)<.55)return 'body';
+ if((f.transient||0)>.62&&short>.05)return 'impact';
+ return 'kar';
+}
+function duplicateGroups(){
+ const map=new Map();
+ for(let i=0;i<feats.length;i++){
+  const f=feats[i];if(!f)continue;
+  if(!map.has(f.fingerprint))map.set(f.fingerprint,[]);
+  map.get(f.fingerprint).push(i);
+ }
+ return [...map.values()].filter(g=>g.length>1);
+}
+function canonIndex(group){
+ const af=audioFamilie(feats[group[0]]);
+ const hit=group.find(i=>naamFamilie(SETS[cur][i])===af);
+ return hit!=null?hit:group[0];
+}
+function canonicalIds(){
+ const map=new Map();
+ for(let i=0;i<feats.length;i++){
+  const f=feats[i];if(!f||!SETS[cur][i])continue;
+  if(!map.has(f.fingerprint))map.set(f.fingerprint,[]);
+  map.get(f.fingerprint).push(i);
+ }
+ return [...map.values()].map(canonIndex);
+}
+function markeerDuplicaten(){
+ document.querySelectorAll('.pad').forEach(el=>{el.classList.remove('dup');el.title=''});
+ const groups=duplicateGroups(),dup=new Set(groups.flat());
+ groups.forEach(g=>{
+  const names=g.map(i=>SETS[cur][i]);
+  g.forEach(i=>{
+   const el=document.getElementById('p'+i);
+   if(el){el.classList.add('dup');el.title='⚠ exact zelfde audio als: '+names.filter((_,k)=>g[k]!==i).join(', ')}
+  });
+ });
+ const base=geladen+'/'+FILES[cur].length;
+ document.getElementById('st').textContent=base+(dup.size?' · ⚠ '+dup.size+' dubbele/mislabelde pads':'');
+ return groups;
+}
+function analyseerSound(buf){
+ const sr=buf.sampleRate,a=buf.getChannelData(0),b=buf.numberOfChannels>1?buf.getChannelData(1):a;
+ let peak=0,maxStep=0,prev=0,rms=0;
+ const stride=2;
+ for(let i=0;i<a.length;i+=stride){const x=(a[i]+b[i])*.5;peak=Math.max(peak,Math.abs(x));maxStep=Math.max(maxStep,Math.abs(x-prev));rms+=x*x;prev=x}
+ rms=Math.sqrt(rms/Math.ceil(a.length/stride));
+ const N=2048,seg=new Float32Array(N),bands={low:0,loMid:0,mid:0,high:0,air:0,all:1e-12},centN=0;
+ let centroid=0,centW=0;
+ for(const posRel of [.08,.3,.55]){
+  const start=Math.min(Math.max(0,a.length-N-1),Math.floor(a.length*posRel));
+  for(let i=0;i<N;i++){const idx=start+i,u=idx<a.length?(a[idx]+b[idx])*.5:0;const win=.5-.5*Math.cos(2*Math.PI*i/(N-1));seg[i]=u*win}
+  const mag=fftMagnitude(seg),hz=sr/N;
+  for(let k=1;k<mag.length;k++){const f=k*hz,e=mag[k]*mag[k];bands.all+=e;
+   if(f<120)bands.low+=e;else if(f<500)bands.loMid+=e;else if(f<2500)bands.mid+=e;else if(f<6000)bands.high+=e;else bands.air+=e;
+   centroid+=f*e;centW+=e}
+ }
+ const lowRatio=bands.low/bands.all,airRatio=bands.air/bands.all,highRatio=(bands.high+bands.air)/bands.all,midRatio=(bands.loMid+bands.mid)/bands.all;
+ return{dur:buf.duration,lowRatio,loMidRatio:bands.loMid/bands.all,midRatio,highRatio,airRatio,brightness:highRatio,centroid:centW?centroid/centW:0,transient:Math.min(1,maxStep*3),peak,rms,fingerprint:pcmFingerprint(a,b)};
+}
+function scoreNaam(n,role){
+ n=(n||'').toLowerCase();
+ if(role==='impact')return /kick/.test(n)?4:/snare|klap/.test(n)?3:/surdo|timbal|conga/.test(n)?2:0;
+ if(role==='body')return /bas|808|sub|logdrum|donder/.test(n)?4:0;
+ if(role==='kar')return /piano|mel|keys|git|harp|lead|marimba|mbira|kalimba|steel|akk|bangi|koti|stab/.test(n)?4:0;
+ if(role==='lucht')return /openhat|hat/.test(n)?4:/(^|[^a-z])rim|clave|shake|perc/.test(n)?2:0;
+ return 0;
+}
+function scoreRole(i,role){
+ const f=feats[i]||{dur:.8,lowRatio:.35,highRatio:.2,transient:.4,brightness:.2},ns=scoreNaam(SETS[cur][i],role);
+ const sustain=Math.min(1,f.dur/1.2),short=Math.max(0,1-f.dur/.55),nm=(SETS[cur][i]||'').toLowerCase();
+ let audio=0;
+ if(role==='impact')audio=f.transient*2.2+short*.9+f.lowRatio*.45;
+ if(role==='body')audio=(f.lowRatio+(f.loMidRatio||0)*.55)*3.2+sustain*1.25-f.brightness*.45;
+ if(role==='kar')audio=sustain*1.8+(1-f.lowRatio)*.8+(1-f.brightness)*.35;
+ if(role==='lucht')audio=f.brightness*2.3+short*.9+f.highRatio*.8-f.lowRatio*.5-sustain*1.15;
+ /* cross-role eerlijkheid: een heldere bass is nog geen lucht, een melodische transient geen drumimpact */
+ if(role==='lucht'&&/bas|808|sub|logdrum|donder/.test(nm))audio-=3.2;
+ if(role==='lucht'&&/piano|mel|keys|git|harp|lead|marimba|mbira|kalimba|steel|akk|bangi|koti|stab/.test(nm))audio-=3.6;
+ if(role==='impact'&&/piano|mel|keys|git|harp|lead|marimba|mbira|kalimba|steel|akk|bangi|koti/.test(nm))audio-=2.8;
+ if(role==='body'&&/hat|rim|clave|snare|klap/.test(nm))audio-=2.4;
+ if(role==='kar'&&/kick|hat|rim|clave|snare|klap/.test(nm))audio-=1.8;
+ return ns+audio+Math.random()*.18;
+}
+function rolePick(role,used){
+ let best=null,bs=.65;
+ for(let i=0;i<SETS[cur].length;i++){if(used.has(i)||!SETS[cur][i])continue;const sc=scoreRole(i,role);if(sc>bs){bs=sc;best=i}}
+ if(best!=null)used.add(best);return best;
+}
+function bestStackPlan(){
+ const roles=['impact','body','kar','lucht'],ids=canonicalIds();
+ const sc={};
+ for(const role of roles){sc[role]=ids.map(i=>scoreRole(i,role))}
+ const none=-1,opts=[];
+ for(const ai of [-1,...ids])for(const bi of [-1,...ids])for(const ci of [-1,...ids])for(const di of [-1,...ids]){
+  const arr=[ai,bi,ci,di];
+  if(new Set(arr.filter(x=>x>=0)).size!==arr.filter(x=>x>=0).length)continue;
+  const vals=[ai>=0?sc.impact[ids.indexOf(ai)]:0,bi>=0?sc.body[ids.indexOf(bi)]:0,ci>=0?sc.kar[ids.indexOf(ci)]:0,di>=0?sc.lucht[ids.indexOf(di)]:0];
+  if((ai>=0&&vals[0]<.9)||(bi>=0&&vals[1]<.9)||(ci>=0&&vals[2]<.9)||(di>=0&&vals[3]<.9))continue;
+  const filled=arr.filter(x=>x>=0).length,total=vals.reduce((a,b)=>a+b,0)+filled*.28;
+  if(filled)opts.push({arr,total,vals});
+ }
+ opts.sort((a,b)=>b.total-a.total);
+ const pick=opts.length?opts[Math.floor(Math.random()*Math.min(3,opts.length))]:null;
+ const a=pick?pick.arr:[-1,-1,-1,-1],impact=a[0]>=0?a[0]:null,body=a[1]>=0?a[1]:null,kar=a[2]>=0?a[2]:null,lucht=a[3]>=0?a[3]:null;
+ const detail=i=>i==null?null:{naam:SETS[cur][i],feature:feats[i]||null};
+ return{impact,body,kar,lucht,namen:{impact:impact!=null?SETS[cur][impact]:null,body:body!=null?SETS[cur][body]:null,karakter:kar!=null?SETS[cur][kar]:null,lucht:lucht!=null?SETS[cur][lucht]:null},details:{impact:detail(impact),body:detail(body),karakter:detail(kar),lucht:detail(lucht)},rollen:[impact,body,kar,lucht].filter(x=>x!=null).length,optimizer:{kandidaten:opts.length,score:pick?+pick.total.toFixed(2):0},duplicaten:duplicateGroups().map(g=>({pads:g,namen:g.map(i=>SETS[cur][i]),canon:canonIndex(g)}))};
+}
+function bestStack(){
+ if(!buffers.length)return;
+ const plan=bestStackPlan(),parts=[];
+ if(plan.impact!=null){speel(plan.impact,0);parts.push('impact '+plan.namen.impact)}
+ if(plan.body!=null){setTimeout(()=>speel(plan.body,-12),18);parts.push('body '+plan.namen.body+' -12st')}
+ if(plan.kar!=null){setTimeout(()=>speel(plan.kar,0),36);parts.push('karakter '+plan.namen.karakter)}
+ if(plan.lucht!=null){setTimeout(()=>speel(plan.lucht,12),54);parts.push('lucht '+plan.namen.lucht+' +12st')}
+ document.getElementById('stackinfo').textContent=parts.length?('BEST STACK: '+parts.join(' · ')):'Geen passende lagen gevonden in deze bank';
+ return plan;
+}
 document.addEventListener('keydown',e=>{
  const i=KEYS.indexOf(e.key.toLowerCase());if(i>=0&&!e.repeat){speel(i);if(window.G2BKB&&G2BKB.log)G2BKB.log(60+i,0,100);}
 });
+document.getElementById('stack').onclick=bestStack;
 ['pitch','leng','filt','vol'].forEach(id=>{
  document.getElementById(id).addEventListener('input',e=>{
   const v=+e.target.value;
