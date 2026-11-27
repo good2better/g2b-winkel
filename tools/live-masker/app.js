@@ -570,6 +570,15 @@ function virtualCam(now){
  if(mode==='push')return{scale:1.035+Math.sin(t*.28)*.018,x:Math.sin(t*.11)*10,y:Math.cos(t*.13)*5,shot:'push-in'};
  if(mode==='orbit')return{scale:1.045,x:Math.sin(t*.32)*24,y:Math.cos(t*.24)*10,shot:'orbit'};
  if(mode==='multicam'){const shot=Math.floor(t/5)%3;return[ {scale:.98,x:-18,y:4,shot:'wide links'}, {scale:1.075,x:22,y:-5,shot:'close rechts'}, {scale:1.03,x:0,y:8,shot:'center detail'} ][shot]}
+ if(mode==='regisseur'){
+  const W=els.cv.width,H=els.cv.height,fresh=face.ready&&(now-face.lastSeen)<1400;
+  const cxn=fresh?face.x0/W-.5:0,cyn=fresh?face.y0/H-.48:0;
+  const phase=Math.floor(t/6)%3,energy=clamp(micLevel*1.8+(fresh?.12:0),0,1);
+  const closeBoost=energy>.45?.045:0,base=[.985,1.055+closeBoost,1.015][phase];
+  const faceScale=fresh?clamp(face.d0/(W*.16),.90,1.12):1;
+  const orbit=phase===2?Math.sin(t*.7)*8:0;
+  return{scale:clamp(base*faceScale,.94,1.13),x:clamp(-cxn*W*.15,-38,38)+orbit,y:clamp(-cyn*H*.10,-18,18),shot:energy>.45?'auto close op energie':['auto wide','auto close','auto detail'][phase]}
+ }
  return{scale:1,x:0,y:0,shot:'statisch'}
 }
 function drawSceneBackground(now) {
@@ -1140,7 +1149,7 @@ function drawMouthCavity(m, anchorX, anchorY, jawRaw) {
   }
   cx.restore();
 }
-let hostMsg='Klaar voor een sterke stream!',hostUntil=performance.now()+5000,worldBursts=[];
+let hostMsg='Klaar voor een sterke stream!',hostUntil=performance.now()+5000,worldBursts=[],lastAutoHost=0;
 function triggerCohost(type='hype'){
  const texts={hype:['🔥 Dit is een sterk moment!','Laten we gaan, G2B!','Energie omhoog — mooi werk!'],vraag:['❓ Chat: hoe zou jij dit gebruiken?','❓ Welke tool wil je nu live zien?','❓ Durf jij deze workflow te proberen?'],event:['🎉 Wereld-event actief!','✨ De wereld reageert op je stream!','🚀 Nieuwe energie in de wereld!']};
  const arr=texts[type]||texts.hype;hostMsg=arr[Math.floor(Math.random()*arr.length)];hostUntil=performance.now()+5200;
@@ -1162,6 +1171,7 @@ function drawCohost(now){
 function drawFrame() {
   const now = performance.now();
   updateLight(now);
+  if(bgKind==='gamewereld'&&($('camMode')&&$('camMode').value)==='regisseur'&&($('cohostOn')&&$('cohostOn').checked)&&micLevel>.55&&now-lastAutoHost>18000){lastAutoHost=now;triggerCohost('hype')}
   const faceAge = face.ready ? now - face.lastSeen : Infinity;
   const blurForPrivacy = els.privacyMode.value === 'blur' && faceAge > 170;
   if (bgKind === 'camera') {
@@ -1912,7 +1922,7 @@ window.G2BMaskerBrowser = {
       status: els.status.textContent, perf: els.perf.textContent,
       privacyBadge: els.privacyBadge.textContent, offlineBadge: els.offlineBadge.textContent, modelBadge: els.modelBadge.textContent,
       externalResources, lastMaskMetrics: lastMaskMetrics ? { ...lastMaskMetrics } : null,
-      bg: bgKind, fx: fxKind, bgImageLabel, camMode:($('camMode')&&$('camMode').value)||'statisch',camShot:virtualCam(performance.now()).shot,regieAuto: !!($('regieAuto') && $('regieAuto').checked), cohostOn: !!($('cohostOn') && $('cohostOn').checked), hostMsg, worldBursts: worldBursts.length,
+      bg: bgKind, fx: fxKind, bgImageLabel, camMode:($('camMode')&&$('camMode').value)||'statisch',camShot:virtualCam(performance.now()).shot,directorCam:virtualCam(performance.now()),regieAuto: !!($('regieAuto') && $('regieAuto').checked), cohostOn: !!($('cohostOn') && $('cohostOn').checked), hostMsg, worldBursts: worldBursts.length,
       segReady, segError, segDelegate, segInferenceAvg, personCoverage,
       segReinitAttempts, segLowCoverageStreak, jawSmoothed,
       personMaskAge: personMask ? now - personMask.timestamp : null,
