@@ -1,0 +1,45 @@
+G2B Live-Masker browserlijn — licentie- en herkomstoverzicht
+=============================================================
+
+Eigen onderdelen
+----------------
+- index.html, styles.css, app.js, face-worker.js, segment-worker.js, sw.js en manifest.webmanifest zijn voor deze G2B-browserversie geschreven.
+- De procedurele achtergronden (ruimte, onderwater, zonsondergang) en deeltjeseffecten (sterren, confetti, sneeuw, bubbels) zijn eigen canvascode van deze browserlijn; ze gebruiken geen externe beeld- of animatieassets.
+- kat.png en uil.png zijn de bestaande karakterassets van deze G2B-browserlijn. robot.png is tijdens deze upgrade als eigen G2B-vectorasset opnieuw gebouwd in dezelfde vormenfamilie, omdat de oude robot.png een 300x300-smiley-placeholder was. icon-192.png en icon-512.png zijn daarvan afgeleide eigen app-iconen. Ze zijn geen kopie van de aparte SVG-karakters uit het app-prototype. Definitieve commerciële licentietekst en assetaudit moeten vóór verkoop nog juridisch worden vastgelegd.
+- Deze browserversie is bewust een eigen lichte productlijn en geen kopie van het zwaardere app-prototype.
+
+MediaPipe Tasks Vision
+----------------------
+- Component: @mediapipe/tasks-vision
+- Vendored versie: 0.10.32
+- Licentie: Apache License 2.0
+- Bron: https://www.npmjs.com/package/@mediapipe/tasks-vision en https://github.com/google-ai-edge/mediapipe
+- De volledige Apache-2.0-licentietekst staat in vendor/mediapipe/LICENSE-APACHE-2.0.txt
+- Bestands- en hashbewijs staat in vendor/mediapipe/PROVENANCE.json
+
+Face Landmarker-model
+---------------------
+- Bestand: vendor/mediapipe/face_landmarker.task
+- Bron: https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task
+- SHA256: 64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff
+- De officiële modelkaarten vermelden Apache License 2.0.
+- De app gebruikt dit uitsluitend voor lokale gezichtsgeometrie en expressiecoëfficiënten. Er is geen identiteitsherkenning, geen gezichtsdatabase en geen cloudverwerking.
+
+Selfie Segmenter-model
+----------------------
+- Bestand: vendor/mediapipe/selfie_segmenter.tflite (249.537 bytes)
+- Bron: MediaPipe selfie segmentation model (Google), zoals ook in het app-prototype gebruikt.
+- SHA256: 191ac9529ae506ee0beefa6b2c945a172dab9d07d1e802a290a4e4038226658b
+- Licentie: Apache License 2.0 volgens de officiële modelkaart.
+- De app gebruikt dit uitsluitend lokaal om de persoon los te knippen van de echte achtergrond voor de achtergrondmagie. Dat versterkt juist de privacy: de echte kamer is niet zichtbaar. Er is geen identiteitsanalyse en geen cloudverwerking.
+
+Bewuste keuzes
+--------------
+- Geen GPL/AGPL-component in deze tool.
+- Geen CDN-dependency: de benodigde MediaPipe-bestanden staan lokaal in vendor/mediapipe.
+- Geen trackers, analytics, accounts of cloud-API's.
+- Uploads van eigen karakters blijven lokaal; SVG-uploads worden gesanitized voordat ze worden gebruikt.
+
+Eerlijke beperking
+------------------
+Dit overzicht is technisch zorgvuldig maar geen juridisch advies. Voor verkoop moeten productlicentie, assetherkomst, privacytekst en eventuele merk-/naamrechten nog definitief worden gecontroleerd.
