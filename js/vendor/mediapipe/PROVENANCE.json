@@ -1,0 +1,19 @@
+{
+  "component": "@mediapipe/tasks-vision + hand_landmarker model",
+  "version": "0.10.32",
+  "license": "Apache-2.0",
+  "note": "Gedeelde shop-vendor voor camera-apps (airdrums e.a.). vision_bundle/wasm zijn byte-identiek aan de bewezen live-masker vendor. hand_landmarker.task is het officiële MediaPipe handmodel; modelkaart vermeldt Apache License 2.0. Geen identiteits- of biometrische opslag: alleen 21 handlandmark-posities in vluchtig geheugen.",
+  "npm_tarball": "https://registry.npmjs.org/@mediapipe/tasks-vision/-/tasks-vision-0.10.32.tgz",
+  "npm_integrity": "sha512-3tiAZnmKloYnRXYoO3dKltTUGnqeCwzC4lV03uY0vCsE+aveJTyEVQyZHOlQGQNsjK+gRHzkf9q08C99Qm2K0Q==",
+  "hand_model_url": "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
+  "files": {
+    "vision_bundle.cjs.js": {
+      "bytes": 137315,
+      "sha256": "zie live-masker PROVENANCE (byte-identiek)"
+    },
+    "hand_landmarker.task": {
+      "bytes": 7819105,
+      "sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1"
+    }
+  }
+}

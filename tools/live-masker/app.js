@@ -27,17 +27,22 @@ const QUALITY = {
 const CHARACTERS = {
   kat: {
     label: 'Kat', src: './kat.png', scale: 0.82,
-    eyeCX: 0.4955108514421094, eyeY: 0.31418795356705087, eyeDist: 0.1917736940077595
+    eyeCX: 0.4955108514421094, eyeY: 0.31418795356705087, eyeDist: 0.1917736940077595,
+    mouth: { x: 0.50, y: 0.415, w: 0.13 }
   },
   robot: {
     label: 'Robot', src: './robot.png', scale: 0.88,
-    eyeCX: 0.5, eyeY: 0.310546875, eyeDist: 0.205078125
+    eyeCX: 0.5, eyeY: 0.310546875, eyeDist: 0.205078125,
+    mouth: { x: 0.50, y: 0.380, w: 0.12 }
   },
   uil: {
     label: 'Uil', src: './uil.png', scale: 0.90,
-    eyeCX: 0.49928385779712847, eyeY: 0.35662746598720185, eyeDist: 0.22725315627328485
+    eyeCX: 0.49928385779712847, eyeY: 0.35662746598720185, eyeDist: 0.22725315627328485,
+    mouth: { x: 0.50, y: 0.450, w: 0.10 }
   }
 };
+// eigen uploads hebben geen gemeten mondpositie — generieke gezichtsverhouding als aardige default
+const DEFAULT_MOUTH = { x: 0.5, y: 0.60, w: 0.15 };
 for (const def of Object.values(CHARACTERS)) {
   def.img = new Image();
   def.img.decoding = 'async';
@@ -99,6 +104,14 @@ let lastSegSent = 0;
 let segInferenceAvg = 0;
 let personMask = null;
 let personCoverage = 0;
+// zelfherstellende segmentatie: op sommige mobiele GPU's levert de GPU-delegate
+// stilletjes lege maskers (persoon onzichtbaar ondanks werkende tracking).
+// De watchdog gebruikt gezichtsdetectie als waarheid: is er een gezicht maar blijft
+// de dekking vrijwel nul, dan proberen we eenmalig de andere delegate.
+let segLowCoverageStreak = 0;
+let segReinitAttempts = 0;
+let segReiniting = false;
+let segDelegateForced = '';
 const personMaskCanvas = document.createElement('canvas');
 const personCanvas = document.createElement('canvas');
 const bgCacheCanvas = document.createElement('canvas');
@@ -668,6 +681,8 @@ function initSegWorker() {
       if (!msg.ok || !msg.mask) return;
       segInferenceAvg = segInferenceAvg ? segInferenceAvg * 0.82 + msg.inferenceMs * 0.18 : msg.inferenceMs;
       personCoverage = msg.personCoverage || 0;
+      const facePresent = face.ready && (performance.now() - (face.lastSeen || 0) < 1500);
+      segWatchdogTick(personCoverage, facePresent);
       personMask = {
         data: new Uint8Array(msg.mask),
         width: msg.width,
@@ -682,13 +697,39 @@ function initSegWorker() {
       finish(false);
     };
     try {
-      segWorker.postMessage({ type: 'init', delegate: 'AUTO' });
+      segWorker.postMessage({ type: 'init', delegate: segDelegateForced || 'AUTO' });
     } catch (error) {
       segError = String(error && error.message || error);
       finish(false);
     }
   });
   return segInitPromise;
+}
+function segWatchdogTick(coverage, facePresent) {
+  if (facePresent && coverage < 0.015) segLowCoverageStreak++;
+  else segLowCoverageStreak = 0;
+  if (segLowCoverageStreak >= 6 && segReinitAttempts < 2 && !segReiniting) {
+    segReinitAttempts++;
+    const alternate = segDelegate === 'GPU' ? 'CPU' : 'GPU';
+    reinitSegWorker(alternate);
+    return true;
+  }
+  return false;
+}
+function reinitSegWorker(delegate) {
+  if (segReiniting) return;
+  segReiniting = true;
+  segDelegateForced = delegate;
+  try { if (segWorker) segWorker.postMessage({ type: 'close' }); } catch (_) {}
+  try { if (segWorker) segWorker.terminate(); } catch (_) {}
+  segWorker = null;
+  segReady = false;
+  segPending = false;
+  segInitPromise = null;
+  personMask = null;
+  personCoverage = 0;
+  segLowCoverageStreak = 0;
+  initSegWorker().finally(() => { segReiniting = false; });
 }
 function renderPersonMaskCanvas() {
   if (!personMask || !personMask.data || !personMask.width || !personMask.height) return;
@@ -977,8 +1018,10 @@ function maskMetrics() {
   const cyp = face.y0 + f.oy * eyeD;
   return { def, f, eyeD, spriteW, spriteH, cxp, cyp };
 }
+let blendOverride = null;
 function expressionValues() {
-  const blend = face.blend || {};
+  const blend = { ...(face.blend || {}) };
+  if (blendOverride && performance.now() < blendOverride.until) Object.assign(blend, blendOverride.vals);
   const jaw = clamp(blend.jawOpen || 0);
   const smile = clamp(((blend.mouthSmileLeft || 0) + (blend.mouthSmileRight || 0)) / 2);
   const blink = clamp(((blend.eyeBlinkLeft || 0) + (blend.eyeBlinkRight || 0)) / 2);
@@ -1024,6 +1067,39 @@ function drawMask(now) {
   const anchorY = m.spriteH * m.def.eyeY;
   cx.drawImage(m.def.img, -anchorX, -anchorY, m.spriteW, m.spriteH);
   cx.filter = 'none';
+  drawMouthCavity(m, anchorX, anchorY, exv.jaw);
+  cx.restore();
+}
+// pratende mond: zichtbare mondholte die mee-opent met de kaak van de gebruiker.
+// De kale squash-vervorming was in de praktijk onzichtbaar (max ~2-5%) — deze poppenmond
+// is de eerlijke lichte cartoon-oplossing binnen statische PNG-sprites.
+let jawSmoothed = 0;
+function drawMouthCavity(m, anchorX, anchorY, jawRaw) {
+  const target = clamp(jawRaw || 0, 0, 1);
+  jawSmoothed += (target - jawSmoothed) * (target > jawSmoothed ? 0.5 : 0.22);
+  const jaw = jawSmoothed;
+  if (jaw < 0.045) return;
+  const mouth = (m.def && m.def.mouth) || DEFAULT_MOUTH;
+  const mxp = mouth.x * m.spriteW - anchorX;
+  const myp = mouth.y * m.spriteH - anchorY;
+  const halfW = mouth.w * m.spriteW * (0.85 + jaw * 0.30) * 0.5;
+  const halfH = Math.max(halfW * 0.25, mouth.w * m.spriteW * 0.62 * jaw * 0.5);
+  cx.save();
+  cx.translate(mxp, myp);
+  const grad = cx.createRadialGradient(0, -halfH * 0.1, halfH * 0.15, 0, 0, Math.max(halfW, halfH) * 1.15);
+  grad.addColorStop(0, '#6e1626');
+  grad.addColorStop(0.55, '#420a16');
+  grad.addColorStop(1, '#24040c');
+  cx.fillStyle = grad;
+  cx.beginPath();
+  cx.ellipse(0, 0, halfW, halfH, 0, 0, Math.PI * 2);
+  cx.fill();
+  if (jaw > 0.30) {
+    cx.fillStyle = 'rgba(196,64,79,0.9)';
+    cx.beginPath();
+    cx.ellipse(0, halfH * 0.42, halfW * 0.52, halfH * 0.38, 0, 0, Math.PI * 2);
+    cx.fill();
+  }
   cx.restore();
 }
 function drawFrame() {
@@ -1157,7 +1233,11 @@ function updatePerf(now) {
   if (now - lastPerfUpdate < 1000) return;
   const fps = frameCount * 1000 / (now - lastPerfUpdate);
   const detFps = detectionCount * 1000 / (now - lastPerfUpdate);
-  els.perf.textContent = running ? `${fps.toFixed(0)} fps · ${detFps.toFixed(0)} Hz · ${inferenceAvg ? inferenceAvg.toFixed(1) : '–'} ms` : '';
+  let perfText = running ? `${fps.toFixed(0)} fps · ${detFps.toFixed(0)} Hz · ${inferenceAvg ? inferenceAvg.toFixed(1) : '–'} ms` : '';
+  if (running && bgKind !== 'camera') {
+    perfText += ` · seg ${(personCoverage * 100).toFixed(0)}% ${segInferenceAvg ? segInferenceAvg.toFixed(0) + 'ms' : '–'} ${segDelegate || '…'}${segReinitAttempts ? ' h' + segReinitAttempts : ''}`;
+  }
+  els.perf.textContent = perfText;
   frameCount = 0;
   detectionCount = 0;
   lastPerfUpdate = now;
@@ -1769,12 +1849,13 @@ window.G2BMaskerBrowser = {
       externalResources, lastMaskMetrics: lastMaskMetrics ? { ...lastMaskMetrics } : null,
       bg: bgKind, fx: fxKind, bgImageLabel,
       segReady, segError, segDelegate, segInferenceAvg, personCoverage,
+      segReinitAttempts, segLowCoverageStreak, jawSmoothed,
       personMaskAge: personMask ? now - personMask.timestamp : null,
       particleCount: particles.length, frameTimeAvg,
       activeCharacter: CHARACTERS[kar] ? {
         label: CHARACTERS[kar].label, src: CHARACTERS[kar].src,
         eyeCX: CHARACTERS[kar].eyeCX, eyeY: CHARACTERS[kar].eyeY, eyeDist: CHARACTERS[kar].eyeDist,
-        scale: CHARACTERS[kar].scale
+        scale: CHARACTERS[kar].scale, mouth: CHARACTERS[kar].mouth || DEFAULT_MOUTH
       } : null,
       characterCount: Object.keys(CHARACTERS).length,
       snapDisabled: els.snap.disabled, recDisabled: els.rec.disabled
@@ -1807,6 +1888,10 @@ window.G2BMaskerBrowser = {
     drawFrame();
     return { blend: { ...face.blend }, metrics: lastMaskMetrics ? { ...lastMaskMetrics } : null };
   },
+  debugBlendOverride(values, ms) {
+    blendOverride = values ? { vals: { ...values }, until: performance.now() + (ms || 2000) } : null;
+    return !!blendOverride;
+  },
   debugFace(values = {}) {
     const target = {
       x: values.x ?? els.cv.width / 2,
@@ -1833,5 +1918,35 @@ window.G2BMaskerBrowser = {
   exportStats() {
     drawFrame();
     return imageStatsForCanvas();
+  },
+  mouthRegionStats() {
+    const mm = lastMaskMetrics;
+    if (!mm || !mm.width) return null;
+    const def = CHARACTERS[kar];
+    const mouth = (def && def.mouth) || DEFAULT_MOUTH;
+    const mx = mm.x + (mouth.x * mm.width - mm.anchorX);
+    const my = mm.y + (mouth.y * mm.height - mm.anchorY);
+    const r = Math.max(6, mouth.w * mm.width * 0.5);
+    const x0 = Math.max(0, Math.round(mx - r)), x1 = Math.min(els.cv.width, Math.round(mx + r));
+    const y0 = Math.max(0, Math.round(my - r)), y1 = Math.min(els.cv.height, Math.round(my + r));
+    if (x1 <= x0 || y1 <= y0) return null;
+    const data = cx.getImageData(x0, y0, x1 - x0, y1 - y0).data;
+    let dark = 0, n = 0, sumR = 0, sumG = 0, sumB = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      const R = data[i], G = data[i + 1], B = data[i + 2];
+      sumR += R; sumG += G; sumB += B; n++;
+      const lum = R * 0.2126 + G * 0.7152 + B * 0.0722;
+      if (lum < 70 && R > B * 0.8) dark++;
+    }
+    return { cx: mx, cy: my, r, darkRatio: dark / n, meanR: sumR / n, meanG: sumG / n, meanB: sumB / n };
+  },
+  debugWatchdog(coverage, facePresent) {
+    const before = { attempts: segReinitAttempts, streak: segLowCoverageStreak };
+    const triggered = segWatchdogTick(Number(coverage) || 0, !!facePresent);
+    return {
+      triggered,
+      before,
+      after: { attempts: segReinitAttempts, streak: segLowCoverageStreak, forced: segDelegateForced }
+    };
   }
 };
