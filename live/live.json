@@ -1,14 +1,1 @@
-{
-  "title": "G2B Live — volgende sessie volgt snel",
-  "start": "",
-  "video": "",
-  "ticket": "",
-  "note": "Hier stream ik binnenkort live: beats maken, nieuwe packs laten horen en jullie vragen beantwoorden. Houd deze link bij!",
-  "choices": [],
-  "recurring": {
-    "enabled": false,
-    "weekday": 5,
-    "hour": 20
-  },
-  "questions": "g.sandvliet88@gmail.com"
-}
+{"title":"G2B Live — volgende sessie volgt snel","note":"Live lessen, creatiesessies en productdemo's.","questions":"g.sandvliet88@gmail.com","recurring":{"enabled":false,"weekday":5,"hour":20}}

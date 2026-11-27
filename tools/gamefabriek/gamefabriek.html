@@ -54,6 +54,11 @@ label{font-size:.8rem;color:var(--zacht)}
 </div>
 
 <div class="kaart">
+<h2>3B. Snelle workflows — één klik = beste startinstellingen</h2>
+<div class="grid" id="presets"></div>
+</div>
+
+<div class="kaart">
 <h2>4. Eigen foto's (optioneel) — jij in het spel</h2>
 <div class="rij">
 <div><label>📷 Held (jouwe foto)</label><input type="file" id="heldfoto" accept="image/*" style="margin-top:6px"><div id="heldprev" style="margin-top:6px"></div></div>
@@ -108,6 +113,16 @@ function bouwKies(el,lijst,kies){
   d.onclick=()=>{el.querySelectorAll('.kies').forEach(k=>k.classList.remove('aan'));d.classList.add('aan');kies(t.id)};el.appendChild(d)});
  el.firstChild.classList.add('aan')}
 bouwKies(T('types'),TYPES,v=>type=v);bouwKies(T('themas'),THEMAS,v=>thema=v);
+
+const PRESETS=[
+ {id:'feest',ic:'🎉',nm:'Kinderfeestje',info:'memory · dieren · kleuter · omstebeurt',type:'memory',thema:'dieren',moeilijk:'kleuter',tijd:'90',spelers:'beurt',naam:'Feest Dieren Memory'},
+ {id:'klas',ic:'🏫',nm:'Klaslokaal',info:'quiz · dieren · kind · rustig tempo',type:'quiz',thema:'dieren',moeilijk:'kind',tijd:'90',spelers:'beurt',naam:'Dierenquiz Klas'},
+ {id:'creator',ic:'🎬',nm:'Creator-video',info:'race · ruimte · snel · 60 sec',type:'race',thema:'ruimte',moeilijk:'groot',tijd:'60',spelers:'1',naam:'Ruimte Race Challenge'},
+ {id:'peuter',ic:'🍼',nm:'Peuter rustig',info:'vangspel · zee · oneindig · zacht',type:'vang',thema:'zee',moeilijk:'peuter',tijd:'0',spelers:'1',naam:'Rustige Zee Vanger'}
+];
+function klikKies(el,id,lijst){const i=lijst.findIndex(x=>x.id===id);if(i>=0)el.children[i].click()}
+function applyPreset(p){klikKies(T('types'),p.type,TYPES);klikKies(T('themas'),p.thema,THEMAS);T('moeilijk').value=p.moeilijk;T('tijd').value=p.tijd;T('spelers').value=p.spelers;T('naam').value=p.naam;log('⚡ workflow '+p.nm+' ingesteld — druk op MAAK MIJN SPEL')}
+PRESETS.forEach(p=>{const d=document.createElement('div');d.className='kies';d.innerHTML=`<span class="ic">${p.ic}</span><span class="nm">${p.nm}</span><div class="info">${p.info}</div>`;d.onclick=()=>applyPreset(p);T('presets').appendChild(d)});
 
 function log(t){const L=T('log');L.classList.add('toon');L.textContent+=t+'\n'}
 
@@ -281,31 +296,46 @@ function tik(x,y){if(!doel)return;const dx=x-doel.x,dy=y-doel.y;
  if(lev<=0)einde();else requestAnimationFrame(loop)})();
 </`+'script></body></html>',
 
-/* MEMORY: paren zoeken op een 4x4 grid */
+/* MEMORY: paren zoeken op een 4x4 grid — met highscore, toetsenbord en gamepad */
 memory:(naam,t,d)=>`<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${naam}</title>
 <style>body{margin:0;background:${t.achtergr};display:flex;flex-direction:column;align-items:center;font-family:system-ui;color:#fff;min-height:100vh}
 h1{margin:12px}#b{display:grid;grid-template-columns:repeat(4,72px);gap:10px;margin-top:14px}
-.k{width:72px;height:72px;background:#ffffff18;border:2px solid ${t.acc};border-radius:12px;font-size:2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none}
-.k.open{background:${t.acc}}#hud{margin:8px;font-size:1.1rem}#over{display:none;text-align:center;margin:20px;font-size:1.4rem}
+.k{width:72px;height:72px;background:#ffffff18;border:2px solid ${t.acc};border-radius:12px;font-size:2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;transition:transform .08s,box-shadow .12s}
+.k.open{background:${t.acc}}.k.focus{box-shadow:0 0 0 4px #fff8,0 0 18px ${t.acc};transform:scale(1.05)}#hud{margin:8px;font-size:1.05rem;text-align:center}#over{display:none;text-align:center;margin:20px;font-size:1.35rem;max-width:430px}
 button{background:${t.acc};border:0;color:#042;padding:10px 24px;border-radius:10px;font-weight:700;cursor:pointer}
 .bge{position:fixed;font-size:2rem;opacity:.10;pointer-events:none;animation:drift var(--d,6s) ease-in-out infinite alternate}@keyframes drift{from{transform:translateY(0) rotate(-8deg)}to{transform:translateY(-60px) rotate(8deg)}}</style></head><body>
-<div id="bgx"></div><h1>${naam}</h1><div id="hud">⭐ <span id="s">0</span> — zetten: <span id="z">0</span></div><div id="b"></div><div id="over">🎉 Alles gevonden! <button onclick="location.reload()">Opnieuw</button></div>
+<div id="bgx"></div><h1>${naam}</h1><div id="hud">⭐ <span id="s">0</span> — zetten: <span id="z">0</span> — 🏆 beste: <span id="best">—</span></div><div id="b"></div><div id="over"></div>
 <script>
 const T=${JSON.stringify('THEMA')};{const bgx=document.getElementById('bgx');for(let i=0;i<9;i++){const s=document.createElement('span');s.className='bge';s.textContent=T.items[i%T.items.length];s.style.left=(4+i*11)+'vw';s.style.top=(10+((i*37)%80))+'vh';s.style.setProperty('--d',(5+i*1.3).toFixed(1)+'s');s.style.fontSize=(1.4+(i%3)*.5)+'rem';bgx.appendChild(s)}}
 let kaarten=T.items.slice(0,8);kaarten=kaarten.concat(kaarten).sort(()=>Math.random()-.5);
-let open=[],klaar=0,zet=0,score=0,blok=false;
-const B=document.getElementById('b');
+let open=[],klaar=0,zet=0,score=0,blok=false,focus=0;
+const B=document.getElementById('b'),BK='g2bmembest_'+document.title;let best=+(localStorage.getItem(BK)||0);
+if(best)document.getElementById('best').textContent=best+' zetten';
 const A=new(window.AudioContext||window.webkitAudioContext)();
 const blip=f=>{const o=A.createOscillator(),g=A.createGain();o.frequency.value=f;const t0=A.currentTime;g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.15,t0+.0015);g.gain.exponentialRampToValueAtTime(.001,t0+.1);o.connect(g);g.connect(A.destination);o.start();o.stop(t0+.1)};
 const FOTOS=${JSON.stringify('FOTOS')};const FITEMS=(FOTOS.items||[]).map(u=>{const i=new Image();i.src=u;return i});
-kaarten.forEach((e,i)=>{const k=document.createElement('div');k.className='k';k.textContent='❓';
+const kaartEls=[];
+function setFocus(i){focus=(i+16)%16;kaartEls.forEach((k,x)=>k.classList.toggle('focus',x==focus))}
+function einde(){if(!best||zet<best){best=zet;localStorage.setItem(BK,best);document.getElementById('best').textContent=best+' zetten'}
+ const ov=document.getElementById('over');ov.style.display='block';ov.innerHTML='🎉 Alles gevonden in '+zet+' zetten!<br><small>Score: '+score+' — beste: '+best+' zetten</small><br><button onclick="location.reload()">Opnieuw</button>'}
+kaarten.forEach((e,i)=>{const k=document.createElement('div');k.className='k';k.textContent='❓';kaartEls.push(k);
  k.onclick=()=>{if(blok||k.classList.contains('open'))return;k.classList.add('open');
   if(FITEMS.length){const im=FITEMS[i%FITEMS.length];k.innerHTML='';const m=document.createElement('img');m.src=im.src;m.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:10px';k.appendChild(m)}
   else k.textContent=e;blip(500);open.push({k,e});
   if(open.length==2){zet++;document.getElementById('z').textContent=zet;
-   if(open[0].e==open[1].e){score+=20;document.getElementById('s').textContent=score;blip(750);klaar+=2;open=[];if(klaar==16)document.getElementById('over').style.display='block'}
+   if(open[0].e==open[1].e){score+=20;document.getElementById('s').textContent=score;blip(750);klaar+=2;open=[];if(klaar==16)einde()}
    else{blok=true;setTimeout(()=>{open.forEach(o=>{o.k.classList.remove('open');o.k.textContent='❓'});open=[];blok=false},700)}}};
  B.appendChild(k)});
+setFocus(0);
+addEventListener('keydown',e=>{const row=Math.floor(focus/4),col=focus%4;
+ if(e.key=='ArrowLeft')setFocus(row*4+(col+3)%4);if(e.key=='ArrowRight')setFocus(row*4+(col+1)%4);
+ if(e.key=='ArrowUp')setFocus(((row+3)%4)*4+col);if(e.key=='ArrowDown')setFocus(((row+1)%4)*4+col);
+ if(e.key=='Enter'||e.key==' ')kaartEls[focus].click()});
+const readPad=()=>{try{const g=navigator.getGamepads&&navigator.getGamepads()[0];if(!g)return{};const ax=g.axes[0]||0,ay=g.axes[1]||0,B=i=>g.buttons[i]&&g.buttons[i].pressed;return{l:ax<-.4||B(14),r:ax>.4||B(15),u:ay<-.4||B(12),d:ay>.4||B(13),a:B(0)||B(1)}}catch(e){return{}}};
+let gp={};setInterval(()=>{const p=readPad(),row=Math.floor(focus/4),col=focus%4;
+ if(p.l&&!gp.l)setFocus(row*4+(col+3)%4);if(p.r&&!gp.r)setFocus(row*4+(col+1)%4);
+ if(p.u&&!gp.u)setFocus(((row+3)%4)*4+col);if(p.d&&!gp.d)setFocus(((row+1)%4)*4+col);
+ if(p.a&&!gp.a)kaartEls[focus].click();gp=p},110);
 </`+'script></body></html>',
 
 /* RENNER: spring over obstakels */
@@ -377,12 +407,12 @@ h1{margin-bottom:6px}#v{font-size:1.3rem;margin:18px;text-align:center;min-heigh
 .a{width:280px;background:#ffffff14;border:2px solid ${t.acc};border-radius:12px;padding:14px;margin:6px;font-size:1.1rem;cursor:pointer;text-align:center;transition:transform .08s}
 .a:active{transform:scale(1.08,.86)}
 ${d.kid?'.a{width:330px;padding:22px;font-size:1.3rem}':''}
-.a:hover{background:#ffffff28}.a.goed{background:#16a34a}.a.fout{background:#dc2626}
+.a:hover{background:#ffffff28}.a:focus,.a.focus{outline:0;box-shadow:0 0 0 4px #fff7,0 0 18px ${t.acc};transform:scale(1.03)}.a.goed{background:#16a34a}.a.fout{background:#dc2626}
 .a.hint{animation:hp .7s infinite alternate}@keyframes hp{from{box-shadow:0 0 0 0 #fff0}to{box-shadow:0 0 16px 5px ${t.acc}}}
 #hud{font-size:1.1rem}
 .bge{position:fixed;font-size:2rem;opacity:.10;pointer-events:none;animation:drift var(--d,6s) ease-in-out infinite alternate}@keyframes drift{from{transform:translateY(0) rotate(-8deg)}to{transform:translateY(-60px) rotate(8deg)}}</style></head><body>
-<div id="bgx"></div><h1>${naam}</h1><div id="hud">⭐ <span id="s">0</span> / vraag <span id="vn">1</span>/10</div>
-<div id="v"></div><div id="ant"></div>
+<div id="bgx"></div><h1>${naam}</h1><div id="hud">⭐ <span id="s">0</span> / vraag <span id="vn">1</span>/10 — 🏆 <span id="best">—</span></div>
+<div id="v"></div><div id="ant"></div><div id="over" style="display:none;text-align:center;margin:18px;font-size:1.3rem"></div>
 <script>
 const VR={
 dieren:[['Welk dier zegt "woef"?','🐶',['🐱','🐰','🐍']],['Welk dier is het grootst?','🐘',['🐭','🐹','🐰']],['Welk dier kan vliegen?','🦅',['🐷','🐄','🐴']],['Welk dier leeft in de zee?','🐬',['🐶','🐱','🐔']],['Welk dier heeft een slurf?','🐘',['🦁','🐯','🐻']],['Welk dier springt het hoogst?','🦘',['🐢','🐌','🐛']],['Welk dier is de koning?','🦁',['🐭','🐰','🦆']],['Welk dier maakt honing?','🐝',['🦋','🐌','🐜']],['Welk dier is gestreept?','🦓',['🐄','🐖','🐑']],['Welk dier draagt een huis?','🐌',['🐕','🐈','🐇']]],
@@ -394,14 +424,25 @@ muziek:[['Wat heeft snaren?','🎸 Gitaar',['Drum','Fluit','Trompet']],['Wat hee
 const _TI='THEMA_ID';const vr=VR[_TI].sort(()=>Math.random()-.5).slice(0,10);
 {const ITS={dieren:['🐶','🐱','🐰','🦁'],ruimte:['⭐','🪐','🚀','🌙'],zee:['🐟','🐠','🦀','🐬'],snoep:['🍬','🍭','🧁','🍩'],sport:['⚽','🏀','🎾','🏈'],muziek:['🎵','🎶','🎸','🥁']};const IT=ITS[_TI]||ITS.dieren;
  const bgx=document.getElementById('bgx');for(let i=0;i<9;i++){const s=document.createElement('span');s.className='bge';s.textContent=IT[i%IT.length];s.style.left=(4+i*11)+'vw';s.style.top=(10+((i*37)%80))+'vh';s.style.setProperty('--d',(5+i*1.3).toFixed(1)+'s');s.style.fontSize=(1.4+(i%3)*.5)+'rem';bgx.appendChild(s)}}
-let n=0,score=0;const A=new(window.AudioContext||window.webkitAudioContext)();
+let n=0,score=0,focus=0,antEls=[];const A=new(window.AudioContext||window.webkitAudioContext)();
+const FOTOS=${JSON.stringify('FOTOS')};
+if(FOTOS.held){const im=document.createElement('img');im.src=FOTOS.held;im.alt='jouw quiz-held';im.style.cssText='width:54px;height:54px;border-radius:50%;object-fit:cover;border:3px solid ${t.acc};margin:6px';document.querySelector('h1').appendChild(im)}
+const QBK='g2bquizbest_'+document.title;let best=+(localStorage.getItem(QBK)||0);if(best)document.getElementById('best').textContent=best;
 const blip=(f,d=.1)=>{const o=A.createOscillator(),g=A.createGain();o.frequency.value=f;const t0=A.currentTime;g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.15,t0+.0015);g.gain.exponentialRampToValueAtTime(.001,t0+d);o.connect(g);g.connect(A.destination);o.start();o.stop(t0+d)};
-function vraag(){const[q,goed,fout]=vr[n];document.getElementById('v').textContent=q;document.getElementById('vn').textContent=n+1;let foutN=0;
+function setFocus(i){if(!antEls.length)return;focus=(i+antEls.length)%antEls.length;antEls.forEach((x,j)=>x.classList.toggle('focus',j==focus))}
+function activeer(){if(antEls[focus])antEls[focus].click()}
+addEventListener('keydown',e=>{if(e.key=='ArrowUp'||e.key=='ArrowLeft')setFocus(focus-1);if(e.key=='ArrowDown'||e.key=='ArrowRight')setFocus(focus+1);if(e.key=='Enter'||e.key==' ')activeer()});
+const readPad=()=>{try{const g=navigator.getGamepads&&navigator.getGamepads()[0];if(!g)return{};const ay=g.axes[1]||0,B=i=>g.buttons[i]&&g.buttons[i].pressed;return{u:ay<-.4||B(12),d:ay>.4||B(13),a:B(0)||B(1)}}catch(e){return{}}};
+let gp={};setInterval(()=>{const p=readPad();if((p.u&&!gp.u)||(p.d&&!gp.d))setFocus(focus+(p.u?-1:1));if(p.a&&!gp.a)activeer();gp=p},120);
+function quizEinde(){if(score>best){best=score;localStorage.setItem(QBK,best);document.getElementById('best').textContent=best}
+ const ov=document.getElementById('over');ov.style.display='block';ov.innerHTML='🎉 Klaar! Score: '+score+'<br><small>Highscore: '+best+'</small><br><button onclick="location.reload()" style="margin-top:12px;padding:10px 24px;border-radius:10px;border:0;background:${t.acc};font-weight:700">Opnieuw</button>';
+ document.getElementById('ant').innerHTML='';document.getElementById('v').textContent=''}
+function vraag(){const[q,goed,fout]=vr[n];document.getElementById('v').textContent=q;document.getElementById('vn').textContent=n+1;let foutN=0;antEls=[];focus=0;
  const ant=[goed,...fout].sort(()=>Math.random()-.5);const A2=document.getElementById('ant');A2.innerHTML='';
- ant.forEach(a=>{const d=document.createElement('div');d.className='a';d.textContent=a;if(a==goed)d.dataset.g='1';
+ ant.forEach(a=>{const d=document.createElement('div');d.className='a';d.textContent=a;if(a==goed)d.dataset.g='1';antEls.push(d);
   d.onclick=()=>{if(a==goed){d.classList.add('goed');score+=10;document.getElementById('s').textContent=score;blip(700)}else{d.classList.add('fout');blip(300,.25,'sine');foutN++;if(foutN>=3)A2.querySelector('[data-g]').classList.add('hint')};
-   setTimeout(()=>{if(++n<10){vraag()}else{document.getElementById('v').innerHTML='🎉 Klaar! Score: '+score+'<br><button onclick="location.reload()" style="margin-top:12px;padding:10px 24px;border-radius:10px;border:0;background:${t.acc};font-weight:700">Opnieuw</button>';document.getElementById('ant').innerHTML=''}},700)};
-  A2.appendChild(d)})}
+   setTimeout(()=>{if(++n<10){vraag()}else quizEinde()},700)};
+  A2.appendChild(d)});setFocus(0)}
 vraag();
 </`+'script></body></html>',
 
@@ -759,6 +800,20 @@ function slag(){if(Math.hypot(vx,vy)>.4)return;
 </`+'script></body></html>',
 };
 
+function valideerSpel(code){
+ const checks=[
+  ['standalone',!/<script\s+src=|<link\s+[^>]*href=|https?:\/\//i.test(code)],
+  ['mobiel/touch',/touch|pointerdown|click/i.test(code)],
+  ['gamepad',/gamepad/i.test(code)],
+  ['highscore',/localStorage/i.test(code)],
+  ['eindscherm',/getElementById\('over'\)|getElementById\("over"\)/.test(code)],
+  ['foto-personalisatie',/FOTOS|foi2?/.test(code)],
+  ['templateplaceholders weg',!/"THEMA"|"MOEIL"|"FOTOS"|"TIJD"|"MUZIEK"|"SPELERS"/.test(code)]
+ ];
+ const score=Math.round(checks.filter(x=>x[1]).length/checks.length*100);
+ return {score,checks}}
+function logValidatie(v){log('🧪 game-check '+v.score+'/100 — '+v.checks.map(c=>(c[1]?'✓ ':'✗ ')+c[0]).join(' · '))}
+
 T('proef').onclick=()=>{if(!window._laatste){log('⚠️ Klik eerst op 🎮 MAAK MIJN SPEL — dan kun je hem hier meteen uitproberen');return}
  window.open(URL.createObjectURL(new Blob([_laatste.code],{type:'text/html'})),'_blank');
  log('▶ '+_laatste.naam+' live geopend in nieuw tabblad — speel hem meteen')};
@@ -774,14 +829,12 @@ T('maak').onclick=()=>{
  if(sp=='duo'&&!['vang','race'].includes(type)){log('ℹ️ 2-tegelijk kan bij Vang-Spel en Skelter-Race — omstebeurt gebruikt');sp='beurt'}
  const gen=GEN[type];
  let code=gen(naam,th,mo);
- code=code.replace(JSON.stringify('THEMA'),JSON.stringify(th)).replace(JSON.stringify('MOEIL'),JSON.stringify(mo))
-   .replace(JSON.stringify('FOTOS'),JSON.stringify({held:heldImg,items:xImgs}))
-  .replace(JSON.stringify('TIJD'),+T('tijd').value)
-  .replace(JSON.stringify('MUZIEK'),JSON.stringify(beatData))
-  .replace(JSON.stringify('SPELERS'),JSON.stringify(sp));
+ const vervangAlles=(sleutel,waarde)=>{code=code.split(JSON.stringify(sleutel)).join(JSON.stringify(waarde))};
+ vervangAlles('THEMA',th);vervangAlles('MOEIL',mo);vervangAlles('FOTOS',{held:heldImg,items:xImgs});vervangAlles('TIJD',+T('tijd').value);vervangAlles('MUZIEK',beatData);vervangAlles('SPELERS',sp);
  if(type=='quiz')code=code.replace("'THEMA_ID'",JSON.stringify(thema));
  log('🔨 '+naam+' ('+type+'/'+thema+') gebouwd: '+(code.length/1024).toFixed(0)+' KB, één bestand, geen externe bestanden nodig');
  window._laatste={code,naam};
+ logValidatie(valideerSpel(code));
  const fn=naam.toLowerCase().replace(/[^a-z0-9]+/g,'-');
  if(T('verkoop').checked){
   /* minimale ZIP (store): spel + cover + LEESMIJ — verkoopklaar */
@@ -819,6 +872,7 @@ T('maak').onclick=()=>{
   log('⬇️ '+a.download+' gedownload — open in je browser en speel!');
  }
 };
+window.GameFabriek={TYPES,THEMAS,PRESETS,GEN,valideerSpel,applyPreset,get type(){return type},get thema(){return thema},get last(){return window._laatste}};
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 <script src="/js/g2b-gate.js" data-tier="inner" data-demo="1"></script>

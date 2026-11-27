@@ -1,164 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="nl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>G2B Live — GOOD2BETTER</title>
-<link rel="icon" href="../media/logo.png">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B Live — lessen, creatie en vragen</title>
+<meta name="description" content="G2B Live: live lessen, creatiesessies, productdemo's, vragen en praktische workflows.">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:#0b0f0d;color:#e8f0ea;font-family:"Segoe UI",system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column}
-  header{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid #1d2b22}
-  header img{height:34px}
-  header .brand{font-weight:700;letter-spacing:2px;color:#3ddc84}
-  main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
-  h1{font-size:clamp(20px,4vw,34px);margin-bottom:8px}
-  .sub{color:#9fb3a6;margin-bottom:26px;max-width:560px}
-  .livebadge{display:none;align-items:center;gap:8px;background:#c62828;color:#fff;font-weight:700;padding:6px 14px;border-radius:20px;font-size:13px;letter-spacing:1px;margin-bottom:14px}
-  .livebadge .dot{width:9px;height:9px;border-radius:50%;background:#fff;animation:p 1.1s infinite}
-  @keyframes p{50%{opacity:.25}}
-  .count{display:flex;gap:14px;margin:10px 0 22px}
-  .count .u{background:#131a16;border:1px solid #233628;border-radius:10px;padding:14px 10px;min-width:76px}
-  .count .n{font-size:30px;font-weight:700;color:#3ddc84;font-variant-numeric:tabular-nums}
-  .count .l{font-size:11px;color:#7d937f;letter-spacing:1px;margin-top:4px}
-  .player{width:min(920px,94vw);aspect-ratio:16/9;background:#000;border:2px solid #3ddc84;border-radius:14px;overflow:hidden;display:none;position:relative;box-shadow:0 0 0 6px #131a16,0 12px 40px rgba(61,220,132,.15)}
-  .player::before{content:"GOOD2BETTER";position:absolute;top:10px;left:12px;z-index:3;font-size:11px;font-weight:800;letter-spacing:2px;color:#3ddc84;background:rgba(11,15,13,.7);padding:3px 10px;border-radius:10px}
-  .player video{width:100%;height:100%}
-  .choice{position:absolute;left:0;right:0;bottom:18%;display:none;justify-content:center;flex-wrap:wrap;gap:20px;padding:0 20px}
-  .choice button{background:rgba(61,220,132,.92);color:#0b0f0d;border:none;font-weight:700;font-size:clamp(14px,2.4vw,19px);padding:14px 26px;border-radius:10px;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.6);transition:transform .15s}
-  .choice button:hover{transform:scale(1.06)}
-  .choice .pick{color:#fff;font-size:12px;width:100%;text-align:center;margin-bottom:8px;letter-spacing:1px}
-  .note{margin-top:20px;color:#9fb3a6;font-size:14px;max-width:560px}
-  .ticket{display:inline-block;margin-top:14px;background:#3ddc84;color:#0b0f0d;font-weight:700;padding:11px 22px;border-radius:8px;text-decoration:none}
-  .over{display:none;margin-top:18px;color:#c9a227;font-size:15px}
-  footer{padding:14px;text-align:center;color:#4b5c4f;font-size:12px;border-top:1px solid #1d2b22}
+:root{--groen:#20e68b;--groen2:#9df7cb;--bg:#050d09;--kaart:#0d1e15;--kaart2:#11281d;--rand:#1f4a36;--tekst:#eafff4;--zacht:#9fc5b1;--goud:#ffd66b;--rood:#ff5b70}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#164a31 0,#050d09 48%,#020503 100%);color:var(--tekst);font-family:system-ui,Segoe UI,Arial,sans-serif}a{color:inherit}button,input,textarea{font:inherit}input,textarea{width:100%;background:#07130e;border:1px solid var(--rand);border-radius:12px;color:var(--tekst);padding:11px 12px}textarea{min-height:96px;resize:vertical}.wrap{max-width:1200px;margin:auto;padding:20px}.nav{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.brand{display:flex;align-items:center;gap:10px;text-decoration:none}.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#20e68b,#0a5d38);display:grid;place-items:center;color:#02130a;font-weight:1000;box-shadow:0 0 35px #20e68b55}.brand b{font-size:20px}.navlinks{display:flex;gap:10px;flex-wrap:wrap}.navlinks a,.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--groen);color:#03150c;text-decoration:none;border:0;border-radius:999px;padding:10px 15px;font-weight:1000;cursor:pointer}.navlinks a,.btn.sec{background:#10251a;color:var(--tekst);border:1px solid var(--rand)}.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:24px;align-items:stretch}.card{background:linear-gradient(180deg,#10251acc,#07130e);border:1px solid var(--rand);border-radius:26px;padding:20px;box-shadow:0 22px 80px #0008}.stage{min-height:420px;display:grid;place-items:center;text-align:center;overflow:hidden;position:relative}.stage:before{content:"";position:absolute;inset:-30%;background:radial-gradient(circle at 35% 30%,#20e68b22,transparent 25%),radial-gradient(circle at 70% 65%,#73c7ff18,transparent 28%);animation:glow 8s ease-in-out infinite alternate}@keyframes glow{to{transform:rotate(7deg) scale(1.08)}}.stage>*{position:relative;z-index:1}.livepill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--rand);background:#07130ecc;border-radius:999px;padding:8px 13px;font-weight:1000}.livepill i{width:10px;height:10px;border-radius:50%;background:#687d70}.livepill.live i{background:var(--rood);box-shadow:0 0 14px var(--rood);animation:pulse 1.2s infinite}@keyframes pulse{50%{opacity:.35}}h1{font-size:clamp(34px,6vw,76px);letter-spacing:-.06em;line-height:.94;margin:18px 0 12px}h2{margin:0 0 12px;font-size:clamp(22px,3vw,34px);letter-spacing:-.03em}h3{margin:18px 0 8px}.lead{font-size:clamp(16px,2vw,21px);color:#c9f7dd;line-height:1.45;max-width:780px;margin:auto}.muted{color:var(--zacht);line-height:1.5}.count{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:18px 0}.count div{background:#07130e;border:1px solid var(--rand);border-radius:16px;padding:12px;text-align:center}.count b{display:block;font-size:clamp(23px,4vw,42px);color:var(--groen)}.count span{font-size:11px;color:var(--zacht);text-transform:uppercase;letter-spacing:.1em}.actions{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}.mini{background:#0a1811;border:1px solid var(--rand);border-radius:20px;padding:16px}.mini b{display:block;font-size:17px;margin-bottom:5px}.mini p{margin:0;color:var(--zacht);font-size:13px;line-height:1.45}.mini a{color:var(--groen2);font-weight:800}.agenda{display:grid;gap:8px}.item{display:flex;gap:10px;align-items:center;background:#0a1811;border:1px solid var(--rand);border-radius:14px;padding:10px}.item b{color:var(--goud);min-width:45px}.qbox textarea{margin-bottom:8px}.qlist{max-height:180px;overflow:auto;margin-top:10px}.q{font-size:13px;border-top:1px solid var(--rand);padding:8px 0;color:#d8ffe9}.support{display:flex;gap:9px;flex-wrap:wrap}.support a{background:#07130e;border:1px solid var(--rand);color:#dfffee;text-decoration:none;border-radius:14px;padding:10px 13px;font-weight:1000}.support a:hover{border-color:var(--groen)}.studio{background:linear-gradient(135deg,#143b29,#08130e);border-color:#20e68b88}.notice{margin-top:16px;border:1px solid var(--rand);background:#07130e;border-radius:18px;padding:13px;color:var(--zacht);font-size:13px}.footer{text-align:center;color:#789b89;font-size:12px;margin:28px 0}.hide{display:none!important}.playerbox{display:none;width:min(920px,94vw);aspect-ratio:16/9;background:#000;border:2px solid var(--groen);border-radius:18px;overflow:hidden;position:relative;margin:16px auto 0;box-shadow:0 18px 60px #000a}.playerbox video{width:100%;height:100%;display:block}.choice{position:absolute;left:0;right:0;bottom:16%;display:none;justify-content:center;flex-wrap:wrap;gap:16px;padding:0 18px}.choice button{background:#20e68be9;color:#03150c;border:0;font-weight:1000;font-size:clamp(14px,2vw,19px);padding:13px 22px;border-radius:12px;cursor:pointer}.choice .pick{color:#fff;font-size:12px;width:100%;text-align:center;margin-bottom:5px;letter-spacing:.12em}.over{display:none;margin-top:13px;color:var(--goud);font-weight:800}@media(max-width:850px){.hero,.grid{grid-template-columns:1fr}.count{grid-template-columns:repeat(2,1fr)}.stage{min-height:340px}.wrap{padding:12px}}
 </style>
 </head>
 <body>
-<header><img src="../media/logo.png" onerror="this.style.display='none'"><span class="brand">GOOD2BETTER · LIVE</span></header>
-<main>
-  <div class="livebadge" id="live"><span class="dot"></span>LIVE</div>
-  <h1 id="title">G2B Live</h1>
-  <p class="sub" id="when"></p>
-  <div class="count" id="count">
-    <div class="u"><div class="n" id="d">0</div><div class="l">DAGEN</div></div>
-    <div class="u"><div class="n" id="h">00</div><div class="l">UREN</div></div>
-    <div class="u"><div class="n" id="m">00</div><div class="l">MIN</div></div>
-    <div class="u"><div class="n" id="s">00</div><div class="l">SEC</div></div>
+<div class="wrap">
+<nav class="nav"><a class="brand" href="../index.html"><span class="logo">G2B</span><span><b>GOOD2BETER · LIVE</b><br><small class="muted">live leren, maken en verkopen</small></span></a><div class="navlinks"><a href="../mijn-apps.html">mijn apps</a><a href="../catalogus.html">winkel</a><a href="../tools/livestudio/">voor Giorgio: LiveStudio</a></div></nav>
+<main class="hero">
+ <section class="card stage">
+  <div>
+   <span class="livepill" id="livepill"><i></i><span id="livestate">offline · volgende sessie wordt voorbereid</span></span>
+   <h1>Live meebouwen,<br>leren en vragen stellen</h1>
+   <p class="lead">Geen statische promo meer: G2B Live wordt een echte browseromgeving voor mini-lessen, creatie-sessies, productdemo's, lezingen en directe vragen — met een naflow voor clips, lessen en tools.</p>
+   <div class="count" id="count"><div><b id="d">--</b><span>dagen</span></div><div><b id="h">--</b><span>uren</span></div><div><b id="m">--</b><span>min</span></div><div><b id="s">--</b><span>sec</span></div></div>
+   <div class="actions"><a class="btn" href="#vraag">stel je vraag</a><a class="btn sec" href="#agenda">bekijk opbouw</a><a class="btn sec" href="../tools/livestudio/">open controlroom</a></div>
+   <p class="muted" id="nexttxt">Volgende sessie: wordt lokaal ingesteld door Giorgio.</p>
+   <div class="playerbox" id="playerbox"><video id="vid" controls playsinline></video><div class="choice" id="choice"><div class="pick">KIES JE PAD:</div><button id="ca" onclick="pick(0)"></button><button id="cb" onclick="pick(1)"></button></div></div>
+   <p class="over" id="over">Deze sessie is afgelopen — replay of vervolg volgt.</p>
   </div>
-  <div class="player" id="playerbox"><video id="vid" controls playsinline></video>
-    <div class="choice" id="choice">
-      <div class="pick">KIES JE PAD:</div>
-      <button id="ca" onclick="pick(0)"></button>
-      <button id="cb" onclick="pick(1)"></button>
-    </div>
+ </section>
+ <aside class="card studio">
+  <h2>De nieuwe live-workflow</h2>
+  <p class="muted">Geleerd van sterke creators: niet alleen uitzenden, maar een complete showflow.</p>
+  <div class="agenda">
+   <div class="item"><b>01</b><span>eerst resultaat laten zien — geen saaie intro</span></div>
+   <div class="item"><b>02</b><span>live maken of uitleggen in kleine stappen</span></div>
+   <div class="item"><b>03</b><span>vragen verzamelen en echt beantwoorden</span></div>
+   <div class="item"><b>04</b><span>gratis winst/bonus + duidelijke volgende stap</span></div>
+   <div class="item"><b>05</b><span>clipmomenten markeren voor shorts en lessen</span></div>
   </div>
-  <p class="note" id="note"></p>
-  <a class="ticket" id="ticket" target="_blank" style="display:none">KOOP JE TICKET</a>
-  <a class="ticket" id="vragen" target="_blank" style="display:none;background:#2a4a37;color:#e8f0ea">STEL JE VRAAG</a>
-  <p class="over" id="over">Deze sessie is afgelopen — replay volgt / check de winkel voor de volgende.</p>
-  <div id="steun" style="max-width:520px;margin:28px auto 0;text-align:center;border:1px solid #2a4a37;border-radius:14px;padding:18px">
-    <b style="color:#2fbf71">💚 STEUN G2B LIVE</b><br>
-    <span style="font-size:.82rem;opacity:.75">Vind je de live-sessies goed? Trakteer de maker op een koffie — elke bijdrage gaat direct naar nieuwe sessies, plugins en packs.</span>
-    <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap">
-      <a href="../bestel.html?p=steun-3" style="border:1.5px solid #2fbf71;color:#2fbf71;font-weight:800;font-size:13px;padding:8px 18px;border-radius:20px;text-decoration:none">☕ € 3</a>
-      <a href="../bestel.html?p=steun-5" style="background:#2fbf71;color:#04120a;font-weight:800;font-size:13px;padding:8px 18px;border-radius:20px;text-decoration:none">☕ € 5</a>
-      <a href="../bestel.html?p=steun-10" style="border:1.5px solid #2fbf71;color:#2fbf71;font-weight:800;font-size:13px;padding:8px 18px;border-radius:20px;text-decoration:none">☕ € 10</a>
-    </div>
-  </div>
+  <h3>voor Giorgio</h3>
+  <p class="muted">De controlroom bevat teleprompter, run-of-show, timer, vragenboard, clipmarks, OBS-overlaylink en export. Streamen zelf doe je bewust via OBS/YouTube/Twitch.</p>
+  <a class="btn" href="../tools/livestudio/">start LiveStudio</a>
+ </aside>
 </main>
-<footer>GOOD2BETTER · eigen live-platform · geen YouTube, geen tussenpartij<br><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465
-</footer>
+<section class="grid" id="agenda">
+ <div class="mini"><b>Les / masterclass</b><p>Belofte → uitleg → demonstratie → oefening → vragen → samenvatting. Na afloop kan LesFabriek er een mini-cursus van maken.</p></div>
+ <div class="mini"><b>Creatie live</b><p>Een idee live bouwen, publiek mee laten denken, belangrijke momenten markeren en later in Shorts-web omzetten naar verticale clips.</p></div>
+ <div class="mini"><b>Launch / verkoop</b><p>Probleem → demo → bewijs → bonus → aanbieding. Zonder druk of nepbeloftes: eerst waarde laten zien, dan een heldere keuze.</p></div>
+</section>
+<section class="grid" style="grid-template-columns:1.1fr .9fr;margin-top:16px">
+ <div class="card qbox" id="vraag">
+  <h2>stel je vraag voor de volgende live</h2>
+  <p class="muted">Deze browserversie bewaart vragen lokaal als demo-inbox. Giorgio kan ze exporteren en in de controlroom gebruiken. Er wordt niets automatisch verzonden.</p>
+  <input id="name" placeholder="je naam of bijnaam (optioneel)"><br><br>
+  <textarea id="question" placeholder="waar wil je uitleg, demo of feedback over?"></textarea>
+  <div class="actions" style="justify-content:flex-start"><button class="btn" id="saveq">bewaar vraag</button><button class="btn sec" id="exportq">exporteer vragen</button></div>
+  <div class="qlist" id="qlist"></div>
+ </div>
+ <div class="card">
+  <h2>steun G2B Live</h2>
+  <p class="muted">Vind je de sessies goed? Kleine steun helpt voor nieuwe tools, plugins en uitleg. Dit zijn de bestaande G2B-steunlinks uit de winkeldata.</p>
+  <div class="support" id="support"><a href="../bestel.html?p=steun-3">☕ €3</a><a href="../bestel.html?p=steun-5">✦ €5</a><a href="../bestel.html?p=steun-10">❤ €10</a></div>
+  <h3>verbonden tools</h3>
+  <p class="muted"><a href="../tools/livestudio/">LiveStudio</a> · <a href="../tools/shorts-web/">Shorts-web</a> · <a href="../lesfabriek.html">LesFabriek</a> · <a href="../tools/live-masker/">Live-Masker</a> · <a href="../qr.html">QR-Studio</a></p>
+ </div>
+</section>
+<div class="notice"><b>Eerlijk:</b> deze pagina is nog geen eigen streamingdienst en verzamelt nog geen centrale online vragen. Het is de browserhub plus workflowbasis. De LiveStudio is wel al een echte lokale controlroom; echte chat/betalingen/streaming lopen via gekozen platforms of een latere backend.</div>
+<div class="footer">GOOD2BETER · eigen live platform in opbouw · geen trackers op deze pagina</div>
+</div>
 <script>
-let cfg, startT, vid;
-fetch('live.json').then(r=>r.json()).then(c=>{
-  cfg=c;
-  document.getElementById('title').textContent=c.title||'G2B Live';
-  document.getElementById('note').textContent=c.note||'';
-  if(c.ticket){const t=document.getElementById('ticket');t.href=c.ticket;t.style.display='inline-block'}
-  const v=document.getElementById('vragen');
-  v.href='mailto:'+(c.questions||'g.sandvliet88@gmail.com')+'?subject='+encodeURIComponent('Vraag — '+(c.title||'G2B Live'));
-  v.style.display='inline-block';
-  if(c.recurring && c.recurring.enabled){
-    const n=new Date(); let t=new Date(n);
-    t.setDate(n.getDate()+((c.recurring.weekday-n.getDay()+7)%7));
-    t.setHours(c.recurring.hour,0,0,0);
-    if(t.getTime()<=n.getTime())t.setDate(t.getDate()+7);
-    c.start=t.toISOString();
-  }
-  if(c.start){
-    startT=new Date(c.start).getTime();
-    const d=new Date(startT);
-    document.getElementById('when').textContent='Start: '+d.toLocaleString('nl-NL',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'})+' — wie later binnenkomt stapt midden in de sessie, zoals echt live.';
-    vid=document.getElementById('vid');
-    tick(); setInterval(tick,1000);
-  } else {
-    document.getElementById('count').style.display='none';
-    document.getElementById('when').textContent='Eerste sessie-datum volgt snel — houd deze link bij.';
-  }
-}).catch(()=>{document.getElementById('when').textContent='Geen sessie gepland — check later opnieuw.'});
-
-function tick(){
-  const now=Date.now(), diff=startT-now;
-  if(diff>0){
-    const dd=Math.floor(diff/864e5), hh=Math.floor(diff%864e5/36e5),
-          mm=Math.floor(diff%36e5/6e4), ss=Math.floor(diff%6e4/1e3);
-    d.textContent=dd; h.textContent=String(hh).padStart(2,'0');
-    m.textContent=String(mm).padStart(2,'0'); s.textContent=String(ss).padStart(2,'0');
-  } else { goLive(); }
+'use strict';const $=id=>document.getElementById(id);const QKEY='g2b-live-vragen-v1';
+let cfg={},startT=0,vid=null,started=false,shownChoices={},currentChoice=null,choiceTimer=null;
+function pad(n){return String(n).padStart(2,'0')}
+function nextFriday(){let d=new Date();d.setDate(d.getDate()+((5-d.getDay()+7)%7||7));d.setHours(20,0,0,0);return d}
+function target(){if(startT)return new Date(startT);let v=localStorage.getItem('g2b-live-next');let d=v?new Date(v):nextFriday();return isNaN(d)?nextFriday():d}
+async function loadCfg(){try{cfg=await (await fetch('live.json')).json()}catch(e){cfg={}}
+ if(cfg.recurring&&cfg.recurring.enabled){const n=new Date(),t=new Date(n);t.setDate(n.getDate()+((cfg.recurring.weekday-n.getDay()+7)%7));t.setHours(cfg.recurring.hour||20,0,0,0);if(t.getTime()<=n.getTime())t.setDate(t.getDate()+7);cfg.start=t.toISOString()}
+ if(cfg.start)startT=new Date(cfg.start).getTime();vid=$('vid');
+ if(cfg.ticket){const a=document.createElement('a');a.className='btn sec';a.href=cfg.ticket;a.target='_blank';a.textContent='ticket/aanbieding';document.querySelector('.actions').appendChild(a)}
 }
-
-let started=false, shownChoices={};
-function goLive(){
-  if(started)return; started=true;
-  document.getElementById('count').style.display='none';
-  document.getElementById('live').style.display='inline-flex';
-  const tk=document.getElementById('ticket'); if(tk)tk.style.display='none';
-  if(!cfg.video){document.getElementById('over').style.display='block';document.getElementById('over').textContent='De sessie is gestart — video-link volgt zo.';return}
-  document.getElementById('playerbox').style.display='block';
-  vid.src=cfg.video;
-  const off=(Date.now()-startT)/1000;
-  vid.addEventListener('loadedmetadata',()=>{ if(off<vid.duration){vid.currentTime=off}else{vid.currentTime=0} });
-  vid.play().catch(()=>{});
-  vid.addEventListener('timeupdate',checkChoices);
-  vid.addEventListener('ended',()=>{
-    document.getElementById('live').style.display='none';
-    document.getElementById('choice').style.display='none';
-    document.getElementById('over').style.display='block';
-  });
-}
-
-function checkChoices(){
-  if(!cfg.choices||!cfg.choices.length)return;
-  for(let i=0;i<cfg.choices.length;i++){
-    const c=cfg.choices[i];
-    if(!shownChoices[i] && vid.currentTime>=c.at && vid.currentTime<c.at+8){
-      shownChoices[i]=true;
-      currentChoice=c;
-      document.getElementById('ca').textContent=c.a.label;
-      document.getElementById('cb').textContent=c.b.label;
-      document.getElementById('choice').style.display='flex';
-      vid.pause();
-      choiceTimer=setTimeout(()=>{pick(0)},(c.timeout||10)*1000);
-      return;
-    }
-  }
-}
-
-let currentChoice=null,choiceTimer=null;
-function pick(n){
-  if(!currentChoice)return;
-  const c=n===0?currentChoice.a:currentChoice.b;
-  if(choiceTimer){clearTimeout(choiceTimer);choiceTimer=null}
-  document.getElementById('choice').style.display='none';
-  currentChoice=null;
-  if(c.video && c.video!==vid.src){
-    vid.src=c.video;
-    vid.currentTime=c.skip||0;
-  }
-  vid.play().catch(()=>{});
-}
-
+function tick(){let diff=Math.max(0,target()-Date.now());let s=Math.floor(diff/1000);$('d').textContent=Math.floor(s/86400);$('h').textContent=pad(Math.floor(s/3600)%24);$('m').textContent=pad(Math.floor(s/60)%60);$('s').textContent=pad(s%60);$('nexttxt').textContent=(cfg.start?'Geplande sessie: ':'Volgende sessie (concept): ')+target().toLocaleString('nl-NL',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'});if(diff<2*3600*1000){$('livepill').classList.add('live');$('livestate').textContent='bijna live · bereid je vragen voor'}if(diff<=0&&cfg.start)goLive()}
+function goLive(){if(started)return;started=true;$('count').style.display='none';$('livepill').classList.add('live');$('livestate').textContent='LIVE · sessie loopt';if(!cfg.video){$('over').style.display='block';$('over').textContent='De sessie is gestart — video-link volgt zo.';return}$('playerbox').style.display='block';vid.src=cfg.video;const off=(Date.now()-startT)/1000;vid.addEventListener('loadedmetadata',()=>{vid.currentTime=off<vid.duration?off:0});vid.play().catch(()=>{});vid.addEventListener('timeupdate',checkChoices);vid.addEventListener('ended',()=>{$('choice').style.display='none';$('over').style.display='block'})}
+function checkChoices(){if(!cfg.choices||!cfg.choices.length)return;for(let i=0;i<cfg.choices.length;i++){const c=cfg.choices[i];if(!shownChoices[i]&&vid.currentTime>=c.at&&vid.currentTime<c.at+8){shownChoices[i]=true;currentChoice=c;$('ca').textContent=c.a.label;$('cb').textContent=c.b.label;$('choice').style.display='flex';vid.pause();choiceTimer=setTimeout(()=>pick(0),(c.timeout||10)*1000);return}}}
+function pick(n){if(!currentChoice)return;const c=n===0?currentChoice.a:currentChoice.b;if(choiceTimer){clearTimeout(choiceTimer);choiceTimer=null}$('choice').style.display='none';currentChoice=null;if(c.video&&c.video!==vid.src){vid.src=c.video;vid.currentTime=c.skip||0}vid.play().catch(()=>{})}
+function vragen(){try{return JSON.parse(localStorage.getItem(QKEY)||'[]')}catch(e){return[]}}
+function renderq(){$('qlist').innerHTML=vragen().map(q=>`<div class=q><b>${q.name||'anoniem'}</b> · ${q.time}<br>${q.text.replace(/[<>&]/g,'')}</div>`).join('')}
+function csv(rows){return rows.map(r=>r.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\n')}
+function download(name,text){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+async function supportLinks(){try{let r=await fetch('../products.json');let arr=await r.json();let items=Array.isArray(arr)?arr:(arr.products||[]);let sup=items.filter(x=>/^steun-/.test(x.id));if(sup.length){$('support').innerHTML=sup.map(x=>`<a href="${x.links.stripe||('../bestel.html?p='+x.id)}">${x.titel.replace('STEUN G2B — ','')}</a>`).join('')}}catch(e){}}
+$('saveq').onclick=()=>{let text=$('question').value.trim();if(!text)return;let all=vragen();all.unshift({name:$('name').value.trim(),text,time:new Date().toLocaleString('nl-NL')});localStorage.setItem(QKEY,JSON.stringify(all));$('question').value='';renderq()};$('exportq').onclick=()=>download('g2b-live-inbox.csv',csv([['naam','vraag','tijd'],...vragen().map(q=>[q.name,q.text,q.time])]));
+loadCfg().then(()=>tick());setInterval(tick,1000);renderq();supportLinks();
+window.G2BLiveHub={target,setNext:iso=>{localStorage.setItem('g2b-live-next',iso);startT=0;tick()},questions:vragen,addQuestion:(name,text)=>{let all=vragen();all.unshift({name,text,time:'test'});localStorage.setItem(QKEY,JSON.stringify(all));renderq()},loadConfig:loadCfg,goLive,pick,get cfg(){return cfg},version:2};
 </script>
 </body>
 </html>

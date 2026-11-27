@@ -22,7 +22,7 @@ select{background:var(--bg);color:var(--tekst);border:1px solid var(--rand);bord
 body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#12231a;--dim:#5c6b61}
 </style></head><body>
 <h1>G2B IMAGELAB <small>beeld-studio in je browser — bewerken + watermerk</small></h1>
-<div id="drop">🖼️ Sleep een afbeelding hierheen of klik om te kiezen (png/jpg/webp)<input type="file" id="file" accept="image/*" hidden></div>
+<div id="drop">🖼️ Sleep één of meerdere afbeeldingen hierheen of klik om te kiezen — batch wordt met dezelfde look verwerkt<input type="file" id="file" accept="image/*" multiple hidden></div>
 <div class="rij">
 <label>HELDERHEID <b id="vBr">100%</b><input type="range" id="br" min="0" max="200" value="100"></label>
 <label>CONTRAST <b id="vCo">100%</b><input type="range" id="co" min="0" max="200" value="100"></label>
@@ -35,8 +35,11 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <button class="uit" onclick="rot(90)">⟳ 90°</button>
 <button class="uit" onclick="flip()">⇋ SPIEGEL</button>
 <button class="uit" onclick="reset()">↺ RESET</button>
+<label>FORMAAT<select id="outfmt"><option value="orig">origineel</option><option value="square">1:1 social</option><option value="story">9:16 story/short</option><option value="wide">16:9 wide</option></select></label>
 <button class="uit go" onclick="exportImg('png')">↓ PNG</button>
 <button class="uit" onclick="exportImg('jpeg')">↓ JPG</button>
+<button class="uit" id="batchZip">↓ BATCH ZIP</button>
+<button class="uit" id="prevImg">←</button><button class="uit" id="nextImg">→</button>
 <button class="uit" onclick="document.body.classList.toggle('licht')">◐</button>
 <span id="st">nog geen afbeelding</span>
 </div>
@@ -51,27 +54,24 @@ body.licht{--bg:#f6f8f6;--kaart:#fff;--rand:#d3ded6;--groen:#0a9b42;--tekst:#122
 <label>LOGO (png)<input type="file" id="logo" accept="image/png,image/webp" style="width:170px;font-size:11px"></label>
 </div>
 <canvas id="view"></canvas>
-<div class="info">Browser-versie van ImageLab: de bewerkingen die zonder GPU kunnen — helderheid/contrast/verzadiging/grijs/blur, draaien, spiegelen, watermerk (tekst + optioneel logo, hoek, zichtbaarheid, tegels zoals de watermerk-node). AI-nodes (txt2img, bgremove, upscale) blijven in je pc-ImageLab. ↓PNG/↓JPG downloaden het resultaat.</div>
+<div class="info">ImageLab browserstudio: bewerken, watermerken én batchwerken. Kies meerdere afbeeldingen, gebruik ← → om te wisselen, en exporteer alles in één ZIP. Social-formaten vullen lege ruimte met een zachte vervaagde achtergrond zodat je beeld niet lelijk wordt afgekapt. Alles blijft lokaal in je browser.</div>
 <script>
 "use strict";
 const $=id=>document.getElementById(id),st=$('st');
-let img=null,rotDeg=0,flipX=1,logo=null;
+let img=null,rotDeg=0,flipX=1,logo=null,batch=[],batchIndex=0;
 const view=$('view'),vx=view.getContext('2d');
-const off=document.createElement('canvas');
+function renderSource(src){
+ if(!src)return null;
+ const iw=src.naturalWidth||src.width,ih=src.naturalHeight||src.height,swap=rotDeg%180!==0;
+ const cw=swap?ih:iw,ch=swap?iw:ih,base=document.createElement('canvas');base.width=cw;base.height=ch;
+ const bx=base.getContext('2d');bx.translate(cw/2,ch/2);bx.rotate(rotDeg*Math.PI/180);bx.scale(flipX,1);bx.drawImage(src,-iw/2,-ih/2);
+ const out=document.createElement('canvas');out.width=cw;out.height=ch;const ox=out.getContext('2d');
+ ox.filter=`brightness(${$('br').value}%) contrast(${$('co').value}%) saturate(${$('sa').value}%) grayscale(${$('gr').value}%) blur(${$('bl').value}px)`;
+ ox.drawImage(base,0,0);ox.filter='none';watermerk(ox,cw,ch);return out}
 function render(){
- if(!img)return;
- const w=img.naturalWidth,h=img.naturalHeight,swap=rotDeg%180!==0;
- const cw=swap?h:w,ch=swap?w:h;
- off.width=cw;off.height=ch;
- const ox=off.getContext('2d');
- ox.setTransform(1,0,0,1,0,0);ox.clearRect(0,0,cw,ch);
- ox.translate(cw/2,ch/2);ox.rotate(rotDeg*Math.PI/180);ox.scale(flipX,1);
- ox.drawImage(img,-w/2,-h/2);
- view.width=cw;view.height=ch;
- vx.filter=`brightness(${$('br').value}%) contrast(${$('co').value}%) saturate(${$('sa').value}%) grayscale(${$('gr').value}%) blur(${$('bl').value}px)`;
- vx.drawImage(off,0,0);vx.filter='none';
- watermerk(vx,cw,ch);
- st.textContent=`${cw}×${ch}px — ${img._name}`;}
+ if(!img)return;const out=renderSource(img);view.width=out.width;view.height=out.height;vx.clearRect(0,0,view.width,view.height);vx.drawImage(out,0,0);
+ const extra=batch.length>1?' · batch '+(batchIndex+1)+'/'+batch.length:'';
+ st.textContent=`${out.width}×${out.height}px — ${img._name||'afbeelding'}${extra}`}
 function watermerk(x,w,h){
  const t=$('wmText').value.trim(),op=+$('wmOp').value/100;
  if(!t&&!logo)return;
@@ -91,35 +91,73 @@ function watermerk(x,w,h){
   const c=$('wmCorner').value;
   const cy=c[0]==='b'?h-m:m, cx=c[1]==='r'?w-m-tot/2:m+tot/2;
   draw(cx,cy);}
- x.restore();}
-function rot(d){rotDeg=(rotDeg+d+360)%360;render();}
-function flip(){flipX*=-1;render();}
+ x.restore()}
+function socialCanvas(base,mode){
+ if(mode==='orig')return base;
+ const dims={square:[1080,1080],story:[1080,1920],wide:[1920,1080]}[mode];if(!dims)return base;
+ const W=dims[0],H=dims[1],out=document.createElement('canvas');out.width=W;out.height=H;const x=out.getContext('2d');
+ const cover=Math.max(W/base.width,H/base.height)*1.06,bw=base.width*cover,bh=base.height*cover;
+ x.filter='blur(30px) brightness(.58) saturate(1.2)';x.drawImage(base,(W-bw)/2,(H-bh)/2,bw,bh);x.filter='none';
+ const fit=Math.min(W/base.width,H/base.height)*.9,fw=base.width*fit,fh=base.height*fit;
+ x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=Math.min(W,H)*.035;x.drawImage(base,(W-fw)/2,(H-fh)/2,fw,fh);
+ return out}
+function finalCanvas(src){return socialCanvas(renderSource(src),$('outfmt').value)}
+function rot(d){rotDeg=(rotDeg+d+360)%360;render()}
+function flip(){flipX*=-1;render()}
 function reset(){rotDeg=0;flipX=1;
  $('br').value=100;$('co').value=100;$('sa').value=100;$('gr').value=0;$('bl').value=0;
- syncLabels();render();}
+ syncLabels();render()}
 function syncLabels(){$('vBr').textContent=$('br').value+'%';$('vCo').textContent=$('co').value+'%';
- $('vSa').textContent=$('sa').value+'%';$('vGr').textContent=$('gr').value+'%';$('vBl').textContent=$('bl').value+'px';}
+ $('vSa').textContent=$('sa').value+'%';$('vGr').textContent=$('gr').value+'%';$('vBl').textContent=$('bl').value+'px'}
 [['br','vBr','%'],['co','vCo','%'],['sa','vSa','%'],['gr','vGr','%'],['bl','vBl','px']].forEach(([id,vid,u])=>{
- $(id).oninput=e=>{$(vid).textContent=e.target.value+u;render();};});
+ $(id).oninput=e=>{$(vid).textContent=e.target.value+u;render()};});
 $('wmText').oninput=render;$('wmCorner').onchange=render;
-$('wmOp').oninput=e=>{$('vOp').textContent=e.target.value+'%';render();};
-$('wmTile').onclick=function(){this.classList.toggle('go');render();};
+$('wmOp').oninput=e=>{$('vOp').textContent=e.target.value+'%';render()};
+$('wmTile').onclick=function(){this.classList.toggle('go');render()};
 $('logo').onchange=e=>{const f=e.target.files[0];
- if(!f){logo=null;render();return;}
- const L=new Image();L.onload=()=>{logo=L;render();};L.src=URL.createObjectURL(f);};
+ if(!f){logo=null;render();return}
+ const L=new Image();L.onload=()=>{logo=L;render()};L.src=URL.createObjectURL(f)};
+function downloadBlob(blob,nm){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nm;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+function safeName(s){return (s||'beeld').replace(/\.[^.]+$/,'').replace(/[^a-z0-9_-]+/gi,'-').slice(0,50)||'beeld'}
 function exportImg(fmt){
- if(!img)return;
- const a=document.createElement('a');
- a.href=view.toDataURL('image/'+fmt,0.92);
- a.download='G2B-IMAGELAB-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'')+'.'+(fmt==='jpeg'?'jpg':'png');
- a.click();}
-function loadImg(f){const i=new Image();i.onload=()=>{img=i;img._name=f.name;render();};i.src=URL.createObjectURL(f);}
+ if(!img)return;finalCanvas(img).toBlob(bl=>downloadBlob(bl,'G2B-IMAGELAB-'+safeName(img._name)+'-'+$('outfmt').value+'.'+(fmt==='jpeg'?'jpg':'png')),'image/'+fmt,.92)}
+const _crct=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c}return t})();
+function _crc(u){let c=~0;for(let i=0;i<u.length;i++)c=_crct[(c^u[i])&255]^(c>>>8);return ~c>>>0}
+function zipFiles(files){const enc=new TextEncoder(),loc=[],cen=[];let off=0;
+ for(const f of files){const nm=enc.encode(f.naam),crc=_crc(f.data),L=f.data.length,lh=new DataView(new ArrayBuffer(30));let p=0;
+  const u16=v=>{lh.setUint16(p,v,true);p+=2},u32=v=>{lh.setUint32(p,v,true);p+=4};
+  u32(0x04034b50);u16(20);u16(0x0800);u16(0);u16(0);u16(0);u32(crc);u32(L);u32(L);u16(nm.length);u16(0);loc.push(lh.buffer,nm,f.data);
+  const ch=new DataView(new ArrayBuffer(46));p=0;const w16=v=>{ch.setUint16(p,v,true);p+=2},w32=v=>{ch.setUint32(p,v,true);p+=4};
+  w32(0x02014b50);w16(20);w16(20);w16(0x0800);w16(0);w16(0);w16(0);w32(crc);w32(L);w32(L);w16(nm.length);w16(0);w16(0);w16(0);w16(0);w32(0);w32(off);
+  cen.push(ch.buffer,nm);off+=30+nm.length+L}
+ const cdSize=cen.reduce((s,x)=>s+(x.byteLength||x.length),0),eocd=new DataView(new ArrayBuffer(22));let p=0;
+ const u16=v=>{eocd.setUint16(p,v,true);p+=2},u32=v=>{eocd.setUint32(p,v,true);p+=4};
+ u32(0x06054b50);u16(0);u16(0);u16(files.length);u16(files.length);u32(cdSize);u32(off);u16(0);
+ return new Blob([...loc,...cen,eocd.buffer],{type:'application/zip'})}
+function blobBytes(cv,fmt='png'){return new Promise(res=>cv.toBlob(async bl=>res(new Uint8Array(await bl.arrayBuffer())),'image/'+fmt,.92))}
+$('batchZip').onclick=async()=>{
+ if(!batch.length){st.textContent='⚠ kies eerst afbeeldingen';return}
+ st.textContent='⏳ batch renderen…';const files=[];
+ for(let k=0;k<batch.length;k++){const im=batch[k];files.push({naam:'G2B-'+String(k+1).padStart(2,'0')+'-'+safeName(im._name)+'-'+$('outfmt').value+'.png',data:await blobBytes(finalCanvas(im),'png')})}
+ downloadBlob(zipFiles(files),'G2B-IMAGELAB-BATCH-'+batch.length+'-'+$('outfmt').value+'.zip');st.textContent='✅ batch ZIP klaar — '+files.length+' beelden verwerkt'};
+function toonBatch(n){if(!batch.length)return;batchIndex=(n+batch.length)%batch.length;img=batch[batchIndex];render()}
+$('prevImg').onclick=()=>toonBatch(batchIndex-1);$('nextImg').onclick=()=>toonBatch(batchIndex+1);
+function leesAfbeelding(f){return new Promise((res,rej)=>{const i=new Image();i.onload=()=>{i._name=f.name;res(i)};i.onerror=rej;i.src=URL.createObjectURL(f)})}
+let loadSeq=0;
+async function loadFiles(files){
+ const seq=++loadSeq,list=[...files].filter(f=>f.type.startsWith('image/')||/\.(png|jpe?g|webp|gif|svg)$/i.test(f.name)).slice(0,24);if(!list.length)return;
+ st.textContent='⏳ afbeeldingen laden…';const loaded=[];
+ for(const f of list){try{loaded.push(await leesAfbeelding(f))}catch(e){}}
+ if(seq!==loadSeq)return;
+ batch=loaded;if(!batch.length){st.textContent='⚠ geen bruikbare afbeeldingen';return}
+ batchIndex=0;img=batch[0];render();if(batch.length>1)st.textContent+=' — ← → wisselt, BATCH ZIP verwerkt alles'}
 const drop2=$('drop'),fileIn=$('file');
 drop2.onclick=()=>fileIn.click();
-drop2.ondragover=e=>{e.preventDefault();drop2.classList.add('over');};
+drop2.ondragover=e=>{e.preventDefault();drop2.classList.add('over')};
 drop2.ondragleave=()=>drop2.classList.remove('over');
-drop2.ondrop=e=>{e.preventDefault();drop2.classList.remove('over');const f=e.dataTransfer.files[0];if(f)loadImg(f);};
-fileIn.onchange=()=>{const f=fileIn.files[0];if(f)loadImg(f);};
+drop2.ondrop=e=>{e.preventDefault();drop2.classList.remove('over');loadFiles(e.dataTransfer.files)};
+fileIn.onchange=()=>loadFiles(fileIn.files);
+window.ImageLab={renderSource,socialCanvas,finalCanvas,zipFiles,get batch(){return batch},get img(){return img},toonBatch};
 </script>
 <footer style="margin-top:32px;padding:14px;text-align:center;font-size:12px;opacity:.75"><b>Good2Better High Quality Media</b> · KVK 95199926 · BTW NL005139345B30 · +31 6 45288465</footer>
 </body></html>

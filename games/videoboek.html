@@ -32,15 +32,15 @@ button{font:inherit}#app{height:100vh;display:flex;flex-direction:column}
 <div class="world" id="world"><div class="sky" id="sky">🦊</div><div class="shade"></div><div class="friend" id="friend">🐰</div>
 <div class="panel"><div class="scene" id="scene">Scène</div><div class="txt" id="txt"></div><div class="hint" id="hint"></div><div class="controls"><button class="sec" id="prev">← vorige</button><button id="next">volgende →</button><button class="sec" id="read">🔊 lees voor</button><div class="prog"><i id="bar"></i></div><span class="score" id="score">0/0 vrienden</span></div></div></div>
 <div class="toast" id="toast"></div><div class="overlay" id="ov"><div class="card" id="card"></div></div>
-</div><script>
+</div><script src="livewereld.js"></script><script>
 "use strict";
 const $=id=>document.getElementById(id);
 const FALLBACK={title:"Animal Heroes — het verstopte bos",scenes:[
-{text:"Vosje rent door het maanlichtbos. Ergens tussen de bladeren zit Konijn verstopt. Klik zachtjes in de wereld als je hem ziet.",art:"🦊",pal:["#12355c","#07111f"],friend:{e:"🐰",n:"Konijn",x:72,y:43,hint:"Konijn houdt van hoge plekken."}},
-{text:"Bij de rivier glinsteren sterren in het water. Egel heeft zich onder een blad verstopt, maar zijn neusje steekt er bijna uit.",art:"🌊",pal:["#0e4b61","#07111f"],friend:{e:"🦔",n:"Egel",x:28,y:66,hint:"Kijk laag bij de waterkant."}},
-{text:"In de oude eik kraakt een tak. Uil ziet alles, maar zelf wil hij juist niet gezien worden.",art:"🌳",pal:["#21451f","#07111f"],friend:{e:"🦉",n:"Uil",x:50,y:22,hint:"Uil kijkt van bovenaf toe."}},
-{text:"Het bosfeest begint. Alle vrienden komen tevoorschijn en samen maken ze van de nacht een lichtfeest.",art:"🎉",pal:["#5b2b67","#07111f"],friend:{e:"🦡",n:"Das",x:82,y:72,hint:"Das blijft graag bij de rand van het feest."}}]};
-let BOOK=null,i=0,found={},voice=true,sparks=0;
+{text:"Vosje rent door het maanlichtbos. Ergens tussen de bladeren zit Konijn verstopt. Klik zachtjes in de wereld als je hem ziet.",art:"🦊",pal:["#12355c","#07111f"],fx:"vuurvliegen",friend:{e:"🐰",n:"Konijn",x:72,y:43,hint:"Konijn houdt van hoge plekken."}},
+{text:"Bij de rivier glinsteren sterren in het water. Egel heeft zich onder een blad verstopt, maar zijn neusje steekt er bijna uit.",art:"🌊",pal:["#0e4b61","#07111f"],fx:"bubbels",friend:{e:"🦔",n:"Egel",x:28,y:66,hint:"Kijk laag bij de waterkant."}},
+{text:"In de oude eik kraakt een tak. Uil ziet alles, maar zelf wil hij juist niet gezien worden.",art:"🌳",pal:["#21451f","#07111f"],fx:"bladeren",friend:{e:"🦉",n:"Uil",x:50,y:22,hint:"Uil kijkt van bovenaf toe."}},
+{text:"Het bosfeest begint. Alle vrienden komen tevoorschijn en samen maken ze van de nacht een lichtfeest.",art:"🎉",pal:["#5b2b67","#07111f"],fx:"confetti",friend:{e:"🦡",n:"Das",x:82,y:72,hint:"Das blijft graag bij de rand van het feest."}}]};
+let BOOK=null,i=0,found={},voice=true,sparks=0,worldFx=null;
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function toast(t){$('toast').textContent=t;$('toast').classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>$('toast').classList.remove('on'),1800)}
 function speak(t){if(!voice)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='nl-NL';speechSynthesis.speak(u)}catch(e){}}
@@ -62,6 +62,7 @@ function render(){
  $('sky').textContent=s.art||'✨';$('sky').style.display=s.image?'none':'flex';
  w.querySelectorAll('.orb').forEach(x=>x.remove());
  for(let k=0;k<9;k++){const o=document.createElement('span');o.className='orb';o.style.left=(7+k*11)+'%';o.style.top=(18+((k*29)%52))+'%';o.style.animationDelay=(k*.43)+'s';w.appendChild(o)}
+ if(window.LiveWereld){if(!worldFx)worldFx=LiveWereld.create(w,{effect:s.fx||'vuurvliegen',palette:s.pal});worldFx.setScene({effect:s.fx||['vuurvliegen','bubbels','bladeren','confetti'][i%4],palette:s.pal})}
  const f=$('friend');f.textContent=s.friend.e;f.style.left=s.friend.x+'%';f.style.top=s.friend.y+'%';f.className='friend'+(found[i]?' found':'');
  $('scene').textContent='Scène '+(i+1)+' / '+BOOK.scenes.length+(s.title?' · '+s.title:'');
  $('txt').textContent=s.text||'';
@@ -75,6 +76,7 @@ $('world').addEventListener('click',e=>{
  if(e.target.closest('.panel'))return;const p=point(e),s=BOOK.scenes[i];
  const rp=document.createElement('span');rp.className='ripple';rp.style.left=p.cx+'px';rp.style.top=p.cy+'px';$('world').appendChild(rp);setTimeout(()=>rp.remove(),600);
  const d=Math.hypot(p.x-s.friend.x,p.y-s.friend.y);
+ if(worldFx)worldFx.burst(p.cx,p.cy,d<8&&!found[i]);
  if(d<8&&!found[i]){found[i]=1;sparks++;render();speak('Ja! Je vond '+s.friend.n);chime(true);toast('✨ '+s.friend.n+' gevonden!');
   for(let k=0;k<9;k++)setTimeout(()=>{const sp=document.createElement('span');sp.className='spark';sp.style.left=(p.cx+(Math.random()*90-45))+'px';sp.style.top=(p.cy+(Math.random()*65-32))+'px';$('world').appendChild(sp);setTimeout(()=>sp.remove(),800)},k*45);
  }else{if(d<15)toast('warm… bijna!');else if(d<25)toast('lauw… kijk verder');chime(false)}

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>G2B Fabriek-Oog — browserproef</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230D0F0E'/><text x='50' y='68' font-size='50' font-weight='bold' text-anchor='middle' fill='%232FBF71' font-family='sans-serif'>FO</text></svg>">
+<style>
+:root{--bg:#0d0f0e;--panel:#141816;--panel2:#101412;--line:#243328;--groen:#2fbf71;--groen2:#7ee2a8;--tekst:#e8ede9;--mut:#aebbb1;--rood:#ff6b6b;--oranje:#ffd166;--blauw:#69b7ff}
+*{box-sizing:border-box;margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(circle at 20% 0%,#172218 0,#0d0f0e 42%,#090b0a 100%);color:var(--tekst);line-height:1.45;min-height:100vh}
+button,input,select{font:inherit}
+button{border:0;border-radius:12px;padding:11px 15px;background:var(--groen);color:#07100a;font-weight:800;cursor:pointer;box-shadow:0 8px 20px rgba(47,191,113,.16)}
+button.sec{background:#1c2720;color:var(--tekst);border:1px solid #334639;box-shadow:none}
+button.warn{background:#ffd166;color:#241a02}
+button.rood{background:#ff6b6b;color:#2a0505}
+button:active{transform:translateY(1px)}
+input,select{width:100%;background:#0c100d;border:1px solid #334639;color:var(--tekst);border-radius:10px;padding:10px 11px}
+label{font-size:12px;color:var(--mut);display:block;margin-bottom:5px}
+.wrap{max-width:1180px;margin:auto;padding:20px}
+header{padding:24px 20px 12px;border-bottom:1px solid #1b281e;background:rgba(13,15,14,.82);position:sticky;top:0;z-index:5;backdrop-filter:blur(12px)}
+.headin{max-width:1180px;margin:auto;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.logo{font-size:13px;letter-spacing:.15em;color:var(--groen);font-weight:900}
+h1{font-size:clamp(22px,4vw,34px);line-height:1.1;margin-top:3px}
+h1 em{font-style:normal;color:var(--groen2)}
+.prive{font-size:12px;border:1px solid #31503a;background:#102016;color:#bfe9cd;padding:7px 10px;border-radius:999px;font-weight:700}
+.hero{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0}
+.notice{background:#122016;border:1px solid #2a5137;color:#c9ecd3;padding:12px 14px;border-radius:14px;font-size:13px;margin:12px 0}
+.grid{display:grid;grid-template-columns:minmax(330px,1.12fr) minmax(300px,.88fr);gap:18px;align-items:start}
+.card{background:linear-gradient(180deg,rgba(20,24,22,.96),rgba(14,18,15,.96));border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 18px 50px rgba(0,0,0,.22)}
+.card h2{font-size:16px;color:#fff;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h3{font-size:14px;color:var(--groen2);margin:12px 0 8px}
+.small{font-size:12px;color:var(--mut)}
+.videoBox{position:relative;background:#050706;border-radius:14px;overflow:hidden;border:1px solid #243328;min-height:290px}
+#view{display:block;width:100%;aspect-ratio:16/9;background:#050706}
+#proc,#demoSrc{display:none}
+video{display:none}
+.overlay{position:absolute;left:10px;top:10px;display:flex;gap:7px;flex-wrap:wrap}
+.chip{padding:6px 9px;border-radius:999px;background:rgba(6,10,7,.76);border:1px solid rgba(255,255,255,.14);font-size:12px;font-weight:800}
+.chip.groen{color:#91f3b8}.chip.rood{color:#ff9a9a}.chip.oranje{color:#ffe19a}.chip.blauw{color:#a8d5ff}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kpi{background:#0d1210;border:1px solid #223026;border-radius:14px;padding:12px;min-height:86px}
+.kpi .lab{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}
+.kpi .val{font-size:28px;font-weight:900;margin-top:4px}
+.kpi .hint{font-size:11px;color:var(--mut)}
+.kpi.groot{grid-column:span 2;background:linear-gradient(135deg,#102216,#0d1210);border-color:#2f6b45}
+.kpi.groot .val{font-size:44px;color:var(--groen2)}
+.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-top:10px}
+.row button{flex:1;min-width:115px;padding:10px 10px}
+#trend{width:100%;height:150px;background:#080b09;border-radius:12px;border:1px solid #223026}
+.list{display:grid;gap:8px}
+.item{background:#0d1210;border:1px solid #223026;border-radius:12px;padding:10px;font-size:13px}
+.item b{color:#fff}
+.item.alarm{border-color:#704040;background:#1c1111}
+.item.actie{border-color:#365c3f;background:#101a12}
+#log{max-height:220px;overflow:auto;font-size:12px;color:#c7d2c9;background:#070908;border-radius:12px;border:1px solid #223026;padding:10px;white-space:pre-wrap}
+.full{grid-column:1/-1}
+.footer{margin:22px 0 4px;color:#829187;font-size:12px;text-align:center}
+@media(max-width:840px){.grid{grid-template-columns:1fr}.headin{align-items:flex-start}.kpis{grid-template-columns:repeat(2,1fr)}header{position:relative}}
+@media print{body{background:#fff;color:#111}header,.hero,.notice,button{display:none}.card{box-shadow:none;break-inside:avoid}.wrap{max-width:none}}
+</style>
+</head>
+<body>
+<header><div class="headin"><div><div class="logo">GOOD2BETTER · PRIVÉ PROTOTYPE</div><h1>Fabriek-Oog <em>browserproef</em></h1><div class="small">Camera/demoliijn → activiteit, stilstand en OEE-signaal. Geen beelden opslaan.</div></div><div class="prive">🔒 lokaal · noindex · geen personenregistratie</div></div></header>
+<div class="wrap">
+<div class="hero">
+<button id="btnDemo">▶ Start demoliijn</button>
+<button id="btnCamera" class="sec">📷 Start camera</button>
+<button id="btnStop" class="sec">⏸ Stop meting</button>
+<button id="btnReset" class="rood">↺ Nieuwe dienst</button>
+<button id="btnCsv" class="sec">⬇ Export CSV</button>
+<button id="btnPrint" class="sec">🖨 Print rapport</button>
+</div>
+<div class="notice"><b>Eerlijke proef:</b> deze browserversie meet beweging/activiteit in beeld als procestracer. Het is géén gecertificeerd OEE-systeem en telt of herkent geen personen. Er worden geen camerabeelden opgeslagen; alleen tijd, activiteitscijfers, status en tellers blijven lokaal in deze browser.</div>
+
+<main class="grid">
+<section class="card">
+<h2>👁 Lijnbeeld en live-status</h2>
+<div class="videoBox">
+<video id="cam" playsinline muted></video>
+<canvas id="view" width="640" height="360"></canvas>
+<canvas id="proc" width="96" height="54"></canvas>
+<canvas id="demoSrc" width="640" height="360"></canvas>
+<div class="overlay"><span class="chip" id="chipMode">modus: uit</span><span class="chip groen" id="chipState">status: —</span><span class="chip blauw" id="chipSamples">0 metingen</span></div>
+</div>
+<div class="controls">
+<div><label for="lijnNaam">Lijnnaam</label><input id="lijnNaam" value="Lijn 1"></div>
+<div><label for="doelAct">Doelactiviteit (%)</label><input id="doelAct" type="number" min="10" max="100" value="65"></div>
+<div><label for="stopDrempel">Stilstand onder (%)</label><input id="stopDrempel" type="number" min="1" max="40" value="8"></div>
+<div><label for="waardeUur">Waarde per productie-uur (€)</label><input id="waardeUur" type="number" min="0" value="1200"></div>
+</div>
+<div class="row">
+<button id="btnGood" class="sec">✓ +1 goed product</button>
+<button id="btnReject" class="warn">✗ +1 afkeur</button>
+</div>
+<p class="small" style="margin-top:10px">Tip: richt de camera op de lijn of machinezone, niet op gezichten. De meting is het sterkst als de camera stilstaat en verlichting redelijk constant is.</p>
+</section>
+
+<section class="card">
+<h2>📊 Live OEE-signaal</h2>
+<div class="kpis">
+<div class="kpi"><div class="lab">Activiteit nu</div><div class="val" id="kAct">0%</div><div class="hint">beweging in lijnzone</div></div>
+<div class="kpi"><div class="lab">Beschikbaarheid</div><div class="val" id="kA">—</div><div class="hint">niet-stil / totaal</div></div>
+<div class="kpi"><div class="lab">Prestatie</div><div class="val" id="kP">—</div><div class="hint">activiteit t.o.v. doel</div></div>
+<div class="kpi"><div class="lab">Kwaliteit</div><div class="val" id="kQ">—</div><div class="hint" id="kQh">goed / totaal</div></div>
+<div class="kpi groot"><div class="lab">OEE-signaal</div><div class="val" id="kOee">—</div><div class="hint">beschikbaarheid × prestatie × kwaliteit</div></div>
+<div class="kpi"><div class="lab">+1% OEE waard</div><div class="val" id="kRoi">—</div><div class="hint">bij 160 uur/maand</div></div>
+</div>
+<h3>Trend activiteit</h3><canvas id="trend" width="520" height="150"></canvas>
+</section>
+
+<section class="card">
+<h2>🚨 Alarmen</h2><div id="alarms" class="list"><div class="item">Nog geen alarmen. Start de demo of camera.</div></div>
+</section>
+<section class="card">
+<h2>🎯 Top-3: doe dit eerst</h2><div id="acties" class="list"><div class="item actie"><b>1.</b> Start een meting; daarna kiest het Oog de grootste verbeterkansen.</div></div>
+</section>
+
+<section class="card full">
+<h2>🧾 Dienstlogboek — alleen cijfers/events, geen beelden</h2>
+<div id="log">Nog geen events.\n</div>
+</section>
+</main>
+<div class="footer">G2B Fabriek-Oog browserproef · privacy-ontwerp: beeld wordt alleen in geheugen geanalyseerd · versie 0.1</div>
+</div>
+
+<script>
+(()=>{'use strict';
+const T=id=>document.getElementById(id);
+const qs=new URLSearchParams(location.search),FAST=qs.has('fast');
+const SAMPLE_MS=FAST?110:600,DEMO_SCALE=FAST?7:1;
+const view=T('view'),vctx=view.getContext('2d'),proc=T('proc'),pctx=proc.getContext('2d',{willReadFrequently:true});
+const demo=T('demoSrc'),dctx=demo.getContext('2d'),cam=T('cam');
+let mode='uit',stream=null,timer=null,prev=null,lastSampleAt=0,sampleId=0,stateRun=0,demoStart=0,lastSimGood=0;
+const blankMetrics=()=>({activity:0,availability:0,performance:0,quality:1,oee:0,state:'uit',changedRatio:0,roi:0,downtime:0,samples:0});
+let metrics=blankMetrics();
+let shift=nieuweShift();
+function nieuweShift(){return {start:Date.now(),lijn:'Lijn 1',samples:[],events:[],counts:{good:0,reject:0},state:'uit',stoppedMs:0,lastTs:0}}
+function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
+function pct(n){return (n*100).toFixed(0)+'%'}
+function fmtTime(ts){return new Date(ts).toLocaleTimeString('nl-NL',{hour12:false})}
+function addEvent(type,msg,sev='info'){const ev={t:Date.now(),type,msg,sev};shift.events.unshift(ev);if(shift.events.length>200)shift.events.length=200;renderLog();saveLocal()}
+function renderLog(){T('log').textContent=shift.events.length?shift.events.map(e=>`[${fmtTime(e.t)}] ${e.type}: ${e.msg}`).join('\n'):'Nog geen events.\n'}
+function saveLocal(){try{localStorage.setItem('fabriekOogShift',JSON.stringify({start:shift.start,lijn:shift.lijn,samples:shift.samples.slice(-500),events:shift.events.slice(0,100),counts:shift.counts}))}catch(e){}}
+function loadLocal(){try{const s=JSON.parse(localStorage.getItem('fabriekOogShift')||'null');if(s&&s.samples){shift={state:'uit',stoppedMs:0,lastTs:0,...s};renderLog()}}catch(e){}}
+function setMode(m){mode=m;T('chipMode').textContent='modus: '+m;T('chipMode').className='chip '+(m==='demo'?'blauw':m==='camera'?'groen':'')}
+function drawIdle(){vctx.fillStyle='#050706';vctx.fillRect(0,0,640,360);vctx.fillStyle='#1c2820';vctx.fillRect(60,150,520,60);vctx.fillStyle='#52665a';vctx.font='bold 22px system-ui';vctx.textAlign='center';vctx.fillText('Start demoliijn of camera',320,88);vctx.font='14px system-ui';vctx.fillStyle='#93a399';vctx.fillText('Het Oog analyseert beweging zonder beeld op te slaan',320,113)}
+function drawDemo(now){
+ if(!demoStart)demoStart=now;const sim=(now-demoStart)/1000*DEMO_SCALE;
+ const phase=sim%34;let speed=phase<15?92:phase<21?0:phase<29?48:76;
+ const g=dctx;g.fillStyle='#101512';g.fillRect(0,0,640,360);
+ const grd=g.createLinearGradient(0,0,0,360);grd.addColorStop(0,'#172018');grd.addColorStop(1,'#090d0a');g.fillStyle=grd;g.fillRect(0,0,640,360);
+ g.fillStyle='#202a23';g.fillRect(0,155,640,78);g.fillStyle='#101713';g.fillRect(0,190,640,13);
+ g.strokeStyle='#3a4b40';g.lineWidth=3;for(let x=-80;x<700;x+=80){const xx=(x+(sim*speed)%80);g.beginPath();g.moveTo(xx,158);g.lineTo(xx-28,228);g.stroke()}
+ for(let i=0;i<7;i++){const x=((i*118+sim*speed)%760)-60,y=132+(i%2)*70;g.fillStyle=i%3?'#d8a53d':'#51b576';g.fillRect(x,y,48,42);g.fillStyle='rgba(0,0,0,.25)';g.fillRect(x+6,y+7,36,10)}
+ g.fillStyle='#26352b';g.fillRect(70,65,500,48);g.fillStyle='#2fbf71';g.font='bold 18px system-ui';g.textAlign='left';g.fillText('G2B DEMOLIJN',92,95);
+ if(speed>0){g.fillStyle='#ffb703';for(let i=0;i<4;i++)g.fillRect(470+i*30,78+Math.sin(sim*8+i)*3,16,8)}
+ else{g.fillStyle='#ff6b6b';g.fillRect(470,78,106,8)}
+ g.fillStyle='rgba(47,191,113,.18)';g.fillRect(42,270,556,44);g.fillStyle='#a8d5ff';g.font='12px system-ui';g.fillText('gesimuleerde beweging — geen echte personen',54,296);
+ return {speed,sim}}
+function sourceCanvas(){if(mode==='demo')return drawDemo(performance.now())&&demo;if(mode==='camera'&&cam.readyState>=2)return cam;return null}
+function analyze(src){
+ const w=96,h=54;pctx.drawImage(src,0,0,w,h);const cur=pctx.getImageData(0,0,w,h).data;
+ if(!prev){prev=cur.slice();return {activity:0,changedRatio:0}}
+ let sum=0,changed=0,n=w*h;for(let i=0;i<n;i++){const j=i*4,d=(Math.abs(cur[j]-prev[j])+Math.abs(cur[j+1]-prev[j+1])+Math.abs(cur[j+2]-prev[j+2]))/3;sum+=d;if(d>18)changed++}
+ prev=cur.slice();const diffNorm=sum/(n*255),changedRatio=changed/n;
+ const activity=clamp(Math.round(diffNorm*1350+changedRatio*125),0,100);
+ return {activity,changedRatio,diffNorm}}
+function classify(activity){const stop=Number(T('stopDrempel').value||8);if(activity<stop)return 'stil';if(activity<35)return 'rustig';return 'draait'}
+function sample(){
+ const src=sourceCanvas();
+ if(!src)return;
+ vctx.drawImage(src,0,0,640,360);
+ const now=Date.now();if(now-lastSampleAt<SAMPLE_MS*.55)return;lastSampleAt=now;
+ const a=analyze(src);let cand=classify(a.activity);
+ if(cand===shift.state)stateRun++;else stateRun=0;
+ if(stateRun===0||stateRun>=1){if(shift.state!==cand&&shift.state!=='uit')addEvent('status',`${shift.state} → ${cand} bij ${a.activity}% activiteit`,cand==='stil'?'alarm':'info');shift.state=cand}
+ const dt=shift.lastTs?now-shift.lastTs:SAMPLE_MS;shift.lastTs=now;if(shift.state==='stil')shift.stoppedMs+=dt;
+ const smp={t:now,a:a.activity,state:shift.state,cr:Number(a.changedRatio.toFixed(4))};shift.samples.push(smp);if(shift.samples.length>1200)shift.samples.shift();sampleId++;
+ simulateQuality(now);reken();render();saveLocal()}
+function simulateQuality(now){if(mode!=='demo'||!shift.samples.length)return;const n=shift.samples.length;if(n%12===0&&lastSimGood!==n){lastSimGood=n;shift.counts.good++;if(n%60===0){shift.counts.reject++;addEvent('kwaliteit','demoliijn: 1 afkeur geregistreerd','warn')}else addEvent('kwaliteit','demoliijn: 1 goed product geregistreerd')}}
+function reken(){
+ const total=shift.samples.length||1,notStil=shift.samples.filter(s=>s.state!=='stil').length;
+ const active=shift.samples.filter(s=>s.state==='draait');const doel=Number(T('doelAct').value||65);
+ const availability=total?notStil/total:0;
+ const performance=(active.length?active.reduce((a,s)=>a+s.a,0)/active.length:0)/doel;
+ const totprod=shift.counts.good+shift.counts.reject,quality=totprod?shift.counts.good/totprod:1;
+ const roi=Number(T('waardeUur').value||0)*160*0.01;
+ metrics={activity:shift.samples.length?shift.samples[shift.samples.length-1].a:0,availability,performance:clamp(performance,0,1.2),quality,oee:availability*clamp(performance,0,1)*quality,state:shift.state,changedRatio:shift.samples.length?shift.samples[shift.samples.length-1].cr:0,roi,downtime:shift.stoppedMs,samples:total}}
+function render(){
+ T('kAct').textContent=metrics.activity+'%';T('kA').textContent=pct(metrics.availability);T('kP').textContent=pct(metrics.performance);T('kQ').textContent=pct(metrics.quality);T('kQh').textContent=`${shift.counts.good} goed / ${shift.counts.good+shift.counts.reject} totaal`;T('kOee').textContent=pct(metrics.oee);T('kRoi').textContent='€ '+metrics.roi.toFixed(0);
+ const cs=T('chipState');cs.textContent='status: '+metrics.state;cs.className='chip '+(metrics.state==='draait'?'groen':metrics.state==='rustig'?'oranje':'rood');T('chipSamples').textContent=metrics.samples+' metingen';
+ drawTrend();renderAlarms();renderActies()}
+function drawTrend(){const c=T('trend'),g=c.getContext('2d'),w=c.width,h=c.height;g.fillStyle='#080b09';g.fillRect(0,0,w,h);g.strokeStyle='#1f2b23';for(let y=30;y<h;y+=30){g.beginPath();g.moveTo(0,y);g.lineTo(w,y);g.stroke()}const arr=shift.samples.slice(-160);if(arr.length<2){g.fillStyle='#6f8075';g.font='12px system-ui';g.fillText('wachten op metingen…',12,24);return}g.strokeStyle='#2fbf71';g.lineWidth=2;g.beginPath();arr.forEach((s,i)=>{const x=i/(arr.length-1)*(w-12)+6,y=h-8-(s.a/100)*(h-18);i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke();g.fillStyle='#2fbf71';g.fillRect(6,h-8-((Number(T('doelAct').value)||65)/100)*(h-18),w-12,1)}
+function renderAlarms(){const out=[];const downtimePct=metrics.samples?shift.stoppedMs/Math.max(1,Date.now()-shift.start):0;
+ if(metrics.state==='stil')out.push(['Lijn staat nu stil','controleer materiaal, storing of aflossing aan de lijn']);
+ if(downtimePct>.18&&metrics.samples>8)out.push(['Veel stilstand in deze dienst',`${pct(downtimePct)} van de tijd stil — zoek de grootste herhaaloorzaak`]);
+ if(metrics.performance<.72&&metrics.samples>8)out.push(['Prestatie onder doel','lijn draait, maar trager dan ingesteld doel']);
+ if(metrics.quality<.97)out.push(['Kwaliteit onder 97%','bekijk afkeurmoment en laatste proceswijziging']);
+ if(!out.length)out.push(metrics.samples?['Geen kritieke alarmen','blijf trend volgen en noteer verbeteracties']:['Nog geen alarmen','start demo of camera']);
+ T('alarms').innerHTML=out.map(x=>`<div class="item alarm"><b>⚠ ${x[0]}</b><br><span class="small">${x[1]}</span></div>`).join('')}
+function renderActies(){const acts=[];
+ if(metrics.state==='stil')acts.push('Los eerst de actieve stilstand op: materiaal, storing, instelling of aflossing.');
+ if(metrics.performance<.85)acts.push('Meet één cyclus handmatig en vergelijk met het doel; zoek microstops of te lage snelheid.');
+ if(metrics.quality<.98)acts.push('Neem de laatste afkeur erbij en leg oorzaak vast in het logboek.');
+ if(!acts.length)acts.push('Kies de langste stilstand uit het logboek en maak daar vandaag één verbeteractie voor.');
+ acts.push('Bespreek in de dagstart alleen de top-3 — niet alles tegelijk.');acts.push('Herhaal de meting na de actie en vergelijk het OEE-signaal.');
+ T('acties').innerHTML=acts.slice(0,3).map((x,i)=>`<div class="item actie"><b>${i+1}.</b> ${x}</div>`).join('')}
+function stopStreams(){if(timer){clearInterval(timer);timer=null}if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}cam.srcObject=null}
+async function startCamera(){stopStreams();nieuw(false);try{stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:960},height:{ideal:540}},audio:false});cam.srcObject=stream;await cam.play();setMode('camera');timer=setInterval(sample,SAMPLE_MS);addEvent('camera','camera gestart — alleen lokale analyse')}catch(e){setMode('uit');addEvent('fout','camera niet gestart: '+e.message,'alarm');alert('Camera niet gestart. Controleer toestemming en gebruik HTTPS of localhost.')}}
+function startDemo(){stopStreams();nieuw(false);setMode('demo');demoStart=0;timer=setInterval(sample,SAMPLE_MS);addEvent('demo','demoliijn gestart')}
+function stopAll(){stopStreams();setMode('uit');if(shift.state!=='uit')addEvent('meting','meting gestopt');shift.state='uit';reken();render()}
+function nieuw(ask=true){if(ask&&!confirm('Nieuwe dienst starten? De huidige lokale meetcijfers worden gewist.'))return false;shift=nieuweShift();shift.lijn=T('lijnNaam').value||'Lijn 1';prev=null;stateRun=0;lastSimGood=0;metrics=blankMetrics();try{localStorage.removeItem('fabriekOogShift')}catch(e){}renderLog();render();return true}
+function exportCsv(){const rows=[['type','tijd','lijn','activiteit','status','beschikbaarheid','prestatie','kwaliteit','oee','bericht'].join(';')];shift.samples.forEach(s=>rows.push(['meting',new Date(s.t).toISOString(),shift.lijn,s.a,s.state,'','','','',''].join(';')));shift.events.slice().reverse().forEach(e=>rows.push(['event',new Date(e.t).toISOString(),shift.lijn,'','','','','','',String(e.type+': '+e.msg).replace(/;/g,',')].join(';')));rows.push(['samenvatting',new Date().toISOString(),shift.lijn,metrics.activity,metrics.state,pct(metrics.availability),pct(metrics.performance),pct(metrics.quality),pct(metrics.oee),''].join(';'));const blob=new Blob([rows.join('\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='fabriek-oog-rapport.csv';document.body.appendChild(a);a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);addEvent('export','CSV-rapport geëxporteerd')}
+T('btnDemo').onclick=startDemo;T('btnCamera').onclick=startCamera;T('btnStop').onclick=stopAll;T('btnReset').onclick=()=>{if(nieuw(true))drawIdle()};T('btnCsv').onclick=exportCsv;T('btnPrint').onclick=()=>window.print();
+T('btnGood').onclick=()=>{shift.counts.good++;addEvent('kwaliteit','handmatig: +1 goed product');reken();render()};T('btnReject').onclick=()=>{shift.counts.reject++;addEvent('kwaliteit','handmatig: +1 afkeur','warn');reken();render()};
+T('lijnNaam').oninput=()=>{shift.lijn=T('lijnNaam').value||'Lijn 1'};['doelAct','stopDrempel','waardeUur'].forEach(id=>T(id).oninput=()=>{reken();render()});
+loadLocal();drawIdle();reken();render();
+if(qs.has('demo'))setTimeout(startDemo,150);
+window.FabriekOog={version:'0.1',startDemo,startCamera,stopAll,nieuweShift:()=>nieuw(false),exportCsv,get metrics(){return {...metrics}},get shift(){return shift},classify,reken,get fast(){return FAST}};
+})();
+</script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 <!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>G2B SHORTS-KNIPPER — lange video → 9:16 short (in je browser)</title>
+<title>G2B SHORTSFABRIEK — video → virale 9:16 clips (in je browser)</title>
 <style>
 :root{--bg:#0a0f0a;--ka:#101a10;--lijn:#1f331f;--groen:#22c55e;--dim:#7d9b7d;--tx:#d7e8d7}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,sans-serif;padding:18px;max-width:860px;margin:auto}
@@ -17,7 +17,7 @@ video{display:none}
 #st{font-size:.82rem;color:var(--groen);min-height:1.2em;margin-top:8px}
 a{color:var(--groen)}
 </style></head><body>
-<h1>G2B SHORTS-KNIPPER <small>— lange video → 9:16 short · 100% in je browser · gratis</small></h1>
+<h1>G2B SHORTSFABRIEK <small>— lange video → sterke 9:16 clips + remix-pack · 100% in je browser</small></h1>
 <div class="ka"><div class="hint">Sleep een video in, kies het stuk en waar hij in het beeld focust — export komt als .webm (speelt overal, YouTube pakt hem direct). Voor AI-momenten + auto-ondertiteling gebruik je NeonClipping (link onderaan).</div></div>
 <div class="drop" id="drop">🎬 Sleep hier een video (.mp4/.webm/.mov) of klik om te kiezen<input type="file" id="bestand" accept="video/*" hidden></div>
 <div class="ka" id="paneel" hidden>
@@ -25,23 +25,36 @@ a{color:var(--groen)}
  <div class="row"><button class="sec" id="play">▶ speel stuk</button><span class="hint" id="duur"></span></div>
  <label>Begin (seconden)</label><input type="range" id="v0" min="0" step="0.1">
  <label>Einde (seconden)</label><input type="range" id="v1" min="0" step="0.1">
+ <label>9:16 layout</label><select id="layout" style="width:100%;background:#0c140c;border:1px solid var(--lijn);color:var(--tx);border-radius:8px;padding:8px"><option value="crop">✂ crop — dichterbij/scherpstellen</option><option value="blur">🌫 blur-fill — hele video met zachte achtergrond</option></select>
  <label>Focus — waar in beeld de camera staat (schuif heen/terug)</label><input type="range" id="fx" min="0" max="1" step="0.01" value="0.5">
  <label>Titel bovenaan (optioneel — wordt erin gebrand)</label><input type="text" id="titel" placeholder="bv. G2B — nieuwe beat drop">
- <div class="row" style="margin-top:12px"><button id="knip">✂ KNIP & DOWNLOAD</button><button class="sec" id="reset">andere video</button></div>
+ <div class="row" style="margin-top:12px"><button id="knip">✂ KNIP & DOWNLOAD</button><button class="sec" id="cancel" disabled>■ cancel</button><button class="sec" id="cover">📸 cover png</button><button class="sec" id="reset">andere video</button></div>
+ <div style="height:8px;background:#0c140c;border-radius:99px;margin-top:10px;overflow:hidden"><i id="prog" style="display:block;height:100%;width:0%;background:var(--groen)"></i></div>
+ <div class="ka" style="margin:12px 0 0;padding:10px">
+  <div class="row"><b style="color:var(--groen)">⚡ Viral Remix Pack</b><button class="sec" id="scan">zoek sterke momenten</button><select id="cliplen" style="width:115px;background:#0c140c;border:1px solid var(--lijn);color:var(--tx);border-radius:8px;padding:7px"><option value="8">8 sec clips</option><option value="15" selected>15 sec clips</option><option value="30">30 sec clips</option></select><button id="pack">📦 export pack</button></div>
+  <div class="hint">De tool bekijkt beweging, contrast en visuele verandering lokaal in je browser. Geen AI-cloud, geen upload. Kies de beste momenten en exporteer clips + covers + remix-plan in één zip.</div>
+  <div id="momenten" style="margin-top:8px"></div>
+ </div>
  <div id="st"></div>
 </div>
 <div class="ka"><div class="hint">Tip: korte video's met gesproken woord → <a href="https://github.com/iamajmeena/neonclipping" target="_blank">NeonClipping</a> vindt de beste momenten + ondertitels automatisch. Deze knipper is voor als je zelf al weet welk stuk je wilt.</div></div>
 <script>
 const $=id=>document.getElementById(id);
 const v=document.createElement('video');v.playsInline=true;v.muted=false;v.crossOrigin='anonymous';
-let raf=null,rec=null,chunks=[],audioTracks=[];
+let raf=null,rec=null,chunks=[],audioTracks=[],bronFile=null,momenten=[],packLoopt=false;
 const cv=$('cv'),ctx=cv.getContext('2d');
 function st(t){$('st').textContent=t}
 function teken(){
  const vw=v.videoWidth,vh=v.videoHeight;if(!vw)return;
- // 9:16 uit de bron: crop-breedte = hoogte*9/16
- const cw=vh*9/16,cx=Math.max(0,Math.min(vw-cw,(vw-cw)*$('fx').value));
- ctx.drawImage(v,cx,0,cw,vh,0,0,540,960);
+ ctx.filter='none';ctx.fillStyle='#000';ctx.fillRect(0,0,540,960);
+ if(($('layout')||{}).value==='blur'){
+  const sc=Math.max(540/vw,960/vh),bw=vw*sc,bh=vh*sc;ctx.save();ctx.filter='blur(18px) brightness(.72) saturate(1.25)';ctx.drawImage(v,(540-bw)/2,(960-bh)/2,bw,bh);ctx.restore();
+  const fs=Math.min(540/vw,960/vh),fw=vw*fs,fh=vh*fs;ctx.drawImage(v,(540-fw)/2,(960-fh)/2,fw,fh);
+ }else{
+  // 9:16 uit de bron: crop-breedte = hoogte*9/16
+  const cw=vh*9/16,cx=Math.max(0,Math.min(vw-cw,(vw-cw)*$('fx').value));
+  ctx.drawImage(v,cx,0,cw,vh,0,0,540,960);
+ }
  const t=$('titel').value.trim();
  if(t){ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(0,0,540,80);
   ctx.fillStyle='#fff';ctx.font='bold 30px system-ui';ctx.textAlign='center';ctx.fillText(t,270,52);}
@@ -53,31 +66,72 @@ $('bestand').onchange=e=>{if(e.target.files[0])laad(e.target.files[0])};
 $('drop').ondragover=e=>{e.preventDefault();$('drop').classList.add('over')};
 $('drop').ondragleave=()=>$('drop').classList.remove('over');
 $('drop').ondrop=e=>{e.preventDefault();$('drop').classList.remove('over');if(e.dataTransfer.files[0])laad(e.dataTransfer.files[0])};
-function laad(f){v.src=URL.createObjectURL(f);
- v.onloadedmetadata=()=>{$('paneel').hidden=false;$('v0').value=0;$('v1').value=Math.min(30,v.duration);syncRng();
-  st('✅ '+f.name+' — stel je stuk in en druk ▶ of ✂')}}
+function laad(f){bronFile=f;momenten=[];renderMomenten();v.src=URL.createObjectURL(f);
+ v.onloadedmetadata=()=>{$('paneel').hidden=false;$('v0').value=0;$('v1').value=Math.min(30,v.duration);syncRng();v.currentTime=Math.min(.45,v.duration*.35);
+  st('✅ '+f.name+' — stel je stuk in, zoek momenten of knip direct')}}
 $('v0').oninput=syncRng;$('v1').oninput=syncRng;
 $('fx').oninput=()=>{if(v.paused){v.currentTime=+$('v0').value;cancelAnimationFrame(raf);teken()}};
+$('layout').onchange=()=>{cancelAnimationFrame(raf);teken()};
+$('cover').onclick=()=>{teken();const a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download='g2b-short-cover.png';a.click()};
 $('play').onclick=()=>{v.currentTime=+$('v0').value;
  v.ontimeupdate=()=>{if(v.currentTime>=+$('v1').value)v.pause()};
  v.play();teken()};
 $('reset').onclick=()=>location.reload();
-$('knip').onclick=async()=>{
- const s=+$('v0').value,e=+$('v1').value;
- if(e<=s){st('⚠ einde moet ná begin liggen');return}
- const len=e-s;if(len>600){st('⚠ max 10 min per short');return}
- st('⏺ opnemen… laat het tabblad open');
- const stream=cv.captureStream(30);
- try{const vs=v.captureStream?v.captureStream():v.mozCaptureStream();
-  vs.getAudioTracks().forEach(t=>stream.addTrack(t))}catch(err){}
+function downloadBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2500)}
+function streamMetAudio(){const stream=cv.captureStream(30);try{const vs=v.captureStream?v.captureStream():v.mozCaptureStream();vs.getAudioTracks().forEach(t=>stream.addTrack(t))}catch(err){}return stream}
+async function recordSegment(s,e,opt={}){
+ if(e<=s)throw new Error('einde moet ná begin liggen');const len=e-s;if(len>600)throw new Error('max 10 min per short');
+ const label=opt.label||'opnemen';st('⏺ '+label+'… laat het tabblad open');$('cancel').disabled=false;$('prog').style.width='0%';
+ const stream=streamMetAudio();
  rec=new MediaRecorder(stream,{mimeType:MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')?'video/webm;codecs=vp9,opus':'video/webm'});
  chunks=[];rec.ondataavailable=ev=>{if(ev.data.size)chunks.push(ev.data)};
- rec.onstop=()=>{const blob=new Blob(chunks,{type:'video/webm'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='g2b-short-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+'.webm';a.click();
-  st('✅ gedownload — '+((blob.size/1048576).toFixed(1))+' MB · drop er nog een voor de volgende short')};
- v.currentTime=s;
- v.onended=null;
- v.ontimeupdate=()=>{if(v.currentTime>=e){v.pause();setTimeout(()=>{try{rec.stop()}catch(_){}},150)}};
- rec.start(250);await v.play();teken()};
+ return new Promise((resolve,reject)=>{
+  let klaar=false;const progI=setInterval(()=>{const pct=Math.min(100,((v.currentTime-s)/(e-s))*100);$('prog').style.width=Math.max(0,pct)+'%';st('⏺ '+label+'… '+Math.round(pct)+'% — laat het tabblad open')},250);window.__progI=progI;
+  function finish(){if(klaar)return;klaar=true;try{v.pause()}catch(_){};setTimeout(()=>{try{if(rec&&rec.state!=='inactive')rec.stop()}catch(_){};},150)}
+  rec.onerror=ev=>{clearInterval(progI);reject(ev.error||new Error('recorderfout'))};
+  rec.onstop=()=>{clearInterval(progI);$('cancel').disabled=true;$('prog').style.width='100%';const blob=new Blob(chunks,{type:'video/webm'});window.__lastExport={size:blob.size,type:blob.type,at:Date.now()};
+   if(opt.download!==false){downloadBlob(blob,'g2b-short-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+'.webm');st('✅ gedownload — '+((blob.size/1048576).toFixed(1))+' MB · drop er nog een voor de volgende short')}
+   resolve(blob)};
+  v.currentTime=s;v.onended=finish;v.ontimeupdate=()=>{if(v.currentTime>=e)finish()};
+  try{rec.start(250);v.play().then(()=>teken()).catch(reject)}catch(err){reject(err)}
+ })
+}
+$('knip').onclick=async()=>{try{await recordSegment(+$('v0').value,+$('v1').value)}catch(err){st('⚠ '+err.message)}};
+function wachtSeek(vid,t){return new Promise(res=>{let done=false;const ok=()=>{if(done)return;done=true;vid.removeEventListener('seeked',ok);res()};vid.addEventListener('seeked',ok);vid.currentTime=Math.max(0,Math.min(t,(vid.duration||t)-.01));setTimeout(ok,550)})}
+function sampleScore(g,prev){const d=g.getImageData(0,0,64,36).data;let lum=0,lum2=0,motion=0,n=0,lums=[];for(let i=0;i<d.length;i+=16){const l=(d[i]+d[i+1]+d[i+2])/3;lums.push(l);lum+=l;lum2+=l*l;if(prev)motion+=Math.abs(l-prev[n]);n++}lum/=n;const varr=Math.max(0,lum2/n-lum*lum);return{score:varr*.9+(motion/n)*2.2+lum*.15,lum,motion:motion/n,variance:varr,lums}}
+async function scanMoments(){
+ if(!bronFile||!v.duration){st('⚠ laad eerst een video');return[]}st('⚡ momenten scannen — beweging, contrast en verandering…');
+ const sv=document.createElement('video');sv.muted=true;sv.playsInline=true;sv.src=v.src;await new Promise((res,rej)=>{sv.onloadedmetadata=res;sv.onerror=rej;setTimeout(res,1800)});
+ const c=document.createElement('canvas');c.width=64;c.height=36;const g=c.getContext('2d',{willReadFrequently:true});
+ const step=Math.max(.25,sv.duration/80),times=[];for(let t=.08;t<sv.duration-.05;t+=step)times.push(t);
+ let prev=null,samples=[];for(const t of times){await wachtSeek(sv,t);g.drawImage(sv,0,0,64,36);const sc=sampleScore(g,prev);prev=sc.lums;samples.push({t,score:sc.score,lum:sc.lum,motion:sc.motion,variance:sc.variance})}
+ const len=+$('cliplen').value,maxN=sv.duration<len*1.2?1:4;
+ const gesorteerd=[...samples].sort((a,b)=>b.score-a.score),keuze=[];
+ for(const x of gesorteerd){if(keuze.length>=maxN)break;if(!keuze.some(y=>Math.abs(y.t-x.t)<Math.max(1.2,len*.45)))keuze.push(x)}
+ if(!keuze.length&&samples.length)keuze.push(gesorteerd[0]);
+ momenten=keuze.sort((a,b)=>a.t-b.t).map((x,i)=>{let start=sv.duration<=len?0:Math.max(0,Math.min(sv.duration-len,x.t-len*.35));let end=Math.min(sv.duration,start+len);return{id:i+1,t:x.t,start,end,score:x.score,motion:x.motion,checked:true}});
+ renderMomenten();st('⚡ '+momenten.length+' sterke momenten gevonden — vink aan en exporteer pack');return momenten}
+function renderMomenten(){const box=$('momenten');if(!momenten.length){box.innerHTML='<div class="hint">Nog geen momenten. Druk op “zoek sterke momenten”.</div>';return}box.innerHTML=momenten.map((m,i)=>`<label style="display:flex;gap:8px;align-items:center;margin:6px 0;color:var(--tx)"><input type="checkbox" data-i="${i}" ${m.checked?'checked':''} style="width:auto"><span>⚡ moment ${i+1} · ${m.start.toFixed(1)}s → ${m.end.toFixed(1)}s · score ${Math.round(m.score)}</span><button type="button" class="sec" data-use="${i}" style="padding:5px 8px">gebruik</button></label>`).join('');box.querySelectorAll('input[type=checkbox]').forEach(x=>x.onchange=()=>{momenten[+x.dataset.i].checked=x.checked});box.querySelectorAll('[data-use]').forEach(b=>b.onclick=()=>{const m=momenten[+b.dataset.use];$('v0').value=m.start;$('v1').value=m.end;syncRng();v.currentTime=m.start;cancelAnimationFrame(raf);teken()})}
+function u8(s){return new TextEncoder().encode(s)}
+function crc32(buf){let table=crc32.t;if(!table){table=crc32.t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xedb88320^(c>>>1):c>>>1;table[n]=c>>>0}}let c=0xffffffff;for(let i=0;i<buf.length;i++)c=table[(c^buf[i])&255]^(c>>>8);return(c^0xffffffff)>>>0}
+function concat(parts){let len=parts.reduce((a,x)=>a+x.length,0),out=new Uint8Array(len),o=0;for(const x of parts){out.set(x,o);o+=x.length}return out}
+function maakZip(entries){const parts=[],central=[];let off=0;for(const e of entries){const name=u8(e.name),data=e.data,crc=crc32(data),lh=new DataView(new ArrayBuffer(30));lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(8,0,true);lh.setUint32(14,crc,true);lh.setUint32(18,data.length,true);lh.setUint32(22,data.length,true);lh.setUint16(26,name.length,true);const head=new Uint8Array(lh.buffer);parts.push(head,name,data);
+ const ch=new DataView(new ArrayBuffer(46));ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint16(10,0,true);ch.setUint32(16,crc,true);ch.setUint32(20,data.length,true);ch.setUint32(24,data.length,true);ch.setUint16(28,name.length,true);ch.setUint32(42,off,true);central.push(new Uint8Array(ch.buffer),name);off+=head.length+name.length+data.length}
+ const cd=concat(central),end=new DataView(new ArrayBuffer(22));end.setUint32(0,0x06054b50,true);end.setUint16(8,entries.length,true);end.setUint16(10,entries.length,true);end.setUint32(12,cd.length,true);end.setUint32(16,off,true);return new Blob([concat([...parts,cd,new Uint8Array(end.buffer)])],{type:'application/zip'})}
+function canvasPng(){return new Promise(res=>cv.toBlob(res,'image/png'))}
+async function exportPack(){
+ if(packLoopt)return;let sel=momenten.filter(x=>x.checked);if(!sel.length)sel=await scanMoments();sel=sel.filter(x=>x.checked);if(!sel.length){st('⚠ geen momenten om te exporteren');return}
+ packLoopt=true;const entries=[],plan=[];try{
+  for(let i=0;i<sel.length;i++){const mm=sel[i],nm='moment-'+(i+1);st('📦 pack '+(i+1)+'/'+sel.length+' — clip opnemen');
+   const blob=await recordSegment(mm.start,mm.end,{download:false,label:'packclip '+(i+1)+'/'+sel.length});entries.push({name:'clips/'+nm+'.webm',data:new Uint8Array(await blob.arrayBuffer())});
+   await wachtSeek(v,mm.start+(mm.end-mm.start)*.45);cancelAnimationFrame(raf);teken();const png=await canvasPng();if(png)entries.push({name:'covers/'+nm+'-cover.png',data:new Uint8Array(await png.arrayBuffer())});
+   plan.push({moment:i+1,start:mm.start,end:mm.end,score:mm.score,tip:'knip dit als aparte short en gebruik de cover als thumbnail'})}
+  const titel=$('titel').value.trim();entries.push({name:'remix-plan.json',data:u8(JSON.stringify({tool:'G2B Shorts Viral Remix Pack',titel,layout:$('layout').value,gemaakt:new Date().toISOString(),momenten:plan},null,2))});
+   entries.push({name:'LEESMIJ.txt',data:u8('G2B Viral Remix Pack\n\nIn de map clips staan 9:16 webm-shorts. In covers staan png-thumbnails. remix-plan.json bevat tijdcodes en scores. Alles lokaal in je browser gemaakt; er is niets geüpload.\n')});
+   const zip=maakZip(entries);window.__lastPackBlob=zip;downloadBlob(zip,'g2b-viral-remix-pack-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+'.zip');window.__lastPack={size:zip.size,entries:entries.length,clips:sel.length,at:Date.now()};st('✅ remix-pack gedownload — '+sel.length+' clips + covers + plan in één zip')
+ }catch(err){st('⚠ pack-export gestopt: '+err.message)}finally{packLoopt=false}
+}
+$('scan').onclick=scanMoments;$('pack').onclick=exportPack;
+$('cancel').onclick=()=>{try{v.pause();if(rec&&rec.state!=='inactive')rec.stop()}catch(e){};st('■ opname gestopt — je kunt opnieuw knippen')};
+window.ShortsKnipper={laad,teken,scanMoments,exportPack,recordSegment,setMoments:x=>{momenten=x;renderMomenten()},get moments(){return momenten},get video(){return v},get canvas(){return cv},get recording(){return rec&&rec.state},get lastExport(){return window.__lastExport},get lastPack(){return window.__lastPack}};
 </script></body></html>
