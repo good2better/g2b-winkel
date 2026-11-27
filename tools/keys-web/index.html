@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G2B KEY ENGINE — piano/steinway instrument</title>
+<style>
+:root{--bg:#07110c;--panel:#0c1d14;--panel2:#10251a;--groen:#54e69a;--groen2:#21b96f;--tekst:#eefbf3;--dim:#9ab8a8;--rand:#214832;--geel:#f0cd64;--rood:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -20%,#173d28 0,#07110c 48%,#030805 100%);color:var(--tekst);font-family:system-ui,Segoe UI,Arial,sans-serif;padding:18px}
+main{max-width:1180px;margin:auto}.kaart{background:linear-gradient(180deg,rgba(16,37,26,.96),rgba(8,20,13,.96));border:1px solid var(--rand);border-radius:18px;padding:18px;box-shadow:0 20px 60px #0008}
+h1{margin:0;font-size:clamp(1.55rem,3vw,2.5rem);letter-spacing:.02em}h1 span{color:var(--groen)}h2{font-size:1rem;margin:16px 0 8px;color:var(--groen)}.sub{color:var(--dim);line-height:1.45;margin:8px 0 14px}.rij{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.paneel{background:#07130d;border:1px solid #183523;border-radius:14px;padding:12px;margin-top:10px}
+label{display:flex;flex-direction:column;gap:5px;font-size:.78rem;color:var(--dim);min-width:105px}select,input[type=text]{background:#06100a;color:var(--tekst);border:1px solid #2b5b3c;border-radius:9px;padding:9px 10px}input[type=range]{width:135px;accent-color:var(--groen)}input[type=number]{width:82px;background:#06100a;color:var(--tekst);border:1px solid #2b5b3c;border-radius:9px;padding:8px}
+button{border:0;border-radius:10px;padding:10px 13px;background:linear-gradient(180deg,#25c777,#14814b);color:#021007;font-weight:800;cursor:pointer;box-shadow:0 5px 18px #0005}button:hover{filter:brightness(1.1)}button.secundair{background:#152a1e;color:var(--tekst);border:1px solid #2d5b3d;font-weight:700}button.waarschuw{background:linear-gradient(180deg,#f0cd64,#a98022);color:#130e02}.klein{font-size:.76rem;padding:7px 9px}.status{min-height:24px;color:var(--geel);font-size:.88rem;margin-top:10px}.meter{font-family:ui-monospace,Consolas,monospace;background:#020705;border:1px solid #1e4b30;border-radius:10px;padding:10px;color:#bdf4d4;white-space:pre-wrap;line-height:1.45}.commando{flex:1;min-width:270px}.commando input{width:100%}
+.keys{display:grid;grid-template-columns:repeat(12,minmax(48px,1fr));gap:6px;margin-top:10px}.pad{min-height:76px;border-radius:10px;border:1px solid #2d6041;background:linear-gradient(180deg,#f5fff8,#c7d8cc);color:#07110c;font-weight:900;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:8px 4px;cursor:pointer;user-select:none}.pad.zwart{background:linear-gradient(180deg,#1d2923,#050907);color:#e9fff1;border-color:#385844;min-height:62px}.pad small{font-weight:600;opacity:.62;font-size:.65rem}.pad.hit{transform:translateY(2px);filter:brightness(1.25);box-shadow:0 0 20px #54e69a88}.akkoorden{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.akkoorden button{background:#10271a;color:var(--tekst);border:1px solid #2b5b3c}.uitleg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:12px}.blok{background:#08150e;border:1px solid #1d422c;border-radius:12px;padding:10px;color:var(--dim);font-size:.84rem;line-height:1.4}.blok b{color:var(--tekst)}
+@media(max-width:760px){.keys{grid-template-columns:repeat(6,1fr)}label{min-width:92px}input[type=range]{width:105px}}
+</style>
+</head>
+<body>
+<main>
+<section class="kaart">
+<h1>G2B <span>KEY ENGINE</span></h1>
+<div class="sub">Eigen piano/steinway-bronnen als snaarlichaam, maar bespeelbaar als instrument: hamer, snaren/unison, decay, bloom, metaal en ruimte. <b>Instrumentlagen eerst, nabewerking daarna.</b></div>
+<div class="rij">
+<label>BANK<select id="bank"><option value="PIANO">PIANO — compact/eigen</option><option value="STEINWAY">STEINWAY — groot/rond</option></select></label>
+<label>HAMER <span id="vHamer">58</span><input type="range" id="hamer" min="0" max="100" value="58"></label>
+<label>SNAAR/METAAL <span id="vSnaar">34</span><input type="range" id="snaar" min="0" max="100" value="34"></label>
+<label>DECAY <span id="vDecay">62</span><input type="range" id="decay" min="0" max="100" value="62"></label>
+<label>BLOOM <span id="vBloom">36</span><input type="range" id="bloom" min="0" max="100" value="36"></label>
+<label>DETUNE <span id="vDetune">18</span><input type="range" id="detune" min="0" max="100" value="18"></label>
+<label>RUIMTE <span id="vRuimte">28</span><input type="range" id="ruimte" min="0" max="100" value="28"></label>
+<button class="waarschuw" id="dobbel">🎲 SOUND</button>
+<button class="secundair" id="demo">▶ DEMO</button>
+</div>
+<div class="paneel">
+<h2>Brein Commando</h2>
+<div class="rij commando"><input type="text" id="cmd" placeholder="bijv: warme filmische steinway, zacht, lange decay, render 2 bars 82 bpm"><button id="cmdGo">🧠 VOER UIT</button></div>
+<div class="sub" style="margin-bottom:0">Lokaal en offline: tekst zet eerst instrumentgedrag, daarna pas ruimte/nabewerking.</div>
+</div>
+<div class="paneel">
+<h2>Bespeelbaar keyboard</h2>
+<div class="keys" id="keys"></div>
+<h2>Akkoorden direct horen</h2>
+<div class="akkoorden" id="chords"></div>
+</div>
+<div class="paneel">
+<h2>Arrangement-loop export</h2>
+<div class="rij">
+<label>PROGRESSIE<select id="prog"><option value="Am F C G">Am – F – C – G</option><option value="Dm Am F G">Dm – Am – F – G</option><option value="Am Em F G">Am – Em – F – G</option><option value="C G Am F">C – G – Am – F</option></select></label>
+<label>BARS<select id="bars"><option>1</option><option selected>2</option><option>4</option><option>8</option></select></label>
+<label>BPM<input type="number" id="bpm" min="55" max="160" value="82"></label>
+<button id="render">⬇ RENDER WAV</button>
+<button class="secundair klein" id="quality">🧪 QUALITY CHECK</button>
+</div>
+<div class="meter" id="meter">KEY-DNA wacht op eerste render…</div>
+</div>
+<div class="uitleg">
+<div class="blok"><b>Instrumentgedrag</b><br>Hamer kiest zacht/hard bronmateriaal en attack/helderheid. Snaar/metaal, bloom en detune vormen het instrument zelf.</div>
+<div class="blok"><b>Nabewerking</b><br>Ruimte, outputcompressor en gain komen pas daarna. Dat voorkomt dat een effect als nep-laag voelt.</div>
+<div class="blok"><b>Workstation-waarde</b><br>Dezelfde engine kan straks akkoordlagen, keys-packs en Sound DNA in Workstation voeden.</div>
+</div>
+<div class="status" id="status">laden…</div>
+</section>
+</main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const status=t=>{$('status').textContent=t};
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const NOTE_NAMES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const ANCHORS=[{n:'C1',m:24},{n:'C2',m:36},{n:'C3',m:48},{n:'E3',m:52},{n:'C4',m:60},{n:'C5',m:72},{n:'C6',m:84},{n:'C7',m:96}];
+const FILES={PIANO:a=>`wav/piano_kP_${a.n}_v${hardVariant()?'4':'1'}.wav`,STEINWAY:a=>`wav/steinway_kS_${a.n}_${hardVariant()?'h':'s'}.wav`};
+const ALLFILES={PIANO:[],STEINWAY:[]};
+for(const bank of Object.keys(ALLFILES))for(const a of ANCHORS)for(const hard of [false,true])ALLFILES[bank].push(bank==='PIANO'?`wav/piano_kP_${a.n}_v${hard?'4':'1'}.wav`:`wav/steinway_kS_${a.n}_${hard?'h':'s'}.wav`);
+function hardVariant(){return (+$('hamer').value)>=50}
+const P=()=>({bank:$('bank').value,hamer:+$('hamer').value,snaar:+$('snaar').value,decay:+$('decay').value,bloom:+$('bloom').value,detune:+$('detune').value,ruimte:+$('ruimte').value,bpm:+$('bpm').value});
+const BUFFERS={PIANO:new Map(),STEINWAY:new Map()};
+let actx=null,liveBus=null,liveOut=null,impulseCache=new WeakMap(),lastRender=null;
+function nearestAnchor(m){let best=ANCHORS[0],d=999;for(const a of ANCHORS){const dd=Math.abs(a.m-m);if(dd<d){d=dd;best=a}}return best}
+function keyFor(bank,a,hard){return bank+'|'+a.n+'|'+(hard?'hard':'soft')}
+function fileFor(bank,a,hard){return bank==='PIANO'?`wav/piano_kP_${a.n}_v${hard?'4':'1'}.wav`:`wav/steinway_kS_${a.n}_${hard?'h':'s'}.wav`}
+async function ensureCtx(){if(!actx)actx=new (window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended'){try{await actx.resume()}catch(e){}}return actx}
+async function loadBank(bank){
+ await ensureCtx();
+ if(BUFFERS[bank].size>=16)return;
+ status('⏳ '+bank+' laden — eigen piano/steinway bronnen…');
+ const jobs=ALLFILES[bank].map(async f=>{
+  const r=await fetch(f);if(!r.ok)throw new Error('ontbreekt: '+f);
+  const ab=await r.arrayBuffer();const buf=await actx.decodeAudioData(ab.slice(0));
+  const m=f.match(/_(C\d|E\d)_/);const hard=/(_v4|_h)\.wav$/.test(f);BUFFERS[bank].set(keyFor(bank,{n:m[1]},hard),buf);
+ });
+ await Promise.all(jobs);status('✓ '+bank+' klaar — 16 bronnen geladen');
+}
+function impulse(ctx,sec=1.7,decay=2.6){
+ if(impulseCache.has(ctx))return impulseCache.get(ctx);
+ const len=Math.floor(ctx.sampleRate*sec),buf=ctx.createBuffer(2,len,ctx.sampleRate);
+ for(let c=0;c<2;c++){const d=buf.getChannelData(c);for(let i=0;i<len;i++){const t=i/len;d[i]=(Math.random()*2-1)*Math.pow(1-t,decay)}}
+ impulseCache.set(ctx,buf);return buf;
+}
+function makeOutput(ctx){
+ const inp=ctx.createGain(),comp=ctx.createDynamicsCompressor(),out=ctx.createGain();
+ comp.threshold.value=-12;comp.knee.value=18;comp.ratio.value=3.2;comp.attack.value=.004;comp.release.value=.18;out.gain.value=.88;
+ inp.connect(comp);comp.connect(out);out.connect(ctx.destination);return inp;
+}
+function makeBus(ctx,dest){
+ const input=ctx.createGain(),dry=ctx.createGain(),wet=ctx.createGain(),conv=ctx.createConvolver();
+ conv.buffer=impulse(ctx);input.connect(dry);dry.connect(dest);input.connect(conv);conv.connect(wet);wet.connect(dest);return{input,dry,wet};
+}
+function updateBus(bus,p){const r=p.ruimte/100;bus.dry.gain.value=.9-r*.12;bus.wet.gain.value=r*.52}
+async function ensureLive(){
+ const ctx=await ensureCtx();await loadBank($('bank').value);
+ if(!liveOut){liveOut=makeOutput(ctx);liveBus=makeBus(ctx,liveOut)}
+ updateBus(liveBus,P());return{ctx,bus:liveBus};
+}
+function addSource(ctx,bus,bank,midi,vel,when,p,layer){
+ const a=nearestAnchor(midi),hard=p.hamer>=50,buf=BUFFERS[bank].get(keyFor(bank,a,hard))||BUFFERS[bank].get(keyFor(bank,a,!hard));
+ if(!buf)return null;
+ const src=ctx.createBufferSource();src.buffer=buf;
+ const cents=layer===0?0:(layer===1?1:-1)*(2+p.detune/100*13);
+ const rate=Math.pow(2,(midi-a.m)/12)*Math.pow(2,cents/1200);src.playbackRate.value=rate;
+ const sg=ctx.createGain();sg.gain.value=layer===0?1:clamp(p.detune/100*.42,0,.34);
+ const pan=ctx.createStereoPanner?ctx.createStereoPanner():null;
+ src.connect(sg);
+ if(pan){pan.pan.value=layer===0?0:(layer===1?1:-1)*(.025+p.detune/100*.07);sg.connect(pan);pan.connect(bus._voiceIn)}else sg.connect(bus._voiceIn);
+ return{src,rate,dur:buf.duration/rate};
+}
+function voice(ctx,bus,midi,vel=96,when=0,p=P()){
+ const pin=bus._voiceIn=ctx.createGain();
+ const filt=ctx.createBiquadFilter();filt.type='lowpass';
+ const h=p.hamer/100,s=p.snaar/100,d=p.decay/100,b=p.bloom/100;
+ filt.frequency.value=1150+h*5200+s*3100;filt.Q.value=.35+s*1.15;
+ const bite=ctx.createBiquadFilter();bite.type='peaking';bite.frequency.value=900+s*3600;bite.Q.value=.8;bite.gain.value=-2+h*3+s*5;
+ const env=ctx.createGain();env.gain.value=0;
+ pin.connect(filt);filt.connect(bite);bite.connect(env);env.connect(bus.input);
+ const layers=[0];if(p.detune>4)layers.push(1,2);
+ const made=layers.map(l=>addSource(ctx,bus,p.bank,midi,vel,when,p,l)).filter(Boolean);
+ if(!made.length)return null;
+ const vg=clamp(vel/127,0,1)*.72,attack=.002+(1-h)*.018;
+ const maxDur=Math.max(.35,Math.min(Math.max(...made.map(x=>x.dur)),.45+d*5.6));
+ env.gain.setValueAtTime(0,when);env.gain.linearRampToValueAtTime(vg*(.58+h*.42),when+attack);
+ const bloomTime=.07+b*.48;env.gain.linearRampToValueAtTime(vg*(.72+b*.34),when+attack+bloomTime);
+ const hold=maxDur*(.48+d*.28),tau=.06+(1-d)*.12+d*.32;
+ env.gain.setTargetAtTime(.00012,when+hold,tau);
+ for(const x of made){x.src.start(when);x.src.stop(when+maxDur+.06)}
+ return{dur:maxDur};
+}
+async function speelNootLive(midi,vel=100){const{ctx,bus}=await ensureLive();return voice(ctx,bus,midi,vel,ctx.currentTime+.01,P())}
+const CHORDS={Am:[57,60,64],F:[53,57,60],C:[48,52,55],G:[55,59,62],Em:[52,55,59],Dm:[50,53,57]};
+function speelChord(naam){(CHORDS[naam]||[]).forEach((n,i)=>setTimeout(()=>speelNootLive(n,88-i*4),i*18))}
+async function renderProgression(){
+ const p=P();await ensureCtx();await loadBank(p.bank);const sr=44100,bars=+$('bars').value,bpm=p.bpm,spb=60/bpm;
+ const seq=$('prog').value.trim().split(/\s+/).filter(x=>CHORDS[x]);if(!seq.length)throw new Error('geen geldige progressie');
+ const loopSec=bars*4*spb,total=loopSec+2.8+p.ruimte/100*1.4;
+ const off=new OfflineAudioContext(2,Math.floor(sr*total),sr),out=makeOutput(off),bus=makeBus(off,out);updateBus(bus,p);
+ for(let bar=0;bar<bars;bar++){
+  const chord=CHORDS[seq[bar%seq.length]],t0=bar*4*spb;
+  voice(off,bus,chord[0]-12,92,t0,p);
+  for(let beat=0;beat<4;beat++){
+   const tone=chord[beat%chord.length]+(beat===3?12:0);
+   voice(off,bus,tone,beat===0?104:84,t0+beat*spb,p);
+   if(p.ruimte>45&&beat===2)voice(off,bus,chord[(beat+1)%chord.length],50,t0+(beat+.5)*spb,p);
+  }
+ }
+ const rendered=await off.startRendering();lastRender=rendered;
+ const q=analyzeBuffer(rendered);setMeter(q,'KEY-DNA');
+ return{buf:rendered,q};
+}
+function analyzeBuffer(buf){
+ let peak=0,sum=0,n=buf.length*buf.numberOfChannels,end=0;const tailN=Math.min(buf.length,Math.floor(buf.sampleRate*.12));
+ for(let c=0;c<buf.numberOfChannels;c++){const d=buf.getChannelData(c);for(let i=0;i<d.length;i++){const a=Math.abs(d[i]);if(a>peak)peak=a;sum+=a*a}}
+ for(let c=0;c<buf.numberOfChannels;c++){const d=buf.getChannelData(c);for(let i=d.length-tailN;i<d.length;i++)end=Math.max(end,Math.abs(d[i]))}
+ const rms=Math.sqrt(sum/n),clip=peak>=.999;
+ return{sec:buf.duration,peak,rms,end,clip,ok:!clip&&peak>.04&&end<.08};
+}
+function setMeter(q,naam){$('meter').textContent=`🧬 ${naam} ${q.ok?'✓':'⚠'}  sec ${q.sec.toFixed(2)} · piek ${q.peak.toFixed(3)} · rms ${q.rms.toFixed(3)} · einde ${q.end.toFixed(3)} · clipping ${q.clip?'JA':'nee'}`}
+function wav16(buf){
+ const n=buf.length,bytes=44+n*4,ab=new ArrayBuffer(bytes),v=new DataView(ab),w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+ w(0,'RIFF');v.setUint32(4,bytes-8,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,2,true);v.setUint32(24,buf.sampleRate,true);v.setUint32(28,buf.sampleRate*4,true);v.setUint16(32,4,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n*4,true);
+ let o=44;for(let i=0;i<n;i++)for(let c=0;c<2;c++){const x=clamp(buf.getChannelData(c)[i],-1,1);v.setInt16(o,Math.round(x*32767),true);o+=2}
+ return ab;
+}
+function download(blob,naam){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=naam;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1200)}
+function setSlider(id,val){$(id).value=clamp(Math.round(val),0,100);labelSliders()}
+function labelSliders(){for(const id of ['hamer','snaar','decay','bloom','detune','ruimte'])$('v'+id[0].toUpperCase()+id.slice(1)).textContent=$(id).value}
+function dobbelKeys(){
+ const bank=Math.random()<.5?'PIANO':'STEINWAY';$('bank').value=bank;
+ setSlider('hamer',28+Math.random()*58);setSlider('snaar',8+Math.random()*74);setSlider('decay',38+Math.random()*55);setSlider('bloom',15+Math.random()*66);setSlider('detune',3+Math.random()*48);setSlider('ruimte',12+Math.random()*58);
+ status('🎲 KEY-SOUND — instrumentlaag gekozen, ruimte blijft nabewerking');return P();
+}
+function breinKeys(text){
+ const t=(text||'').toLowerCase(),act=[],set=(id,v,naam)=>{setSlider(id,v);act.push(naam+' '+Math.round(v))};
+ if(/steinway|groot|concert/.test(t)){$('bank').value='STEINWAY';act.push('bank Steinway')}
+ if(/compact|eigen|pop|strak/.test(t)&&!/steinway/.test(t)){$('bank').value='PIANO';act.push('bank Piano')}
+ if(/film|cinema|breed|episch/.test(t)){set('ruimte',72,'ruimte');set('decay',78,'decay');set('bloom',64,'bloom')}
+ if(/warm|zacht|intiem|felt/.test(t)){set('hamer',28,'hamer zacht');set('snaar',25,'snaar rond');set('ruimte',Math.max(+$('ruimte').value,42),'ruimte warm')}
+ if(/hard|bright|helder|percussief/.test(t)){set('hamer',84,'hamer hard');set('snaar',62,'snaar helder')}
+ if(/toy|speelgoed|klein/.test(t)){set('snaar',92,'korte snaar');set('decay',30,'korte decay');set('detune',30,'speelse detune')}
+ if(/metaal|bell|chime/.test(t)){set('snaar',96,'metaal');set('bloom',72,'bloom');set('detune',42,'detune')}
+ if(/strak|kort|droog/.test(t)){set('decay',28,'korte decay');set('ruimte',8,'droog')}
+ if(/detune|chorus|dubbel|unison/.test(t))set('detune',58,'detune/unison');
+ const bpm=(t.match(/(\d{2,3})\s*bpm/)||[])[1];if(bpm){$('bpm').value=clamp(+bpm,55,160);act.push('bpm '+$('bpm').value)}
+ const bars=(t.match(/(\d)\s*bars?/)||[])[1];if(bars){$('bars').value=bars;act.push(bars+' bars')}
+ const res={text,actions:act,params:P()};status('🧠 KEY COMMANDO — '+(act.length?act.join(' · '):'geen herkende wijziging'));
+ if(/render|export|loop/.test(t))renderProgression().catch(e=>status('⚠ '+e.message));else speelChord('Am');
+ return res;
+}
+function buildUI(){
+ const black=new Set([1,3,6,8,10]);
+ for(let midi=48;midi<=71;midi++){
+  const d=document.createElement('div');d.className='pad'+(black.has(midi%12)?' zwart':'');d.id='p'+(midi-48);
+  d.innerHTML=NOTE_NAMES[midi%12]+'<small>'+(Math.floor(midi/12)-1)+'</small>';
+  d.onpointerdown=()=>{d.classList.add('hit');speelNootLive(midi,100);setTimeout(()=>d.classList.remove('hit'),150)};
+  $('keys').appendChild(d);
+ }
+ for(const c of Object.keys(CHORDS)){const b=document.createElement('button');b.textContent=c;b.onclick=()=>speelChord(c);$('chords').appendChild(b)}
+}
+function bind(){
+ for(const id of ['hamer','snaar','decay','bloom','detune','ruimte'])$(id).oninput=labelSliders;
+ $('bank').onchange=()=>loadBank($('bank').value).then(()=>status('✓ bank gewisseld')).catch(e=>status('⚠ '+e.message));
+ $('dobbel').onclick=()=>{dobbelKeys();speelChord('Am')};
+ $('demo').onclick=()=>speelChord('Am');
+ $('render').onclick=()=>{status('⏳ renderen…');renderProgression().then(({buf})=>{download(new Blob([wav16(buf)],{type:'audio/wav'}),'g2b-key-engine-loop.wav');status('✓ WAV gerenderd en gedownload')}).catch(e=>status('⚠ '+e.message))};
+ $('quality').onclick=()=>{status('⏳ quality check…');renderProgression().then(()=>status('✓ quality check klaar')).catch(e=>status('⚠ '+e.message))};
+ $('cmdGo').onclick=()=>breinKeys($('cmd').value);
+ $('cmd').addEventListener('keydown',e=>{if(e.key==='Enter')breinKeys($('cmd').value)});
+ if(navigator.requestMIDIAccess)navigator.requestMIDIAccess().then(m=>{m.inputs.forEach(inp=>inp.onmidimessage=e=>{const[s,n,v]=e.data;if((s&240)===144&&v>0)speelNootLive(n,v)})}).catch(()=>{});
+}
+buildUI();bind();labelSliders();
+loadBank('PIANO').catch(e=>status('⚠ laden mislukt: '+e.message));
+window.G2B_KEYS={playNote:speelNootLive,renderProgression,analyzeBuffer,breinKeys,dobbelKeys,params:P,buffers:BUFFERS,wav16};
+</script>
+</body>
+</html>
