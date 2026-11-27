@@ -126,6 +126,16 @@ function score(t){
   if(domein) return {tier:'maybe', hits, why:'past in G2B-domein — licentie onduidelijk uit titel'};
   return {tier:'rest', hits, why:''};
 }
+function routeFor(i){
+ const h=i.hits||[];
+ if(h.includes('live')||h.includes('vision')) return {naam:'LiveWereld-regie',kleur:'g'};
+ if(h.includes('browserai')&&h.includes('video')) return {naam:'VideoFabriek + browser-AI',kleur:'g'};
+ if(h.includes('video')) return {naam:'VideoFabriek / ShortsFabriek',kleur:'g'};
+ if(h.includes('boeken')) return {naam:'PagePlay / LesFabriek',kleur:'g'};
+ if(h.includes('games')) return {naam:'GameFabriek / LiveWereld',kleur:'g'};
+ if(h.includes('audio')) return {naam:'audiosessie / soundfamilie',kleur:'d'};
+ return {naam:'onderzoeken',kleur:'y'};
+}
 const TAGNL={audio:'🎵 audio/muziek',video:'🎬 video',boeken:'📖 boeken/audioboeken',games:'🎮 games',live:'📡 live/stream',vision:'👁 vision/camera',browserai:'🧠 browser/local AI',licentie:'📜 open-licentie',licht:'💻 licht/CPU'};
 
 async function fetchHN(){
@@ -183,7 +193,7 @@ async function scan(){
     <span class="sc ${i.tier==='rest'?'dim':''}">${i._sc}</span>
     <span class="bd">
     ${i.hits.filter(h=>TAGNL[h]).map(h=>`<span class="tag ${h==='licentie'||h==='licht'?'g':''}">${TAGNL[h]}</span>`).join('')}
-    <span class="tag d">${i.src}</span>
+    <span class="tag d">${i.src}</span><span class="tag ${routeFor(i).kleur}">→ ${routeFor(i).naam}</span>
     <div><a href="${i.url}" target="_blank" rel="noopener">${i.title}</a></div>
     ${i.desc?`<div class="why">${i.desc.slice(0,160)}</div>`:''}
     <div class="why">→ ${i.why}</div></span></div>`;
