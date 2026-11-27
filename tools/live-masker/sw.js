@@ -1,4 +1,4 @@
-const CACHE = 'g2b-livemasker-browser-v2.2.3';
+const CACHE = 'g2b-livemasker-browser-v2.2.4';
 const ASSETS = [
   './',
   './index.html',

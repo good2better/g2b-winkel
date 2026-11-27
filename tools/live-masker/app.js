@@ -77,6 +77,7 @@ let audioContext = null;
 let micLevel = 0;
 let recorder = null;
 let chunks = [];
+let lastRecordingBlob = null;
 let recordStartedAt = 0;
 let lastRecordTimerUpdate = 0;
 let hiddenCaptureTimer = null;
@@ -1763,6 +1764,41 @@ function pickRecorderMime() {
   const options = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'];
   return options.find(type => MediaRecorder.isTypeSupported(type)) || '';
 }
+function openContentLineDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('g2b-contentlijn-v1', 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('inbox', { keyPath: 'id' });
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error || new Error('IndexedDB niet beschikbaar'));
+  });
+}
+async function sendBlobToVideoFabriek(blob, meta = {}) {
+  if (!blob || !blob.size) throw new Error('geen video om door te sturen');
+  const db = await openContentLineDB();
+  const id = 'rec-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+  const item = { id, blob, type: blob.type || 'video/webm', name: meta.name || ('g2b-livewereld-' + stamp() + '.webm'), source: 'live-masker', created: Date.now(), meta };
+  await new Promise((resolve, reject) => {
+    const tx = db.transaction('inbox', 'readwrite');
+    tx.objectStore('inbox').put(item);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error || new Error('opslaan in contentlijn mislukt'));
+  });
+  try { db.close(); } catch (_) {}
+  return item;
+}
+async function handoffToVideoFabriek() {
+  try {
+    if (!lastRecordingBlob) { setStatus('maak eerst een opname'); return false; }
+    const item = await sendBlobToVideoFabriek(lastRecordingBlob);
+    setStatus('opname staat klaar in VideoFabriek…');
+    location.href = '../videofabriek/?inbox=' + encodeURIComponent(item.id);
+    return true;
+  } catch (error) {
+    setStatus('doorsturen naar VideoFabriek mislukt: ' + (error && error.message || error));
+    return false;
+  }
+}
+if ($('toVF')) $('toVF').onclick = handoffToVideoFabriek;
 els.rec.onclick = () => {
   if (!running) return;
   if (recorder && recorder.state === 'recording') {
@@ -1805,9 +1841,11 @@ els.rec.onclick = () => {
     const type = recorder.mimeType || mime;
     const blob = new Blob(chunks, { type });
     if (blob.size > 0) {
+      lastRecordingBlob = blob;
+      if ($('toVF')) $('toVF').disabled = false;
       const ext = type.includes('mp4') ? 'mp4' : 'webm';
       downloadBlob(blob, `g2b-live-masker-${stamp()}.${ext}`);
-      setStatus(`filmpje gedownload · ${(blob.size / 1024 / 1024).toFixed(1)} MB`);
+      setStatus(`filmpje gedownload · ${(blob.size / 1024 / 1024).toFixed(1)} MB · kan direct naar VideoFabriek`);
     }
     recordStartedAt = 0;
     els.rec.classList.remove('recording');
@@ -1949,6 +1987,8 @@ window.G2BMaskerBrowser = {
   selectBackground,
   selectEffect,
   triggerCohost,
+  sendBlobToVideoFabriek,
+  handoffToVideoFabriek,
   uploadBgFile: handleBgUploadFile,
   initSeg: initSegWorker,
   setFit(values) {
