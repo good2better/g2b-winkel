@@ -565,6 +565,13 @@ function drawCoverImage(img, W, H, drift) {
   const dy = (H - dh) / 2 + panY * dh;
   cx.drawImage(img, dx, dy, dw, dh);
 }
+function virtualCam(now){
+ const mode=($('camMode')&&$('camMode').value)||'statisch',t=now/1000;
+ if(mode==='push')return{scale:1.035+Math.sin(t*.28)*.018,x:Math.sin(t*.11)*10,y:Math.cos(t*.13)*5,shot:'push-in'};
+ if(mode==='orbit')return{scale:1.045,x:Math.sin(t*.32)*24,y:Math.cos(t*.24)*10,shot:'orbit'};
+ if(mode==='multicam'){const shot=Math.floor(t/5)%3;return[ {scale:.98,x:-18,y:4,shot:'wide links'}, {scale:1.075,x:22,y:-5,shot:'close rechts'}, {scale:1.03,x:0,y:8,shot:'center detail'} ][shot]}
+ return{scale:1,x:0,y:0,shot:'statisch'}
+}
 function drawSceneBackground(now) {
   const W = els.cv.width;
   const H = els.cv.height;
@@ -588,7 +595,7 @@ function drawSceneBackground(now) {
     cx.restore();
     return;
   }
-  cx.drawImage(bgCacheCanvas, 0, 0);
+  if(bgKind==='gamewereld'){const vc=virtualCam(now);cx.save();cx.translate(W/2+vc.x*.38,H/2+vc.y*.32);cx.scale(1+(vc.scale-1)*.62,1+(vc.scale-1)*.62);cx.translate(-W/2,-H/2);cx.drawImage(bgCacheCanvas,0,0);cx.restore()}else cx.drawImage(bgCacheCanvas, 0, 0);
   const t = now / 1000;
   const motion = reducedMotion ? 0.25 : 1;
   cx.globalCompositeOperation = 'screen';
@@ -831,6 +838,7 @@ function paintPersonCutout(now) {
     const contr = clamp(1.04 + (.50 - light) * .14, .98, 1.12);
     cx.filter = `brightness(${bright.toFixed(3)}) contrast(${contr.toFixed(3)}) saturate(1.08)`;
   }
+  if(bgKind==='gamewereld'){const vc=virtualCam(now);cx.translate(W/2+vc.x,H/2+vc.y);cx.scale(vc.scale,vc.scale);cx.translate(-W/2,-H/2)}
   cx.drawImage(personCanvas, 0, 0);
   cx.filter = 'none';
   cx.restore();
@@ -1904,7 +1912,7 @@ window.G2BMaskerBrowser = {
       status: els.status.textContent, perf: els.perf.textContent,
       privacyBadge: els.privacyBadge.textContent, offlineBadge: els.offlineBadge.textContent, modelBadge: els.modelBadge.textContent,
       externalResources, lastMaskMetrics: lastMaskMetrics ? { ...lastMaskMetrics } : null,
-      bg: bgKind, fx: fxKind, bgImageLabel, regieAuto: !!($('regieAuto') && $('regieAuto').checked), cohostOn: !!($('cohostOn') && $('cohostOn').checked), hostMsg, worldBursts: worldBursts.length,
+      bg: bgKind, fx: fxKind, bgImageLabel, camMode:($('camMode')&&$('camMode').value)||'statisch',camShot:virtualCam(performance.now()).shot,regieAuto: !!($('regieAuto') && $('regieAuto').checked), cohostOn: !!($('cohostOn') && $('cohostOn').checked), hostMsg, worldBursts: worldBursts.length,
       segReady, segError, segDelegate, segInferenceAvg, personCoverage,
       segReinitAttempts, segLowCoverageStreak, jawSmoothed,
       personMaskAge: personMask ? now - personMask.timestamp : null,
