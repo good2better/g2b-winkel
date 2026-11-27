@@ -46,13 +46,14 @@ footer{margin-top:36px;padding-top:14px;border-top:1px solid var(--line);color:v
 <body>
 <div class="langset"><button class="langb" data-lang="nl">NL</button><button class="langb" data-lang="en">EN</button><button class="langb" data-lang="es">ES</button></div>
 <h1 data-i18n="tr_h1">📡 G2B Tech-Radar</h1>
-<p class="sub" data-i18n="tr_sub">AI-nieuws gefilterd voor jóuw studio — alleen wat bruikbaar is voor muziek, video (boeken-clips) en tekst. Gratis + commercieel + lokaal draaibaar = 🟢. De rest verdwijnt onderin.</p>
+<p class="sub" data-i18n="tr_sub">AI-nieuws gefilterd voor jóuw studio — muziek, video, boeken, games én nu ook live-streaming, camera-regie, computer vision, avatars en browser-AI. Gratis + commercieel + lokaal/CPU = 🟢.</p>
 
 <div class="card">
 <div class="row">
   <button onclick="scan()" data-i18n="tr_scan">🔍 SCAN NIEUWS NU</button>
   <button class="sec" onclick="window.open('https://alphasignal.ai/','_blank')">AlphaSignal volledige lijst ↗</button>
   <button class="sec" onclick="window.open('https://huggingface.co/models?pipeline_tag=audio&sort=likes7d','_blank')">HuggingFace audio top ↗</button>
+  <button class="sec" onclick="window.open('https://huggingface.co/models?sort=likes7d','_blank')">HuggingFace trending ↗</button>
 </div>
 <div id="status"></div>
 <div class="fbar" id="fbar"></div>
@@ -99,7 +100,10 @@ const GOED = {
   video:/\b(video|anim|clip|render|caption|subtitle|faceless|shorts|tiktok|motion|lipsync|image.?to.?video|text.?to.?video|wan2|ltx|hunyuan.?video|cosmos)\b/i,
   boeken:/\b(ocr|document|pdf|scan|book|ebook|audiobook|read|narrat|voice.?clon|piper|text.?extract|typeset|layout|translate|verta)\b/i,
   games:/\b(game|godot|unity|unreal|pixel|sprite|platformer|puzzle|rpg|arcade|playable|browser.?game|kid.?game|educational.?game|pygame|kaboom|phaser)\b/i,
-  licentie:/\b(mit|apache|bsd|cc0|open.?source|open.?weights|permissive|free)\b/i,
+  live:/\b(live|stream|streaming|broadcast|obs|webrtc|camera|webcam|multicam|multi.?cam|avatar|vtuber|virtual.?production|moderator|co.?host|teleprompter)\b/i,
+  vision:/\b(computer.?vision|vision|segmentation|image.?segmentation|selfie.?segmentation|face|pose|depth|object.?detection|opencv|mediapipe|tracking|landmark)\b/i,
+  browserai:/\b(wasm|webgpu|webnn|transformers\.js|tensorflow\.js|onnx.?runtime.?web|in.?browser|client.?side|browser.?ai|local.?ai)\b/i,
+  licentie:/\b(mit|apache(?:-2.0)?|bsd|isc|cc0|public.?domain)\b/i,
   licht:/\b(cpu|onnx|gguf|quantiz|small|tiny|mini|lite|edge|local|offline|laptop|realtime|real.?time|wasm|int8)\b/i,
 };
 const SLECHT = /\b(non.?commercial|research.?only|nc\b|agpl|gpl|busl|sspl|paid|subscription|metered|api.?only|elevenlabs|suno|openai.?api|enterprise)\b/i;
@@ -109,21 +113,27 @@ function score(t){
   const hits = Object.entries(GOED).filter(([k,re])=>re.test(hay)).map(([k])=>k);
   const bad = SLECHT.test(hay);
   // licentie + domein nodig voor 🟢; bekende open licenties in titel/tekst tellen mee
-  const domein = hits.some(h=>h==='audio'||h==='video'||h==='boeken'||h==='games');
+  const domein = hits.some(h=>['audio','video','boeken','games','live','vision','browserai'].includes(h));
   if(bad) return {tier:'maybe', hits, why:'mogelijk licentie/kosten-risico — zelf even checken'};
-  if(domein && (hits.includes('licentie')||hits.includes('licht')))
-    return {tier:'go', hits, why:'open/gratis-signaal + G2B-domein'};
+  if(domein && hits.includes('licentie') && hits.includes('browserai'))
+    return {tier:'go', hits, why:'direct testen: permissive licentie + browser/local-first + G2B-domein'};
+  if(domein && hits.includes('licentie') && hits.includes('licht'))
+    return {tier:'go', hits, why:'kleine proef waard: permissive licentie + licht/CPU-signaal'};
+  if(domein && hits.includes('licentie'))
+    return {tier:'go', hits, why:'licentie-signaal is commercieel-vriendelijk — hardware/bron nog controleren'};
+  if(domein && hits.includes('licht'))
+    return {tier:'maybe', hits, why:'interessant en licht, maar licentie is niet bewezen — geen groene goudmijn'};
   if(domein) return {tier:'maybe', hits, why:'past in G2B-domein — licentie onduidelijk uit titel'};
   return {tier:'rest', hits, why:''};
 }
-const TAGNL={audio:'🎵 audio/muziek',video:'🎬 video',boeken:'📖 boeken/audioboeken',games:'🎮 games',licentie:'📜 open-licentie',licht:'💻 licht/CPU'};
+const TAGNL={audio:'🎵 audio/muziek',video:'🎬 video',boeken:'📖 boeken/audioboeken',games:'🎮 games',live:'📡 live/stream',vision:'👁 vision/camera',browserai:'🧠 browser/local AI',licentie:'📜 open-licentie',licht:'💻 licht/CPU'};
 
 async function fetchHN(){
-  const qs=['AI audio','AI music','AI video','open source audio','whisper speech','text to video','AI game','game engine','godot','AI game generator'];
+  const qs=['AI audio','AI music','AI video','open source audio','whisper speech','text to video','AI video editing','AI game','game engine','godot','AI game generator','computer vision web','webcam segmentation','mediapipe avatar','live streaming AI','virtual production browser','WebGPU machine learning','transformers.js browser AI','OCR document AI'];
   const out=[];
   for(const q of qs){
     try{
-      const r=await fetch('https://hn.algolia.com/api/v1/search?query='+encodeURIComponent(q)+'&tags=story&hitsPerPage=8').then(x=>x.json());
+      const r=await fetch('https://hn.algolia.com/api/v1/search?query='+encodeURIComponent(q)+'&tags=story&hitsPerPage=6').then(x=>x.json());
       out.push(...r.hits.map(h=>({title:h.title,url:h.url,src:'HN'})));
     }catch(e){}
   }
@@ -131,10 +141,10 @@ async function fetchHN(){
 }
 async function fetchHF(){
   const out=[];
-  for(const tag of ['audio','video','automatic-speech-recognition','text-to-video']){
+  for(const tag of ['audio','video','automatic-speech-recognition','text-to-video','image-segmentation','object-detection','depth-estimation','image-to-video']){
     try{
-      const r=await fetch('https://huggingface.co/api/models?pipeline_tag='+tag+'&sort=createdAt&limit=15&full=false').then(x=>x.json());
-      if(Array.isArray(r)) out.push(...r.map(m=>({title:m.id,url:'https://huggingface.co/'+m.id,src:'HF',desc:(m.pipeline_tag||'')})));
+      const r=await fetch('https://huggingface.co/api/models?pipeline_tag='+tag+'&sort=likes7d&limit=12&full=true').then(x=>x.json());
+      if(Array.isArray(r)) out.push(...r.map(m=>({title:m.id,url:'https://huggingface.co/'+m.id,src:'HF',desc:[m.pipeline_tag,m.cardData&&m.cardData.license,'likes '+(m.likes||0),'downloads '+(m.downloads||0),(m.tags||[]).slice(0,8).join(' ')].filter(Boolean).join(' · ')})));
     }catch(e){}
   }
   return out;
@@ -142,7 +152,7 @@ async function fetchHF(){
 async function fetchGH(){
   const d=new Date(Date.now()-30*864e5).toISOString().slice(0,10);
   const out=[];
-  for(const q of ['audio+ai','video+generation','speech+recognition','music+generation','game+ai','godot','game+engine']){
+  for(const q of ['audio+ai','video+ai','computer+vision+javascript','game+ai','webgpu+machine+learning','virtual+production']){
     try{
       const r=await fetch(`https://api.github.com/search/repositories?q=${q}+created:>${d}&sort=stars&per_page=8`,
         {headers:{Accept:'application/vnd.github+json'}}).then(x=>x.json());
@@ -158,10 +168,12 @@ async function scan(){
   let items=[];
   const parts=await Promise.all([fetchHN(),fetchHF(),fetchGH()]);
   items=parts.flat();
+  if(items.length<40){try{const cache=JSON.parse(localStorage.getItem('g2b-techradar-scan-v2')||'null');if(cache&&cache.items)items.push(...cache.items.map(x=>({title:x.title,url:x.url,src:x.src+' cache',desc:x.desc||''})))}catch(e){}}
   // dedup op titel
   const seen=new Set();items=items.filter(i=>{const k=i.title.toLowerCase().slice(0,60);if(seen.has(k))return false;seen.add(k);return true});
   const scored=items.map(i=>({...i,...score(i)}));
-  scored.forEach(i=>{const dom=i.hits.filter(h=>['audio','video','boeken','games'].includes(h)).length;i._sc=i.hits.length+dom;});
+  scored.forEach(i=>{const dom=i.hits.filter(h=>['audio','video','boeken','games','live','vision','browserai'].includes(h)).length;i._sc=i.hits.length+dom+(i.hits.includes('browserai')?2:0);});
+  try{localStorage.setItem('g2b-techradar-scan-v2',JSON.stringify({at:Date.now(),items:scored.slice(0,160)}))}catch(e){}
   const go=scored.filter(i=>i.tier==='go');
   const maybe=scored.filter(i=>i.tier==='maybe');
   const rest=scored.filter(i=>i.tier==='rest');
@@ -182,7 +194,7 @@ async function scan(){
   buildFilters();
 }
 // ---- AlphaSignal-filters: onderwerp-knoppen -------------------------------
-const FILTERS=[['alles','ALLES'],['audio','AUDIO'],['video','VIDEO'],['boeken','BOEKEN'],['games','GAMES'],['licht','LICHT/CPU'],['licentie','OPEN']];
+const FILTERS=[['alles','ALLES'],['live','LIVE'],['vision','VISION'],['browserai','BROWSER-AI'],['audio','AUDIO'],['video','VIDEO'],['boeken','BOEKEN'],['games','GAMES'],['licht','LICHT/CPU'],['licentie','OPEN']];
 let _f='alles';
 function buildFilters(){
   const bar=document.getElementById('fbar');if(!bar)return;
