@@ -145,7 +145,7 @@ function applySettings() {
   if (typeof settings.micOn === 'boolean') els.micOn.checked = settings.micOn;
   if (typeof settings.lightMatch === 'boolean') els.lightMatch.checked = settings.lightMatch;
   if (['freeze', 'blur', 'off'].includes(settings.privacyMode)) els.privacyMode.value = settings.privacyMode;
-  if (settings.bg && ['camera', 'ruimte', 'onderwater', 'zonsondergang'].includes(settings.bg)) {
+  if (settings.bg && ['camera', 'ruimte', 'onderwater', 'zonsondergang', 'gamewereld'].includes(settings.bg)) {
     bgKind = settings.bg;
   }
   if (settings.fx && (settings.fx === 'uit' || FX_SPECS[settings.fx])) {
@@ -537,6 +537,20 @@ function ensureBgCache(kind, W, H) {
     }
     return true;
   }
+  if (kind === 'gamewereld') {
+    const sky = g.createLinearGradient(0, 0, 0, H);
+    sky.addColorStop(0, '#06142f'); sky.addColorStop(0.42, '#12285b'); sky.addColorStop(0.75, '#26184d'); sky.addColorStop(1, '#070b1e');
+    g.fillStyle = sky; g.fillRect(0, 0, W, H);
+    for (const neb of [[.22,.22,.45,'rgba(38,230,190,.20)'],[.74,.28,.42,'rgba(145,80,255,.22)'],[.52,.66,.52,'rgba(255,85,180,.10)']]) {
+      const rg = g.createRadialGradient(W*neb[0],H*neb[1],0,W*neb[0],H*neb[1],Math.max(W,H)*neb[2]);rg.addColorStop(0,neb[3]);rg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=rg;g.fillRect(0,0,W,H);
+    }
+    for (let i=0;i<180;i++) { const x=rnd()*W,y=rnd()*H*.62,r=.5+rnd()*1.6;g.fillStyle=`rgba(255,255,255,${(.18+rnd()*.62).toFixed(3)})`;g.beginPath();g.arc(x,y,r,0,Math.PI*2);g.fill(); }
+    g.fillStyle='rgba(5,8,24,.88)';g.beginPath();g.moveTo(0,H*.72);for(let x=0;x<=W;x+=W/12)g.lineTo(x,H*(.68+rnd()*.09));g.lineTo(W,H);g.lineTo(0,H);g.closePath();g.fill();
+    g.strokeStyle='rgba(32,230,139,.34)';g.lineWidth=2;for(let i=0;i<13;i++){const y=H*(.74+i*.022);g.beginPath();g.moveTo(0,y);g.lineTo(W,y);g.stroke()}
+    for(let i=-8;i<18;i++){g.beginPath();g.moveTo(W*.5+i*W*.055,H*.73);g.lineTo(W*.5+i*W*.16,H);g.stroke()}
+    for(const isl of [[.16,.48,.10],[.82,.42,.12],[.64,.57,.075]]){g.fillStyle='rgba(28,47,88,.92)';g.beginPath();g.ellipse(W*isl[0],H*isl[1],W*isl[2],H*.035,0,0,Math.PI*2);g.fill();g.fillStyle='rgba(32,230,139,.30)';g.fillRect(W*(isl[0]-isl[2]*.55),H*(isl[1]-.012),W*isl[2]*1.1,3)}
+    return true;
+  }
   return false;
 }
 function drawCoverImage(img, W, H, drift) {
@@ -635,6 +649,13 @@ function drawSceneBackground(now) {
       cx.fillStyle = rg;
       cx.fillRect(0, 0, W, H);
     }
+  } else if (bgKind === 'gamewereld') {
+    for (const rib of [[.18,.12,'rgba(32,230,139,.16)'],[.45,.18,'rgba(110,120,255,.13)'],[.72,.15,'rgba(255,100,210,.10)']]) {
+      cx.strokeStyle=rib[2];cx.lineWidth=Math.max(10,W*.018);cx.beginPath();
+      for(let x=0;x<=W;x+=W/28){const y=H*(rib[0]+Math.sin(t*.7+x*.003+rib[1]*8)*.035+x/W*.08);if(x===0)cx.moveTo(x,y);else cx.lineTo(x,y)}cx.stroke();
+    }
+    const rnd2=seededRandom(991);for(let i=0;i<34;i++){const sp=.025+rnd2()*.055,yy=(rnd2()+t*sp)%1,x=(rnd2()+Math.sin(t+i)*.015)*W,y=yy*H*.75;cx.fillStyle=i%3?'rgba(32,230,139,.55)':'rgba(255,214,107,.55)';cx.beginPath();cx.arc(x,y,1+rnd2()*2.8,0,Math.PI*2);cx.fill()}
+    const glow=cx.createRadialGradient(W*.5,H*.78,0,W*.5,H*.78,W*.42);glow.addColorStop(0,'rgba(32,230,139,.12)');glow.addColorStop(1,'rgba(0,0,0,0)');cx.fillStyle=glow;cx.fillRect(0,0,W,H);
   }
   cx.globalCompositeOperation = 'source-over';
   cx.restore();
@@ -804,7 +825,14 @@ function paintPersonCutout(now) {
   const alpha = age < 520 ? 1 : Math.max(0.35, 1 - (age - 520) / 380);
   cx.save();
   cx.globalAlpha = alpha;
+  if ($('regieAuto') && $('regieAuto').checked) {
+    const light = face.light || .55;
+    const bright = clamp(1 + (.56 - light) * .62, .90, 1.24);
+    const contr = clamp(1.04 + (.50 - light) * .14, .98, 1.12);
+    cx.filter = `brightness(${bright.toFixed(3)}) contrast(${contr.toFixed(3)}) saturate(1.08)`;
+  }
   cx.drawImage(personCanvas, 0, 0);
+  cx.filter = 'none';
   cx.restore();
   return true;
 }
@@ -895,12 +923,13 @@ function drawEffects(now) {
   cx.globalAlpha = 1;
 }
 function selectBackground(key, button) {
-  if (!['camera', 'ruimte', 'onderwater', 'zonsondergang', 'eigen'].includes(key)) return;
+  if (!['camera', 'ruimte', 'onderwater', 'zonsondergang', 'gamewereld', 'eigen'].includes(key)) return;
   bgKind = key;
   document.querySelectorAll('.bg').forEach(x => x.classList.remove('act'));
   if (button) button.classList.add('act');
   const bgButton = document.querySelector(`.bg[data-b="${key}"]`);
   if (bgButton) bgButton.classList.add('act');
+  if (key === 'gamewereld' && kar !== 'zelf') selectCharacter('zelf', document.querySelector('.kar[data-k="zelf"]'));
   if (key !== 'camera') {
     setStatus('achtergrondmagie wordt geladen…');
     initSegWorker().then(ok => {
@@ -1029,6 +1058,7 @@ function expressionValues() {
   return { jaw, smile, blink, brow };
 }
 function drawMask(now) {
+  if (kar === 'zelf') return;
   const alpha = privacyAlpha(now);
   if (alpha <= 0.01) {
     if (lastMaskMetrics) lastMaskMetrics = { ...lastMaskMetrics, alpha: 0 };
@@ -1102,8 +1132,28 @@ function drawMouthCavity(m, anchorX, anchorY, jawRaw) {
   }
   cx.restore();
 }
+let hostMsg='Klaar voor een sterke stream!',hostUntil=performance.now()+5000,worldBursts=[];
+function triggerCohost(type='hype'){
+ const texts={hype:['🔥 Dit is een sterk moment!','Laten we gaan, G2B!','Energie omhoog — mooi werk!'],vraag:['❓ Chat: hoe zou jij dit gebruiken?','❓ Welke tool wil je nu live zien?','❓ Durf jij deze workflow te proberen?'],event:['🎉 Wereld-event actief!','✨ De wereld reageert op je stream!','🚀 Nieuwe energie in de wereld!']};
+ const arr=texts[type]||texts.hype;hostMsg=arr[Math.floor(Math.random()*arr.length)];hostUntil=performance.now()+5200;
+ if(type==='event'){selectEffect('confetti');for(let i=0;i<8;i++)worldBursts.push({x:.18+Math.random()*.64,y:.2+Math.random()*.5,t:performance.now(),hue:120+Math.random()*160})}
+ drawFrame();return {type,message:hostMsg}
+}
+function drawWorldBursts(now){worldBursts=worldBursts.filter(b=>now-b.t<1800);for(const b of worldBursts){const a=1-(now-b.t)/1800,r=(1-a)*90+8,x=b.x*els.cv.width,y=b.y*els.cv.height;cx.save();cx.globalAlpha=a;cx.strokeStyle=`hsla(${b.hue},95%,62%,.9)`;cx.lineWidth=3;cx.beginPath();cx.arc(x,y,r,0,Math.PI*2);cx.stroke();cx.fillStyle=`hsla(${b.hue},95%,72%,.7)`;for(let i=0;i<7;i++){const ang=i/7*Math.PI*2+now/300;cx.beginPath();cx.arc(x+Math.cos(ang)*r,y+Math.sin(ang)*r,3,0,Math.PI*2);cx.fill()}cx.restore()}}
+function roundRect(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
+function drawCohost(now){
+ if(bgKind!=='gamewereld'||!($('cohostOn')&&$('cohostOn').checked))return;
+ const W=els.cv.width,H=els.cv.height,x=W*.82,y=H*.76+Math.sin(now/380)*H*.008,s=Math.min(W,H)*.105;cx.save();
+ const glow=cx.createRadialGradient(x,y,0,x,y,s*2.1);glow.addColorStop(0,'rgba(32,230,139,.30)');glow.addColorStop(1,'rgba(32,230,139,0)');cx.fillStyle=glow;cx.fillRect(x-s*2,y-s*2,s*4,s*4);
+ cx.translate(x,y);cx.fillStyle='#12253f';roundRect(cx,-s*.62,-s*.72,s*1.24,s*1.42,s*.28);cx.fill();cx.strokeStyle='#20e68b';cx.lineWidth=3;cx.stroke();
+ cx.fillStyle='#dffef0';cx.beginPath();cx.arc(-s*.24,-s*.26,s*.09,0,Math.PI*2);cx.arc(s*.24,-s*.26,s*.09,0,Math.PI*2);cx.fill();cx.fillStyle='#20e68b';cx.fillRect(-s*.30,s*.08,s*.6,Math.max(3,s*.06+Math.sin(now/90)*s*.025));
+ cx.strokeStyle='#ffd66b';cx.lineWidth=4;cx.beginPath();cx.moveTo(-s*.62,-s*.1);cx.lineTo(-s*1.05,-s*.44+Math.sin(now/180)*s*.12);cx.moveTo(s*.62,-s*.1);cx.lineTo(s*1.05,-s*.40+Math.cos(now/190)*s*.12);cx.stroke();
+ cx.restore();
+ if(now<hostUntil){const fs=Math.max(14,Math.round(W*.018));cx.font='900 '+fs+'px system-ui';const tw=Math.min(W*.43,cx.measureText(hostMsg).width+34),bx=W*.56-tw/2,by=H*.12;cx.fillStyle='rgba(3,15,10,.82)';roundRect(cx,bx,by,tw,fs*2.15,14);cx.fill();cx.strokeStyle='rgba(32,230,139,.8)';cx.stroke();cx.fillStyle='#eafff4';cx.textAlign='center';cx.fillText(hostMsg,W*.56,by+fs*1.42)}
+}
 function drawFrame() {
   const now = performance.now();
+  updateLight(now);
   const faceAge = face.ready ? now - face.lastSeen : Infinity;
   const blurForPrivacy = els.privacyMode.value === 'blur' && faceAge > 170;
   if (bgKind === 'camera') {
@@ -1115,6 +1165,8 @@ function drawFrame() {
     }
   }
   drawMask(now);
+  drawWorldBursts(now);
+  drawCohost(now);
   drawEffects(now);
 }
 
@@ -1494,7 +1546,7 @@ els.lightMatch.onchange = saveSettings;
 els.privacyMode.onchange = saveSettings;
 
 function selectCharacter(key, button) {
-  if (!CHARACTERS[key]) return;
+  if (!CHARACTERS[key] && key !== 'zelf') return;
   kar = key;
   document.querySelectorAll('.kar').forEach(x => x.classList.remove('act'));
   if (button) button.classList.add('act');
@@ -1518,12 +1570,17 @@ if (els.upBg) {
     });
   }
 }
-for (const key of ['camera', 'ruimte', 'onderwater', 'zonsondergang']) {
+for (const key of ['camera', 'ruimte', 'onderwater', 'zonsondergang', 'gamewereld']) {
   if (key === bgKind) {
     document.querySelectorAll('.bg').forEach(x => x.classList.toggle('act', x.dataset.b === key));
   }
 }
 document.querySelectorAll('.fx').forEach(x => x.classList.toggle('act', x.dataset.f === fxKind));
+if ($('hostHype')) $('hostHype').onclick=()=>triggerCohost('hype');
+if ($('hostVraag')) $('hostVraag').onclick=()=>triggerCohost('vraag');
+if ($('hostConfetti')) $('hostConfetti').onclick=()=>triggerCohost('event');
+els.cv.addEventListener('pointerdown',ev=>{const r=els.cv.getBoundingClientRect(),x=(ev.clientX-r.left)/r.width,y=(ev.clientY-r.top)/r.height;worldBursts.push({x,y,t:performance.now(),hue:120+Math.random()*160});if(bgKind==='gamewereld'&&Math.random()<.55)triggerCohost('event')});
+window.addEventListener('keydown',ev=>{if(ev.key.toLowerCase()==='h')triggerCohost('hype')});
 els.resetFit.onclick = () => {
   fitStore[kar] = defaultFit();
   try { localStorage.setItem('g2b-livemasker-browser-fit-v2', JSON.stringify(fitStore)); } catch (_) {}
@@ -1847,7 +1904,7 @@ window.G2BMaskerBrowser = {
       status: els.status.textContent, perf: els.perf.textContent,
       privacyBadge: els.privacyBadge.textContent, offlineBadge: els.offlineBadge.textContent, modelBadge: els.modelBadge.textContent,
       externalResources, lastMaskMetrics: lastMaskMetrics ? { ...lastMaskMetrics } : null,
-      bg: bgKind, fx: fxKind, bgImageLabel,
+      bg: bgKind, fx: fxKind, bgImageLabel, regieAuto: !!($('regieAuto') && $('regieAuto').checked), cohostOn: !!($('cohostOn') && $('cohostOn').checked), hostMsg, worldBursts: worldBursts.length,
       segReady, segError, segDelegate, segInferenceAvg, personCoverage,
       segReinitAttempts, segLowCoverageStreak, jawSmoothed,
       personMaskAge: personMask ? now - personMask.timestamp : null,
@@ -1866,6 +1923,7 @@ window.G2BMaskerBrowser = {
   selectCharacter,
   selectBackground,
   selectEffect,
+  triggerCohost,
   uploadBgFile: handleBgUploadFile,
   initSeg: initSegWorker,
   setFit(values) {

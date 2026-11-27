@@ -45,6 +45,7 @@
 
   <section class="controls" aria-label="Bediening">
     <div class="row character-row" id="kars" aria-label="Kies je karakter">
+      <button class="kar" data-k="zelf" type="button"><span>🧑‍🎤</span> Zelf</button>
       <button class="kar act" data-k="kat" type="button"><span>🐱</span> Kat</button>
       <button class="kar" data-k="robot" type="button"><span>🤖</span> Robot</button>
       <button class="kar" data-k="uil" type="button"><span>🦉</span> Uil</button>
@@ -56,6 +57,7 @@
       <button class="bg" data-b="ruimte" type="button"><span>🌌</span> ruimte</button>
       <button class="bg" data-b="onderwater" type="button"><span>🫧</span> onderwater</button>
       <button class="bg" data-b="zonsondergang" type="button"><span>🌇</span> zonsondergang</button>
+      <button class="bg" data-b="gamewereld" type="button"><span>🕹️</span> game-wereld</button>
       <label class="upload small" for="upBg" tabindex="0" role="button">🖼 eigen achtergrond
         <input type="file" id="upBg" accept="image/png,image/webp,image/jpeg,image/gif,image/svg+xml">
       </label>
@@ -109,6 +111,8 @@
         <label class="check"><input id="micOn" type="checkbox" checked> microfoon voor stem en opname</label>
         <label class="check"><input id="mirror" type="checkbox" checked> spiegelbeeld</label>
         <label class="check"><input id="lightMatch" type="checkbox" checked> karakter aan licht aanpassen</label>
+        <label class="check"><input id="regieAuto" type="checkbox" checked> slimme regie: licht + kleur corrigeren</label>
+        <label class="check"><input id="cohostOn" type="checkbox" checked> virtuele co-host in game-wereld</label>
         <label>privacy bij trackingverlies
           <select id="privacyMode">
             <option value="freeze" selected>masker kort vasthouden</option>
@@ -117,6 +121,16 @@
           </select>
         </label>
       </div>
+    </details>
+
+    <details class="panel" open>
+      <summary>LiveWereld-regie en virtuele co-host</summary>
+      <div class="row action-row">
+        <button id="hostHype" type="button">🔥 hype-reactie</button>
+        <button id="hostVraag" type="button">❓ publieksvraag</button>
+        <button id="hostConfetti" type="button">🎉 wereld-event</button>
+      </div>
+      <p class="hint">De co-host is een lokale regie-assistent: geen echte cloud-AI en geen vervanging voor menselijke moderatie, maar wel een solo-streamhulp die reacties, energie en wereld-events kan triggeren. Klik ook in het beeld voor interactie.</p>
     </details>
 
     <details class="panel">
