@@ -565,6 +565,13 @@ function drawCoverImage(img, W, H, drift) {
   const dy = (H - dh) / 2 + panY * dh;
   cx.drawImage(img, dx, dy, dw, dh);
 }
+let camSmooth={x:0,y:0,scale:1,mode:''};
+function smoothDirectorCam(mode,raw){
+ if(mode!=='regisseur'){camSmooth={x:raw.x,y:raw.y,scale:raw.scale,mode};return raw}
+ if(camSmooth.mode!==mode)camSmooth={x:raw.x,y:raw.y,scale:raw.scale,mode};
+ camSmooth.x+=(raw.x-camSmooth.x)*.10;camSmooth.y+=(raw.y-camSmooth.y)*.10;camSmooth.scale+=(raw.scale-camSmooth.scale)*.075;
+ return{...raw,x:camSmooth.x,y:camSmooth.y,scale:camSmooth.scale,smoothed:true}
+}
 function virtualCam(now){
  const mode=($('camMode')&&$('camMode').value)||'statisch',t=now/1000;
  if(mode==='push')return{scale:1.035+Math.sin(t*.28)*.018,x:Math.sin(t*.11)*10,y:Math.cos(t*.13)*5,shot:'push-in'};
@@ -577,7 +584,7 @@ function virtualCam(now){
   const closeBoost=energy>.45?.045:0,base=[.985,1.055+closeBoost,1.015][phase];
   const faceScale=fresh?clamp(face.d0/(W*.16),.90,1.12):1;
   const orbit=phase===2?Math.sin(t*.7)*8:0;
-  return{scale:clamp(base*faceScale,.94,1.13),x:clamp(-cxn*W*.15,-38,38)+orbit,y:clamp(-cyn*H*.10,-18,18),shot:energy>.45?'auto close op energie':['auto wide','auto close','auto detail'][phase]}
+  return smoothDirectorCam(mode,{scale:clamp(base*faceScale,.94,1.13),x:clamp(-cxn*W*.15,-38,38)+orbit,y:clamp(-cyn*H*.10,-18,18),shot:energy>.45?'auto close op energie':['auto wide','auto close','auto detail'][phase]})
  }
  return{scale:1,x:0,y:0,shot:'statisch'}
 }
